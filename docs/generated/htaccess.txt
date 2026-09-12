@@ -7,6 +7,8 @@ ErrorDocument 404 /404.html
 
 <IfModule mod_rewrite.c>
 RewriteEngine On
+# Never serve dotfiles (the deploy branch is pulled with its .git directory).
+RewriteRule (^|/)\.(?!well-known/) - [R=404,L]
 # Canonical host and scheme in one hop.
 RewriteCond %{HTTP_HOST} ^www\.pequeverso\.com$ [NC]
 RewriteRule ^(.*)$ https://pequeverso.com/$1 [R=301,L]
