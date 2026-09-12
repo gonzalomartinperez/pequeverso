@@ -27,6 +27,7 @@ Header always set Referrer-Policy "strict-origin-when-cross-origin"
 Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), browsing-topics=()"
 Header always set X-Frame-Options "SAMEORIGIN"
 Header always set Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self' 'unsafe-inline' https://checkout.hotmart.com https://*.hotmart.com https://connect.facebook.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.hotmart.com https://www.facebook.com https://connect.facebook.net https://cloud.umami.is https://api-gateway.umami.dev; frame-src https://*.hotmart.com https://www.facebook.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://*.hotmart.com; frame-ancestors 'self'"
+Header always set Cache-Control "no-cache"
 # html-no-cache
 <If "%{REQUEST_URI} =~ m#^/.*\.html$#">
   Header always set Cache-Control "no-cache"

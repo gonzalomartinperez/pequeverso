@@ -25,8 +25,10 @@
         "Referrer-Policy": "strict-origin-when-cross-origin",
         "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), browsing-topics=()",
         "X-Frame-Options": "SAMEORIGIN",
-        "Content-Security-Policy-Report-Only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://checkout.hotmart.com https://*.hotmart.com https://connect.facebook.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.hotmart.com https://www.facebook.com https://connect.facebook.net https://cloud.umami.is https://api-gateway.umami.dev; frame-src https://*.hotmart.com https://www.facebook.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://*.hotmart.com; frame-ancestors 'self'"
-      }
+        "Content-Security-Policy-Report-Only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://checkout.hotmart.com https://*.hotmart.com https://connect.facebook.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.hotmart.com https://www.facebook.com https://connect.facebook.net https://cloud.umami.is https://api-gateway.umami.dev; frame-src https://*.hotmart.com https://www.facebook.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://*.hotmart.com; frame-ancestors 'self'",
+        "Cache-Control": "no-cache"
+      },
+      "description": "Applies to every response; later rules override Cache-Control for immutable assets and build-info. HTML is never CDN-cached (Cloudflare/Hostinger CDN respect origin Cache-Control)."
     },
     {
       "id": "html-no-cache",

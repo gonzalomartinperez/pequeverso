@@ -15,9 +15,9 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/build-info.mjs && next build && node scripts/gen-htaccess.mjs",
-    "build:standalone": "cross-env NEXT_OUTPUT=standalone next build",
-    "start": "node scripts/serve-static.mjs",
+    "build": "node scripts/build-info.mjs && next build --webpack && node scripts/gen-htaccess.mjs",
+    "build:standalone": "cross-env NEXT_OUTPUT=standalone npm run build",
+    "start": "node scripts/start.mjs",
     "typegen": "next typegen",
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "biome ci --error-on-warnings .",
@@ -31,7 +31,8 @@
     "check:placeholders": "node scripts/check-placeholders.mjs",
     "check:placeholders:strict": "node scripts/check-placeholders.mjs --strict",
     "lhci": "lhci autorun",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "start:static": "node scripts/serve-static.mjs"
   },
   "dependencies": {
     "embla-carousel-react": "8.6.0",

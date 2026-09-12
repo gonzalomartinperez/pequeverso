@@ -1,10 +1,11 @@
 name: Deploy
 
-# Gated release to Hostinger through Hostinger's Git integration (no SSH, no secrets):
+# Gated release to Hostinger through Hostinger's Git integrations (no SSH, no secrets):
 # 1. build the static export of the requested tag/commit with the environment's variables;
 # 2. publish `out/` (with .htaccess and build-info.json) to the `deploy` branch as a
-#    single orphan commit — Hostinger's Git deployment pulls that branch into public_html
-#    and serves the files as they are (it never runs a build);
+#    single orphan commit — for a Hostinger *website* whose Git deployment pulls that branch
+#    into public_html (no build on the host) — and promote the source commit to `release`,
+#    the branch a Hostinger *Node.js Web App* builds and runs (standalone, webpack build);
 # 3. wait for the host to pick it up and verify the deployed revision over HTTP.
 # The `production` environment requires an approval; rollback = re-run with the previous tag.
 # See docs/deployment.md.
@@ -103,6 +104,14 @@ jobs:
           git commit -qm "deploy: $REF_NAME ($SHA)"
           git push --force origin "HEAD:refs/heads/$BRANCH"
           echo "published $BRANCH at $(git rev-parse HEAD)"
+
+      - name: Promote the source commit to the release branch (Hostinger Node.js Web App mode)
+        # If the hPanel Node.js app is connected to `release` instead of `main`, this is what
+        # triggers Hostinger's own build of exactly the approved commit.
+        env:
+          SHA: ${{ steps.meta.outputs.sha }}
+          BRANCH: ${{ inputs.target == 'production' && 'release' || 'release-staging' }}
+        run: git push --force origin "$SHA:refs/heads/$BRANCH"
 
       - name: Wait for Hostinger to pull and verify the deployed revision (not just HTTP 200)
         env:

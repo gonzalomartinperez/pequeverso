@@ -38,13 +38,20 @@ export function validateEdgeRules(rules) {
 
 /** Next.js redirects() shape (standalone target). @param {EdgeRules} rules */
 export function toNextRedirects(rules) {
-  return rules.redirects
+  const list = rules.redirects
     .filter((r) => !r.gone)
     .map((r) => ({
       source: r.source,
       destination: /** @type {string} */ (r.destination),
       permanent: r.permanent !== false,
     }));
+  // www → apex on the Node target (the static target does it in .htaccess).
+  const host = [{ type: "host", value: `www.${rules.canonicalHost}` }];
+  list.unshift(
+    { source: "/", has: host, destination: `https://${rules.canonicalHost}`, permanent: true },
+    { source: "/:path+", has: host, destination: `https://${rules.canonicalHost}/:path+/`, permanent: true },
+  );
+  return list;
 }
 
 /** Next.js headers() shape (standalone target). @param {EdgeRules} rules */

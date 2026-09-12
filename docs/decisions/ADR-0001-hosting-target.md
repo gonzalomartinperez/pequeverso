@@ -1,6 +1,6 @@
 # ADR-0001: Hosting target — static export on a Hostinger website, Node app as fallback
 
-Date: 2026-09-12 · Status: accepted (pending staging spike confirmation)
+Date: 2026-09-12 · Status: accepted, amended the same day (see Addendum)
 
 ## Context
 
@@ -28,3 +28,18 @@ Hostinger's Git integration pulls into `public_html` (no server-side build, no S
   `ErrorDocument`, Range/206, HTTP/2, `rsync` availability, CDN caching behaviour.
 - Fallback trigger: if the host blocks required `.htaccess` directives, switch the Deploy workflow to
   the Hostinger Node.js Web App (`standalone`) — no application code changes required.
+
+## Addendum (2026-09-12, evening)
+
+The owner connected the repository to a **Hostinger Node.js Web App** (hPanel CI/CD) instead of a
+website + Git deployment. The first host build failed exactly as anticipated (Turbopack needs native
+SWC bindings; GLIBC 2.28 → WASM only). Both modes are now first-class:
+
+- `npm run build` uses `next build --webpack` everywhere (WASM SWC works with webpack).
+- `next.config.mjs` switches to `standalone` when `NEXT_OUTPUT=standalone` **or** when the build runs
+  under Hostinger's `/hbuilds/` directory, attaching redirects/headers (incl. `www` → apex and
+  `Cache-Control: no-cache` for HTML) from `config/edge-rules.json`.
+- `npm start` (`scripts/start.mjs`) runs the standalone server or the static server.
+- The Deploy workflow promotes the approved commit to `release` (Node mode) and publishes the export
+  to `deploy` (static mode). Connecting hPanel to `release` keeps the approval gate; `main` deploys
+  every merge.
