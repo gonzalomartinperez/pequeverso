@@ -1,0 +1,1202 @@
+{
+  "$schemaVersion": 1,
+  "$comment": "Declarative source list for tools/media/media-build.mjs. Paths are relative to the library root resolved from EXTERNAL_ASSETS_ROOT / EXTERNAL_OPS_ROOT / EXTERNAL_STUDIO_ROOT. Nothing referenced here is ever copied into the repository; only the derived outputs under public/ are.",
+  "libraries": {
+    "ai-business-assets": {
+      "env": "EXTERNAL_ASSETS_ROOT",
+      "default": "D:/07-proyectos/business/ai-business-assets"
+    },
+    "ai-business-ops": {
+      "env": "EXTERNAL_OPS_ROOT",
+      "default": "D:/07-proyectos/business/ai-business-ops"
+    },
+    "pequeverso-content-studio": {
+      "env": "EXTERNAL_STUDIO_ROOT",
+      "default": "D:/07-proyectos/business/pequeverso-content-studio"
+    }
+  },
+  "roles": {
+    "hero": {
+      "widths": [480, 768, 1024, 1440],
+      "quality": 82
+    },
+    "scene": {
+      "widths": [480, 768, 1024],
+      "quality": 78
+    },
+    "page": {
+      "widths": [640, 1100],
+      "quality": 80,
+      "sharpen": true
+    },
+    "card": {
+      "widths": [360, 520, 720],
+      "quality": 76
+    },
+    "thumb": {
+      "widths": [240, 480],
+      "quality": 72
+    },
+    "brand": {
+      "widths": [320, 640],
+      "quality": 90,
+      "alphaQuality": 100
+    },
+    "poster": {
+      "widths": [480, 720],
+      "quality": 72
+    }
+  },
+  "rights": {
+    "owner": "Pequeverso / Digital Products Team",
+    "license": "proprietary-all-rights-reserved",
+    "redistribution": "public-repo-approved",
+    "approvedAt": "2026-09-12T00:00:00.000Z",
+    "basis": "Coordinator brief 2026-09-12; the same derivatives are already served publicly on the live landings (digitalproductsteam.com). Items that override redistribution to pending-owner-confirmation must not ship until the owner signs off."
+  },
+  "provenanceProfiles": {
+    "brand-identity": {
+      "origin": "owner-designed",
+      "tool": "Canva (raster export 2026-08-02; no vector master available)",
+      "date": "2026-07-28",
+      "people": "none",
+      "minors": "none",
+      "release": "n/a"
+    },
+    "imagegen-2026-06": {
+      "origin": "ai-generated",
+      "tool": "ChatGPT image generation",
+      "date": "2026-06",
+      "people": "synthetic",
+      "minors": "synthetic",
+      "release": "n/a"
+    },
+    "imagegen-cards-2026-07-26": {
+      "origin": "ai-generated",
+      "tool": "ChatGPT image generation (cover-card redesign 2026-07-26)",
+      "date": "2026-07-26",
+      "people": "none",
+      "minors": "none",
+      "release": "n/a"
+    },
+    "card-composite-2026-07": {
+      "origin": "ai-generated",
+      "tool": "ChatGPT image generation composite of own PDF covers (cover-card refresh 2026-07-24)",
+      "date": "2026-07-24",
+      "people": "none",
+      "minors": "none",
+      "release": "n/a"
+    },
+    "owner-render-main-kit": {
+      "origin": "owner-render",
+      "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+      "date": "2026-06-29",
+      "people": "none",
+      "minors": "none",
+      "release": "n/a"
+    },
+    "owner-render-pack": {
+      "origin": "owner-render",
+      "tool": "Product PDF page render (Pack Imprime y Juega, 2026-06)",
+      "date": "2026-06",
+      "people": "none",
+      "minors": "none",
+      "release": "n/a"
+    },
+    "owner-recorded-clips": {
+      "origin": "owner-recorded",
+      "tool": "Smartphone recording, 2x silent export (content-studio clip library 2026-08-16)",
+      "date": "2026-08-16",
+      "people": "owner",
+      "minors": "none",
+      "release": "n/a",
+      "notes": "Hands-only demonstrations of the printed material. Several frames also show a child's hand or forearm and, briefly, hair at the frame edge; no face is visible. The owner must confirm (a) that any child shown is their own and consents to publication and (b) that the printed material in the clips is their own before redistribution changes to public-repo-approved."
+    }
+  },
+  "items": [
+    {
+      "id": "brand.isotipo",
+      "role": "brand",
+      "page": "site",
+      "group": "brand",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "01-brands/pequeverso/approved/identity/pequeverso-isotipo.png"
+      },
+      "provenance": "brand-identity",
+      "alt": {
+        "es": "Isotipo de Pequeverso"
+      },
+      "outputs": {
+        "widths": [96, 192, 512]
+      }
+    },
+    {
+      "id": "brand.logo",
+      "role": "brand",
+      "page": "site",
+      "group": "brand",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "01-brands/pequeverso/approved/identity/pequeverso-logo-completo.png"
+      },
+      "provenance": "brand-identity",
+      "alt": {
+        "es": "Pequeverso"
+      },
+      "outputs": {
+        "widths": [320, 640]
+      }
+    },
+    {
+      "id": "brand.og",
+      "role": "og",
+      "page": "site",
+      "group": "brand",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "01-brands/pequeverso/approved/identity/pequeverso-logo-completo.png"
+      },
+      "provenance": "brand-identity",
+      "alt": {
+        "es": "Pequeverso"
+      },
+      "compose": {
+        "kind": "og-card",
+        "width": 1200,
+        "height": 630,
+        "background": "#fffaf2",
+        "band": "#003068",
+        "bandHeight": 48,
+        "logoWidth": 760,
+        "basename": "pequeverso-og-1200x630"
+      }
+    },
+    {
+      "id": "brand.icons",
+      "role": "icons",
+      "page": "site",
+      "group": "brand",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "01-brands/pequeverso/approved/identity/pequeverso-isotipo.png"
+      },
+      "provenance": "brand-identity",
+      "alt": {
+        "es": "Icono de Pequeverso"
+      },
+      "compose": {
+        "kind": "favicons",
+        "background": "#fffaf2",
+        "padding": 0.1
+      }
+    },
+    {
+      "id": "gf.hero",
+      "role": "hero",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/16-oferta-kit-completo-bonos-flatlay.png"
+      },
+      "provenance": "imagegen-2026-06",
+      "alt": {
+        "es": "Kit completo Grafismo Fonético impreso junto a sus ocho recursos complementarios"
+      },
+      "outputs": {
+        "widths": [480, 768, 1024, 1440],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.scene.mesa",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/01-hero-madre-nino-practica-mesa-wide.png"
+      },
+      "provenance": "imagegen-2026-06",
+      "alt": {
+        "es": "Madre y niño practicando con una página impresa del kit"
+      }
+    },
+    {
+      "id": "gf.scene.trazo",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/05-demo-trazo-gato-closeup.png"
+      },
+      "provenance": "imagegen-2026-06",
+      "alt": {
+        "es": "Mano infantil trazando una palabra punteada en una hoja de grafismo fonético"
+      }
+    },
+    {
+      "id": "gf.scene.carpeta",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/12-carpeta-kit-impreso-mapa.png"
+      },
+      "provenance": "imagegen-2026-06",
+      "alt": {
+        "es": "Páginas de Grafismo Fonético organizadas dentro de una carpeta"
+      }
+    },
+    {
+      "id": "gf.scene.mecanismo",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/10-mecanismo-une-gato-tarjetas.png"
+      },
+      "provenance": "imagegen-2026-06",
+      "alt": {
+        "es": "Tarjetas de sílabas junto a una hoja de Grafismo Fonético: del sonido a la palabra"
+      }
+    },
+    {
+      "id": "gf.scene.flatlay",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/02-producto-premium-kit-impreso-flatlay.png"
+      },
+      "provenance": "imagegen-2026-06",
+      "alt": {
+        "es": "Material imprimible Grafismo Fonético presentado sobre una mesa"
+      }
+    },
+    {
+      "id": "gf.scene.stack",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/09-stack-paginas-producto-completo.png"
+      },
+      "provenance": "imagegen-2026-06",
+      "alt": {
+        "es": "Selección de páginas del kit completo Grafismo Fonético"
+      }
+    },
+    {
+      "id": "gf.scene.entrega",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/15-kit-impreso-entrega-madre-nina.png"
+      },
+      "provenance": "imagegen-2026-06",
+      "alt": {
+        "es": "Madre entregando a una niña una carpeta con páginas impresas del kit"
+      }
+    },
+    {
+      "id": "gf.scene.cierre",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/20-cierre-practica-compartida-camaleon-wide.png"
+      },
+      "provenance": "imagegen-2026-06",
+      "alt": {
+        "es": "Adulto y niño compartiendo una práctica con Grafismo Fonético"
+      }
+    },
+    {
+      "id": "gf.page.01",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p037-ma-pa-mapa.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 1: práctica de la palabra MAPA"
+      }
+    },
+    {
+      "id": "gf.page.02",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p040-mo-no-mono.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 2: práctica de la palabra MONO"
+      }
+    },
+    {
+      "id": "gf.page.03",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p043-pa-to-pato.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 3: práctica de la palabra PATO"
+      }
+    },
+    {
+      "id": "gf.page.04",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p047-pu-ma-puma.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 4: práctica de la palabra PUMA"
+      }
+    },
+    {
+      "id": "gf.page.05",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p049-sa-po-sapo.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 5: práctica de la palabra SAPO"
+      }
+    },
+    {
+      "id": "gf.page.06",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p058-lo-bo-lobo.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 6: práctica de la palabra LOBO"
+      }
+    },
+    {
+      "id": "gf.page.07",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p059-lu-na-luna.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 7: práctica de la palabra LUNA"
+      }
+    },
+    {
+      "id": "gf.page.08",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p064-to-ma-te-tomate.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 8: práctica de la palabra TOMATE"
+      }
+    },
+    {
+      "id": "gf.page.09",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p067-na-ve-nave.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 9: práctica de la palabra NAVE"
+      }
+    },
+    {
+      "id": "gf.page.10",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p069-ni-do-nido.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 10: práctica de la palabra NIDO"
+      }
+    },
+    {
+      "id": "gf.page.11",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p073-da-do-dado.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 11: práctica de la palabra DADO"
+      }
+    },
+    {
+      "id": "gf.page.12",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p075-di-no-dino.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 12: práctica de la palabra DINO"
+      }
+    },
+    {
+      "id": "gf.page.13",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p082-fo-ca-foca.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 13: práctica de la palabra FOCA"
+      }
+    },
+    {
+      "id": "gf.page.14",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p085-a-be-ja-abeja.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 14: práctica de la palabra ABEJA"
+      }
+    },
+    {
+      "id": "gf.page.15",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p086-e-le-fan-te-elefante.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 15: práctica de la palabra ELEFANTE"
+      }
+    },
+    {
+      "id": "gf.page.16",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p087-i-gua-na-iguana.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 16: práctica de la palabra IGUANA"
+      }
+    },
+    {
+      "id": "gf.page.17",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p088-o-so-oso.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 17: práctica de la palabra OSO"
+      }
+    },
+    {
+      "id": "gf.page.18",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p094-ga-to-gato.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 18: práctica de la palabra GATO"
+      }
+    },
+    {
+      "id": "gf.page.19",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p095-pe-rro-perro.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 19: práctica de la palabra PERRO"
+      }
+    },
+    {
+      "id": "gf.page.20",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "group": "gf-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p096-ca-ma-le-on-camaleon.png"
+      },
+      "provenance": "owner-render-main-kit",
+      "alt": {
+        "es": "Página real 20: práctica de la palabra CAMALEÓN"
+      }
+    },
+    {
+      "id": "gf.card.01",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "group": "gf-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-principal-trazos-sonidos.webp"
+      },
+      "provenance": "card-composite-2026-07",
+      "alt": {
+        "es": "Portada del PDF principal Grafismo Fonético Paso a Paso"
+      }
+    },
+    {
+      "id": "gf.card.02",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "group": "gf-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-guia-10-minutos.webp"
+      },
+      "provenance": "card-composite-2026-07",
+      "alt": {
+        "es": "Portada del bono 10 Minutos de Grafismo Fonético"
+      }
+    },
+    {
+      "id": "gf.card.03",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "group": "gf-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-tarjetas-silabas.webp"
+      },
+      "provenance": "card-composite-2026-07",
+      "alt": {
+        "es": "Portada del bono Sílabas en Tus Manos"
+      }
+    },
+    {
+      "id": "gf.card.04",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "group": "gf-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-reto-21-dias.webp"
+      },
+      "provenance": "card-composite-2026-07",
+      "alt": {
+        "es": "Portada del bono 21 Días de Grafismo Fonético en Casa"
+      }
+    },
+    {
+      "id": "gf.card.05",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "group": "gf-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-animales-sonidos.webp"
+      },
+      "provenance": "card-composite-2026-07",
+      "alt": {
+        "es": "Portada del bono Safari de Sonidos y Sílabas"
+      }
+    },
+    {
+      "id": "gf.card.06",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "group": "gf-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-juegos-foneticos.webp"
+      },
+      "provenance": "card-composite-2026-07",
+      "alt": {
+        "es": "Portada del bono Juega con Sonidos y Sílabas"
+      }
+    },
+    {
+      "id": "gf.card.07",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "group": "gf-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-sonidos-casa.webp"
+      },
+      "provenance": "card-composite-2026-07",
+      "alt": {
+        "es": "Portada del bono Los Sonidos de Mi Casa"
+      }
+    },
+    {
+      "id": "gf.card.08",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "group": "gf-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-posters-tarjetas.webp"
+      },
+      "provenance": "card-composite-2026-07",
+      "alt": {
+        "es": "Portada del bono Mi Pared de Sonidos"
+      }
+    },
+    {
+      "id": "gf.card.09",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "group": "gf-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-mi-nombre-familia.webp"
+      },
+      "provenance": "card-composite-2026-07",
+      "alt": {
+        "es": "Portada del bono Las Letras de Mi Mundo"
+      }
+    },
+    {
+      "id": "pack.card.01",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "group": "pack-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-kit-tardes-tranquilas.png"
+      },
+      "provenance": "imagegen-cards-2026-07-26",
+      "alt": {
+        "es": "Portada del Kit Tardes Tranquilas, producto central del pack"
+      }
+    },
+    {
+      "id": "pack.card.02",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "group": "pack-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-que-imprimo-hoy.png"
+      },
+      "provenance": "imagegen-cards-2026-07-26",
+      "alt": {
+        "es": "Portada del bono interno ¿Qué Imprimo Hoy?"
+      }
+    },
+    {
+      "id": "pack.card.03",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "group": "pack-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-pequenos-logros.png"
+      },
+      "provenance": "imagegen-cards-2026-07-26",
+      "alt": {
+        "es": "Portada del bono interno Pequeños Logros, Grandes Sonrisas"
+      }
+    },
+    {
+      "id": "pack.card.04",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "group": "pack-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-listos-para-jugar.png"
+      },
+      "provenance": "imagegen-cards-2026-07-26",
+      "alt": {
+        "es": "Portada del bono interno Listos para Jugar"
+      }
+    },
+    {
+      "id": "pack.card.05",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "group": "pack-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-aventuras-para-llevar.png"
+      },
+      "provenance": "imagegen-cards-2026-07-26",
+      "alt": {
+        "es": "Portada del pack Aventuras para Llevar"
+      }
+    },
+    {
+      "id": "pack.card.06",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "group": "pack-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-30-dias-jugar-juntos.png"
+      },
+      "provenance": "imagegen-cards-2026-07-26",
+      "alt": {
+        "es": "Portada del pack 30 Días para Jugar Juntos"
+      }
+    },
+    {
+      "id": "pack.card.07",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "group": "pack-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-letras-en-juego.png"
+      },
+      "provenance": "imagegen-cards-2026-07-26",
+      "alt": {
+        "es": "Portada del pack Letras en Juego"
+      }
+    },
+    {
+      "id": "pack.card.08",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "group": "pack-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-valores-crecen-casa.png"
+      },
+      "provenance": "imagegen-cards-2026-07-26",
+      "alt": {
+        "es": "Portada del pack Valores que Crecen en Casa"
+      }
+    },
+    {
+      "id": "pack.card.09",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "group": "pack-cards",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-mira-busca-colorea.png"
+      },
+      "provenance": "imagegen-cards-2026-07-26",
+      "alt": {
+        "es": "Portada del pack Mira, Busca y Colorea"
+      }
+    },
+    {
+      "id": "pack.page.01",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "group": "pack-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/kit-imprime-y-juega/page-064-disena-tu-pizza.png"
+      },
+      "provenance": "owner-render-pack",
+      "alt": {
+        "es": "Página real 1: Diseña tu pizza (Kit Tardes Tranquilas)"
+      },
+      "text": {
+        "title": "Diseña tu pizza",
+        "description": "Kit Tardes Tranquilas"
+      }
+    },
+    {
+      "id": "pack.page.02",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "group": "pack-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/kit-imprime-y-juega/page-066-titeres-de-dedo.png"
+      },
+      "provenance": "owner-render-pack",
+      "alt": {
+        "es": "Página real 2: Títeres de dedo (Kit Tardes Tranquilas)"
+      },
+      "text": {
+        "title": "Títeres de dedo",
+        "description": "Kit Tardes Tranquilas"
+      }
+    },
+    {
+      "id": "pack.page.03",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "group": "pack-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/colorea-y-observa/page-040-diferencias-6-la-feria.png"
+      },
+      "provenance": "owner-render-pack",
+      "alt": {
+        "es": "Página real 3: Diferencias en la feria (Mira, Busca y Colorea)"
+      },
+      "text": {
+        "title": "Diferencias en la feria",
+        "description": "Mira, Busca y Colorea"
+      }
+    },
+    {
+      "id": "pack.page.04",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "group": "pack-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/colorea-y-observa/page-055-la-gran-busqueda.png"
+      },
+      "provenance": "owner-render-pack",
+      "alt": {
+        "es": "Página real 4: La gran búsqueda (Mira, Busca y Colorea)"
+      },
+      "text": {
+        "title": "La gran búsqueda",
+        "description": "Mira, Busca y Colorea"
+      }
+    },
+    {
+      "id": "pack.page.05",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "group": "pack-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/mini-kit-letras-sonidos/page-038-mi-gato-mira-la-luna.png"
+      },
+      "provenance": "owner-render-pack",
+      "alt": {
+        "es": "Página real 5: Mi gato mira la luna (Letras en Juego)"
+      },
+      "text": {
+        "title": "Mi gato mira la luna",
+        "description": "Letras en Juego"
+      }
+    },
+    {
+      "id": "pack.page.06",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "group": "pack-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/mini-kit-letras-sonidos/page-043-mi-primera-palabra.png"
+      },
+      "provenance": "owner-render-pack",
+      "alt": {
+        "es": "Página real 6: Mi primera palabra (Letras en Juego)"
+      },
+      "text": {
+        "title": "Mi primera palabra",
+        "description": "Letras en Juego"
+      }
+    },
+    {
+      "id": "pack.page.07",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "group": "pack-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/pack-para-salir/page-036-busca-5-cosas.png"
+      },
+      "provenance": "owner-render-pack",
+      "alt": {
+        "es": "Página real 7: Busca cinco cosas (Aventuras para Llevar)"
+      },
+      "text": {
+        "title": "Busca cinco cosas",
+        "description": "Aventuras para Llevar"
+      }
+    },
+    {
+      "id": "pack.page.08",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "group": "pack-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/pack-para-salir/page-054-mapa-de-recuerdos.png"
+      },
+      "provenance": "owner-render-pack",
+      "alt": {
+        "es": "Página real 8: Mapa de recuerdos (Aventuras para Llevar)"
+      },
+      "text": {
+        "title": "Mapa de recuerdos",
+        "description": "Aventuras para Llevar"
+      }
+    },
+    {
+      "id": "pack.page.09",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "group": "pack-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/reto-30-dias/page-021-dia-17-5-diferencias.png"
+      },
+      "provenance": "owner-render-pack",
+      "alt": {
+        "es": "Página real 9: Encuentra cinco diferencias (30 Días para Jugar Juntos)"
+      },
+      "text": {
+        "title": "Encuentra cinco diferencias",
+        "description": "30 Días para Jugar Juntos"
+      }
+    },
+    {
+      "id": "pack.page.10",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "group": "pack-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/reto-30-dias/page-027-dia-23-la-maquina-increible.png"
+      },
+      "provenance": "owner-render-pack",
+      "alt": {
+        "es": "Página real 10: La máquina increíble (30 Días para Jugar Juntos)"
+      },
+      "text": {
+        "title": "La máquina increíble",
+        "description": "30 Días para Jugar Juntos"
+      }
+    },
+    {
+      "id": "pack.page.11",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "group": "pack-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/valores-en-casa/page-043-actividad-dibuja-tu-risa.png"
+      },
+      "provenance": "owner-render-pack",
+      "alt": {
+        "es": "Página real 11: Dibuja tu risa (Valores que Crecen en Casa)"
+      },
+      "text": {
+        "title": "Dibuja tu risa",
+        "description": "Valores que Crecen en Casa"
+      }
+    },
+    {
+      "id": "pack.page.12",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "group": "pack-pages",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/valores-en-casa/page-053-nuestro-arbol-de-valores.png"
+      },
+      "provenance": "owner-render-pack",
+      "alt": {
+        "es": "Página real 12: Nuestro árbol de valores (Valores que Crecen en Casa)"
+      },
+      "text": {
+        "title": "Nuestro árbol de valores",
+        "description": "Valores que Crecen en Casa"
+      }
+    },
+    {
+      "id": "pack.hero",
+      "role": "hero",
+      "page": "imprime-y-juega",
+      "group": "pack",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/approved/social-proof/dpt-kij-v5-hero-photo-source.png"
+      },
+      "provenance": "imagegen-2026-06",
+      "alt": {
+        "es": "Kit Tardes Tranquilas impreso sobre una mesa junto a una página para colorear y lápices"
+      },
+      "outputs": {
+        "widths": [480, 768, 1024, 1440]
+      }
+    },
+    {
+      "id": "video.gf.bota",
+      "role": "video",
+      "page": "grafismo-fonetico",
+      "group": "video",
+      "source": {
+        "library": "pequeverso-content-studio",
+        "path": "02-biblioteca/clips/grafismo-fonetico/silabas-y-palabras/bo-ta-opcion-01-2x-sin-sonido.mp4"
+      },
+      "provenance": "owner-recorded-clips",
+      "rights": {
+        "redistribution": "pending-owner-confirmation",
+        "approvedAt": null
+      },
+      "alt": {
+        "es": "Portada del video: BO + TA: formar una palabra"
+      },
+      "text": {
+        "title": "BO + TA: formar una palabra",
+        "description": "Una actividad visual para unir dos sílabas y reconocer la palabra BOTA."
+      },
+      "video": {
+        "maxSeconds": 15,
+        "posterAt": 1,
+        "posterWidths": [480, 720],
+        "webm": false
+      }
+    },
+    {
+      "id": "video.gf.mapa",
+      "role": "video",
+      "page": "grafismo-fonetico",
+      "group": "video",
+      "source": {
+        "library": "pequeverso-content-studio",
+        "path": "02-biblioteca/clips/grafismo-fonetico/silabas-y-palabras/ma-pa-opcion-02-2x-sin-sonido.mp4"
+      },
+      "provenance": "owner-recorded-clips",
+      "rights": {
+        "redistribution": "pending-owner-confirmation",
+        "approvedAt": null
+      },
+      "alt": {
+        "es": "Portada del video: MA + PA: unir para leer MAPA"
+      },
+      "text": {
+        "title": "MA + PA: unir para leer MAPA",
+        "description": "Cada sílaba se relaciona con la palabra completa y una imagen reconocible."
+      },
+      "video": {
+        "maxSeconds": 15,
+        "posterAt": 1,
+        "posterWidths": [480, 720],
+        "webm": false
+      }
+    },
+    {
+      "id": "video.gf.paloma",
+      "role": "video",
+      "page": "grafismo-fonetico",
+      "group": "video",
+      "source": {
+        "library": "pequeverso-content-studio",
+        "path": "02-biblioteca/clips/grafismo-fonetico/silabas-y-palabras/pa-lo-ma-opcion-02-2x-sin-sonido.mp4"
+      },
+      "provenance": "owner-recorded-clips",
+      "rights": {
+        "redistribution": "pending-owner-confirmation",
+        "approvedAt": null
+      },
+      "alt": {
+        "es": "Portada del video: PA + LO + MA: avanzar paso a paso"
+      },
+      "text": {
+        "title": "PA + LO + MA: avanzar paso a paso",
+        "description": "Una palabra más larga se recorre sílaba por sílaba hasta llegar a PALOMA."
+      },
+      "video": {
+        "maxSeconds": 15,
+        "posterAt": 6,
+        "posterWidths": [480, 720],
+        "webm": false
+      }
+    },
+    {
+      "id": "video.gf.maleta",
+      "role": "video",
+      "page": "grafismo-fonetico",
+      "group": "video",
+      "source": {
+        "library": "pequeverso-content-studio",
+        "path": "02-biblioteca/clips/grafismo-fonetico/silabas-y-palabras/ma-le-ta-opcion-01-2x-sin-sonido.mp4"
+      },
+      "provenance": "owner-recorded-clips",
+      "rights": {
+        "redistribution": "pending-owner-confirmation",
+        "approvedAt": null
+      },
+      "alt": {
+        "es": "Portada del video: MA + LE + TA: seguir la secuencia"
+      },
+      "text": {
+        "title": "MA + LE + TA: seguir la secuencia",
+        "description": "Los apoyos visuales acompañan el recorrido hasta completar la palabra MALETA."
+      },
+      "video": {
+        "maxSeconds": 15,
+        "posterAt": 1,
+        "posterWidths": [480, 720],
+        "webm": false
+      }
+    }
+  ]
+}
