@@ -1,0 +1,36 @@
+name: Branch policy
+
+# Validates branch naming for pull requests into main without checking out code
+# (pull_request_target runs with the base repository's permissions; no untrusted code runs).
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened]
+
+permissions: {}
+
+jobs:
+  branch-policy:
+    name: Branch policy
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Validate head branch and base
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.repository }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          set -euo pipefail
+          echo "PR: $HEAD_REPO:$HEAD_REF -> $BASE_REPO:$BASE_REF"
+          if [ "$BASE_REF" != "main" ]; then
+            echo "::error::Pull requests must target main"; exit 1
+          fi
+          if [ "$HEAD_REPO" = "$BASE_REPO" ] && ! printf '%s' "$HEAD_REF" | grep -Eq '^(feat|fix|chore|docs|refactor|perf|test|ci|build|revert|release|dependabot)/[a-z0-9]+([._/-][a-z0-9]+)*$'; then
+            echo "::error::Branch name must match type/kebab-case (feat|fix|chore|docs|refactor|perf|test|ci|build|revert|release)"; exit 1
+          fi
+          if ! printf '%s' "$PR_TITLE" | grep -Eq '^(feat|fix|chore|docs|refactor|perf|test|ci|build|revert)(\([a-z0-9-]+\))?!?: .+'; then
+            echo "::error::PR title must follow Conventional Commits (e.g. 'feat: add homepage hero')"; exit 1
+          fi
+          echo "Branch policy satisfied"

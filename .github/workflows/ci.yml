@@ -1,0 +1,165 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+  # Public defaults so the build is reproducible without secrets.
+  NEXT_PUBLIC_SITE_URL: https://pequeverso.com
+
+jobs:
+  quality:
+    name: Quality (lint, types, unit, build, budgets)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install (exact lockfile, no lifecycle scripts)
+        run: npm ci
+
+      - name: Lint and format (Biome)
+        run: npx biome ci --error-on-warnings --reporter=github .
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Cache Next.js build
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .next/cache
+          key: next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**', 'content/**', 'config/**') }}
+          restore-keys: |
+            next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+
+      - name: Build (static export)
+        run: npm run build
+
+      - name: Generated files are committed (htaccess golden copy)
+        run: git diff --exit-code -- docs/generated
+
+      - name: Media budget and provenance
+        run: npm run check:media
+
+      - name: Placeholder report (non-blocking on PRs; the deploy workflow is strict)
+        run: npm run check:placeholders
+
+      - name: Dependency audit (production, high+)
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Upload static export
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: site-export-${{ github.sha }}
+          path: out
+          retention-days: 7
+          if-no-files-found: error
+
+  e2e:
+    name: E2E (Playwright, axe, offer modes, widget lifecycle)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    needs: quality
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Download static export
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: site-export-${{ github.sha }}
+          path: out
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright (PR matrix)
+        run: npx playwright test --project=chromium-390 --project=chromium-768 --project=chromium-1440 --project=reduced-motion
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-report-${{ github.sha }}
+          path: playwright-report
+          retention-days: 7
+
+  lighthouse:
+    name: Lighthouse CI (lab budgets)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    needs: quality
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Download static export
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: site-export-${{ github.sha }}
+          path: out
+
+      - name: Lighthouse CI
+        # Accessibility and CLS are hard errors; performance/SEO budgets warn (lab numbers, see docs/code-quality.md).
+        run: npx lhci autorun
+
+      - name: Upload Lighthouse results
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: lighthouse-${{ github.sha }}
+          path: .lighthouseci
+          retention-days: 7
+
+  ci:
+    name: ci
+    # Single required status check for the main ruleset.
+    runs-on: ubuntu-24.04
+    needs: [quality, e2e, lighthouse]
+    if: always()
+    steps:
+      - name: Gate
+        run: |
+          echo "quality=${{ needs.quality.result }} e2e=${{ needs.e2e.result }} lighthouse=${{ needs.lighthouse.result }}"
+          test "${{ needs.quality.result }}" = "success"
+          test "${{ needs.e2e.result }}" = "success"
+          test "${{ needs.lighthouse.result }}" = "success"

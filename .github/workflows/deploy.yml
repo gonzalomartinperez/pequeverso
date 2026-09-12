@@ -1,0 +1,165 @@
+name: Deploy
+
+# Manual, gated deployment of a tagged release to the Hostinger website that serves
+# pequeverso.com (static files over SSH). The `production` environment requires a
+# reviewer approval and holds the secrets. Rollback = re-run with the previous tag.
+# See docs/deployment.md for the one-time setup (SSH key, known_hosts, paths).
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Tag (vX.Y.Z) or commit to deploy
+        required: true
+        default: main
+      target:
+        description: Deployment target
+        required: true
+        default: production
+        type: choice
+        options: [production, staging]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-${{ inputs.target }}
+  cancel-in-progress: false
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+
+jobs:
+  build:
+    name: Build release artifact
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    environment: ${{ inputs.target }}
+    outputs:
+      sha: ${{ steps.meta.outputs.sha }}
+    steps:
+      - name: Checkout requested ref
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Resolve commit
+        id: meta
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Launch gate — no placeholders in customer-facing content
+        run: npm run check:placeholders:strict
+
+      - name: Build with environment configuration
+        env:
+          GITHUB_SHA: ${{ steps.meta.outputs.sha }}
+          GITHUB_REF_NAME: ${{ inputs.ref }}
+          NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+          NEXT_PUBLIC_CHECKOUT_URL: ${{ vars.NEXT_PUBLIC_CHECKOUT_URL }}
+          NEXT_PUBLIC_META_PIXEL_ID: ${{ vars.NEXT_PUBLIC_META_PIXEL_ID }}
+          NEXT_PUBLIC_UMAMI_SCRIPT_URL: ${{ vars.NEXT_PUBLIC_UMAMI_SCRIPT_URL }}
+          NEXT_PUBLIC_UMAMI_WEBSITE_ID: ${{ vars.NEXT_PUBLIC_UMAMI_WEBSITE_ID }}
+        run: |
+          test -n "$NEXT_PUBLIC_SITE_URL" || { echo "NEXT_PUBLIC_SITE_URL is not set for this environment"; exit 1; }
+          npm run build
+          npm run check:media
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-${{ steps.meta.outputs.sha }}
+          path: out
+          retention-days: 30
+          if-no-files-found: error
+
+  deploy:
+    name: Upload, switch, verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    needs: build
+    environment:
+      name: ${{ inputs.target }}
+      url: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+    steps:
+      - name: Checkout (scripts only)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.build.outputs.sha }}
+          sparse-checkout: |
+            scripts
+            package.json
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Download release artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release-${{ needs.build.outputs.sha }}
+          path: out
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          test -n "$SSH_PRIVATE_KEY" || { echo "SSH_PRIVATE_KEY secret missing"; exit 1; }
+          test -n "$SSH_KNOWN_HOSTS" || { echo "SSH_KNOWN_HOSTS secret missing"; exit 1; }
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts && chmod 644 ~/.ssh/known_hosts
+
+      - name: Upload release directory and switch document root
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          REMOTE_ROOT: ${{ vars.REMOTE_ROOT }}
+          SHA: ${{ needs.build.outputs.sha }}
+        run: |
+          set -euo pipefail
+          test -n "$REMOTE_ROOT" || { echo "REMOTE_ROOT variable missing (e.g. domains/pequeverso.com)"; exit 1; }
+          SSH="ssh -i ~/.ssh/deploy_key -p ${SSH_PORT:-22} -o BatchMode=yes"
+          RELEASE="$REMOTE_ROOT/releases/$SHA"
+          $SSH "$SSH_USER@$SSH_HOST" "mkdir -p '$RELEASE' '$REMOTE_ROOT/releases'"
+          if $SSH "$SSH_USER@$SSH_HOST" "command -v rsync >/dev/null"; then
+            rsync -az --delete -e "ssh -i ~/.ssh/deploy_key -p ${SSH_PORT:-22} -o BatchMode=yes" out/ "$SSH_USER@$SSH_HOST:$RELEASE/"
+          else
+            tar -C out -czf release.tgz .
+            scp -i ~/.ssh/deploy_key -P "${SSH_PORT:-22}" release.tgz "$SSH_USER@$SSH_HOST:$RELEASE/release.tgz"
+            $SSH "$SSH_USER@$SSH_HOST" "cd '$RELEASE' && tar -xzf release.tgz && rm release.tgz"
+          fi
+          # Swap public_html atomically (rename), keep the previous release for rollback.
+          $SSH "$SSH_USER@$SSH_HOST" "cd '$REMOTE_ROOT' && rm -rf public_html.previous && { [ -d public_html ] && mv public_html public_html.previous || true; } && cp -a 'releases/$SHA' public_html && ls releases | sort | head -n -3 | xargs -r -I{} rm -rf 'releases/{}'"
+
+      - name: Verify deployed revision and behaviour (not just HTTP 200)
+        env:
+          SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+          SHA: ${{ needs.build.outputs.sha }}
+        run: |
+          sleep 5
+          node scripts/smoke.mjs "$SITE_URL" "$SHA"
+          echo "Headers:" && curl -sI "$SITE_URL/" | grep -iE 'strict-transport|x-content-type|content-security|cache-control' || true
+
+      - name: Roll back on verification failure
+        if: failure()
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          REMOTE_ROOT: ${{ vars.REMOTE_ROOT }}
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "${SSH_PORT:-22}" -o BatchMode=yes "$SSH_USER@$SSH_HOST" \
+            "cd '$REMOTE_ROOT' && if [ -d public_html.previous ]; then rm -rf public_html && mv public_html.previous public_html && echo 'rolled back'; fi" || true

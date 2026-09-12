@@ -1,0 +1,67 @@
+{
+  "$schema": "./edge-rules.schema.json",
+  "description": "Single source of truth for redirects and response headers on pequeverso.com. scripts/gen-htaccess.mjs renders it to out/.htaccess (static target); next.config.mjs attaches it as redirects()/headers() (standalone target). The old-domain cutover block lives in docs/migration/old-domain.htaccess and is not part of this file. The ?offer=downsell alias is handled client-side by the offer-mode script (no redirect, to avoid query-merge loops).",
+  "canonicalHost": "pequeverso.com",
+  "hsts": {
+    "enabled": true,
+    "maxAge": 300,
+    "includeSubDomains": false,
+    "note": "Raise maxAge to 31536000 only after apex and www have served valid HTTPS for a week (docs/migration.md)."
+  },
+  "redirects": [
+    {
+      "id": "prior-owner-shop",
+      "description": "URLs indexed from the previous owner of pequeverso.com (Montessori shop). Return 410 Gone.",
+      "source": "/shop-2/:path*",
+      "gone": true
+    }
+  ],
+  "headers": [
+    {
+      "id": "security",
+      "source": "/:path*",
+      "headers": {
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), browsing-topics=()",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Content-Security-Policy-Report-Only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://checkout.hotmart.com https://*.hotmart.com https://connect.facebook.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.hotmart.com https://www.facebook.com https://connect.facebook.net https://cloud.umami.is https://api-gateway.umami.dev; frame-src https://*.hotmart.com https://www.facebook.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://*.hotmart.com; frame-ancestors 'self'"
+      }
+    },
+    {
+      "id": "html-no-cache",
+      "source": "/:path*.html",
+      "headers": {
+        "Cache-Control": "no-cache"
+      }
+    },
+    {
+      "id": "build-info",
+      "source": "/build-info.json",
+      "headers": {
+        "Cache-Control": "no-store"
+      }
+    },
+    {
+      "id": "immutable-media",
+      "source": "/media/:path*",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "id": "immutable-fonts",
+      "source": "/fonts/:path*",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "id": "immutable-next-static",
+      "source": "/_next/static/:path*",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    }
+  ]
+}

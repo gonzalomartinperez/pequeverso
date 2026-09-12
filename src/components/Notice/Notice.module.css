@@ -1,0 +1,29 @@
+.notice {
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--pv-line);
+  background: var(--pv-white);
+  display: grid;
+  gap: var(--space-2);
+}
+
+.info {
+  background: var(--pv-sky);
+}
+
+.success {
+  background: var(--pv-mint);
+}
+
+.warning {
+  background: var(--pv-lemon);
+}
+
+.title {
+  font-weight: 800;
+  color: var(--pv-ink);
+}
+
+.body p {
+  color: var(--pv-body);
+}

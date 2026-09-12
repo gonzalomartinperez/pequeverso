@@ -1,0 +1,53 @@
+{
+  "name": "pequeverso",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pequeverso commercial website: static Next.js landings for the Grafismo Fonético printable kit, with Hotmart checkout.",
+  "homepage": "https://pequeverso.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gonzalomartinperez/pequeverso.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12 <25",
+    "npm": ">=10.9 <12"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "node scripts/build-info.mjs && next build && node scripts/gen-htaccess.mjs",
+    "build:standalone": "cross-env NEXT_OUTPUT=standalone next build",
+    "start": "node scripts/serve-static.mjs",
+    "typegen": "next typegen",
+    "typecheck": "next typegen && tsc --noEmit",
+    "lint": "biome ci --error-on-warnings .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "test": "node --test \"tests/unit/**/*.test.mjs\"",
+    "test:e2e": "playwright test",
+    "test:e2e:nightly": "playwright test --project=nightly-chromium --project=nightly-webkit",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run check:media && npm run check:placeholders",
+    "check:media": "node scripts/check-media-budget.mjs",
+    "check:placeholders": "node scripts/check-placeholders.mjs",
+    "check:placeholders:strict": "node scripts/check-placeholders.mjs --strict",
+    "lhci": "lhci autorun",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "next": "16.3.5",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@biomejs/biome": "2.5.13",
+    "@lhci/cli": "0.15.1",
+    "@playwright/test": "1.63.0",
+    "@types/node": "24.13.4",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "cross-env": "10.1.0",
+    "typescript": "5.9.3"
+  },
+  "type": "module"
+}

@@ -1,0 +1,88 @@
+/* Shared button styles (used by CTAButton and by routes that cannot import components, e.g. error.tsx). */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 56px;
+  padding: 0 var(--space-6);
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.button--primary {
+  background: var(--pv-coral);
+  color: var(--pv-white);
+  border-color: var(--pv-coral);
+  box-shadow: var(--shadow-cta);
+}
+
+.button--primary:hover {
+  background: var(--pv-coral-hover);
+  border-color: var(--pv-coral-hover);
+  color: var(--pv-white);
+}
+
+.button--secondary {
+  background: transparent;
+  color: var(--pv-navy);
+  border-color: var(--pv-navy);
+}
+
+.button--secondary:hover {
+  background: var(--pv-navy);
+  color: var(--pv-white);
+}
+
+.button--inverse {
+  background: var(--pv-white);
+  color: var(--pv-navy);
+  border-color: var(--pv-white);
+}
+
+.button--inverse:hover {
+  background: var(--pv-gold);
+  border-color: var(--pv-gold);
+  color: var(--pv-ink);
+}
+
+.button--ghost {
+  background: transparent;
+  color: var(--pv-navy);
+  border-color: var(--pv-line-strong);
+  min-height: 48px;
+  padding-inline: var(--space-4);
+}
+
+.button--ghost:hover {
+  border-color: var(--pv-navy);
+  color: var(--pv-navy);
+}
+
+.button--small {
+  min-height: 46px;
+  padding-inline: var(--space-4);
+  font-size: 1rem;
+}
+
+.button--block {
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .button--primary:active {
+    transform: translateY(1px);
+  }
+}

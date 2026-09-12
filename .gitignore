@@ -1,0 +1,32 @@
+# dependencies
+node_modules/
+tools/media/node_modules/
+
+# next.js
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# generated at build time
+public/build-info.json
+
+# test output
+playwright-report/
+test-results/
+.lighthouseci/
+
+# local env (never commit real values; see .env.example)
+.env
+.env.local
+.env.*.local
+
+# editor / os
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# local media work area (originals never enter the repo)
+tools/media/.cache/
