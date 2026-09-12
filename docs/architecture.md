@@ -20,7 +20,7 @@ visitor ──► pequeverso.com (static HTML/CSS, small client islands)
 | | Static export (default) | Node standalone (fallback) |
 |---|---|---|
 | Config | `NEXT_OUTPUT=export` (default) | `NEXT_OUTPUT=standalone` |
-| Serving | Hostinger website (LiteSpeed) serving `public_html` | Hostinger Node.js Web App (Hostinger forces `standalone`) |
+| Serving | Hostinger website (LiteSpeed) serving `public_html`, pulled from the `deploy` branch by Hostinger Git | Hostinger Node.js Web App (Hostinger forces `standalone`) |
 | Redirects/headers | `out/.htaccess` generated from `config/edge-rules.json` | `redirects()`/`headers()` from the same file |
 | Images | Build-time WebP derivatives (`tools/media`), `images.unoptimized` | same |
 | Why default | No cold starts, CI artifact = deployed artifact, rollback by re-deploy, full `.htaccess` control | Only if `.htaccess` capabilities prove insufficient on the host |
@@ -48,7 +48,7 @@ form). `www` → apex and `http` → `https` are handled in `.htaccess` in one h
 ## Offer mode (`?downsell=1`)
 
 Both the upsell and the downsell views are rendered into the static HTML of `/imprime-y-juega/`.
-A classic inline script — the first child of `<main id="offer-root" suppressHydrationWarning>` —
+A classic inline script — the first child of `<main id="contenido" data-offer-root suppressHydrationWarning>` —
 reads `location.search` before the sibling views are parsed and sets `data-offer="downsell" |
 "upsell"` on that element. Global CSS hides the inactive view (`.only-upsell` / `.only-downsell`),
 so there is no flash, no layout shift and no redirect hop. After hydration a client island reads

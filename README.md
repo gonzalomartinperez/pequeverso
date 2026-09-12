@@ -13,7 +13,7 @@ handled by Hotmart; this repository contains only the public website.
 - Next.js 16 (App Router, React Server Components, static export by default), React 19, TypeScript strict
 - Plain CSS with design tokens and CSS Modules; self-hosted OFL fonts (Fraunces, Nunito Sans)
 - Biome (lint + format), Node test runner, Playwright + axe, Lighthouse CI
-- GitHub Actions CI on every PR; gated manual deploy over SSH to Hostinger with revision verification
+- GitHub Actions CI on every PR; gated manual deploy that publishes the export to a `deploy` branch pulled by Hostinger Git, with revision verification
 
 ## Quick start
 

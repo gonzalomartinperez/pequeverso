@@ -3,9 +3,12 @@
 // - every file under public/media must have a record in media/manifest.json
 // - no single media file above MAX_FILE_BYTES, total media under MAX_TOTAL_BYTES
 // - no source/original formats (psd, ai, mov, 4k masters) slip in
+// - with --strict (deploy workflow): every item must have rights.redistribution =
+//   "public-repo-approved" — assets still pending the owner's confirmation block a release
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 
+const strict = process.argv.includes("--strict");
 const root = process.cwd();
 const mediaDir = resolve(root, "public/media");
 const manifestPath = resolve(root, "media/manifest.json");
@@ -46,6 +49,13 @@ for (const file of files) {
 }
 for (const rel of declared) {
   if (!existsSync(resolve(root, rel))) errors.push(`manifest references missing file: ${rel}`);
+}
+if (strict) {
+  for (const item of manifest.items || []) {
+    if (item.rights?.redistribution !== "public-repo-approved") {
+      errors.push(`rights not confirmed (${item.rights?.redistribution ?? "missing"}): ${item.id}`);
+    }
+  }
 }
 if (total > MAX_TOTAL_BYTES)
   errors.push(`public/media total ${(total / 1048576).toFixed(2)} MB exceeds 25 MB`);

@@ -1,0 +1,18 @@
+# Pequeverso cutover — insert this block in the .htaccess of digitalproductsteam.com
+# ABOVE "# BEGIN LSCACHE" / "# BEGIN WordPress". Per-directory context: no leading slash.
+# All rules preserve the query string (UTM, downsell=1, sck/src/xcod, fbclid). One hop from
+# https://, https://www. and non-slash variants; http:// is upgraded by the Hostinger edge first
+# (an unavoidable second hop). Targets are on another host, so no loop is possible.
+# After deploying: remove ONLY the template_redirect action of the "DPT Pequeverso Funnel
+# Routes V1" code snippet (keep its helper functions), then purge LiteSpeed and the CDN.
+
+# BEGIN Pequeverso cutover
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^pequeverso/?$ https://pequeverso.com/ [R=301,L,NC]
+RewriteRule ^(pequeverso|products)/grafismo-fonetico/?$ https://pequeverso.com/grafismo-fonetico/ [R=301,L,NC]
+RewriteRule ^(pequeverso/imprime-y-juega|products/kit-imprime-y-juega)/?$ https://pequeverso.com/imprime-y-juega/ [R=301,L,NC]
+RewriteRule ^(pequeverso/grafismo-fonetico/gracias|products/grafismo-fonetico-gracias)/?$ https://pequeverso.com/grafismo-fonetico/gracias/ [R=301,L,NC]
+RewriteRule ^pequeverso/(.+)$ https://pequeverso.com/$1 [R=301,L,NC]
+</IfModule>
+# END Pequeverso cutover

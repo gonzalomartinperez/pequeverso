@@ -1,0 +1,3960 @@
+{
+  "$schemaVersion": 1,
+  "generatedAt": "2026-09-12T21:31:26.262Z",
+  "generator": "tools/media/media-build.mjs v1 (sharp 0.35.4, libvips 8.18.6)",
+  "extras": [
+    "public/manifest.webmanifest"
+  ],
+  "items": [
+    {
+      "id": "brand.isotipo",
+      "role": "brand",
+      "page": "site",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "01-brands/pequeverso/approved/identity/pequeverso-isotipo.png",
+        "sha256": "7490d09933a1091a47c942eae92bedca1cd7cb7ddb2d287a837a5a98518a5e19",
+        "bytes": 387894,
+        "width": 821,
+        "height": 823
+      },
+      "provenance": {
+        "origin": "owner-designed",
+        "tool": "Canva (raster export 2026-08-02; no vector master available)",
+        "date": "2026-07-28",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Isotipo de Pequeverso"
+      },
+      "outputs": [
+        {
+          "file": "public/media/brand/brand-isotipo-w96-cf729aa6.webp",
+          "bytes": 3968,
+          "sha256": "31fd9052695fcfa3f70afa60e3817ad7602a21ebb04e8f05f4791e85864bc660",
+          "width": 96,
+          "height": 96,
+          "format": "webp",
+          "quality": 90
+        },
+        {
+          "file": "public/media/brand/brand-isotipo-w192-f34b1740.webp",
+          "bytes": 8588,
+          "sha256": "2902745ce762e76d002318f328295907a2b1a747a5a58fda889c7ac4f0ea6760",
+          "width": 192,
+          "height": 192,
+          "format": "webp",
+          "quality": 90
+        },
+        {
+          "file": "public/media/brand/brand-isotipo-w512-2c9c33ee.webp",
+          "bytes": 23950,
+          "sha256": "33364fc7f715626d6a70e2ca42a6bea310bebff2feb752178055a49391d8bc2c",
+          "width": 512,
+          "height": 513,
+          "format": "webp",
+          "quality": 90
+        }
+      ]
+    },
+    {
+      "id": "brand.logo",
+      "role": "brand",
+      "page": "site",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "01-brands/pequeverso/approved/identity/pequeverso-logo-completo.png",
+        "sha256": "ccf9a233feef54ce7bd104d00562abb5dab94b0ac8c6b71d72b08851454eb10f",
+        "bytes": 650621,
+        "width": 1646,
+        "height": 1186
+      },
+      "provenance": {
+        "origin": "owner-designed",
+        "tool": "Canva (raster export 2026-08-02; no vector master available)",
+        "date": "2026-07-28",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Pequeverso"
+      },
+      "outputs": [
+        {
+          "file": "public/media/brand/brand-logo-w320-7094b2c0.webp",
+          "bytes": 18692,
+          "sha256": "9198946daee3adf52bafdbcbccb3cad8aea94eba660f4bbe4be7fe5de974aae7",
+          "width": 320,
+          "height": 231,
+          "format": "webp",
+          "quality": 90
+        },
+        {
+          "file": "public/media/brand/brand-logo-w640-802b6a00.webp",
+          "bytes": 42018,
+          "sha256": "cb83a73e3d3f0522f21a59002f40edc31ed9f84f54ffe95decb5a637ef337739",
+          "width": 640,
+          "height": 461,
+          "format": "webp",
+          "quality": 90
+        }
+      ]
+    },
+    {
+      "id": "brand.og",
+      "role": "og",
+      "page": "site",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "01-brands/pequeverso/approved/identity/pequeverso-logo-completo.png",
+        "sha256": "ccf9a233feef54ce7bd104d00562abb5dab94b0ac8c6b71d72b08851454eb10f",
+        "bytes": 650621,
+        "width": 1646,
+        "height": 1186
+      },
+      "provenance": {
+        "origin": "owner-designed",
+        "tool": "Canva (raster export 2026-08-02; no vector master available)",
+        "date": "2026-07-28",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Pequeverso"
+      },
+      "outputs": [
+        {
+          "file": "public/media/brand/pequeverso-og-1200x630.png",
+          "bytes": 48085,
+          "sha256": "8a8aec0792821137cf24b307c3a494ba68c46f7d3fdc9192d9585f8854c34493",
+          "width": 1200,
+          "height": 630,
+          "format": "png",
+          "quality": 90
+        },
+        {
+          "file": "public/media/brand/pequeverso-og-1200x630.webp",
+          "bytes": 25496,
+          "sha256": "3eef8cd48dcb7cd09ef3523437ad379d652af39130bac1b3b87372b0bd19841e",
+          "width": 1200,
+          "height": 630,
+          "format": "webp",
+          "quality": 90
+        }
+      ]
+    },
+    {
+      "id": "brand.icons",
+      "role": "icons",
+      "page": "site",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "01-brands/pequeverso/approved/identity/pequeverso-isotipo.png",
+        "sha256": "7490d09933a1091a47c942eae92bedca1cd7cb7ddb2d287a837a5a98518a5e19",
+        "bytes": 387894,
+        "width": 821,
+        "height": 823
+      },
+      "provenance": {
+        "origin": "owner-designed",
+        "tool": "Canva (raster export 2026-08-02; no vector master available)",
+        "date": "2026-07-28",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Icono de Pequeverso"
+      },
+      "outputs": [
+        {
+          "file": "public/favicon.ico",
+          "bytes": 2319,
+          "sha256": "2ec3ec16262efe92b858a6e5eabaf4627da7ea3683e1532b631d69ed97173ddc",
+          "width": 32,
+          "height": 32,
+          "format": "ico",
+          "quality": null
+        },
+        {
+          "file": "public/apple-touch-icon.png",
+          "bytes": 7157,
+          "sha256": "029b705a459c674af57310dd7b43324f9772b1f71e21cae305e3b551223d15c6",
+          "width": 180,
+          "height": 180,
+          "format": "png",
+          "quality": null
+        },
+        {
+          "file": "public/icon-192.png",
+          "bytes": 7798,
+          "sha256": "91a8ee7d178e372f0594cde6ec43cd1b2646a7664e17bf72e2c2f4e9f9d8d13b",
+          "width": 192,
+          "height": 192,
+          "format": "png",
+          "quality": null
+        },
+        {
+          "file": "public/icon-512.png",
+          "bytes": 34872,
+          "sha256": "9565446fc3b0e8e6213e7c2fe46866588cce8ba580fadaeba7910aa8f8ea74c6",
+          "width": 512,
+          "height": 512,
+          "format": "png",
+          "quality": null
+        },
+        {
+          "file": "public/icon.svg",
+          "bytes": 13388,
+          "sha256": "60edd8138b58974e0b805b7ecc93297928f7c0803837f7ef131a9134d1191319",
+          "width": 96,
+          "height": 96,
+          "format": "svg",
+          "quality": null
+        }
+      ]
+    },
+    {
+      "id": "gf.hero",
+      "role": "hero",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/16-oferta-kit-completo-bonos-flatlay.png",
+        "sha256": "13c8bf375db651cd0e1569508bd9829f3afe60ecde78fe37179c191bd3d572c2",
+        "bytes": 2374818,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation",
+        "date": "2026-06",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Kit completo Grafismo Fonético impreso junto a sus ocho recursos complementarios"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-hero-w480-634ecbbf.webp",
+          "bytes": 35828,
+          "sha256": "fd08965d81158f8106101521486f9da10f5de35881c845294b421ff559ece71d",
+          "width": 480,
+          "height": 360,
+          "format": "webp",
+          "quality": 82
+        },
+        {
+          "file": "public/media/gf/gf-hero-w768-c0a6b2e2.webp",
+          "bytes": 79926,
+          "sha256": "ef4f527fdf04ce2b72849f8a9f488f700c6236ec754df45c41f452fba817e20a",
+          "width": 768,
+          "height": 576,
+          "format": "webp",
+          "quality": 82
+        },
+        {
+          "file": "public/media/gf/gf-hero-w1024-bc46934c.webp",
+          "bytes": 132004,
+          "sha256": "43a10c28123bc26de07568fccee90a20b1595c98d6b10e677e1bbab3af30012f",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 82
+        },
+        {
+          "file": "public/media/gf/gf-hero-w1440-7f01b3ea.webp",
+          "bytes": 218954,
+          "sha256": "2359835c902615c0e648585709b8e1ba7d05045365162d3d3c68aede134e8912",
+          "width": 1440,
+          "height": 1080,
+          "format": "webp",
+          "quality": 82
+        },
+        {
+          "file": "public/media/gf/gf-hero-w1024-fc057277.avif",
+          "bytes": 78898,
+          "sha256": "45d7dc5adea0a9ab76eb54eeea8358d2482a85a025cd4f73465779062bd55fc4",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 82
+        }
+      ]
+    },
+    {
+      "id": "gf.scene.mesa",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/01-hero-madre-nino-practica-mesa-wide.png",
+        "sha256": "c135b9be0bab892ac42ee0ef082bf9a8e50e13496b580a3d3141f8d3325fccfc",
+        "bytes": 2365111,
+        "width": 1672,
+        "height": 941
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation",
+        "date": "2026-06",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre y niño practicando con una página impresa del kit"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-scene-mesa-w480-dd3365ca.webp",
+          "bytes": 13534,
+          "sha256": "88e12523102e13ff136cb64de31d837cfdb0157add31e92333f555059cbc6a40",
+          "width": 480,
+          "height": 270,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-mesa-w768-54c0d402.webp",
+          "bytes": 31922,
+          "sha256": "abc3ec93dfe5f07d56e95c850e34dd5d8d60efec2f70f95b68ebb8e700032c54",
+          "width": 768,
+          "height": 432,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-mesa-w1024-ff93fda1.webp",
+          "bytes": 56390,
+          "sha256": "1694afe5b1154250637193971eebc06a3b7bb806476b7699a172c93b03934e8e",
+          "width": 1024,
+          "height": 576,
+          "format": "webp",
+          "quality": 78
+        }
+      ]
+    },
+    {
+      "id": "gf.scene.trazo",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/05-demo-trazo-gato-closeup.png",
+        "sha256": "b3654134a0e2ad5799e88c5e8edb87ad3e59dfdee8e498b443d3bc317aa75a69",
+        "bytes": 2111799,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation",
+        "date": "2026-06",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Mano infantil trazando una palabra punteada en una hoja de grafismo fonético"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-scene-trazo-w480-27eb43d1.webp",
+          "bytes": 27180,
+          "sha256": "9ac44bf2e0ececccec86d15494fa42095e1ab439c01a283c802adafb88943e1f",
+          "width": 480,
+          "height": 360,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-trazo-w768-46c862eb.webp",
+          "bytes": 51980,
+          "sha256": "e242f54a585385287fc7d4c72c2027510fce076ba9cfde336757aef28a074841",
+          "width": 768,
+          "height": 576,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-trazo-w1024-4dc93ac7.webp",
+          "bytes": 73786,
+          "sha256": "44796384019c48d8a926880b4443e7501c5e3e6853bb79b507cf54329d9030d1",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        }
+      ]
+    },
+    {
+      "id": "gf.scene.carpeta",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/12-carpeta-kit-impreso-mapa.png",
+        "sha256": "c7493dd20e5ced8c6df12a060f9dcdec3c934216453f3f3c0e1526080841e398",
+        "bytes": 2343404,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation",
+        "date": "2026-06",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Páginas de Grafismo Fonético organizadas dentro de una carpeta"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-scene-carpeta-w480-867e012b.webp",
+          "bytes": 34592,
+          "sha256": "245e8a74459db2ebc9c5adabbb65606aa776f0291d09da559b2c4b88ff827abc",
+          "width": 480,
+          "height": 360,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-carpeta-w768-34d68b94.webp",
+          "bytes": 68592,
+          "sha256": "3d2fbc42ee8d411920ff3b6400961b0d099fde65a3e6c63bde9b7ab022f0eb74",
+          "width": 768,
+          "height": 576,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-carpeta-w1024-b64d0405.webp",
+          "bytes": 101318,
+          "sha256": "1328cab6b154e34cb229643fbf96bd4ecbd2a928db79a179eed4f967bcd3f969",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        }
+      ]
+    },
+    {
+      "id": "gf.scene.mecanismo",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/10-mecanismo-une-gato-tarjetas.png",
+        "sha256": "5f62a655bcfc93e04df74153ea24cfc5ad009b2bd04ae391866a2793cddb9b14",
+        "bytes": 2506730,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation",
+        "date": "2026-06",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Tarjetas de sílabas junto a una hoja de Grafismo Fonético: del sonido a la palabra"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-scene-mecanismo-w480-753aec91.webp",
+          "bytes": 33754,
+          "sha256": "d99a02ce1fa3987c8f232032f390fafe50f5c84e3c03df0d187cb12f45b17695",
+          "width": 480,
+          "height": 360,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-mecanismo-w768-a3661d42.webp",
+          "bytes": 76716,
+          "sha256": "f40326cb777a5dbb3fc4d62192419260e8ed9722ef185bae7f68254e21fddcd5",
+          "width": 768,
+          "height": 576,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-mecanismo-w1024-4026cbd5.webp",
+          "bytes": 123034,
+          "sha256": "550b585dd3c84106634622ec636c502f3d980c79bc28c36347757e1d5ef26d9d",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        }
+      ]
+    },
+    {
+      "id": "gf.scene.flatlay",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/02-producto-premium-kit-impreso-flatlay.png",
+        "sha256": "d278c654bcafd08b9f3b8418e69e30e084034b0609473ab1d13d5db047d71ad5",
+        "bytes": 2750537,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation",
+        "date": "2026-06",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Material imprimible Grafismo Fonético presentado sobre una mesa"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-scene-flatlay-w480-ec2a8da3.webp",
+          "bytes": 37290,
+          "sha256": "5d0e6804c5a5a8269b851f412d2a775ed6bbe7ff3ef13bdce5178628a3f6ac36",
+          "width": 480,
+          "height": 360,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-flatlay-w768-a659f63b.webp",
+          "bytes": 86876,
+          "sha256": "813ef259bb1e5e10e07a58be5e5dfae29531252a348d7d3f070a75c5ad49651f",
+          "width": 768,
+          "height": 576,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-flatlay-w1024-bd694bea.webp",
+          "bytes": 144616,
+          "sha256": "78147d2c03282a63ea8d0f02e1a24f5e9e42cb021cc791313097b4507fddc44c",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        }
+      ]
+    },
+    {
+      "id": "gf.scene.stack",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/09-stack-paginas-producto-completo.png",
+        "sha256": "35220e72743bc52cc4080b64cc18695d7b6b1e91ac2104be941efecf06a3ea7e",
+        "bytes": 2493186,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation",
+        "date": "2026-06",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Selección de páginas del kit completo Grafismo Fonético"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-scene-stack-w480-24d2eebf.webp",
+          "bytes": 32238,
+          "sha256": "eb2a0c941f43e7b54dd68a3976b19765909aacfa7f2f5fa64b96b832544e5753",
+          "width": 480,
+          "height": 360,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-stack-w768-1e475031.webp",
+          "bytes": 68676,
+          "sha256": "f02ae5d0713d5e7d110e1f711b7291f6cc4e47514967525bb8f49a9563f53fd7",
+          "width": 768,
+          "height": 576,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-stack-w1024-c4c46235.webp",
+          "bytes": 109340,
+          "sha256": "c8907345de544101025cdcec16a9bc392056057e40303210967d8ff8eafc2e72",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        }
+      ]
+    },
+    {
+      "id": "gf.scene.entrega",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/15-kit-impreso-entrega-madre-nina.png",
+        "sha256": "caf7d6c9de9f1af1323de725256c07b8fb2751aa4388dfef1ca9b07a506fe92c",
+        "bytes": 2337304,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation",
+        "date": "2026-06",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre entregando a una niña una carpeta con páginas impresas del kit"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-scene-entrega-w480-7583d173.webp",
+          "bytes": 28316,
+          "sha256": "359b437ae8ee2ba7c9c3fe779b5022fe56658fc512e05f374ac87058595df6b6",
+          "width": 480,
+          "height": 360,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-entrega-w768-04b09b1f.webp",
+          "bytes": 61814,
+          "sha256": "09961476b7e4755593b909ef67604fc1010719d991b41188d19ecf189142287a",
+          "width": 768,
+          "height": 576,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-entrega-w1024-477c8fee.webp",
+          "bytes": 99960,
+          "sha256": "c0fa0427947064664c4afbda51ef19662461d59ea2347e954b6f462d8a687b7c",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        }
+      ]
+    },
+    {
+      "id": "gf.scene.cierre",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/20-cierre-practica-compartida-camaleon-wide.png",
+        "sha256": "985d2887294a832e4cdafe9d1f170ee0065f59e5283b7338d652bdbc497d32da",
+        "bytes": 2128995,
+        "width": 1672,
+        "height": 941
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation",
+        "date": "2026-06",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Adulto y niño compartiendo una práctica con Grafismo Fonético"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-scene-cierre-w480-0e9a3313.webp",
+          "bytes": 16042,
+          "sha256": "bfe6848c776e520383bee4cc3f3d53d444ba7e75692bc98c26ed5dd92ca881a0",
+          "width": 480,
+          "height": 270,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-cierre-w768-c7295677.webp",
+          "bytes": 33362,
+          "sha256": "cfb849d29b815b1598b4a6e1221ad2bbc01b6ac83848b9f2414df51c480fb7c0",
+          "width": 768,
+          "height": 432,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-cierre-w1024-ef5c25d9.webp",
+          "bytes": 51632,
+          "sha256": "fa32a0fd93b9a8afa37a65a4b8934d400cfee0e935ed4a86c31b9390bf2c38c1",
+          "width": 1024,
+          "height": 576,
+          "format": "webp",
+          "quality": 78
+        }
+      ]
+    },
+    {
+      "id": "gf.page.01",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p037-ma-pa-mapa.png",
+        "sha256": "aacfc0ab2c5140df2fc68dbf4bf3a31f5ccad5a26571fd816fc07c4975f204ae",
+        "bytes": 1643997,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 1: práctica de la palabra MAPA"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-01-w640-d47b80ad.webp",
+          "bytes": 56804,
+          "sha256": "adc605e6987caa1758ecbb9aaf294bc3a9994a15f2eafa68d825b2dc4ab846ad",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-01-w1100-c4209daa.webp",
+          "bytes": 109390,
+          "sha256": "c59f98f582135454c1607c30b8a3af19e3ddf1b22406d9d19f1bf2ad2020bf6e",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.02",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p040-mo-no-mono.png",
+        "sha256": "a6bfd5e8d00c4c81384956cf6f8ee7010096193980f7b702f5b4ee77ee512b3b",
+        "bytes": 1783414,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 2: práctica de la palabra MONO"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-02-w640-60e3eb5a.webp",
+          "bytes": 54940,
+          "sha256": "1f520093b7812801189e399f43fda99645ed2b40b09eddc118b7210a9cdafacc",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-02-w1100-ce76fe68.webp",
+          "bytes": 107086,
+          "sha256": "e073f57b1cc3d8720882f7d002dbe72cc93ec2da55bf91fd41dd797bd16045d1",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.03",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p043-pa-to-pato.png",
+        "sha256": "a13ea65d59cbbd7ca2c69174c7960b16d3a28a6951f7fa601b00d80d5f9aa6f1",
+        "bytes": 1439891,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 3: práctica de la palabra PATO"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-03-w640-52763f8b.webp",
+          "bytes": 47294,
+          "sha256": "51b54afd7a1ccdaf3252c8a9f1920a6b8fd79a89f97e5090b11faacd5840d7c2",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-03-w1100-09d8c79d.webp",
+          "bytes": 88898,
+          "sha256": "a0ba63d9d0427a4fd7f02703e3840d052741ca9172c6d82f3df4421ca6e20039",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.04",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p047-pu-ma-puma.png",
+        "sha256": "70e4bd84f73528099d1692bf6268ab0cceed10a52d8e3c398d32d9f8437675c9",
+        "bytes": 1777058,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 4: práctica de la palabra PUMA"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-04-w640-f5680786.webp",
+          "bytes": 48072,
+          "sha256": "e3491cfd329f3155a761d2279d5442080f26730b86a041ac2454013e31718252",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-04-w1100-d348c6aa.webp",
+          "bytes": 95694,
+          "sha256": "ca8f1be46bd13fc484ed61aad25e16f1cc76403569a16e5043ef071bf69b0eae",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.05",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p049-sa-po-sapo.png",
+        "sha256": "fe1384808b2c662c5b0b3a8b860eaa35c712b8a6d17e42be2ae2a9e0bb572240",
+        "bytes": 1686488,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 5: práctica de la palabra SAPO"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-05-w640-0c21f2d0.webp",
+          "bytes": 46322,
+          "sha256": "688897b64aff73b4d9e13e337a724f5e8b53fd80384decb1a665cc8cb195fdc6",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-05-w1100-2c20216e.webp",
+          "bytes": 90566,
+          "sha256": "b0529138044baa9d0019dd73e08b83ee1421050e98f6393480344acd62b9288d",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.06",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p058-lo-bo-lobo.png",
+        "sha256": "fc029948e3fa0544d1479a9821fae1f88e2195fa3bfba79f1e0fa2f7cba48c12",
+        "bytes": 1710814,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 6: práctica de la palabra LOBO"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-06-w640-6f10cd50.webp",
+          "bytes": 45340,
+          "sha256": "9ce27366e1f94e813b9b9f0fb82439590222c03d0ef2e148b0bae277b1f07b1e",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-06-w1100-ddef592b.webp",
+          "bytes": 86982,
+          "sha256": "4441eee6ce3fa823f6578d282c813bce103137037994cfc4fac908047170a69a",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.07",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p059-lu-na-luna.png",
+        "sha256": "9138874d173c1dc6bc7eb4f08cee41f374db2b0c40127b36a00ae949cc2b1565",
+        "bytes": 1590934,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 7: práctica de la palabra LUNA"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-07-w640-00d82c5c.webp",
+          "bytes": 39590,
+          "sha256": "89b45a1d2ab9f678a7fe0396bd279d2e0365864e293f2737fa20b5fe3a0e4ff2",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-07-w1100-49ac3f4d.webp",
+          "bytes": 71826,
+          "sha256": "18f8206fcf981075270a455a1aea441e66a021fc06d5352c7230fe813263e831",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.08",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p064-to-ma-te-tomate.png",
+        "sha256": "c2e5186c10cac2cf113a22e7b93076d5f4eb0623baee6fb76650ab06b94c7cdf",
+        "bytes": 1604812,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 8: práctica de la palabra TOMATE"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-08-w640-8666171b.webp",
+          "bytes": 48220,
+          "sha256": "e735547f3bca3b65a1c4db4d6964f954eb3befe1f90ffc89f0d7a599ea151fb8",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-08-w1100-e51361f8.webp",
+          "bytes": 91682,
+          "sha256": "6cffa348ac783dc0f6ed80e5a8c918ff75a76fbaca567656997bb0ea1e317694",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.09",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p067-na-ve-nave.png",
+        "sha256": "5e64de56181867d2e7bdb003c497158e581b3fbdf6bbc24779bf84c442614d61",
+        "bytes": 1521480,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 9: práctica de la palabra NAVE"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-09-w640-766781e9.webp",
+          "bytes": 48762,
+          "sha256": "1c274fe447ba6624ef9226f00d234506c28a196a2cf0f70f0a824be9b6e258ad",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-09-w1100-d893501b.webp",
+          "bytes": 90804,
+          "sha256": "d7500dd7a49d312e7820ef8fadefe386c4b91f5eb1e1846cdf3b04abae4a1376",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.10",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p069-ni-do-nido.png",
+        "sha256": "5d9c7b217fb20278e8176af3947de7faf7ce984b0cb3f1d7ba8eb1799bbcd839",
+        "bytes": 1805994,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 10: práctica de la palabra NIDO"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-10-w640-d0650197.webp",
+          "bytes": 55884,
+          "sha256": "22c8cacbb87990d2d42899e0ab9c142738c0405a3fe57e8fa3d72ef6c19e0739",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-10-w1100-8f5c8f83.webp",
+          "bytes": 109708,
+          "sha256": "fb66ae929f3ea825f49dd32cc4e2ffbcf9a0d239e2f090df9e0d533c33b0447a",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.11",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p073-da-do-dado.png",
+        "sha256": "55bddb13233117e8469e797562b9cfa2aade81e665afe8d5a54bf4629f62f7b4",
+        "bytes": 1477409,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 11: práctica de la palabra DADO"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-11-w640-c2090b01.webp",
+          "bytes": 42090,
+          "sha256": "16d2906fc998476c1bf4b46ce7a72455d685e8cd67194ca0510b017722972c9b",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-11-w1100-a48dae57.webp",
+          "bytes": 79440,
+          "sha256": "8445f9bd2fe206d8b6edbddd66c04e407d6f891b681573611281046b87525612",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.12",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p075-di-no-dino.png",
+        "sha256": "0e88c377a4c34d0035b40899055e64bd9f82a8e3cd7e35d27b8c0bda23f81e66",
+        "bytes": 1664781,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 12: práctica de la palabra DINO"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-12-w640-ff15ed28.webp",
+          "bytes": 49180,
+          "sha256": "2d5c31145634a08b6681f330365bf56d9c9bddacd611f63ded0105fea96d79a7",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-12-w1100-8abe4306.webp",
+          "bytes": 95508,
+          "sha256": "93957480a75e09a9f3cb4f2524bb3c6edbed126b32c6bc507248011c8ab75474",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.13",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p082-fo-ca-foca.png",
+        "sha256": "de5fdea9214735d1774b2839ef978b6b6b416789799f22411d528616d9b80d64",
+        "bytes": 1792756,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 13: práctica de la palabra FOCA"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-13-w640-56bdf9fd.webp",
+          "bytes": 51938,
+          "sha256": "6db41dcdf1238dc495a71336a1933f1a832a5015121deeac2de4572c5a5e91e6",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-13-w1100-cc707df2.webp",
+          "bytes": 98932,
+          "sha256": "b2b6f2a1ae8c8da740e3a31685f61d8978d3ec713a36ebb70a0b76d043e705f6",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.14",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p085-a-be-ja-abeja.png",
+        "sha256": "f49042bde184e1f004f73dd4702a29397aa21d2a6570a75b1eb646d1adc6e180",
+        "bytes": 1631951,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 14: práctica de la palabra ABEJA"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-14-w640-fd2bcef1.webp",
+          "bytes": 47358,
+          "sha256": "f5898cdf468abf26aa89cf1fc3e61cb6b3e987443c49f3671f4b3242dbdf38fe",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-14-w1100-7d7d8567.webp",
+          "bytes": 90956,
+          "sha256": "bcf9acb98f8b496e818f420ead76ea6f384f2cb6a53dd230d65ae0a1dc778888",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.15",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p086-e-le-fan-te-elefante.png",
+        "sha256": "bed6f82ee918760f9d294b9d3a84603a2b6d250cfc386cb6eba219dc12ef6560",
+        "bytes": 1641187,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 15: práctica de la palabra ELEFANTE"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-15-w640-512f79a4.webp",
+          "bytes": 47056,
+          "sha256": "e76eb5ef8872932163e8315f53696b43ffba9038cc5ffb38faf1f630eb5fc58c",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-15-w1100-50224608.webp",
+          "bytes": 88150,
+          "sha256": "e1f919fb2c35bfcfb60832c65c63f07223c4d987028172fb8fa328a06cac8d77",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.16",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p087-i-gua-na-iguana.png",
+        "sha256": "2367de96cb05397726c269a99c30792d5abcad8be4ff3fdd817803fe83b38eed",
+        "bytes": 1594745,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 16: práctica de la palabra IGUANA"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-16-w640-a1678d60.webp",
+          "bytes": 51024,
+          "sha256": "690e5d449515c62486a5e2d885319d18ad19dd215a2855052c399bdbd7f441a6",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-16-w1100-27bbeba8.webp",
+          "bytes": 94928,
+          "sha256": "32095abd319739edbc323b2654e89a95d54a264e894f7a8ed2bd626fc0d12577",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.17",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p088-o-so-oso.png",
+        "sha256": "acf14ca7b3435f65601306c6ac94d7b293053f5ae1e464e73d067080c3eb08f4",
+        "bytes": 1698094,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 17: práctica de la palabra OSO"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-17-w640-4b408736.webp",
+          "bytes": 47630,
+          "sha256": "c7ef745e0ec41765aeb218a46f233dee94237e115918e5c5583a529ea3f5fcb8",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-17-w1100-7846a534.webp",
+          "bytes": 90906,
+          "sha256": "52a0cde8719f5fde0806e337bef64bf48d2ec65254536bf243e2364837a328bf",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.18",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p094-ga-to-gato.png",
+        "sha256": "477c94a9f2c35a15a0efa311f4825985644b9b091ec01ef39ea01476a00e1c63",
+        "bytes": 1422157,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 18: práctica de la palabra GATO"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-18-w640-4480f111.webp",
+          "bytes": 48806,
+          "sha256": "f52df4ee3cfecdb27ef4fb5b74ec553bb2f1bae8eef0c0aa695490d42d4fcc3f",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-18-w1100-36556c70.webp",
+          "bytes": 90882,
+          "sha256": "c80b329d78224a6a3794bbc6ed49e1a37c14f660d17419ee10cff6613859d517",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.19",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p095-pe-rro-perro.png",
+        "sha256": "ebd391a27772fa00d3dc4f46422032127a79f2832bd662094185d6131fba56f8",
+        "bytes": 1391149,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 19: práctica de la palabra PERRO"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-19-w640-622f2a03.webp",
+          "bytes": 46964,
+          "sha256": "06dc884ce3f07cb377c66aa4ed1aa730919b94cbd692e0db7ab731f6754f6677",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-19-w1100-0d894a88.webp",
+          "bytes": 88796,
+          "sha256": "b5bb5ad3d9c34bc947c6d6ff9afdbc8053aafd8dd6274106feb5f0d8ee81fe19",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.page.20",
+      "role": "page",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/trazos-y-sonidos/main-kit/p096-ca-ma-le-on-camaleon.png",
+        "sha256": "554071ccb75e3c68d34ecad44adccebb0d84b05734680691c72d2487b87219f7",
+        "bytes": 1507901,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Grafismo Fonético Paso a Paso, symbol-aligned build 2026-06-29)",
+        "date": "2026-06-29",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 20: práctica de la palabra CAMALEÓN"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-pages/gf-page-20-w640-d9cef134.webp",
+          "bytes": 59776,
+          "sha256": "052223125d39b1afea2b598925145f113739230de743a3b7ee5663182a5ecd36",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf-pages/gf-page-20-w1100-287d6f3c.webp",
+          "bytes": 115550,
+          "sha256": "edfc5f5cadb20c5050c9ab2f2e5f3bbdc84f0ac591e16cdfa4fad6b059c59be3",
+          "width": 1100,
+          "height": 825,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "gf.card.01",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-principal-trazos-sonidos.webp",
+        "sha256": "34a72c32fc45fcc9de78beba2af419f2fb19e7bcefa1191294bd5f1efd6242b9",
+        "bytes": 177186,
+        "width": 1400,
+        "height": 1050
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation composite of own PDF covers (cover-card refresh 2026-07-24)",
+        "date": "2026-07-24",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del PDF principal Grafismo Fonético Paso a Paso"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-cards/gf-card-01-w360-ce9a10d0.webp",
+          "bytes": 18064,
+          "sha256": "0e802cab1b512a747a205a56254999b43b68e8b7bdc5524ff9c61040e72d653f",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-01-w520-8eecfe55.webp",
+          "bytes": 28498,
+          "sha256": "ba2ab30756ba6131f2dadd3423bd58ea48e709848f07cc23df56c7fa69b3a405",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-01-w720-ffe520be.webp",
+          "bytes": 40980,
+          "sha256": "319fe1e0c657cfb09972a6b302d69a75f7148b5dd21de7fd3c766c0e60e1da65",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "gf.card.02",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-guia-10-minutos.webp",
+        "sha256": "82d19dbc9afee0816a429443bfb572a8ff5645aa282c28b169b7fa66eeeac424",
+        "bytes": 159456,
+        "width": 1400,
+        "height": 1050
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation composite of own PDF covers (cover-card refresh 2026-07-24)",
+        "date": "2026-07-24",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del bono 10 Minutos de Grafismo Fonético"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-cards/gf-card-02-w360-d1882e32.webp",
+          "bytes": 15382,
+          "sha256": "f81a41b6598cfeacdc7fe6f1e029ae4139ebda94ccca6d8bfde0dbf24b0468fd",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-02-w520-88855e42.webp",
+          "bytes": 23868,
+          "sha256": "973b3d8a3e9cad6ae911fac712720610755d1c5c957d29c29d673e0bd0c0086b",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-02-w720-45775e77.webp",
+          "bytes": 35364,
+          "sha256": "72c087b327d7a30d3a20e9f79668120af71c8fda012361643a7709c584a51b77",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "gf.card.03",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-tarjetas-silabas.webp",
+        "sha256": "f3f2d14366777e5560e58efa1203eed99210d7d5d318c0f04a150fd3202f00d9",
+        "bytes": 203520,
+        "width": 1400,
+        "height": 1050
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation composite of own PDF covers (cover-card refresh 2026-07-24)",
+        "date": "2026-07-24",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del bono Sílabas en Tus Manos"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-cards/gf-card-03-w360-70c070a4.webp",
+          "bytes": 19520,
+          "sha256": "142c8b05fe8a49f0531cb3ae06f230648bb4872f8141bed68cbf472fcd02a6b0",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-03-w520-4d29156c.webp",
+          "bytes": 31606,
+          "sha256": "124603b504247ce4b9ef6f2aa583c657fde2ecafccc88a0d9fe0f0970179b679",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-03-w720-83874807.webp",
+          "bytes": 45754,
+          "sha256": "fd67be8d739eb1148025002c01832342703599010164810a1e4ea062b5f2c077",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "gf.card.04",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-reto-21-dias.webp",
+        "sha256": "45588d27b73a1814041f620ccfaad6c91d2cdf832b6d3597e78f7c4c458739c6",
+        "bytes": 176530,
+        "width": 1400,
+        "height": 1050
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation composite of own PDF covers (cover-card refresh 2026-07-24)",
+        "date": "2026-07-24",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del bono 21 Días de Grafismo Fonético en Casa"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-cards/gf-card-04-w360-e178fb1e.webp",
+          "bytes": 17072,
+          "sha256": "c9f196e1272171df1f6ba406401d00272eba064fcacbbbf5019f9c4721eceab1",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-04-w520-6f534484.webp",
+          "bytes": 27004,
+          "sha256": "ddc0709091707fd4e69c2553b669ad93960849b9e270305d09aba291c63deb70",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-04-w720-f0cd4a22.webp",
+          "bytes": 40446,
+          "sha256": "ba91abfb9ad319df1ff18f16fcefabc7cc7470baef79958ae8712538bbd06f31",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "gf.card.05",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-animales-sonidos.webp",
+        "sha256": "20d6c6b02644e17deea808c8a393772e3184e848110bba7c9926d308bce8ff37",
+        "bytes": 285440,
+        "width": 1400,
+        "height": 1050
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation composite of own PDF covers (cover-card refresh 2026-07-24)",
+        "date": "2026-07-24",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del bono Safari de Sonidos y Sílabas"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-cards/gf-card-05-w360-32ba9c71.webp",
+          "bytes": 19544,
+          "sha256": "2190f4c5be065a001a11271616fcedc14f7ca89cb93bcec810244a099f84b45e",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-05-w520-17d7eef2.webp",
+          "bytes": 33208,
+          "sha256": "375138798598979c2e6496be761d64813e97f5c5b03ebf935848d50cf76bb1be",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-05-w720-4df61f53.webp",
+          "bytes": 51950,
+          "sha256": "0c5ab03039327b138cfcbb9fd4816926e6b19110003822d6d2506c22f80df28b",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "gf.card.06",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-juegos-foneticos.webp",
+        "sha256": "97fe1a2791c877bf7f1ba89b0f576d23208650046c6e59761f8647fb64adf8e2",
+        "bytes": 196702,
+        "width": 1400,
+        "height": 1050
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation composite of own PDF covers (cover-card refresh 2026-07-24)",
+        "date": "2026-07-24",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del bono Juega con Sonidos y Sílabas"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-cards/gf-card-06-w360-2160e31e.webp",
+          "bytes": 18910,
+          "sha256": "57cd77d86ff501a368a46e359206abbc33b1de8daad86b9fddb4b5b8e52874da",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-06-w520-609dc2bc.webp",
+          "bytes": 29628,
+          "sha256": "f61bffc3239957cd935c5b8979862854932fee6e621514aa8341c15cd924b8b6",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-06-w720-7c9b6c81.webp",
+          "bytes": 44628,
+          "sha256": "fbe203a3b61d0081f93ff440d3cc5c0bd23ec021dee4b581386dca93f7e04e24",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "gf.card.07",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-sonidos-casa.webp",
+        "sha256": "2d7049c69190fa3963266d38b3f175de01a8c61fedd25aa142d361f37009dcd4",
+        "bytes": 194178,
+        "width": 1400,
+        "height": 1050
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation composite of own PDF covers (cover-card refresh 2026-07-24)",
+        "date": "2026-07-24",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del bono Los Sonidos de Mi Casa"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-cards/gf-card-07-w360-ae55d4d6.webp",
+          "bytes": 16626,
+          "sha256": "cb91d299175b1c2fb9997b43e4f24fdb5d398d66460bf3153536f1b8ff9168f1",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-07-w520-7b89011d.webp",
+          "bytes": 26798,
+          "sha256": "0c467ddeaed61461811afbff72350b655d72bf5a45c7f2202145d1edd2eee07d",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-07-w720-cd5b2e46.webp",
+          "bytes": 39578,
+          "sha256": "1a9c469d0b79e82e798bed0ba0e984b956530b2adbb92acbcae50d166e3e91f9",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "gf.card.08",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-posters-tarjetas.webp",
+        "sha256": "0e00fbdd3d2f723163c356b9c46e869456959a5710e161c284cc3d53887ca1ef",
+        "bytes": 258426,
+        "width": 1400,
+        "height": 1050
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation composite of own PDF covers (cover-card refresh 2026-07-24)",
+        "date": "2026-07-24",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del bono Mi Pared de Sonidos"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-cards/gf-card-08-w360-0c8b95e5.webp",
+          "bytes": 17884,
+          "sha256": "b1b2d86389c5244f5c82107510dd9d88324ba6559f5569b1f3e14d10d283bfb1",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-08-w520-319576bb.webp",
+          "bytes": 31692,
+          "sha256": "2305ab4e4864c82e50055e889e123ea9b10d8db965a7ab2407e7116f726c9f55",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-08-w720-153b940f.webp",
+          "bytes": 51324,
+          "sha256": "77480d4bd14fead19f30751e18c331edbdf0ae69b776ed506070b046b167123b",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "gf.card.09",
+      "role": "card",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/gf-card-bono-mi-nombre-familia.webp",
+        "sha256": "b2cddbd4f7908473c1f13cc2a7e99b97878d8cc7dba8f3a2a94c7f71cc20fdd1",
+        "bytes": 213434,
+        "width": 1400,
+        "height": 1050
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation composite of own PDF covers (cover-card refresh 2026-07-24)",
+        "date": "2026-07-24",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del bono Las Letras de Mi Mundo"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf-cards/gf-card-09-w360-f7a910e8.webp",
+          "bytes": 16084,
+          "sha256": "7cf05d5313728cabed417e44551a9c07c65655bcea6e1c53e109c35a0e5e582b",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-09-w520-d198ee63.webp",
+          "bytes": 26752,
+          "sha256": "3f3bbd5068dfd3a11440c838047c6b49818ff0cc6420956cd9b967665c35e267",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-09-w720-d46aa898.webp",
+          "bytes": 41124,
+          "sha256": "5c344092d76dab101cfa778256b1182307478768404b9545fb150d38ff262eb4",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "pack.card.01",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-kit-tardes-tranquilas.png",
+        "sha256": "a00f2fc1e07842495de3c57438a3272ddc9eda7c55844c71a99b5ca973db5976",
+        "bytes": 2428149,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (cover-card redesign 2026-07-26)",
+        "date": "2026-07-26",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del Kit Tardes Tranquilas, producto central del pack"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-cards/pack-card-01-w360-3be3e3e0.webp",
+          "bytes": 17648,
+          "sha256": "f0741f6f8e9971876a55dc284028f933f7367390ceeb297d46321bb40360aec6",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-01-w520-3d3d19b8.webp",
+          "bytes": 31038,
+          "sha256": "f596535fd9a2c715e13db697b793d05b1e96131ddbbb2c1a898ef313a7585bb9",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-01-w720-9f689990.webp",
+          "bytes": 51344,
+          "sha256": "1952bda684d1c805f530761e06fdab28eb29c1ae234bffdb81dfdb055c4e83bf",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "pack.card.02",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-que-imprimo-hoy.png",
+        "sha256": "8c1b17d4748cc0af254f743eec52d1309f045090044006c925f7ee5c4803f8e3",
+        "bytes": 2481989,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (cover-card redesign 2026-07-26)",
+        "date": "2026-07-26",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del bono interno ¿Qué Imprimo Hoy?"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-cards/pack-card-02-w360-c713ebcd.webp",
+          "bytes": 18770,
+          "sha256": "85e1ffef24cc99a7e188fe38885dbdaec552a867c6485b7f5e8c1518b574766d",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-02-w520-1519c936.webp",
+          "bytes": 34770,
+          "sha256": "2a5e964c086797b2e29ba688880e89551f6b1f4eb9960f2c0988e6d40c49d95d",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-02-w720-e72e990a.webp",
+          "bytes": 58370,
+          "sha256": "bda3402bdb4254d6e09ab2c4aecffcf519d4f1cc1db73460f03dc85de4534ae3",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "pack.card.03",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-pequenos-logros.png",
+        "sha256": "b6701d5b8ca90d56913069a6d34bdfbe9064b40283e87652c0412b3cc5b47399",
+        "bytes": 2609289,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (cover-card redesign 2026-07-26)",
+        "date": "2026-07-26",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del bono interno Pequeños Logros, Grandes Sonrisas"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-cards/pack-card-03-w360-b853a9a4.webp",
+          "bytes": 21680,
+          "sha256": "59cacea9e63a8d85ba621a3f8db2a7c17ef538af56ee09e106043335d4116cbf",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-03-w520-53d5d948.webp",
+          "bytes": 39282,
+          "sha256": "8d991572fb337d2ee844331f96cbd21bea55d479960e4263311958eaa043383e",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-03-w720-ba2e7662.webp",
+          "bytes": 66228,
+          "sha256": "de3cfba73d74e69ab45bf11dc0220a4ccffba027b23fb88668357b8ff5ab1550",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "pack.card.04",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-listos-para-jugar.png",
+        "sha256": "3a59a255bf22dd2bbe7ec0f2a386eda2c56b0a07408107cc892c3bfd7b4b28b2",
+        "bytes": 2416290,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (cover-card redesign 2026-07-26)",
+        "date": "2026-07-26",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del bono interno Listos para Jugar"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-cards/pack-card-04-w360-061256a8.webp",
+          "bytes": 18116,
+          "sha256": "ec951d6bde6fd5db0497598d8a277072b0748c984b5b58e730cb876dc17b3ae3",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-04-w520-e8f8993b.webp",
+          "bytes": 33402,
+          "sha256": "f069ad13bf8fa7faf9abbb72382f1c965a273bfe528627de97b94dd37fd66a00",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-04-w720-2dcf00b7.webp",
+          "bytes": 56908,
+          "sha256": "ae9a466018d100ed14f8dcc61c4883fa6d102af33d2731f520080cf1fab433b5",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "pack.card.05",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-aventuras-para-llevar.png",
+        "sha256": "1e5d2a30b36117bd83a2d12b167375708b018f3ff5713e2028b15cd2ba09d85d",
+        "bytes": 2557472,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (cover-card redesign 2026-07-26)",
+        "date": "2026-07-26",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del pack Aventuras para Llevar"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-cards/pack-card-05-w360-2da381ff.webp",
+          "bytes": 18912,
+          "sha256": "78c072fe2749fe43f0841261e41ea418917c7c35fdf0cb6da8d0b2ee546173d1",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-05-w520-31d9e63b.webp",
+          "bytes": 34934,
+          "sha256": "47cc70de1632d392d7b7de021f86cedcaebff8ba53c475dd461cc4eec7093c98",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-05-w720-fb5d286f.webp",
+          "bytes": 58688,
+          "sha256": "1108be97b5e28fba6fb7dbef913afb756cee80977d0582d4122b4bb807968b02",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "pack.card.06",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-30-dias-jugar-juntos.png",
+        "sha256": "503186caba073456f5d80863c72e6d56cd65484d599ac5c8cc311d3827bc734b",
+        "bytes": 2495653,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (cover-card redesign 2026-07-26)",
+        "date": "2026-07-26",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del pack 30 Días para Jugar Juntos"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-cards/pack-card-06-w360-9ab17a45.webp",
+          "bytes": 17124,
+          "sha256": "b7a3cd9f111638bc149028c7320cfd44602cbd87c00d900c2559d7a326d1dea1",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-06-w520-0255317a.webp",
+          "bytes": 30534,
+          "sha256": "0250e9c8f08b6c598030f3be3d27368f11790c6872c4db20d6e130bdfbc964f6",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-06-w720-4bb87a3f.webp",
+          "bytes": 52084,
+          "sha256": "f0cdeb47eea82cf11a977b8ed562fe12be3c5d04b5a18ebd2900660e2926b8a1",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "pack.card.07",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-letras-en-juego.png",
+        "sha256": "376922c040808fc0826995bc5378d6c3e879720eb6991119253c252b9aca2086",
+        "bytes": 2659873,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (cover-card redesign 2026-07-26)",
+        "date": "2026-07-26",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del pack Letras en Juego"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-cards/pack-card-07-w360-5cc1ab0e.webp",
+          "bytes": 18888,
+          "sha256": "0c82b50e30e8531bdaeaab761010d2d749627fc8e3530a001f91473c2f74f131",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-07-w520-1685b9b8.webp",
+          "bytes": 35346,
+          "sha256": "ca147dcc07f4ed6c0933311c7875ee9a38b10b84060345f124232ca6ea4be842",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-07-w720-a85cc059.webp",
+          "bytes": 58000,
+          "sha256": "a128a82abfaeb242863f50f1c5c1b7760100193c4e707c545a75ea864f533353",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "pack.card.08",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-valores-crecen-casa.png",
+        "sha256": "096697ccd07bed1d1d9f3b191117ab3a156998a1a945197d04b4bd7a2849f52c",
+        "bytes": 2660859,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (cover-card redesign 2026-07-26)",
+        "date": "2026-07-26",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del pack Valores que Crecen en Casa"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-cards/pack-card-08-w360-15124e5a.webp",
+          "bytes": 19190,
+          "sha256": "33ac5ecbc434e0a4f6b99c0ffc38afacafe0e6a714b5a76f551836b2c24ee89d",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-08-w520-c7b44aa3.webp",
+          "bytes": 34670,
+          "sha256": "5a09065da2c12fafc8da29c78e50d7a773452df1a377431b907156736b4a8a4a",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-08-w720-ace40ece.webp",
+          "bytes": 58960,
+          "sha256": "d9abad2023aa763b8c33bf49c8609234c8e96ea96523de9ee335ad1aa566e2f8",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "pack.card.09",
+      "role": "card",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-v1/upsell-card-mira-busca-colorea.png",
+        "sha256": "61890859e9c4b83d8a7ca30b3d471c915122717c7c111c87048e4829bf1ecda2",
+        "bytes": 2724018,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (cover-card redesign 2026-07-26)",
+        "date": "2026-07-26",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del pack Mira, Busca y Colorea"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-cards/pack-card-09-w360-70a1810e.webp",
+          "bytes": 26046,
+          "sha256": "14fd665eb2b56804c3d44420df98157e223645fca2090efe40be84d258293d48",
+          "width": 360,
+          "height": 270,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-09-w520-d1977fc0.webp",
+          "bytes": 47894,
+          "sha256": "77655c799da6d9c846f91e2c2ee2a850e20584ab8ddd7b89cfdc358bdd1f0c97",
+          "width": 520,
+          "height": 390,
+          "format": "webp",
+          "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-09-w720-988c6a54.webp",
+          "bytes": 79892,
+          "sha256": "e847fc8cf055e948be2543c764894c982fb1632bdfe126d4bae9366c6e97bebf",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 76
+        }
+      ]
+    },
+    {
+      "id": "pack.page.01",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/kit-imprime-y-juega/page-064-disena-tu-pizza.png",
+        "sha256": "6e7292c4db3a5a771c4b912c970a68e265b425b7b339e993c9ed71004ab85d42",
+        "bytes": 1160972,
+        "width": 1055,
+        "height": 1491
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Pack Imprime y Juega, 2026-06)",
+        "date": "2026-06",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 1: Diseña tu pizza (Kit Tardes Tranquilas)"
+      },
+      "text": {
+        "title": "Diseña tu pizza",
+        "description": "Kit Tardes Tranquilas"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-pages/pack-page-01-w640-e3b0924d.webp",
+          "bytes": 42566,
+          "sha256": "f7487ef424ef466543dcaeef70e845b891ddfc7240bbe7d714be09616931214d",
+          "width": 640,
+          "height": 904,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/pack-pages/pack-page-01-w1055-1a799cc9.webp",
+          "bytes": 76520,
+          "sha256": "d3bc94f6cb8e6b99def96e2ddb0f2803635aef89589095e029f8e1c9bdfe791f",
+          "width": 1055,
+          "height": 1491,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "pack.page.02",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/kit-imprime-y-juega/page-066-titeres-de-dedo.png",
+        "sha256": "4aaa8de33ccbcfa8127e458d8f2c8216ce61ac3c047aaa5753764e25296583c6",
+        "bytes": 1194550,
+        "width": 1055,
+        "height": 1491
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Pack Imprime y Juega, 2026-06)",
+        "date": "2026-06",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 2: Títeres de dedo (Kit Tardes Tranquilas)"
+      },
+      "text": {
+        "title": "Títeres de dedo",
+        "description": "Kit Tardes Tranquilas"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-pages/pack-page-02-w640-9036a3c0.webp",
+          "bytes": 47502,
+          "sha256": "167aa21c30c19e8820b0ff437c7c8ae39f92082e8824cb8819412a3a8ec8bfca",
+          "width": 640,
+          "height": 904,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/pack-pages/pack-page-02-w1055-1adad289.webp",
+          "bytes": 86268,
+          "sha256": "955e9fde6a2642ce0ebeb840ccd0173161954ca8ec873375dfcef6091a46058f",
+          "width": 1055,
+          "height": 1491,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "pack.page.03",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/colorea-y-observa/page-040-diferencias-6-la-feria.png",
+        "sha256": "3bc7ef6bedfb5a61bb27d1d441f1ae26849b136fdbbba79317c758439274a39c",
+        "bytes": 1426907,
+        "width": 1055,
+        "height": 1491
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Pack Imprime y Juega, 2026-06)",
+        "date": "2026-06",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 3: Diferencias en la feria (Mira, Busca y Colorea)"
+      },
+      "text": {
+        "title": "Diferencias en la feria",
+        "description": "Mira, Busca y Colorea"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-pages/pack-page-03-w640-ab0ee1e0.webp",
+          "bytes": 62340,
+          "sha256": "d3111cf74ae5d0f4274e464e6878ab5f48cf7e0894bdb8339e4170f79c4d99bb",
+          "width": 640,
+          "height": 904,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/pack-pages/pack-page-03-w1055-a645715b.webp",
+          "bytes": 114798,
+          "sha256": "11ed8004313032a0b51edf0a431fdc9c299c310ece8f719b212df7311409b015",
+          "width": 1055,
+          "height": 1491,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "pack.page.04",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/colorea-y-observa/page-055-la-gran-busqueda.png",
+        "sha256": "5d28e1fd9147bc7d5a3f94b98081612f7ed1c30dd25d4977c623176b15f33f86",
+        "bytes": 1848152,
+        "width": 1055,
+        "height": 1491
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Pack Imprime y Juega, 2026-06)",
+        "date": "2026-06",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 4: La gran búsqueda (Mira, Busca y Colorea)"
+      },
+      "text": {
+        "title": "La gran búsqueda",
+        "description": "Mira, Busca y Colorea"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-pages/pack-page-04-w640-2473dbb5.webp",
+          "bytes": 114810,
+          "sha256": "8429727bb00d2664c6dcc7bbb5dc3a66a657ac8c2054f72f841985c2df247caf",
+          "width": 640,
+          "height": 904,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/pack-pages/pack-page-04-w1055-fe2a33ee.webp",
+          "bytes": 220046,
+          "sha256": "d163e5da46b081e72cc24170af8cfe3f57bff705d94ac481096cdcdb93818852",
+          "width": 1055,
+          "height": 1491,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "pack.page.05",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/mini-kit-letras-sonidos/page-038-mi-gato-mira-la-luna.png",
+        "sha256": "c705afcd7bdf43c7ffb9dd1f47052d8e60bf843994f431c0410e02856d3ae092",
+        "bytes": 1089139,
+        "width": 1055,
+        "height": 1491
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Pack Imprime y Juega, 2026-06)",
+        "date": "2026-06",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 5: Mi gato mira la luna (Letras en Juego)"
+      },
+      "text": {
+        "title": "Mi gato mira la luna",
+        "description": "Letras en Juego"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-pages/pack-page-05-w640-c34ed6fe.webp",
+          "bytes": 38290,
+          "sha256": "0606a440a4d49ec9c2c7ab5a7bf71cbe602c0ff2656cb41179d5e1fe574f8b95",
+          "width": 640,
+          "height": 904,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/pack-pages/pack-page-05-w1055-a0e3b67a.webp",
+          "bytes": 71650,
+          "sha256": "591056f2c3f585db5f1ac3c57be792ba786612feb44454a7c8f6ca28b6f49389",
+          "width": 1055,
+          "height": 1491,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "pack.page.06",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/mini-kit-letras-sonidos/page-043-mi-primera-palabra.png",
+        "sha256": "05e133265d5bc134859c5e46bcc91fe3f7d6fa20db28de7db5a8b64d957be684",
+        "bytes": 939238,
+        "width": 1055,
+        "height": 1491
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Pack Imprime y Juega, 2026-06)",
+        "date": "2026-06",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 6: Mi primera palabra (Letras en Juego)"
+      },
+      "text": {
+        "title": "Mi primera palabra",
+        "description": "Letras en Juego"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-pages/pack-page-06-w640-845c1f63.webp",
+          "bytes": 24780,
+          "sha256": "64e6fa868364ec26ed5eeae40ef9788cccb982723e9cc753d26b6ce4ba87a880",
+          "width": 640,
+          "height": 904,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/pack-pages/pack-page-06-w1055-48a4ed7f.webp",
+          "bytes": 45544,
+          "sha256": "33756003e1f7da35d3e47b6473db459911b14a417582d21366b62c1812670ef3",
+          "width": 1055,
+          "height": 1491,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "pack.page.07",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/pack-para-salir/page-036-busca-5-cosas.png",
+        "sha256": "823024b801e95371d222ff1666fe25f1d07e78879761aa79c575087a53570b48",
+        "bytes": 1433437,
+        "width": 1055,
+        "height": 1491
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Pack Imprime y Juega, 2026-06)",
+        "date": "2026-06",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 7: Busca cinco cosas (Aventuras para Llevar)"
+      },
+      "text": {
+        "title": "Busca cinco cosas",
+        "description": "Aventuras para Llevar"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-pages/pack-page-07-w640-8c89b17d.webp",
+          "bytes": 66956,
+          "sha256": "cc9ae02f76d20ff3b25b33aea305b9b7a39df391444191a01a70eb50c78f35aa",
+          "width": 640,
+          "height": 904,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/pack-pages/pack-page-07-w1055-815a95ad.webp",
+          "bytes": 121748,
+          "sha256": "4c2d9271097acc697476981321c6d1e3e4d5203f404c1732cc7610224caac2cf",
+          "width": 1055,
+          "height": 1491,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "pack.page.08",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/pack-para-salir/page-054-mapa-de-recuerdos.png",
+        "sha256": "e67aa3e0039eabbffe9804cdcb96ded571edc4e682a00c46dccbdda1ed0d5120",
+        "bytes": 1587504,
+        "width": 1055,
+        "height": 1491
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Pack Imprime y Juega, 2026-06)",
+        "date": "2026-06",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 8: Mapa de recuerdos (Aventuras para Llevar)"
+      },
+      "text": {
+        "title": "Mapa de recuerdos",
+        "description": "Aventuras para Llevar"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-pages/pack-page-08-w640-1889f039.webp",
+          "bytes": 82212,
+          "sha256": "7972ff72e4ef9c0dab88347a7bdb3aeb815276315ad59e95b1e8cc6918d5b74c",
+          "width": 640,
+          "height": 904,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/pack-pages/pack-page-08-w1055-b5b92226.webp",
+          "bytes": 151034,
+          "sha256": "2364868ecb740c775a386dfd02b62d7fa6daebf2b49bb4c14466eee9a5b536f3",
+          "width": 1055,
+          "height": 1491,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "pack.page.09",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/reto-30-dias/page-021-dia-17-5-diferencias.png",
+        "sha256": "185438eaf3f42225f77034a0356314aa61c1844590341ac8d5e8ab5624ef461a",
+        "bytes": 1297009,
+        "width": 1055,
+        "height": 1491
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Pack Imprime y Juega, 2026-06)",
+        "date": "2026-06",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 9: Encuentra cinco diferencias (30 Días para Jugar Juntos)"
+      },
+      "text": {
+        "title": "Encuentra cinco diferencias",
+        "description": "30 Días para Jugar Juntos"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-pages/pack-page-09-w640-d36ebaa9.webp",
+          "bytes": 55056,
+          "sha256": "20a88b27fc4f04d93d185bf1316e376dd16684770474d139a05330d4411f88ad",
+          "width": 640,
+          "height": 904,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/pack-pages/pack-page-09-w1055-7edd076f.webp",
+          "bytes": 102680,
+          "sha256": "bb5b23705222bbd21d13ca16811580c444d6239df6adb3c5f2f96ff1f53cff7d",
+          "width": 1055,
+          "height": 1491,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "pack.page.10",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/reto-30-dias/page-027-dia-23-la-maquina-increible.png",
+        "sha256": "e244a64d3e3fbc52a67b91ba96d4457dc6f74a2229afdd457c5956617ff6d22b",
+        "bytes": 1120511,
+        "width": 1055,
+        "height": 1491
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Pack Imprime y Juega, 2026-06)",
+        "date": "2026-06",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 10: La máquina increíble (30 Días para Jugar Juntos)"
+      },
+      "text": {
+        "title": "La máquina increíble",
+        "description": "30 Días para Jugar Juntos"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-pages/pack-page-10-w640-380ce6d2.webp",
+          "bytes": 41056,
+          "sha256": "4a85f54196b2c297ebce02e056d40bbab34ff7dc50869b092ae85768068ebd19",
+          "width": 640,
+          "height": 904,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/pack-pages/pack-page-10-w1055-7769a22a.webp",
+          "bytes": 74516,
+          "sha256": "7572cc31d2bd7b31910b7ce6e46783589dbf495fa0adfe2e6940ac3413dd151c",
+          "width": 1055,
+          "height": 1491,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "pack.page.11",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/valores-en-casa/page-043-actividad-dibuja-tu-risa.png",
+        "sha256": "328088259f124afbde1c53bc45fb7ac0894ac2a91f6977f8297ba7024c9b81c9",
+        "bytes": 1442776,
+        "width": 1055,
+        "height": 1491
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Pack Imprime y Juega, 2026-06)",
+        "date": "2026-06",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 11: Dibuja tu risa (Valores que Crecen en Casa)"
+      },
+      "text": {
+        "title": "Dibuja tu risa",
+        "description": "Valores que Crecen en Casa"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-pages/pack-page-11-w640-c4f03088.webp",
+          "bytes": 48424,
+          "sha256": "51ddc97578d4fa1e22eb94ccba1d84fe55afa5dbe187bed8646567072b4dc1de",
+          "width": 640,
+          "height": 904,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/pack-pages/pack-page-11-w1055-ec59e2b5.webp",
+          "bytes": 87482,
+          "sha256": "8090d230cfd41516ebfaba00f77c9225355e24da261ca0a709d904e7968718ed",
+          "width": 1055,
+          "height": 1491,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "pack.page.12",
+      "role": "page",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/deliverables/kit-imprime-y-juega-tardes-tranquilas/source-products/valores-en-casa/page-053-nuestro-arbol-de-valores.png",
+        "sha256": "cd3a3ea24afde67ddaa8ef39902c3dcdd10432cfeec1f9cb9d90121bae88c737",
+        "bytes": 2048693,
+        "width": 1055,
+        "height": 1491
+      },
+      "provenance": {
+        "origin": "owner-render",
+        "tool": "Product PDF page render (Pack Imprime y Juega, 2026-06)",
+        "date": "2026-06",
+        "people": "none",
+        "minors": "none",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Página real 12: Nuestro árbol de valores (Valores que Crecen en Casa)"
+      },
+      "text": {
+        "title": "Nuestro árbol de valores",
+        "description": "Valores que Crecen en Casa"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack-pages/pack-page-12-w640-bd970161.webp",
+          "bytes": 98538,
+          "sha256": "d825de03b9791f0d099f8021b157d83f4e62007e2b664e5e7f8ca4008986d372",
+          "width": 640,
+          "height": 904,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/pack-pages/pack-page-12-w1055-02665a2e.webp",
+          "bytes": 169596,
+          "sha256": "bee532681d1e61e9baccee083ccb26adcd3960c14f6fd53333caec9e142f1836",
+          "width": 1055,
+          "height": 1491,
+          "format": "webp",
+          "quality": 80
+        }
+      ]
+    },
+    {
+      "id": "pack.hero",
+      "role": "hero",
+      "page": "imprime-y-juega",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/approved/social-proof/dpt-kij-v5-hero-photo-source.png",
+        "sha256": "7b6f86df08be2926bf7fe72320dd367da3625b6ce6fb6df263198e29b5321921",
+        "bytes": 2592209,
+        "width": 1024,
+        "height": 1536
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation",
+        "date": "2026-06",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Kit Tardes Tranquilas impreso sobre una mesa junto a una página para colorear y lápices"
+      },
+      "outputs": [
+        {
+          "file": "public/media/pack/pack-hero-w480-aaf7528f.webp",
+          "bytes": 53664,
+          "sha256": "c9764a105ddff17e588962c878696e2d97fc76adffa4d7c6b0e5b003651789a2",
+          "width": 480,
+          "height": 720,
+          "format": "webp",
+          "quality": 82
+        },
+        {
+          "file": "public/media/pack/pack-hero-w768-ee0a6858.webp",
+          "bytes": 118694,
+          "sha256": "f0e69f177ad9783e32211ed2bd55e1a3c570dec0bd1fe22737c8be0d6255f75b",
+          "width": 768,
+          "height": 1152,
+          "format": "webp",
+          "quality": 82
+        },
+        {
+          "file": "public/media/pack/pack-hero-w1024-37f87492.webp",
+          "bytes": 185412,
+          "sha256": "bba62d5dc4647bf5f4ad922c4d7be3dd2761e9e3481dbdd9cd790e8e7de4851f",
+          "width": 1024,
+          "height": 1536,
+          "format": "webp",
+          "quality": 82
+        }
+      ]
+    },
+    {
+      "id": "video.gf.bota",
+      "role": "video",
+      "page": "grafismo-fonetico",
+      "kind": "video",
+      "source": {
+        "library": "pequeverso-content-studio",
+        "path": "02-biblioteca/clips/grafismo-fonetico/silabas-y-palabras/bo-ta-opcion-01-2x-sin-sonido.mp4",
+        "sha256": "34a30ac7fe1f1df2b5cf8172be76b00bf42f4383360e32ee446b819d1649e918",
+        "bytes": 7306331,
+        "width": 1080,
+        "height": 1920
+      },
+      "provenance": {
+        "origin": "owner-recorded",
+        "tool": "Smartphone recording, 2x silent export (content-studio clip library 2026-08-16)",
+        "date": "2026-08-16",
+        "people": "owner",
+        "minors": "none",
+        "release": "n/a",
+        "notes": "Hands-only demonstrations of the printed material. Several frames also show a child's hand or forearm and, briefly, hair at the frame edge; no face is visible. The owner must confirm (a) that any child shown is their own and consents to publication and (b) that the printed material in the clips is their own before redistribution changes to public-repo-approved."
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "pending-owner-confirmation",
+        "approvedAt": null
+      },
+      "alt": {
+        "es": "Portada del video: BO + TA: formar una palabra"
+      },
+      "text": {
+        "title": "BO + TA: formar una palabra",
+        "description": "Una actividad visual para unir dos sílabas y reconocer la palabra BOTA."
+      },
+      "outputs": [
+        {
+          "file": "public/media/video/video-gf-bota-crf26-eb7eef6a.mp4",
+          "bytes": 967700,
+          "sha256": "460330afd628f7bcd9d6d693e6114ee3d2df837829ecf66d4a4cf440c6e81062",
+          "width": 720,
+          "height": 1280,
+          "format": "mp4",
+          "quality": "crf26"
+        },
+        {
+          "file": "public/media/video/video-gf-bota-poster-w480-651dedaf.webp",
+          "bytes": 20478,
+          "sha256": "05bbb5da670f4c72c4adcb1657d37520973bfd5327028f5cab2bebd64e046d1d",
+          "width": 480,
+          "height": 853,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/video/video-gf-bota-poster-w720-e629168f.webp",
+          "bytes": 32634,
+          "sha256": "849e22deca6fa940547bf5b304f59deef1a1b6ae73a0a9645a3a52279766ef97",
+          "width": 720,
+          "height": 1280,
+          "format": "webp",
+          "quality": 72
+        }
+      ],
+      "video": {
+        "codec": "h264",
+        "profile": "high",
+        "pixelFormat": "yuv420p",
+        "shortSide": 720,
+        "fps": 30,
+        "crf": 26,
+        "maxrate": "1500k",
+        "bufsize": "3000k",
+        "gop": 60,
+        "audio": "stripped",
+        "maxSeconds": 15,
+        "sourceDuration": 4.434,
+        "duration": 4.434,
+        "trimmed": false,
+        "posterAt": 1,
+        "webm": false
+      }
+    },
+    {
+      "id": "video.gf.mapa",
+      "role": "video",
+      "page": "grafismo-fonetico",
+      "kind": "video",
+      "source": {
+        "library": "pequeverso-content-studio",
+        "path": "02-biblioteca/clips/grafismo-fonetico/silabas-y-palabras/ma-pa-opcion-02-2x-sin-sonido.mp4",
+        "sha256": "aad6d0e16c3f239c6784588e72249bb3f12af382d45de934eb6c8ed3e891442e",
+        "bytes": 9409581,
+        "width": 1080,
+        "height": 1920
+      },
+      "provenance": {
+        "origin": "owner-recorded",
+        "tool": "Smartphone recording, 2x silent export (content-studio clip library 2026-08-16)",
+        "date": "2026-08-16",
+        "people": "owner",
+        "minors": "none",
+        "release": "n/a",
+        "notes": "Hands-only demonstrations of the printed material. Several frames also show a child's hand or forearm and, briefly, hair at the frame edge; no face is visible. The owner must confirm (a) that any child shown is their own and consents to publication and (b) that the printed material in the clips is their own before redistribution changes to public-repo-approved."
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "pending-owner-confirmation",
+        "approvedAt": null
+      },
+      "alt": {
+        "es": "Portada del video: MA + PA: unir para leer MAPA"
+      },
+      "text": {
+        "title": "MA + PA: unir para leer MAPA",
+        "description": "Cada sílaba se relaciona con la palabra completa y una imagen reconocible."
+      },
+      "outputs": [
+        {
+          "file": "public/media/video/video-gf-mapa-crf26-55ee6950.mp4",
+          "bytes": 1206787,
+          "sha256": "af93b8da29bb01d97e92c9f4707ffaf72858bf4c6f1c21348c52436843536b7e",
+          "width": 720,
+          "height": 1280,
+          "format": "mp4",
+          "quality": "crf26"
+        },
+        {
+          "file": "public/media/video/video-gf-mapa-poster-w480-96a084b3.webp",
+          "bytes": 26916,
+          "sha256": "95e1e0bd23dd440b9ae55e030989be5b3764045bae5a88cae22d8e735143dce5",
+          "width": 480,
+          "height": 853,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/video/video-gf-mapa-poster-w720-2ee6837a.webp",
+          "bytes": 43488,
+          "sha256": "46556516db2973d91d51b1042a1081865a11e0a23c72bcc1e5739b755bac9250",
+          "width": 720,
+          "height": 1280,
+          "format": "webp",
+          "quality": 72
+        }
+      ],
+      "video": {
+        "codec": "h264",
+        "profile": "high",
+        "pixelFormat": "yuv420p",
+        "shortSide": 720,
+        "fps": 30,
+        "crf": 26,
+        "maxrate": "1500k",
+        "bufsize": "3000k",
+        "gop": 60,
+        "audio": "stripped",
+        "maxSeconds": 15,
+        "sourceDuration": 5.934,
+        "duration": 5.934,
+        "trimmed": false,
+        "posterAt": 1,
+        "webm": false
+      }
+    },
+    {
+      "id": "video.gf.paloma",
+      "role": "video",
+      "page": "grafismo-fonetico",
+      "kind": "video",
+      "source": {
+        "library": "pequeverso-content-studio",
+        "path": "02-biblioteca/clips/grafismo-fonetico/silabas-y-palabras/pa-lo-ma-opcion-02-2x-sin-sonido.mp4",
+        "sha256": "162e402c2ad03148f0a954c3b8ffe58e7c0e75eea0b779b56c1a4be4458a0857",
+        "bytes": 17907843,
+        "width": 1080,
+        "height": 1920
+      },
+      "provenance": {
+        "origin": "owner-recorded",
+        "tool": "Smartphone recording, 2x silent export (content-studio clip library 2026-08-16)",
+        "date": "2026-08-16",
+        "people": "owner",
+        "minors": "none",
+        "release": "n/a",
+        "notes": "Hands-only demonstrations of the printed material. Several frames also show a child's hand or forearm and, briefly, hair at the frame edge; no face is visible. The owner must confirm (a) that any child shown is their own and consents to publication and (b) that the printed material in the clips is their own before redistribution changes to public-repo-approved."
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "pending-owner-confirmation",
+        "approvedAt": null
+      },
+      "alt": {
+        "es": "Portada del video: PA + LO + MA: avanzar paso a paso"
+      },
+      "text": {
+        "title": "PA + LO + MA: avanzar paso a paso",
+        "description": "Una palabra más larga se recorre sílaba por sílaba hasta llegar a PALOMA."
+      },
+      "outputs": [
+        {
+          "file": "public/media/video/video-gf-paloma-crf28-bb22b3b1.mp4",
+          "bytes": 2054501,
+          "sha256": "22597eb16e83ffc821168f88f3a5d3b1b9d90ca03073dba37bd72373433203b3",
+          "width": 720,
+          "height": 1280,
+          "format": "mp4",
+          "quality": "crf28"
+        },
+        {
+          "file": "public/media/video/video-gf-paloma-poster-w480-e688a058.webp",
+          "bytes": 19172,
+          "sha256": "2e24d3797363d2a8a73c6dd561532355d14dbf5178acf0ad172ffec928ca5601",
+          "width": 480,
+          "height": 853,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/video/video-gf-paloma-poster-w720-024eb5ef.webp",
+          "bytes": 28690,
+          "sha256": "3d66bdf903dd3fd3fba4ec2342d5a2e9f99009daee73d97fdc59f0e1f499225b",
+          "width": 720,
+          "height": 1280,
+          "format": "webp",
+          "quality": 72
+        }
+      ],
+      "video": {
+        "codec": "h264",
+        "profile": "high",
+        "pixelFormat": "yuv420p",
+        "shortSide": 720,
+        "fps": 30,
+        "crf": 28,
+        "maxrate": "1500k",
+        "bufsize": "3000k",
+        "gop": 60,
+        "audio": "stripped",
+        "maxSeconds": 15,
+        "sourceDuration": 13.5,
+        "duration": 13.5,
+        "trimmed": false,
+        "posterAt": 6,
+        "webm": false
+      }
+    },
+    {
+      "id": "video.gf.maleta",
+      "role": "video",
+      "page": "grafismo-fonetico",
+      "kind": "video",
+      "source": {
+        "library": "pequeverso-content-studio",
+        "path": "02-biblioteca/clips/grafismo-fonetico/silabas-y-palabras/ma-le-ta-opcion-01-2x-sin-sonido.mp4",
+        "sha256": "3e926c154f9dc04e779b229c131910d34c0780fc524537f154c78d0e9cab5ac2",
+        "bytes": 23251001,
+        "width": 1080,
+        "height": 1920
+      },
+      "provenance": {
+        "origin": "owner-recorded",
+        "tool": "Smartphone recording, 2x silent export (content-studio clip library 2026-08-16)",
+        "date": "2026-08-16",
+        "people": "owner",
+        "minors": "none",
+        "release": "n/a",
+        "notes": "Hands-only demonstrations of the printed material. Several frames also show a child's hand or forearm and, briefly, hair at the frame edge; no face is visible. The owner must confirm (a) that any child shown is their own and consents to publication and (b) that the printed material in the clips is their own before redistribution changes to public-repo-approved."
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "pending-owner-confirmation",
+        "approvedAt": null
+      },
+      "alt": {
+        "es": "Portada del video: MA + LE + TA: seguir la secuencia"
+      },
+      "text": {
+        "title": "MA + LE + TA: seguir la secuencia",
+        "description": "Los apoyos visuales acompañan el recorrido hasta completar la palabra MALETA."
+      },
+      "outputs": [
+        {
+          "file": "public/media/video/video-gf-maleta-crf30-d2b81945.mp4",
+          "bytes": 2029582,
+          "sha256": "6ba9de79de98cd29bee4345c993f7e8e0ef867a73ef60d4dcf732e81800501c6",
+          "width": 720,
+          "height": 1280,
+          "format": "mp4",
+          "quality": "crf30"
+        },
+        {
+          "file": "public/media/video/video-gf-maleta-poster-w480-429cef93.webp",
+          "bytes": 33624,
+          "sha256": "cea0bfde2a8a31b0eabaf8027f53a741aa542ad24e17d72625869db53ed52288",
+          "width": 480,
+          "height": 853,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/video/video-gf-maleta-poster-w720-d9d02735.webp",
+          "bytes": 54240,
+          "sha256": "bba30b307b9e33d3ccb1cc5243d7ab92557a7a190dfeb3aeba2f71bf472e613a",
+          "width": 720,
+          "height": 1280,
+          "format": "webp",
+          "quality": 72
+        }
+      ],
+      "video": {
+        "codec": "h264",
+        "profile": "high",
+        "pixelFormat": "yuv420p",
+        "shortSide": 720,
+        "fps": 30,
+        "crf": 30,
+        "maxrate": "1500k",
+        "bufsize": "3000k",
+        "gop": 60,
+        "audio": "stripped",
+        "maxSeconds": 15,
+        "sourceDuration": 13.067,
+        "duration": 13.067,
+        "trimmed": false,
+        "posterAt": 1,
+        "webm": false
+      }
+    }
+  ]
+}

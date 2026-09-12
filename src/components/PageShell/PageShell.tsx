@@ -3,7 +3,13 @@ import { Footer } from "@/components/Footer/Footer";
 import { Header, type NavItem } from "@/components/Header/Header";
 import styles from "./PageShell.module.css";
 
-type Props = { children: ReactNode; nav?: NavItem[]; cta?: ReactNode; subtitle?: string; topbar?: ReactNode };
+type Props = {
+  children: ReactNode;
+  nav?: readonly NavItem[];
+  cta?: ReactNode;
+  subtitle?: string;
+  topbar?: ReactNode;
+};
 
 /** Header + main landmark + footer. Every route uses it so navigation is complete everywhere. */
 export function PageShell({ children, nav, cta, subtitle, topbar }: Props) {

@@ -49,7 +49,8 @@ Spanish. Read this file first, then the doc that matches your task.
   `docs/generated/htaccess.txt` in sync (`node scripts/gen-htaccess.mjs`).
 - One owner per lockfile change; dependency updates are their own PR.
 - Releases are tags `vX.Y.Z` deployed manually through the `Deploy` workflow with environment
-  approval; the workflow verifies the deployed commit, not just an HTTP 200.
+  approval; it publishes the export to the `deploy` branch (pulled by Hostinger Git) and verifies
+  the deployed commit, not just an HTTP 200. Never commit to `deploy` by hand.
 
 ## Boundaries
 

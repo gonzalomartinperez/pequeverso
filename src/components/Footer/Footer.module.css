@@ -42,6 +42,9 @@
 
 .footer a,
 .footer :global(.linklike) {
+  display: inline-block;
+  min-height: 24px;
+  padding-block: 0.15rem;
   color: var(--pv-white);
   text-decoration: none;
   background: none;
