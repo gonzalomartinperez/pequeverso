@@ -2,12 +2,14 @@ import { formatUsd, products } from "@config/commerce";
 import { site } from "@config/site";
 import { homeCopy as copy } from "@content/es/home";
 import { grafismoPageIds } from "@content/es/products";
+import { ArrowDown } from "lucide-react";
 import type { Metadata } from "next";
 import { Icon } from "@/components/Icon/Icon";
 import { MediaImage } from "@/components/MediaImage/MediaImage";
 import { PageShell } from "@/components/PageShell/PageShell";
 import { ProductInterestLink } from "@/components/ProductInterestLink/ProductInterestLink";
 import { SectionHeading } from "@/components/SectionHeading/SectionHeading";
+import { SocialLinks } from "@/components/SocialLinks/SocialLinks";
 import { Steps } from "@/components/Steps/Steps";
 import { TiltCard } from "@/components/TiltCard/TiltCard";
 import { Universe } from "@/components/Universe/Universe";
@@ -98,7 +100,14 @@ export default function HomePage() {
                 {copy.hero.cta}
               </ProductInterestLink>
               <a href="#metodo" className="button button--inverse">
-                {copy.hero.secondary}
+                <span>{copy.hero.secondary}</span>
+                <ArrowDown
+                  aria-hidden="true"
+                  focusable="false"
+                  size={18}
+                  strokeWidth={2.4}
+                  className="button__icon"
+                />
               </a>
             </div>
           </div>
@@ -288,6 +297,10 @@ export default function HomePage() {
                   {copy.closing.cta}
                 </ProductInterestLink>
                 <span className={styles.closingPrice}>{formatUsd(product.price)} · pago único</span>
+              </div>
+              <div className={styles.closingSocial}>
+                <p>Síguenos: ideas y páginas nuevas cada semana en @somospequeverso</p>
+                <SocialLinks tone="dark" showLabels />
               </div>
             </div>
           </div>

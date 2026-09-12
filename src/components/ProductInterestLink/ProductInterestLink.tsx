@@ -1,6 +1,7 @@
 "use client";
 
 import { products } from "@config/commerce";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { type ReactNode, useEffect, useState } from "react";
 import { withPassthrough } from "@/lib/params";
@@ -28,7 +29,8 @@ export function ProductInterestLink({ href, position, children, className }: Pro
         trackProductInterest({ product: products.grafismoFonetico.slug, position, destination: href })
       }
     >
-      {children}
+      <span>{children}</span>
+      <ArrowRight aria-hidden="true" focusable="false" size={18} strokeWidth={2.4} className="button__icon" />
     </Link>
   );
 }

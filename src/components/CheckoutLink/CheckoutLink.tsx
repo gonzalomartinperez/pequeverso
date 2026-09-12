@@ -1,6 +1,7 @@
 "use client";
 
 import { checkoutUrl, products } from "@config/commerce";
+import { ArrowRight, ShoppingBag } from "lucide-react";
 import { type MouseEvent, type ReactNode, useEffect, useState } from "react";
 import { buildCheckoutUrl, sckFor } from "@/lib/params";
 import { trackCheckoutIntent } from "@/lib/tracking";
@@ -41,7 +42,15 @@ export function CheckoutLink({ position, children, className, offer = "main-usd-
       data-position={position}
       rel={checkoutUrl ? "noopener" : undefined}
     >
-      {children}
+      <ShoppingBag
+        aria-hidden="true"
+        focusable="false"
+        size={20}
+        strokeWidth={2.4}
+        className="button__icon"
+      />
+      <span>{children}</span>
+      <ArrowRight aria-hidden="true" focusable="false" size={18} strokeWidth={2.4} className="button__icon" />
     </a>
   );
 }

@@ -71,6 +71,15 @@
   color: var(--pv-navy);
 }
 
+.button__icon {
+  flex: none;
+}
+
+.button--small .button__icon {
+  width: 18px;
+  height: 18px;
+}
+
 .button--small {
   min-height: 46px;
   padding-inline: var(--space-4);

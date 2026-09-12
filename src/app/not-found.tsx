@@ -18,13 +18,13 @@ export default function NotFound() {
           útiles:
         </p>
         <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-          <CTAButton href="/" variant="secondary">
+          <CTAButton href="/" variant="secondary" iconAfter="arrow">
             Ir al inicio
           </CTAButton>
-          <CTAButton href="/grafismo-fonetico/" variant="secondary">
+          <CTAButton href="/grafismo-fonetico/" variant="secondary" iconAfter="arrow">
             Ver Grafismo Fonético
           </CTAButton>
-          <CTAButton href="/soporte/" variant="ghost">
+          <CTAButton href="/soporte/" variant="ghost" iconAfter="arrow">
             Soporte
           </CTAButton>
         </div>

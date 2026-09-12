@@ -1,6 +1,7 @@
 import { formatUsd, products } from "@config/commerce";
 import { packCopy as copy } from "@content/es/imprime-y-juega";
 import { packPageIds, packResources } from "@content/es/products";
+import { MousePointerClick } from "lucide-react";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { FAQ } from "@/components/FAQ/FAQ";
@@ -47,6 +48,13 @@ export default function ImprimeYJuegaPage() {
 
   const decisionLink = (
     <a href="#decision" className="button button--primary button--small" data-decision-link>
+      <MousePointerClick
+        aria-hidden="true"
+        focusable="false"
+        size={20}
+        strokeWidth={2.4}
+        className="button__icon"
+      />
       {copy.header.cta}
     </a>
   );
@@ -85,6 +93,13 @@ export default function ImprimeYJuegaPage() {
                 taxNote="+ impuestos aplicables según el país"
                 cta={
                   <a href="#decision" className="button button--primary" data-decision-link>
+                    <MousePointerClick
+                      aria-hidden="true"
+                      focusable="false"
+                      size={20}
+                      strokeWidth={2.4}
+                      className="button__icon"
+                    />
                     {copy.header.cta}
                   </a>
                 }
@@ -119,6 +134,13 @@ export default function ImprimeYJuegaPage() {
                 taxNote="+ impuestos aplicables según el país"
                 cta={
                   <a href="#decision" className="button button--primary" data-decision-link>
+                    <MousePointerClick
+                      aria-hidden="true"
+                      focusable="false"
+                      size={20}
+                      strokeWidth={2.4}
+                      className="button__icon"
+                    />
                     {copy.header.cta}
                   </a>
                 }
@@ -258,6 +280,13 @@ export default function ImprimeYJuegaPage() {
             <h2 id="cierre-title">{copy.close.title}</h2>
             <p className="lead">{copy.close.text}</p>
             <a href="#decision" className="button button--inverse" data-decision-link>
+              <MousePointerClick
+                aria-hidden="true"
+                focusable="false"
+                size={20}
+                strokeWidth={2.4}
+                className="button__icon"
+              />
               {copy.close.cta}
             </a>
           </div>
