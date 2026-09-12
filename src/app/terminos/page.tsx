@@ -1,5 +1,5 @@
 import { formatUsd, guaranteeDays, hotmart, products } from "@config/commerce";
-import { seller } from "@content/es/legal/seller";
+import { seller, sellerField } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalLayout } from "@/components/LegalLayout/LegalLayout";
@@ -36,9 +36,9 @@ export default function TerminosPage() {
     >
       <h2 id="partes">Quién vende y quién cobra</h2>
       <p>
-        El vendedor de los materiales es {seller.legalName} ({seller.operator}), titular de la marca{" "}
-        {seller.brand}. La venta se realiza a través de <strong>Hotmart</strong>, plataforma que actúa como
-        intermediaria: procesa el pago, emite el comprobante correspondiente, entrega el acceso digital y
+        El vendedor de los materiales es {sellerField(seller.legalName)} ({seller.operator}), titular de la
+        marca {seller.brand}. La venta se realiza a través de <strong>Hotmart</strong>, plataforma que actúa
+        como intermediaria: procesa el pago, emite el comprobante correspondiente, entrega el acceso digital y
         gestiona los reembolsos conforme a sus propios términos de compra, que aceptas en la página de pago.
       </p>
 
@@ -103,8 +103,8 @@ export default function TerminosPage() {
 
       <h2 id="ley">Legislación aplicable</h2>
       <p>
-        Estos términos se rigen por la legislación de {seller.country}, sin perjuicio de los derechos que te
-        reconozca la normativa de protección al consumidor de tu país de residencia.
+        Estos términos se rigen por la legislación de {sellerField(seller.country)}, sin perjuicio de los
+        derechos que te reconozca la normativa de protección al consumidor de tu país de residencia.
       </p>
     </LegalLayout>
   );

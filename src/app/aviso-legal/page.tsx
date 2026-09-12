@@ -1,5 +1,5 @@
 import { site } from "@config/site";
-import { seller } from "@content/es/legal/seller";
+import { seller, sellerField } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalLayout } from "@/components/LegalLayout/LegalLayout";
@@ -35,9 +35,9 @@ export default function AvisoLegalPage() {
         <strong>{seller.brand}</strong> es una marca operada por <strong>{seller.operator}</strong>.
       </p>
       <ul>
-        <li>Titular: {seller.legalName}</li>
-        <li>Identificación fiscal: {seller.taxId}</li>
-        <li>Domicilio: {seller.address}</li>
+        <li>Titular: {sellerField(seller.legalName)}</li>
+        <li>Identificación fiscal: {sellerField(seller.taxId)}</li>
+        <li>Domicilio: {sellerField(seller.address)}</li>
         <li>
           Correo de contacto: <a href={`mailto:${seller.supportEmail}`}>{seller.supportEmail}</a>
         </li>
@@ -79,9 +79,9 @@ export default function AvisoLegalPage() {
 
       <h2 id="ley">Legislación aplicable</h2>
       <p>
-        Este aviso se rige por la legislación de {seller.country}. Para cualquier controversia, y salvo que la
-        normativa de protección al consumidor del país del comprador establezca otra cosa, serán competentes
-        los tribunales de {seller.jurisdiction}.
+        Este aviso se rige por la legislación de {sellerField(seller.country)}. Para cualquier controversia, y
+        salvo que la normativa de protección al consumidor del país del comprador establezca otra cosa, serán
+        competentes los tribunales de {sellerField(seller.jurisdiction)}.
       </p>
     </LegalLayout>
   );

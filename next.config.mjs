@@ -2,14 +2,21 @@
 import { loadEdgeRules, toNextHeaders, toNextRedirects } from "./scripts/lib/edge-rules.mjs";
 
 /**
- * Build mode is selected by NEXT_OUTPUT so the same codebase can be deployed as
- * static files (default, Hostinger website + .htaccess) or as a Node server
- * (Hostinger Node.js Web App, which forces `standalone` anyway).
- * Redirects and headers live in config/edge-rules.json; in export mode they are
- * emitted to out/.htaccess by scripts/gen-htaccess.mjs, in standalone mode they
- * are attached here. See docs/architecture.md.
+ * Build target selection.
+ *
+ * - Static export (default): `NEXT_OUTPUT` unset or "export". Served from public_html; redirects and
+ *   headers come from the generated .htaccess (scripts/gen-htaccess.mjs).
+ * - Node server: `NEXT_OUTPUT=standalone`, or automatically when the build runs inside Hostinger's
+ *   Node.js Web App builder (its working directory lives under `/hbuilds/`). Hostinger wraps this
+ *   config and forces `output: 'standalone'` itself; here we make sure the same redirects/headers
+ *   from config/edge-rules.json are attached, since no .htaccess of ours is served in that mode.
+ *
+ * Builds use `next build --webpack` (package.json): Hostinger's builder has GLIBC 2.28, where the
+ * native SWC/Turbopack bindings cannot load and only the WASM fallback (webpack-compatible) works.
+ * See docs/architecture.md and docs/decisions/ADR-0001-hosting-target.md.
  */
-const output = process.env.NEXT_OUTPUT === "standalone" ? "standalone" : "export";
+const onHostingerNodeApp = process.cwd().replace(/\\/g, "/").includes("/hbuilds/");
+const output = process.env.NEXT_OUTPUT === "standalone" || onHostingerNodeApp ? "standalone" : "export";
 const edgeRules = loadEdgeRules();
 
 /** @type {import('next').NextConfig} */
