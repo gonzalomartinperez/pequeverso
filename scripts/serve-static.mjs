@@ -3,9 +3,10 @@
 // directories resolve to index.html, missing paths return the real 404 page with
 // status 404, and .htaccess-equivalent cache headers are applied. Used by
 // Playwright, Lighthouse CI and `npm start`.
-import { createReadStream, existsSync, statSync } from "node:fs";
+import { createReadStream, existsSync, readFileSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join, normalize, resolve } from "node:path";
+import { brotliCompressSync, constants, gzipSync } from "node:zlib";
 
 const root = resolve(process.cwd(), "out");
 const port = Number(process.env.PORT || 3000);
@@ -33,7 +34,9 @@ if (!existsSync(root)) {
   process.exit(1);
 }
 
-function send(res, file, status = 200) {
+const COMPRESSIBLE = new Set([".html", ".css", ".js", ".json", ".xml", ".txt", ".svg", ".webmanifest"]);
+
+function send(res, file, status = 200, acceptEncoding = "") {
   const ext = extname(file);
   const stat = statSync(file);
   const headers = {
@@ -41,6 +44,34 @@ function send(res, file, status = 200) {
     "Content-Length": stat.size,
     "Accept-Ranges": "bytes",
   };
+  // Text assets are compressed like production (LiteSpeed/Cloudflare) so Lighthouse measures transfer size.
+  if (COMPRESSIBLE.has(ext) && stat.size > 1024) {
+    const raw = readFileSync(file);
+    const encoding = acceptEncoding.split(",").some((e) => e.trim().startsWith("br"))
+      ? "br"
+      : acceptEncoding.includes("gzip")
+        ? "gzip"
+        : null;
+    if (encoding) {
+      const body =
+        encoding === "br"
+          ? brotliCompressSync(raw, { params: { [constants.BROTLI_PARAM_QUALITY]: 5 } })
+          : gzipSync(raw, { level: 6 });
+      headers["Content-Encoding"] = encoding;
+      headers["Content-Length"] = body.length;
+      headers.Vary = "Accept-Encoding";
+      applyCache(headers, file, ext);
+      res.writeHead(status, headers);
+      res.end(body);
+      return;
+    }
+  }
+  applyCache(headers, file, ext);
+  res.writeHead(status, headers);
+  createReadStream(file).pipe(res);
+}
+
+function applyCache(headers, file, ext) {
   const rel = file.slice(root.length).split("\\").join("/");
   if (rel.startsWith("/media/") || rel.startsWith("/fonts/") || rel.startsWith("/_next/static/")) {
     headers["Cache-Control"] = "public, max-age=31536000, immutable";
@@ -49,8 +80,6 @@ function send(res, file, status = 200) {
   } else if (ext === ".html") {
     headers["Cache-Control"] = "no-cache";
   }
-  res.writeHead(status, headers);
-  createReadStream(file).pipe(res);
 }
 
 createServer((req, res) => {
@@ -68,15 +97,16 @@ createServer((req, res) => {
     }
     file = join(file, "index.html");
   }
+  const accept = String(req.headers["accept-encoding"] || "");
   if (existsSync(file) && statSync(file).isFile()) {
-    send(res, file);
+    send(res, file, 200, accept);
     return;
   }
   if (!extname(pathname) && existsSync(`${file}.html`)) {
-    send(res, `${file}.html`);
+    send(res, `${file}.html`, 200, accept);
     return;
   }
   const notFound = join(root, "404.html");
-  if (existsSync(notFound)) send(res, notFound, 404);
+  if (existsSync(notFound)) send(res, notFound, 404, accept);
   else res.writeHead(404, { "Content-Type": "text/plain" }).end("Not found");
 }).listen(port, () => console.log(`serve-static: http://localhost:${port} (out/)`));
