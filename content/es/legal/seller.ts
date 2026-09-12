@@ -15,3 +15,8 @@ export const seller = {
   responseTime: "48 horas hábiles",
   updatedAt: "12 de septiembre de 2026",
 } as const;
+
+/** Renders a seller field for display; unfilled placeholders read as "pendiente de publicación". */
+export function sellerField(value: string): string {
+  return /^\[\[[A-Z0-9_]+\]\]$/.test(value) ? "pendiente de publicación" : value;
+}

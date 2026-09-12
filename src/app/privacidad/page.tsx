@@ -1,4 +1,4 @@
-import { seller } from "@content/es/legal/seller";
+import { seller, sellerField } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalLayout } from "@/components/LegalLayout/LegalLayout";
@@ -34,10 +34,10 @@ export default function PrivacidadPage() {
       <h2 id="responsable">Responsable del tratamiento</h2>
       <ul>
         <li>
-          {seller.legalName} ({seller.operator}), titular de la marca {seller.brand}
+          {sellerField(seller.legalName)} ({seller.operator}), titular de la marca {seller.brand}
         </li>
-        <li>Identificación fiscal: {seller.taxId}</li>
-        <li>Domicilio: {seller.address}</li>
+        <li>Identificación fiscal: {sellerField(seller.taxId)}</li>
+        <li>Domicilio: {sellerField(seller.address)}</li>
         <li>
           Contacto de privacidad: <a href={`mailto:${seller.privacyEmail}`}>{seller.privacyEmail}</a>
         </li>
