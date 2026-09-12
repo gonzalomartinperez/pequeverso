@@ -108,6 +108,8 @@ export function toHtaccess(rules, opts = {}) {
   lines.push("");
   lines.push("<IfModule mod_rewrite.c>");
   lines.push("RewriteEngine On");
+  lines.push("# Never serve dotfiles (the deploy branch is pulled with its .git directory).");
+  lines.push("RewriteRule (^|/)\\.(?!well-known/) - [R=404,L]");
   lines.push("# Canonical host and scheme in one hop.");
   lines.push(`RewriteCond %{HTTP_HOST} ^www\\.${rules.canonicalHost.replace(/\./g, "\\.")}$ [NC]`);
   lines.push(`RewriteRule ^(.*)$ https://${rules.canonicalHost}/$1 [R=301,L]`);
