@@ -7,7 +7,7 @@ export type NavItem = { href: string; label: string };
 
 type Props = {
   /** Up to four in-page or site anchors. */
-  nav?: NavItem[];
+  nav?: readonly NavItem[];
   /** Header CTA (a verb plus price where relevant). */
   cta?: ReactNode;
   /** Small subtitle under the brand on product pages. */

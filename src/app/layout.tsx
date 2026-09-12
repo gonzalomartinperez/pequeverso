@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import type { ReactNode } from "react";
 import { Analytics } from "@/components/Analytics/Analytics";
 import { ConsentBanner } from "@/components/ConsentBanner/ConsentBanner";
+import { RevealObserver } from "@/components/Reveal/RevealObserver";
 import { SkipLink } from "@/components/SkipLink/SkipLink";
 import "@/styles/tokens.css";
 import "@/styles/base.css";
@@ -61,6 +62,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         {children}
         <ConsentBanner />
         <Analytics />
+        <RevealObserver />
       </body>
     </html>
   );

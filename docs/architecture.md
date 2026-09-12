@@ -48,7 +48,7 @@ form). `www` → apex and `http` → `https` are handled in `.htaccess` in one h
 ## Offer mode (`?downsell=1`)
 
 Both the upsell and the downsell views are rendered into the static HTML of `/imprime-y-juega/`.
-A classic inline script — the first child of `<main id="offer-root" suppressHydrationWarning>` —
+A classic inline script — the first child of `<main id="contenido" data-offer-root suppressHydrationWarning>` —
 reads `location.search` before the sibling views are parsed and sets `data-offer="downsell" |
 "upsell"` on that element. Global CSS hides the inactive view (`.only-upsell` / `.only-downsell`),
 so there is no flash, no layout shift and no redirect hop. After hydration a client island reads

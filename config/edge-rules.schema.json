@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pequeverso edge rules",
+  "type": "object",
+  "required": ["canonicalHost", "hsts", "redirects", "headers"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "description": { "type": "string" },
+    "canonicalHost": { "type": "string", "pattern": "^[a-z0-9.-]+$" },
+    "hsts": {
+      "type": "object",
+      "required": ["enabled", "maxAge", "includeSubDomains"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "maxAge": { "type": "integer", "minimum": 0 },
+        "includeSubDomains": { "type": "boolean" },
+        "note": { "type": "string" }
+      }
+    },
+    "redirects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "source"],
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "source": { "type": "string", "pattern": "^/" },
+          "destination": { "type": "string" },
+          "permanent": { "type": "boolean" },
+          "gone": { "type": "boolean" }
+        }
+      }
+    },
+    "headers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "source", "headers"],
+        "properties": {
+          "id": { "type": "string" },
+          "source": { "type": "string", "pattern": "^/" },
+          "headers": { "type": "object", "additionalProperties": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

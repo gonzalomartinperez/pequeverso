@@ -1,0 +1,45 @@
+.bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 60;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--gutter) calc(var(--space-2) + env(safe-area-inset-bottom));
+  background: rgba(255, 250, 242, 0.96);
+  border-top: 1px solid var(--pv-line);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(110%);
+  transition: transform var(--duration) var(--ease-out);
+}
+
+.visible {
+  transform: none;
+}
+
+.label {
+  font-weight: 800;
+  color: var(--pv-ink);
+  font-size: var(--text-small);
+  line-height: 1.2;
+}
+
+.action :global(.button) {
+  min-height: 52px;
+  padding-inline: var(--space-5);
+  white-space: nowrap;
+}
+
+@media (max-width: 1023px) {
+  .bar {
+    display: flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    transition: none;
+  }
+}
