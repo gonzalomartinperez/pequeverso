@@ -1,8 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-test("reveal elements are visible immediately under reduced motion", async ({ page, browserName }) => {
-  test.skip(browserName !== "chromium", "reduced-motion project runs on chromium");
+test("reveal elements are visible immediately under reduced motion", async ({ page }) => {
   await page.goto("/");
+  const reduced = await page.evaluate(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  test.skip(!reduced, "only meaningful in the reduced-motion project");
   const hidden = await page.evaluate(
     () =>
       [...document.querySelectorAll<HTMLElement>("[data-reveal]")].filter(

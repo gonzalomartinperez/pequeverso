@@ -42,7 +42,7 @@ export const metadata: Metadata = buildMetadata({
 export default function ImprimeYJuegaPage() {
   const galleryItems = packPageIds.map((id) => {
     const image = getImage(id);
-    return { id, ...image, caption: image.alt.replace(/^Página real \d+: /i, "") };
+    return { ...image, caption: image.alt.replace(/^Página real \d+: /i, "") };
   });
 
   const decisionLink = (

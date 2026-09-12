@@ -14,7 +14,10 @@ const routes = [
 
 for (const route of routes) {
   test(`axe WCAG 2.2 AA: ${route}`, async ({ page }) => {
+    // Contrast is evaluated on settled styles: no reveal/tilt transitions mid-flight.
+    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(route);
+    await page.waitForLoadState("networkidle");
     await page.evaluate(() => {
       for (const el of document.querySelectorAll("[data-reveal]")) el.classList.add("is-visible");
     });

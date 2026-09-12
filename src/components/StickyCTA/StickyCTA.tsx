@@ -37,7 +37,7 @@ export function StickyCTA({ hideWhenVisible, label, children }: Props) {
   return (
     <div
       className={`${styles.bar} ${visible ? styles.visible : ""}`}
-      aria-hidden={!visible}
+      inert={!visible}
       data-testid="sticky-cta"
     >
       <span className={styles.label}>{label}</span>

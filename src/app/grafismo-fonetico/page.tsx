@@ -47,12 +47,11 @@ const breadcrumbJsonLd = {
 export default function GrafismoFoneticoPage() {
   const galleryItems = grafismoPageIds.map((id) => {
     const image = getImage(id);
-    return { id, ...image, caption: image.alt.replace(/^Página real \d+: /i, "") };
+    return { ...image, caption: image.alt.replace(/^Página real \d+: /i, "") };
   });
-  const videos = ["video.gf.bota", "video.gf.mapa", "video.gf.paloma", "video.gf.maleta"].map((id) => ({
-    id,
-    ...getVideo(id),
-  }));
+  const videos = ["video.gf.bota", "video.gf.mapa", "video.gf.paloma", "video.gf.maleta"].map((id) =>
+    getVideo(id),
+  );
 
   const headerCta = (
     <CheckoutLink position="header" className="button button--primary button--small">

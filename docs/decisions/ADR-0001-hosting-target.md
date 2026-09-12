@@ -13,7 +13,8 @@ read 2026-09-11/12 and the portfolio deployment log). Every page of this site is
 
 ## Decision
 
-Default to `output: 'export'` built in GitHub Actions and deployed over SSH into `public_html`, with
+Default to `output: 'export'` built in GitHub Actions and published to a `deploy` branch that
+Hostinger's Git integration pulls into `public_html` (no server-side build, no SSH), with
 `.htaccess` generated from `config/edge-rules.json`. Keep the codebase compatible with
 `NEXT_OUTPUT=standalone` and build that target on `main` as a parity check.
 

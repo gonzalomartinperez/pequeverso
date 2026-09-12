@@ -66,9 +66,9 @@ test("each CTA click fires exactly one CheckoutIntent with a unique event id", a
 
 test("hub links keep acquisition params and emit product interest", async ({ page }) => {
   await page.goto("/?utm_source=ig&utm_campaign=sept&foo=bar");
-  const href = await page.locator('a[data-position="hero"]').getAttribute("href");
-  expect(href).toContain("/grafismo-fonetico/?utm_source=ig&utm_campaign=sept");
-  expect(href).not.toContain("foo=bar");
+  const hero = page.locator('a[data-position="hero"]');
+  await expect(hero).toHaveAttribute("href", /\/grafismo-fonetico\/\?utm_source=ig&utm_campaign=sept/);
+  await expect(hero).not.toHaveAttribute("href", /foo=bar/);
   await preventNavigation(page, "a[data-position]");
   await page.locator('a[data-position="hero"]').click();
   expect(await dataLayer(page, "PequeversoProductInterest")).toHaveLength(1);
@@ -81,5 +81,7 @@ test("no pixel script is injected without configuration or consent", async ({ pa
 
 test("landing records ViewContent once on mount", async ({ page }) => {
   await page.goto("/grafismo-fonetico/");
+  await expect.poll(async () => (await dataLayer(page, "ViewContent")).length, { timeout: 10_000 }).toBe(1);
+  await page.waitForTimeout(500);
   expect(await dataLayer(page, "ViewContent")).toHaveLength(1);
 });
