@@ -13,6 +13,16 @@ updates:
       # Node major bumps are coordinated with .nvmrc and the Hostinger runtime.
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
+      # TypeScript 7 (Go compiler) is evaluated as its own task; Next.js integration is experimental.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      # Framework majors are upgraded deliberately with the support-policy calendar.
+      - dependency-name: "next"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: npm
     directory: /tools/media
     schedule:
