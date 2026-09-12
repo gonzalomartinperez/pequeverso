@@ -1,6 +1,7 @@
 import { site } from "@config/site";
 import Link from "next/link";
 import { BrandLogo } from "@/components/BrandLogo/BrandLogo";
+import { SocialLinks } from "@/components/SocialLinks/SocialLinks";
 import { CookieSettingsLink } from "./CookieSettingsLink";
 import styles from "./Footer.module.css";
 
@@ -24,13 +25,6 @@ const legalLinks = [
   { href: "/terminos/", label: "Términos de compra" },
 ];
 
-const socialLinks = [
-  { href: site.social.instagram, label: "Instagram" },
-  { href: site.social.tiktok, label: "TikTok" },
-  { href: site.social.facebook, label: "Facebook" },
-  { href: site.social.youtube, label: "YouTube" },
-];
-
 export function Footer() {
   return (
     <footer className={styles.footer}>
@@ -38,15 +32,8 @@ export function Footer() {
         <div className={styles.brand}>
           <BrandLogo className={styles.logo} />
           <p className={styles.tagline}>{site.tagline}</p>
-          <ul className={styles.social} role="list" aria-label="Redes sociales">
-            {socialLinks.map((item) => (
-              <li key={item.href}>
-                <a href={item.href} rel="noopener" target="_blank">
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <p className={styles.follow}>Síguenos: @somospequeverso</p>
+          <SocialLinks tone="dark" showLabels />
         </div>
         <nav aria-label="Producto">
           <p className={styles.heading}>Producto</p>

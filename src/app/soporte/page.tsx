@@ -3,7 +3,7 @@ import { seller } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CTAButton } from "@/components/CTAButton/CTAButton";
-import { Icon, type IconName } from "@/components/Icon/Icon";
+import { Icon, type IconName, icons } from "@/components/Icon/Icon";
 import { PageShell } from "@/components/PageShell/PageShell";
 import { buildMetadata } from "@/lib/metadata";
 import styles from "./page.module.css";
@@ -57,7 +57,13 @@ export default function SoportePage() {
                 </span>
                 <h2 className={styles.title}>{route.title}</h2>
                 <p>{route.text}</p>
-                <CTAButton href={route.cta.href} variant="secondary" size="small" external>
+                <CTAButton
+                  href={route.cta.href}
+                  variant="secondary"
+                  size="small"
+                  external
+                  icon={icons[route.icon]}
+                >
                   {route.cta.label}
                 </CTAButton>
               </li>

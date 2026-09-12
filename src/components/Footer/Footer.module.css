@@ -62,10 +62,10 @@
   text-decoration: underline;
 }
 
-.social {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3) var(--space-4);
+.follow {
+  font-weight: 800;
+  color: var(--pv-gold);
+  font-size: var(--text-small);
 }
 
 .bottom {

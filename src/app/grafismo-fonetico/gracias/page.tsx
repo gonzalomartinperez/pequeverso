@@ -2,6 +2,7 @@ import { guaranteeDays, hotmart } from "@config/commerce";
 import { site } from "@config/site";
 import { graciasCopy as copy } from "@content/es/gracias";
 import { grafismoResources } from "@content/es/products";
+import { LogIn } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CTAButton } from "@/components/CTAButton/CTAButton";
@@ -29,7 +30,7 @@ export const metadata: Metadata = buildMetadata({
  */
 export default function GraciasPage() {
   const headerCta = (
-    <CTAButton href={hotmart.consumerArea} variant="primary" size="small" external>
+    <CTAButton href={hotmart.consumerArea} variant="primary" size="small" external icon={LogIn}>
       Abrir Hotmart
     </CTAButton>
   );
@@ -55,7 +56,7 @@ export default function GraciasPage() {
             ))}
           </ul>
           <div className={styles.heroActions}>
-            <CTAButton href={hotmart.consumerArea} variant="primary" external>
+            <CTAButton href={hotmart.consumerArea} variant="primary" external icon={LogIn}>
               {copy.hero.cta}
             </CTAButton>
             <p className={styles.heroNote}>{copy.hero.note}</p>
