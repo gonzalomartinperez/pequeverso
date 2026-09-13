@@ -4,16 +4,16 @@ import { homeCopy as copy } from "@content/es/home";
 import { grafismoPageIds } from "@content/es/products";
 import { ArrowDown } from "lucide-react";
 import type { Metadata } from "next";
-import { Icon } from "@/components/Icon/Icon";
-import { MediaImage } from "@/components/MediaImage/MediaImage";
-import { PageShell } from "@/components/PageShell/PageShell";
-import { ProductInterestLink } from "@/components/ProductInterestLink/ProductInterestLink";
-import { SectionHeading } from "@/components/SectionHeading/SectionHeading";
-import { SocialLinks } from "@/components/SocialLinks/SocialLinks";
-import { Steps } from "@/components/Steps/Steps";
-import { TiltCard } from "@/components/TiltCard/TiltCard";
-import { Universe } from "@/components/Universe/Universe";
+import { PageShell } from "@/components/layout/PageShell/PageShell";
+import { Icon } from "@/components/ui/Icon/Icon";
+import { MediaImage } from "@/components/ui/MediaImage/MediaImage";
+import { SectionHeading } from "@/components/ui/SectionHeading/SectionHeading";
+import { SocialLinks } from "@/components/ui/SocialLinks/SocialLinks";
+import { Steps } from "@/components/ui/Steps/Steps";
+import { ProductInterestLink } from "@/features/commerce/ProductInterestLink/ProductInterestLink";
 import { buildMetadata } from "@/lib/metadata";
+import { TiltCard } from "@/motion/TiltCard";
+import { Universe } from "@/motion/Universe";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = buildMetadata({

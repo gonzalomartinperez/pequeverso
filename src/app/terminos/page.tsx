@@ -2,7 +2,7 @@ import { formatUsd, guaranteeDays, hotmart, products } from "@config/commerce";
 import { seller, sellerField } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LegalLayout } from "@/components/LegalLayout/LegalLayout";
+import { LegalLayout } from "@/components/layout/LegalLayout/LegalLayout";
 import { buildMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildMetadata({

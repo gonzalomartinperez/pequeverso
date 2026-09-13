@@ -1,0 +1,58 @@
+name: Post-deploy verify
+
+# Hostinger builds `main` on push. This workflow waits for that build to reach production,
+# then verifies the deployed revision and runs the smoke suite against the live origin.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: Commit expected in production (defaults to the triggering commit)
+        required: false
+  workflow_call:
+    inputs:
+      sha:
+        required: true
+        type: string
+      site_url:
+        required: false
+        type: string
+        default: https://pequeverso.com
+
+permissions:
+  contents: read
+
+concurrency:
+  group: post-deploy-verify
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify production revision
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      SITE_URL: ${{ inputs.site_url || 'https://pequeverso.com' }}
+      EXPECTED_SHA: ${{ inputs.sha || github.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Wait for Hostinger to serve the expected revision
+        run: node scripts/wait-for-revision.mjs "$SITE_URL" "$EXPECTED_SHA" 1200
+      - run: node scripts/smoke.mjs "$SITE_URL" "$EXPECTED_SHA"
+      - name: Headers
+        run: curl -sI "$SITE_URL/" | grep -iE 'strict-transport|x-content-type|content-security|cache-control|cf-cache-status'
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e:prod
+        env:
+          E2E_BASE_URL: ${{ env.SITE_URL }}
+      - name: Lighthouse (informative)
+        continue-on-error: true
+        run: |
+          npx lhci collect --url="$SITE_URL/" --url="$SITE_URL/grafismo-fonetico/" --numberOfRuns=1 --settings.preset=desktop --settings.formFactor=mobile --settings.screenEmulation.mobile=true --settings.screenEmulation.width=390 --settings.screenEmulation.height=844 --settings.screenEmulation.deviceScaleFactor=3 --settings.throttlingMethod=simulate
+          node scripts/lhci-summary.mjs >> "$GITHUB_STEP_SUMMARY"

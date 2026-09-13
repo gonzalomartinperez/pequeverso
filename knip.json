@@ -1,0 +1,15 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "src/app/**/{page,layout,error,global-error,not-found}.tsx!",
+    "src/app/**/{sitemap,robots}.ts!",
+    "scripts/*.mjs",
+    "scripts/lib/*.mjs",
+    "tests/unit/**/*.test.mjs",
+    "tests/e2e/**/*.spec.ts"
+  ],
+  "project": ["src/**!", "config/**!", "content/**!", "scripts/**", "tests/**"],
+  "ignore": [],
+  "ignoreExportsUsedInFile": true,
+  "tags": ["-internal"]
+}

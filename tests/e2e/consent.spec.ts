@@ -9,6 +9,7 @@ test("no consent banner and no third-party cookies without a configured integrat
   page,
   context,
 }) => {
+  test.skip(!!process.env.E2E_EXPECT_CONSENT, "build was configured with a pixel id");
   await page.goto("/");
   await expect(page.getByTestId("consent-banner")).toHaveCount(0);
   const cookies = await context.cookies();

@@ -42,6 +42,9 @@ jobs:
     environment:
       name: ${{ inputs.target }}
       url: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+    outputs:
+      sha: ${{ steps.meta.outputs.sha }}
+      site_url: ${{ vars.NEXT_PUBLIC_SITE_URL }}
     steps:
       - name: Checkout requested ref
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -113,17 +116,10 @@ jobs:
           BRANCH: ${{ inputs.target == 'production' && 'release' || 'release-staging' }}
         run: git push --force origin "$SHA:refs/heads/$BRANCH"
 
-      - name: Wait for Hostinger to pull and verify the deployed revision (not just HTTP 200)
-        env:
-          SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
-          SHA: ${{ steps.meta.outputs.sha }}
-        run: |
-          set -euo pipefail
-          for i in $(seq 1 30); do
-            live=$(curl -fsS -H 'Cache-Control: no-cache' "$SITE_URL/build-info.json" 2>/dev/null | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{try{console.log(JSON.parse(d).sha)}catch{console.log("")}})' || true)
-            if [ "$live" = "$SHA" ]; then echo "deployed sha verified after $((i*20))s"; break; fi
-            if [ "$i" = "30" ]; then echo "::error::pequeverso.com still serves sha '$live' (expected $SHA). Check hPanel → Git → deploy (auto-deploy webhook) and CDN cache."; exit 1; fi
-            sleep 20
-          done
-          node scripts/smoke.mjs "$SITE_URL" "$SHA"
-          echo "Headers:" && curl -sI "$SITE_URL/" | grep -iE 'strict-transport|x-content-type|content-security|cache-control|cf-cache-status' || true
+  verify:
+    name: Verify deployed revision
+    needs: release
+    uses: ./.github/workflows/post-deploy-verify.yml
+    with:
+      sha: ${{ needs.release.outputs.sha }}
+      site_url: ${{ needs.release.outputs.site_url }}

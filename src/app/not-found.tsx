@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { CTAButton } from "@/components/CTAButton/CTAButton";
-import { PageShell } from "@/components/PageShell/PageShell";
+import { PageShell } from "@/components/layout/PageShell/PageShell";
+import { CTAButton } from "@/components/ui/CTAButton/CTAButton";
 
 export const metadata: Metadata = {
   title: "Página no encontrada",

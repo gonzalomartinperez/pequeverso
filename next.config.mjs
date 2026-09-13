@@ -1,4 +1,5 @@
 // @ts-check
+import bundleAnalyzer from "@next/bundle-analyzer";
 import { loadEdgeRules, toNextHeaders, toNextRedirects } from "./scripts/lib/edge-rules.mjs";
 
 /**
@@ -39,4 +40,6 @@ const nextConfig = {
     : {}),
 };
 
-export default nextConfig;
+const withAnalyzer = bundleAnalyzer({ enabled: process.env.ANALYZE === "1", openAnalyzer: false });
+
+export default withAnalyzer(nextConfig);

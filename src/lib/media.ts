@@ -10,7 +10,7 @@
  * metadata routes and unit tests alike. The manifest is a plain JSON import; call the helpers from
  * server components or at module top level so the JSON does not end up in client bundles.
  */
-import manifest from "../../media/manifest.json";
+import manifest from "../../media/manifest.json" with { type: "json" };
 
 type ManifestOutput = {
   file: string;
@@ -81,10 +81,10 @@ const FORMAT_ORDER = ["avif", "webp", "png"];
 const items = manifest.items as ManifestItem[];
 const byId: ReadonlyMap<string, ManifestItem> = new Map(items.map((item) => [item.id, item]));
 
-/** Every id declared in the manifest, in build order. */
+/** Every id declared in the manifest, in build order. @internal */
 export const mediaIds: ReadonlyArray<MediaId> = items.map((item) => item.id);
 
-/** True when the manifest declares the id (any kind). */
+/** True when the manifest declares the id (any kind). @internal */
 export function hasMedia(id: MediaId): boolean {
   return byId.has(id);
 }

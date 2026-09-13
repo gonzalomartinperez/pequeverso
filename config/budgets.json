@@ -1,0 +1,11 @@
+{
+  "description": "Transfer-size budgets (gzip bytes) per route, enforced by scripts/check-bundle-budget.mjs. Tighten after each optimization; never loosen without a decision record.",
+  "default": { "html": 40960, "js": 199680, "css": 16384 },
+  "routes": {
+    "/": { "html": 30720 },
+    "/grafismo-fonetico/": { "html": 46080 },
+    "/imprime-y-juega/": { "html": 40960 },
+    "/grafismo-fonetico/gracias/": {},
+    "/soporte/": {}
+  }
+}

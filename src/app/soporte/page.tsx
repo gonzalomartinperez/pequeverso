@@ -2,9 +2,9 @@ import { guaranteeDays, hotmart } from "@config/commerce";
 import { seller } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CTAButton } from "@/components/CTAButton/CTAButton";
-import { Icon, type IconName, icons } from "@/components/Icon/Icon";
-import { PageShell } from "@/components/PageShell/PageShell";
+import { PageShell } from "@/components/layout/PageShell/PageShell";
+import { CTAButton } from "@/components/ui/CTAButton/CTAButton";
+import { Icon, type IconName, icons } from "@/components/ui/Icon/Icon";
 import { buildMetadata } from "@/lib/metadata";
 import styles from "./page.module.css";
 
