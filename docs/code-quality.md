@@ -18,6 +18,7 @@ comments; no dead code (knip is a gate); business facts come from `config/` and 
 | Build | static export; generated golden files committed | PR, main | yes |
 | Media | manifest record per file, ≤ 5 MB/file, total budget, `--strict` rights gate on deploy | PR, main, deploy | yes |
 | Bundle | gzip per route vs `config/budgets.json` (html/js/css) | PR, main | yes |
+| Rendered HTML | `scripts/check-rendered.mjs`: landmarks, single visible h1, `lang`, canonical, skip link, resolvable anchors, no placeholders or retired text | PR, main | yes |
 | Placeholders | report on PR; `--strict` on deploy | PR / deploy | deploy |
 | Dependencies | `npm audit --omit=dev --audit-level=high`; Dependabot weekly with cooldowns | PR, main | yes |
 | E2E | Playwright `PW_SET=pr`: chromium 390/768/1440 + reduced motion (smoke, axe WCAG 2.2 AA, offer modes, widget lifecycle, commerce, consent, motion, navigation) | PR | yes |

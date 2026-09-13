@@ -26,7 +26,7 @@
     "test": "node --test \"tests/unit/**/*.test.mjs\"",
     "test:e2e": "cross-env PW_SET=pr playwright test",
     "test:e2e:nightly": "cross-env PW_SET=nightly playwright test",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run knip:production && npm run build && npm run check:media && npm run check:placeholders && npm run check:bundle",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run knip:production && npm run build && npm run check:media && npm run check:placeholders && npm run check:bundle && npm run check:rendered",
     "check:media": "node scripts/check-media-budget.mjs",
     "check:placeholders": "node scripts/check-placeholders.mjs",
     "check:placeholders:strict": "node scripts/check-placeholders.mjs --strict",
@@ -38,7 +38,8 @@
     "knip": "knip --no-progress",
     "knip:production": "knip --no-progress --production",
     "check:bundle": "node scripts/check-bundle-budget.mjs",
-    "analyze": "cross-env ANALYZE=1 next build --webpack"
+    "analyze": "cross-env ANALYZE=1 next build --webpack",
+    "check:rendered": "node scripts/check-rendered.mjs"
   },
   "dependencies": {
     "embla-carousel-react": "8.6.0",
