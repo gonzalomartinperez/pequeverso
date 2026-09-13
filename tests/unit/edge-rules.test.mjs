@@ -22,7 +22,7 @@ test("edge rules validate and stay in sync with the committed golden .htaccess",
 
 test("apache regexes never carry a leading slash (per-directory context)", () => {
   assert.equal(toApacheRegex("/shop-2/:path*"), "^shop-2/(.*)$");
-  assert.equal(toApacheRegex("/grafismo-fonetico/"), "^grafismo-fonetico/$");
+  assert.equal(toApacheRegex("/grafismo-fonetico/"), "^grafismo-fonetico/?$");
   for (const r of rules.redirects) assert.doesNotMatch(toApacheRegex(r.source), /^\^\//);
 });
 

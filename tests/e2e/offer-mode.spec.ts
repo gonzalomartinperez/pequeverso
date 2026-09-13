@@ -45,6 +45,6 @@ test("canonical and robots for the downsell variant point to the base page and n
 test("editorial CTAs move focus to the widget slot and no direct checkout link exists", async ({ page }) => {
   await page.goto("/imprime-y-juega/");
   await page.locator("header a[data-decision-link]").click();
-  await expect(page.locator("#decision")).toBeFocused();
+  await expect(page.locator("#gfp-decision")).toBeFocused();
   await expect(page.locator("a[href*='checkout'], a[href*='pay.hotmart']")).toHaveCount(0);
 });

@@ -47,7 +47,7 @@ export default function ImprimeYJuegaPage() {
   });
 
   const decisionLink = (
-    <a href="#decision" className="button button--primary button--small" data-decision-link>
+    <a href="#gfp-decision" className="button button--primary button--small" data-decision-link>
       <MousePointerClick
         aria-hidden="true"
         focusable="false"
@@ -92,7 +92,7 @@ export default function ImprimeYJuegaPage() {
                 price={pack.upsellPrice}
                 taxNote="+ impuestos aplicables según el país"
                 cta={
-                  <a href="#decision" className="button button--primary" data-decision-link>
+                  <a href="#gfp-decision" className="button button--primary" data-decision-link>
                     <MousePointerClick
                       aria-hidden="true"
                       focusable="false"
@@ -133,7 +133,7 @@ export default function ImprimeYJuegaPage() {
                 previous={{ label: copy.downsell.previousLabel, price: pack.upsellPrice }}
                 taxNote="+ impuestos aplicables según el país"
                 cta={
-                  <a href="#decision" className="button button--primary" data-decision-link>
+                  <a href="#gfp-decision" className="button button--primary" data-decision-link>
                     <MousePointerClick
                       aria-hidden="true"
                       focusable="false"
@@ -162,6 +162,20 @@ export default function ImprimeYJuegaPage() {
         <section className={`section ${styles.decision}`} aria-label="Decisión de la oferta">
           <div className={`container ${styles.decisionInner}`}>
             <HotmartWidgetSlot
+              heading={
+                <>
+                  <div className="only-upsell">
+                    <p className="kicker">{copy.decision.upsell.kicker}</p>
+                    <h2 id="gfp-decision-title">{copy.decision.upsell.title}</h2>
+                    <p>{copy.decision.upsell.text}</p>
+                  </div>
+                  <div className="only-downsell">
+                    <p className="kicker">{copy.decision.downsell.kicker}</p>
+                    <h2 id="gfp-decision-title-downsell">{copy.decision.downsell.title}</h2>
+                    <p>{copy.decision.downsell.text}</p>
+                  </div>
+                </>
+              }
               loadingText={copy.widget.loading}
               fallbackTitle={copy.widget.fallbackTitle}
               fallbackText={copy.widget.fallbackText}
@@ -279,7 +293,7 @@ export default function ImprimeYJuegaPage() {
             <p className="kicker">{copy.close.kicker}</p>
             <h2 id="cierre-title">{copy.close.title}</h2>
             <p className="lead">{copy.close.text}</p>
-            <a href="#decision" className="button button--inverse" data-decision-link>
+            <a href="#gfp-decision" className="button button--inverse" data-decision-link>
               <MousePointerClick
                 aria-hidden="true"
                 focusable="false"
@@ -292,8 +306,8 @@ export default function ImprimeYJuegaPage() {
           </div>
         </section>
 
-        <StickyCTA hideWhenVisible={["#decision", "#cierre", "footer"]} label={`${pack.name}`}>
-          <a href="#decision" className="button button--primary" data-decision-link>
+        <StickyCTA hideWhenVisible={["#gfp-decision", "#cierre", "footer"]} label={`${pack.name}`}>
+          <a href="#gfp-decision" className="button button--primary" data-decision-link>
             <span className="only-upsell">
               {copy.sticky.upsell} · {formatUsd(pack.upsellPrice)}
             </span>

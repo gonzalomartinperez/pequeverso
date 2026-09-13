@@ -10,6 +10,51 @@
   },
   "redirects": [
     {
+      "id": "legacy-hub",
+      "description": "WordPress hub path pasted on the new domain.",
+      "source": "/pequeverso/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "id": "legacy-main",
+      "description": "WordPress and /products/ aliases of the principal landing (query preserved).",
+      "source": "/pequeverso/grafismo-fonetico/",
+      "destination": "/grafismo-fonetico/",
+      "permanent": true
+    },
+    {
+      "id": "legacy-main-products",
+      "source": "/products/grafismo-fonetico/",
+      "destination": "/grafismo-fonetico/",
+      "permanent": true
+    },
+    {
+      "id": "legacy-upsell",
+      "description": "Upsell/downsell aliases; ?downsell=1 and attribution params are preserved by both targets.",
+      "source": "/pequeverso/imprime-y-juega/",
+      "destination": "/imprime-y-juega/",
+      "permanent": true
+    },
+    {
+      "id": "legacy-upsell-products",
+      "source": "/products/kit-imprime-y-juega/",
+      "destination": "/imprime-y-juega/",
+      "permanent": true
+    },
+    {
+      "id": "legacy-thank-you",
+      "source": "/pequeverso/grafismo-fonetico/gracias/",
+      "destination": "/grafismo-fonetico/gracias/",
+      "permanent": true
+    },
+    {
+      "id": "legacy-thank-you-products",
+      "source": "/products/grafismo-fonetico-gracias/",
+      "destination": "/grafismo-fonetico/gracias/",
+      "permanent": true
+    },
+    {
       "id": "prior-owner-shop",
       "description": "URLs indexed from the previous owner of pequeverso.com (Montessori shop). Return 410 Gone.",
       "source": "/shop-2/:path*",

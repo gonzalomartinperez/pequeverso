@@ -15,6 +15,20 @@ RewriteRule ^(.*)$ https://pequeverso.com/$1 [R=301,L]
 RewriteCond %{HTTPS} !=on
 RewriteCond %{HTTP:X-Forwarded-Proto} !=https
 RewriteRule ^(.*)$ https://pequeverso.com/$1 [R=301,L]
+# legacy-hub: WordPress hub path pasted on the new domain.
+RewriteRule ^pequeverso/?$ / [R=301,L]
+# legacy-main: WordPress and /products/ aliases of the principal landing (query preserved).
+RewriteRule ^pequeverso/grafismo-fonetico/?$ /grafismo-fonetico/ [R=301,L]
+# legacy-main-products
+RewriteRule ^products/grafismo-fonetico/?$ /grafismo-fonetico/ [R=301,L]
+# legacy-upsell: Upsell/downsell aliases; ?downsell=1 and attribution params are preserved by both targets.
+RewriteRule ^pequeverso/imprime-y-juega/?$ /imprime-y-juega/ [R=301,L]
+# legacy-upsell-products
+RewriteRule ^products/kit-imprime-y-juega/?$ /imprime-y-juega/ [R=301,L]
+# legacy-thank-you
+RewriteRule ^pequeverso/grafismo-fonetico/gracias/?$ /grafismo-fonetico/gracias/ [R=301,L]
+# legacy-thank-you-products
+RewriteRule ^products/grafismo-fonetico-gracias/?$ /grafismo-fonetico/gracias/ [R=301,L]
 # prior-owner-shop: URLs indexed from the previous owner of pequeverso.com (Montessori shop). Return 410 Gone.
 RewriteRule ^shop-2/(.*)$ - [G,L]
 </IfModule>
