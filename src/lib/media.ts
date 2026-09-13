@@ -81,10 +81,10 @@ const FORMAT_ORDER = ["avif", "webp", "png"];
 const items = manifest.items as ManifestItem[];
 const byId: ReadonlyMap<string, ManifestItem> = new Map(items.map((item) => [item.id, item]));
 
-/** Every id declared in the manifest, in build order. */
+/** Every id declared in the manifest, in build order. @internal */
 export const mediaIds: ReadonlyArray<MediaId> = items.map((item) => item.id);
 
-/** True when the manifest declares the id (any kind). */
+/** True when the manifest declares the id (any kind). @internal */
 export function hasMedia(id: MediaId): boolean {
   return byId.has(id);
 }
