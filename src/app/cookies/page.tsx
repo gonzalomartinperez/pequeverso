@@ -1,7 +1,7 @@
 import { seller } from "@content/es/legal/seller";
 import type { Metadata } from "next";
-import { CookieSettingsLink } from "@/components/Footer/CookieSettingsLink";
-import { LegalLayout } from "@/components/LegalLayout/LegalLayout";
+import { LegalLayout } from "@/components/layout/LegalLayout/LegalLayout";
+import { CookieSettingsLink } from "@/features/tracking/CookieSettingsLink";
 import { buildMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildMetadata({

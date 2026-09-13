@@ -10,7 +10,7 @@
  * metadata routes and unit tests alike. The manifest is a plain JSON import; call the helpers from
  * server components or at module top level so the JSON does not end up in client bundles.
  */
-import manifest from "../../media/manifest.json";
+import manifest from "../../media/manifest.json" with { type: "json" };
 
 type ManifestOutput = {
   file: string;

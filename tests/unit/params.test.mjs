@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { buildCheckoutUrl, isAllowedParam, sckFor, withPassthrough } from "../../src/lib/params.ts";
+import {
+  buildCheckoutUrl,
+  isAllowedParam,
+  sckFor,
+  withPassthrough,
+} from "../../src/features/commerce/checkout-url.ts";
 
 const base = "https://pay.hotmart.com/D106959604R?checkoutMode=10";
 

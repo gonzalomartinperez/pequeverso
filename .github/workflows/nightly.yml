@@ -1,11 +1,14 @@
 name: Nightly
 
-# Full verification matrix: seven viewports in Chromium and WebKit, visual snapshots,
-# unused-code audit. Runs on a schedule and on demand; never blocks pull requests.
 on:
   schedule:
     - cron: "17 4 * * *"
   workflow_dispatch:
+    inputs:
+      update_snapshots:
+        description: Regenerate visual baselines and upload them as an artifact
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -15,10 +18,10 @@ env:
   NEXT_PUBLIC_SITE_URL: https://pequeverso.com
 
 jobs:
-  full-matrix:
-    name: Full Playwright matrix
+  build:
+    name: Build export (public defaults)
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -27,19 +30,21 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: npx playwright install --with-deps chromium webkit
-      - run: npm run test:e2e:nightly
-      - if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: nightly-playwright-report
-          path: playwright-report
-          retention-days: 14
+          name: nightly-export
+          path: out
+          retention-days: 3
 
-  unused-code:
-    name: Unused files, exports and dependencies (knip)
+  matrix:
+    name: Playwright ${{ matrix.browser }} × 7 widths
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 45
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -47,4 +52,99 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - run: npx --yes knip@6.35.1 --no-progress
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: nightly-export
+          path: out
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npx playwright test --project="${{ matrix.browser }}-*"
+        env:
+          PW_SET: nightly
+      - if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: nightly-report-${{ matrix.browser }}
+          path: playwright-report
+          retention-days: 14
+
+  visual:
+    name: Visual snapshots
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    needs: build
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: nightly-export
+          path: out
+      - run: npx playwright install --with-deps chromium webkit
+      - if: ${{ !inputs.update_snapshots }}
+        run: npm run test:e2e:visual
+      - if: ${{ inputs.update_snapshots }}
+        run: npm run test:e2e:visual -- --update-snapshots
+      - if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: visual-results
+          path: |
+            tests/e2e/__screenshots__
+            playwright-report
+          retention-days: 14
+          if-no-files-found: ignore
+
+  clean-clone:
+    name: Clean clone has no consent banner and no cookies
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    needs: build
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: nightly-export
+          path: out
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --project=chromium-1440 tests/e2e/consent.spec.ts tests/e2e/commerce.spec.ts
+
+  quality:
+    name: knip, Lighthouse (5 runs), links, bundle analysis
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    needs: build
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run knip
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: nightly-export
+          path: out
+      - run: npx lhci autorun --collect.numberOfRuns=5
+      - if: always()
+        run: node scripts/lhci-summary.mjs >> "$GITHUB_STEP_SUMMARY"
+      - run: node scripts/check-links.mjs
+      - run: npm run analyze
+      - if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: nightly-quality
+          path: |
+            .lighthouseci
+            .next/analyze
+          retention-days: 30
+          if-no-files-found: ignore

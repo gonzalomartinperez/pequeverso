@@ -5,16 +5,16 @@ import { grafismoResources } from "@content/es/products";
 import { LogIn } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CTAButton } from "@/components/CTAButton/CTAButton";
-import { FactChip } from "@/components/FactChip/FactChip";
-import { Icon, type IconName } from "@/components/Icon/Icon";
-import { Notice } from "@/components/Notice/Notice";
-import { PageShell } from "@/components/PageShell/PageShell";
-import { ResourceGrid } from "@/components/ResourceGrid/ResourceGrid";
-import { SectionHeading } from "@/components/SectionHeading/SectionHeading";
-import { Topbar } from "@/components/Topbar/Topbar";
-import { Universe } from "@/components/Universe/Universe";
+import { PageShell } from "@/components/layout/PageShell/PageShell";
+import { CTAButton } from "@/components/ui/CTAButton/CTAButton";
+import { FactChip } from "@/components/ui/FactChip/FactChip";
+import { Icon, type IconName } from "@/components/ui/Icon/Icon";
+import { Notice } from "@/components/ui/Notice/Notice";
+import { ResourceGrid } from "@/components/ui/ResourceGrid/ResourceGrid";
+import { SectionHeading } from "@/components/ui/SectionHeading/SectionHeading";
+import { Topbar } from "@/components/ui/Topbar/Topbar";
 import { buildMetadata } from "@/lib/metadata";
+import { Universe } from "@/motion/Universe";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = buildMetadata({
