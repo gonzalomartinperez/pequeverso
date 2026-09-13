@@ -17,6 +17,7 @@ Spanish. Read this file first, then the doc that matches your task.
 | Legal/support pages | `docs/legal-checklist.md` |
 | Release or deploy | `docs/deployment.md` |
 | URL changes, redirects, cutover | `docs/migration.md` |
+| Hotmart funnel (checkout, widget, dashboard changes, E2E checklist) | `docs/hotmart-funnel.md` |
 | Skills | `.agents/skills/*/SKILL.md` (canonical); `.claude/skills` are thin adapters |
 
 ## Non-negotiables

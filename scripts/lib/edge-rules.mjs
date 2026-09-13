@@ -86,7 +86,8 @@ export function toApacheRegex(source) {
     return `^${escaped.replace(/:[a-zA-Z0-9_]+\*$/, "(.*)")}$`;
   }
   if (/\*$/.test(trimmed)) return `^${escaped.replace(/\\?\*$/, "(.*)")}$`;
-  return `^${escaped}$`;
+  // Literal paths accept the slash-less form too (one hop instead of slash → alias → target).
+  return `^${escaped.replace(/\/$/, "/?")}$`;
 }
 
 /**

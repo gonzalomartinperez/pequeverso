@@ -26,6 +26,9 @@ New-site policy: trailing-slash canonical, `www`→apex and `http`→`https` in 
 
 ## External references to update at cutover
 
+The Hotmart funnel mapping, the Next.js adaptation of the sales-funnel widget, the dashboard
+changes and the end-to-end purchase checklist live in `docs/hotmart-funnel.md`.
+
 1. **Hotmart** (same hour as DNS): product external sales page URL; sales-funnel stage URLs
    (upsell `https://pequeverso.com/imprime-y-juega/`, downsell `.../imprime-y-juega/?downsell=1`);
    external thank-you URLs for approved / awaiting payment / under analysis

@@ -131,6 +131,18 @@ export const packCopy = {
     text: "Las opciones Sí y No las muestra Hotmart dentro de esta página. Tu compra principal ya está confirmada pase lo que pase.",
     cta: "Ir a las opciones Sí / No",
   },
+  decision: {
+    upsell: {
+      kicker: "Confirma tu decisión",
+      title: "¿Quieres sumar el Pack Imprime y Juega?",
+      text: "Hotmart procesará tu respuesta y te llevará automáticamente al siguiente paso.",
+    },
+    downsell: {
+      kicker: "Última decisión de este paso",
+      title: "¿Agregas el pack completo por menos?",
+      text: "Elige Sí o No. Hotmart procesará tu respuesta y te llevará automáticamente al siguiente paso.",
+    },
+  },
   widget: {
     loading: "Cargando las opciones de Hotmart…",
     fallbackTitle: "No pudimos cargar las opciones de Hotmart.",
