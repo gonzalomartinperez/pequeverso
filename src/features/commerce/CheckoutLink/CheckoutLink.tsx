@@ -46,6 +46,7 @@ export function CheckoutLink({ product, position, children, className }: Props) 
       onClick={onClick}
       data-checkout
       data-position={position}
+      target={checkoutUrl ? "_blank" : undefined}
       rel={checkoutUrl ? "noopener" : undefined}
     >
       <ShoppingBag

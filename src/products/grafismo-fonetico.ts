@@ -32,7 +32,10 @@ export const grafismoFonetico = {
   pricing: { list: 14.99 },
   checkout: {
     envKey: "NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO",
-    url: process.env.NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO || process.env.NEXT_PUBLIC_CHECKOUT_URL || "",
+    url:
+      process.env.NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO ||
+      process.env.NEXT_PUBLIC_CHECKOUT_URL ||
+      "https://pay.hotmart.com/D106959604R?checkoutMode=10",
     offer: "main-usd-14-99",
     sckPrefix: "gf",
   },
