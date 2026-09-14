@@ -231,7 +231,7 @@ export default function HomePage() {
           </div>
           <div className={styles.closingSocial}>
             <p>{copy.closing.social}</p>
-            <SocialLinks tone="dark" showLabels />
+            <SocialLinks tone="dark" />
           </div>
         </Stack>
       </Section>

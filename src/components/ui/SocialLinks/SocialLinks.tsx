@@ -2,8 +2,8 @@ import { type SocialNetwork, site } from "@config/site";
 import styles from "./SocialLinks.module.css";
 
 /**
- * Brand marks for the official @somospequeverso profiles. Paths from Simple Icons (CC0 1.0);
- * each link has an accessible name, opens in a new tab and is at least a 44 px target.
+ * Icon-only brand marks for the official @somospequeverso profiles. Paths from Simple Icons
+ * (CC0 1.0); each link has an accessible name and tooltip, opens in a new tab and is a 44 px target.
  */
 const marks: Record<SocialNetwork, { label: string; path: string }> = {
   instagram: {
@@ -29,11 +29,10 @@ const order: SocialNetwork[] = ["instagram", "tiktok", "facebook", "youtube"];
 type Props = {
   tone?: "light" | "dark";
   size?: "default" | "large";
-  showLabels?: boolean;
   className?: string;
 };
 
-export function SocialLinks({ tone = "light", size = "default", showLabels = false, className }: Props) {
+export function SocialLinks({ tone = "light", size = "default", className }: Props) {
   return (
     <ul
       className={`${styles.list} ${styles[tone]} ${size === "large" ? styles.large : ""} ${className ?? ""}`}
@@ -49,12 +48,12 @@ export function SocialLinks({ tone = "light", size = "default", showLabels = fal
               className={styles.link}
               target="_blank"
               rel="noopener"
+              title={mark.label}
               aria-label={`${mark.label}: @somospequeverso (se abre en una pestaña nueva)`}
             >
-              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
                 <path d={mark.path} fill="currentColor" />
               </svg>
-              {showLabels ? <span className={styles.label}>{mark.label}</span> : null}
             </a>
           </li>
         );
