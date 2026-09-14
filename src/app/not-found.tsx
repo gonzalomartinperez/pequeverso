@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageShell } from "@/components/layout/PageShell/PageShell";
 import { CTAButton } from "@/components/ui/CTAButton/CTAButton";
+import { coreProducts } from "@/products";
 
 export const metadata: Metadata = {
   title: "Página no encontrada",
@@ -21,9 +22,11 @@ export default function NotFound() {
           <CTAButton href="/" variant="secondary" iconAfter="arrow">
             Ir al inicio
           </CTAButton>
-          <CTAButton href="/grafismo-fonetico/" variant="secondary" iconAfter="arrow">
-            Ver Grafismo Fonético
-          </CTAButton>
+          {coreProducts().map((product) => (
+            <CTAButton key={product.slug} href={product.path} variant="secondary" iconAfter="arrow">
+              Ver {product.name}
+            </CTAButton>
+          ))}
           <CTAButton href="/soporte/" variant="ghost" iconAfter="arrow">
             Soporte
           </CTAButton>

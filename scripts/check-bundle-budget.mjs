@@ -22,7 +22,8 @@ function measureRoute(route) {
     (src) => !/polyfills/.test(src),
   );
   const styles = [...new Set(source.match(/\/_next\/static\/css\/[^"']+\.css/g) ?? [])];
-  const sum = (files) => files.reduce((total, file) => total + gzipBytes(join(outDir, file)), 0);
+  const sum = (files) =>
+    files.reduce((total, file) => total + gzipBytes(join(outDir, decodeURIComponent(file))), 0);
   return { route, html: gzipBytes(html), js: sum(scripts), css: sum(styles), scripts: scripts.length };
 }
 

@@ -1,8 +1,5 @@
-import { formatUsd, products } from "@config/commerce";
+import { formatUsd } from "@config/commerce";
 import { site } from "@config/site";
-import { grafismoCopy as copy } from "@content/es/grafismo-fonetico";
-import { grafismoPageIds, grafismoResources } from "@content/es/products";
-import type { Metadata } from "next";
 import { PageShell } from "@/components/layout/PageShell/PageShell";
 import { FAQ } from "@/components/ui/FAQ/FAQ";
 import { FactChip } from "@/components/ui/FactChip/FactChip";
@@ -14,48 +11,57 @@ import { SectionHeading } from "@/components/ui/SectionHeading/SectionHeading";
 import { Steps } from "@/components/ui/Steps/Steps";
 import { Topbar } from "@/components/ui/Topbar/Topbar";
 import { TrustStrip } from "@/components/ui/TrustStrip/TrustStrip";
-import { CheckoutLink } from "@/features/commerce/CheckoutLink/CheckoutLink";
+import { CheckoutLink, type CheckoutTarget } from "@/features/commerce/CheckoutLink/CheckoutLink";
 import { ViewContentOnMount } from "@/features/commerce/ViewContentOnMount/ViewContentOnMount";
 import { PageGallery } from "@/features/gallery/PageGallery/PageGallery";
 import { VideoBlock } from "@/features/gallery/VideoBlock/VideoBlock";
 import { getImage, getVideo } from "@/lib/media";
-import { buildMetadata } from "@/lib/metadata";
 import { StickyCTA } from "@/motion/StickyCTA";
 import { TiltCard } from "@/motion/TiltCard";
 import { Universe } from "@/motion/Universe";
-import styles from "./page.module.css";
+import { checkoutFallbackPath } from "@/products";
+import { breadcrumbJsonLd, productJsonLd } from "@/products/jsonld";
+import type { CoreProduct } from "@/products/schema";
+import styles from "./CoreLanding.module.css";
 
-const product = products.grafismoFonetico;
+type Props = { product: CoreProduct };
 
-export const metadata: Metadata = buildMetadata({
-  path: "/grafismo-fonetico/",
-  title: copy.meta.title,
-  description: copy.meta.description,
-  image: getImage("gf.hero").src,
-  imageAlt: getImage("gf.hero").alt,
-});
+function checkoutTarget(product: CoreProduct): CheckoutTarget {
+  return {
+    slug: product.slug,
+    checkoutUrl: product.checkout.url,
+    offer: product.checkout.offer,
+    sckPrefix: product.checkout.sckPrefix,
+    fallbackPath: checkoutFallbackPath(product),
+  };
+}
 
-const breadcrumbJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Pequeverso", item: `${site.url}/` },
-    { "@type": "ListItem", position: 2, name: product.name, item: `${site.url}/grafismo-fonetico/` },
-  ],
-};
+function jsonLdScript(data: Record<string, unknown> | null) {
+  if (!data) return null;
+  return (
+    <script
+      type="application/ld+json"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD built from the registry
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
 
-export default function GrafismoFoneticoPage() {
-  const galleryItems = grafismoPageIds.map((id) => {
+/** Principal product landing: hero with price, method, real pages, resources, videos, FAQ, final offer. */
+export function CoreLanding({ product }: Props) {
+  const { copy, media } = product;
+  const price = product.pricing.list;
+  const target = checkoutTarget(product);
+  const pageAt = (index: number): string => media.pageIds[index] ?? media.hero;
+  const galleryItems = media.pageIds.map((id) => {
     const image = getImage(id);
     return { ...image, caption: image.alt.replace(/^Página real \d+: /i, "") };
   });
-  const videos = ["video.gf.bota", "video.gf.mapa", "video.gf.paloma", "video.gf.maleta"].map((id) =>
-    getVideo(id),
-  );
+  const videos = media.videoIds.map((id) => getVideo(id));
 
   const headerCta = (
-    <CheckoutLink position="header" className="button button--primary button--small">
-      Comprar · {formatUsd(product.price)}
+    <CheckoutLink product={target} position="header" className="button button--primary button--small">
+      Comprar · {formatUsd(price)}
     </CheckoutLink>
   );
 
@@ -64,15 +70,11 @@ export default function GrafismoFoneticoPage() {
       topbar={<Topbar items={copy.topbar} />}
       nav={copy.nav}
       cta={headerCta}
-      subtitle="Kit imprimible paso a paso"
+      subtitle={copy.subtitle}
     >
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD built from config
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
-      <ViewContentOnMount product={product.slug} name={product.name} value={product.price} />
-
+      {jsonLdScript(productJsonLd(product))}
+      {jsonLdScript(breadcrumbJsonLd(product))}
+      <ViewContentOnMount product={product.slug} name={product.name} value={price} />
       {/* Hero */}
       <section className={styles.hero} id="hero" aria-labelledby="hero-title">
         <div className={`container ${styles.heroInner}`}>
@@ -90,11 +92,11 @@ export default function GrafismoFoneticoPage() {
             <PriceBlock
               id="comprar"
               kicker={copy.hero.priceKicker}
-              price={product.price}
+              price={price}
               taxNote={copy.hero.taxNote}
               currencyNote={copy.hero.currencyNote}
               cta={
-                <CheckoutLink position="hero" className="button button--primary">
+                <CheckoutLink product={target} position="hero" className="button button--primary">
                   {copy.hero.cta}
                 </CheckoutLink>
               }
@@ -103,13 +105,13 @@ export default function GrafismoFoneticoPage() {
           </div>
           <div className={styles.heroVisual}>
             <TiltCard className={styles.heroCard} max={5} as="figure">
-              <MediaImage id="gf.hero" sizes="(min-width: 1024px) 560px, 92vw" priority />
+              <MediaImage id={media.hero} sizes="(min-width: 1024px) 560px, 92vw" priority />
             </TiltCard>
             <ul className={styles.heroThumbs} role="list" aria-label="Páginas de ejemplo">
-              {[grafismoPageIds[0], grafismoPageIds[3], grafismoPageIds[8]].map((id) => (
+              {[pageAt(0), pageAt(3), pageAt(8)].map((id) => (
                 <li key={id}>
                   <a href="#paginas" className={styles.heroThumb}>
-                    <MediaImage id={id ?? "gf.page.01"} sizes="160px" />
+                    <MediaImage id={id} sizes="160px" />
                   </a>
                 </li>
               ))}
@@ -141,7 +143,7 @@ export default function GrafismoFoneticoPage() {
             </ul>
           </div>
           <TiltCard className={styles.problemImage} max={4} as="figure">
-            <MediaImage id="gf.scene.mesa" sizes="(min-width: 1024px) 520px, 92vw" />
+            <MediaImage id={media.scenes.problem} sizes="(min-width: 1024px) 520px, 92vw" />
           </TiltCard>
         </div>
       </section>
@@ -172,7 +174,7 @@ export default function GrafismoFoneticoPage() {
             lead={copy.pages.lead}
             align="center"
           />
-          <PageGallery items={galleryItems} label="Páginas reales del kit" zoomHint={copy.pages.zoomHint} />
+          <PageGallery items={galleryItems} label={copy.pages.galleryLabel} zoomHint={copy.pages.zoomHint} />
         </div>
       </section>
 
@@ -185,7 +187,7 @@ export default function GrafismoFoneticoPage() {
             title={copy.included.title}
             lead={copy.included.lead}
           />
-          <ResourceGrid resources={grafismoResources} total={copy.included.total} />
+          <ResourceGrid resources={product.resources} total={copy.included.total} />
         </div>
       </section>
 
@@ -198,10 +200,10 @@ export default function GrafismoFoneticoPage() {
             <p className="lead">{copy.midOffer.text}</p>
           </div>
           <div className={styles.midAction}>
-            <CheckoutLink position="mid" className="button button--primary">
+            <CheckoutLink product={target} position="mid" className="button button--primary">
               {copy.midOffer.cta}
             </CheckoutLink>
-            <span>{formatUsd(product.price)} · pago único</span>
+            <span>{formatUsd(price)} · pago único</span>
           </div>
         </div>
       </section>
@@ -224,7 +226,7 @@ export default function GrafismoFoneticoPage() {
       <section className="section section--lemon" aria-labelledby="enfoque-title">
         <div className={`container ${styles.credibility}`}>
           <TiltCard className={styles.credibilityImage} max={4} as="figure">
-            <MediaImage id="gf.scene.trazo" sizes="(min-width: 1024px) 480px, 92vw" />
+            <MediaImage id={media.scenes.credibility} sizes="(min-width: 1024px) 480px, 92vw" />
           </TiltCard>
           <div data-reveal>
             <p className="kicker">{copy.credibility.kicker}</p>
@@ -298,10 +300,10 @@ export default function GrafismoFoneticoPage() {
           </div>
           <PriceBlock
             kicker={copy.hero.priceKicker}
-            price={product.price}
+            price={price}
             taxNote={copy.hero.taxNote}
             cta={
-              <CheckoutLink position="final" className="button button--primary">
+              <CheckoutLink product={target} position="final" className="button button--primary">
                 {copy.finalOffer.cta}
               </CheckoutLink>
             }
@@ -312,9 +314,9 @@ export default function GrafismoFoneticoPage() {
 
       <StickyCTA
         hideWhenVisible={["#hero", "#oferta-final", "footer"]}
-        label={`${copy.sticky.label} · ${formatUsd(product.price)}`}
+        label={`${copy.sticky.label} · ${formatUsd(price)}`}
       >
-        <CheckoutLink position="sticky" className="button button--primary">
+        <CheckoutLink product={target} position="sticky" className="button button--primary">
           {copy.sticky.cta}
         </CheckoutLink>
       </StickyCTA>

@@ -1,7 +1,6 @@
-import { formatUsd, products } from "@config/commerce";
+import { formatUsd } from "@config/commerce";
 import { site } from "@config/site";
 import { homeCopy as copy } from "@content/es/home";
-import { grafismoPageIds } from "@content/es/products";
 import { ArrowDown } from "lucide-react";
 import type { Metadata } from "next";
 import { PageShell } from "@/components/layout/PageShell/PageShell";
@@ -14,6 +13,7 @@ import { ProductInterestLink } from "@/features/commerce/ProductInterestLink/Pro
 import { buildMetadata } from "@/lib/metadata";
 import { TiltCard } from "@/motion/TiltCard";
 import { Universe } from "@/motion/Universe";
+import { featuredProduct } from "@/products";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = buildMetadata({
@@ -45,12 +45,14 @@ const organizationJsonLd = {
   ],
 };
 
-const product = products.grafismoFonetico;
+const product = featuredProduct();
+const pageAt = (index: number): string => product.media.pageIds[index] ?? product.media.hero;
 
 export default function HomePage() {
   const headerCta = (
     <ProductInterestLink
-      href="/grafismo-fonetico/"
+      href={product.path}
+      product={product.slug}
       position="header"
       className="button button--primary button--small"
     >
@@ -93,7 +95,8 @@ export default function HomePage() {
             </ul>
             <div className={styles.heroActions}>
               <ProductInterestLink
-                href="/grafismo-fonetico/"
+                href={product.path}
+                product={product.slug}
                 position="hero"
                 className="button button--primary"
               >
@@ -115,15 +118,15 @@ export default function HomePage() {
           <div className={styles.heroVisual}>
             <div className={styles.stack} aria-hidden="true">
               <div className={`${styles.stackPage} ${styles.stackPageA}`}>
-                <MediaImage id={grafismoPageIds[1] ?? "gf.page.02"} sizes="220px" alt="" />
+                <MediaImage id={pageAt(1)} sizes="220px" alt="" />
               </div>
               <div className={`${styles.stackPage} ${styles.stackPageB}`}>
-                <MediaImage id={grafismoPageIds[4] ?? "gf.page.05"} sizes="220px" alt="" />
+                <MediaImage id={pageAt(4)} sizes="220px" alt="" />
               </div>
             </div>
             <TiltCard className={styles.productCard} max={5} as="article">
               <div className={styles.productImage}>
-                <MediaImage id="gf.hero" sizes="(min-width: 1024px) 520px, 92vw" priority />
+                <MediaImage id={product.media.hero} sizes="(min-width: 1024px) 520px, 92vw" priority />
               </div>
               <div className={styles.productBody}>
                 <p className={styles.productKicker}>{copy.product.kicker}</p>
@@ -137,10 +140,11 @@ export default function HomePage() {
                 <div className={styles.productPriceRow}>
                   <p className={styles.productPrice}>
                     <span className={styles.productPriceKicker}>{copy.product.priceKicker}</span>
-                    <span>{formatUsd(product.price)}</span>
+                    <span>{formatUsd(product.pricing.list)}</span>
                   </p>
                   <ProductInterestLink
-                    href="/grafismo-fonetico/"
+                    href={product.path}
+                    product={product.slug}
                     position="hero-card"
                     className="button button--primary button--small"
                   >
@@ -179,7 +183,8 @@ export default function HomePage() {
                 ))}
               </ul>
               <ProductInterestLink
-                href="/grafismo-fonetico/"
+                href={product.path}
+                product={product.slug}
                 position="start"
                 className="button button--primary button--small"
               >
@@ -217,24 +222,22 @@ export default function HomePage() {
             align="center"
           />
           <ul className={styles.previewGrid} role="list">
-            {[grafismoPageIds[0], grafismoPageIds[6], grafismoPageIds[12]].map((id, index) => (
+            {[pageAt(0), pageAt(6), pageAt(12)].map((id, index) => (
               <li key={id} data-reveal style={{ transitionDelay: `${index * 80}ms` }}>
                 <TiltCard className={styles.previewCard} max={6} as="figure">
-                  <MediaImage
-                    id={id ?? "gf.page.01"}
-                    sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 90vw"
-                  />
+                  <MediaImage id={id} sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 90vw" />
                 </TiltCard>
               </li>
             ))}
           </ul>
           <p className={styles.previewCta}>
             <ProductInterestLink
-              href="/grafismo-fonetico/#paginas"
+              href={`${product.path}#paginas`}
+              product={product.slug}
               position="preview"
               className="button button--secondary"
             >
-              Ver las 20 páginas reales
+              Ver las {product.media.pageIds.length} páginas reales
             </ProductInterestLink>
           </p>
         </div>
@@ -290,13 +293,14 @@ export default function HomePage() {
               <p className="lead">{copy.closing.text}</p>
               <div className={styles.closingActions}>
                 <ProductInterestLink
-                  href="/grafismo-fonetico/"
+                  href={product.path}
+                  product={product.slug}
                   position="closing"
                   className="button button--primary"
                 >
                   {copy.closing.cta}
                 </ProductInterestLink>
-                <span className={styles.closingPrice}>{formatUsd(product.price)} · pago único</span>
+                <span className={styles.closingPrice}>{formatUsd(product.pricing.list)} · pago único</span>
               </div>
               <div className={styles.closingSocial}>
                 <p>Síguenos: ideas y páginas nuevas cada semana en @somospequeverso</p>

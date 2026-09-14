@@ -1,9 +1,12 @@
-import { formatUsd, guaranteeDays, hotmart, products } from "@config/commerce";
+import { formatUsd, guaranteeDays, hotmart } from "@config/commerce";
 import { seller, sellerField } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Fragment } from "react";
 import { LegalLayout } from "@/components/layout/LegalLayout/LegalLayout";
 import { buildMetadata } from "@/lib/metadata";
+import { coreProducts, offerProducts } from "@/products";
+import type { CoreProduct, OfferProduct } from "@/products/schema";
 
 export const metadata: Metadata = buildMetadata({
   path: "/terminos/",
@@ -24,9 +27,18 @@ const sections = [
   { id: "ley", title: "Legislación aplicable" },
 ];
 
+function offerOf(product: CoreProduct): OfferProduct | undefined {
+  return offerProducts().find((offer) => offer.parent === product.slug);
+}
+
+function priceSentence(main: CoreProduct, pack: OfferProduct | undefined): string {
+  const principal = `${formatUsd(main.pricing.list)} el kit principal`;
+  if (!pack) return principal;
+  return `${principal}; ${formatUsd(pack.pricing.upsell)} o ${formatUsd(pack.pricing.downsell)} el pack opcional según el paso del proceso de compra en que se ofrezca`;
+}
+
 export default function TerminosPage() {
-  const main = products.grafismoFonetico;
-  const pack = products.imprimeYJuega;
+  const lines = coreProducts().map((main) => ({ main, pack: offerOf(main) }));
   return (
     <LegalLayout
       title="Términos de compra"
@@ -44,14 +56,22 @@ export default function TerminosPage() {
 
       <h2 id="producto">Qué compras</h2>
       <ul>
-        <li>
-          <strong>{main.name}:</strong> {main.pdfCount} archivos PDF con {main.pageCount} páginas en total, en
-          formato A4, para imprimir en casa. Orientado a niños de {main.ageRange}.
-        </li>
-        <li>
-          <strong>{pack.name}</strong> (oferta opcional después de la compra principal): {pack.pdfCount}{" "}
-          archivos PDF con {pack.pageCount} páginas y {pack.visibleResources} recursos visibles.
-        </li>
+        {lines.map(({ main, pack }) => (
+          <Fragment key={main.slug}>
+            <li>
+              <strong>{main.name}:</strong> {main.composition.pdfCount} archivos PDF con{" "}
+              {main.composition.pageCount} páginas en total, en formato A4, para imprimir en casa. Orientado a
+              niños de {main.composition.ageRange}.
+            </li>
+            {pack ? (
+              <li>
+                <strong>{pack.name}</strong> (oferta opcional después de la compra principal):{" "}
+                {pack.composition.pdfCount} archivos PDF con {pack.composition.pageCount} páginas y{" "}
+                {pack.composition.visibleResources} recursos visibles.
+              </li>
+            ) : null}
+          </Fragment>
+        ))}
       </ul>
       <p>
         Son productos 100% digitales: no se envía ningún artículo físico. El contenido descrito en cada página
@@ -60,11 +80,10 @@ export default function TerminosPage() {
 
       <h2 id="precio">Precio e impuestos</h2>
       <p>
-        Los precios se muestran en dólares estadounidenses ({formatUsd(main.price)} el kit principal;{" "}
-        {formatUsd(pack.upsellPrice)} o {formatUsd(pack.downsellPrice)} el pack opcional según el paso del
-        proceso de compra en que se ofrezca). Hotmart calcula los impuestos aplicables según tu país, puede
-        mostrarte el importe en moneda local y define los medios de pago disponibles. El total final es el que
-        aparece en la página de pago antes de confirmar.
+        Los precios se muestran en dólares estadounidenses (
+        {lines.map(({ main, pack }) => priceSentence(main, pack)).join("; ")}). Hotmart calcula los impuestos
+        aplicables según tu país, puede mostrarte el importe en moneda local y define los medios de pago
+        disponibles. El total final es el que aparece en la página de pago antes de confirmar.
       </p>
 
       <h2 id="entrega">Entrega y acceso</h2>

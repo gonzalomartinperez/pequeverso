@@ -1,22 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { grafismoPageIds, grafismoResources, packPageIds, packResources } from "../../content/es/products.ts";
 import { getImage, getVideo, hasMedia, mediaIds } from "../../src/lib/media.ts";
 
-test("every media id referenced by content exists in the manifest", () => {
-  const referenced = [
-    "gf.hero",
-    "pack.hero",
-    "brand.isotipo",
-    "gf.scene.mesa",
-    "gf.scene.trazo",
-    ...grafismoPageIds,
-    ...packPageIds,
-    ...grafismoResources.map((r) => r.card),
-    ...packResources.map((r) => r.card),
-  ];
-  for (const id of referenced) assert.ok(hasMedia(id), `missing media id ${id}`);
-  assert.ok(mediaIds.length >= referenced.length);
+test("site-wide media ids exist in the manifest (product ids are checked by the registry)", () => {
+  for (const id of ["brand.isotipo", "brand.logo", "brand.og"])
+    assert.ok(hasMedia(id), `missing media id ${id}`);
+  assert.ok(mediaIds.length > 0);
 });
 
 test("images expose explicit dimensions and a srcset; videos expose poster and text alternative", () => {

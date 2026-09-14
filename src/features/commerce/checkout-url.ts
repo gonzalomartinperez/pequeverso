@@ -38,7 +38,7 @@ export function withPassthrough(path: string, pageSearch: string): string {
   return query ? `${path}?${query}` : path;
 }
 
-/** Hotmart `sck` is limited to 30 characters. */
-export function sckFor(position: string): string {
-  return `pv-gf-${position}`.replace(/[^a-z0-9-]/gi, "").slice(0, 30);
+/** `pv-<product prefix>-<position>`; Hotmart `sck` is limited to 30 characters. */
+export function sckFor(prefix: string, position: string): string {
+  return `pv-${prefix}-${position}`.replace(/[^a-z0-9-]/gi, "").slice(0, 30);
 }
