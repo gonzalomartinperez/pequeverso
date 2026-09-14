@@ -34,7 +34,7 @@ Manual (`workflow_dispatch`), `production` environment with required approval:
    (or keep `main`, see note), framework Next.js, build command `npm run build`, start command
    `npm start`, Node 24. Environment variables (optional): `NEXT_OUTPUT=standalone` (explicit),
    `NEXT_PUBLIC_META_PIXEL_ID`, `NEXT_PUBLIC_UMAMI_*`. `NEXT_PUBLIC_SITE_URL` defaults to
-   `https://pequeverso.com`; `NEXT_PUBLIC_CHECKOUT_URL` defaults to the documented checkout.
+   `https://pequeverso.com`; the checkout URL defaults to the registry's public Hotmart checkout.
 2. GitHub → Settings → Environments → `production`: reviewer = you (already set); variables
    `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_CHECKOUT_URL` (set), pixel/analytics ids (optional).
 3. Cloudflare proxy: HTML responses are `Cache-Control: no-cache` (never CDN-cached); `/media/`,
@@ -50,8 +50,8 @@ redeploy**; there is nothing to reload at runtime.
 | Variable | Required | Format | Effect when empty |
 |---|---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | yes | `https://` origin, no trailing slash | defaults to `https://pequeverso.com` (canonicals, sitemap, OG) |
-| `NEXT_PUBLIC_CHECKOUT_URL` / `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO` | yes, one of them | starts with `https://pay.hotmart.com/` | CTAs fall back to the on-page offer anchor (public clone) |
-| `NEXT_PUBLIC_META_PIXEL_ID` | optional | 15–16 digits | Meta adapter off: no script, no consent banner |
+| `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO` (or legacy `NEXT_PUBLIC_CHECKOUT_URL`) | optional override | starts with `https://pay.hotmart.com/` | the registry default (the public Hotmart checkout) is used |
+| `NEXT_PUBLIC_META_PIXEL_ID` | optional | 15–16 digits | Meta adapter off: no script; the first-visit consent banner is not shown and "Configurar cookies" opens a necessary-cookies notice |
 | `NEXT_PUBLIC_UMAMI_SCRIPT_URL` + `NEXT_PUBLIC_UMAMI_WEBSITE_ID` | optional pair (both or neither) | `https://` script URL + website id | Umami adapter off |
 | `NEXT_PUBLIC_CONSENT_MODE` | optional | `strict` (default) or `advanced` | `strict`: nothing third-party loads before consent |
 | `NEXT_PUBLIC_TRACKING_DEBUG` | optional | `1` | no console output |

@@ -71,13 +71,12 @@ Policy:
 - **Gates.** CSS: `prefers-reduced-motion: no-preference` around every animation, plus the global
   kill switch in `base.css`. JS: `useMotionOK()` (`useSyncExternalStore` over reduced motion,
   `(pointer: fine)` and `navigator.connection.saveData`) gates `TiltCard`, `Counter`, `FlipPreview`.
-  Motion's `MotionConfig reducedMotion="user"` covers `m.*`. `Orbit` pauses under reduced motion.
+  `Orbit` pauses under reduced motion.
 - **Budget** (gzip, measured 2026-09-13): `src/motion` client JS 2.1 KB for TiltCard + Counter +
   FlipPreview + StickyCTA + `useMotionOK` (target ≤ 3 KB; RevealObserver adds ~0.4 KB to the layout
-  chunk). Motion: `MotionProvider` (LazyMotion + MotionConfig) is **10.7 KB sync** — above the 5 KB
-  target, it is the library's floor — plus **15.1 KB lazy** (`domAnimation`, target ≤ 15 KB). Mount
-  `MotionProvider` only on routes that render `m.*`, import elements from `motion/react-m`
-  (`import * as m`) and never `m`/`motion` from `motion/react` (+37 KB). Prefer the CSS-only pieces.
+  chunk). The Motion library was evaluated (10.7 KB sync + 15.1 KB lazy at its floor) and dropped
+  once the hero choreography fit in `hero.css` and React `ViewTransition`; every effect is CSS
+  scroll-driven or transform/opacity, and JS only observes.
 - No autoplaying video. Route budgets stay enforced by `npm run check:bundle`.
 
 ### Motion components (`src/motion`)
@@ -95,7 +94,6 @@ Policy:
 | `WaveDivider` | server | `fill: WaveFill` (token name), `flip?`, `className?` |
 | `Orbit` | server | `className?` — dashed ellipse + gold star on `offset-path` |
 | `Universe` | server | `variant?: hero\|band`, `className?` — paint-contained backdrop that renders `Orbit` |
-| `MotionProvider` | client | `children` — `LazyMotion` (lazy `domAnimation`) inside `MotionConfig reducedMotion="user"` |
 | `StickyCTA` | client | `hideWhenVisible: string[]`, `label`, `children` — mobile only (`below("lg")`), hidden while any `dialog[open]` |
 
 ## Primitives (`src/components/ui`)
@@ -127,7 +125,7 @@ page renders `Section`/`Eyebrow`; remove them with the last page migration.
 |---|---|---|
 | `PageShell`, `Header`, `Footer`, `Topbar`, `SkipLink` | server | complete navigation on every page; ≤ 4 header anchors, one CTA with a verb |
 | `Universe` | server (CSS) | decorative starfield backdrop with `Orbit` |
-| `SectionHeading`, `FactChip`, `TrustStrip`, `Steps`, `Notice`, `LegalLayout`, `Icon` | server | lucide icons through a small map |
+| `SectionHeading`, `FactChip`, `Steps`, `Notice`, `LegalLayout`, `Icon` | server | lucide icons through a small map |
 | `MediaImage` | server | manifest-backed `<img srcset>` with explicit size, priority for LCP |
 | `ResourceGrid` | server + `TiltCard` | real covers, names, page counts |
 | `PageGallery` | client (Embla) | drag, arrows, dots, keyboard, counter, `<dialog>` zoom |
