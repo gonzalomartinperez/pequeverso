@@ -14,7 +14,8 @@
 //
 // Originals never enter the repository: outputs are named <id-slug>-w<width>-<hash8>.<ext> where hash8
 // derives from the source sha256 plus the export parameters, so a changed source or a changed quality
-// produces a new file name (and the old one is pruned).
+// produces a new file name (and the old one is pruned). Videos: <id-slug>-crf<crf>-<hash8>.mp4 and,
+// when enabled, <id-slug>-vp9-crf<crf>-<hash8>.webm.
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
@@ -26,7 +27,9 @@ import sharp from "sharp";
 import { optimize as svgoOptimize } from "svgo";
 
 const PIPELINE_VERSION = 1;
-const MAX_VIDEO_BYTES = 2_500_000; // strict: 2.5 MB in either MB or MiB reading
+const MAX_VIDEO_BYTES = 2_200_000;
+const MAX_VIDEO_MB = "2.2 MB";
+const AVIF_QUALITY = 55;
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 25 * 1024 * 1024;
 
@@ -112,7 +115,7 @@ function checkManifest() {
     if (item.kind === "video") {
       const mp4 = item.outputs.find((o) => o.format === "mp4");
       if (!mp4) errors.push(`${item.id}: video without mp4 output`);
-      else if (mp4.bytes > MAX_VIDEO_BYTES) errors.push(`${item.id}: mp4 exceeds 2.5 MB`);
+      else if (mp4.bytes > MAX_VIDEO_BYTES) errors.push(`${item.id}: mp4 exceeds ${MAX_VIDEO_MB}`);
       if (!item.outputs.some((o) => o.format === "webp")) errors.push(`${item.id}: video without poster`);
     }
   }
@@ -221,6 +224,15 @@ async function imageDims(abs) {
   return { width: meta.width, height: meta.height };
 }
 
+function encoderFor(pipeline, spec) {
+  const { format, quality, alphaQuality } = spec;
+  if (format === "webp") {
+    return pipeline.webp({ quality, effort: 6, smartSubsample: true, alphaQuality: alphaQuality ?? 100 });
+  }
+  if (format === "avif") return pipeline.avif({ quality, effort: 6 });
+  return fail(`unsupported image format ${format}`);
+}
+
 // Encodes one responsive width. Returns the manifest output record.
 async function encodeImage(item, src, sourceSha, spec) {
   const { width, format, quality, sharpen, alphaQuality } = spec;
@@ -231,29 +243,23 @@ async function encodeImage(item, src, sourceSha, spec) {
     ensureDir(file);
     let pipeline = sharp(src).rotate().resize({ width, withoutEnlargement: true });
     if (sharpen) pipeline = pipeline.sharpen({ sigma: 0.5, m1: 0.5, m2: 1 });
-    if (format === "webp") {
-      pipeline = pipeline.webp({
-        quality,
-        effort: 6,
-        smartSubsample: true,
-        alphaQuality: alphaQuality ?? 100,
-      });
-    } else if (format === "avif") {
-      pipeline = pipeline.avif({ quality: Math.max(40, quality - 24), effort: 6 });
-    } else {
-      fail(`${item.id}: unsupported format ${format}`);
-    }
-    await pipeline.toFile(file);
+    await encoderFor(pipeline, spec).toFile(file);
     if (VERBOSE) log(`  wrote ${relRepo(file)}`);
   }
   const dims = await imageDims(file);
   return outputRecord(file, { ...dims, format, quality });
 }
 
-async function buildImage(item, src, sourceSha) {
+// Role defaults (sources.json roles.<role>) merged with the item-level `outputs` override:
+// `widths` (WebP), `avif` (AVIF widths, [] disables), `avifQuality`, `quality`, `sharpen`, `alphaQuality`.
+function imageSpec(item) {
   const role = sources.roles[item.role];
   if (!role) fail(`${item.id}: unknown role ${item.role}`);
-  const spec = { ...role, ...(item.outputs || {}) };
+  return { avif: [], avifQuality: AVIF_QUALITY, ...role, ...(item.outputs || {}) };
+}
+
+async function buildImage(item, src, sourceSha) {
+  const spec = imageSpec(item);
   // Never enlarge: widths above the source width collapse to the source width (deduplicated).
   const meta = await sharp(src).metadata();
   const effective = (widths) =>
@@ -262,8 +268,9 @@ async function buildImage(item, src, sourceSha) {
   for (const width of effective(spec.widths)) {
     outputs.push(await encodeImage(item, src, sourceSha, { ...spec, width, format: "webp" }));
   }
-  for (const width of effective(spec.avif || [])) {
-    outputs.push(await encodeImage(item, src, sourceSha, { ...spec, width, format: "avif" }));
+  const avif = { ...spec, format: "avif", quality: spec.avifQuality, alphaQuality: undefined };
+  for (const width of effective(spec.avif)) {
+    outputs.push(await encodeImage(item, src, sourceSha, { ...avif, width }));
   }
   return outputs;
 }
@@ -373,146 +380,105 @@ async function buildFavicons(item, src) {
   return files;
 }
 
-async function buildVideo(item, src, sourceSha) {
-  const v = { maxSeconds: 15, posterAt: 1, posterWidths: [480, 720], webm: false, ...(item.video || {}) };
-  const probe = ffprobe(src);
-  const duration = Math.min(probe.duration, v.maxSeconds);
-  const encode = {
-    codec: "h264",
-    profile: "high",
-    pixelFormat: "yuv420p",
-    shortSide: 720,
-    fps: 30,
-    crf: 26,
-    maxrate: "1500k",
-    bufsize: "3000k",
-    gop: 60,
-    audio: "stripped",
-    maxSeconds: v.maxSeconds,
-  };
-  const hash = paramsHash(sourceSha, encode);
-  const groupDir = join(mediaDir, item.group);
-  const scale = "scale=w='if(gte(iw,ih),-2,720)':h='if(gte(iw,ih),720,-2)'";
-  // The final crf is part of the file name so a skipped (already built) clip reports the crf it was
-  // actually encoded with. The ceiling is enforced by stepping crf up on long clips.
-  const mp4Name = (crf) => `${slug(item.id)}-crf${crf}-${hash}.mp4`;
-  const existing = existsSync(groupDir)
-    ? readdirSync(groupDir).find((f) => f.startsWith(`${slug(item.id)}-crf`) && f.endsWith(`-${hash}.mp4`))
-    : undefined;
-  let crf = encode.crf;
-  let mp4 = existing ? join(groupDir, existing) : undefined;
-  if (!mp4 || FORCE) {
-    if (mp4) rmSync(mp4);
-    mkdirSync(groupDir, { recursive: true });
-    for (;;) {
-      mp4 = join(groupDir, mp4Name(crf));
-      run(ffmpegPath, [
-        "-y",
-        "-v",
-        "error",
-        "-i",
-        src,
-        "-t",
-        String(v.maxSeconds),
-        "-vf",
-        `${scale},fps=${encode.fps},format=${encode.pixelFormat}`,
-        "-c:v",
-        "libx264",
-        "-profile:v",
-        encode.profile,
-        "-preset",
-        "slow",
-        "-crf",
-        String(crf),
-        "-maxrate",
-        encode.maxrate,
-        "-bufsize",
-        encode.bufsize,
-        "-g",
-        String(encode.gop),
-        "-keyint_min",
-        String(encode.gop),
-        "-sc_threshold",
-        "0",
-        "-movflags",
-        "+faststart",
-        "-an",
-        "-map_metadata",
-        "-1",
-        mp4,
-      ]);
-      if (statSync(mp4).size <= MAX_VIDEO_BYTES || crf >= 32) break;
-      rmSync(mp4);
-      crf += 2;
-      log(`  ${item.id}: mp4 above 2.5 MB, retrying with crf ${crf}`);
-    }
-    if (VERBOSE) log(`  wrote ${relRepo(mp4)}`);
-  } else {
-    crf = Number(/-crf(\d+)-/.exec(existing)[1]);
-  }
-  const outProbe = ffprobe(mp4);
-  if (statSync(mp4).size > MAX_VIDEO_BYTES) fail(`${item.id}: mp4 still above 2.5 MB`);
-  const outputs = [
-    await outputRecord(mp4, {
-      width: outProbe.width,
-      height: outProbe.height,
-      format: "mp4",
-      quality: `crf${crf}`,
-    }),
+const VIDEO_SCALE = "scale=w='if(gte(iw,ih),-2,720)':h='if(gte(iw,ih),720,-2)'";
+const MP4_CRF_LADDER = [26, 28, 30, 32];
+const WEBM_CRF_LADDER = [33, 37, 41];
+
+function ffmpegArgs(src, encode, codecArgs, out) {
+  const filters = `${VIDEO_SCALE},fps=${encode.fps},format=${encode.pixelFormat}`;
+  const head = ["-y", "-v", "error", "-i", src, "-t", String(encode.maxSeconds), "-vf", filters];
+  return [...head, ...codecArgs, "-an", "-map_metadata", "-1", out];
+}
+
+function mp4Args(encode, crf) {
+  const gop = String(encode.gop);
+  const rate = ["-maxrate", encode.maxrate, "-bufsize", encode.bufsize];
+  const keyframes = ["-g", gop, "-keyint_min", gop, "-sc_threshold", "0", "-movflags", "+faststart"];
+  return [
+    "-c:v",
+    "libx264",
+    "-profile:v",
+    encode.profile,
+    "-preset",
+    "slow",
+    "-crf",
+    String(crf),
+    ...rate,
+    ...keyframes,
   ];
+}
 
-  // Optional WebM (VP9), kept only when it is not larger than the mp4.
-  const webm = mp4.replace(/\.mp4$/, ".webm");
-  if (v.webm) {
-    if (!existsSync(webm) || FORCE) {
-      run(ffmpegPath, [
-        "-y",
-        "-v",
-        "error",
-        "-i",
-        src,
-        "-t",
-        String(v.maxSeconds),
-        "-vf",
-        `${scale},fps=${encode.fps},format=yuv420p`,
-        "-c:v",
-        "libvpx-vp9",
-        "-crf",
-        "34",
-        "-b:v",
-        "0",
-        "-row-mt",
-        "1",
-        "-deadline",
-        "good",
-        "-cpu-used",
-        "2",
-        "-g",
-        String(encode.gop),
-        "-an",
-        "-map_metadata",
-        "-1",
-        webm,
-      ]);
-      if (statSync(webm).size > statSync(mp4).size) {
-        log(`  ${item.id}: webm larger than mp4, skipped`);
-        rmSync(webm);
-      }
+function webmArgs(encode, crf) {
+  const quality = ["-b:v", "0", "-crf", String(crf), "-row-mt", "1", "-deadline", "good"];
+  return ["-c:v", "libvpx-vp9", ...quality, "-g", String(encode.gop)];
+}
+
+function findExisting(groupDir, prefix, suffix) {
+  if (!existsSync(groupDir)) return undefined;
+  const name = readdirSync(groupDir).find((f) => f.startsWith(prefix) && f.endsWith(suffix));
+  return name ? join(groupDir, name) : undefined;
+}
+
+// The final crf is part of the file name so a skipped (already built) clip reports the crf it was
+// actually encoded with; hash8 covers the source and the other parameters. The ceiling is enforced by
+// stepping crf up the ladder; returns undefined when even the last step is too large.
+function encodeLadder(item, target, ladder, ceiling, encodeAt) {
+  const groupDir = join(mediaDir, item.group);
+  const existing = findExisting(groupDir, target.prefix, target.suffix);
+  if (existing && !FORCE) return { file: existing, crf: Number(/-crf(\d+)-/.exec(existing)[1]) };
+  if (existing) rmSync(existing);
+  mkdirSync(groupDir, { recursive: true });
+  for (const crf of ladder) {
+    const file = join(groupDir, `${target.prefix}${crf}${target.suffix}`);
+    encodeAt(crf, file);
+    if (statSync(file).size <= ceiling) {
+      if (VERBOSE) log(`  wrote ${relRepo(file)}`);
+      return { file, crf };
     }
-    if (existsSync(webm))
-      outputs.push(
-        await outputRecord(webm, {
-          width: outProbe.width,
-          height: outProbe.height,
-          format: "webm",
-          quality: "crf34",
-        }),
-      );
-  } else if (existsSync(webm)) {
-    rmSync(webm);
+    rmSync(file);
+    log(`  ${item.id}: ${target.label} at crf ${crf} is above ${mb(ceiling)}`);
   }
+  return undefined;
+}
 
-  // Poster: a frame from the master at posterAt seconds, resized like a "poster" role image.
+function encodeMp4(item, src, sourceSha, encode) {
+  const target = {
+    label: "mp4",
+    prefix: `${slug(item.id)}-crf`,
+    suffix: `-${paramsHash(sourceSha, encode)}.mp4`,
+  };
+  const encodeAt = (crf, file) => run(ffmpegPath, ffmpegArgs(src, encode, mp4Args(encode, crf), file));
+  return encodeLadder(item, target, MP4_CRF_LADDER, MAX_VIDEO_BYTES, encodeAt);
+}
+
+// Optional WebM (VP9, constant quality). Kept only when it is not larger than the mp4.
+function encodeWebm(item, src, sourceSha, encode, mp4) {
+  const params = {
+    ...encode,
+    codec: "vp9",
+    profile: null,
+    crf: WEBM_CRF_LADDER[0],
+    maxrate: null,
+    bufsize: null,
+  };
+  const target = {
+    label: "webm",
+    prefix: `${slug(item.id)}-vp9-crf`,
+    suffix: `-${paramsHash(sourceSha, params)}.webm`,
+  };
+  const encodeAt = (crf, file) => run(ffmpegPath, ffmpegArgs(src, encode, webmArgs(encode, crf), file));
+  const built = encodeLadder(item, target, WEBM_CRF_LADDER, statSync(mp4).size, encodeAt);
+  if (!built) log(`  ${item.id}: webm skipped (larger than the mp4 at every crf)`);
+  return built;
+}
+
+function pruneWebm(item) {
+  const stale = findExisting(join(mediaDir, item.group), `${slug(item.id)}-vp9-`, ".webm");
+  if (stale) rmSync(stale);
+}
+
+// Poster: a frame from the master at posterAt seconds, resized like a "poster" role image.
+async function buildPosters(item, src, sourceSha, v) {
   const posterRole = sources.roles.poster;
   const frame = run(ffmpegPath, [
     "-v",
@@ -529,6 +495,7 @@ async function buildVideo(item, src, sourceSha) {
     "png",
     "-",
   ]);
+  const outputs = [];
   for (const width of v.posterWidths || posterRole.widths) {
     const params = { poster: true, posterAt: v.posterAt, width, quality: posterRole.quality };
     const phash = paramsHash(sourceSha, params);
@@ -543,16 +510,47 @@ async function buildVideo(item, src, sourceSha) {
       await outputRecord(file, { ...(await imageDims(file)), format: "webp", quality: posterRole.quality }),
     );
   }
+  return outputs;
+}
+
+async function buildVideo(item, src, sourceSha) {
+  const v = { maxSeconds: 15, posterAt: 1, posterWidths: [480, 720], webm: false, ...(item.video || {}) };
+  const probe = ffprobe(src);
+  const duration = Math.min(probe.duration, v.maxSeconds);
+  const encode = {
+    codec: "h264",
+    profile: "high",
+    pixelFormat: "yuv420p",
+    shortSide: 720,
+    fps: 30,
+    crf: MP4_CRF_LADDER[0],
+    maxrate: "1500k",
+    bufsize: "3000k",
+    gop: 60,
+    audio: "stripped",
+    maxSeconds: v.maxSeconds,
+  };
+  const mp4 = encodeMp4(item, src, sourceSha, encode);
+  if (!mp4) fail(`${item.id}: mp4 still above ${MAX_VIDEO_MB}`);
+  const dims = ffprobe(mp4.file);
+  const size = { width: dims.width, height: dims.height };
+  const outputs = [await outputRecord(mp4.file, { ...size, format: "mp4", quality: `crf${mp4.crf}` })];
+  if (!v.webm) pruneWebm(item);
+  const webm = v.webm ? encodeWebm(item, src, sourceSha, encode, mp4.file) : undefined;
+  if (webm)
+    outputs.push(await outputRecord(webm.file, { ...size, format: "webm", quality: `crf${webm.crf}` }));
+  outputs.push(...(await buildPosters(item, src, sourceSha, v)));
   return {
     outputs,
     video: {
       ...encode,
-      crf,
+      crf: mp4.crf,
       sourceDuration: Math.round(probe.duration * 1000) / 1000,
       duration: Math.round(duration * 1000) / 1000,
       trimmed: probe.duration > v.maxSeconds,
       posterAt: v.posterAt,
-      webm: v.webm,
+      webm: Boolean(webm),
+      ...(webm ? { webmCodec: "vp9", webmCrf: webm.crf } : {}),
     },
   };
 }
