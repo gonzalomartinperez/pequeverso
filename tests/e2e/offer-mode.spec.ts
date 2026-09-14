@@ -32,7 +32,7 @@ for (const query of ["?downsell=1", "?offer=downsell", "?downsell=1&utm_source=x
     await expect(page.locator("#hero-title-upsell")).toBeHidden();
     await expect(page.locator("#hero")).toHaveAttribute("aria-hidden", "true");
     await expect(page.locator("#hotmart-sales-funnel")).toHaveCount(1);
-    await expect(page.getByText("US$7.49").first()).toBeVisible();
+    await expect(page.getByText("US$7,49").first()).toBeVisible();
   });
 }
 
@@ -48,3 +48,29 @@ test("editorial CTAs move focus to the widget slot and no direct checkout link e
   await expect(page.locator("#gfp-decision")).toBeFocused();
   await expect(page.locator("a[href*='checkout'], a[href*='pay.hotmart']")).toHaveCount(0);
 });
+
+test("the composition counters ship their final numbers in the server HTML", async ({ request }) => {
+  const html = await (await request.get("/imprime-y-juega/")).text();
+  expect(html).toMatch(/<span[^>]*>384<\/span>/);
+  expect(html).toMatch(/<span[^>]*>6<\/span>/);
+  expect(html).toMatch(/<span[^>]*>9<\/span>/);
+});
+
+for (const [query, visible, hidden, price] of [
+  ["", ".only-upsell", ".only-downsell", "US$14,99"],
+  ["?downsell=1", ".only-downsell", ".only-upsell", "US$7,49"],
+] as const) {
+  test(`sticky decision link shows the ${visible} label for /imprime-y-juega/${query}`, async ({ page }) => {
+    await page.goto(`/imprime-y-juega/${query}`);
+    const link = page.locator("[data-testid='sticky-cta'] a[data-decision-link]");
+    await expect(link).toHaveAttribute("href", "#gfp-decision");
+    await expect(link.locator(visible)).toContainText(price);
+    const displays = await link.evaluate(
+      (el, selectors) =>
+        selectors.map((selector) => getComputedStyle(el.querySelector(selector) as Element).display),
+      [visible, hidden] as [string, string],
+    );
+    expect(displays[0]).not.toBe("none");
+    expect(displays[1]).toBe("none");
+  });
+}

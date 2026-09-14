@@ -7,9 +7,10 @@ test("shared commercial facts (guarantee and currency)", () => {
   assert.equal(currency, "USD");
 });
 
-test("USD formatting matches the landings", () => {
-  assert.equal(formatUsd(14.99), "US$14.99");
-  assert.equal(formatUsd(7.49), "US$7.49");
+test("USD formatting uses the Spanish decimal comma", () => {
+  assert.equal(formatUsd(14.99), "US$14,99");
+  assert.equal(formatUsd(7.49), "US$7,49");
+  assert.equal(formatUsd(5), "US$5,00");
 });
 
 test("off and ref are not in the passthrough allowlist", () => {

@@ -9,15 +9,11 @@ import { packFaq } from "./faq.ts";
 export const packCopy = {
   topbar: "Tu compra principal está confirmada · Esta oferta es opcional",
   header: { subtitle: "Pack Imprime y Juega", cta: "Ver opciones Sí / No" },
-  facts: [
-    { label: "6 PDF", detail: "descargables" },
-    { label: "384 páginas", detail: "en A4" },
-    { label: "9 recursos", detail: "visibles" },
-    { label: "3 a 7 años", detail: "orientativo" },
-  ],
+  facts: [{ label: "3 a 7 años", detail: "orientativo" }],
+  counters: { pdf: "PDF", pages: "páginas", resources: "recursos" },
   taxNote: "+ impuestos aplicables según el país",
   upsell: {
-    kicker: "Oferta complementaria opcional",
+    kicker: "Oferta opcional · tu compra principal ya está confirmada",
     title: "Ya tienes letras y sonidos. Ahora suma actividades listas para tardes, esperas y viajes.",
     lead: "El Pack Imprime y Juega no repite Grafismo Fonético: amplía las opciones con propuestas para colorear, observar, contar, recortar, dibujar y jugar.",
     priceKicker: "Precio de esta oferta",
@@ -26,10 +22,10 @@ export const packCopy = {
   downsell: {
     kicker: "Oferta final de este paso",
     title: "Antes de terminar: el mismo pack completo por menos.",
-    lead: "Mismo contenido, mismos 6 PDF y 384 páginas. Es la última vez que verás este precio dentro del proceso de compra.",
+    lead: "Mismo contenido, mismos 6 PDF y 384 páginas. En este paso el precio es menor y tu compra principal no cambia.",
     priceKicker: "Precio final de este paso",
     previousLabel: "Oferta anterior",
-    proof: "No se reduce el contenido: 6 PDF · 384 páginas · 9 recursos",
+    proof: "Mismo contenido: 6 PDF · 384 páginas · 9 recursos",
     objections: [
       {
         title: "“No quería gastar tanto.”",
@@ -47,8 +43,8 @@ export const packCopy = {
     decisionHint: "Elige Sí para agregar el pack a este precio o No para terminar tu compra.",
   },
   complement: {
-    kicker: "El complemento, no una repetición",
-    title: "Dos materiales, dos momentos distintos.",
+    kicker: "Dos materiales, dos momentos distintos",
+    title: "Complementa, no repite.",
     ownedLabel: "Ya es tuyo",
     offerLabel: "Esta oferta",
     owned: {
@@ -116,5 +112,5 @@ export const packCopy = {
       "Tu compra principal ya está confirmada. Puedes recargar esta página para volver a intentarlo o cerrar la ventana y revisar tu correo para acceder a Grafismo Fonético.",
     reload: "Recargar la página",
   },
-  sticky: { upsell: "Sumar el pack completo", downsell: "Agregar por menos" },
+  sticky: { upsell: "Sumar el pack", downsell: "Agregar por menos" },
 } as const satisfies OfferLandingCopy;

@@ -1,37 +1,41 @@
+import { notFoundCopy as copy } from "@content/es/soporte";
 import type { Metadata } from "next";
 import { PageShell } from "@/components/layout/PageShell/PageShell";
+import { ChipRow } from "@/components/ui/ChipRow/ChipRow";
 import { CTAButton } from "@/components/ui/CTAButton/CTAButton";
+import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
+import { Section } from "@/components/ui/Section/Section";
+import { Stack } from "@/components/ui/Stack/Stack";
 import { coreProducts } from "@/products";
 
 export const metadata: Metadata = {
-  title: "Página no encontrada",
+  title: copy.meta.title,
   robots: { index: false, follow: false },
 };
 
 export default function NotFound() {
   return (
     <PageShell>
-      <div className="container section" style={{ display: "grid", gap: "1.25rem", maxWidth: "60ch" }}>
-        <p className="kicker">Error 404</p>
-        <h1>Esta página no existe.</h1>
-        <p className="lead">
-          Puede que el enlace esté incompleto o que la página se haya movido. Estas son las salidas más
-          útiles:
-        </p>
-        <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-          <CTAButton href="/" variant="secondary" iconAfter="arrow">
-            Ir al inicio
-          </CTAButton>
-          {coreProducts().map((product) => (
-            <CTAButton key={product.slug} href={product.path} variant="secondary" iconAfter="arrow">
-              Ver {product.name}
+      <Section tone="cream" labelledBy="not-found-title">
+        <Stack gap={4} maxWidth="60ch">
+          <Eyebrow>{copy.kicker}</Eyebrow>
+          <h1 id="not-found-title">{copy.title}</h1>
+          <p className="lead">{copy.lead}</p>
+          <ChipRow>
+            <CTAButton href="/" variant="secondary" iconAfter="arrow">
+              {copy.home}
             </CTAButton>
-          ))}
-          <CTAButton href="/soporte/" variant="ghost" iconAfter="arrow">
-            Soporte
-          </CTAButton>
-        </div>
-      </div>
+            {coreProducts().map((product) => (
+              <CTAButton key={product.slug} href={product.path} variant="secondary" iconAfter="arrow">
+                {copy.product} {product.name}
+              </CTAButton>
+            ))}
+            <CTAButton href="/soporte/" variant="ghost" iconAfter="arrow">
+              {copy.support}
+            </CTAButton>
+          </ChipRow>
+        </Stack>
+      </Section>
     </PageShell>
   );
 }

@@ -93,6 +93,7 @@ followed by a refund inside the guarantee) — **only with the owner's explicit 
 9. Meta Events Manager: `ViewContent` from the site, `InitiateCheckout` and `Purchase` from Hotmart
    only; no duplicated `Purchase`.
 10. Refund the test purchases via `refund.hotmart.com` if real money was used.
+11. Measure the rendered widget height in each mode at ≤ 768 px and ≥ 768 px and replace the estimated `--widget-min-h` (220 px / 180 px, set without a purchase session) in `src/features/commerce/HotmartWidgetSlot/HotmartWidgetSlot.module.css` with the measured values.
 
 Record results in `docs/verification/` (date, URLs Hotmart used, screenshots of the widget in
 each mode, transaction ids masked).
