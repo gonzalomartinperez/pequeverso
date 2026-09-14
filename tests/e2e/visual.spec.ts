@@ -1,11 +1,11 @@
 import { expect, test } from "@playwright/test";
 
 /**
- * Screenshot baselines (PW_SET=visual: chromium + webkit at 390 / 1440, reduced motion). Baselines
- * are generated on Linux by the nightly workflow (`update_snapshots`) and committed under
- * tests/e2e/__screenshots__; animated backdrops and media are masked.
+ * Screenshot baselines (PW_SET=visual: chromium at 390 / 1440, reduced motion). Baselines are
+ * generated on Linux by the nightly workflow (`update_snapshots`) and committed under
+ * tests/e2e/__screenshots__. Reduced motion freezes every CSS animation, so only video is masked.
  */
-const MASKED = "video, [data-visual-mask]";
+const MASKED = "video";
 
 const pages = [
   { name: "home", path: "/" },

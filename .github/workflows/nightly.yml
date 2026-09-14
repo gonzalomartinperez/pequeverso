@@ -83,7 +83,7 @@ jobs:
         with:
           name: nightly-export
           path: out
-      - run: npx playwright install --with-deps chromium webkit
+      - run: npx playwright install --with-deps chromium
       - if: ${{ !inputs.update_snapshots }}
         run: npm run test:e2e:visual
       - if: ${{ inputs.update_snapshots }}
