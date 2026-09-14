@@ -17,70 +17,36 @@
   },
   "roles": {
     "hero": {
-      "widths": [
-        480,
-        768,
-        1024,
-        1440
-      ],
+      "widths": [480, 768, 1024, 1440],
       "quality": 82,
-      "avif": [
-        1024,
-        1440
-      ]
+      "avif": [1024, 1440]
     },
     "scene": {
-      "widths": [
-        480,
-        768,
-        1024
-      ],
+      "widths": [480, 768, 1024],
       "quality": 78,
-      "avif": [
-        768,
-        1024
-      ]
+      "avif": [768, 1024]
     },
     "page": {
-      "widths": [
-        640,
-        1100
-      ],
+      "widths": [640, 1100],
       "quality": 80,
       "sharpen": true
     },
     "card": {
-      "widths": [
-        360,
-        520,
-        720
-      ],
+      "widths": [360, 520, 720],
       "quality": 76,
-      "avif": [
-        520,
-        720
-      ]
+      "avif": [520, 720]
     },
     "thumb": {
-      "widths": [
-        240,
-        480
-      ],
+      "widths": [240, 480],
       "quality": 72
     },
     "brand": {
-      "widths": [
-        320,
-        640
-      ],
+      "widths": [320, 640],
       "quality": 90,
       "alphaQuality": 100
     },
     "poster": {
-      "widths": [
-        480,
-        720
-      ],
+      "widths": [480, 720],
       "quality": 72
     }
   },
@@ -165,11 +131,7 @@
         "es": "Isotipo de Pequeverso"
       },
       "outputs": {
-        "widths": [
-          96,
-          192,
-          512
-        ]
+        "widths": [96, 192, 512]
       }
     },
     {
@@ -186,10 +148,7 @@
         "es": "Pequeverso"
       },
       "outputs": {
-        "widths": [
-          320,
-          640
-        ]
+        "widths": [320, 640]
       }
     },
     {
@@ -249,12 +208,7 @@
         "es": "Kit completo Grafismo Fonético impreso junto a sus ocho recursos complementarios"
       },
       "outputs": {
-        "widths": [
-          480,
-          768,
-          1024,
-          1440
-        ]
+        "widths": [480, 768, 1024, 1440]
       }
     },
     {
@@ -1131,12 +1085,7 @@
         "es": "Kit Tardes Tranquilas impreso sobre una mesa junto a una página para colorear y lápices"
       },
       "outputs": {
-        "widths": [
-          480,
-          768,
-          1024,
-          1440
-        ]
+        "widths": [480, 768, 1024, 1440]
       }
     },
     {
@@ -1163,10 +1112,7 @@
       "video": {
         "maxSeconds": 15,
         "posterAt": 1,
-        "posterWidths": [
-          480,
-          720
-        ],
+        "posterWidths": [480, 720],
         "webm": false
       }
     },
@@ -1194,10 +1140,7 @@
       "video": {
         "maxSeconds": 15,
         "posterAt": 1,
-        "posterWidths": [
-          480,
-          720
-        ],
+        "posterWidths": [480, 720],
         "webm": false
       }
     },
@@ -1225,10 +1168,7 @@
       "video": {
         "maxSeconds": 12,
         "posterAt": 6,
-        "posterWidths": [
-          480,
-          720
-        ],
+        "posterWidths": [480, 720],
         "webm": false
       }
     },
@@ -1256,10 +1196,7 @@
       "video": {
         "maxSeconds": 12,
         "posterAt": 1,
-        "posterWidths": [
-          480,
-          720
-        ],
+        "posterWidths": [480, 720],
         "webm": false
       }
     }
