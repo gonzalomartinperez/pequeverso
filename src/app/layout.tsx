@@ -40,8 +40,9 @@ export const metadata: Metadata = {
   applicationName: site.name,
   icons: {
     icon: [
+      { url: "/favicon.png", type: "image/png", sizes: "512x512" },
       { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/favicon.ico", sizes: "48x48" },
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },

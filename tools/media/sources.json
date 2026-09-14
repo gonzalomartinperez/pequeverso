@@ -190,8 +190,7 @@
       },
       "compose": {
         "kind": "favicons",
-        "background": "#fffaf2",
-        "padding": 0.1
+        "background": "#003068"
       }
     },
     {

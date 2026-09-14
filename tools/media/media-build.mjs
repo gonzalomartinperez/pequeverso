@@ -332,20 +332,14 @@ function icoFromPng(pngBuffer, size) {
 
 async function buildFavicons(item, src) {
   const c = item.compose;
-  const padded = async (size) => {
-    const inner = Math.round(size * (1 - 2 * c.padding));
-    const icon = await sharp(src)
-      .resize({ width: inner, height: inner, fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
-      .png()
-      .toBuffer();
-    return sharp({ create: { width: size, height: size, channels: 3, background: c.background } })
-      .composite([{ input: icon, left: Math.round((size - inner) / 2), top: Math.round((size - inner) / 2) }])
-      .png({ compressionLevel: 9, palette: true, quality: 90 })
-      .toBuffer();
-  };
   const transparent = (size) =>
     sharp(src)
       .resize({ width: size, height: size, fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .png({ compressionLevel: 9 })
+      .toBuffer();
+  const onBackground = async (size) =>
+    sharp({ create: { width: size, height: size, channels: 3, background: c.background } })
+      .composite([{ input: await transparent(size), left: 0, top: 0 }])
       .png({ compressionLevel: 9 })
       .toBuffer();
 
@@ -355,12 +349,13 @@ async function buildFavicons(item, src) {
     writeFileSync(abs, buffer);
     files.push(await outputRecord(abs, { ...dims, format, quality: null }));
   };
-  await write("favicon.ico", icoFromPng(await transparent(32), 32), { width: 32, height: 32 }, "ico");
-  await write("apple-touch-icon.png", await padded(180), { width: 180, height: 180 }, "png");
-  await write("icon-192.png", await padded(192), { width: 192, height: 192 }, "png");
-  await write("icon-512.png", await padded(512), { width: 512, height: 512 }, "png");
-  const png96 = await transparent(96);
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 96 96" width="96" height="96"><title>Pequeverso</title><image width="96" height="96" href="data:image/png;base64,${png96.toString("base64")}"/></svg>`;
+  await write("favicon.ico", icoFromPng(await transparent(48), 48), { width: 48, height: 48 }, "ico");
+  await write("favicon.png", await transparent(512), { width: 512, height: 512 }, "png");
+  await write("apple-touch-icon.png", await onBackground(180), { width: 180, height: 180 }, "png");
+  await write("icon-192.png", await transparent(192), { width: 192, height: 192 }, "png");
+  await write("icon-512.png", await transparent(512), { width: 512, height: 512 }, "png");
+  const png192 = await transparent(192);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 192 192" width="192" height="192"><title>Pequeverso</title><image width="192" height="192" href="data:image/png;base64,${png192.toString("base64")}"/></svg>`;
   const optimized = svgoOptimize(svg, { multipass: true, plugins: ["preset-default"] }).data;
   await write("icon.svg", Buffer.from(`${optimized}\n`), { width: 96, height: 96 }, "svg");
   const webmanifest = {
@@ -372,8 +367,8 @@ async function buildFavicons(item, src) {
     background_color: c.background,
     theme_color: "#003068",
     icons: [
-      { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { src: "/icon-512.png", sizes: "512x512", type: "image/png" },
+      { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
     ],
   };
   writeFileSync(join(publicDir, "manifest.webmanifest"), `${JSON.stringify(webmanifest, null, 2)}\n`);
