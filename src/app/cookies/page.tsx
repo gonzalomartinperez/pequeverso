@@ -22,7 +22,7 @@ export default function CookiesPage() {
   return (
     <LegalLayout
       title="Política de cookies"
-      intro="Solo instalamos cookies necesarias. Las cookies de marketing de Meta se activan únicamente si las aceptas en el banner."
+      intro="Usamos cookies necesarias y, para medir nuestras campañas, el píxel de Meta. Puedes rechazarlo en el banner o desde el pie de página y recordamos tu elección durante seis meses."
       updatedAt={seller.updatedAt}
       sections={sections}
     >
@@ -61,7 +61,7 @@ export default function CookiesPage() {
             <td>Meta Platforms Ireland</td>
             <td>Distinguir navegadores para medir campañas (Meta Pixel)</td>
             <td>90 días</td>
-            <td>Marketing (solo con consentimiento)</td>
+            <td>Marketing (puedes rechazarla)</td>
           </tr>
           <tr>
             <td>
@@ -70,14 +70,10 @@ export default function CookiesPage() {
             <td>Meta Platforms Ireland</td>
             <td>Guardar el identificador de clic de un anuncio de Meta</td>
             <td>90 días</td>
-            <td>Marketing (solo con consentimiento)</td>
+            <td>Marketing (puedes rechazarla)</td>
           </tr>
         </tbody>
       </table>
-      <p>
-        Si está activa una herramienta de medición agregada sin cookies (por ejemplo, Umami), no instala
-        cookies ni identifica personas; se indica aquí cuando se utiliza.
-      </p>
 
       <h2 id="elegir">Cómo elegir o cambiar</h2>
       <p>

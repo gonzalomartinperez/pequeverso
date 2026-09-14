@@ -14,12 +14,14 @@ providers (TikTok, Google) without touching pages.
 - One `track(name, params)` entry point in `src/features/tracking/track.ts` generates a UUID
   event id, mirrors the event to `window.dataLayer` and fans out to enabled adapters.
 - Adapters implement `TrackingAdapter` (`id`, `category`, `enabled`, `scripts(mode)`,
-  `onConsent(state)`, `send(event)`); Meta (marketing, consent API `revoke`/`grant`) and Umami
-  (cookieless, no consent) are implemented. Adding a provider is a new adapter file plus an
+  `onConsent(state)`, `send(event)`); Meta (marketing, consent API `revoke`/`grant`) is
+  implemented. Adding a provider is a new adapter file plus an
   environment variable; pages never change.
 - Consent v2 stores per-category decisions (`analytics`, `marketing`) with a version that forces a
-  re-prompt when the policy changes. `NEXT_PUBLIC_CONSENT_MODE=strict` (default) injects gated
-  scripts only after consent; `advanced` loads Meta immediately revoked and grants later.
+  re-prompt when the policy changes. Policy lives in code (`DEFAULT_CHOICE`): since 2026-09-14
+  measurement is on by default and the banner withdraws it (owner decision; see the legal note in
+  `docs/tracking.md`). The earlier `NEXT_PUBLIC_CONSENT_MODE` and Umami variables were removed so
+  the deployment surface is site URL, checkout override and pixel id only.
 - `InitiateCheckout`, `Purchase`, `PlaceAnOrder` and `begin_checkout` are forbidden at the type
   level and guarded at runtime: Hotmart owns them.
 - `scripts/check-env.mjs` validates variable formats before every build and prints the enabled
@@ -30,4 +32,4 @@ providers (TikTok, Google) without touching pages.
 - Site-side events under-count visitors who reject; Hotmart checkout and purchase events remain
   complete.
 - No server-side event API from the site (static target); Hotmart's server events cover purchases.
-- Tests run with fake ids and stubbed third-party hosts, so CI never contacts Meta or Umami.
+- Tests run with a fake id; `tests/e2e/fixtures.ts` aborts every Meta host, so CI never contacts Meta.

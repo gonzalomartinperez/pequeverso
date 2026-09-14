@@ -46,29 +46,12 @@ function validate() {
   const pixel = read("NEXT_PUBLIC_META_PIXEL_ID");
   if (pixel && !/^\d{15,16}$/.test(pixel)) errors.push("NEXT_PUBLIC_META_PIXEL_ID must be 15-16 digits");
 
-  const umamiUrl = read("NEXT_PUBLIC_UMAMI_SCRIPT_URL");
-  const umamiId = read("NEXT_PUBLIC_UMAMI_WEBSITE_ID");
-  if (Boolean(umamiUrl) !== Boolean(umamiId)) {
-    errors.push("NEXT_PUBLIC_UMAMI_SCRIPT_URL and NEXT_PUBLIC_UMAMI_WEBSITE_ID must be set together");
-  }
-  if (umamiUrl && !isHttpsUrl(umamiUrl)) errors.push("NEXT_PUBLIC_UMAMI_SCRIPT_URL must be an https:// URL");
-
-  const mode = read("NEXT_PUBLIC_CONSENT_MODE");
-  if (mode && mode !== "strict" && mode !== "advanced") {
-    errors.push('NEXT_PUBLIC_CONSENT_MODE must be "strict" or "advanced"');
-  }
-
-  const debug = read("NEXT_PUBLIC_TRACKING_DEBUG");
-  if (debug && debug !== "0" && debug !== "1") errors.push('NEXT_PUBLIC_TRACKING_DEBUG must be "1" or empty');
-
   return errors;
 }
 
 function summary() {
   const meta = read("NEXT_PUBLIC_META_PIXEL_ID") ? "on" : "off";
-  const umami = read("NEXT_PUBLIC_UMAMI_SCRIPT_URL") && read("NEXT_PUBLIC_UMAMI_WEBSITE_ID") ? "on" : "off";
-  const mode = read("NEXT_PUBLIC_CONSENT_MODE") === "advanced" ? "advanced" : "strict";
-  return `tracking: meta=${meta} umami=${umami} mode=${mode}`;
+  return `tracking: meta=${meta}`;
 }
 
 loadEnvFiles();

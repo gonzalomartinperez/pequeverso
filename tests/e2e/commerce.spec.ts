@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 const CHECKOUT_ORIGIN = "https://pay.hotmart.com/";
 
@@ -78,7 +78,8 @@ test("hub links keep acquisition params and emit product interest", async ({ pag
   expect(await dataLayer(page, "PequeversoProductInterest")).toHaveLength(1);
 });
 
-test("no pixel script is injected without configuration or consent", async ({ page }) => {
+test("no pixel script is injected without configuration", async ({ page }) => {
+  test.skip(!!process.env.E2E_EXPECT_CONSENT, "build was configured with a pixel id");
   await page.goto("/grafismo-fonetico/");
   await expect(page.locator('script[src*="connect.facebook.net"]')).toHaveCount(0);
 });

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 test("upsell mode by default: upsell view visible, downsell hidden, one widget container", async ({
   page,

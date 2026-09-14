@@ -9,6 +9,12 @@ export type ConsentCategory = "analytics" | "marketing";
 
 export type ConsentChoice = Record<ConsentCategory, boolean>;
 
+/**
+ * Policy before the visitor decides: measurement is on and the banner offers an equal
+ * "Rechazar" that withdraws it (opt-out). A stored choice always wins over this default.
+ */
+export const DEFAULT_CHOICE: Readonly<ConsentChoice> = { analytics: true, marketing: true };
+
 export type ConsentState = ConsentChoice & {
   version: typeof CONSENT_VERSION;
   updatedAt: string;
@@ -68,13 +74,13 @@ export function writeConsent(choice: ConsentChoice): ConsentState {
   return state;
 }
 
-/** Whether `category` may run: "none" always, others only when granted in `state`. */
+/** Whether `category` may run: "none" always, others per the stored choice or `DEFAULT_CHOICE`. */
 export function hasConsent(
   category: ConsentCategory | "none",
   state: ConsentState | null = readConsent(),
 ): boolean {
   if (category === "none") return true;
-  return state?.[category] === true;
+  return state ? state[category] : DEFAULT_CHOICE[category];
 }
 
 /** Subscribe to consent changes; returns an unsubscribe function. */

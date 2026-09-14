@@ -68,12 +68,12 @@ function queueFor(adapter: TrackingAdapter): TrackedEvent[] {
 }
 
 function dispatch(adapter: TrackingAdapter, event: TrackedEvent, state: ConsentState | null): void {
-  const allowed = hasConsent(adapter.category, state);
-  if (allowed && adapter.send(event)) {
+  if (!hasConsent(adapter.category, state)) return;
+  if (adapter.send(event)) {
     log("sent", adapter.id, event.name, event.eventId);
     return;
   }
-  if (allowed || state === null) queueFor(adapter).push(event);
+  queueFor(adapter).push(event);
 }
 
 function flushAdapter(adapter: TrackingAdapter, state: ConsentState | null): void {
@@ -109,8 +109,8 @@ export function syncConsent(): void {
 }
 
 /**
- * Records an event: UUID id, `window.dataLayer` mirror, then every enabled adapter (sent now
- * when its category is consented, queued otherwise). Returns the event id; safe on the server.
+ * Records an event: UUID id, `window.dataLayer` mirror, then every enabled adapter whose
+ * category is allowed (queued while its script loads). Returns the event id; safe on the server.
  */
 export function track(name: EventName, params: EventParams = {}): string {
   if (!assertAllowed(name)) return "";

@@ -4,6 +4,15 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
 
 ## [Unreleased]
 
+### Changed
+- Tracking policy: the Meta Pixel runs by default when `NEXT_PUBLIC_META_PIXEL_ID` is set and
+  the banner withdraws it (`Rechazar` revokes the pixel, choice kept six months; no script on
+  later visits). "Configurar" shows marketing active by default.
+
+### Removed
+- `NEXT_PUBLIC_CONSENT_MODE`, `NEXT_PUBLIC_TRACKING_DEBUG` and the Umami adapter with its two
+  variables: the deployment surface is site URL, checkout override and pixel id only.
+
 ## [0.2.0] — 2026-09-14
 
 Site v2: design system, motion, product registry, tracking v2 and a lean CI.
