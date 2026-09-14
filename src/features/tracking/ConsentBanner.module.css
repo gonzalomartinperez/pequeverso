@@ -33,6 +33,25 @@
   font-size: var(--text-small);
   color: var(--pv-body);
   padding-left: 0;
+  list-style: none;
+}
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.option input {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.125rem;
+  accent-color: var(--pv-navy);
+}
+
+.option label {
+  min-height: 24px;
 }
 
 .actions {

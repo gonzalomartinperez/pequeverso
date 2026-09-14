@@ -40,6 +40,23 @@ Manual (`workflow_dispatch`), `production` environment with required approval:
 3. Cloudflare proxy: HTML responses are `Cache-Control: no-cache` (never CDN-cached); `/media/`,
    `/_next/static/` are `immutable`. Purge the zone only if you change cache rules.
 
+## Environment variables (hPanel → Environment variables; GitHub `production` environment)
+
+`npm run build` runs `scripts/check-env.mjs` first: it validates formats, never prints values,
+exits 1 on a malformed one and logs `tracking: meta=on|off umami=on|off mode=strict|advanced`.
+`NEXT_PUBLIC_*` values are inlined at build time, so **saving a variable in hPanel triggers a
+redeploy**; there is nothing to reload at runtime.
+
+| Variable | Required | Format | Effect when empty |
+|---|---|---|---|
+| `NEXT_PUBLIC_SITE_URL` | yes | `https://` origin, no trailing slash | defaults to `https://pequeverso.com` (canonicals, sitemap, OG) |
+| `NEXT_PUBLIC_CHECKOUT_URL` / `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO` | yes, one of them | starts with `https://pay.hotmart.com/` | CTAs fall back to the on-page offer anchor (public clone) |
+| `NEXT_PUBLIC_META_PIXEL_ID` | optional | 15–16 digits | Meta adapter off: no script, no consent banner |
+| `NEXT_PUBLIC_UMAMI_SCRIPT_URL` + `NEXT_PUBLIC_UMAMI_WEBSITE_ID` | optional pair (both or neither) | `https://` script URL + website id | Umami adapter off |
+| `NEXT_PUBLIC_CONSENT_MODE` | optional | `strict` (default) or `advanced` | `strict`: nothing third-party loads before consent |
+| `NEXT_PUBLIC_TRACKING_DEBUG` | optional | `1` | no console output |
+| `NEXT_OUTPUT` | auto | `export` (default) or `standalone` | static export; Hostinger's Node builder forces `standalone` |
+
 ## Verification matrix (after every deploy)
 
 ```bash
