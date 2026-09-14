@@ -56,7 +56,13 @@ export function CTAButton(props: LinkProps | ButtonProps) {
     const after = iconAfter ?? (isExternal && !/^mailto:/.test(href) ? "external" : undefined);
     if (isExternal || /^mailto:/.test(href)) {
       return (
-        <a href={href} className={cls} rel={isExternal ? "noopener" : undefined} {...rest}>
+        <a
+          href={href}
+          className={cls}
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "noopener" : undefined}
+          {...rest}
+        >
           <Content icon={icon} iconAfter={after}>
             {children}
           </Content>

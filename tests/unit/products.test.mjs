@@ -76,10 +76,9 @@ test("documented prices (README 2026-08-04): 14.99 list, 14.99 upsell, 7.49 down
 
 test("the checkout URL is read through static env references Next can inline", () => {
   const source = readFileSync(new URL("../../src/products/grafismo-fonetico.ts", import.meta.url), "utf8");
-  assert.match(
-    source,
-    /process\.env\.NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO \|\| process\.env\.NEXT_PUBLIC_CHECKOUT_URL \|\| ""/,
-  );
+  assert.match(source, /process\.env\.NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO \|\|/);
+  assert.match(source, /process\.env\.NEXT_PUBLIC_CHECKOUT_URL \|\|/);
+  assert.match(grafismoFonetico.checkout.url, /^https:\/\/pay\.hotmart\.com\/D106959604R\?checkoutMode=10$/);
   assert.equal(grafismoFonetico.checkout.envKey, "NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO");
   assert.match(grafismoFonetico.checkout.sckPrefix, /^[a-z0-9]{1,6}$/);
 });

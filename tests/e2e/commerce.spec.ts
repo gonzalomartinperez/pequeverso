@@ -27,16 +27,18 @@ test("every principal CTA points to the configured checkout with allowlisted par
   await page.goto(
     "/grafismo-fonetico/?utm_source=tiktok&utm_medium=social&a=aff1&off=EVIL&ref=EVIL&fbclid=abc",
   );
-  const hrefs = await page
-    .locator("a[data-checkout]")
-    .evaluateAll((els) => els.map((el) => (el as HTMLAnchorElement).href));
-  expect(hrefs.length).toBeGreaterThanOrEqual(4);
-  for (const href of hrefs) {
-    if (!href.startsWith(CHECKOUT_ORIGIN)) {
-      // Public clone without NEXT_PUBLIC_CHECKOUT_URL falls back to the on-page offer anchor.
-      expect(href).toContain("#comprar");
-      continue;
-    }
+  const links = await page.locator("a[data-checkout]").evaluateAll((els) =>
+    els.map((el) => ({
+      href: (el as HTMLAnchorElement).href,
+      target: el.getAttribute("target"),
+      rel: el.getAttribute("rel"),
+    })),
+  );
+  expect(links.length).toBeGreaterThanOrEqual(4);
+  for (const { href, target, rel } of links) {
+    expect(href.startsWith(CHECKOUT_ORIGIN)).toBe(true);
+    expect(target).toBe("_blank");
+    expect(rel).toContain("noopener");
     const url = new URL(href);
     expect(url.searchParams.get("checkoutMode")).toBe("10");
     expect(url.searchParams.get("utm_source")).toBe("tiktok");
