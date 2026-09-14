@@ -24,6 +24,8 @@ type IconFact = { icon: IconName; label: string; detail: string };
 type IconStep = { icon: IconName; title: string; text: string };
 type IconPoint = { icon: IconName; text: string };
 type Section = { kicker: string; title: string; lead?: string };
+type AgeOption = { id: string; label: string; hint: string };
+type AudienceCard = { title: string; items: readonly string[] };
 
 /** Copy of a principal landing (checkout CTA). */
 export type CoreLandingCopy = {
@@ -40,13 +42,29 @@ export type CoreLandingCopy = {
     priceKicker: string;
     taxNote: string;
     currencyNote: string;
+    /** Age radios of the hero: each option swaps the featured worksheet and a "where to start" line. */
+    ages?: { legend: string; defaultId: string; items: readonly AgeOption[] };
+    /** Parts of the hero trust line; price and guarantee days come from config. */
+    assurance?: { payment: string; access: string; guarantee: string };
   };
   trust: readonly IconPoint[];
   problem: Section & { paragraphs: readonly string[]; bullets: readonly string[] };
   method: Section & { steps: readonly IconStep[] };
   pages: Section & { zoomHint: string; galleryLabel: string };
-  included: Section & { total: string };
+  included: Section & { total: string; units?: { pdf: string; pages: string } };
   midOffer: { title: string; text: string; cta: string };
+  /** Offer card details (kicker, currency note, checks); title, text and CTA come from `midOffer`. */
+  offer?: { kicker: string; currencyNote: string; checks: readonly string[] };
+  /** "Es para ti / no es para ti" cards. */
+  audience?: Section & { yes: AudienceCard; no: AudienceCard };
+  /** Note from the kit's author; rendered only when enabled. */
+  creator?: {
+    enabled: boolean;
+    kicker: string;
+    title: string;
+    paragraphs: readonly string[];
+    signature: string;
+  };
   videos: Section;
   credibility: { kicker: string; title: string; text: string; points: readonly string[] };
   benefits: Section & { items: readonly IconStep[]; callout: string };

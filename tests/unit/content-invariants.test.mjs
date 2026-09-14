@@ -80,7 +80,8 @@ test("guarantee days in copy match the configured value", () => {
       days: Number(match[1]),
     })),
   );
-  assert.ok(mentions.length > 0, "guarantee copy is expected somewhere");
+  const configured = files.filter((file) => read(file).includes("guaranteeDays"));
+  assert.ok(mentions.length + configured.length > 0, "guarantee copy is expected somewhere");
   for (const { file, days } of mentions) {
     assert.equal(days, guaranteeDays, `${relative(".", file)} states ${days} days`);
   }

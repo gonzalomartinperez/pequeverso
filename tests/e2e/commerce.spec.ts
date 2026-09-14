@@ -56,7 +56,7 @@ test("each CTA click fires exactly one CheckoutIntent with a unique event id", a
   const positions = await page
     .locator("a[data-checkout]")
     .evaluateAll((els) => els.map((el) => el.getAttribute("data-position")));
-  expect(positions).toEqual(expect.arrayContaining(["header", "hero", "mid", "final", "sticky"]));
+  expect(positions).toEqual(expect.arrayContaining(["header", "hero", "oferta", "final", "sticky"]));
   const hero = page.locator('a[data-checkout][data-position="hero"]');
   await hero.click();
   await hero.click();

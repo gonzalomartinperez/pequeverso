@@ -31,7 +31,7 @@ for (const route of routes) {
     expect(element?.tag === "h1" || (element?.tag === "img" && element.lcp)).toBe(true);
   });
 
-  test(`${route}: the image preload targets the hero rendition, never the isotipo`, async ({ page }) => {
+  test(`${route}: the image preload targets the hero worksheet, never the isotipo`, async ({ page }) => {
     await page.goto(route);
     const hero = page.locator("main img[data-lcp]").first();
     const candidates = await hero.evaluate((img) => [
@@ -39,13 +39,20 @@ for (const route of routes) {
       ...[...(img.closest("picture")?.querySelectorAll("source") ?? [])].map((s) => s.getAttribute("srcset")),
     ]);
     const sizes = await hero.getAttribute("sizes");
-    const preloads = page.locator(`link[rel="preload"][as="image"][imagesizes="${sizes}"]`);
-    await expect(preloads).toHaveCount(1);
-    const srcset = (await preloads.first().getAttribute("imagesrcset")) ?? "";
-    expect(candidates).toContain(srcset);
-    expect(srcset).toMatch(/-hero-w\d+-/);
-    await expect(preloads.first()).toHaveAttribute("fetchpriority", "high");
-    expect(await hero.evaluate((img) => img.currentSrc)).toMatch(/-hero-w\d+-/);
+    const preloads = await page
+      .locator(`link[rel="preload"][as="image"][imagesizes="${sizes}"]`)
+      .evaluateAll((links) =>
+        links.map((link) => ({
+          srcset: link.getAttribute("imagesrcset") ?? "",
+          priority: link.getAttribute("fetchpriority"),
+        })),
+      );
+    // Link prefetches may add another route's hero preload; exactly one must match this page's hero.
+    const own = preloads.filter((link) => candidates.includes(link.srcset));
+    expect(own).toHaveLength(1);
+    expect(own[0]?.srcset).toMatch(/-(hero|page-\d+)-w\d+-/);
+    expect(own[0]?.priority).toBe("high");
+    expect(await hero.evaluate((img) => img.currentSrc)).toMatch(/-(hero|page-\d+)-w\d+-/);
     const allPreloads = await page
       .locator('link[rel="preload"]')
       .evaluateAll((links) =>

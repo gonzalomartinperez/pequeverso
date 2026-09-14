@@ -36,7 +36,7 @@ export function Footer() {
           <BrandLogo className={styles.logo} />
           <p className={styles.tagline}>{site.tagline}</p>
           <p className={styles.follow}>Síguenos: @somospequeverso</p>
-          <SocialLinks tone="dark" showLabels />
+          <SocialLinks tone="dark" />
         </div>
         <nav aria-label="Producto">
           <p className={styles.heading}>Producto</p>

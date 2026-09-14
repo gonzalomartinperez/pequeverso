@@ -1,0 +1,17 @@
+.note {
+  max-width: 70ch;
+  margin-inline: auto;
+  justify-items: start;
+  border-left: var(--space-1) solid var(--pv-gold);
+}
+
+.title {
+  font-size: var(--text-h3);
+  font-family: var(--font-display);
+}
+
+.signature {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--pv-ink);
+}

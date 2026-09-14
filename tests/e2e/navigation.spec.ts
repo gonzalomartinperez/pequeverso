@@ -60,7 +60,7 @@ test("sitemap lists only indexable routes and pages carry a self canonical", asy
   }
 });
 
-test("media requests resolve and the LCP hero image has explicit dimensions", async ({ page }) => {
+test("media requests resolve and the LCP worksheet image has explicit dimensions", async ({ page }) => {
   const failed: string[] = [];
   page.on("response", (res) => {
     if (res.url().includes("/media/") && res.status() >= 400) failed.push(`${res.status()} ${res.url()}`);
@@ -69,7 +69,7 @@ test("media requests resolve and the LCP hero image has explicit dimensions", as
   const hero = page.locator("main img[data-lcp]").first();
   await expect(hero).toHaveAttribute("width", /\d+/);
   await expect(hero).toHaveAttribute("height", /\d+/);
-  await expect(hero).toHaveAttribute("srcset", /w480|w768/);
+  await expect(hero).toHaveAttribute("srcset", /w640|w1100/);
   await expect(hero).toHaveAttribute("fetchpriority", "high");
   expect(failed).toEqual([]);
 });
