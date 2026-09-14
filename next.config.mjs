@@ -32,6 +32,9 @@ const nextConfig = {
     unoptimized: true,
   },
   generateBuildId: async () => process.env.GITHUB_SHA || null,
+  experimental: {
+    optimizePackageImports: ["lucide-react"],
+  },
   ...(output === "standalone"
     ? {
         redirects: async () => toNextRedirects(edgeRules),

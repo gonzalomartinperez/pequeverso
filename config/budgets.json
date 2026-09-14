@@ -1,11 +1,11 @@
 {
-  "description": "Transfer-size budgets (gzip bytes) per route, enforced by scripts/check-bundle-budget.mjs. Tighten after each optimization; never loosen without a decision record.",
-  "default": { "html": 40960, "js": 199680, "css": 16384 },
+  "description": "Transfer-size budgets (gzip bytes) per route, enforced by scripts/check-bundle-budget.mjs. Tighten after each optimization; never loosen without a decision record. Values are measured + 10 % (docs/performance.md).",
+  "default": { "html": 17408, "js": 173568, "css": 13312 },
   "routes": {
-    "/": { "html": 30720 },
-    "/grafismo-fonetico/": { "html": 46080 },
-    "/imprime-y-juega/": { "html": 40960 },
-    "/grafismo-fonetico/gracias/": {},
-    "/soporte/": {}
+    "/": { "html": 20480, "js": 160256 },
+    "/grafismo-fonetico/": { "html": 36864 },
+    "/imprime-y-juega/": { "html": 28160 },
+    "/grafismo-fonetico/gracias/": { "js": 157696 },
+    "/soporte/": { "html": 9728, "js": 156160 }
   }
 }

@@ -1,7 +1,7 @@
 import { site } from "@config/site";
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
 import type { ReactNode } from "react";
+import { preload } from "react-dom";
 import { SkipLink } from "@/components/ui/SkipLink/SkipLink";
 import { ConsentBanner } from "@/features/tracking/ConsentBanner";
 import { Analytics } from "@/features/tracking/TrackingScripts";
@@ -10,25 +10,7 @@ import "@/styles/tokens.css";
 import "@/styles/base.css";
 import "@/styles/utilities.css";
 
-const fraunces = localFont({
-  src: "../fonts/fraunces-latin-wght-normal.woff2",
-  variable: "--font-fraunces",
-  weight: "100 900",
-  display: "swap",
-  preload: true,
-  fallback: ["Georgia", "Times New Roman", "serif"],
-  adjustFontFallback: "Times New Roman",
-});
-
-const nunito = localFont({
-  src: "../fonts/nunito-sans-latin-wght-normal.woff2",
-  variable: "--font-nunito",
-  weight: "200 1000",
-  display: "swap",
-  preload: true,
-  fallback: ["system-ui", "Segoe UI", "Roboto", "sans-serif"],
-  adjustFontFallback: "Arial",
-});
+const fonts = ["/fonts/fraunces-latin-wght-7f9d191d.woff2", "/fonts/nunito-sans-latin-wght-29e38904.woff2"];
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -56,8 +38,9 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+  for (const href of fonts) preload(href, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
   return (
-    <html lang={site.locale} className={`${fraunces.variable} ${nunito.variable}`}>
+    <html lang={site.locale}>
       <body>
         <SkipLink />
         {children}

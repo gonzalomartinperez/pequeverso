@@ -66,9 +66,10 @@ test("media requests resolve and the LCP hero image has explicit dimensions", as
     if (res.url().includes("/media/") && res.status() >= 400) failed.push(`${res.status()} ${res.url()}`);
   });
   await page.goto("/grafismo-fonetico/");
-  const hero = page.locator("main img[fetchpriority='high']").first();
+  const hero = page.locator("main img[data-lcp]").first();
   await expect(hero).toHaveAttribute("width", /\d+/);
   await expect(hero).toHaveAttribute("height", /\d+/);
   await expect(hero).toHaveAttribute("srcset", /w480|w768/);
+  await expect(hero).toHaveAttribute("fetchpriority", "high");
   expect(failed).toEqual([]);
 });
