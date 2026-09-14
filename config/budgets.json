@@ -3,15 +3,15 @@
   "default": {
     "html": 17408,
     "js": 173568,
-    "css": 13312
+    "css": 15872
   },
   "routes": {
     "/": {
-      "html": 20480,
+      "html": 22528,
       "js": 160256
     },
     "/grafismo-fonetico/": {
-      "html": 36864
+      "html": 44032
     },
     "/imprime-y-juega/": {
       "html": 28160

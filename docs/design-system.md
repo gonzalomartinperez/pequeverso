@@ -139,6 +139,19 @@ page renders `Section`/`Eyebrow`; remove them with the last page migration.
 | `StickyCTA` | client | mobile bar hidden over hero, final offer, footer and open dialogs |
 | `ConsentBanner`, `Analytics`, `RevealObserver` | client | mounted once in the root layout |
 
+## Hero scene and page sections
+
+The landing and the home share the hero "la mesa bajo el pequeño universo" (`src/features/landing/core`):
+
+| Component | Kind | Notes |
+|---|---|---|
+| `HeroScene` | server | `id`, `titleId`, `eyebrow`, `title`, `lead`, `children` (copy extras), `actions`, `trust`, `stack`, `aside`, `desk`. A navy sky (`Universe` + `WaveDivider`) over a cream desk; the section is its own query container (sm 640 · lg 1024 · xl 1280), every item is placed explicitly on the grid. ≥ lg: 1.05/0.95 columns, the stack hangs over the wave by `--section-overlap`, the aside is `position: sticky` beside the desk row. sm–lg: copy → stack → aside → desk. < sm: sky covers copy + aside, stack (240 px, side pages peeking) → desk. Entrance uses `hero.css` (`--i` 0–5; the h1 lifts without opacity, the stack is `data-hero-enter="media"`). |
+| `HeroStack` | client | `pages: {id, node}[]` (server-rendered `MediaImage`, the featured one `priority`), `featured`. Three worksheets fanned with `perspective` + `preserve-3d` (rotateY −14°/0/+12°, translateZ) under an `Orbit`; slots (`data-slot="front|left|right"`) follow the `AgeProvider` selection through React `ViewTransition` (`"none"` under reduced motion). |
+| `AgeProvider`, `AgeSelector` (`src/features/landing/AgeSelector`) | client | `fieldset` of radios (3–4 · 5 · 6–7) styled as chips; `select` runs in `startTransition`; the "por dónde empezar" line is `aria-live="polite"`. Title, price and URL never change. |
+| `Includes`, `MethodSteps`, `OfferCard`, `AudienceCards`, `CreatorNote`, `CenteredHeading` | server | Section bodies composed from primitives: `Counter` facts + `ResourceGrid` (two columns from 30rem of the desk column), `Steps` from md and `StickyStack` of navy cards below, `Card emphasis` + `Split` + `PriceBlock`, two `BulletList` cards, the author's note (only when `copy.creator.enabled`), and a centred `Stack` heading. |
+
+Landing order (`CoreLanding`): `#hero` (with `#comprar` price card and the `#incluye` desk) → Problema → `#metodo` (navy, wave-top) → `#videos` → `#paginas` (sky, overlap) → `#oferta` → `#para-quien` → author's note → `#preguntas` (mint) → `#oferta-final` (navy) → `StickyCTA` (mobile; hidden while the hero CTA, `#comprar`, `#oferta`, `#oferta-final`, the footer or a dialog is visible). Checkout positions: `header`, `hero`, `hero-card`, `oferta`, `final`, `sticky`. Home: hero (the only CTA lives in the product card) with the `#empieza` desk → `#paginas` (three `FlipPreview` cards) → `#metodo` (navy, wave-top) → `#valores` → closing band. Below-the-fold sections render with `Section defer`; the hero and the sticky-bar sentinels never do.
+
 ## Responsive rules
 
 1440/1280: two-column heroes, 3–4-up grids. 1024: two columns, 3-up grids. 768: single column,

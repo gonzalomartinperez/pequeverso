@@ -1,4 +1,8 @@
-/** The ten FAQ answers of the published Grafismo Fonético landing, reviewed. */
+/**
+ * The FAQ of the Grafismo Fonético landing: the ten reviewed answers of the published landing
+ * plus the currency question. The guarantee answer sits third so the refund terms are read early.
+ */
+import { guaranteeDays } from "../../../../config/commerce.ts";
 import type { FaqItem } from "../index.ts";
 
 export const grafismoFaq: readonly FaqItem[] = [
@@ -9,6 +13,10 @@ export const grafismoFaq: readonly FaqItem[] = [
   {
     q: "¿Para qué edades se recomienda?",
     a: "La recomendación orientativa es de 3 a 7 años. La edad no reemplaza observar el ritmo, el interés y las habilidades actuales de cada niño.",
+  },
+  {
+    q: `¿Cómo funciona la garantía de ${guaranteeDays} días?`,
+    a: `Tienes ${guaranteeDays} días desde la compra para solicitar un reembolso a través de Hotmart, de acuerdo con las condiciones informadas en la página de pago.`,
   },
   {
     q: "¿Cuánto tiempo conviene practicar?",
@@ -39,7 +47,7 @@ export const grafismoFaq: readonly FaqItem[] = [
     a: "Hotmart envía el acceso al correo utilizado en la compra. También puedes ingresar en consumer.hotmart.com con ese mismo correo y revisar “Mis compras”.",
   },
   {
-    q: "¿Cómo funciona la garantía de 7 días?",
-    a: "Tienes 7 días desde la compra para solicitar un reembolso a través de Hotmart, de acuerdo con las condiciones informadas en la página de pago.",
+    q: "¿Puedo pagar en mi moneda?",
+    a: "Hotmart muestra el total en tu moneda local y los métodos disponibles en tu país antes de confirmar.",
   },
 ];

@@ -53,8 +53,13 @@ test("fallback path marks only elements below the fold and reveals them on scrol
   expect(pendingAboveFold).toBe(0);
   const last = await page.locator("[data-reveal][data-reveal-state='pending']").last().elementHandle();
   if (!last) throw new Error("expected a pending element");
-  await last.scrollIntoViewIfNeeded();
-  await expect.poll(() => last.getAttribute("data-reveal-state")).toBe("visible");
+  // Deferred sections (content-visibility) grow as they render, so keep scrolling until it is in view.
+  await expect
+    .poll(async () => {
+      await last.scrollIntoViewIfNeeded();
+      return last.getAttribute("data-reveal-state");
+    })
+    .toBe("visible");
   await expect.poll(() => last.evaluate((el) => getComputedStyle(el).opacity), { timeout: 3_000 }).toBe("1");
 });
 
@@ -90,4 +95,35 @@ test("page gallery: arrows, dots, keyboard and zoom dialog", async ({ page }) =>
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(dialog).toHaveCount(0);
+});
+
+test("age selector swaps the featured worksheet and keeps a single h1", async ({ page }) => {
+  await page.goto("/grafismo-fonetico/");
+  const heading = page.locator("h1:visible");
+  await expect(heading).toHaveCount(1);
+  const title = await heading.textContent();
+  const featured = page.locator('#hero [data-slot="front"] img');
+  const before = await featured.getAttribute("alt");
+  const option = page.getByRole("radio", { name: "6–7" });
+  await option.click();
+  await expect(option).toBeChecked();
+  await expect(featured).not.toHaveAttribute("alt", before ?? "");
+  await expect(page.locator("h1:visible")).toHaveCount(1);
+  await expect(heading).toHaveText(title ?? "");
+  await expect(page.locator("#comprar")).toHaveCount(1);
+  expect(page.url()).not.toContain("?");
+});
+
+test("sticky bar stays hidden while the gallery zoom dialog is open", async ({ page }) => {
+  await page.goto("/grafismo-fonetico/#paginas");
+  const bar = page.getByTestId("sticky-cta");
+  const offscreen = () =>
+    bar.evaluate((el) => {
+      const rect = el.getBoundingClientRect();
+      return rect.height === 0 || rect.top >= window.innerHeight;
+    });
+  await page.locator("button[aria-label^='Ampliar']").first().click();
+  await expect(page.locator("dialog[open]")).toBeVisible();
+  await expect.poll(offscreen, { timeout: 3_000 }).toBe(true);
+  await page.keyboard.press("Escape");
 });

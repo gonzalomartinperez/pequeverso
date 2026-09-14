@@ -1,25 +1,38 @@
-/** Copy for the homepage (hub). Brand-first, product-clear. */
+/**
+ * Copy for the homepage (hub). Brand-first, product-clear. Prices, counts and the guarantee
+ * period come from the registry and config; copy only names what the material contains.
+ */
+import { guaranteeDays } from "../../config/commerce.ts";
+
 export const homeCopy = {
   meta: {
     title: "Pequeverso | Recursos imprimibles para aprender en familia",
     description:
       "Un pequeño universo de recursos imprimibles para niños de 3 a 7 años: letras, sonidos, sílabas, palabras y trazos listos para imprimir y practicar en casa, 10 minutos por día.",
   },
+  nav: [
+    { href: "#empieza", label: "Empieza por aquí" },
+    { href: "#metodo", label: "Cómo lo usamos" },
+    { href: "#valores", label: "Qué esperar" },
+  ],
   hero: {
     kicker: "Recursos imprimibles para familias",
-    title: "Un pequeño universo para aprender, crear y crecer en familia.",
+    title: "Un pequeño universo para aprender en familia, una hoja por día.",
     lead: "Páginas reales, listas para imprimir, pensadas para niños de 3 a 7 años y para adultos que quieren saber por dónde empezar.",
-    chips: ["Material real y visible", "Sin suscripciones", "Acceso digital inmediato"],
+    chips: [
+      { icon: "eye", label: "Material real y visible" },
+      { icon: "infinity", label: "Sin suscripciones" },
+      { icon: "download", label: "Acceso digital inmediato" },
+    ],
     cta: "Ver Grafismo Fonético",
-    secondary: "Cómo lo usamos",
   },
   product: {
     kicker: "Disponible ahora · 3 a 7 años",
     title: "Grafismo Fonético",
     promise: "Primeros pasos para reconocer letras, sonidos, sílabas y palabras, con trazos guiados.",
     facts: ["9 PDF", "414 páginas", "Acceso digital"],
-    cta: "Ver el kit",
-    priceKicker: "Kit completo",
+    priceKicker: "Kit completo · pago único",
+    cta: "Ver Grafismo Fonético",
   },
   start: {
     kicker: "Empieza por aquí",
@@ -34,7 +47,7 @@ export const homeCopy = {
         "Guía de 10 minutos para acompañar",
         "Tarjetas, juegos, pósteres y reto de 21 días",
       ],
-      cta: "Ver Grafismo Fonético",
+      cta: "Ver el kit completo",
     },
     complement: {
       label: "Complemento opcional",
@@ -50,7 +63,9 @@ export const homeCopy = {
   preview: {
     kicker: "Mira lo que encontrarás dentro",
     title: "Páginas reales, no maquetas.",
-    lead: "Tres hojas del PDF principal tal como las vas a imprimir.",
+    lead: "Tres hojas del PDF principal tal como las vas a imprimir. Gira cada tarjeta para ver otra página.",
+    flip: { show: "Ver otra página", hide: "Volver a la primera" },
+    cta: "Ver todas las páginas reales",
   },
   method: {
     kicker: "Cómo lo usamos",
@@ -80,7 +95,7 @@ export const homeCopy = {
       {
         icon: "shield",
         title: "Compra clara",
-        text: "Pago único a través de Hotmart, acceso inmediato y 7 días para pedir reembolso.",
+        text: `Pago único a través de Hotmart, acceso inmediato y ${guaranteeDays} días para pedir reembolso.`,
       },
     ],
   },
@@ -89,5 +104,7 @@ export const homeCopy = {
     title: "Elige una hoja. Imprímela. Practica diez minutos.",
     text: "Grafismo Fonético reúne 9 PDF y 414 páginas para acompañar sus primeros pasos hacia la lectura.",
     cta: "Ver Grafismo Fonético",
+    priceSuffix: "pago único",
+    social: "Síguenos: ideas y páginas nuevas cada semana en @somospequeverso",
   },
 } as const;

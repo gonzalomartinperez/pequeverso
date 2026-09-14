@@ -1,10 +1,14 @@
 /**
  * Copy for /grafismo-fonetico/. One canonical neutral-Spanish version (no runtime overwrite).
  * Claims are limited to what the material contains; see docs/content-model.md for sources.
- * Business facts (prices, counts, media) live in src/products/grafismo-fonetico.ts.
+ * Business facts (prices, counts, media) live in src/products/grafismo-fonetico.ts; the
+ * guarantee period comes from config/commerce.ts.
  */
+import { guaranteeDays } from "../../../../config/commerce.ts";
 import type { CoreLandingCopy } from "../index.ts";
 import { grafismoFaq } from "./faq.ts";
+
+const guarantee = `${guaranteeDays} días de garantía en Hotmart`;
 
 export const grafismoCopy = {
   subtitle: "Kit imprimible paso a paso",
@@ -16,16 +20,30 @@ export const grafismoCopy = {
     { href: "#preguntas", label: "Preguntas" },
   ],
   hero: {
-    kicker: "Kit imprimible · 3 a 7 años",
-    title: "Un kit imprimible para ayudarlo a dar sus primeros pasos hacia la lectura.",
-    lead: "Grafismo Fonético reúne más de 400 páginas con sílabas grandes, imágenes reconocibles y palabras para trazar. Elige una hoja, imprímela y practica 10 minutos: mira, di, traza y une.",
+    kicker: "Kit imprimible · 3 a 7 años · 9 PDF",
+    title: "De las letras a las primeras palabras, un paso por día.",
+    lead: "Grafismo Fonético reúne 9 PDF y 414 páginas con sílabas grandes, imágenes reconocibles y palabras para trazar. Eliges una hoja, la imprimes y practican 10 minutos: mira, di, traza y une.",
     facts: [
       { icon: "files", label: "9 PDF", detail: "414 páginas en total" },
       { icon: "printer", label: "Imprimible", detail: "En casa o en una papelería" },
       { icon: "child", label: "3 a 7 años", detail: "Orientativo, según cada niño" },
     ],
+    ages: {
+      legend: "¿Qué edad tiene?",
+      defaultId: "5",
+      items: [
+        {
+          id: "3-4",
+          label: "3–4",
+          hint: "Empieza por las páginas de sonidos y trazo guiado: hojas cortas, una por día.",
+        },
+        { id: "5", label: "5", hint: "Sílabas grandes con imagen y la primera palabra para unir." },
+        { id: "6-7", label: "6–7", hint: "Palabras completas, tarjetas y juegos para repasar." },
+      ],
+    },
     cta: "Quiero el kit completo",
-    ctaNote: "Pago único · Acceso digital inmediato · 7 días de garantía en Hotmart",
+    ctaNote: `Pago único · Acceso digital inmediato · ${guarantee}`,
+    assurance: { payment: "Pago único", access: "Acceso digital inmediato", guarantee },
     priceKicker: "Kit completo",
     taxNote: "+ impuestos aplicables según el país",
     currencyNote: "Hotmart muestra el total en tu moneda local antes de pagar.",
@@ -33,7 +51,7 @@ export const grafismoCopy = {
   trust: [
     { icon: "shield", text: "Pago seguro a través de Hotmart" },
     { icon: "download", text: "Descarga inmediata tras la aprobación" },
-    { icon: "refresh", text: "7 días para pedir reembolso" },
+    { icon: "refresh", text: `${guaranteeDays} días para pedir reembolso` },
     { icon: "infinity", text: "Imprime las veces que quieras" },
   ],
   problem: {
@@ -68,15 +86,26 @@ export const grafismoCopy = {
     galleryLabel: "Páginas reales del kit",
   },
   included: {
-    kicker: "Qué incluye",
+    kicker: "Qué recibes",
     title: "Nueve PDF que se complementan.",
     lead: "Un material central y ocho recursos para variar el formato de la práctica: guía, tarjetas, reto, animales, juegos, sonidos del hogar, pósteres y páginas sobre el nombre y la familia.",
     total: "9 PDF · 414 páginas en A4 · Acceso digital",
+    units: { pdf: "PDF", pages: "páginas" },
   },
   midOffer: {
-    title: "Todo esto, por un solo pago.",
+    title: "Todo el kit, por un solo pago.",
     text: "Recibes los 9 PDF juntos. Imprimes lo que necesites, cuando lo necesites, y vuelves a usarlos con cada niño.",
     cta: "Quiero el kit completo",
+  },
+  offer: {
+    kicker: "Oferta",
+    currencyNote: "Hotmart muestra el total en tu moneda antes de pagar.",
+    checks: [
+      "9 PDF · 414 páginas en A4",
+      "Guía para saber qué hoja usar cada día",
+      "Tarjetas, juegos, pósteres y reto de 21 días",
+      `Acceso inmediato y ${guarantee}`,
+    ],
   },
   videos: {
     kicker: "En movimiento",
@@ -120,6 +149,33 @@ export const grafismoCopy = {
     ],
     callout: "El objetivo no es acelerar al niño, sino darte un material claro para acompañarlo.",
   },
+  audience: {
+    kicker: "Para quién es",
+    title: "Antes de comprar, revisa si encaja con tu casa.",
+    yes: {
+      title: "Es para ti si…",
+      items: [
+        "Acompañas a un niño de 3 a 7 años que empieza con letras y sonidos.",
+        "Prefieres un material ordenado antes que fichas sueltas.",
+        "Puedes imprimir en casa o en una papelería.",
+      ],
+    },
+    no: {
+      title: "No es para ti si…",
+      items: [
+        "Buscas un método que prometa resultados en un plazo.",
+        "Prefieres pantallas o una app en lugar de papel y lápiz.",
+        "Tu hijo ya lee con fluidez y buscas comprensión lectora.",
+      ],
+    },
+  },
+  creator: {
+    enabled: false,
+    kicker: "Nota de quien hizo el kit",
+    title: "",
+    paragraphs: [],
+    signature: "",
+  },
   faq: {
     kicker: "Preguntas frecuentes",
     title: "Menos dudas antes de comenzar.",
@@ -133,7 +189,7 @@ export const grafismoCopy = {
       "9 PDF · 414 páginas en A4",
       "Guía para saber qué hoja usar cada día",
       "Tarjetas, juegos, pósteres y reto de 21 días",
-      "Acceso inmediato y 7 días de garantía en Hotmart",
+      `Acceso inmediato y ${guarantee}`,
     ],
     cta: "Quiero el kit completo",
     note: "Serás dirigido a la página de pago segura de Hotmart.",

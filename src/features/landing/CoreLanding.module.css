@@ -1,336 +1,47 @@
-/* Hero */
-.hero {
-  padding-block: clamp(2.5rem, 5vw, 5rem) clamp(3rem, 6vw, 5rem);
-  background:
-    radial-gradient(70% 60% at 100% 0%, var(--pv-mint), transparent 60%),
-    radial-gradient(50% 50% at 0% 100%, var(--pv-lemon), transparent 60%), var(--pv-cream);
-}
-
-.heroInner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(2rem, 5vw, 4.5rem);
-  align-items: start;
-}
-
-.heroCopy {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.heroCopy :global(.kicker) {
-  justify-self: start;
-}
-
-.facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.heroVisual {
-  display: grid;
-  gap: var(--space-4);
-  position: sticky;
-  top: calc(var(--header-height) + var(--space-4));
-}
-
-.heroCard {
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--pv-white);
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--pv-line);
-}
-
-.heroCard img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-}
-
-.heroThumbs {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
-}
-
-.heroThumb {
-  display: block;
-  border-radius: var(--radius);
-  overflow: hidden;
-  border: 1px solid var(--pv-line);
-  background: var(--pv-white);
-  box-shadow: var(--shadow-sm);
-  transition: transform var(--duration-fast) var(--ease-out);
-}
-
-.heroThumb:hover {
-  transform: translateY(-3px);
-}
-
-.heroThumb img {
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  width: 100%;
-}
-
-/* Problema / enfoque */
-.problem,
-.credibility {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(2rem, 5vw, 4.5rem);
-  align-items: center;
-}
-
-.problemCopy {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.problemCopy :global(.kicker),
-.credibility :global(.kicker) {
-  justify-self: start;
-}
-
-.credibility > div {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.problemImage,
-.credibilityImage {
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--pv-line);
-  background: var(--pv-white);
-}
-
-.problemImage img,
-.credibilityImage img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-}
-
-.bullets {
-  display: grid;
-  gap: var(--space-3);
-}
-
-.bullets li {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  font-weight: 600;
-  color: var(--pv-body);
-}
-
-.bullets svg {
-  color: var(--pv-teal);
-  flex: none;
-  margin-top: 0.25em;
-}
-
-/* Método */
-.method {
-  position: relative;
-  overflow: hidden;
-  color: var(--pv-white);
-}
-
-.methodInner {
-  position: relative;
-}
-
-/* Oferta intermedia */
-.midOffer {
-  position: relative;
-  overflow: hidden;
-  color: var(--pv-white);
-}
-
-.midInner {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: var(--space-6);
-  align-items: center;
-}
-
-.midInner h2,
-.midInner p {
-  color: var(--pv-white);
-}
-
-.midInner :global(.lead) {
-  color: rgba(255, 255, 255, 0.86);
-  margin-top: var(--space-3);
-}
-
-.midAction {
-  display: grid;
-  gap: var(--space-3);
-  justify-items: center;
-  text-align: center;
-  font-weight: 800;
-  color: var(--pv-gold);
-}
-
-.midAction :global(.button) {
-  width: 100%;
-  max-width: 420px;
-}
-
-/* Beneficios */
 .benefits {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-5);
-}
-
-.benefit {
-  display: grid;
-  gap: var(--space-2);
-  align-content: start;
-  padding: var(--space-5);
-  border-radius: var(--radius-lg);
-  background: var(--pv-white);
-  border: 1px solid var(--pv-line);
-  box-shadow: var(--shadow-sm);
-}
-
-.benefitIcon {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius);
-  display: grid;
-  place-items: center;
-  background: var(--pv-mint);
-  color: var(--pv-teal-text);
+  gap: var(--space-6);
+  margin-top: var(--space-8);
 }
 
 .callout {
-  margin-top: var(--space-6);
-  padding: var(--space-5) var(--space-6);
-  border-left: 4px solid var(--pv-gold);
-  background: var(--pv-white);
-  border-radius: var(--radius);
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  color: var(--pv-ink);
+  justify-self: start;
   max-width: 60ch;
+  padding: var(--space-5) var(--space-6);
+  border-left: var(--space-1) solid var(--pv-gold);
+  border-radius: var(--radius);
+  background: var(--pv-cream);
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  color: var(--pv-ink);
 }
 
-/* FAQ */
-.faq {
-  display: grid;
-  grid-template-columns: 0.8fr 1.2fr;
-  gap: var(--space-7);
-  align-items: start;
+.approach {
+  margin-top: var(--space-8);
 }
 
-.faqIntro {
-  position: sticky;
-  top: calc(var(--header-height) + var(--space-4));
+.trust {
+  margin-top: var(--space-6);
 }
 
-.faqSupport {
+.support {
   font-size: var(--text-small);
 }
 
-/* Oferta final */
-.finalOffer {
-  background: radial-gradient(60% 60% at 0% 0%, var(--pv-sky), transparent 60%), var(--pv-cream);
+.final {
+  overflow: hidden;
   scroll-margin-top: var(--header-height);
 }
 
+.finalOrbit {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: min(45%, calc(var(--container) / 2));
+  translate: 30% -50%;
+  pointer-events: none;
+}
+
 .finalInner {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: var(--space-7);
-  align-items: center;
-}
-
-.finalCopy {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.finalCopy :global(.kicker) {
-  justify-self: start;
-}
-
-.checks {
-  display: grid;
-  gap: var(--space-3);
-}
-
-.checks li {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-weight: 700;
-  color: var(--pv-ink);
-}
-
-.checks svg {
-  color: var(--pv-teal);
-  flex: none;
-}
-
-/* Responsive */
-@media (max-width: 1023px) {
-  .heroInner,
-  .problem,
-  .credibility,
-  .midInner,
-  .faq,
-  .finalInner {
-    grid-template-columns: 1fr;
-  }
-
-  .heroVisual {
-    position: static;
-    order: -1;
-  }
-
-  .heroCopy {
-    order: 0;
-  }
-
-  .faqIntro {
-    position: static;
-  }
-
-  .benefits {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .problemImage {
-    order: -1;
-  }
-}
-
-@media (max-width: 639px) {
-  .benefits {
-    grid-template-columns: 1fr;
-  }
-
-  .heroThumbs {
-    gap: var(--space-2);
-  }
-
-  .midAction :global(.button) {
-    width: 100%;
-  }
-}
-
-@media (max-width: 639px) {
-  /* Copy first on phones: kicker → h1 → lead → facts → price/CTA, then the visual. */
-  .heroVisual {
-    order: 1;
-  }
+  position: relative;
 }
