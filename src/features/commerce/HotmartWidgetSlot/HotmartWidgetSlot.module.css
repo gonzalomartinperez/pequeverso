@@ -1,4 +1,5 @@
 .slot {
+  --widget-min-h: 220px;
   display: grid;
   gap: var(--space-3);
   padding: var(--space-4);
@@ -27,8 +28,14 @@
 }
 
 .container {
-  min-height: 132px;
+  min-height: var(--widget-min-h);
   border-radius: var(--radius);
+}
+
+@media (min-width: 768px) {
+  .slot {
+    --widget-min-h: 180px;
+  }
 }
 
 .container[data-status="loading"] {

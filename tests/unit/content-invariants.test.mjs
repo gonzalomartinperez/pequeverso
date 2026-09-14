@@ -98,3 +98,10 @@ test("price literals in copy use the shared formatter", () => {
     assert.equal(raw.replace(/\s/g, ""), formatUsd(value), `${relative(".", file)} hard-codes ${raw}`);
   }
 });
+
+test("price literals never use a decimal point (customer-facing prices read US$14,99)", () => {
+  assert.equal(formatUsd(14.99), "US$14,99");
+  for (const file of files) {
+    assert.doesNotMatch(read(file), /US\$\s?\d+\.\d{2}/, `${relative(".", file)} uses a decimal point`);
+  }
+});

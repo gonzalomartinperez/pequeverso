@@ -4,12 +4,21 @@ import { graciasCopy as copy } from "@content/es/gracias";
 import { LogIn } from "lucide-react";
 import Link from "next/link";
 import { PageShell } from "@/components/layout/PageShell/PageShell";
+import { Card } from "@/components/ui/Card/Card";
+import { ChipRow } from "@/components/ui/ChipRow/ChipRow";
 import { CTAButton } from "@/components/ui/CTAButton/CTAButton";
+import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
 import { FactChip } from "@/components/ui/FactChip/FactChip";
-import { Icon, type IconName } from "@/components/ui/Icon/Icon";
+import { Grid } from "@/components/ui/Grid/Grid";
+import { IconCardList } from "@/components/ui/IconCardList/IconCardList";
+import { MediaFrame } from "@/components/ui/MediaFrame/MediaFrame";
+import { MediaImage } from "@/components/ui/MediaImage/MediaImage";
 import { Notice } from "@/components/ui/Notice/Notice";
 import { ResourceGrid } from "@/components/ui/ResourceGrid/ResourceGrid";
+import { Section } from "@/components/ui/Section/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading/SectionHeading";
+import { Split } from "@/components/ui/Split/Split";
+import { Stack } from "@/components/ui/Stack/Stack";
 import { Topbar } from "@/components/ui/Topbar/Topbar";
 import { Universe } from "@/motion/Universe";
 import type { CoreProduct } from "@/products/schema";
@@ -22,6 +31,7 @@ type Props = { product: CoreProduct };
  * event is fired, and visitors without a purchase are pointed to the landing.
  */
 export function ThanksPage({ product }: Props) {
+  const firstPage = product.media.pageIds[0] ?? product.media.hero;
   const headerCta = (
     <CTAButton href={hotmart.consumerArea} variant="primary" size="small" external icon={LogIn}>
       Abrir Hotmart
@@ -34,109 +44,79 @@ export function ThanksPage({ product }: Props) {
       cta={headerCta}
       subtitle="Acceso a tu compra"
     >
-      {/* Hero */}
-      <section className={styles.hero} aria-labelledby="hero-title">
+      <Section tone="navy" labelledBy="hero-title">
         <Universe variant="hero" />
-        <div className={`container ${styles.heroInner}`}>
-          <p className="kicker">{copy.hero.kicker}</p>
-          <h1 id="hero-title">{copy.hero.title}</h1>
+        <Stack gap={4} maxWidth="44rem" className={styles.hero}>
+          <Eyebrow tone="dark">{copy.hero.kicker}</Eyebrow>
+          <h1 id="hero-title" data-hero-enter="title">
+            {copy.hero.title}
+          </h1>
           <p className="lead">{copy.hero.lead}</p>
-          <ul className={styles.facts} role="list">
+          <ChipRow>
             {copy.hero.facts.map((fact) => (
-              <li key={fact}>
-                <FactChip label={fact} tone="dark" />
-              </li>
+              <FactChip key={fact} label={fact} tone="dark" />
             ))}
-          </ul>
-          <div className={styles.heroActions}>
-            <CTAButton href={hotmart.consumerArea} variant="primary" external icon={LogIn}>
-              {copy.hero.cta}
-            </CTAButton>
-            <p className={styles.heroNote}>{copy.hero.note}</p>
-          </div>
-        </div>
-      </section>
+          </ChipRow>
+          <CTAButton href={hotmart.consumerArea} variant="primary" external icon={LogIn}>
+            {copy.hero.cta}
+          </CTAButton>
+          <p>{copy.hero.note}</p>
+        </Stack>
+      </Section>
 
-      {/* Acceso */}
-      <section className="section" aria-labelledby="acceso-title">
-        <div className="container">
-          <SectionHeading id="acceso-title" kicker={copy.access.kicker} title={copy.access.title} />
-          <ol className={styles.steps} role="list">
-            {copy.access.steps.map((step, index) => (
-              <li
-                key={step.title}
-                className={styles.step}
-                data-reveal
-                style={{ transitionDelay: `${index * 70}ms` }}
-              >
-                <span className={styles.stepBadge}>
-                  <Icon name={step.icon as IconName} size={24} strokeWidth={2.2} />
-                  <span aria-hidden="true">{index + 1}</span>
-                </span>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
-              </li>
-            ))}
-          </ol>
-          <p className={styles.accessCta}>
-            <CTAButton href={hotmart.consumerArea} variant="secondary" external>
-              {copy.access.cta}
-            </CTAButton>
-          </p>
-        </div>
-      </section>
+      <Section tone="cream" labelledBy="acceso-title">
+        <SectionHeading id="acceso-title" kicker={copy.access.kicker} title={copy.access.title} />
+        <IconCardList items={copy.access.steps} numbered />
+        <p className={styles.after}>
+          <CTAButton href={hotmart.consumerArea} variant="secondary" external>
+            {copy.access.cta}
+          </CTAButton>
+        </p>
+      </Section>
 
-      {/* Primera práctica */}
-      <section className="section section--sky" aria-labelledby="practica-title">
-        <div className={`container ${styles.practice}`}>
+      <Section tone="sky" labelledBy="practica-title" defer>
+        <Split ratio="1.2/0.8">
           <div>
             <SectionHeading
               id="practica-title"
               kicker={copy.firstPractice.kicker}
               title={copy.firstPractice.title}
             />
-            <ol className={styles.practiceList}>
-              {copy.firstPractice.steps.map((step) => (
-                <li key={step}>{step}</li>
-              ))}
-            </ol>
+            <Card pad="lg" reveal>
+              <ol className={styles.practice}>
+                {copy.firstPractice.steps.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ol>
+            </Card>
           </div>
-          <Notice tone="warning" title="Tú eliges cuánto imprimir">
-            <p>{copy.firstPractice.printNote}</p>
-          </Notice>
-        </div>
-      </section>
+          <Stack gap={4}>
+            <MediaFrame ratio="3/4" as="figure">
+              <MediaImage id={firstPage} sizes="(min-width: 768px) 360px, 90vw" />
+            </MediaFrame>
+            <Notice tone="warning" title="Tú eliges cuánto imprimir">
+              <p>{copy.firstPractice.printNote}</p>
+            </Notice>
+          </Stack>
+        </Split>
+      </Section>
 
-      {/* Recursos */}
-      <section className="section" aria-labelledby="recursos-title">
-        <div className="container">
-          <SectionHeading id="recursos-title" kicker={copy.resources.kicker} title={copy.resources.title} />
-          <ResourceGrid resources={product.resources} compact />
-        </div>
-      </section>
+      <Section tone="cream" labelledBy="recursos-title" defer>
+        <SectionHeading id="recursos-title" kicker={copy.resources.kicker} title={copy.resources.title} />
+        <ResourceGrid resources={product.resources} compact />
+      </Section>
 
-      {/* Ayuda */}
-      <section className="section section--mint" aria-labelledby="ayuda-title">
-        <div className="container">
-          <SectionHeading id="ayuda-title" kicker={copy.help.kicker} title={copy.help.title} />
-          <ul className={styles.help} role="list">
-            {copy.help.items.map((item) => (
-              <li key={item.title} className={styles.helpCard} data-reveal>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-              </li>
-            ))}
-          </ul>
-          <p className={styles.contact}>
-            {copy.help.contact} <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a> · Reembolsos:{" "}
-            <a href={hotmart.refunds}>refund.hotmart.com</a> ({guaranteeDays} días).
-          </p>
-        </div>
-      </section>
+      <Section tone="mint" labelledBy="ayuda-title" defer>
+        <SectionHeading id="ayuda-title" kicker={copy.help.kicker} title={copy.help.title} />
+        <IconCardList items={copy.help.items} cols={2} />
+        <p className={`${styles.after} ${styles.contact}`}>
+          {copy.help.contact} <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a> · Reembolsos:{" "}
+          <a href={hotmart.refunds}>refund.hotmart.com</a> ({guaranteeDays} días).
+        </p>
+      </Section>
 
-      {/* Pack note + no-purchase branch */}
-      <section className="section" aria-label="Notas finales">
-        <div className={`container ${styles.notes}`}>
+      <Section tone="cream" label="Notas finales" defer>
+        <Grid cols={2}>
           <Notice tone="info" title={copy.packNote.title}>
             <p>{copy.packNote.text}</p>
           </Notice>
@@ -145,8 +125,8 @@ export function ThanksPage({ product }: Props) {
               {copy.noPurchase.text} <Link href={product.path}>{copy.noPurchase.cta}</Link>
             </p>
           </Notice>
-        </div>
-      </section>
+        </Grid>
+      </Section>
     </PageShell>
   );
 }

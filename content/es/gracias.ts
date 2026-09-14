@@ -60,18 +60,22 @@ export const graciasCopy = {
     title: "Si algo no aparece.",
     items: [
       {
+        icon: "mail",
         title: "No llegó el correo",
         text: "Revisa Spam y Promociones. Luego entra directamente a consumer.hotmart.com con el correo de la compra.",
       },
       {
+        icon: "clock",
         title: "Pagué con boleto, transferencia o efectivo",
         text: "El acceso se libera cuando Hotmart confirma el pago; puede demorar hasta que el método lo procese.",
       },
       {
+        icon: "login",
         title: "Compré con otro correo",
         text: "Hotmart puede ayudarte a cambiar el correo de acceso desde su centro de ayuda.",
       },
       {
+        icon: "refresh",
         title: "Quiero un reembolso",
         text: "Tienes 7 días para pedirlo en refund.hotmart.com con tu número de transacción (empieza con HP).",
       },

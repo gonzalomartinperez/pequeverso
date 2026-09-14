@@ -62,6 +62,8 @@ export type OfferLandingCopy = {
   topbar: string;
   header: { subtitle: string; cta: string };
   facts: readonly { label: string; detail: string }[];
+  /** Unit labels for the animated composition counters (PDF, pages, resources). */
+  counters?: { pdf: string; pages: string; resources: string };
   taxNote: string;
   upsell: OfferView;
   downsell: OfferView & {

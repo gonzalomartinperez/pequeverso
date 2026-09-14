@@ -35,6 +35,7 @@ export const hotmart = {
   salesFunnelContainerId: "hotmart-sales-funnel",
 } as const;
 
+/** Customer-facing USD price with the Spanish decimal comma, e.g. `US$14,99`. */
 export function formatUsd(value: number): string {
-  return `US$${value.toFixed(2)}`;
+  return `US$${value.toFixed(2).replace(".", ",")}`;
 }
