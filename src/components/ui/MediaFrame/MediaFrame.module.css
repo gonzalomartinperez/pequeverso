@@ -1,0 +1,38 @@
+.frame {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--pv-sky);
+}
+
+.frame :global(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ratio43 {
+  aspect-ratio: 4 / 3;
+}
+
+.ratio34 {
+  aspect-ratio: 3 / 4;
+}
+
+.ratio169 {
+  aspect-ratio: 16 / 9;
+}
+
+.elevSm {
+  box-shadow: var(--shadow-sm);
+}
+
+.elevMd {
+  box-shadow: var(--shadow-md);
+}
+
+.elevLg {
+  box-shadow: var(--shadow-lg);
+}

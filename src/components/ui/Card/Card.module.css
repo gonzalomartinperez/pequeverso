@@ -1,0 +1,44 @@
+.card {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+  min-width: 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--pv-line);
+  background: var(--pv-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.md {
+  padding: var(--space-5);
+}
+
+.lg {
+  padding: var(--space-6);
+}
+
+.emphasis {
+  border: 2px solid var(--pv-navy);
+  box-shadow: var(--shadow-md);
+}
+
+.soft {
+  border-color: transparent;
+  background: var(--pv-sky);
+  box-shadow: none;
+}
+
+.navy {
+  border-color: var(--pv-on-navy-chip);
+  background: var(--pv-navy-deep);
+  color: var(--pv-white);
+  box-shadow: none;
+}
+
+.navy :is(h2, h3, strong) {
+  color: var(--pv-white);
+}
+
+.navy p {
+  color: var(--pv-on-navy);
+}

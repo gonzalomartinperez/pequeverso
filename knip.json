@@ -9,7 +9,8 @@
     "tests/e2e/**/*.spec.ts"
   ],
   "project": ["src/**!", "config/**!", "content/**!", "scripts/**", "tests/**"],
-  "ignore": [],
+  "ignore": ["src/components/ui/**", "src/motion/**", "src/features/commerce/DecisionLink/**"],
+  "ignoreDependencies": ["motion"],
   "ignoreExportsUsedInFile": true,
   "tags": ["-internal"]
 }

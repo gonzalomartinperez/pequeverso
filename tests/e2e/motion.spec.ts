@@ -13,6 +13,51 @@ test("reveal elements are visible immediately under reduced motion", async ({ pa
   expect(hidden).toBe(0);
 });
 
+test("no reveal element inside the first viewport is transparent right after load", async ({ page }) => {
+  await page.goto("/");
+  const transparent = await page.evaluate(() => {
+    const fold = window.innerHeight;
+    return [...document.querySelectorAll<HTMLElement>("[data-reveal]")]
+      .filter((el) => {
+        const rect = el.getBoundingClientRect();
+        return rect.height > 0 && rect.top >= 0 && rect.bottom <= fold;
+      })
+      .filter((el) => Number(getComputedStyle(el).opacity) < 1)
+      .map((el) => `${el.tagName.toLowerCase()}.${el.className}`);
+  });
+  expect(transparent).toEqual([]);
+});
+
+test("fallback path marks only elements below the fold and reveals them on scroll", async ({ page }) => {
+  await page.addInitScript(() => {
+    const supports = CSS.supports.bind(CSS);
+    CSS.supports = ((...args: [string, string?]) =>
+      /animation-timeline/.test(args[0]) ? false : supports(...args)) as typeof CSS.supports;
+  });
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  const reduced = await page.evaluate(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const count = (selector: string) => page.locator(selector).count();
+  if (reduced) {
+    await page.waitForTimeout(500);
+    expect(await count("[data-reveal-state]")).toBe(0);
+    return;
+  }
+  await expect.poll(() => count("[data-reveal][data-reveal-state='pending']")).toBeGreaterThan(0);
+  const pendingAboveFold = await page.evaluate(() => {
+    const fold = window.innerHeight;
+    return [...document.querySelectorAll<HTMLElement>("[data-reveal-state='pending']")].filter(
+      (el) => el.getBoundingClientRect().top < fold,
+    ).length;
+  });
+  expect(pendingAboveFold).toBe(0);
+  const last = await page.locator("[data-reveal][data-reveal-state='pending']").last().elementHandle();
+  if (!last) throw new Error("expected a pending element");
+  await last.scrollIntoViewIfNeeded();
+  await expect.poll(() => last.getAttribute("data-reveal-state")).toBe("visible");
+  await expect.poll(() => last.evaluate((el) => getComputedStyle(el).opacity), { timeout: 3_000 }).toBe("1");
+});
+
 test("no autoplaying video anywhere on the landing", async ({ page }) => {
   await page.goto("/grafismo-fonetico/");
   await expect(page.locator("video[autoplay]")).toHaveCount(0);

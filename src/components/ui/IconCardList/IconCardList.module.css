@@ -1,0 +1,11 @@
+.item {
+  gap: var(--space-3);
+}
+
+.title {
+  font-size: var(--text-h3);
+}
+
+.text {
+  font-size: var(--text-small);
+}

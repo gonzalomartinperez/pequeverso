@@ -1,0 +1,5 @@
+.counter {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}

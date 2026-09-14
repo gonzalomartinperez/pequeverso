@@ -2,6 +2,10 @@
  * Pequeverso design tokens — the single source for colour, type, spacing, radius,
  * elevation and motion. Contrast ratios were computed on 2026-09-12 (WCAG 2.2 AA:
  * ≥ 4.5:1 text, ≥ 3:1 large text and UI). See docs/design-system.md.
+ *
+ * Breakpoints (px, min-width; mirrored in src/lib/breakpoints.ts):
+ *   sm 640 · md 768 · lg 1024 · xl 1280
+ * Primitives use the same numbers in container queries; pages never write @media.
  */
 
 /* Self-hosted fonts (public/fonts, preloaded in layout.tsx); "Fallback" faces match Georgia/Arial to the web-font metrics (docs/performance.md). */
@@ -77,6 +81,13 @@
   --pv-coral-hover: #a83129; /* 6.7:1 */
   --pv-gold: #ffd840; /* ink on gold 11.9:1 — accents, chips; never gold text on light */
 
+  /* Hero and navy surfaces (tokens v2) */
+  --pv-hero-top: #00234e;
+  --pv-hero-bottom: #003068;
+  --pv-turquoise: #7fe3d9; /* accent on navy only: 8.6:1 on navy; never on light */
+  --pv-on-navy: rgba(255, 255, 255, 0.86); /* body text on navy 9.9:1 */
+  --pv-on-navy-chip: rgba(255, 255, 255, 0.12);
+
   /* Neutrals */
   --pv-cream: #fffaf2;
   --pv-white: #ffffff;
@@ -140,12 +151,27 @@
 
   /* Motion */
   --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-emphasis: cubic-bezier(0.2, 0.8, 0.2, 1);
   --duration-fast: 150ms;
   --duration: 220ms;
+  --duration-reveal: 480ms;
+  --duration-hero: 600ms;
+  --duration-orbit: 48s;
+  --stagger: 60ms;
+  --reveal-y: 16px;
+  --parallax-range: 20px;
+  --tilt-max: 6deg;
+  --tilt-perspective: 900px;
 
   /* Layout */
   --header-height: 4.25rem;
   --sticky-bar-height: 4.5rem;
+  --section-overlap: var(--space-8);
+  --section-intrinsic: 640px; /* contain-intrinsic-size for deferred sections */
+  --wave-height: clamp(2rem, 6vw, 4.5rem);
+  --badge-sm: 3rem;
+  --badge-md: 3.5rem;
+  --badge-lg: 4.5rem;
 
   color-scheme: light;
 }

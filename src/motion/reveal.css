@@ -1,0 +1,41 @@
+/*
+ * Reveal-on-scroll for [data-reveal]. Scroll-driven (view timeline) where supported: an
+ * element already in view at load sits at progress 100%, so nothing flashes. Stagger
+ * siblings with `--i` (0, 1, 2 …). Browsers without view timelines get the
+ * IntersectionObserver fallback in RevealObserver.tsx, which only marks elements below
+ * the fold with data-reveal-state. Content is always visible without JS and under
+ * reduced motion.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    [data-reveal] {
+      animation: pv-reveal var(--duration-reveal) var(--ease-emphasis) both;
+      animation-timeline: view();
+      animation-range-start: entry calc(var(--i, 0) * 6%);
+      animation-range-end: entry calc(35% + var(--i, 0) * 6%);
+    }
+  }
+
+  [data-reveal-state] {
+    transition:
+      opacity var(--duration-reveal) var(--ease-emphasis),
+      transform var(--duration-reveal) var(--ease-emphasis);
+    transition-delay: calc(var(--i, 0) * var(--stagger));
+  }
+
+  [data-reveal-state="pending"] {
+    opacity: 0;
+    transform: translateY(var(--reveal-y));
+  }
+}
+
+@keyframes pv-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-y));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

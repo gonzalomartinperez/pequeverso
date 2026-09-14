@@ -19,6 +19,10 @@
   transform: none;
 }
 
+:global(body:has(dialog[open])) .bar {
+  transform: translateY(110%);
+}
+
 .label {
   font-weight: 800;
   color: var(--pv-ink);

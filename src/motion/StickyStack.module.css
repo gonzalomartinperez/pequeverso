@@ -1,0 +1,57 @@
+.stack {
+  --stack-top: calc(var(--header-height) + var(--space-5));
+  display: grid;
+  gap: var(--space-5);
+}
+
+.item {
+  transform-origin: top center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) and (timeline-scope: --a) {
+    .stack {
+      timeline-scope: --stack-1, --stack-2, --stack-3, --stack-4, --stack-5, --stack-6;
+    }
+
+    .item {
+      position: sticky;
+      top: var(--stack-top);
+      view-timeline-axis: block;
+      view-timeline-inset: var(--stack-top) 0;
+      animation: recede linear both;
+      animation-range: contain 0% contain 100%;
+    }
+
+    .item:nth-child(1) {
+      view-timeline-name: --stack-1;
+      animation-timeline: --stack-2;
+    }
+    .item:nth-child(2) {
+      view-timeline-name: --stack-2;
+      animation-timeline: --stack-3;
+    }
+    .item:nth-child(3) {
+      view-timeline-name: --stack-3;
+      animation-timeline: --stack-4;
+    }
+    .item:nth-child(4) {
+      view-timeline-name: --stack-4;
+      animation-timeline: --stack-5;
+    }
+    .item:nth-child(5) {
+      view-timeline-name: --stack-5;
+      animation-timeline: --stack-6;
+    }
+    .item:nth-child(6) {
+      view-timeline-name: --stack-6;
+      animation-timeline: none;
+    }
+  }
+}
+
+@keyframes recede {
+  to {
+    transform: scale(0.94);
+  }
+}
