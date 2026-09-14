@@ -20,10 +20,5 @@
 }
 
 .dark :global(.lead) {
-  color: rgba(255, 255, 255, 0.82);
-}
-
-.dark :global(.kicker) {
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--pv-gold);
+  color: var(--pv-on-navy);
 }

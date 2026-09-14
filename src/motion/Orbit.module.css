@@ -1,0 +1,51 @@
+.orbit {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.ring {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.22);
+  stroke-width: 1;
+  stroke-dasharray: 6 8;
+}
+
+.star {
+  fill: var(--pv-gold);
+}
+
+.glowCore {
+  stop-color: var(--pv-gold);
+  stop-opacity: 0.55;
+}
+
+.glowEdge {
+  stop-color: var(--pv-gold);
+  stop-opacity: 0;
+}
+
+.traveller {
+  offset-path: path("M 10 200 A 190 72 0 1 1 390 200 A 190 72 0 1 1 10 200");
+  offset-rotate: 0deg;
+  offset-distance: 0%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .traveller {
+    animation: travel var(--duration-orbit) linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .traveller {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes travel {
+  to {
+    offset-distance: 100%;
+  }
+}

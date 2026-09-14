@@ -1,4 +1,7 @@
 /* Base styles: reset, typography, focus, motion, layout utilities. Component styles live in CSS Modules. */
+@import "../motion/reveal.css";
+@import "../motion/hero.css";
+@import "../motion/flip.css";
 
 *,
 *::before,
@@ -133,6 +136,8 @@ ol[role="list"] {
   border: 0;
 }
 
+/* Legacy aliases (.container, .section, .section--*, .kicker): pages still use them; Section and
+   Eyebrow own these styles now. Remove once every page renders the primitives. */
 .container {
   width: min(var(--container), 100% - 2 * var(--gutter));
   margin-inline: auto;
@@ -230,21 +235,6 @@ ol[role="list"] {
 [data-offer="downsell"] .only-upsell,
 [data-offer="upsell"] .only-downsell {
   display: none;
-}
-
-/* Reveal-on-scroll (progressive; content is visible without JS and under reduced motion) */
-@media (prefers-reduced-motion: no-preference) {
-  .js [data-reveal] {
-    opacity: 0;
-    transform: translateY(12px);
-    transition:
-      opacity var(--duration) var(--ease-out),
-      transform var(--duration) var(--ease-out);
-  }
-  .js [data-reveal].is-visible {
-    opacity: 1;
-    transform: none;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

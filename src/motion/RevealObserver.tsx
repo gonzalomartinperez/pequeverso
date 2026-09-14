@@ -2,40 +2,35 @@
 
 import { useEffect } from "react";
 
+const SCROLL_DRIVEN = "animation-timeline: view()";
+
 /**
- * Progressive reveal-on-scroll. Marks <html class="js"> so CSS can hide [data-reveal]
- * elements only when JavaScript runs, then reveals them once (IntersectionObserver).
- * Reduced motion is handled in CSS (no transforms), so this stays purely additive.
+ * Fallback for browsers without view timelines: marks only [data-reveal] elements below the
+ * fold as pending and reveals them once with IntersectionObserver. No-op when the CSS
+ * scroll-driven path applies or under reduced motion.
  */
 export function RevealObserver() {
   useEffect(() => {
-    const root = document.documentElement;
-    root.classList.add("js");
-    if (!("IntersectionObserver" in window)) {
-      for (const el of document.querySelectorAll("[data-reveal]")) el.classList.add("is-visible");
-      return;
-    }
+    if (CSS.supports(SCROLL_DRIVEN)) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!("IntersectionObserver" in window)) return;
+    const fold = window.innerHeight;
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
+          if (!entry.isIntersecting) continue;
+          entry.target.setAttribute("data-reveal-state", "visible");
+          observer.unobserve(entry.target);
         }
       },
       { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
     );
-    const observe = () => {
-      for (const el of document.querySelectorAll("[data-reveal]:not(.is-visible)")) observer.observe(el);
-    };
-    observe();
-    const mutation = new MutationObserver(observe);
-    mutation.observe(document.body, { childList: true, subtree: true });
-    return () => {
-      observer.disconnect();
-      mutation.disconnect();
-    };
+    for (const el of document.querySelectorAll("[data-reveal]:not([data-reveal-state])")) {
+      if (el.getBoundingClientRect().top < fold) continue;
+      el.setAttribute("data-reveal-state", "pending");
+      observer.observe(el);
+    }
+    return () => observer.disconnect();
   }, []);
   return null;
 }

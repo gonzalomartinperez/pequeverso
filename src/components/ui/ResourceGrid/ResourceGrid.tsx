@@ -1,4 +1,5 @@
 import type { Resource } from "@content/es/products";
+import type { CSSProperties } from "react";
 import { MediaImage } from "@/components/ui/MediaImage/MediaImage";
 import { TiltCard } from "@/motion/TiltCard";
 import styles from "./ResourceGrid.module.css";
@@ -15,7 +16,7 @@ export function ResourceGrid({ resources, compact = false, total }: Props) {
             key={resource.id}
             className={styles.item}
             data-reveal
-            style={{ transitionDelay: `${(index % 3) * 60}ms` }}
+            style={{ "--i": index % 3 } as CSSProperties}
           >
             <TiltCard as="article" className={styles.card} max={4}>
               <div className={styles.cover}>

@@ -1,0 +1,55 @@
+/* Container thresholds reuse the documented breakpoints: sm 640, md 768, lg 1024. */
+.host {
+  container-type: inline-size;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin: 0;
+  padding: 0;
+}
+
+.grid > * {
+  min-width: 0;
+}
+
+.gap3 {
+  gap: var(--space-3);
+}
+
+.gap4 {
+  gap: var(--space-4);
+}
+
+.gap5 {
+  gap: var(--space-5);
+}
+
+.gap6 {
+  gap: var(--space-6);
+}
+
+.auto {
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-min), 100%), 1fr));
+}
+
+@container (min-width: 640px) {
+  .cols2,
+  .cols3,
+  .cols4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@container (min-width: 768px) {
+  .cols3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@container (min-width: 1024px) {
+  .cols4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

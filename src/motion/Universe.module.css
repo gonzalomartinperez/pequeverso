@@ -2,17 +2,18 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
+  contain: paint;
   pointer-events: none;
   background:
     radial-gradient(120% 80% at 80% 10%, rgba(0, 125, 121, 0.35), transparent 60%),
     radial-gradient(90% 70% at 10% 90%, rgba(0, 169, 164, 0.18), transparent 60%),
-    linear-gradient(160deg, #061d3d 0%, var(--pv-navy) 55%, #00234e 100%);
+    linear-gradient(160deg, var(--pv-hero-top) 0%, var(--pv-hero-bottom) 100%);
 }
 
 .band {
   background:
     radial-gradient(90% 70% at 90% 20%, rgba(0, 125, 121, 0.28), transparent 60%),
-    linear-gradient(160deg, var(--pv-navy) 0%, #00234e 100%);
+    linear-gradient(160deg, var(--pv-hero-bottom) 0%, var(--pv-hero-top) 100%);
 }
 
 .stars,
@@ -48,7 +49,6 @@
 .planet {
   position: absolute;
   border-radius: 50%;
-  filter: blur(0.2px);
 }
 
 .planetA {
@@ -79,54 +79,7 @@
   right: 4%;
   top: 6%;
   width: clamp(280px, 40vw, 560px);
-  height: clamp(280px, 40vw, 560px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 50%;
-  transform: rotateX(62deg) rotateZ(-12deg);
-  transform-style: preserve-3d;
-}
-
-.star {
-  position: absolute;
-  top: -8px;
-  left: 50%;
-  width: 16px;
-  height: 16px;
-  margin-left: -8px;
-  background: var(--pv-gold);
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-  filter: drop-shadow(0 0 10px rgba(255, 216, 64, 0.9));
-  transform-origin: 8px calc(50% + clamp(140px, 20vw, 280px));
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .orbit {
-    animation: orbit 48s linear infinite;
-  }
-
-  .star {
-    animation: twinkle 3s ease-in-out infinite;
-  }
-}
-
-@keyframes orbit {
-  from {
-    transform: rotateX(62deg) rotateZ(-12deg);
-  }
-  to {
-    transform: rotateX(62deg) rotateZ(348deg);
-  }
-}
-
-@keyframes twinkle {
-  0%,
-  100% {
-    opacity: 0.85;
-  }
-  50% {
-    opacity: 1;
-    filter: drop-shadow(0 0 18px rgba(255, 216, 64, 1));
-  }
+  height: auto;
 }
 
 @media (max-width: 767px) {

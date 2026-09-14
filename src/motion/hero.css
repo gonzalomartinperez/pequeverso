@@ -1,0 +1,49 @@
+/*
+ * Hero entrance for [data-hero-enter]: transform/opacity only, ≤ --duration-hero, staggered
+ * with `--i`. The title (`h1` or data-hero-enter="title") and the media
+ * (data-hero-enter="media") never animate opacity, so the LCP candidate paints at once.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  [data-hero-enter] {
+    animation: pv-hero-rise var(--duration-hero) var(--ease-emphasis) both;
+    animation-delay: calc(var(--i, 0) * var(--stagger));
+  }
+
+  h1[data-hero-enter],
+  [data-hero-enter="title"] {
+    animation-name: pv-hero-lift;
+  }
+
+  [data-hero-enter="media"] {
+    animation-name: pv-hero-settle;
+  }
+}
+
+@keyframes pv-hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-y));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pv-hero-lift {
+  from {
+    transform: translateY(var(--reveal-y));
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes pv-hero-settle {
+  from {
+    transform: translateY(var(--reveal-y)) scale(0.97);
+  }
+  to {
+    transform: none;
+  }
+}
