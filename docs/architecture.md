@@ -29,15 +29,64 @@ Rules that keep both targets valid: no `proxy.ts`/middleware, no `cookies()`/`he
 APIs, no route handlers beyond `sitemap.ts`/`robots.ts`/metadata images, no runtime image optimizer.
 ADR: `docs/decisions/ADR-0001-hosting-target.md`.
 
+## Source tree
+
+```
+config/          site-wide facts: site.ts (brand, URLs), commerce.ts (currency, guarantee, passthrough
+                 allowlist, Hotmart URLs), edge-rules.json, budgets.json
+content/es/      neutral-Spanish copy: home.ts, gracias.ts, legal/, products/<slug>/{copy,resources,faq}.ts
+src/products/    the product registry (schema.ts, <slug>.ts modules, index.ts, jsonld.ts)
+src/app/         routes: page.tsx (hub), [product]/ (one landing per registry product),
+                 [product]/gracias/ (thank-you of core products), legal/support pages, sitemap, robots
+src/features/    landing/ (CoreLanding, OfferLanding, ThanksPage templates), commerce/ (client islands),
+                 gallery/, tracking/
+src/components/  layout (PageShell, Header, Footer, LegalLayout) and ui primitives
+src/lib/         media.ts (manifest access), metadata.ts
+media/, public/  media manifest and build-time renditions (tools/media)
+```
+
+## Product registry
+
+`src/products` is the single source of product facts. Each product is a module
+(`src/products/grafismo-fonetico.ts`, `src/products/imprime-y-juega.ts`) declared with
+`satisfies ProductInput` and parsed once, at build time, by `src/products/index.ts` through the Zod
+schema in `src/products/schema.ts` (discriminated union on `kind`):
+
+| Field | `core` (principal product) | `post-purchase-offer` |
+|---|---|---|
+| identity | `slug` (route), `code` (media namespace), `name`, `shortName`, `checkoutTitle?` | same |
+| `composition` | `pdfCount`, `pageCount`, `ageRange`, `visibleResources?` | same |
+| `media` | `hero`, `og?`, `pageIds[]`, `videoIds[]`, `cards[]`, `scenes {problem, credibility}` | `hero`, `og?`, `pageIds[]`, `videoIds[]`, `cards[]` |
+| `seo` | `index`, `title`, `description`, `priority` | same (`index: false`) |
+| `resources`, `copy` | the real PDFs and the typed landing copy from `content/es/products/<slug>/` | same |
+| `pricing` | `{ list }` | `{ upsell, downsell }` |
+| `checkout` | `envKey`, `url` (static `process.env` reference), `offer`, `sckPrefix` (<= 6 chars) | — (never a direct checkout) |
+| `funnel` / `parent` | `thanksPath`, `postPurchaseOffer?` | `parent` (a core slug), `decision: "hotmart-widget"` |
+
+Every media id is refined with `hasMedia()` (unknown ids fail the build); the registry as a whole
+checks unique slugs/codes, that `parent`/`postPurchaseOffer` resolve to the right kind, that
+`thanksPath` is `/<slug>/gracias/` and that resource page counts sum to `composition.pageCount`.
+API: `products`, `getProduct(slug)`, `coreProducts()`, `offerProducts()`, `indexableProducts()`,
+`featuredProduct()` (the hub's product), `checkoutFallbackPath(product)`. Zod and the media manifest
+stay on the server: client islands (`CheckoutLink`, `ProductInterestLink`, `OfferModeMirror`) receive
+plain props from the templates. `src/products/jsonld.ts` emits a `Product` + single `Offer` (and a
+`BreadcrumbList`) for indexable core products only — never ratings, reviews or merchant-listing fields.
+ADR: `docs/decisions/ADR-0002-product-registry.md`.
+
 ## Routes
+
+`src/app/[product]/page.tsx` (`dynamicParams = false`, `generateStaticParams` from the registry)
+renders `CoreLanding` or `OfferLanding` by kind; `src/app/[product]/gracias/page.tsx` renders
+`ThanksPage` for core products. Adding a product module therefore adds its routes, sitemap entry,
+footer/404 links and terms paragraph without touching the app tree.
 
 | Route | Role | robots | canonical |
 |---|---|---|---|
-| `/` | Hub / homepage | index | self |
-| `/grafismo-fonetico/` | Principal landing (checkout CTA) | index | self |
-| `/imprime-y-juega/` | Upsell (Hotmart widget) | noindex | self |
+| `/` | Hub / homepage (`featuredProduct()`) | index | self |
+| `/grafismo-fonetico/` | Principal landing (checkout CTA), `[product]` core | index | self |
+| `/imprime-y-juega/` | Upsell (Hotmart widget), `[product]` offer | noindex | self |
 | `/imprime-y-juega/?downsell=1` (alias `?offer=downsell`) | Same page, downsell mode | noindex | `/imprime-y-juega/` |
-| `/grafismo-fonetico/gracias/` | Post-purchase guidance | noindex | self |
+| `/grafismo-fonetico/gracias/` | Post-purchase guidance, `[product]/gracias` | noindex | self |
 | `/aviso-legal/`, `/privacidad/`, `/cookies/`, `/terminos/`, `/compras-y-reembolsos/` | Legal | noindex,follow | self |
 | `/soporte/` | Support and contact | index | self |
 | anything else | Real 404 (`out/404.html`, `ErrorDocument 404`) | — | — |
@@ -58,8 +107,10 @@ widget itself is identical in both modes: Hotmart decides the offer from the buy
 
 ## Commerce and tracking boundaries
 
-- `config/commerce.ts` holds prices, composition, guarantee and passthrough allowlist. `lib/params.ts`
-  builds checkout URLs (never forwards `off`/`ref`).
+- `src/products` holds prices, composition, checkout and funnel facts per product; `config/commerce.ts`
+  keeps the shared ones (currency, guarantee, passthrough allowlist, Hotmart URLs).
+  `features/commerce/checkout-url.ts` builds checkout URLs (never forwards `off`/`ref`) and the
+  per-product `sck=pv-<sckPrefix>-<position>`.
 - `lib/tracking.ts` + `components/Analytics` own site events (PageView, ViewContent,
   PequeversoProductInterest, CheckoutIntent) with UUID event IDs, gated by `lib/consent.ts`.
   Hotmart owns InitiateCheckout and Purchase. See `docs/tracking.md`.

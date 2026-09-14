@@ -45,7 +45,8 @@ test("internal passthrough keeps only allowlisted params", () => {
   assert.equal(withPassthrough("/grafismo-fonetico/", ""), "/grafismo-fonetico/");
 });
 
-test("sck is sanitized and capped at 30 characters", () => {
-  assert.equal(sckFor("hero"), "pv-gf-hero");
-  assert.ok(sckFor("a-very-long-position-name-that-exceeds").length <= 30);
+test("sck carries the product prefix, is sanitized and capped at 30 characters", () => {
+  assert.equal(sckFor("gf", "hero"), "pv-gf-hero");
+  assert.equal(sckFor("gf", "he ro!"), "pv-gf-hero");
+  assert.ok(sckFor("gf", "a-very-long-position-name-that-exceeds").length <= 30);
 });

@@ -1,8 +1,5 @@
-import { formatUsd, products } from "@config/commerce";
-import { packCopy as copy } from "@content/es/imprime-y-juega";
-import { packPageIds, packResources } from "@content/es/products";
+import { formatUsd } from "@config/commerce";
 import { MousePointerClick } from "lucide-react";
-import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Footer } from "@/components/layout/Footer/Footer";
 import { Header } from "@/components/layout/Header/Header";
@@ -19,33 +16,24 @@ import { OfferModeMirror } from "@/features/commerce/OfferModeMirror";
 import { OfferModeRoot } from "@/features/commerce/OfferModeRoot";
 import { PageGallery } from "@/features/gallery/PageGallery/PageGallery";
 import { getImage } from "@/lib/media";
-import { buildMetadata } from "@/lib/metadata";
 import { StickyCTA } from "@/motion/StickyCTA";
 import { TiltCard } from "@/motion/TiltCard";
-import styles from "./page.module.css";
+import type { OfferProduct } from "@/products/schema";
+import styles from "./OfferLanding.module.css";
 
-const pack = products.imprimeYJuega;
-
-export const metadata: Metadata = buildMetadata({
-  path: "/imprime-y-juega/",
-  title: copy.meta.title,
-  description: copy.meta.description,
-  noindex: true,
-  image: getImage("pack.hero").src,
-  imageAlt: getImage("pack.hero").alt,
-});
+type Props = { product: OfferProduct };
 
 /**
  * Post-purchase offer. Both views are in the HTML; OfferModeRoot picks one before first
  * paint from ?downsell=1 (alias ?offer=downsell). The Hotmart sales-funnel widget is the
  * only decision control and is rendered exactly once, outside both views.
  */
-export default function ImprimeYJuegaPage() {
-  const galleryItems = packPageIds.map((id) => {
+export function OfferLanding({ product }: Props) {
+  const { copy, media, pricing } = product;
+  const galleryItems = media.pageIds.map((id) => {
     const image = getImage(id);
     return { ...image, caption: image.alt.replace(/^Página real \d+: /i, "") };
   });
-
   const decisionLink = (
     <a href="#gfp-decision" className="button button--primary button--small" data-decision-link>
       <MousePointerClick
@@ -67,10 +55,7 @@ export default function ImprimeYJuegaPage() {
       <Header cta={decisionLink} subtitle={copy.header.subtitle} />
       <OfferModeRoot>
         <Suspense fallback={null}>
-          <OfferModeMirror
-            product={pack.slug}
-            prices={{ upsell: pack.upsellPrice, downsell: pack.downsellPrice }}
-          />
+          <OfferModeMirror product={product.slug} prices={pricing} />
         </Suspense>
 
         {/* Hero — upsell view */}
@@ -89,8 +74,8 @@ export default function ImprimeYJuegaPage() {
               </ul>
               <PriceBlock
                 kicker={copy.upsell.priceKicker}
-                price={pack.upsellPrice}
-                taxNote="+ impuestos aplicables según el país"
+                price={pricing.upsell}
+                taxNote={copy.taxNote}
                 cta={
                   <a href="#gfp-decision" className="button button--primary" data-decision-link>
                     <MousePointerClick
@@ -107,7 +92,7 @@ export default function ImprimeYJuegaPage() {
               />
             </div>
             <TiltCard className={styles.heroCard} max={5} as="figure">
-              <MediaImage id="pack.hero" sizes="(min-width: 1024px) 560px, 92vw" priority />
+              <MediaImage id={media.hero} sizes="(min-width: 1024px) 560px, 92vw" priority />
             </TiltCard>
           </div>
         </section>
@@ -129,9 +114,9 @@ export default function ImprimeYJuegaPage() {
               </p>
               <PriceBlock
                 kicker={copy.downsell.priceKicker}
-                price={pack.downsellPrice}
-                previous={{ label: copy.downsell.previousLabel, price: pack.upsellPrice }}
-                taxNote="+ impuestos aplicables según el país"
+                price={pricing.downsell}
+                previous={{ label: copy.downsell.previousLabel, price: pricing.upsell }}
+                taxNote={copy.taxNote}
                 cta={
                   <a href="#gfp-decision" className="button button--primary" data-decision-link>
                     <MousePointerClick
@@ -197,11 +182,11 @@ export default function ImprimeYJuegaPage() {
               <div className={`${styles.compareCard} ${styles.compareOwned}`} data-reveal>
                 <p className={styles.compareLabel}>
                   <Icon name="shield" size={16} />
-                  Ya es tuyo
+                  {copy.complement.ownedLabel}
                 </p>
-                <h3>{copy.complement.grafismo.title}</h3>
+                <h3>{copy.complement.owned.title}</h3>
                 <ul role="list">
-                  {copy.complement.grafismo.points.map((point) => (
+                  {copy.complement.owned.points.map((point) => (
                     <li key={point}>{point}</li>
                   ))}
                 </ul>
@@ -212,11 +197,11 @@ export default function ImprimeYJuegaPage() {
               <div className={`${styles.compareCard} ${styles.compareOffer}`} data-reveal>
                 <p className={styles.compareLabel}>
                   <Icon name="sparkles" size={16} />
-                  Esta oferta
+                  {copy.complement.offerLabel}
                 </p>
-                <h3>{copy.complement.pack.title}</h3>
+                <h3>{copy.complement.offer.title}</h3>
                 <ul role="list">
-                  {copy.complement.pack.points.map((point) => (
+                  {copy.complement.offer.points.map((point) => (
                     <li key={point}>{point}</li>
                   ))}
                 </ul>
@@ -234,7 +219,7 @@ export default function ImprimeYJuegaPage() {
               title={copy.included.title}
               lead={copy.included.lead}
             />
-            <ResourceGrid resources={packResources} total={copy.included.total} />
+            <ResourceGrid resources={product.resources} total={copy.included.total} />
           </div>
         </section>
 
@@ -248,7 +233,7 @@ export default function ImprimeYJuegaPage() {
               lead={copy.pages.lead}
               align="center"
             />
-            <PageGallery items={galleryItems} label="Páginas reales del pack" />
+            <PageGallery items={galleryItems} label={copy.pages.galleryLabel} />
           </div>
         </section>
 
@@ -306,13 +291,13 @@ export default function ImprimeYJuegaPage() {
           </div>
         </section>
 
-        <StickyCTA hideWhenVisible={["#gfp-decision", "#cierre", "footer"]} label={`${pack.name}`}>
+        <StickyCTA hideWhenVisible={["#gfp-decision", "#cierre", "footer"]} label={product.name}>
           <a href="#gfp-decision" className="button button--primary" data-decision-link>
             <span className="only-upsell">
-              {copy.sticky.upsell} · {formatUsd(pack.upsellPrice)}
+              {copy.sticky.upsell} · {formatUsd(pricing.upsell)}
             </span>
             <span className="only-downsell">
-              {copy.sticky.downsell} · {formatUsd(pack.downsellPrice)}
+              {copy.sticky.downsell} · {formatUsd(pricing.downsell)}
             </span>
           </a>
         </StickyCTA>

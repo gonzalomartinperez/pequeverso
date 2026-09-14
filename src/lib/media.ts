@@ -84,7 +84,7 @@ const byId: ReadonlyMap<string, ManifestItem> = new Map(items.map((item) => [ite
 /** Every id declared in the manifest, in build order. @internal */
 export const mediaIds: ReadonlyArray<MediaId> = items.map((item) => item.id);
 
-/** True when the manifest declares the id (any kind). @internal */
+/** True when the manifest declares the id (any kind). */
 export function hasMedia(id: MediaId): boolean {
   return byId.has(id);
 }

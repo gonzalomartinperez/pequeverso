@@ -3,19 +3,22 @@ import Link from "next/link";
 import { BrandLogo } from "@/components/ui/BrandLogo/BrandLogo";
 import { SocialLinks } from "@/components/ui/SocialLinks/SocialLinks";
 import { CookieSettingsLink } from "@/features/tracking/CookieSettingsLink";
+import { coreProducts } from "@/products";
 import styles from "./Footer.module.css";
 
 const productLinks = [
   { href: "/", label: "Inicio" },
-  { href: "/grafismo-fonetico/", label: "Grafismo Fonético" },
-  { href: "/grafismo-fonetico/#incluye", label: "Qué incluye" },
-  { href: "/grafismo-fonetico/#preguntas", label: "Preguntas frecuentes" },
+  ...coreProducts().flatMap((product) => [
+    { href: product.path, label: product.name },
+    { href: `${product.path}#incluye`, label: "Qué incluye" },
+    { href: `${product.path}#preguntas`, label: "Preguntas frecuentes" },
+  ]),
 ];
 
 const helpLinks = [
   { href: "/soporte/", label: "Soporte y contacto" },
   { href: "/compras-y-reembolsos/", label: "Compras y reembolsos" },
-  { href: "/grafismo-fonetico/gracias/", label: "Acceso a tu compra" },
+  ...coreProducts().map((product) => ({ href: product.funnel.thanksPath, label: "Acceso a tu compra" })),
 ];
 
 const legalLinks = [

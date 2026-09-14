@@ -1,36 +1,42 @@
 "use client";
 
-import { checkoutUrl, products } from "@config/commerce";
 import { ArrowRight, ShoppingBag } from "lucide-react";
-import { type MouseEvent, type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { buildCheckoutUrl, sckFor } from "@/features/commerce/checkout-url";
 import { trackCheckoutIntent } from "@/features/tracking/track";
 
+/** Plain checkout facts of a core product, passed from the server template (never the registry). */
+export type CheckoutTarget = {
+  slug: string;
+  checkoutUrl: string;
+  offer: string;
+  sckPrefix: string;
+  fallbackPath: string;
+};
+
 type Props = {
+  product: CheckoutTarget;
   position: string;
   children: ReactNode;
   className?: string;
-  offer?: string;
-  offerMode?: string;
 };
-
-const FALLBACK = "/grafismo-fonetico/#comprar";
 
 /**
  * Principal CTA. Server-renders the base checkout URL, then upgrades it on the client with
  * the allowlisted acquisition parameters from the page URL and a per-position `sck`.
  * Fires exactly one CheckoutIntent per click and navigates in the same tab.
  */
-export function CheckoutLink({ position, children, className, offer = "main-usd-14-99", offerMode }: Props) {
-  const [href, setHref] = useState(checkoutUrl || FALLBACK);
+export function CheckoutLink({ product, position, children, className }: Props) {
+  const { checkoutUrl, fallbackPath, sckPrefix } = product;
+  const [href, setHref] = useState(checkoutUrl || fallbackPath);
 
   useEffect(() => {
     if (!checkoutUrl) return;
-    setHref(buildCheckoutUrl(checkoutUrl, window.location.search, { sck: sckFor(position) }));
-  }, [position]);
+    setHref(buildCheckoutUrl(checkoutUrl, window.location.search, { sck: sckFor(sckPrefix, position) }));
+  }, [checkoutUrl, sckPrefix, position]);
 
-  const onClick = (_event: MouseEvent<HTMLAnchorElement>) => {
-    trackCheckoutIntent({ product: products.grafismoFonetico.slug, offer, position, offerMode });
+  const onClick = () => {
+    trackCheckoutIntent({ product: product.slug, offer: product.offer, position });
   };
 
   return (

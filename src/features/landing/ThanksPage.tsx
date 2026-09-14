@@ -1,9 +1,7 @@
 import { guaranteeDays, hotmart } from "@config/commerce";
 import { site } from "@config/site";
 import { graciasCopy as copy } from "@content/es/gracias";
-import { grafismoResources } from "@content/es/products";
 import { LogIn } from "lucide-react";
-import type { Metadata } from "next";
 import Link from "next/link";
 import { PageShell } from "@/components/layout/PageShell/PageShell";
 import { CTAButton } from "@/components/ui/CTAButton/CTAButton";
@@ -13,22 +11,17 @@ import { Notice } from "@/components/ui/Notice/Notice";
 import { ResourceGrid } from "@/components/ui/ResourceGrid/ResourceGrid";
 import { SectionHeading } from "@/components/ui/SectionHeading/SectionHeading";
 import { Topbar } from "@/components/ui/Topbar/Topbar";
-import { buildMetadata } from "@/lib/metadata";
 import { Universe } from "@/motion/Universe";
-import styles from "./page.module.css";
+import type { CoreProduct } from "@/products/schema";
+import styles from "./ThanksPage.module.css";
 
-export const metadata: Metadata = buildMetadata({
-  path: "/grafismo-fonetico/gracias/",
-  title: copy.meta.title,
-  description: copy.meta.description,
-  noindex: true,
-});
+type Props = { product: CoreProduct };
 
 /**
  * Post-purchase guidance. The URL is not proof of payment: no files are linked, no purchase
  * event is fired, and visitors without a purchase are pointed to the landing.
  */
-export default function GraciasPage() {
+export function ThanksPage({ product }: Props) {
   const headerCta = (
     <CTAButton href={hotmart.consumerArea} variant="primary" size="small" external icon={LogIn}>
       Abrir Hotmart
@@ -118,7 +111,7 @@ export default function GraciasPage() {
       <section className="section" aria-labelledby="recursos-title">
         <div className="container">
           <SectionHeading id="recursos-title" kicker={copy.resources.kicker} title={copy.resources.title} />
-          <ResourceGrid resources={grafismoResources} compact />
+          <ResourceGrid resources={product.resources} compact />
         </div>
       </section>
 
@@ -149,7 +142,7 @@ export default function GraciasPage() {
           </Notice>
           <Notice tone="success" title={copy.noPurchase.title}>
             <p>
-              {copy.noPurchase.text} <Link href="/grafismo-fonetico/">{copy.noPurchase.cta}</Link>
+              {copy.noPurchase.text} <Link href={product.path}>{copy.noPurchase.cta}</Link>
             </p>
           </Notice>
         </div>
