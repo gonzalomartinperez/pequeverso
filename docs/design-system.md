@@ -26,8 +26,8 @@ Retired from the WordPress landings: `#df5a4f` (3.7:1), `#00a9a4` text (2.9:1), 
 
 Fraunces (variable, 700) for display/H1/H2/price; Nunito Sans (variable, 500–800) for everything
 else. Fluid scale via `clamp()`: H1 34→60, H2 30→42, lead 17→19, body 16→17, price 38→44.
-Weights are capped at 800. Fonts are self-hosted (`src/fonts`, OFL) and loaded with
-`next/font/local` (`display: swap`, metric-compatible fallbacks to limit CLS).
+Weights are capped at 800. Fonts are self-hosted (`public/fonts`, OFL) with hand-written `@font-face` rules, preloaded from the
+root layout and metric-matched fallbacks (`docs/performance.md`).
 
 ## Spacing, radius, elevation, motion
 

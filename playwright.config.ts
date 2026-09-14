@@ -22,7 +22,7 @@ function viewport(width: number) {
 const desktopChrome = devices["Desktop Chrome"];
 const desktopSafari = devices["Desktop Safari"];
 const specs = {
-  functional: /(smoke|a11y|offer-mode|widget|commerce|consent|motion|navigation|tracking)\.spec\.ts/,
+  functional: /(smoke|a11y|offer-mode|widget|commerce|consent|motion|navigation|tracking|lcp)\.spec\.ts/,
   visual: /visual\.spec\.ts/,
   prod: /smoke\.spec\.ts/,
 };
