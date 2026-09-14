@@ -17,7 +17,6 @@ export function Orbit({ className }: Props) {
       viewBox="0 0 400 400"
       aria-hidden="true"
       focusable="false"
-      data-visual-mask
     >
       <defs>
         <radialGradient id={glowId}>

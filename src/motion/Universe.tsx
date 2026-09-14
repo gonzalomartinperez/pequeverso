@@ -9,11 +9,7 @@ type Props = { variant?: "hero" | "band"; className?: string };
  */
 export function Universe({ variant = "hero", className }: Props) {
   return (
-    <div
-      className={`${styles.universe} ${styles[variant]} ${className ?? ""}`}
-      aria-hidden="true"
-      data-visual-mask
-    >
+    <div className={`${styles.universe} ${styles[variant]} ${className ?? ""}`} aria-hidden="true">
       <div className={styles.stars} />
       <div className={styles.starsFar} />
       <div className={`${styles.planet} ${styles.planetA}`} />

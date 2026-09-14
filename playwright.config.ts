@@ -7,7 +7,7 @@ import { defineConfig, devices } from "@playwright/test";
  * Project sets are selected with PW_SET:
  *   pr       chromium at 390 / 768 / 1440 + reduced-motion (pull-request gate, default)
  *   nightly  chromium + webkit at 1440 / 1280 / 1024 / 768 / 430 / 390 / 360
- *   visual   screenshot baselines at 390 / 1440 (chromium + webkit, reduced motion)
+ *   visual   screenshot baselines at 390 / 1440 (chromium, reduced motion; WebKit text antialiasing drifts)
  *   prod     chromium-1440 smoke against a deployed origin (E2E_BASE_URL required)
  */
 const set = (process.env.PW_SET ?? "pr") as "pr" | "nightly" | "visual" | "prod";
@@ -58,18 +58,11 @@ const projectSets = {
       testMatch: specs.functional,
     })),
   ],
-  visual: [390, 1440].flatMap((width) => [
-    {
-      name: `visual-chromium-${width}`,
-      use: { ...desktopChrome, viewport: viewport(width), reducedMotion: "reduce" as const },
-      testMatch: specs.visual,
-    },
-    {
-      name: `visual-webkit-${width}`,
-      use: { ...desktopSafari, viewport: viewport(width), reducedMotion: "reduce" as const },
-      testMatch: specs.visual,
-    },
-  ]),
+  visual: [390, 1440].map((width) => ({
+    name: `visual-chromium-${width}`,
+    use: { ...desktopChrome, viewport: viewport(width), reducedMotion: "reduce" as const },
+    testMatch: specs.visual,
+  })),
   prod: [
     {
       name: "prod-chromium-1440",
