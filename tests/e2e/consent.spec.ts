@@ -31,6 +31,18 @@ test("footer cookie control exists and legal links are complete", async ({ page 
   }
 });
 
+test("footer control opens a necessary-cookies notice when nothing is configured", async ({ page }) => {
+  test.skip(!!process.env.E2E_EXPECT_CONSENT, "build was configured with a pixel id");
+  await page.goto("/");
+  await page.getByRole("button", { name: "Configurar cookies" }).click();
+  const banner = page.getByTestId("consent-banner");
+  await expect(banner).toBeVisible();
+  await expect(banner).toHaveAttribute("data-mode", "notice");
+  await expect(banner).toContainText("solo usa cookies propias necesarias");
+  await banner.getByRole("button", { name: "Entendido" }).click();
+  await expect(banner).toHaveCount(0);
+});
+
 test("consent banner (when configured) offers equal accept, reject and configure actions", async ({
   page,
 }) => {

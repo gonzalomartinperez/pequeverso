@@ -82,8 +82,9 @@ function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
 
 /**
  * Prior-consent banner with equal "Aceptar" / "Rechazar" actions plus "Configurar" for a
- * per-category choice (AEPD 2024 criteria, Meta Business Tools terms). Rendered only when an
- * enabled adapter needs consent; `CookieSettingsLink` reopens it (pv:consent:open).
+ * per-category choice (AEPD 2024 criteria, Meta Business Tools terms). Shown on first visit only
+ * when an enabled adapter needs consent; `CookieSettingsLink` reopens it (pv:consent:open). With
+ * no gated integration it opens on request as a notice that only necessary cookies are used.
  */
 export function ConsentBanner() {
   const [categories] = useState(() => gatedCategories(enabledAdapters()));
@@ -94,8 +95,7 @@ export function ConsentBanner() {
   const descId = useId();
 
   useEffect(() => {
-    if (categories.length === 0) return;
-    setOpen(readConsent() === null);
+    if (categories.length > 0) setOpen(readConsent() === null);
     const reopen = () => {
       const current = readConsent();
       if (current) setSelection({ analytics: current.analytics, marketing: current.marketing });
@@ -113,6 +113,36 @@ export function ConsentBanner() {
   }, [categories]);
 
   if (!open) return null;
+
+  if (categories.length === 0) {
+    return (
+      <section
+        className={styles.banner}
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby={headingId}
+        aria-describedby={descId}
+        data-testid="consent-banner"
+        data-mode="notice"
+      >
+        <div className={styles.inner}>
+          <h2 id={headingId} className={styles.title}>
+            Cookies
+          </h2>
+          <p id={descId} className={styles.text}>
+            Este sitio solo usa cookies propias necesarias para funcionar y no requieren tu permiso. No hay
+            integraciones de medición ni de marketing activas, así que no hay nada que configurar.{" "}
+            <Link href="/cookies/">Más información</Link>
+          </p>
+          <div className={styles.actions}>
+            <button type="button" className={styles.primary} onClick={() => setOpen(false)}>
+              Entendido
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section

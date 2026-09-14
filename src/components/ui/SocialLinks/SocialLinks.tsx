@@ -3,7 +3,7 @@ import styles from "./SocialLinks.module.css";
 
 /**
  * Icon-only brand marks for the official @somospequeverso profiles. Paths from Simple Icons
- * (CC0 1.0); each link has an accessible name and tooltip, opens in a new tab and is a 44 px target.
+ * (CC0 1.0); each link has a visually hidden name and a tooltip, opens in a new tab and is a 44 px target.
  */
 const marks: Record<SocialNetwork, { label: string; path: string }> = {
   instagram: {
@@ -49,11 +49,11 @@ export function SocialLinks({ tone = "light", size = "default", className }: Pro
               target="_blank"
               rel="noopener"
               title={mark.label}
-              aria-label={`${mark.label}: @somospequeverso (se abre en una pestaña nueva)`}
             >
               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
                 <path d={mark.path} fill="currentColor" />
               </svg>
+              <span className="visually-hidden">{`${mark.label}: @somospequeverso (se abre en una pestaña nueva)`}</span>
             </a>
           </li>
         );
