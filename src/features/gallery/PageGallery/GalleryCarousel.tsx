@@ -74,6 +74,7 @@ export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
     dragFree: false,
   });
   const [selected, setSelected] = useState(0);
+  const [settled, setSettled] = useState(true);
   const [zoom, setZoom] = useState<Zoom | null>(null);
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const open = useCallback((image: HTMLImageElement) => setZoom(zoomFrom(image)), []);
@@ -90,12 +91,18 @@ export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
 
   useEffect(() => {
     if (!embla) return;
+    const onScroll = () => setSettled(false);
+    const onSettle = () => setSettled(true);
     onSelect();
     embla.on("select", onSelect);
     embla.on("reInit", onSelect);
+    embla.on("scroll", onScroll);
+    embla.on("settle", onSettle);
     return () => {
       embla.off("select", onSelect);
       embla.off("reInit", onSelect);
+      embla.off("scroll", onScroll);
+      embla.off("settle", onSettle);
     };
   }, [embla, onSelect]);
 
@@ -120,7 +127,12 @@ export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
     <ZoomContext.Provider value={open}>
       <section className={styles.gallery} aria-roledescription="carrusel" aria-label={label}>
         {/* biome-ignore lint/a11y/noStaticElementInteractions: keyboard navigation for the carousel viewport (roving focus lives on the controls) */}
-        <div className={styles.viewport} ref={emblaRef} onKeyDown={onKeyDown}>
+        <div
+          className={styles.viewport}
+          ref={emblaRef}
+          onKeyDown={onKeyDown}
+          data-state={settled ? "settled" : "scrolling"}
+        >
           <ul className={styles.track} role="list">
             {slides.map((slide, index) => (
               <li
