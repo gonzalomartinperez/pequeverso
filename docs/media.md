@@ -7,7 +7,7 @@ hard-code `/media/...` paths: they call `getImage(id)` / `getVideo(id)` from `sr
 
 Budget: **5 MB per file, 25 MB for `public/media` in total** (target 16–20 MB), enforced by
 `npm run check:media` (`scripts/check-media-budget.mjs`) and by `media-build.mjs --check`.
-Current state: 68 items, 232 outputs (227 under `public/media` + the favicon set), 21.7 MB.
+Current state: 68 items, 229 outputs (223 under `public/media` + the favicon set), 16.6 MB.
 
 ## Pipeline
 
@@ -67,7 +67,7 @@ Library roots default to the local workstation layout and can be overridden:
 | `brand` | per item (96/192/512 isotipo, 320/640 logo) | 90 (alpha 100) | Transparency preserved. |
 | `poster` | 480 / 720 | 72 | Video posters, frame taken from the master at `posterAt` seconds. |
 | `og` | 1200×630 | PNG (palette) + WebP 90 | Composed with sharp: cream `#fffaf2`, centered logo, navy `#003068` band. Fixed file names (referenced by `src/lib/metadata.ts`). |
-| `icons` | 32 ico, 96 svg, 180, 192, 512 | PNG | `favicon.ico` wraps a 32 px PNG; `icon.svg` embeds the 96 px PNG (there is no vector master). |
+| `icons` | 48 ico, 512 png, 192 svg, 180, 192, 512 | PNG, transparent, no padding | `favicon.png` (512, transparent) is the primary icon; `favicon.ico` wraps a 48 px PNG; `icon.svg` embeds the 192 px PNG (no vector master); `apple-touch-icon.png` sits on navy because iOS renders transparency as black. |
 | `video` | short side 720 (720×1280 vertical) | H.264 High, yuv420p, 30 fps, crf 26 → 28 → 30 → 32 until ≤ 2.2 MB, `-maxrate 1500k -bufsize 3000k -g 60`, faststart, **audio stripped**, `maxSeconds` per item (default 15) | WebM (VP9, `-b:v 0 -crf 33 → 37 → 41 -row-mt 1 -deadline good`, same scale/fps/GOP) when `video.webm: true`; the first step whose file is not larger than the mp4 is kept, otherwise no WebM. Evaluated on the four `video.gf.*` clips and **disabled** (`webm: false`): VP9 saved only 3–14 % per clip for +5.1 MB of repository size. |
 
 AVIF renditions come from `roles.<role>.avif` (a list of widths: the middle and the largest WebP width)
