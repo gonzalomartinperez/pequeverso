@@ -68,14 +68,14 @@ Library roots default to the local workstation layout and can be overridden:
 | `poster` | 480 / 720 | 72 | Video posters, frame taken from the master at `posterAt` seconds. |
 | `og` | 1200×630 | PNG (palette) + WebP 90 | Composed with sharp: cream `#fffaf2`, centered logo, navy `#003068` band. Fixed file names (referenced by `src/lib/metadata.ts`). |
 | `icons` | 32 ico, 96 svg, 180, 192, 512 | PNG | `favicon.ico` wraps a 32 px PNG; `icon.svg` embeds the 96 px PNG (there is no vector master). |
-| `video` | short side 720 (720×1280 vertical) | H.264 High, yuv420p, 30 fps, crf 26 → 28 → 30 → 32 until ≤ 2.2 MB, `-maxrate 1500k -bufsize 3000k -g 60`, faststart, **audio stripped**, `maxSeconds` per item (default 15) | WebM (VP9, `-b:v 0 -crf 33 → 37 → 41 -row-mt 1 -deadline good`, same scale/fps/GOP) when `video.webm: true`; the first step whose file is not larger than the mp4 is kept, otherwise no WebM. Enabled for the four `video.gf.*` clips. |
+| `video` | short side 720 (720×1280 vertical) | H.264 High, yuv420p, 30 fps, crf 26 → 28 → 30 → 32 until ≤ 2.2 MB, `-maxrate 1500k -bufsize 3000k -g 60`, faststart, **audio stripped**, `maxSeconds` per item (default 15) | WebM (VP9, `-b:v 0 -crf 33 → 37 → 41 -row-mt 1 -deadline good`, same scale/fps/GOP) when `video.webm: true`; the first step whose file is not larger than the mp4 is kept, otherwise no WebM. Evaluated on the four `video.gf.*` clips and **disabled** (`webm: false`): VP9 saved only 3–14 % per clip for +5.1 MB of repository size. |
 
 AVIF renditions come from `roles.<role>.avif` (a list of widths: the middle and the largest WebP width)
 and can be overridden or disabled per item with `outputs.avif` (`[]` disables). AVIF quality is 55
 (`avifQuality` in a role or item override), effort 6. All encoders use `effort 6`, `withoutEnlargement`
 and strip metadata. Widths above the source width collapse to the source width and are deduplicated.
 
-### Budget by role (before → after AVIF + WebM, 2026-09-13)
+### Budget by role (before → after AVIF, 2026-09-13; WebM evaluated and disabled)
 
 | Group | Files | Before | After | Notes |
 |---|---|---|---|---|
@@ -85,9 +85,9 @@ and strip metadata. Widths above the source width collapse to the source width a
 | `card` WebP / AVIF | 54 / 36 | 1.76 / 0 MB | 1.76 / 0.98 MB | AVIF 520 + 720. First to drop if the total ever crosses 25 MB. |
 | `brand` + `og` | 7 | 0.16 MB | 0.16 MB | Unchanged. |
 | `video` mp4 | 4 | 5.97 MB | 5.55 MB | `paloma` and `maleta` trimmed to 12 s; every mp4 ≤ 2.2 MB. |
-| `video` webm | 4 | — | 5.13 MB | VP9; 3–14 % smaller than the matching mp4. |
+| `video` webm | 0 | — | 0 | Evaluated: VP9 3–14 % smaller than mp4 for +5.13 MB; disabled. |
 | `video` posters | 8 | 0.25 MB | 0.25 MB | Unchanged (frame + hash unaffected by the trim). |
-| **Total `public/media`** | 169 → 227 | **15.07 MB** | **21.74 MB** | Cap 25 MB. Disabling `webm` returns to 16.6 MB. |
+| **Total `public/media`** | 169 → 223 | **15.07 MB** | **16.62 MB** | Cap 25 MB. |
 
 | Clip | Duration | mp4 (before) | mp4 (after) | WebM |
 |---|---|---|---|---|
@@ -96,10 +96,9 @@ and strip metadata. Widths above the source width collapse to the source width a
 | `video.gf.paloma` | 13.5 → 12 s | crf 28, 1.96 MB | crf 28, 1.76 MB | crf 37, 1.68 MB |
 | `video.gf.maleta` | 13.1 → 12 s | crf 30, 1.94 MB | crf 30, 1.72 MB | crf 41, 1.67 MB |
 
-VP9 at crf 33 came out 10–20 % *larger* than the maxrate-capped H.264 for all four clips, which is why
-the ladder steps to 37/41. Whether the WebMs are worth 5.1 MB of budget for a 3–14 % transfer saving
-is an open call: set `video.webm: false` in `sources.json` and rebuild to drop them (pruned
-automatically, manifest and helper adjust).
+VP9 at crf 33 came out 10–20 % *larger* than the maxrate-capped H.264 for all four clips; the ladder
+steps to 37/41 reach only 3–14 % savings. Decision: WebM stays disabled (`video.webm: false`);
+re-enable per item only if a clip changes materially.
 
 ### Naming and caching
 

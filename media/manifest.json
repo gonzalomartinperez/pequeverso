@@ -1,6 +1,6 @@
 {
   "$schemaVersion": 1,
-  "generatedAt": "2026-09-14T00:25:06.132Z",
+  "generatedAt": "2026-09-14T00:29:54.971Z",
   "generator": "tools/media/media-build.mjs v1 (sharp 0.35.4, libvips 8.18.6)",
   "extras": [
     "public/manifest.webmanifest"
@@ -4156,15 +4156,6 @@
           "quality": "crf26"
         },
         {
-          "file": "public/media/video/video-gf-bota-vp9-crf37-2d24265d.webm",
-          "bytes": 826413,
-          "sha256": "8dea64b302aa059ba6cc4880137c4ec00ca959ea4ddef7a43e54615bbc755596",
-          "width": 720,
-          "height": 1280,
-          "format": "webm",
-          "quality": "crf37"
-        },
-        {
           "file": "public/media/video/video-gf-bota-poster-w480-651dedaf.webp",
           "bytes": 20478,
           "sha256": "05bbb5da670f4c72c4adcb1657d37520973bfd5327028f5cab2bebd64e046d1d",
@@ -4199,9 +4190,7 @@
         "duration": 4.434,
         "trimmed": false,
         "posterAt": 1,
-        "webm": true,
-        "webmCodec": "vp9",
-        "webmCrf": 37
+        "webm": false
       }
     },
     {
@@ -4250,15 +4239,6 @@
           "quality": "crf26"
         },
         {
-          "file": "public/media/video/video-gf-mapa-vp9-crf37-4b9180a7.webm",
-          "bytes": 1033853,
-          "sha256": "b6aa19544ba89dbf6ca337d91eeb2b763e81fa74c5e0b10a9990228b91542d89",
-          "width": 720,
-          "height": 1280,
-          "format": "webm",
-          "quality": "crf37"
-        },
-        {
           "file": "public/media/video/video-gf-mapa-poster-w480-96a084b3.webp",
           "bytes": 26916,
           "sha256": "95e1e0bd23dd440b9ae55e030989be5b3764045bae5a88cae22d8e735143dce5",
@@ -4293,9 +4273,7 @@
         "duration": 5.934,
         "trimmed": false,
         "posterAt": 1,
-        "webm": true,
-        "webmCodec": "vp9",
-        "webmCrf": 37
+        "webm": false
       }
     },
     {
@@ -4344,15 +4322,6 @@
           "quality": "crf28"
         },
         {
-          "file": "public/media/video/video-gf-paloma-vp9-crf37-5dd720d1.webm",
-          "bytes": 1759343,
-          "sha256": "6ca851646742d62fba836a7b62e74c7064aa1f081c5e127f28c4f28a8779ec14",
-          "width": 720,
-          "height": 1280,
-          "format": "webm",
-          "quality": "crf37"
-        },
-        {
           "file": "public/media/video/video-gf-paloma-poster-w480-e688a058.webp",
           "bytes": 19172,
           "sha256": "2e24d3797363d2a8a73c6dd561532355d14dbf5178acf0ad172ffec928ca5601",
@@ -4387,9 +4356,7 @@
         "duration": 12,
         "trimmed": true,
         "posterAt": 6,
-        "webm": true,
-        "webmCodec": "vp9",
-        "webmCrf": 37
+        "webm": false
       }
     },
     {
@@ -4438,15 +4405,6 @@
           "quality": "crf30"
         },
         {
-          "file": "public/media/video/video-gf-maleta-vp9-crf41-f273c7f3.webm",
-          "bytes": 1755622,
-          "sha256": "518549ed24376fa5039d735405fff7a38e7a30a930dfa9185d49e31b84336a9c",
-          "width": 720,
-          "height": 1280,
-          "format": "webm",
-          "quality": "crf41"
-        },
-        {
           "file": "public/media/video/video-gf-maleta-poster-w480-429cef93.webp",
           "bytes": 33624,
           "sha256": "cea0bfde2a8a31b0eabaf8027f53a741aa542ad24e17d72625869db53ed52288",
@@ -4481,9 +4439,7 @@
         "duration": 12,
         "trimmed": true,
         "posterAt": 1,
-        "webm": true,
-        "webmCodec": "vp9",
-        "webmCrf": 41
+        "webm": false
       }
     }
   ]
