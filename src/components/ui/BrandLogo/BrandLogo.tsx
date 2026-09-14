@@ -1,7 +1,15 @@
 import { getImage } from "@/lib/media";
 import styles from "./BrandLogo.module.css";
 
-type Props = { variant?: "full" | "mark"; className?: string; priority?: boolean };
+type Props = {
+  variant?: "full" | "mark";
+  className?: string;
+  /**
+   * Above-the-fold mark (header): loads eagerly but with low fetch priority and no head
+   * preload, so the page hero keeps the single LCP preload. Footer and other uses stay lazy.
+   */
+  priority?: boolean;
+};
 
 /**
  * Isotipo from the media manifest (derived from the approved PNG master; no vector master
@@ -22,7 +30,8 @@ export function BrandLogo({ variant = "full", className, priority = false }: Pro
         alt=""
         aria-hidden="true"
         decoding="async"
-        {...(priority ? { fetchPriority: "high" as const } : { loading: "lazy" as const })}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority="low"
       />
       {variant === "full" ? <span className={`${styles.wordmark} pv-wordmark`}>pequeverso</span> : null}
     </span>

@@ -154,10 +154,13 @@ const demo = getVideo("video.gf.mapa"); // { mp4, webm?, poster: { src, srcSet }
 
 - `src` is the largest rendition ≤ 1440 px; always pass `width`/`height` to `<img>` (CLS ≤ 0.1).
 - For `<picture>`, render `sources` (AVIF first) before the WebP `<img>`. `hero`, `scene` and `card`
-  items carry AVIF; `page`, `brand` and posters are WebP only.
-- Videos: render `<source src={webm} type="video/webm">` before `<source src={mp4} type="video/mp4">`
-  when `webm` is present (every `video.gf.*` clip has one); always set `poster`, `width`/`height`,
+  items carry AVIF; `page`, `brand` and posters are WebP only. The LCP image goes through
+  `MediaImage priority`, which adds `fetchpriority="high"`, `data-lcp` and a typed
+  `<link rel="preload" as="image">` for the rendition the browser will pick (`docs/performance.md`).
+- Videos are mp4 only (WebM evaluated and disabled); always set `poster`, `width`/`height`,
   `muted`, `playsInline`, `preload="metadata"`.
+- Gallery pages render `<GallerySlide id>` on the server inside `<PageGallery>`; `VideoBlock`
+  renders posters on the server and only ids/sources reach the client player.
 - Videos are silent demonstrations: render `title`/`description` as visible text or `aria-describedby`;
   they are the text alternative required by WCAG.
 - Unknown ids throw with a clear message, so a typo fails `next build`, not production.
@@ -221,3 +224,10 @@ const demo = getVideo("video.gf.mapa"); // { mp4, webm?, poster: { src, srcSet }
 | Logo vector master | Only raster PNG exports exist (Canva, 2026-08-02) | `icon.svg` embeds a PNG. Ask the owner for the SVG/AI master to replace it. |
 | AI-generated labelling | Scenes and cards are AI-generated | Decide whether pages must label them ("imagen ilustrativa generada con IA"); the manifest already carries `provenance.origin = ai-generated` for the pages to use. |
 | `approvedAt` | Set to the coordinator brief date (2026-09-12) for images | Replace with the owner's sign-off date when it exists. |
+
+## Fonts
+
+Fraunces and Nunito Sans are self-hosted variable woff2 files in `public/fonts/` (SIL OFL, license
+texts alongside), declared with `@font-face` in `src/styles/tokens.css` and preloaded from
+`src/app/layout.tsx`. File names carry a content hash because `/fonts/*` is served immutable; see
+`public/fonts/README.md` for provenance and `docs/performance.md` for the fallback metrics.
