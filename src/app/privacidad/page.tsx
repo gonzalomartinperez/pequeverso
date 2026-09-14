@@ -46,10 +46,10 @@ export default function PrivacidadPage() {
       <h2 id="datos">Qué datos tratamos</h2>
       <ul>
         <li>
-          <strong>Navegación:</strong> si aceptas las cookies de marketing, Meta recibe identificadores de
-          navegación (cookies <code>_fbp</code>/<code>_fbc</code>, dirección IP, agente de usuario) y eventos
-          de este sitio (página vista, interés en el producto, clic hacia el pago). Si las rechazas, no se
-          carga ningún script de Meta.
+          <strong>Navegación:</strong> salvo que rechaces las cookies de marketing, Meta recibe
+          identificadores de navegación (cookies <code>_fbp</code>/<code>_fbc</code>, dirección IP, agente de
+          usuario) y eventos de este sitio (página vista, interés en el producto, clic hacia el pago). Si las
+          rechazas, la medición se desactiva y no se carga ningún script de Meta en tus próximas visitas.
         </li>
         <li>
           <strong>Medición sin cookies:</strong> podemos usar una herramienta de analítica agregada que no
@@ -78,7 +78,10 @@ export default function PrivacidadPage() {
         <tbody>
           <tr>
             <td>Medir campañas y comprender el interés en el producto (Meta)</td>
-            <td>Tu consentimiento (banner de cookies), revocable en cualquier momento</td>
+            <td>
+              Interés legítimo en medir nuestras campañas, con oposición inmediata desde el banner de cookies
+              o el pie de página
+            </td>
           </tr>
           <tr>
             <td>Estadísticas agregadas de uso del sitio</td>
@@ -102,7 +105,7 @@ export default function PrivacidadPage() {
           procesa la compra, la entrega y los reembolsos.
         </li>
         <li>
-          <strong>Meta Platforms Ireland Ltd.</strong>: medición de campañas, solo con tu consentimiento.
+          <strong>Meta Platforms Ireland Ltd.</strong>: medición de campañas, salvo que la rechaces.
         </li>
         <li>
           <strong>Hostinger International Ltd.</strong>: alojamiento del sitio y registros técnicos.

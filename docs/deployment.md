@@ -42,20 +42,20 @@ Manual (`workflow_dispatch`), `production` environment with required approval:
 
 ## Environment variables (hPanel → Environment variables; GitHub `production` environment)
 
-`npm run build` runs `scripts/check-env.mjs` first: it validates formats, never prints values,
-exits 1 on a malformed one and logs `tracking: meta=on|off umami=on|off mode=strict|advanced`.
+`npm run build` runs `scripts/check-env.mjs` first: it validates formats, never prints values
+and exits 1 on a malformed one.
 `NEXT_PUBLIC_*` values are inlined at build time, so **saving a variable in hPanel triggers a
-redeploy**; there is nothing to reload at runtime.
+redeploy**; there is nothing to reload at runtime. Build log line: `tracking: meta=on|off`.
 
 | Variable | Required | Format | Effect when empty |
 |---|---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | yes | `https://` origin, no trailing slash | defaults to `https://pequeverso.com` (canonicals, sitemap, OG) |
 | `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO` (or legacy `NEXT_PUBLIC_CHECKOUT_URL`) | optional override | starts with `https://pay.hotmart.com/` | the registry default (the public Hotmart checkout) is used |
-| `NEXT_PUBLIC_META_PIXEL_ID` | optional | 15–16 digits | Meta adapter off: no script; the first-visit consent banner is not shown and "Configurar cookies" opens a necessary-cookies notice |
-| `NEXT_PUBLIC_UMAMI_SCRIPT_URL` + `NEXT_PUBLIC_UMAMI_WEBSITE_ID` | optional pair (both or neither) | `https://` script URL + website id | Umami adapter off |
-| `NEXT_PUBLIC_CONSENT_MODE` | optional | `strict` (default) or `advanced` | `strict`: nothing third-party loads before consent |
-| `NEXT_PUBLIC_TRACKING_DEBUG` | optional | `1` | no console output |
-| `NEXT_OUTPUT` | auto | `export` (default) or `standalone` | static export; Hostinger's Node builder forces `standalone` |
+| `NEXT_PUBLIC_META_PIXEL_ID` | optional | 15–16 digits | no pixel; the first-visit banner is not shown and "Configurar cookies" opens a necessary-cookies notice. When set, the pixel runs by default and the banner withdraws it (`docs/tracking.md`) |
+| `NEXT_OUTPUT` | never in hPanel | `export` (default) or `standalone` | auto-detected: Hostinger's Node builder gets `standalone` |
+
+Those three are the whole surface: no analytics, consent-mode or debug variables exist; debug
+logging follows `NODE_ENV=development`.
 
 ## Verification matrix (after every deploy)
 

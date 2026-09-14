@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 /**
  * Screenshot baselines (PW_SET=visual: chromium at 390 / 1440, reduced motion). Baselines are

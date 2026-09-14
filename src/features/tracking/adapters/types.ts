@@ -1,10 +1,7 @@
 import type { ConsentCategory, ConsentState } from "../consent.ts";
 
-/** Consent mode selected at build time (`NEXT_PUBLIC_CONSENT_MODE`). */
-export type ConsentMode = "strict" | "advanced";
-
 /** Identifier of a shipped adapter. Extend the union when a new adapter is added. */
-export type AdapterId = "meta" | "umami";
+export type AdapterId = "meta";
 
 /** Consent category an adapter belongs to; `none` needs no consent (cookie-less, no personal data). */
 export type AdapterCategory = ConsentCategory | "none";
@@ -38,8 +35,9 @@ export type TrackedEvent = {
  * Adding an adapter (for example TikTok or gtag):
  * 1. Add its id to `AdapterId` and a factory `createXAdapter(config)` in `adapters/x.ts` that
  *    returns this shape; `enabled` must be false when its `NEXT_PUBLIC_*` value is empty.
- * 2. `scripts(mode)` returns the vendor stub and loader; in `advanced` mode the stub must start
- *    with the vendor's consent-revoke call so nothing is sent before `onConsent` grants.
+ * 2. `scripts()` returns the vendor stub and loader. Scripts are injected only while the
+ *    adapter's category is allowed (granted by default, withdrawn through the banner), and
+ *    `onConsent` must map a withdrawal to the vendor's revoke call.
  * 3. `send()` maps standard names (`PageView`, `ViewContent`) to the vendor's standard events
  *    and passes `eventId` as the vendor's deduplication id; return `false` when the vendor
  *    global is not ready so the tracker keeps the event queued.
@@ -51,7 +49,7 @@ export interface TrackingAdapter {
   readonly label: string;
   readonly category: AdapterCategory;
   readonly enabled: boolean;
-  scripts(mode: ConsentMode): ScriptSpec[];
+  scripts(): ScriptSpec[];
   onConsent(state: ConsentState): void;
   send(event: TrackedEvent): boolean;
 }

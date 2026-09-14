@@ -1,5 +1,5 @@
 import type { ConsentState } from "../consent.ts";
-import type { ConsentMode, ScriptSpec, TrackedEvent, TrackingAdapter } from "./types.ts";
+import type { ScriptSpec, TrackedEvent, TrackingAdapter } from "./types.ts";
 
 type Fbq = ((...args: unknown[]) => void) & {
   queue?: unknown[];
@@ -33,9 +33,8 @@ function initCall(pixelId: string): string {
   return `fbq('init',${JSON.stringify(pixelId)}${payload});`;
 }
 
-function bootstrap(pixelId: string, mode: ConsentMode): string {
-  const revoke = mode === "advanced" ? "fbq('consent','revoke');" : "";
-  return `${STUB}${revoke}${initCall(pixelId)}`;
+function bootstrap(pixelId: string): string {
+  return `${STUB}${initCall(pixelId)}`;
 }
 
 function fbq(): Fbq | undefined {
@@ -45,7 +44,7 @@ function fbq(): Fbq | undefined {
 /**
  * Meta Pixel adapter. Standard events go through `fbq('track')`, custom ones through
  * `fbq('trackCustom')`, always with `{ eventID }` so Hotmart's server events deduplicate.
- * In `advanced` mode the bootstrap revokes consent before `init`; `onConsent` grants it.
+ * The pixel is active from `init`; `onConsent` revokes it when the visitor rejects marketing.
  */
 export function createMetaAdapter(pixelId: string): TrackingAdapter {
   return {
@@ -53,9 +52,9 @@ export function createMetaAdapter(pixelId: string): TrackingAdapter {
     label: "Meta Pixel",
     category: "marketing",
     enabled: pixelId.length > 0,
-    scripts(mode: ConsentMode): ScriptSpec[] {
+    scripts(): ScriptSpec[] {
       return [
-        { id: "meta-pixel-bootstrap", inline: bootstrap(pixelId, mode), strategy: "afterInteractive" },
+        { id: "meta-pixel-bootstrap", inline: bootstrap(pixelId), strategy: "afterInteractive" },
         { id: "meta-pixel", src: FBEVENTS_SRC, strategy: "afterInteractive" },
       ];
     },

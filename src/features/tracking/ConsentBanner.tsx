@@ -72,7 +72,7 @@ function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
             <strong>
               {category.title} ({category.tools.join(", ")}):
             </strong>{" "}
-            {category.purpose}. Solo con tu permiso.
+            {category.purpose}. Activa salvo que la desmarques.
           </label>
         </li>
       ))}
@@ -81,16 +81,17 @@ function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
 }
 
 /**
- * Prior-consent banner with equal "Aceptar" / "Rechazar" actions plus "Configurar" for a
- * per-category choice (AEPD 2024 criteria, Meta Business Tools terms). Shown on first visit only
- * when an enabled adapter needs consent; `CookieSettingsLink` reopens it (pv:consent:open). With
- * no gated integration it opens on request as a notice that only necessary cookies are used.
+ * Cookie banner with equal "Aceptar" / "Rechazar" actions plus "Configurar" for a per-category
+ * choice. Measurement runs by default (`DEFAULT_CHOICE`); "Rechazar" withdraws it and the choice
+ * is kept for six months. Shown on first visit only when an enabled adapter has a gated
+ * category; `CookieSettingsLink` reopens it (pv:consent:open). With no gated integration it
+ * opens on request as a notice that only necessary cookies are used.
  */
 export function ConsentBanner() {
   const [categories] = useState(() => gatedCategories(enabledAdapters()));
   const [open, setOpen] = useState(false);
   const [configuring, setConfiguring] = useState(false);
-  const [selection, setSelection] = useState<ConsentChoice>(() => choiceFor(categories, false));
+  const [selection, setSelection] = useState<ConsentChoice>(() => choiceFor(categories, true));
   const headingId = useId();
   const descId = useId();
 
@@ -158,10 +159,10 @@ export function ConsentBanner() {
           Cookies y medición
         </h2>
         <p id={descId} className={styles.text}>
-          Usamos cookies propias necesarias y, solo si aceptas,{" "}
-          {joinSpanish(categories.flatMap((category) => category.tools))} para{" "}
-          {joinSpanish(categories.map((category) => category.purpose))}. Puedes cambiar tu elección cuando
-          quieras desde el pie de página. <Link href="/cookies/">Más información</Link>
+          Usamos cookies necesarias y {joinSpanish(categories.flatMap((category) => category.tools))} para{" "}
+          {joinSpanish(categories.map((category) => category.purpose))}. Si rechazas, la medición se
+          desactiva; puedes cambiar tu elección en el pie de página.{" "}
+          <Link href="/cookies/">Más información</Link>
         </p>
         {configuring ? (
           <CategoryOptions

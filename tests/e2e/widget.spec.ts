@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 test("shows a neutral fallback when the Hotmart widget script fails", async ({ page }) => {
   await page.route("**/hotmart-checkout-elements.js", (route) => route.abort());

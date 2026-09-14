@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 test("reveal elements are visible immediately under reduced motion", async ({ page }) => {
   await page.goto("/");

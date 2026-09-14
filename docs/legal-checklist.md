@@ -31,7 +31,8 @@ Also decide and confirm (no placeholder, but must be verified):
   needs a legal opinion; the page structure can host it in the footer.
 - **Hotmart contracting entity** shown on buyer invoices (Hotmart B.V. / Launch Pad) — mention it
   in `/privacidad/` if different from the current wording.
-- **Analytics.** If Umami (or any analytics) is enabled, list it in `/cookies/` and `/privacidad/`.
+- **Analytics.** If a second measurement tool is ever added, list it in `/cookies/` and `/privacidad/`.
+- **Consent policy.** The pixel runs by default with an opt-out banner (owner decision, 2026-09-14); for EU/Spain traffic a legal review may require prior consent (`DEFAULT_CHOICE` in `src/features/tracking/consent.ts`).
 
 ## What the pages already state
 

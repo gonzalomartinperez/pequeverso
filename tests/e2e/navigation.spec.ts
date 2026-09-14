@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 /** Crawls every internal link reachable from the home page and asserts none 404s. */
 test("complete internal navigation: no dead links", async ({ page, request }) => {
