@@ -136,8 +136,7 @@ ol[role="list"] {
   border: 0;
 }
 
-/* Legacy aliases (.container, .section, .section--*, .kicker): pages still use them; Section and
-   Eyebrow own these styles now. Remove once every page renders the primitives. */
+/* Shared page classes (.container, .section, .kicker, .lead, .prose): layout shells, legal pages and the error boundary; product pages use the Section/Eyebrow primitives. */
 .container {
   width: min(var(--container), 100% - 2 * var(--gutter));
   margin-inline: auto;
@@ -145,29 +144,6 @@ ol[role="list"] {
 
 .section {
   padding-block: var(--section-pad);
-}
-
-.section--mint {
-  background: var(--pv-mint);
-}
-.section--sky {
-  background: var(--pv-sky);
-}
-.section--lemon {
-  background: var(--pv-lemon);
-}
-.section--rose {
-  background: var(--pv-rose);
-}
-.section--navy {
-  background: var(--pv-navy);
-  color: var(--pv-white);
-}
-.section--navy h2,
-.section--navy h3,
-.section--navy p,
-.section--navy strong {
-  color: var(--pv-white);
 }
 
 .lead {
@@ -186,11 +162,6 @@ ol[role="list"] {
   background: var(--pv-mint);
   border-radius: var(--radius-chip);
   padding: 0.3em 0.7em;
-}
-
-.section--navy .kicker {
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--pv-gold);
 }
 
 .prose {

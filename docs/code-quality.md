@@ -24,7 +24,7 @@ comments; no dead code (knip is a gate); business facts come from `config/` and 
 | E2E | Playwright `PW_SET=pr`: chromium 390/768/1440 + reduced motion (smoke, axe WCAG 2.2 AA, offer modes, widget lifecycle, commerce, consent, motion, navigation) | PR | yes |
 | Lighthouse | LHCI on the export, 2 runs, mobile emulation; a11y ≥ 0.95 and CLS ≤ 0.1 are errors; report kept as artifact and job summary | PR | a11y/CLS |
 | Production | `post-deploy-verify`: revision match, smoke, headers, `PW_SET=prod`, informative Lighthouse | main push, deploy | yes |
-| Nightly | 7 widths × Chromium/WebKit, visual snapshots, clean-clone invariant, knip, LHCI ×5, link check, bundle analysis | nightly | report |
+| Nightly | 7 widths × Chromium/WebKit, visual snapshots (`tests/e2e/visual.spec.ts`, Linux baselines under `tests/e2e/__screenshots__`, regenerate with the `update_snapshots` input), clean-clone invariant, knip, LHCI ×5, link check, bundle analysis | nightly | report |
 
 Lab numbers (Lighthouse) are not field numbers; real-user Core Web Vitals come from Search
 Console / CrUX after launch.
