@@ -7,7 +7,7 @@ hard-code `/media/...` paths: they call `getImage(id)` / `getVideo(id)` from `sr
 
 Budget: **5 MB per file, 25 MB for `public/media` in total** (target 16–20 MB), enforced by
 `npm run check:media` (`scripts/check-media-budget.mjs`) and by `media-build.mjs --check`.
-Current state: 68 items, 174 outputs, 15.1 MB.
+Current state: 68 items, 232 outputs (227 under `public/media` + the favicon set), 21.7 MB.
 
 ## Pipeline
 
@@ -59,34 +59,63 @@ Library roots default to the local workstation layout and can be overridden:
 
 | Role | Widths (px) | WebP quality | Notes |
 |---|---|---|---|
-| `hero` | 480 / 768 / 1024 / 1440 | 82 | `gf.hero` also gets an AVIF at 1024 (`sources` in the helper). |
-| `scene` | 480 / 768 / 1024 | 78 | AI-generated lifestyle scenes. |
-| `page` | 640 / 1100 | 80 | Real product-page renders; light `sharpen()` for text. Portrait pack pages clamp to 1055 (source width). |
-| `card` | 360 / 520 / 720 | 76 | Resource / pack cover cards. |
+| `hero` | 480 / 768 / 1024 / 1440 | 82 | AVIF at 1024 / 1440 (`sources` in the helper). |
+| `scene` | 480 / 768 / 1024 | 78 | AI-generated lifestyle scenes. AVIF at 768 / 1024. |
+| `page` | 640 / 1100 | 80 | Real product-page renders; light `sharpen()` for text. Portrait pack pages clamp to 1055 (source width). No AVIF (line art gains nothing). |
+| `card` | 360 / 520 / 720 | 76 | Resource / pack cover cards. AVIF at 520 / 720. |
 | `thumb` | 240 / 480 | 72 | Reserved. |
 | `brand` | per item (96/192/512 isotipo, 320/640 logo) | 90 (alpha 100) | Transparency preserved. |
 | `poster` | 480 / 720 | 72 | Video posters, frame taken from the master at `posterAt` seconds. |
 | `og` | 1200×630 | PNG (palette) + WebP 90 | Composed with sharp: cream `#fffaf2`, centered logo, navy `#003068` band. Fixed file names (referenced by `src/lib/metadata.ts`). |
 | `icons` | 32 ico, 96 svg, 180, 192, 512 | PNG | `favicon.ico` wraps a 32 px PNG; `icon.svg` embeds the 96 px PNG (there is no vector master). |
-| `video` | short side 720 (720×1280 vertical) | H.264 High, yuv420p, 30 fps, crf 26 → 28 → 30 until ≤ 2.5 MB, `-maxrate 1500k -bufsize 3000k -g 60`, faststart, **audio stripped**, ≤ 15 s | Optional WebM (VP9) only when `video.webm: true` in `sources.json` and the result is not larger than the mp4. Disabled by default to protect the budget. |
+| `video` | short side 720 (720×1280 vertical) | H.264 High, yuv420p, 30 fps, crf 26 → 28 → 30 → 32 until ≤ 2.2 MB, `-maxrate 1500k -bufsize 3000k -g 60`, faststart, **audio stripped**, `maxSeconds` per item (default 15) | WebM (VP9, `-b:v 0 -crf 33 → 37 → 41 -row-mt 1 -deadline good`, same scale/fps/GOP) when `video.webm: true`; the first step whose file is not larger than the mp4 is kept, otherwise no WebM. Evaluated on the four `video.gf.*` clips and **disabled** (`webm: false`): VP9 saved only 3–14 % per clip for +5.1 MB of repository size. |
 
-All encoders use `effort 6`, `withoutEnlargement` and strip metadata. Widths above the source width
-collapse to the source width and are deduplicated.
+AVIF renditions come from `roles.<role>.avif` (a list of widths: the middle and the largest WebP width)
+and can be overridden or disabled per item with `outputs.avif` (`[]` disables). AVIF quality is 55
+(`avifQuality` in a role or item override), effort 6. All encoders use `effort 6`, `withoutEnlargement`
+and strip metadata. Widths above the source width collapse to the source width and are deduplicated.
+
+### Budget by role (before → after AVIF, 2026-09-13; WebM evaluated and disabled)
+
+| Group | Files | Before | After | Notes |
+|---|---|---|---|---|
+| `hero` WebP / AVIF | 7 / 3 | 0.79 / 0.08 MB | 0.79 / 0.28 MB | AVIF 1024 + 1440 (`pack.hero` clamps to 1024). |
+| `scene` WebP / AVIF | 24 / 16 | 1.40 / 0 MB | 1.40 / 0.77 MB | AVIF 768 + 1024. |
+| `page` WebP | 64 | 4.68 MB | 4.68 MB | Unchanged; no AVIF. |
+| `card` WebP / AVIF | 54 / 36 | 1.76 / 0 MB | 1.76 / 0.98 MB | AVIF 520 + 720. First to drop if the total ever crosses 25 MB. |
+| `brand` + `og` | 7 | 0.16 MB | 0.16 MB | Unchanged. |
+| `video` mp4 | 4 | 5.97 MB | 5.55 MB | `paloma` and `maleta` trimmed to 12 s; every mp4 ≤ 2.2 MB. |
+| `video` webm | 0 | — | 0 | Evaluated: VP9 3–14 % smaller than mp4 for +5.13 MB; disabled. |
+| `video` posters | 8 | 0.25 MB | 0.25 MB | Unchanged (frame + hash unaffected by the trim). |
+| **Total `public/media`** | 169 → 223 | **15.07 MB** | **16.62 MB** | Cap 25 MB. |
+
+| Clip | Duration | mp4 (before) | mp4 (after) | WebM |
+|---|---|---|---|---|
+| `video.gf.bota` | 4.4 s | crf 26, 0.92 MB | crf 26, 0.92 MB (unchanged) | crf 37, 0.79 MB |
+| `video.gf.mapa` | 5.9 s | crf 26, 1.15 MB | crf 26, 1.15 MB (unchanged) | crf 37, 0.99 MB |
+| `video.gf.paloma` | 13.5 → 12 s | crf 28, 1.96 MB | crf 28, 1.76 MB | crf 37, 1.68 MB |
+| `video.gf.maleta` | 13.1 → 12 s | crf 30, 1.94 MB | crf 30, 1.72 MB | crf 41, 1.67 MB |
+
+VP9 at crf 33 came out 10–20 % *larger* than the maxrate-capped H.264 for all four clips; the ladder
+steps to 37/41 reach only 3–14 % savings. Decision: WebM stays disabled (`video.webm: false`);
+re-enable per item only if a clip changes materially.
 
 ### Naming and caching
 
 Outputs are named `<id-slug>-w<width>-<hash8>.<ext>` under `public/media/<group>/`
-(videos: `<id-slug>-crf<crf>-<hash8>.mp4`, posters `<id-slug>-poster-w<width>-<hash8>.webp`).
-`hash8` is derived from the **source sha256 plus the export parameters** (pipeline version, width,
-format, quality, sharpening). A new source or a changed parameter therefore yields a new file name,
+(videos: `<id-slug>-crf<crf>-<hash8>.mp4`, `<id-slug>-vp9-crf<crf>-<hash8>.webm`, posters
+`<id-slug>-poster-w<width>-<hash8>.webp`). `hash8` is derived from the **source sha256 plus the export
+parameters** (pipeline version, width, format, quality, sharpening; for clips codec, crf ladder,
+`maxSeconds`). A new source or a changed parameter therefore yields a new file name,
 the old file is pruned, and `/media/*` can be served as `Cache-Control: public, max-age=31536000,
 immutable` (rule `immutable-media` in `config/edge-rules.json`). The only fixed names are the OG
 card (`/media/brand/pequeverso-og-1200x630.png|.webp`) and the favicon set at the root; they are
 small and are re-rendered on every build (sharp's encoders are deterministic, so unchanged inputs
 give byte-identical files).
 
-x264 output is *not* byte-reproducible across machines/thread counts. The committed mp4 is the
-reference; `--check` verifies it, and a `--force` rebuild will legitimately change its hash.
+x264 and libvpx output is *not* byte-reproducible across machines/thread counts. The committed mp4 and
+webm are the reference; `--check` verifies them, and a `--force` rebuild will legitimately change their
+hashes.
 
 ### Manifest (`media/manifest.json`)
 
@@ -105,7 +134,8 @@ reference; `--check` verifies it, and a `--force` rebuild will legitimately chan
     "alt": { "es": "..." },
     "text"?: { "title", "description" },            // videos and pack pages
     "outputs": [{ "file": "public/media/...", "width", "height", "bytes", "sha256", "format", "quality" }],
-    "video"?: { "codec", "profile", "pixelFormat", "fps", "crf", "maxrate", "gop", "audio": "stripped", "duration", ... }
+    "video"?: { "codec", "profile", "pixelFormat", "fps", "crf", "maxrate", "gop", "audio": "stripped",
+                "maxSeconds", "sourceDuration", "duration", "trimmed", "webm", "webmCodec"?, "webmCrf"?, ... }
   }]
 }
 ```
@@ -123,17 +153,29 @@ const demo = getVideo("video.gf.mapa"); // { mp4, webm?, poster: { src, srcSet }
 ```
 
 - `src` is the largest rendition ≤ 1440 px; always pass `width`/`height` to `<img>` (CLS ≤ 0.1).
-- For `<picture>`, render `sources` (AVIF first) before the WebP `<img>`.
+- For `<picture>`, render `sources` (AVIF first) before the WebP `<img>`. `hero`, `scene` and `card`
+  items carry AVIF; `page`, `brand` and posters are WebP only.
+- Videos: render `<source src={webm} type="video/webm">` before `<source src={mp4} type="video/mp4">`
+  when `webm` is present (every `video.gf.*` clip has one); always set `poster`, `width`/`height`,
+  `muted`, `playsInline`, `preload="metadata"`.
 - Videos are silent demonstrations: render `title`/`description` as visible text or `aria-describedby`;
   they are the text alternative required by WCAG.
 - Unknown ids throw with a clear message, so a typo fails `next build`, not production.
 - Call the helpers in server components or at module scope; the manifest is a JSON import and
   should not travel to client bundles.
 
-Ids currently declared: `brand.isotipo`, `brand.logo`, `brand.og`, `brand.icons`, `gf.hero`,
-`gf.scene.{mesa,trazo,carpeta,mecanismo,flatlay,stack,entrega,cierre}`, `gf.page.01…20`,
-`gf.card.01…09`, `pack.card.01…09`, `pack.page.01…12`, `pack.hero`,
-`video.gf.{bota,mapa,paloma,maleta}`. `gf.hero` renders at 1440×1080 max (4:3).
+### Ids and what the helpers return
+
+| Ids | Role | Formats (widths) | Helper / component | Notes |
+|---|---|---|---|---|
+| `brand.isotipo`, `brand.logo` | `brand` | WebP 96/192/512, 320/640 | `getImage` → `BrandLogo` | Alpha preserved. |
+| `brand.og` | `og` | PNG + WebP 1200×630 | `src/lib/metadata.ts` (fixed names) | |
+| `brand.icons` | `icons` | ico/svg/png at `public/` root | `app` metadata | Outside `public/media`. |
+| `gf.hero`, `pack.hero` | `hero` | WebP 480/768/1024/1440 + AVIF 1024/1440 | `MediaImage` (`priority`) | `gf.hero` 1440×1080 (4:3); `pack.hero` clamps to 1024. |
+| `gf.scene.{mesa,trazo,carpeta,mecanismo,flatlay,stack,entrega,cierre}` | `scene` | WebP 480/768/1024 + AVIF 768/1024 | `MediaImage` | AI-generated. |
+| `gf.page.01…20`, `pack.page.01…12` | `page` | WebP 640/1100 (portrait 640/1055) | `MediaImage` / gallery | Line art, WebP only. |
+| `gf.card.01…09`, `pack.card.01…09` | `card` | WebP 360/520/720 + AVIF 520/720 | `MediaImage` | |
+| `video.gf.{bota,mapa,paloma,maleta}` | `video` | mp4 (H.264) + webm (VP9) 720×1280, posters WebP 480/720 | `getVideo` → `VideoBlock` | `rights.redistribution = pending-owner-confirmation`. |
 
 ## Rights and provenance rules
 
@@ -158,7 +200,6 @@ Ids currently declared: `brand.isotipo`, `brand.logo`, `brand.og`, `brand.icons`
 | Hotmart covers at full 1254² size | Store artwork; not needed at that size and adds ~2 MB per file. |
 | `downsell-50-off-premium-hero-v2.png` | "50 % OFF" text baked into the image (business facts are configuration, not pixels). |
 | Landing-v1 social-proof composites (`main-social-proof-*`, `upsell-*-social-proof`) | Could read as testimonials; the site does not invent social proof. |
-| WebM renditions | Would add ~5 MB for a marginal gain; H.264 + poster covers every target browser. |
 
 ## Adding an asset
 
@@ -166,7 +207,7 @@ Ids currently declared: `brand.isotipo`, `brand.logo`, `brand.og`, `brand.icons`
 2. Add an entry to `tools/media/sources.json`: unique `id` (`<page>.<kind>.<slug>`), `role`,
    `page`, `group` (folder under `public/media`), `source` (`library` + relative `path`),
    `provenance` (profile name or inline object), optional `rights` override, `alt.es`, optional
-   `outputs` (`widths`, `avif`) or `video` (`maxSeconds`, `posterAt`, `posterWidths`, `webm`).
+   `outputs` (`widths`, `avif`, `avifQuality`) or `video` (`maxSeconds`, `posterAt`, `posterWidths`, `webm`).
 3. `node tools/media/media-build.mjs --only <id>` then a full `node tools/media/media-build.mjs`
    (prunes and rewrites the manifest).
 4. `node scripts/check-media-budget.mjs` and `node tools/media/media-build.mjs --check`.

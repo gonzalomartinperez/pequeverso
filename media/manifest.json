@@ -1,6 +1,6 @@
 {
   "$schemaVersion": 1,
-  "generatedAt": "2026-09-12T21:31:26.262Z",
+  "generatedAt": "2026-09-14T00:29:54.971Z",
   "generator": "tools/media/media-build.mjs v1 (sharp 0.35.4, libvips 8.18.6)",
   "extras": [
     "public/manifest.webmanifest"
@@ -314,13 +314,22 @@
           "quality": 82
         },
         {
-          "file": "public/media/gf/gf-hero-w1024-fc057277.avif",
-          "bytes": 78898,
-          "sha256": "45d7dc5adea0a9ab76eb54eeea8358d2482a85a025cd4f73465779062bd55fc4",
+          "file": "public/media/gf/gf-hero-w1024-826c8a24.avif",
+          "bytes": 72355,
+          "sha256": "3c8c0f03d2675fc8e6b50ebd90239152ae32c8b951a9d4f6bbf4b601fbfabfed",
           "width": 1024,
           "height": 768,
           "format": "avif",
-          "quality": 82
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-hero-w1440-8d095ed9.avif",
+          "bytes": 120217,
+          "sha256": "c4709fee2575b0bae0c45888f93889b6c009ab6e54e3edc9e1bfaff94779ca5d",
+          "width": 1440,
+          "height": 1080,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -381,6 +390,24 @@
           "height": 576,
           "format": "webp",
           "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-mesa-w768-1eeb7ae7.avif",
+          "bytes": 22849,
+          "sha256": "c6c9ac43cd0bd21cb80da3d27255854ade39fe2e99de28bf6e1c819477d09082",
+          "width": 768,
+          "height": 432,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-scene-mesa-w1024-4dbe144f.avif",
+          "bytes": 40068,
+          "sha256": "dbf6783ed066beb7c0b2e24ab0a62a98b016a6d2d59db508a0df225542628dff",
+          "width": 1024,
+          "height": 576,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -441,6 +468,24 @@
           "height": 768,
           "format": "webp",
           "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-trazo-w768-1d44db11.avif",
+          "bytes": 33383,
+          "sha256": "e24c53cf0efb8268313706dbe053e1f0738fefa31b140e1a48998922e0cdcbe2",
+          "width": 768,
+          "height": 576,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-scene-trazo-w1024-c3f2aa76.avif",
+          "bytes": 47585,
+          "sha256": "be9c7839faa15f41147f09c1dbd11f6b1b367c211b7eb0d07af9fa64538fdcee",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -501,6 +546,24 @@
           "height": 768,
           "format": "webp",
           "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-carpeta-w768-91e9dfb6.avif",
+          "bytes": 41829,
+          "sha256": "fd904735d115ac9ee59a45dcb30342e63c7640434b7756dc1e7315464907356c",
+          "width": 768,
+          "height": 576,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-scene-carpeta-w1024-58fb4264.avif",
+          "bytes": 60995,
+          "sha256": "7b168a40026e10e461e7902800712a421ba58c69f3eb60c16ca8a3f78765a833",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -561,6 +624,24 @@
           "height": 768,
           "format": "webp",
           "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-mecanismo-w768-5e1e05ff.avif",
+          "bytes": 50941,
+          "sha256": "53f1284bc98c63460b2b14ddf1216ae1cb8b67a4d49c6a48de080fac9651b2f2",
+          "width": 768,
+          "height": 576,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-scene-mecanismo-w1024-10696236.avif",
+          "bytes": 81418,
+          "sha256": "038fe7f93e03061b3133cb035819c488e3beb487b514f3dcdf19780b66729fff",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -621,6 +702,24 @@
           "height": 768,
           "format": "webp",
           "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-flatlay-w768-86220063.avif",
+          "bytes": 57200,
+          "sha256": "f9380185b72247935d73a4285c994dbfb84f7bd0471f76d2e389a6401c25e2d8",
+          "width": 768,
+          "height": 576,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-scene-flatlay-w1024-92c2da90.avif",
+          "bytes": 93428,
+          "sha256": "3c1275ddbfe2b1c705dd1b8eca011529f050824d608a9c16f29b571c73789b4a",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -681,6 +780,24 @@
           "height": 768,
           "format": "webp",
           "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-stack-w768-d5bb1334.avif",
+          "bytes": 43500,
+          "sha256": "ed9453f9ea8c69461e5eb69c04258f249ca9c6351f1fcd29668fa3d2cf148ed3",
+          "width": 768,
+          "height": 576,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-scene-stack-w1024-249cde03.avif",
+          "bytes": 69522,
+          "sha256": "967d5f8e2e8307a236a57b7e36f23c7fc293625308664967ba70ec55a4353b07",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -741,6 +858,24 @@
           "height": 768,
           "format": "webp",
           "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-entrega-w768-40f6403b.avif",
+          "bytes": 39501,
+          "sha256": "3cc23fd37cc041da1f59fca9986b0ba029576a419360a68df221170effde36bb",
+          "width": 768,
+          "height": 576,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-scene-entrega-w1024-abe7afa6.avif",
+          "bytes": 62248,
+          "sha256": "fcc8d220caef149bad84a920babd608106080f0e98d6ac51e17a9dab287e45b3",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -801,6 +936,24 @@
           "height": 576,
           "format": "webp",
           "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-scene-cierre-w768-c0c7ddcf.avif",
+          "bytes": 22995,
+          "sha256": "7c4ca1dc484de0fc42788c83fd0b512abd5b3926ff5ab3ada124875f9bfb634b",
+          "width": 768,
+          "height": 432,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-scene-cierre-w1024-b9d7b8d3.avif",
+          "bytes": 35294,
+          "sha256": "36306053e822c31dd134866bd7fb0ab4ad7726838dbb3b5a4dece9ad470ff0d3",
+          "width": 1024,
+          "height": 576,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -1881,6 +2034,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-01-w520-b3dbe85e.avif",
+          "bytes": 17177,
+          "sha256": "78590102839dc64e83da7933a3c98ec3ff623633946118a393e08ac034eab6e6",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-01-w720-0e79f934.avif",
+          "bytes": 25797,
+          "sha256": "c37d0024b9cde3ee0a96e4f26549b3e12a6ec8adeeb0c9549569dc6e9e6ff3bf",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -1941,6 +2112,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-02-w520-16257b19.avif",
+          "bytes": 14849,
+          "sha256": "6a73369956f67e2efb21c60b4e0975bfb727b19771b0d4ce8791f752e7104bab",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-02-w720-d968c88e.avif",
+          "bytes": 23076,
+          "sha256": "9413201908653c3fbe6a353fa5ff8270c07ed4e3ba8a275d45c662ebe356c604",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2001,6 +2190,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-03-w520-bb5641b1.avif",
+          "bytes": 19940,
+          "sha256": "83b7e2ec60911cc1d8e1ef718b1735f08a056e44b024350d2891a0d0c1409891",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-03-w720-1a93a464.avif",
+          "bytes": 28983,
+          "sha256": "e8b57121a33640483cddbce8f1211a9170ea9a4e98a1909534b865e1af2b3bb4",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2061,6 +2268,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-04-w520-98b89780.avif",
+          "bytes": 16149,
+          "sha256": "240d966c710ce3109faad63694297cd38ab0025fb3f698c164c5ac97eacc9c8e",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-04-w720-de5328b1.avif",
+          "bytes": 26581,
+          "sha256": "b9ab9a8eb4e2bba5c6f6dcd3c5b3566fd10d9262f51a435ba073b420a406da9f",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2121,6 +2346,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-05-w520-3af8109b.avif",
+          "bytes": 22222,
+          "sha256": "0183edd9c39ed1e2265c4d0ec526a51c4c341a882b8ee8f11430c14903151ed3",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-05-w720-cdc0a98a.avif",
+          "bytes": 36173,
+          "sha256": "f88f740adb1a243800afead7760b9ad58163ac32cd411aa3c6348357675fb6d2",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2181,6 +2424,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-06-w520-c97c0452.avif",
+          "bytes": 19180,
+          "sha256": "7eaad65f12d63d0e2c6eedd5ddd3bb8f277718f395e29a0076440bfbc068a23e",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-06-w720-3c73829f.avif",
+          "bytes": 28988,
+          "sha256": "be436e469c34e3d8b76fc6a8da6bdd3825d5d601f261c7a2fa1f6edeb4c3dc9b",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2241,6 +2502,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-07-w520-f8b03b55.avif",
+          "bytes": 18173,
+          "sha256": "c00e1b7188bf09b66c91994a664dfcebff9dbfee7fac4dbc52d46caa7c049718",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-07-w720-4a0f3768.avif",
+          "bytes": 27906,
+          "sha256": "a149200407ad85653607ee9892a1fa992f625ef68cdf2829b3d7803fd8b62d83",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2301,6 +2580,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-08-w520-0851c0f9.avif",
+          "bytes": 22524,
+          "sha256": "e2143820f1f870613fae74c1ea0a623c424323183613ea985bdef0e3968bfd36",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-08-w720-1ae5a146.avif",
+          "bytes": 35793,
+          "sha256": "e447729962e689fb0111b3588e795a9751b98f98269ab653b1a4bfe603d33338",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2361,6 +2658,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-09-w520-fd7ea582.avif",
+          "bytes": 18750,
+          "sha256": "f25de7a0ff70981fe4eda189edbf6ad6cf0fcfabd7188871dd7a406f85a31514",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf-cards/gf-card-09-w720-07caa031.avif",
+          "bytes": 29160,
+          "sha256": "9a0abbf4ed6e2d766bc4b2fe188d5460cb68cf879c39b36bc47f164deb794f75",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2421,6 +2736,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-01-w520-19585b77.avif",
+          "bytes": 22425,
+          "sha256": "2121aa81371ecad3c5b3132e82d0c8f380f583bfebebd1f0815ab8f44431db2a",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-01-w720-0ee3c6a5.avif",
+          "bytes": 36974,
+          "sha256": "b7ce4ad6296544e562082a4e4cb3b4d8d680dc1288b0e27e3842743710dd658d",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2481,6 +2814,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-02-w520-7063a540.avif",
+          "bytes": 24822,
+          "sha256": "7c043570623edd28d38f65a9ee46c4a5e33b9a94b391dca00a07c4107a832f74",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-02-w720-24aac7c7.avif",
+          "bytes": 41983,
+          "sha256": "48ee624a805b1ae2ea7c01540318b00f9ba7c6f568beeeb791312d57cc8cce39",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2541,6 +2892,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-03-w520-0e928c9d.avif",
+          "bytes": 27442,
+          "sha256": "f933ba61741ed9b704a5497b704261594564743d2dbe550696ea84d333a6753c",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-03-w720-11f42dce.avif",
+          "bytes": 45891,
+          "sha256": "9865df0694a24b4542a422a449a29dfbc35bb5e1aceca16f7d0833620e515949",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2601,6 +2970,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-04-w520-09b665ed.avif",
+          "bytes": 22990,
+          "sha256": "3e26ace04f3d1bd477665ad4ae742e8debebf89a93815b09daac268abf1385aa",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-04-w720-109e1011.avif",
+          "bytes": 38778,
+          "sha256": "6393ed01e941a239e96af9982bf8c47ddc7d2f0d3c0c50cf6c79af95557d9d69",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2661,6 +3048,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-05-w520-3555dd49.avif",
+          "bytes": 24163,
+          "sha256": "7037eac03d71126614df37248da6d9c2b683a9f794d0805beb164e20dd0be259",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-05-w720-9e3253d1.avif",
+          "bytes": 40308,
+          "sha256": "3fc5493d7477c54f8bbb022c821d989bbf953dd76eac5a032db6e3f064d67512",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2721,6 +3126,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-06-w520-ab7ffdae.avif",
+          "bytes": 21966,
+          "sha256": "8f22517d28bcb9593da03ae9631fe30bafde40122a0f9a9412e19745e2454aca",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-06-w720-59ae21bb.avif",
+          "bytes": 37439,
+          "sha256": "8eab50f0d461cc2bf733027e025198b363a193dfd9911f459e95db913a1f8b46",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2781,6 +3204,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-07-w520-b5d9ae65.avif",
+          "bytes": 24845,
+          "sha256": "3fa7598c1e084e5bee8b6bf96bc60f691fe7d05c2fe48d5ac970bddb33db97e8",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-07-w720-b78b0c42.avif",
+          "bytes": 41604,
+          "sha256": "695e5cf074aebb3a38c50ae3add01aa9329185f002500afa32db717337ac5e85",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2841,6 +3282,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-08-w520-062d8aeb.avif",
+          "bytes": 23746,
+          "sha256": "cc9119ccac72125764f6f508a62faa4302a9013af7a25b90bde3243598f79263",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-08-w720-8098b0e9.avif",
+          "bytes": 40489,
+          "sha256": "a65a12f9d6b4422e4bbb67598c7b88f7a2d8a14c0614c2ce974ec95def9a15cc",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -2901,6 +3360,24 @@
           "height": 540,
           "format": "webp",
           "quality": 76
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-09-w520-17c4ce5a.avif",
+          "bytes": 31938,
+          "sha256": "d68674b1c8979b6c5bc26bb63d9af8f03d8d228d9e55539836269615b3800277",
+          "width": 520,
+          "height": 390,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/pack-cards/pack-card-09-w720-0821936d.avif",
+          "bytes": 53542,
+          "sha256": "9c377cddf7b7e06be551384b01b44cc8139b249e0906f0591087ee82c4f5388f",
+          "width": 720,
+          "height": 540,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -3621,6 +4098,15 @@
           "height": 1536,
           "format": "webp",
           "quality": 82
+        },
+        {
+          "file": "public/media/pack/pack-hero-w1024-a578fc2e.avif",
+          "bytes": 101916,
+          "sha256": "bd3306fa6682470b01fd4e5d52a828b3cdfe6c112d57778d821b3e86879bfce2",
+          "width": 1024,
+          "height": 1536,
+          "format": "avif",
+          "quality": 55
         }
       ]
     },
@@ -3827,9 +4313,9 @@
       },
       "outputs": [
         {
-          "file": "public/media/video/video-gf-paloma-crf28-bb22b3b1.mp4",
-          "bytes": 2054501,
-          "sha256": "22597eb16e83ffc821168f88f3a5d3b1b9d90ca03073dba37bd72373433203b3",
+          "file": "public/media/video/video-gf-paloma-crf28-5e4574fd.mp4",
+          "bytes": 1843759,
+          "sha256": "8ae3b14bfcc86fe4bcbb6821798201b5a1f0f9405ebb917729bdc39e926412e9",
           "width": 720,
           "height": 1280,
           "format": "mp4",
@@ -3865,10 +4351,10 @@
         "bufsize": "3000k",
         "gop": 60,
         "audio": "stripped",
-        "maxSeconds": 15,
+        "maxSeconds": 12,
         "sourceDuration": 13.5,
-        "duration": 13.5,
-        "trimmed": false,
+        "duration": 12,
+        "trimmed": true,
         "posterAt": 6,
         "webm": false
       }
@@ -3910,9 +4396,9 @@
       },
       "outputs": [
         {
-          "file": "public/media/video/video-gf-maleta-crf30-d2b81945.mp4",
-          "bytes": 2029582,
-          "sha256": "6ba9de79de98cd29bee4345c993f7e8e0ef867a73ef60d4dcf732e81800501c6",
+          "file": "public/media/video/video-gf-maleta-crf30-f0ce2b76.mp4",
+          "bytes": 1806528,
+          "sha256": "5745766b18b4a697fb8fde3125dc94c8bc8cfa1c9318aa84044e3dea5e758939",
           "width": 720,
           "height": 1280,
           "format": "mp4",
@@ -3948,10 +4434,10 @@
         "bufsize": "3000k",
         "gop": 60,
         "audio": "stripped",
-        "maxSeconds": 15,
+        "maxSeconds": 12,
         "sourceDuration": 13.067,
-        "duration": 13.067,
-        "trimmed": false,
+        "duration": 12,
+        "trimmed": true,
         "posterAt": 1,
         "webm": false
       }

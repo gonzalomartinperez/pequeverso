@@ -18,11 +18,13 @@
   "roles": {
     "hero": {
       "widths": [480, 768, 1024, 1440],
-      "quality": 82
+      "quality": 82,
+      "avif": [1024, 1440]
     },
     "scene": {
       "widths": [480, 768, 1024],
-      "quality": 78
+      "quality": 78,
+      "avif": [768, 1024]
     },
     "page": {
       "widths": [640, 1100],
@@ -31,7 +33,8 @@
     },
     "card": {
       "widths": [360, 520, 720],
-      "quality": 76
+      "quality": 76,
+      "avif": [520, 720]
     },
     "thumb": {
       "widths": [240, 480],
@@ -205,8 +208,7 @@
         "es": "Kit completo Grafismo Fonético impreso junto a sus ocho recursos complementarios"
       },
       "outputs": {
-        "widths": [480, 768, 1024, 1440],
-        "avif": [1024]
+        "widths": [480, 768, 1024, 1440]
       }
     },
     {
@@ -1164,7 +1166,7 @@
         "description": "Una palabra más larga se recorre sílaba por sílaba hasta llegar a PALOMA."
       },
       "video": {
-        "maxSeconds": 15,
+        "maxSeconds": 12,
         "posterAt": 6,
         "posterWidths": [480, 720],
         "webm": false
@@ -1192,7 +1194,7 @@
         "description": "Los apoyos visuales acompañan el recorrido hasta completar la palabra MALETA."
       },
       "video": {
-        "maxSeconds": 15,
+        "maxSeconds": 12,
         "posterAt": 1,
         "posterWidths": [480, 720],
         "webm": false
