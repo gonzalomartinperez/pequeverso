@@ -53,10 +53,11 @@ test("fallback path marks only elements below the fold and reveals them on scrol
   expect(pendingAboveFold).toBe(0);
   const last = await page.locator("[data-reveal][data-reveal-state='pending']").last().elementHandle();
   if (!last) throw new Error("expected a pending element");
-  // Deferred sections (content-visibility) grow as they render, so keep scrolling until it is in view.
+  // Deferred sections (content-visibility) grow as they render, so keep centring it until it is in
+  // view; WebKit's minimal scrollIntoViewIfNeeded leaves it inside the observer's bottom margin.
   await expect
     .poll(async () => {
-      await last.scrollIntoViewIfNeeded();
+      await last.evaluate((el) => el.scrollIntoView({ block: "center" }));
       return last.getAttribute("data-reveal-state");
     })
     .toBe("visible");
@@ -90,6 +91,8 @@ test("page gallery: arrows, dots, keyboard and zoom dialog", async ({ page }) =>
   await expect(gallery.getByText("2 de 20")).toBeVisible();
   await gallery.getByRole("tab", { name: "Ir a la página 5" }).click();
   await expect(gallery.getByText("5 de 20")).toBeVisible();
+  // Embla swallows clicks that land during the snap animation.
+  await expect(gallery.locator("[data-state='settled']")).toHaveCount(1);
   await gallery.locator("button[aria-label^='Ampliar']").nth(4).click();
   const dialog = page.locator("dialog[open]");
   await expect(dialog).toBeVisible();

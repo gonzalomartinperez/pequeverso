@@ -27,6 +27,8 @@ test("every principal CTA points to the configured checkout with allowlisted par
   await page.goto(
     "/grafismo-fonetico/?utm_source=tiktok&utm_medium=social&a=aff1&off=EVIL&ref=EVIL&fbclid=abc",
   );
+  // Params are appended after hydration; wait for the first link before reading them all.
+  await expect(page.locator("a[data-checkout]").first()).toHaveAttribute("href", /utm_source=tiktok/);
   const links = await page.locator("a[data-checkout]").evaluateAll((els) =>
     els.map((el) => ({
       href: (el as HTMLAnchorElement).href,

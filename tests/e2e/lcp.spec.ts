@@ -6,7 +6,7 @@ const routes = ["/", "/grafismo-fonetico/"];
 async function lcpElement(page: import("@playwright/test").Page) {
   return page.evaluate(
     () =>
-      new Promise<{ tag: string; lcp: boolean } | null>((resolve) => {
+      new Promise<{ tag: string; lcp: boolean; heroText: boolean } | null>((resolve) => {
         let last: Element | null = null;
         const observer = new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
@@ -17,18 +17,27 @@ async function lcpElement(page: import("@playwright/test").Page) {
         observer.observe({ type: "largest-contentful-paint", buffered: true });
         setTimeout(() => {
           observer.disconnect();
-          resolve(last ? { tag: last.tagName.toLowerCase(), lcp: last.hasAttribute("data-lcp") } : null);
+          resolve(
+            last
+              ? {
+                  tag: last.tagName.toLowerCase(),
+                  lcp: last.hasAttribute("data-lcp"),
+                  heroText: last.closest("#hero") !== null && last.tagName !== "IMG",
+                }
+              : null,
+          );
         }, 1500);
       }),
   );
 }
 
 for (const route of routes) {
-  test(`${route}: LCP element is the heading or the preloaded hero image`, async ({ page }) => {
+  test(`${route}: LCP element is hero text or the preloaded hero image`, async ({ page }) => {
     await page.goto(route);
     const element = await lcpElement(page);
     expect(element).not.toBeNull();
-    expect(element?.tag === "h1" || (element?.tag === "img" && element.lcp)).toBe(true);
+    // Narrow viewports paint the lead paragraph before the worksheet stack; both are hero text.
+    expect(element?.heroText || (element?.tag === "img" && element.lcp)).toBe(true);
   });
 
   test(`${route}: the image preload targets the hero worksheet, never the isotipo`, async ({ page }) => {
