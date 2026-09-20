@@ -1,7 +1,7 @@
 // @ts-check
 // Validates the NEXT_PUBLIC_* variables a build inlines and the server-only Meta CAPI token
-// (formats only, never values) and prints the effective tracking configuration. Runs first in
-// `npm run build`; exits 1 on a malformed value.
+// (presence and formats only, never values) and prints the effective tracking configuration.
+// Runs first in `npm run build`; exits 1 when a required variable is missing or malformed.
 import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -32,13 +32,22 @@ function isHttpsUrl(value) {
   }
 }
 
-/** @returns {string[]} */
+/**
+ * Variables every build needs. The repository ships no inline defaults for them: copy
+ * `.env.example` to `.env.local` for a local build; hPanel and the workflows set them.
+ * @returns {string[]}
+ */
 function validate() {
   const errors = [];
   const siteUrl = read("NEXT_PUBLIC_SITE_URL");
-  if (siteUrl && !isHttpsUrl(siteUrl)) errors.push("NEXT_PUBLIC_SITE_URL must be an https:// origin");
+  if (!siteUrl) errors.push("NEXT_PUBLIC_SITE_URL is required (https:// origin of the deployment)");
+  else if (!isHttpsUrl(siteUrl)) errors.push("NEXT_PUBLIC_SITE_URL must be an https:// origin");
 
-  for (const name of ["NEXT_PUBLIC_CHECKOUT_URL", "NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO"]) {
+  const checkoutNames = ["NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO", "NEXT_PUBLIC_CHECKOUT_URL"];
+  if (!checkoutNames.some((name) => read(name))) {
+    errors.push(`${checkoutNames[0]} is required (the Hotmart checkout URL of the principal product)`);
+  }
+  for (const name of checkoutNames) {
     const value = read(name);
     if (value && !value.startsWith(CHECKOUT_ORIGIN))
       errors.push(`${name} must start with ${CHECKOUT_ORIGIN}`);

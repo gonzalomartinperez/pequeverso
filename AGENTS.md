@@ -36,8 +36,11 @@ Spanish. Read this file first, then the doc that matches your task.
   PDFs, backups or anything with unresolved rights. Budget: 5 MB per file, 25 MB total.
 - **Accessibility and performance are acceptance criteria**, not polish: WCAG 2.2 AA (contrast,
   focus, 24 px targets, reduced motion, captions/text alternatives), CLS ≤ 0.1, LCP ≤ 2.5 s (lab).
-- **Consent before marketing scripts.** The Meta Pixel loads only after "Aceptar". Every integration
-  is a no-op when its `NEXT_PUBLIC_*` variable is empty, so a fresh clone builds and runs.
+- **Deployment values live only in environment variables.** The repository ships no inline
+  origin, checkout URL, pixel id or token: `NEXT_PUBLIC_SITE_URL` and the checkout URL are
+  required at build time (`scripts/check-env.mjs`; copy `.env.example` to `.env.local` locally),
+  optional integrations are no-ops when their variable is empty. The Meta Pixel runs when its id is
+  set and the cookie banner withdraws it.
 - **Placeholders `[[LIKE_THIS]]` are allowed in legal copy until the owner supplies the details**;
   the deploy workflow refuses to ship them.
 

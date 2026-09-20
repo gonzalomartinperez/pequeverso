@@ -65,12 +65,12 @@ Manual (`workflow_dispatch`), `production` environment with required approval:
 
 1. hPanel → Websites → pequeverso.com → Node.js Web App → Repository settings: branch **`release`**
    (or keep `main`, see note), framework Next.js, build command `npm run build`, start command
-   `npm start`, Node 24. Environment variables (optional): `NEXT_OUTPUT=standalone` (explicit),
-   `NEXT_PUBLIC_META_PIXEL_ID`, `META_CAPI_ACCESS_TOKEN` (server-only; generate it in Events
-   Manager → Settings → Conversions API → Generate access token). `NEXT_PUBLIC_SITE_URL` defaults
-   to `https://pequeverso.com`; the checkout URL defaults to the registry's public Hotmart checkout.
+   `npm start`, Node 24. Environment variables: `NEXT_PUBLIC_SITE_URL` and
+   `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO` (required — the build refuses to run without them),
+   `NEXT_PUBLIC_META_PIXEL_ID` (optional), `META_CAPI_ACCESS_TOKEN` (optional, server-only; generate
+   it in Events Manager → Settings → Conversions API → Generate access token). See the table below.
 2. GitHub → Settings → Environments → `production`: reviewer = you (already set); variables
-   `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_CHECKOUT_URL` (set), `NEXT_PUBLIC_META_PIXEL_ID` (optional).
+   `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_CHECKOUT_URL` (required), `NEXT_PUBLIC_META_PIXEL_ID` (optional).
    The Deploy workflow reads only these `vars`; nothing else is inlined.
 3. Cloudflare proxy: HTML responses are `Cache-Control: no-cache` (never CDN-cached); `/media/`,
    `/_next/static/` are `immutable`. Purge the zone only if you change cache rules.
@@ -86,8 +86,8 @@ boot line: `meta-capi: enabled|disabled`.
 
 | Variable | Required | Format | Effect when empty |
 |---|---|---|---|
-| `NEXT_PUBLIC_SITE_URL` | yes | `https://` origin, no trailing slash | defaults to `https://pequeverso.com` (canonicals, sitemap, OG) |
-| `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO` (or legacy `NEXT_PUBLIC_CHECKOUT_URL`) | optional override | starts with `https://pay.hotmart.com/` | the registry default (the public Hotmart checkout) is used |
+| `NEXT_PUBLIC_SITE_URL` | yes | `https://` origin, no trailing slash | build fails (canonicals, sitemap, OG need it) |
+| `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO` (or legacy `NEXT_PUBLIC_CHECKOUT_URL`) | yes | starts with `https://pay.hotmart.com/` | build fails (the repository ships no checkout URL) |
 | `NEXT_PUBLIC_META_PIXEL_ID` | optional | 15–16 digits | no pixel; the first-visit banner is not shown and "Configurar cookies" opens a necessary-cookies notice. When set, the pixel runs by default and the banner withdraws it (`docs/tracking.md`) |
 | `META_CAPI_ACCESS_TOKEN` | optional, **server-only** (never `NEXT_PUBLIC_`, never in the repo or CI) | ≥ 32 characters, no whitespace | the `/api/meta/events/` relay answers `204` and Meta is never called from the server. With the pixel id set too, browser events are mirrored to the Conversions API and deduplicated by event id |
 | `NEXT_OUTPUT` | never in hPanel | `export` (default) or `standalone` | auto-detected: Hostinger's Node builder gets `standalone` |

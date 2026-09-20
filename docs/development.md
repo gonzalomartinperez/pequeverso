@@ -26,9 +26,10 @@
 
 ## Environment
 
-Copy `.env.example` to `.env.local` to override. `NEXT_PUBLIC_*` values are inlined at build time.
-With everything empty the site still builds: CTAs fall back to on-site links, no pixel is injected,
-no analytics loads, the Conversions API relay answers `204`.
+Copy `.env.example` to `.env.local` before the first build (`cp .env.example .env.local`).
+`NEXT_PUBLIC_*` values are inlined at build time; `scripts/check-env.mjs` refuses to build without
+`NEXT_PUBLIC_SITE_URL` and a checkout URL, and the repository carries no inline defaults for them.
+With the optional variables empty no pixel is injected and the Conversions API relay answers `204`.
 
 ## Conventions
 

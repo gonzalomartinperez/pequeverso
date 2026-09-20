@@ -7,7 +7,7 @@ import {
   withPassthrough,
 } from "../../src/features/commerce/checkout-url.ts";
 
-const base = "https://pay.hotmart.com/D106959604R?checkoutMode=10";
+const base = "https://pay.hotmart.com/TEST0000000?checkoutMode=10";
 
 test("forwards allowlisted acquisition params and keeps checkoutMode", () => {
   const url = new URL(buildCheckoutUrl(base, "?utm_source=tiktok&utm_medium=social&a=aff1&sck=pv-gf-hero"));
