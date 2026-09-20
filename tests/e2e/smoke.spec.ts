@@ -43,3 +43,16 @@ test("no horizontal overflow at the current viewport", async ({ page }) => {
     expect(overflow, `${route} overflows horizontally`).toBeLessThanOrEqual(0);
   }
 });
+
+test("the Meta CAPI relay is mounted and disabled without a token: 204, no-store, POST only", async ({
+  request,
+}) => {
+  const response = await request.post("/api/meta/events", {
+    headers: { "content-type": "application/json" },
+    data: { events: [] },
+  });
+  expect(response.status()).toBe(204);
+  expect(response.headers()["cache-control"]).toBe("no-store");
+  const get = await request.get("/api/meta/events");
+  expect(get.status()).toBe(405);
+});

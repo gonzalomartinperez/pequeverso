@@ -1,7 +1,7 @@
 import type { ConsentCategory, ConsentState } from "../consent.ts";
 
 /** Identifier of a shipped adapter. Extend the union when a new adapter is added. */
-export type AdapterId = "meta";
+export type AdapterId = "meta" | "meta-capi";
 
 /** Consent category an adapter belongs to; `none` needs no consent (cookie-less, no personal data). */
 export type AdapterCategory = ConsentCategory | "none";

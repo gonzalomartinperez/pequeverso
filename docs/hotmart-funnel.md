@@ -90,8 +90,9 @@ followed by a refund inside the guarantee) — **only with the owner's explicit 
 8. Open `…/imprime-y-juega/?downsell=1` directly with no purchase session → the page renders, the
    widget shows Hotmart's "purchase in progress"/session message or nothing, and the fallback notice
    appears only if nothing renders within 8 s. No charge is possible from the page itself.
-9. Meta Events Manager: `ViewContent` from the site, `InitiateCheckout` and `Purchase` from Hotmart
-   only; no duplicated `Purchase`.
+9. Meta Events Manager: `ViewContent` from the site (connection methods Browser and Server,
+   deduplicated, when `META_CAPI_ACCESS_TOKEN` is set), `InitiateCheckout` and `Purchase` from
+   Hotmart only; no duplicated `Purchase`.
 10. Refund the test purchases via `refund.hotmart.com` if real money was used.
 11. Measure the rendered widget height in each mode at ≤ 768 px and ≥ 768 px and replace the estimated `--widget-min-h` (220 px / 180 px, set without a purchase session) in `src/features/commerce/HotmartWidgetSlot/HotmartWidgetSlot.module.css` with the measured values.
 

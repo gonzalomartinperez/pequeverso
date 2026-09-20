@@ -1,6 +1,7 @@
 // @ts-check
-// Validates the NEXT_PUBLIC_* variables a build inlines (formats only, never values) and prints
-// the effective tracking configuration. Runs first in `npm run build`; exits 1 on a malformed value.
+// Validates the NEXT_PUBLIC_* variables a build inlines and the server-only Meta CAPI token
+// (formats only, never values) and prints the effective tracking configuration. Runs first in
+// `npm run build`; exits 1 on a malformed value.
 import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -46,12 +47,17 @@ function validate() {
   const pixel = read("NEXT_PUBLIC_META_PIXEL_ID");
   if (pixel && !/^\d{15,16}$/.test(pixel)) errors.push("NEXT_PUBLIC_META_PIXEL_ID must be 15-16 digits");
 
+  const token = process.env.META_CAPI_ACCESS_TOKEN;
+  if (token !== undefined && token !== "" && (token.length < 32 || /\s/.test(token)))
+    errors.push("META_CAPI_ACCESS_TOKEN must be at least 32 characters without whitespace");
+
   return errors;
 }
 
 function summary() {
   const meta = read("NEXT_PUBLIC_META_PIXEL_ID") ? "on" : "off";
-  return `tracking: meta=${meta}`;
+  const capi = meta === "on" && read("META_CAPI_ACCESS_TOKEN") ? "on" : "off";
+  return `tracking: meta=${meta} capi=${capi}`;
 }
 
 loadEnvFiles();

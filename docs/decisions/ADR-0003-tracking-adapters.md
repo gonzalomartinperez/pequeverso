@@ -32,4 +32,6 @@ providers (TikTok, Google) without touching pages.
 - Site-side events under-count visitors who reject; Hotmart checkout and purchase events remain
   complete.
 - No server-side event API from the site (static target); Hotmart's server events cover purchases.
+  Superseded on 2026-09-20 by ADR-0005: a same-origin Conversions API relay in the Node server
+  mirrors the site events; purchases stay with Hotmart.
 - Tests run with a fake id; `tests/e2e/fixtures.ts` aborts every Meta host, so CI never contacts Meta.

@@ -90,6 +90,14 @@
       }
     },
     {
+      "id": "api-no-store",
+      "description": "Server endpoints (Meta CAPI relay at /api/meta/events) are never cached by Cloudflare or the browser; no redirect rule touches /api/.",
+      "source": "/api/:path*",
+      "headers": {
+        "Cache-Control": "no-store"
+      }
+    },
+    {
       "id": "immutable-media",
       "source": "/media/:path*",
       "headers": {
