@@ -5,13 +5,16 @@ import { expect, test } from "./fixtures";
  * Opt-out tracking against a build with NEXT_PUBLIC_META_PIXEL_ID (CI sets 1234567890123456
  * and E2E_EXPECT_CONSENT=1): the pixel runs by default and "Rechazar" revokes it. Meta hosts
  * are stubbed so nothing leaves the machine; the fake fbevents.js records every fbq call in
- * window.__fbqCalls.
+ * window.__fbqCalls and writes the _fbp cookie the real one would. The same-origin Conversions
+ * API relay (/api/meta/events) is intercepted so the browser/server pair can be compared.
  */
 const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || "1234567890123456";
 const FORBIDDEN = ["InitiateCheckout", "Purchase", "PlaceAnOrder", "begin_checkout"];
 const PIXEL_SCRIPT = 'script[src*="connect.facebook.net"]';
+const RELAY = "**/api/meta/events";
 const FAKE_FBEVENTS = [
   "window.__fbqCalls=[];",
+  "document.cookie='_fbp=fb.1.1.test; Path=/';",
   "(function(){var q=(window.fbq&&window.fbq.queue)||[];",
   "var f=function(){window.__fbqCalls.push(Array.prototype.slice.call(arguments))};",
   "for(var i=0;i<q.length;i++)f.apply(null,q[i]);window.fbq=f;window._fbq=f;})();",
@@ -19,6 +22,14 @@ const FAKE_FBEVENTS = [
 
 type DataLayerEvent = { event: string; event_id?: string };
 type FbqCall = unknown[];
+type RelayEvent = {
+  name: string;
+  eventId: string;
+  time: number;
+  sourceUrl: string;
+  fbp?: string;
+  fbc?: string;
+};
 
 async function dataLayer(page: Page): Promise<DataLayerEvent[]> {
   return page.evaluate(() => (window as unknown as { dataLayer?: DataLayerEvent[] }).dataLayer ?? []);
@@ -31,6 +42,27 @@ async function fbqCalls(page: Page): Promise<FbqCall[] | undefined> {
 async function thirdPartyCookies(page: Page): Promise<string[]> {
   const cookies = await page.context().cookies();
   return cookies.filter((cookie) => cookie.name !== "pv_consent").map((cookie) => cookie.name);
+}
+
+/** Intercepts relay POSTs (fetch and sendBeacon) and collects their events; answers 202. */
+async function captureRelay(page: Page): Promise<RelayEvent[]> {
+  const relayed: RelayEvent[] = [];
+  await page.route(RELAY, (route) => {
+    const request = route.request();
+    if (request.method() === "POST")
+      relayed.push(...(request.postDataJSON() as { events: RelayEvent[] }).events);
+    route.fulfill({ status: 202, headers: { "cache-control": "no-store" } });
+  });
+  return relayed;
+}
+
+function pixelEventIds(calls: FbqCall[]): Map<string, string> {
+  const ids = new Map<string, string>();
+  for (const call of calls) {
+    if (call[0] !== "track" && call[0] !== "trackCustom") continue;
+    ids.set(String(call[1]), String((call[3] as { eventID: string }).eventID));
+  }
+  return ids;
 }
 
 async function preventNavigation(page: Page, selector: string): Promise<void> {
@@ -159,4 +191,44 @@ test("a choice stored under a previous version re-prompts and falls back to the 
   await expect(page.getByTestId("consent-banner")).toBeVisible();
   await expect(page.locator(PIXEL_SCRIPT)).toHaveCount(1);
   await expect.poll(() => trackedNames(page)).toContain("ViewContent");
+});
+
+test("the Conversions API relay receives the same event ids as the pixel, with _fbp", async ({ page }) => {
+  const relayed = await captureRelay(page);
+  await page.goto("/grafismo-fonetico/");
+  await expect
+    .poll(() => relayed.map((e) => e.name))
+    .toEqual(expect.arrayContaining(["PageView", "ViewContent"]));
+  const pixel = pixelEventIds((await fbqCalls(page)) ?? []);
+  for (const name of ["PageView", "ViewContent"]) {
+    const server = relayed.find((e) => e.name === name);
+    expect(server?.eventId, name).toBe(pixel.get(name));
+    expect(server?.fbp, name).toBe("fb.1.1.test");
+    expect(server?.sourceUrl, name).toContain("/grafismo-fonetico/");
+    expect(typeof server?.time).toBe("number");
+  }
+  await preventNavigation(page, "a[data-checkout]");
+  await page.locator('a[data-checkout][data-position="hero"]').click();
+  await expect.poll(() => relayed.map((e) => e.name)).toContain("CheckoutIntent");
+  const intent = relayed.find((e) => e.name === "CheckoutIntent");
+  expect(intent?.eventId).toBe(pixelEventIds((await fbqCalls(page)) ?? []).get("CheckoutIntent"));
+  for (const forbidden of FORBIDDEN) expect(relayed.map((e) => e.name)).not.toContain(forbidden);
+});
+
+test("Rechazar stops the relay too: no POST after the rejection", async ({ page }) => {
+  const relayed = await captureRelay(page);
+  await page.goto("/grafismo-fonetico/");
+  await expect.poll(() => relayed.map((e) => e.name)).toContain("ViewContent");
+  await page.getByTestId("consent-banner").getByRole("button", { name: "Rechazar" }).click();
+  await expect.poll(async () => fbqCalls(page)).toContainEqual(["consent", "revoke"]);
+  const before = relayed.length;
+  await preventNavigation(page, "a[data-checkout]");
+  await page.locator('a[data-checkout][data-position="hero"]').click();
+  await expect.poll(async () => (await dataLayer(page)).some((e) => e.event === "CheckoutIntent")).toBe(true);
+  await page.waitForTimeout(1000);
+  expect(relayed.length).toBe(before);
+  await page.goto("/");
+  await expect.poll(async () => (await dataLayer(page)).some((e) => e.event === "PageView")).toBe(true);
+  await page.waitForTimeout(1000);
+  expect(relayed.length).toBe(before);
 });

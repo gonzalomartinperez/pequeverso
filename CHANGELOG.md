@@ -4,6 +4,14 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
 
 ## [Unreleased]
 
+### Added
+- Meta Conversions API relay: the browser posts every pixel event (same UUID id) to the
+  same-origin `POST /api/meta/events`, served by `server/meta-capi.mjs` in both Node targets
+  (static server and a front server for the standalone build) and forwarded to Graph API with
+  `client_ip_address`, `client_user_agent`, `fbp`, `fbc`. One server-only variable,
+  `META_CAPI_ACCESS_TOKEN`; empty = 204, Meta never called. Rejecting stops both channels and
+  expires `_fbp`/`_fbc`. ADR-0005.
+
 ### Changed
 - Tracking policy: the Meta Pixel runs by default when `NEXT_PUBLIC_META_PIXEL_ID` is set and
   the banner withdraws it (`Rechazar` revokes the pixel, choice kept six months; no script on

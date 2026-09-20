@@ -50,6 +50,10 @@ Header always set Cache-Control "no-cache"
 <If "%{REQUEST_URI} =~ m#^/build-info\.json$#">
   Header always set Cache-Control "no-store"
 </If>
+# api-no-store
+<If "%{REQUEST_URI} =~ m#^/api/.*$#">
+  Header always set Cache-Control "no-store"
+</If>
 # immutable-media
 <If "%{REQUEST_URI} =~ m#^/media/.*$#">
   Header always set Cache-Control "public, max-age=31536000, immutable"

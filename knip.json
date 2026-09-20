@@ -8,7 +8,7 @@
     "tests/unit/**/*.test.mjs",
     "tests/e2e/**/*.spec.ts"
   ],
-  "project": ["src/**!", "config/**!", "content/**!", "scripts/**", "tests/**"],
+  "project": ["src/**!", "config/**!", "content/**!", "scripts/**", "server/**", "tests/**"],
   "ignoreExportsUsedInFile": true,
   "tags": ["-internal"]
 }

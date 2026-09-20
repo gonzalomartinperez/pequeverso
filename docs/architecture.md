@@ -4,8 +4,9 @@
 
 pequeverso.com is a small commercial site: a homepage (hub), the principal product landing, an
 optional post-purchase offer page with a query-driven downsell mode, a thank-you page, legal and
-support pages, and a real 404. There is no database, CMS, authentication or API: payments,
-delivery and refunds run on Hotmart.
+support pages, and a real 404. There is no database, CMS or authentication: payments, delivery
+and refunds run on Hotmart. The only server endpoint is the Meta Conversions API relay
+(`POST /api/meta/events`, `server/`), mounted in the Node servers of both build targets.
 
 ```
 visitor ──► pequeverso.com (static HTML/CSS, small client islands)
@@ -22,12 +23,14 @@ visitor ──► pequeverso.com (static HTML/CSS, small client islands)
 | Config | `NEXT_OUTPUT=export` (default) | `NEXT_OUTPUT=standalone` |
 | Serving | Hostinger website (LiteSpeed) serving `public_html`, pulled from the `deploy` branch by Hostinger Git | Hostinger Node.js Web App building `release`/`main` (forces `standalone`; auto-detected by `/hbuilds/`) |
 | Redirects/headers | `out/.htaccess` generated from `config/edge-rules.json` | `redirects()`/`headers()` from the same file |
+| Meta CAPI relay | `scripts/serve-static.mjs` mounts `server/meta-capi.mjs` (Node.js Web App only; the LiteSpeed mode has no relay) | `scripts/start.mjs` fronts the standalone server with `server/front.mjs` (relay + proxy on `PORT`, Next on `PORT+1`) |
 | Images | Build-time WebP derivatives (`tools/media`), `images.unoptimized` | same |
 | Status | Supported (Deploy workflow publishes `deploy`) | **Connected in hPanel by the owner** (Deploy workflow promotes `release`) |
 
 Rules that keep both targets valid: no `proxy.ts`/middleware, no `cookies()`/`headers()`/request-time
 APIs, no route handlers beyond `sitemap.ts`/`robots.ts`/metadata images, no runtime image optimizer.
-ADR: `docs/decisions/ADR-0001-hosting-target.md`.
+Server endpoints live outside Next, in `server/` (plain Node handlers with a `(req, res) => boolean`
+contract). ADRs: `docs/decisions/ADR-0001-hosting-target.md`, `ADR-0005-conversions-api-relay.md`.
 
 ## Source tree
 
@@ -43,6 +46,8 @@ src/features/    landing/ (CoreLanding, OfferLanding, ThanksPage templates), com
 src/components/  layout (PageShell, Header, Footer, LegalLayout) and ui primitives
 src/lib/         media.ts (manifest access), metadata.ts
 media/, public/  media manifest and build-time renditions (tools/media)
+server/          Node handlers outside Next: meta-capi.mjs (Conversions API relay), front.mjs (standalone
+                 front server: relay + proxy); mounted by scripts/serve-static.mjs and scripts/start.mjs
 ```
 
 ## Product registry
@@ -111,9 +116,10 @@ widget itself is identical in both modes: Hotmart decides the offer from the buy
   keeps the shared ones (currency, guarantee, passthrough allowlist, Hotmart URLs).
   `features/commerce/checkout-url.ts` builds checkout URLs (never forwards `off`/`ref`) and the
   per-product `sck=pv-<sckPrefix>-<position>`.
-- `lib/tracking.ts` + `components/Analytics` own site events (PageView, ViewContent,
-  PequeversoProductInterest, CheckoutIntent) with UUID event IDs, gated by `lib/consent.ts`.
-  Hotmart owns InitiateCheckout and Purchase. See `docs/tracking.md`.
+- `features/tracking` owns site events (PageView, ViewContent, PequeversoProductInterest,
+  CheckoutIntent) with UUID event IDs, gated by `consent.ts`, sent by the browser pixel and
+  mirrored through the same-origin Conversions API relay with the same ids. Hotmart owns
+  InitiateCheckout and Purchase. See `docs/tracking.md`.
 
 ## Deployment and verification
 

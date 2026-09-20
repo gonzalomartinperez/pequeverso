@@ -41,10 +41,27 @@ function fbq(): Fbq | undefined {
   return typeof window === "undefined" ? undefined : window.fbq;
 }
 
+const PIXEL_COOKIES = ["_fbp", "_fbc"];
+
+/** Expires the first-party cookies fbevents.js wrote (it sets them on the registrable domain). */
+function expirePixelCookies(): void {
+  if (typeof document === "undefined" || typeof window === "undefined") return;
+  const labels = (window.location?.hostname ?? "").split(".");
+  const domains = [""];
+  for (let index = 0; index < labels.length - 1; index += 1) domains.push(labels.slice(index).join("."));
+  for (const name of PIXEL_COOKIES) {
+    for (const domain of domains) {
+      // biome-ignore lint/suspicious/noDocumentCookie: cookieStore is not available in all target browsers
+      document.cookie = `${name}=; Max-Age=0; Path=/${domain ? `; Domain=${domain}` : ""}`;
+    }
+  }
+}
+
 /**
  * Meta Pixel adapter. Standard events go through `fbq('track')`, custom ones through
  * `fbq('trackCustom')`, always with `{ eventID }` so Hotmart's server events deduplicate.
- * The pixel is active from `init`; `onConsent` revokes it when the visitor rejects marketing.
+ * The pixel is active from `init`; `onConsent` revokes it and expires `_fbp`/`_fbc` when the
+ * visitor rejects marketing.
  */
 export function createMetaAdapter(pixelId: string): TrackingAdapter {
   return {
@@ -60,6 +77,7 @@ export function createMetaAdapter(pixelId: string): TrackingAdapter {
     },
     onConsent(state: ConsentState): void {
       fbq()?.("consent", state.marketing ? "grant" : "revoke");
+      if (!state.marketing) expirePixelCookies();
     },
     send(event: TrackedEvent): boolean {
       const pixel = fbq();

@@ -1,15 +1,19 @@
 // @ts-check
 // Minimal static server for out/ that mimics the production host: trailing-slash
 // directories resolve to index.html, missing paths return the real 404 page with
-// status 404, and .htaccess-equivalent cache headers are applied. Used by
+// status 404, and .htaccess-equivalent cache headers are applied. Mounts the Meta
+// Conversions API relay (server/meta-capi.mjs) before static resolution. Used by
 // Playwright, Lighthouse CI and `npm start`.
 import { createReadStream, existsSync, readFileSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join, normalize, resolve } from "node:path";
 import { brotliCompressSync, constants, gzipSync } from "node:zlib";
+import { createMetaCapiHandler, metaCapiOptionsFromEnv } from "../server/meta-capi.mjs";
 
 const root = resolve(process.cwd(), "out");
 const port = Number(process.env.PORT || 3000);
+const metaCapiOptions = metaCapiOptionsFromEnv(process.env);
+const metaCapi = createMetaCapiHandler(metaCapiOptions);
 const types = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -82,7 +86,8 @@ function applyCache(headers, file, ext) {
   }
 }
 
-createServer((req, res) => {
+createServer(async (req, res) => {
+  if (await metaCapi(req, res)) return;
   const url = new URL(req.url || "/", `http://localhost:${port}`);
   const pathname = decodeURIComponent(url.pathname);
   if (pathname.includes("..")) {
@@ -109,4 +114,9 @@ createServer((req, res) => {
   const notFound = join(root, "404.html");
   if (existsSync(notFound)) send(res, notFound, 404, accept);
   else res.writeHead(404, { "Content-Type": "text/plain" }).end("Not found");
-}).listen(port, () => console.log(`serve-static: http://localhost:${port} (out/)`));
+}).listen(port, () => {
+  console.log(`serve-static: http://localhost:${port} (out/)`);
+  console.log(
+    `meta-capi: ${metaCapiOptions.pixelId && metaCapiOptions.accessToken ? "enabled" : "disabled"}`,
+  );
+});

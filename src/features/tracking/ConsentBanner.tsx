@@ -28,7 +28,9 @@ const CATEGORY_COPY: Record<ConsentCategory, Pick<CategoryInfo, "title" | "purpo
 
 function gatedCategories(adapters: TrackingAdapter[]): CategoryInfo[] {
   return CATEGORY_ORDER.flatMap((id) => {
-    const tools = adapters.filter((adapter) => adapter.category === id).map((adapter) => adapter.label);
+    const tools = [
+      ...new Set(adapters.filter((adapter) => adapter.category === id).map((adapter) => adapter.label)),
+    ];
     return tools.length > 0 ? [{ id, ...CATEGORY_COPY[id], tools }] : [];
   });
 }
