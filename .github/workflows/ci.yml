@@ -142,7 +142,8 @@ jobs:
       - name: Smoke the standalone server
         run: |
           set -euo pipefail
-          PORT=3000 npm start > standalone.log 2>&1 &
+          # Docker exports HOSTNAME=<container id>, which scripts/start.mjs honours (as the host does).
+          HOSTNAME=127.0.0.1 PORT=3000 npm start > standalone.log 2>&1 &
           node -e 'const until=Date.now()+30000;(async()=>{while(Date.now()<until){try{if((await fetch("http://localhost:3000/")).ok)process.exit(0)}catch{}await new Promise(r=>setTimeout(r,1000))}console.error("standalone server did not start");process.exit(1)})()'
           node scripts/smoke.mjs http://localhost:3000 "$GITHUB_SHA"
           kill %1
