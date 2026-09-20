@@ -69,7 +69,8 @@ jobs:
           E2E_BASE_URL: ${{ env.SITE_URL }}
         run: npm run test:e2e:prod
       - name: Lighthouse (informative)
+        # --no-lighthouserc: lighthouserc.json starts the local static server, which has no out/ here.
         continue-on-error: true
         run: |
-          npx lhci collect --url="$SITE_URL/" --url="$SITE_URL/grafismo-fonetico/" --numberOfRuns=1 --settings.preset=desktop --settings.formFactor=mobile --settings.screenEmulation.mobile=true --settings.screenEmulation.width=390 --settings.screenEmulation.height=844 --settings.screenEmulation.deviceScaleFactor=3 --settings.throttlingMethod=simulate
+          npx lhci collect --no-lighthouserc --url="$SITE_URL/" --url="$SITE_URL/grafismo-fonetico/" --numberOfRuns=1 --settings.preset=desktop --settings.formFactor=mobile --settings.screenEmulation.mobile=true --settings.screenEmulation.width=390 --settings.screenEmulation.height=844 --settings.screenEmulation.deviceScaleFactor=3 --settings.throttlingMethod=simulate
           node scripts/lhci-summary.mjs >> "$GITHUB_STEP_SUMMARY"
