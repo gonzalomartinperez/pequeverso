@@ -1,4 +1,4 @@
-import { formatUsd, guaranteeDays } from "@config/commerce";
+import { formatUsd, guaranteeDays, localCurrencyNote } from "@config/commerce";
 import type { ReactNode } from "react";
 import { Icon } from "@/components/ui/Icon/Icon";
 import styles from "./PriceBlock.module.css";
@@ -9,6 +9,7 @@ type Props = {
   /** Previous price in the same funnel (only shown when it was actually offered before, e.g. downsell). */
   previous?: { label: string; price: number };
   taxNote: string;
+  /** Local-currency explanation under the price; defaults to the shared config note. */
   currencyNote?: string;
   cta: ReactNode;
   ctaNote?: string;
@@ -16,13 +17,13 @@ type Props = {
   id?: string;
 };
 
-/** Price, tax/currency notes, CTA slot and the guarantee line. No invented anchors. */
+/** Price, tax and local-currency notes, CTA slot and the guarantee line. No invented anchors. */
 export function PriceBlock({
   kicker,
   price,
   previous,
   taxNote,
-  currencyNote,
+  currencyNote = localCurrencyNote,
   cta,
   ctaNote,
   tone = "light",
@@ -44,7 +45,10 @@ export function PriceBlock({
         ) : null}
       </div>
       <p className={styles.note}>{taxNote}</p>
-      {currencyNote ? <p className={styles.note}>{currencyNote}</p> : null}
+      <p className={styles.currency}>
+        <Icon name="globe" size={16} />
+        <span>{currencyNote}</span>
+      </p>
       <div className={styles.cta}>{cta}</div>
       {ctaNote ? (
         <p className={styles.guarantee}>

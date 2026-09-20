@@ -1,5 +1,6 @@
 // Structural checks over every exported page: landmarks, single visible h1, language,
-// canonical, skip link, resolvable in-page anchors and no placeholder or retired text.
+// canonical, skip link, resolvable in-page anchors, no placeholder or retired text, and the
+// local-currency wording next to every USD price.
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 
@@ -19,7 +20,10 @@ const walk = (dir) => {
 };
 walk(root);
 
-const forbiddenText = ["Trazos y Sonidos", "lorem ipsum"];
+const forbiddenText = ["Trazos y Sonidos", "lorem ipsum", "Digital Products Team", "digitalproductsteam"];
+/** A page that shows a USD price must also explain that Hotmart charges in local currency. */
+const usdPrice = "US$";
+const localCurrencyWording = "moneda local";
 const placeholderPattern = /\[\[[A-Z0-9_]+\]\]/;
 const count = (html, pattern) => (html.match(pattern) ?? []).length;
 
@@ -41,6 +45,9 @@ function check(page) {
     if (html.includes(text)) errors.push(`contains "${text}"`);
   }
   if (placeholderPattern.test(html)) errors.push("contains an owner placeholder");
+  if (html.includes(usdPrice) && !html.includes(localCurrencyWording)) {
+    errors.push(`shows a ${usdPrice} price without the "${localCurrencyWording}" wording`);
+  }
   const ids = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]));
   for (const match of html.matchAll(/href="#([^"]+)"/g)) {
     if (!ids.has(match[1])) errors.push(`anchor #${match[1]} has no target`);

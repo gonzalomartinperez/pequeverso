@@ -13,7 +13,7 @@ type Props = {
   title: string;
   text: string;
   checks: readonly string[];
-  price: { kicker: string; value: number; taxNote: string; currencyNote: string };
+  price: { kicker: string; value: number; taxNote: string };
   cta: ReactNode;
 };
 
@@ -28,13 +28,7 @@ export function OfferCard({ titleId, kicker, title, text, checks, price, cta }: 
           <p className="lead">{text}</p>
           <BulletList items={checks} icon="shield" />
         </Stack>
-        <PriceBlock
-          kicker={price.kicker}
-          price={price.value}
-          taxNote={price.taxNote}
-          currencyNote={price.currencyNote}
-          cta={cta}
-        />
+        <PriceBlock kicker={price.kicker} price={price.value} taxNote={price.taxNote} cta={cta} />
       </Split>
     </Card>
   );

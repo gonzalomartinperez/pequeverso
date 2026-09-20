@@ -61,9 +61,10 @@ caches. The new domain can stay live meanwhile.
 
 Keep `digitalproductsteam.com` registered for at least one more cycle (redirects must live ≥ 12
 months after cutover, Hotmart buyer emails and social links still point there, and an expired
-domain can be re-registered by a third party). Move `support@` to the new mailbox before letting
-the email plan lapse; if the domain moves its DNS to Cloudflare, free Email Routing can forward
-the old address. Do not cancel hosting (billing 2029-12-08) — the site runs there.
+domain can be re-registered by a third party). Support already runs on `somospequeverso@gmail.com`
+(the site never shows the old mailbox); keep a forward from the old `support@` address while
+buyers may still reply to old Hotmart emails — if the domain moves its DNS to Cloudflare, free
+Email Routing can forward it. Do not cancel hosting (billing 2029-12-08) — the site runs there.
 
 ## Old-domain curl matrix
 

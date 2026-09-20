@@ -1,4 +1,4 @@
-import { formatUsd } from "@config/commerce";
+import { formatUsd, localCurrencyNote, localCurrencyNoteShort } from "@config/commerce";
 import { site } from "@config/site";
 import { homeCopy as copy } from "@content/es/home";
 import type { Metadata } from "next";
@@ -9,6 +9,7 @@ import { ChipRow } from "@/components/ui/ChipRow/ChipRow";
 import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
 import { FactChip } from "@/components/ui/FactChip/FactChip";
 import { Grid } from "@/components/ui/Grid/Grid";
+import { Icon } from "@/components/ui/Icon/Icon";
 import { IconCardList } from "@/components/ui/IconCardList/IconCardList";
 import { MediaImage } from "@/components/ui/MediaImage/MediaImage";
 import { Section } from "@/components/ui/Section/Section";
@@ -124,6 +125,10 @@ export default function HomePage() {
               <span className={styles.productPriceKicker}>{copy.product.priceKicker}</span>
               <span>{price}</span>
             </p>
+            <p className={styles.productCurrency}>
+              <Icon name="globe" size={16} />
+              <span>{localCurrencyNote}</span>
+            </p>
             {productLink("hero", "button button--primary button--block", `${copy.product.cta} · ${price}`)}
           </Card>
         }
@@ -227,6 +232,7 @@ export default function HomePage() {
             {productLink("closing", "button button--primary", copy.closing.cta)}
             <span className={styles.closingPrice}>
               {price} · {copy.closing.priceSuffix}
+              <span className={styles.closingCurrency}>{localCurrencyNoteShort}</span>
             </span>
           </div>
           <div className={styles.closingSocial}>

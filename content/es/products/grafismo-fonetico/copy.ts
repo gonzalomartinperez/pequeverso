@@ -46,7 +46,6 @@ export const grafismoCopy = {
     assurance: { payment: "Pago único", access: "Acceso digital inmediato", guarantee },
     priceKicker: "Kit completo",
     taxNote: "+ impuestos aplicables según el país",
-    currencyNote: "Hotmart muestra el total en tu moneda local antes de pagar.",
   },
   trust: [
     { icon: "shield", text: "Pago seguro a través de Hotmart" },
@@ -99,7 +98,6 @@ export const grafismoCopy = {
   },
   offer: {
     kicker: "Oferta",
-    currencyNote: "Hotmart muestra el total en tu moneda antes de pagar.",
     checks: [
       "9 PDF · 414 páginas en A4",
       "Guía para saber qué hoja usar cada día",

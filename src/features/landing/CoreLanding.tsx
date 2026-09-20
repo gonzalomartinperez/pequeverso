@@ -1,4 +1,4 @@
-import { formatUsd } from "@config/commerce";
+import { formatUsd, localCurrencyNoteShort } from "@config/commerce";
 import { site } from "@config/site";
 import { PageShell } from "@/components/layout/PageShell/PageShell";
 import { BulletList } from "@/components/ui/BulletList/BulletList";
@@ -100,7 +100,12 @@ export function CoreLanding({ product }: Props) {
   const videos = media.videoIds.map((id) => getVideo(id));
 
   const headerCta = (
-    <CheckoutLink product={target} position="header" className="button button--primary button--small">
+    <CheckoutLink
+      product={target}
+      position="header"
+      className="button button--primary button--small"
+      title={localCurrencyNoteShort}
+    >
       Comprar · {formatUsd(price)}
     </CheckoutLink>
   );
@@ -136,7 +141,6 @@ export function CoreLanding({ product }: Props) {
               kicker={copy.hero.priceKicker}
               price={price}
               taxNote={copy.hero.taxNote}
-              currencyNote={copy.hero.currencyNote}
               cta={
                 <CheckoutLink product={target} position="hero-card" className="button button--primary">
                   {copy.hero.cta}
@@ -249,7 +253,6 @@ export function CoreLanding({ product }: Props) {
             kicker: copy.hero.priceKicker,
             value: price,
             taxNote: copy.hero.taxNote,
-            currencyNote: copy.offer?.currencyNote ?? copy.hero.currencyNote,
           }}
           cta={
             <CheckoutLink product={target} position="oferta" className="button button--primary">
@@ -323,6 +326,7 @@ export function CoreLanding({ product }: Props) {
       <StickyCTA
         hideWhenVisible={['a[data-position="hero"]', "#comprar", "#oferta", "#oferta-final", "footer"]}
         label={`${copy.sticky.label} · ${formatUsd(price)}`}
+        note={localCurrencyNoteShort}
       >
         <CheckoutLink product={target} position="sticky" className="button button--primary">
           {copy.sticky.cta}

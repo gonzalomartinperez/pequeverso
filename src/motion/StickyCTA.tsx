@@ -8,6 +8,8 @@ type Props = {
   /** Selectors of elements that hide the bar while they are visible (hero, final offer, footer). */
   hideWhenVisible: string[];
   label: string;
+  /** Small second line under the label (e.g. the local-currency note). */
+  note?: string;
   children: ReactNode;
 };
 
@@ -30,7 +32,7 @@ function observeTargets(selectors: string[], onChange: (covered: boolean) => voi
  * Mobile-only sticky purchase bar. Appears after the hero leaves the viewport, hides over the
  * final offer, the footer and any open dialog so it never covers another control (WCAG 2.4.11).
  */
-export function StickyCTA({ hideWhenVisible, label, children }: Props) {
+export function StickyCTA({ hideWhenVisible, label, note, children }: Props) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -59,7 +61,10 @@ export function StickyCTA({ hideWhenVisible, label, children }: Props) {
       inert={!visible}
       data-testid="sticky-cta"
     >
-      <span className={styles.label}>{label}</span>
+      <div className={styles.copy}>
+        <span className={styles.label}>{label}</span>
+        {note ? <span className={styles.note}>{note}</span> : null}
+      </div>
       <div className={styles.action}>{children}</div>
     </div>
   );

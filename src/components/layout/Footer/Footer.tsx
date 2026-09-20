@@ -17,7 +17,7 @@ const productLinks = [
 
 const helpLinks = [
   { href: "/soporte/", label: "Soporte y contacto" },
-  { href: "/compras-y-reembolsos/", label: "Compras y reembolsos" },
+  { href: "/compras-y-reembolsos/", label: "Reembolsos" },
   ...coreProducts().map((product) => ({ href: product.funnel.thanksPath, label: "Acceso a tu compra" })),
 ];
 
@@ -81,8 +81,7 @@ export function Footer() {
           específicos.
         </p>
         <p>
-          © {new Date().getFullYear()} {site.name} · Operado por {site.operator}. Pagos, entrega y reembolsos
-          gestionados por Hotmart.
+          © {new Date().getFullYear()} {site.name}. Pagos, entrega y reembolsos gestionados por Hotmart.
         </p>
       </div>
     </footer>
