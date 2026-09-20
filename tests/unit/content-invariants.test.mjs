@@ -16,13 +16,17 @@ const forbiddenClaims = [
 const placeholderPattern = /\[\[[A-Z0-9_]+\]\]/;
 const lineBreak = /\r?\n/;
 
-function sourceFiles(dir) {
+/** Retired operator brand: the site is Pequeverso only (owner decision, 2026-09-20). */
+const retiredOperator = ["Digital Products Team", "digitalproductsteam"];
+const retiredOperatorRoots = ["src", "content", "config"];
+
+function sourceFiles(dir, pattern = /\.(ts|tsx)$/) {
   const files = [];
   const walk = (current) => {
     for (const entry of readdirSync(current)) {
       const full = join(current, entry);
       if (statSync(full).isDirectory()) walk(full);
-      else if (/\.(ts|tsx)$/.test(entry)) files.push(full);
+      else if (pattern.test(entry)) files.push(full);
     }
   };
   try {
@@ -33,7 +37,7 @@ function sourceFiles(dir) {
   return files;
 }
 
-const files = roots.flatMap(sourceFiles);
+const files = roots.flatMap((dir) => sourceFiles(dir));
 const read = (file) => readFileSync(file, "utf8");
 const toPosix = (file) => file.split("\\").join("/");
 const isSellerModule = (file) => toPosix(file).endsWith("content/es/legal/seller.ts");
@@ -45,6 +49,17 @@ test("customer-facing sources never use the retired product name or generic plac
     const text = read(file);
     for (const literal of forbiddenLiterals) {
       assert.ok(!text.includes(literal), `${relative(".", file)} contains "${literal}"`);
+    }
+  }
+});
+
+test("no trace of the retired operator brand in code, content or config", () => {
+  const scanned = retiredOperatorRoots.flatMap((dir) => sourceFiles(dir, /\.(ts|tsx|mjs|js|json|css|md)$/));
+  assert.ok(scanned.length > 0, "expected files to scan");
+  for (const file of scanned) {
+    const text = read(file).toLowerCase();
+    for (const literal of retiredOperator) {
+      assert.ok(!text.includes(literal.toLowerCase()), `${relative(".", file)} contains "${literal}"`);
     }
   }
 });

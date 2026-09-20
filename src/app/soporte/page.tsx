@@ -1,3 +1,4 @@
+import { hotmart } from "@config/commerce";
 import { seller } from "@content/es/legal/seller";
 import { soporteCopy as copy } from "@content/es/soporte";
 import type { Metadata } from "next";
@@ -48,6 +49,14 @@ export default function SoportePage() {
             </Card>
           ))}
         </Grid>
+        <Card variant="soft" className={styles.notes}>
+          <h2 className={styles.title}>{copy.include.title}</h2>
+          <BulletList items={copy.include.items} icon="mail" />
+          <p>{copy.include.note}</p>
+          <p>
+            {copy.include.hotmartLabel} <a href={hotmart.consumerArea}>{copy.include.hotmartLink}</a>
+          </p>
+        </Card>
         <Card variant="soft" className={styles.notes}>
           <h2 className={styles.title}>{copy.limits.title}</h2>
           <BulletList items={copy.limits.items} icon="shield" />

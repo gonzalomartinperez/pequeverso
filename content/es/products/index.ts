@@ -40,8 +40,8 @@ export type CoreLandingCopy = {
     cta: string;
     ctaNote: string;
     priceKicker: string;
+    /** Tax line under the price; the local-currency note comes from `config/commerce.ts`. */
     taxNote: string;
-    currencyNote: string;
     /** Age radios of the hero: each option swaps the featured worksheet and a "where to start" line. */
     ages?: { legend: string; defaultId: string; items: readonly AgeOption[] };
     /** Parts of the hero trust line; price and guarantee days come from config. */
@@ -53,8 +53,8 @@ export type CoreLandingCopy = {
   pages: Section & { zoomHint: string; galleryLabel: string };
   included: Section & { total: string; units?: { pdf: string; pages: string } };
   midOffer: { title: string; text: string; cta: string };
-  /** Offer card details (kicker, currency note, checks); title, text and CTA come from `midOffer`. */
-  offer?: { kicker: string; currencyNote: string; checks: readonly string[] };
+  /** Offer card details (kicker, checks); title, text and CTA come from `midOffer`. */
+  offer?: { kicker: string; checks: readonly string[] };
   /** "Es para ti / no es para ti" cards. */
   audience?: Section & { yes: AudienceCard; no: AudienceCard };
   /** Note from the kit's author; rendered only when enabled. */

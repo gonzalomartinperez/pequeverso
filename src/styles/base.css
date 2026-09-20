@@ -201,6 +201,36 @@ ol[role="list"] {
 .prose th {
   color: var(--pv-ink);
 }
+.prose .table-wrap {
+  overflow-x: auto;
+  margin-bottom: var(--space-4);
+}
+.prose .table-wrap table {
+  margin-bottom: 0;
+}
+.prose dl {
+  display: grid;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.prose dt {
+  font-weight: 800;
+  color: var(--pv-ink);
+}
+.prose dd {
+  color: var(--pv-body);
+}
+.prose dd + dt {
+  margin-top: var(--space-2);
+}
+@container (min-width: 40rem) {
+  .prose dl {
+    grid-template-columns: minmax(10rem, 14rem) minmax(0, 1fr);
+  }
+  .prose dd + dt {
+    margin-top: 0;
+  }
+}
 
 /* Offer mode: both views ship in the HTML; a pre-hydration script sets data-offer. */
 [data-offer="downsell"] .only-upsell,

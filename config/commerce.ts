@@ -35,6 +35,16 @@ export const hotmart = {
   salesFunnelContainerId: "hotmart-sales-funnel",
 } as const;
 
+/**
+ * Local-currency explanation shown next to every USD price: Hotmart converts the reference
+ * price to the buyer's currency and shows the final total (taxes included) before payment.
+ */
+export const localCurrencyNote =
+  "Precio de referencia en dólares (USD). Hotmart lo convierte a tu moneda local y muestra el total final, con impuestos, antes de pagar.";
+
+/** Short variant of `localCurrencyNote` for tight spaces (sticky bar, tooltips, chips). */
+export const localCurrencyNoteShort = "Se cobra en tu moneda local.";
+
 /** Customer-facing USD price with the Spanish decimal comma, e.g. `US$14,99`. */
 export function formatUsd(value: number): string {
   return `US$${value.toFixed(2).replace(".", ",")}`;

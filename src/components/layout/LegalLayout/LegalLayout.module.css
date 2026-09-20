@@ -41,6 +41,7 @@
 
 .prose {
   min-width: 0;
+  container-type: inline-size;
 }
 
 @media (max-width: 1023px) {

@@ -48,6 +48,6 @@ export const grafismoFaq: readonly FaqItem[] = [
   },
   {
     q: "¿Puedo pagar en mi moneda?",
-    a: "Hotmart muestra el total en tu moneda local y los métodos disponibles en tu país antes de confirmar.",
+    a: "Sí. El precio se muestra en dólares (USD) como referencia; Hotmart lo convierte automáticamente a la moneda de tu país y te muestra el total final, con la conversión y los impuestos incluidos, antes de confirmar. Los medios de pago dependen del país (tarjeta, PayPal, Pix, OXXO y otros locales). El cargo aparecerá a nombre de Hotmart y tu banco puede aplicar su propio tipo de cambio o comisión si lo trata como compra internacional.",
   },
 ];

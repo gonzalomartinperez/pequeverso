@@ -94,7 +94,7 @@ Policy:
 | `WaveDivider` | server | `fill: WaveFill` (token name), `flip?`, `className?` |
 | `Orbit` | server | `className?` — dashed ellipse + gold star on `offset-path` |
 | `Universe` | server | `variant?: hero\|band`, `className?` — paint-contained backdrop that renders `Orbit` |
-| `StickyCTA` | client | `hideWhenVisible: string[]`, `label`, `children` — mobile only (`below("lg")`), hidden while any `dialog[open]` |
+| `StickyCTA` | client | `hideWhenVisible: string[]`, `label`, `note?` (tiny second line, the short currency note), `children` — mobile only (`below("lg")`), hidden while any `dialog[open]` |
 
 ## Primitives (`src/components/ui`)
 
@@ -130,7 +130,7 @@ page renders `Section`/`Eyebrow`; remove them with the last page migration.
 | `ResourceGrid` | server + `TiltCard` | real covers, names, page counts |
 | `PageGallery` | client (Embla) | drag, arrows, dots, keyboard, counter, `<dialog>` zoom |
 | `VideoBlock` | client | click-to-play with controls, one active player, text alternative |
-| `PriceBlock` | server | price, tax/currency notes, CTA slot, guarantee; anchors only when real |
+| `PriceBlock` | server | price, tax note, local-currency note (globe icon; defaults to `localCurrencyNote`), CTA slot, guarantee; anchors only when real |
 | `CheckoutLink`, `ProductInterestLink`, `ViewContentOnMount` | client | commerce islands (params + events) |
 | `HotmartWidgetSlot` | client | single widget container, reserved height, focus target, fallback |
 | `OfferModeRoot` / `OfferModeMirror` | server / client | pre-paint `data-offer`, post-hydration mirror |

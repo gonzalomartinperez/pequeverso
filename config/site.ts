@@ -13,8 +13,7 @@ export const site = {
   tagline: "Un pequeño universo para aprender, crear y crecer en familia.",
   description:
     "Recursos imprimibles para acompañar los primeros pasos hacia la lectura de niños de 3 a 7 años: letras, sonidos, sílabas, palabras y trazos, listos para imprimir en casa.",
-  operator: "Digital Products Team",
-  supportEmail: "support@digitalproductsteam.com",
+  supportEmail: "somospequeverso@gmail.com",
   themeColor: "#003068",
   social: {
     instagram: "https://www.instagram.com/somospequeverso/",

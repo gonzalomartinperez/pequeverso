@@ -34,6 +34,17 @@ export const soporteCopy = {
       cta: { label: "Escribir por correo", href: `mailto:${seller.supportEmail}` },
     },
   ],
+  include: {
+    title: "Qué incluir en tu mensaje",
+    items: [
+      "El correo electrónico que usaste al comprar.",
+      "El código de transacción de Hotmart (empieza con HP; está en el correo de confirmación).",
+      "Qué necesitas: acceso, reembolso, una duda sobre el material o una licencia para tu centro.",
+    ],
+    note: `Con esos datos podemos ayudarte en un solo intercambio. Respondemos normalmente en ${seller.responseTime}.`,
+    hotmartLabel: "Tus compras en Hotmart:",
+    hotmartLink: "consumer.hotmart.com",
+  },
   limits: {
     title: "Lo que no podemos hacer",
     items: ["Ver o modificar datos de pago.", "Cambiar el correo de una compra."],

@@ -19,6 +19,8 @@ type Props = {
   position: string;
   children: ReactNode;
   className?: string;
+  /** Native tooltip (e.g. the local-currency note on the compact header CTA). */
+  title?: string;
 };
 
 /**
@@ -26,7 +28,7 @@ type Props = {
  * the allowlisted acquisition parameters from the page URL and a per-position `sck`.
  * Fires exactly one CheckoutIntent per click and navigates in the same tab.
  */
-export function CheckoutLink({ product, position, children, className }: Props) {
+export function CheckoutLink({ product, position, children, className, title }: Props) {
   const { checkoutUrl, fallbackPath, sckPrefix } = product;
   const [href, setHref] = useState(checkoutUrl || fallbackPath);
 
@@ -43,6 +45,7 @@ export function CheckoutLink({ product, position, children, className }: Props) 
     <a
       href={href}
       className={className}
+      title={title}
       onClick={onClick}
       data-checkout
       data-position={position}
