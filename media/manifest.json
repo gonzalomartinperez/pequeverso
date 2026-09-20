@@ -1,6 +1,6 @@
 {
   "$schemaVersion": 1,
-  "generatedAt": "2026-09-14T01:05:21.822Z",
+  "generatedAt": "2026-09-20T19:41:12.853Z",
   "generator": "tools/media/media-build.mjs v1 (sharp 0.35.4, libvips 8.18.6)",
   "extras": [
     "public/manifest.webmanifest"
@@ -201,8 +201,8 @@
       "outputs": [
         {
           "file": "public/favicon.ico",
-          "bytes": 3888,
-          "sha256": "ce4c3c98dba02d83482284ea731456193e1bd08f389636540b1e4ddc13abe3b1",
+          "bytes": 1952,
+          "sha256": "b7edc75ce7ca1b30b1a6bae92b761038e0a0ff6f8e1abb8eab3fba522823f2f0",
           "width": 48,
           "height": 48,
           "format": "ico",
@@ -210,8 +210,8 @@
         },
         {
           "file": "public/favicon.png",
-          "bytes": 181981,
-          "sha256": "313cf89a1053772f0769f03185a3b990fec5f2fb6b293da13dc7ba1f2092c0b1",
+          "bytes": 60179,
+          "sha256": "044b3e17f3aad6161069fbfd9fe29f6a7a0c7afd4b85ee50fd321460968b4108",
           "width": 512,
           "height": 512,
           "format": "png",
@@ -219,8 +219,8 @@
         },
         {
           "file": "public/apple-touch-icon.png",
-          "bytes": 26465,
-          "sha256": "b6ac321516e79eb2b2e8411a4c5b8b35223f4e93b89293813ea7d8bd7fd03f5d",
+          "bytes": 7467,
+          "sha256": "6782bb84edc4debe0d1f11c67308eb88a5739715bcca8a4cec7e7b58c610ef9d",
           "width": 180,
           "height": 180,
           "format": "png",
@@ -228,8 +228,8 @@
         },
         {
           "file": "public/icon-192.png",
-          "bytes": 31828,
-          "sha256": "04817ad4a25dea28c60a64e7ab743ea8d98b55edcacad92ca0851525b4e8135e",
+          "bytes": 13504,
+          "sha256": "af98f0565e2d67a23c0869acfda9f1fdaff9390173495693ad0e16e705641ae6",
           "width": 192,
           "height": 192,
           "format": "png",
@@ -237,8 +237,8 @@
         },
         {
           "file": "public/icon-512.png",
-          "bytes": 181981,
-          "sha256": "313cf89a1053772f0769f03185a3b990fec5f2fb6b293da13dc7ba1f2092c0b1",
+          "bytes": 60179,
+          "sha256": "044b3e17f3aad6161069fbfd9fe29f6a7a0c7afd4b85ee50fd321460968b4108",
           "width": 512,
           "height": 512,
           "format": "png",
@@ -246,8 +246,8 @@
         },
         {
           "file": "public/icon.svg",
-          "bytes": 42622,
-          "sha256": "d5fc4fa4a44ff41941411193706249b8a27584afaa33dc9eb269a88b15f16276",
+          "bytes": 18190,
+          "sha256": "33ff0de63d8a1a6427f25749fb6f51aba06986293709a05f598c6be32582f206",
           "width": 96,
           "height": 96,
           "format": "svg",

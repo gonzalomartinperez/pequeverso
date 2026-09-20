@@ -330,16 +330,67 @@ function icoFromPng(pngBuffer, size) {
   return Buffer.concat([header, entry, pngBuffer]);
 }
 
+/**
+ * Lifts the brand mark off its disc: pixels close to `background` become transparent, the
+ * anti-aliased rim is un-blended toward the foreground, and the result is trimmed to the mark.
+ */
+async function isolateMark(src, background) {
+  const { data, info } = await sharp(src).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const bg = [background.r, background.g, background.b];
+  const noise = 14; // colour distance treated as flat background (encoder noise on the disc)
+  const reach = Math.hypot(255 - bg[0], 255 - bg[1], 255 - bg[2]) * 0.55;
+  for (let i = 0; i < data.length; i += 4) {
+    if (data[i + 3] === 0) continue;
+    const distance = Math.hypot(data[i] - bg[0], data[i + 1] - bg[1], data[i + 2] - bg[2]);
+    const coverage = Math.min(1, Math.max(0, (distance - noise) / (reach - noise)));
+    if (coverage === 0) {
+      data[i + 3] = 0;
+      continue;
+    }
+    for (let ch = 0; ch < 3; ch += 1) {
+      const lifted = (data[i + ch] - (1 - coverage) * bg[ch]) / coverage;
+      data[i + ch] = Math.max(0, Math.min(255, Math.round(lifted)));
+    }
+    data[i + 3] = Math.round(data[i + 3] * coverage);
+  }
+  return sharp(data, { raw: { width: info.width, height: info.height, channels: 4 } })
+    .trim({ threshold: 8 })
+    .png()
+    .toBuffer();
+}
+
+function hexToRgb(hex) {
+  const value = Number.parseInt(hex.replace("#", ""), 16);
+  return { r: (value >> 16) & 255, g: (value >> 8) & 255, b: value & 255 };
+}
+
+/**
+ * Favicon set from the isotipo. `compose.mark` "isolated" (default) lifts the mark off its disc so
+ * it fills the transparent canvas; "disc" keeps the source as is. The Apple touch icon is always
+ * the mark inset on an opaque disc-colour square.
+ */
 async function buildFavicons(item, src) {
   const c = item.compose;
-  const transparent = (size) =>
-    sharp(src)
-      .resize({ width: size, height: size, fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+  const background = hexToRgb(c.background);
+  const mark = c.mark === "disc" ? await sharp(src).png().toBuffer() : await isolateMark(src, background);
+  const fitted = (size, inset) =>
+    sharp(mark)
+      .resize({
+        width: Math.round(size * (1 - 2 * inset)),
+        height: Math.round(size * (1 - 2 * inset)),
+        fit: "contain",
+        background: { r: 0, g: 0, b: 0, alpha: 0 },
+      })
+      .png()
+      .toBuffer();
+  const transparent = async (size) =>
+    sharp({ create: { width: size, height: size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+      .composite([{ input: await fitted(size, c.inset ?? 0.02), gravity: "centre" }])
       .png({ compressionLevel: 9 })
       .toBuffer();
   const onBackground = async (size) =>
     sharp({ create: { width: size, height: size, channels: 3, background: c.background } })
-      .composite([{ input: await transparent(size), left: 0, top: 0 }])
+      .composite([{ input: await fitted(size, c.appleInset ?? 0.14), gravity: "centre" }])
       .png({ compressionLevel: 9 })
       .toBuffer();
 
@@ -369,6 +420,7 @@ async function buildFavicons(item, src) {
     icons: [
       { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
       { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: "/apple-touch-icon.png", sizes: "180x180", type: "image/png", purpose: "maskable" },
     ],
   };
   writeFileSync(join(publicDir, "manifest.webmanifest"), `${JSON.stringify(webmanifest, null, 2)}\n`);
