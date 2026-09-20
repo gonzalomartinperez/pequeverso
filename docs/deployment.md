@@ -10,8 +10,36 @@
 | Revision check | `https://pequeverso.com/build-info.json` (`Cache-Control: no-store`) | same |
 | Trade-offs | Idle process stop (cold start on first visit), no rollback UI in hPanel (re-run Deploy with the previous tag), Hostinger build time ~2–4 min | No cold starts, `.htaccess` fully ours; no Node, so no Conversions API relay (`/api/meta/events/` is a 404 the browser ignores) |
 
-Both modes are built in CI on every PR (`quality` job builds the static export; `npm run
+Both modes are built in CI on every PR (the `build` job builds the static export; `npm run
 build:standalone` is the Node parity build you can run locally).
+
+## Workflow map (`.github/workflows`)
+
+| Workflow | When | What | Permissions |
+|---|---|---|---|
+| `ci.yml` | pull request, push to `main`, manual | `workflows` (actionlint + zizmor) → `build` (lint, types, unit, knip, export, budgets, audit) → `e2e` + `lighthouse` (not on push) → `ci` (required check) | `contents: read` |
+| `post-deploy-verify.yml` | push to `main`, manual (`sha`), called by Deploy | waits until `build-info.json` reports the commit, smoke, headers, `PW_SET=prod`, informative Lighthouse; job summary with revision and timings | `contents: read` |
+| `nightly.yml` | 04:17 UTC, manual (`update_snapshots`) | Chromium + WebKit × 7 widths, visual baselines, clean-clone invariant, full knip, Lighthouse ×5, links, bundle analysis | `contents: read` |
+| `deploy.yml` | manual, `production`/`staging` environment approval | gated release below, then `post-deploy-verify` | `contents: write` on the release job only |
+| `branch-policy.yml` | `pull_request_target` | branch name and PR title policy from `main`; no checkout, `permissions: {}` | none |
+
+`.github/actions/setup` is the shared composite (Node from `.nvmrc`, npm cache, `npm ci`,
+optional cached Playwright browser). `deploy.yml` keeps its setup inline because it checks out the
+*requested* tag, which may predate the composite (rollbacks must keep working).
+
+Build-time business values (required by `scripts/check-env.mjs`, no inline defaults in the app):
+
+| Workflow | `NEXT_PUBLIC_SITE_URL` | `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO` | `NEXT_PUBLIC_META_PIXEL_ID` |
+|---|---|---|---|
+| `ci.yml` | `https://pequeverso.com` | fake offer `https://pay.hotmart.com/TEST0000000?checkoutMode=10` (tests assert only the origin and `checkoutMode=10`) | fake id + `E2E_EXPECT_CONSENT=1` |
+| `nightly.yml` | same | same fake offer | none on purpose (clean-clone job: no banner, no cookies) |
+| `deploy.yml` | `vars.NEXT_PUBLIC_SITE_URL`, else `https://pequeverso.com` | `vars.NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO`, else `vars.NEXT_PUBLIC_CHECKOUT_URL`; `staging` may fall back to the fake offer, `production` fails the build without a real one | `vars.NEXT_PUBLIC_META_PIXEL_ID` |
+| `post-deploy-verify.yml` | does not build | — | — |
+
+Owner toggles that are repository settings, not workflows: CodeQL default setup (Settings →
+Code security; JavaScript/TypeScript, free for public repositories), Dependabot alerts, and the
+`ci` required check on the `main` ruleset. A merge queue is not used: one maintainer, PRs must
+already be up to date with `main`.
 
 ## Deploy workflow (`.github/workflows/deploy.yml`)
 
@@ -37,7 +65,8 @@ Manual (`workflow_dispatch`), `production` environment with required approval:
    Manager → Settings → Conversions API → Generate access token). `NEXT_PUBLIC_SITE_URL` defaults
    to `https://pequeverso.com`; the checkout URL defaults to the registry's public Hotmart checkout.
 2. GitHub → Settings → Environments → `production`: reviewer = you (already set); variables
-   `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_CHECKOUT_URL` (set), pixel/analytics ids (optional).
+   `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_CHECKOUT_URL` (set), `NEXT_PUBLIC_META_PIXEL_ID` (optional).
+   The Deploy workflow reads only these `vars`; nothing else is inlined.
 3. Cloudflare proxy: HTML responses are `Cache-Control: no-cache` (never CDN-cached); `/media/`,
    `/_next/static/` are `immutable`. Purge the zone only if you change cache rules.
 
@@ -79,7 +108,10 @@ curl -sI "$H/shop-2/anything/" | head -1                      # 410 (static) / 4
 
 ## Rollback
 
-Re-run **Deploy** with the previous tag (moves `release`/`deploy` back; Hostinger redeploys).
+Re-run **Deploy** with the previous tag (moves `release`/`deploy` back; Hostinger redeploys). The
+workflow file comes from `main`, the built tree from the tag, so any tag since v0.1.0 can be
+re-deployed. The verify job then proves the previous `sha` is live; if Hostinger is connected to
+`main` instead of `release`, a rollback is a revert PR on `main`.
 
 ## Not covered by automation
 

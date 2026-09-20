@@ -2,14 +2,16 @@ name: Post-deploy verify
 
 # Hostinger builds `main` on push. This workflow waits for that build to reach production,
 # then verifies the deployed revision and runs the smoke suite against the live origin.
+# deploy.yml reuses it through workflow_call after publishing a release.
 on:
   push:
     branches: [main]
   workflow_dispatch:
     inputs:
       sha:
-        description: Commit expected in production (defaults to the triggering commit)
+        description: Commit expected in production (empty = the commit this run was started from)
         required: false
+        default: ""
   workflow_call:
     inputs:
       sha:
@@ -20,37 +22,52 @@ on:
         type: string
         default: https://pequeverso.com
 
-permissions:
-  contents: read
+permissions: {}
 
 concurrency:
-  group: post-deploy-verify
-  cancel-in-progress: true
+  # A newer push to main supersedes the wait for an older one; deploy-triggered runs are never cancelled.
+  group: post-deploy-verify-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name == 'push' }}
 
 jobs:
   verify:
     name: Verify production revision
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    permissions:
+      contents: read
     env:
       SITE_URL: ${{ inputs.site_url || 'https://pequeverso.com' }}
       EXPECTED_SHA: ${{ inputs.sha || github.sha }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
+          persist-credentials: false
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          browser: chromium
       - name: Wait for Hostinger to serve the expected revision
         run: node scripts/wait-for-revision.mjs "$SITE_URL" "$EXPECTED_SHA" 1200
-      - run: node scripts/smoke.mjs "$SITE_URL" "$EXPECTED_SHA"
+      - name: Smoke
+        run: node scripts/smoke.mjs "$SITE_URL" "$EXPECTED_SHA"
       - name: Headers
-        run: curl -sI "$SITE_URL/" | grep -iE 'strict-transport|x-content-type|content-security|cache-control|cf-cache-status'
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e:prod
+        run: |
+          set -euo pipefail
+          headers=$(curl -sI "$SITE_URL/" | grep -iE 'strict-transport|x-content-type|content-security|cache-control|cf-cache-status')
+          echo "$headers"
+          {
+            echo "## Headers ($SITE_URL/)"
+            echo
+            echo '```'
+            echo "$headers"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Playwright (PW_SET=prod)
         env:
           E2E_BASE_URL: ${{ env.SITE_URL }}
+        run: npm run test:e2e:prod
       - name: Lighthouse (informative)
         continue-on-error: true
         run: |

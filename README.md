@@ -1,5 +1,8 @@
 # Pequeverso
 
+[![CI](https://github.com/gonzalomartinperez/pequeverso/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/gonzalomartinperez/pequeverso/actions/workflows/ci.yml)
+[![Nightly](https://github.com/gonzalomartinperez/pequeverso/actions/workflows/nightly.yml/badge.svg)](https://github.com/gonzalomartinperez/pequeverso/actions/workflows/nightly.yml)
+
 Commercial website for [pequeverso.com](https://pequeverso.com) — printable learning resources for
 families with children aged 3–7. The site presents the **Grafismo Fonético** kit, the optional
 **Pack Imprime y Juega**, and the post-purchase guidance page. Payments, delivery and refunds are

@@ -1,0 +1,6 @@
+# zizmor configuration (https://docs.zizmor.sh/configuration/). Run by the `workflows` job in ci.yml.
+rules:
+  # GitHub's `$/` self-repository syntax (July 2026) is not yet accepted by actionlint 1.7.12,
+  # which we also run; keep `./` until actionlint supports it, then flip both.
+  self-repository:
+    disable: true

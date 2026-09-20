@@ -20,7 +20,8 @@ comments; no dead code (knip is a gate); business facts come from `config/` and 
 | Bundle | gzip per route vs `config/budgets.json` (html/js/css) | PR, main | yes |
 | Rendered HTML | `scripts/check-rendered.mjs`: landmarks, single visible h1, `lang`, canonical, skip link, resolvable anchors, no placeholders or retired text | PR, main | yes |
 | Placeholders | report on PR; `--strict` on deploy | PR / deploy | deploy |
-| Dependencies | `npm audit --omit=dev --audit-level=high`; Dependabot weekly with cooldowns | PR, main | yes |
+| Dependencies | `npm audit --omit=dev --audit-level=high`; Dependabot weekly with cooldowns (npm, `tools/media`, actions incl. `.github/actions/*`) | PR, main | yes |
+| Workflows | `actionlint` (with shellcheck) + `zizmor` (`.github/zizmor.yml`) on every workflow and composite action | PR, main | yes |
 | E2E | Playwright `PW_SET=pr`: chromium 390/768/1440 + reduced motion (smoke, axe WCAG 2.2 AA, offer modes, widget lifecycle, commerce, consent, motion, navigation) | PR | yes |
 | Lighthouse | LHCI on the export, 2 runs, mobile emulation; a11y ≥ 0.95 and CLS ≤ 0.1 are errors; report kept as artifact and job summary | PR | a11y/CLS |
 | Production | `post-deploy-verify`: revision match, smoke, headers, `PW_SET=prod`, informative Lighthouse | main push, deploy | yes |
@@ -28,6 +29,28 @@ comments; no dead code (knip is a gate); business facts come from `config/` and 
 
 Lab numbers (Lighthouse) are not field numbers; real-user Core Web Vitals come from Search
 Console / CrUX after launch.
+
+## Workflows and cost
+
+Measured on `ubuntu-24.04` runners (September 2026, run ids in the commit bodies). Every job
+declares `timeout-minutes`, per-job `permissions` (workflow default `permissions: {}`) and shares
+`.github/actions/setup` (Node from `.nvmrc` + npm cache + `npm ci` + optional Playwright browser
+cached per version). Nightly runs on `main` and therefore warms the browser caches pull requests
+restore (caches created on a PR branch are invisible to other branches).
+
+| Workflow | Trigger | Jobs | Wall time | Billed minutes |
+|---|---|---|---|---|
+| `ci.yml` (pull request) | PR, `workflow_dispatch` | workflows ≈ 0:20 · build ≈ 0:45 · e2e ≈ 3:30 · lighthouse ≈ 2:15 · ci | ≈ 4:30–5:00 | ≈ 7 |
+| `ci.yml` (push to main) | push | workflows · build · ci (e2e/lighthouse skipped) | ≈ 1:10 | ≈ 1.5 |
+| `post-deploy-verify.yml` | push to main, `workflow_dispatch`, called by Deploy | verify (wait for Hostinger ≈ 1–3 min, smoke, headers, `PW_SET=prod`, Lighthouse) | ≈ 3:00 | ≈ 3 |
+| `nightly.yml` | 04:17 UTC, `workflow_dispatch` | build ≈ 0:40 · chromium ≈ 6:30 · webkit ≈ 11:00 · visual ≈ 1:10 · clean-clone ≈ 1:00 · quality ≈ 5:00 | ≈ 12:00 | ≈ 26 |
+| `deploy.yml` | manual, environment approval | release ≈ 2:00 + verify | ≈ 5:00 | ≈ 5 |
+| `branch-policy.yml` | `pull_request_target` (no checkout, no permissions) | 1 shell step | ≈ 0:10 | < 0.5 |
+
+Concurrency: a newer commit on the same pull request cancels the older CI run; pushes to `main`,
+nightly and deploy runs are never cancelled. Artifact retention: PR export 3 days, Playwright
+reports 7 (14 nightly), Lighthouse reports 30. Lint the workflows locally with
+`actionlint` and `zizmor --persona=pedantic .github/` (binaries, no npm dependency).
 
 ## Local commands
 
