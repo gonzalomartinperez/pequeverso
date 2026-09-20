@@ -124,8 +124,8 @@ export default function PrivacidadPage() {
           <code>_fbp</code> y <code>_fbc</code>, dirección IP, agente de usuario) y eventos de este sitio:
           página vista, interés en el producto y clic hacia la página de pago, tanto desde tu navegador como,
           para que la medición sea fiable, a través de nuestro servidor (API de conversiones de Meta) con los
-          mismos datos. Si las rechazas, la medición se desactiva por ambas vías y no se carga ningún script de
-          Meta en tus próximas visitas. No enviamos a Meta tu nombre, tu correo ni datos de compra.
+          mismos datos. Si las rechazas, la medición se desactiva por ambas vías y no se carga ningún script
+          de Meta en tus próximas visitas. No enviamos a Meta tu nombre, tu correo ni datos de compra.
         </dd>
         <dt>Medición sin cookies</dt>
         <dd>
