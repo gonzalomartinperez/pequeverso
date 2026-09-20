@@ -79,8 +79,8 @@ jobs:
           restore-keys: next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
       - name: Build static export
         run: npm run build
-      - name: Generated files are committed
-        run: git diff --exit-code -- docs/generated
+      - name: Build leaves the tree clean (generated files are committed)
+        run: git diff --exit-code
       - name: Media budget
         run: npm run check:media
       - name: Placeholders (report)
@@ -98,6 +98,59 @@ jobs:
           path: out
           retention-days: 3
           if-no-files-found: error
+
+  hostinger:
+    # Proves the Hostinger Node.js Web App build environment, which the Ubuntu job cannot: GLIBC 2.28
+    # (native SWC/Turbopack bindings do not load; Next must fall back to WASM), `next build --webpack`,
+    # the standalone target and `npm start` serving redirects/headers from config/edge-rules.json.
+    # Origin: PR #5 (86a4bab) — the host build failed although CI was green.
+    name: Hostinger parity (GLIBC 2.28, standalone)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    container:
+      image: rockylinux:8@sha256:2d05a9266523bbf24f33ebc3a9832e4d5fd74b973c220f2204ca802286aa275d
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Install container prerequisites
+        run: dnf install -y -q git tar gzip xz
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Assert the host baseline (glibc 2.28)
+        run: |
+          set -euo pipefail
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          test "$(getconf GNU_LIBC_VERSION)" = "glibc 2.28"
+          echo "$(getconf GNU_LIBC_VERSION), node $(node --version), npm $(npm --version)"
+      - name: Install dependencies
+        run: npm ci
+      - name: Assert Next falls back to the WASM SWC bindings
+        run: |
+          node -e 'require("next/dist/build/swc").loadBindings().then((b) => { if (!b.isWasm) throw new Error("expected the WASM SWC bindings on glibc 2.28"); console.log("swc: wasm bindings loaded"); })'
+      - name: Build standalone (webpack, WASM SWC)
+        run: npm run build:standalone
+      - name: Smoke the standalone server
+        run: |
+          set -euo pipefail
+          PORT=3000 npm start > standalone.log 2>&1 &
+          node -e 'const until=Date.now()+30000;(async()=>{while(Date.now()<until){try{if((await fetch("http://localhost:3000/")).ok)process.exit(0)}catch{}await new Promise(r=>setTimeout(r,1000))}console.error("standalone server did not start");process.exit(1)})()'
+          node scripts/smoke.mjs http://localhost:3000 "$GITHUB_SHA"
+          kill %1
+      - name: Server log
+        if: failure()
+        run: cat standalone.log || true
+      - name: Build leaves the tree clean
+        run: git diff --exit-code
 
   e2e:
     name: E2E (chromium 390/768/1440 + reduced motion)
@@ -170,19 +223,21 @@ jobs:
     name: ci
     runs-on: ubuntu-24.04
     timeout-minutes: 2
-    needs: [workflows, build, e2e, lighthouse]
+    needs: [workflows, build, hostinger, e2e, lighthouse]
     if: always()
     steps:
       - name: Evaluate gates
         env:
           WORKFLOWS: ${{ needs.workflows.result }}
           BUILD: ${{ needs.build.result }}
+          HOSTINGER: ${{ needs.hostinger.result }}
           E2E: ${{ needs.e2e.result }}
           LIGHTHOUSE: ${{ needs.lighthouse.result }}
         run: |
           set -euo pipefail
-          echo "workflows=$WORKFLOWS build=$BUILD e2e=$E2E lighthouse=$LIGHTHOUSE"
+          echo "workflows=$WORKFLOWS build=$BUILD hostinger=$HOSTINGER e2e=$E2E lighthouse=$LIGHTHOUSE"
           test "$WORKFLOWS" = success
           test "$BUILD" = success
+          test "$HOSTINGER" = success
           case "$E2E" in success|skipped) ;; *) exit 1 ;; esac
           case "$LIGHTHOUSE" in success|skipped) ;; *) exit 1 ;; esac
