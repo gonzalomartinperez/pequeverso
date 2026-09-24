@@ -1,0 +1,113 @@
+name: Production daily
+
+# End-to-end daily check of https://pequeverso.com. Never builds the site. Reuses
+# post-deploy-verify.yml for revision, smoke, headers, PW_SET=prod and Lighthouse, adds the live
+# checks it does not cover (scripts/check-live.mjs), and keeps one `production` issue open while
+# anything fails (closed automatically by the next green run).
+on:
+  schedule:
+    - cron: "0 9 * * *" # 06:00 America/Argentina/Buenos_Aires
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: production-daily
+  cancel-in-progress: false
+
+env:
+  SITE_URL: https://pequeverso.com
+
+jobs:
+  revision:
+    name: Read live revision
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    permissions: {}
+    outputs:
+      sha: ${{ steps.info.outputs.sha }}
+    steps:
+      - name: Read build-info.json
+        id: info
+        run: |
+          set -euo pipefail
+          info=$(curl -fsS --retry 3 "$SITE_URL/build-info.json")
+          echo "$info"
+          sha=$(printf '%s' "$info" | jq -er .sha)
+          [[ "$sha" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::build-info.json sha is not a commit: $sha"; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+  verify:
+    name: Verify
+    needs: revision
+    permissions:
+      contents: read
+    uses: ./.github/workflows/post-deploy-verify.yml
+    with:
+      sha: ${{ needs.revision.outputs.sha }}
+      wait_seconds: 60
+
+  live:
+    name: Live checks (TLS, headers, relay, checkout, sitemap, links)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      failed: ${{ steps.check.outputs.failed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: scripts
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - name: Live checks
+        id: check
+        run: node scripts/check-live.mjs "$SITE_URL"
+
+  report:
+    name: Report to the production issue
+    needs: [revision, verify, live]
+    # Production state is repository-wide, so a manual run from any branch reports too.
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      issues: write # opens, comments on and closes the single `production` issue
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      REVISION: ${{ needs.revision.result }}
+      VERIFY: ${{ needs.verify.result }}
+      LIVE: ${{ needs.live.result }}
+      LIVE_FAILED: ${{ needs.live.outputs.failed }}
+      SHA: ${{ needs.revision.outputs.sha }}
+    steps:
+      - name: Open, update or close the issue
+        run: |
+          set -euo pipefail
+          title="Production daily check failing"
+          open=$(gh issue list --label production --state open --search "in:title \"$title\"" --json number --jq '.[0].number // empty')
+          failures=()
+          [ "$REVISION" = success ] || failures+=("revision: $REVISION")
+          [ "$VERIFY" = success ] || failures+=("verify (revision wait / smoke / headers / PW_SET=prod): $VERIFY")
+          [ "$LIVE" = success ] || failures+=("live checks: ${LIVE_FAILED:-$LIVE}")
+          if [ ${#failures[@]} -eq 0 ]; then
+            if [ -n "$open" ]; then gh issue close "$open" --comment "Green again: $RUN_URL ($SHA)"; fi
+            echo "All production checks passed." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          body=$(printf -- '- %s\n' "${failures[@]}")
+          body=$(printf "Run: %s\nRevision: %s\n\n%s\n" "$RUN_URL" "${SHA:-unknown}" "$body")
+          if [ -n "$open" ]; then
+            gh issue comment "$open" --body "$body"
+          else
+            gh label create production --color B60205 --description "Live site checks" --force
+            gh issue create --title "$title" --label production --body "$body"
+          fi
+          printf '## Failing\n\n%s\n' "$body" >> "$GITHUB_STEP_SUMMARY"

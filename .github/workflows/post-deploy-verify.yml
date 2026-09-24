@@ -2,7 +2,7 @@ name: Post-deploy verify
 
 # Hostinger builds `main` on push. This workflow waits for that build to reach production,
 # then verifies the deployed revision and runs the smoke suite against the live origin.
-# deploy.yml reuses it through workflow_call after publishing a release.
+# deploy.yml (after a release) and production-daily.yml reuse it through workflow_call.
 on:
   push:
     branches: [main]
@@ -21,6 +21,11 @@ on:
         required: false
         type: string
         default: https://pequeverso.com
+      wait_seconds:
+        description: How long to wait for the revision (production-daily passes a short value; the sha is already live)
+        required: false
+        type: number
+        default: 1200
 
 permissions: {}
 
@@ -39,6 +44,7 @@ jobs:
     env:
       SITE_URL: ${{ inputs.site_url || 'https://pequeverso.com' }}
       EXPECTED_SHA: ${{ inputs.sha || github.sha }}
+      WAIT_SECONDS: ${{ inputs.wait_seconds || 1200 }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -49,7 +55,7 @@ jobs:
         with:
           browser: chromium
       - name: Wait for Hostinger to serve the expected revision
-        run: node scripts/wait-for-revision.mjs "$SITE_URL" "$EXPECTED_SHA" 1200
+        run: node scripts/wait-for-revision.mjs "$SITE_URL" "$EXPECTED_SHA" "$WAIT_SECONDS"
       - name: Smoke
         run: node scripts/smoke.mjs "$SITE_URL" "$EXPECTED_SHA"
       - name: Headers
