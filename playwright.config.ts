@@ -5,8 +5,9 @@ import { defineConfig, devices } from "@playwright/test";
  * trailing-slash and 404 semantics as production) unless E2E_BASE_URL points elsewhere.
  *
  * Project sets are selected with PW_SET:
- *   pr       chromium at 390 / 768 / 1440 + reduced-motion + the responsive contract (pull-request gate, default)
- *   nightly  chromium + webkit at 1440 / 1280 / 1024 / 768 / 430 / 390 / 360, responsive contract on both engines
+ *   pr       chromium at 390 / 768 / 1440 + reduced-motion (pull-request gate, default)
+ *   nightly  chromium + webkit at 1440 / 1280 / 1024 / 768 / 430 / 390 / 360
+ * responsive.spec.ts sweeps its own widths (320–1920), so it runs once per engine: in the 1440 project.
  *   visual   screenshot baselines at 390 / 1440 (chromium, reduced motion; WebKit text antialiasing drifts)
  *   prod     chromium-1440 smoke against a deployed origin (E2E_BASE_URL required)
  */
@@ -22,9 +23,9 @@ function viewport(width: number) {
 const desktopChrome = devices["Desktop Chrome"];
 const desktopSafari = devices["Desktop Safari"];
 const specs = {
-  functional: /(smoke|a11y|offer-mode|widget|commerce|consent|motion|navigation|tracking|lcp)\.spec\.ts/,
+  functional:
+    /(smoke|a11y|offer-mode|widget|commerce|consent|motion|navigation|tracking|lcp|responsive)\.spec\.ts/,
   visual: /visual\.spec\.ts/,
-  responsive: /responsive\.spec\.ts/,
   prod: /smoke\.spec\.ts/,
 };
 
@@ -41,7 +42,6 @@ const projectSets = {
       use: { ...devices["Pixel 7"], viewport: viewport(390) },
       testMatch: specs.functional,
     },
-    { name: "responsive", use: { ...desktopChrome }, testMatch: specs.responsive },
     {
       name: "reduced-motion",
       use: { ...desktopChrome, viewport: viewport(1280), reducedMotion: "reduce" as const },
@@ -59,8 +59,6 @@ const projectSets = {
       use: { ...desktopSafari, viewport: viewport(width) },
       testMatch: specs.functional,
     })),
-    { name: "responsive-chromium", use: { ...desktopChrome }, testMatch: specs.responsive },
-    { name: "responsive-webkit", use: { ...desktopSafari }, testMatch: specs.responsive },
   ],
   visual: [390, 1440].map((width) => ({
     name: `visual-chromium-${width}`,

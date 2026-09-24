@@ -7,6 +7,13 @@ import { expect, test } from "./fixtures";
  * header CTA is inside the first viewport; on a short landscape phone no fixed layer covers a
  * checkout CTA. Deferred sections grow as they render, so the CTA is re-centred on every poll.
  */
+test.beforeEach(() => {
+  test.skip(
+    !test.info().project.name.endsWith("-1440"),
+    "sweeps its own widths; runs in the 1440 project of each engine",
+  );
+});
+
 const widths = [320, 390, 768, 1024, 1440, 1920] as const;
 const routes = [
   "/",
@@ -102,7 +109,7 @@ test("short landscape phone: no fixed layer covers a checkout CTA", async ({ pag
       .poll(
         () =>
           cta.evaluate((el) => {
-            el.scrollIntoView({ block: "center" });
+            el.scrollIntoView({ block: "center", behavior: "instant" });
             const rect = el.getBoundingClientRect();
             const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
             return hit !== null && el.contains(hit);

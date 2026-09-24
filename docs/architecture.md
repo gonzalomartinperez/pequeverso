@@ -44,8 +44,13 @@ src/app/         routes: page.tsx (hub), [product]/ (one landing per registry pr
                  [product]/gracias/ (thank-you of core products), legal/support pages, sitemap, robots
 src/features/    landing/ (CoreLanding, OfferLanding, ThanksPage templates), commerce/ (client islands),
                  gallery/, tracking/
-src/components/  layout (PageShell, Header, Footer, LegalLayout) and ui primitives
-src/lib/         media.ts (manifest access), metadata.ts
+src/app/globals.css  design tokens, Tailwind v4 theme bridge, base layer, utilities (docs/design-system.md)
+src/components/  ui/ (shadcn/ui primitives on Base UI + server-safe *-variants.ts), blocks/ (server
+                 blocks: section, grid, split, price-block, cta-button, faq, …), layout/ (page-shell,
+                 header + lazy mobile-nav sheet, footer, legal-layout)
+src/motion/      motion.css, reveal/tilt/counter/flip/parallax/sticky components, page-motion (WAAPI),
+                 scene/ (lazy three + gsap starfield, static SVG fallback, useSceneRuntime)
+src/lib/         media.ts (manifest access), metadata.ts, utils.ts (`cn` on compiled tables), cx.ts
 media/, public/  media manifest and build-time renditions (tools/media)
 server/          meta-capi.mjs (Conversions API relay core + Node adapter, types in meta-capi.d.mts); used by
                  scripts/serve-static.mjs and src/app/api/meta/events/route.standalone.ts (alias @server/*)

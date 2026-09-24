@@ -87,6 +87,8 @@ jobs:
         run: npm run check:placeholders
       - name: Bundle budget
         run: npm run check:bundle
+      - name: Deferred 3D scene budget
+        run: npm run check:scene
       - name: Rendered HTML invariants
         run: npm run check:rendered
       - name: Audit production dependencies

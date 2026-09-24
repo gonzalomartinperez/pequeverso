@@ -3,8 +3,9 @@
 ## Standard
 
 TypeScript strict with `noUncheckedIndexedAccess`; Server Components by default and client
-islands only where the browser is required; one component per folder with its CSS Module; design
-tokens only (no magic numbers in component CSS); concise JSDoc on exported symbols, no narrative
+islands only where the browser is required; Tailwind utilities over the tokens in
+`src/app/globals.css` (kebab-case files, `data-slot` roots, cva variants; CSS Modules only for
+custom geometry, never with `@apply`; see `docs/design-system.md`); concise JSDoc on exported symbols, no narrative
 comments; no dead code (knip is a gate); business facts come from `config/` and `src/products`.
 
 ## Gates
@@ -13,17 +14,18 @@ comments; no dead code (knip is a gate); business facts come from `config/` and 
 |---|---|---|---|
 | Format + lint | Biome 2.5 (`biome ci --error-on-warnings`), `next`/`react` domains | PR, main | yes |
 | Types | `next typegen` + `tsc --noEmit` | PR, main | yes |
-| Unit | `node --test`: edge rules ↔ golden `.htaccess`, checkout params, commerce facts, media manifest, content invariants (retired names, outcome claims, placeholders, guarantee days, price format) | PR, main | yes |
+| Unit | `node --test`: edge rules ↔ golden `.htaccess`, checkout params, commerce facts, media manifest, content invariants (retired names, outcome claims, placeholders, guarantee days, price format), design-system invariants (no `@apply` in modules, no retired style paths, kebab-case + `data-slot`, light-only, OKLCH contrast pairs), scene-budget plugin | PR, main | yes |
 | Dead code | `knip --production` (PR/main), full `knip` (nightly) | PR, main, nightly | yes |
 | Build | static export; generated golden files committed | PR, main | yes |
 | Media | manifest record per file, ≤ 5 MB/file, total budget, `--strict` rights gate on deploy | PR, main, deploy | yes |
 | Bundle | gzip per route vs `config/budgets.json` (html/js/css) | PR, main | yes |
+| Scene | `scripts/check-scene-budget.mjs`: the three + gsap closure is never initial and ≤ `scene.js` (250 KB) | PR, main | yes |
 | Rendered HTML | `scripts/check-rendered.mjs`: landmarks, single visible h1, `lang`, canonical, skip link, resolvable anchors, no placeholders or retired text | PR, main | yes |
 | Placeholders | report on PR; `--strict` on deploy | PR / deploy | deploy |
 | Dependencies | `npm audit --omit=dev --audit-level=high`; Dependabot weekly with cooldowns (npm, `tools/media`, actions incl. `.github/actions/*`) | PR, main | yes |
 | Workflows | `actionlint` (with shellcheck) + `zizmor` (`.github/zizmor.yml`) on every workflow and composite action | PR, main | yes |
 | Hostinger parity | `rockylinux:8` (GLIBC 2.28) container: WASM SWC fallback asserted, `build:standalone`, smoke against `npm start` | PR, main | yes |
-| E2E | Playwright `PW_SET=pr`: chromium 390/768/1440 + reduced motion (smoke, axe WCAG 2.2 AA, offer modes, widget lifecycle, commerce, consent, motion, navigation) | PR | yes |
+| E2E | Playwright `PW_SET=pr`: chromium 390/768/1440 + reduced motion (smoke, axe WCAG 2.2 AA, offer modes, widget lifecycle, commerce, consent, motion, navigation, responsive contract 320–1920 in the 1440 project) | PR | yes |
 | Lighthouse | LHCI on the export, 2 runs, mobile emulation; a11y ≥ 0.95 and CLS ≤ 0.1 are errors; report kept as artifact and job summary | PR | a11y/CLS |
 | Production | `post-deploy-verify`: revision match, smoke, headers, `PW_SET=prod`, informative Lighthouse | main push, deploy | yes |
 | Nightly | 7 widths × Chromium/WebKit, visual snapshots (`tests/e2e/visual.spec.ts`, Linux baselines under `tests/e2e/__screenshots__`, regenerate with the `update_snapshots` input), clean-clone invariant, knip, LHCI ×5, link check, bundle analysis | nightly | report |
