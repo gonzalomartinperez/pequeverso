@@ -20,7 +20,9 @@ const RATIO = { "4/3": "aspect-[4/3]", "3/4": "aspect-[3/4]", "16/9": "aspect-vi
 /** Both faces hide their back side (prefixed for Safari); the back one is pre-rotated 180°. */
 const FACE =
   "absolute inset-0 overflow-hidden rounded-[inherit] bg-card backface-hidden [-webkit-backface-visibility:hidden] [&_img]:size-full [&_img]:object-cover";
-const FLIP_SECONDS = 0.56;
+const LIFT_SECONDS = 0.14;
+const FLIP_SECONDS = 0.6;
+const SETTLE_SECONDS = 0.2;
 const FADE_SECONDS = 0.18;
 
 /** Decodes every image of the card so the first turn never waits on a decode mid-flight. */
@@ -29,11 +31,12 @@ function decodeImages(root: HTMLElement): Promise<unknown> {
 }
 
 /**
- * Two-faced preview that turns over in 3D: one inner element rotates on Y (gsap, 560 ms,
- * power2.inOut) inside a perspective parent with `preserve-3d`, both faces `backface-visibility:
- * hidden`. `will-change` is set only while turning; the shadow is a separate layer whose opacity
- * dips mid-turn (no box-shadow animation); images are decoded before the first turn. Under
- * reduced motion the faces crossfade instead. The hidden face is inert.
+ * Two-faced preview that turns over in 3D with one gsap timeline on the inner card: a slight lift
+ * (scale 1.02, z 24 px), the 180° rotateY (600 ms, power2.inOut) and a settle, inside a
+ * perspective parent with `preserve-3d`; both faces `backface-visibility: hidden` (+ `-webkit-`).
+ * `will-change` only while turning, input ignored until the timeline ends, the shadow is a
+ * pseudo-element whose opacity (`--flip-shadow`) dips mid-turn (no box-shadow animation), images
+ * are decoded before the first turn. Reduced motion crossfades. The hidden face is inert.
  */
 export function FlipPreview({
   front,
@@ -45,7 +48,8 @@ export function FlipPreview({
 }: Props) {
   const [flipped, setFlipped] = useState(false);
   const card = useRef<HTMLDivElement>(null);
-  const shadow = useRef<HTMLDivElement>(null);
+  const wrapper = useRef<HTMLDivElement>(null);
+  const busy = useRef(false);
   const id = useId();
 
   // Warm gsap when the card nears the viewport, so the first turn never waits on the chunk.
@@ -66,45 +70,53 @@ export function FlipPreview({
 
   const toggle = async () => {
     const el = card.current;
-    if (!el) return;
+    const stage = wrapper.current;
+    if (!el || !stage || busy.current) return;
+    busy.current = true;
     const next = !flipped;
     const angle = next ? 180 : 0;
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const [gsap] = await Promise.all([loadGsap().catch(() => null), decodeImages(el)]);
     setFlipped(next);
     el.dataset.state = next ? "back" : "front";
+    const done = () => {
+      el.style.willChange = "";
+      busy.current = false;
+    };
     if (!gsap) {
       el.style.transform = `rotateY(${angle}deg)`;
+      done();
       return;
     }
-    gsap.killTweensOf([el, shadow.current]);
+    gsap.killTweensOf([el, stage]);
     if (reduced) {
       gsap
-        .timeline()
+        .timeline({ onComplete: done })
         .to(el, { opacity: 0, duration: FADE_SECONDS, ease: "power1.out" })
         .set(el, { rotationY: angle })
         .to(el, { opacity: 1, duration: FADE_SECONDS, ease: "power1.in" });
       return;
     }
     el.style.willChange = "transform";
+    // Lift → turn → settle; the shadow (a pseudo-element) fades through --flip-shadow meanwhile.
     gsap
-      .timeline({
-        onComplete: () => {
-          el.style.willChange = "";
-        },
-      })
-      .to(el, { rotationY: angle, duration: FLIP_SECONDS, ease: "power2.inOut" }, 0)
-      .to(
-        shadow.current,
-        { opacity: 0.35, duration: FLIP_SECONDS / 2, ease: "power1.out", yoyo: true, repeat: 1 },
-        0,
-      );
+      .timeline({ onComplete: done })
+      .to(el, { scale: 1.02, z: 24, duration: LIFT_SECONDS, ease: "power1.out" }, 0)
+      .to(stage, { "--flip-shadow": 0.4, duration: FLIP_SECONDS / 2, ease: "power1.out" }, 0)
+      .to(el, { rotationY: angle, duration: FLIP_SECONDS, ease: "power2.inOut" }, LIFT_SECONDS / 2)
+      .to(el, { scale: 1, z: 0, duration: SETTLE_SECONDS, ease: "power2.out" }, `>-${SETTLE_SECONDS / 2}`)
+      .to(stage, { "--flip-shadow": 1, duration: FLIP_SECONDS / 2, ease: "power1.in" }, "<");
   };
 
   return (
     <div data-slot="flip-preview" className={cx("grid justify-items-center gap-3", className)}>
-      <div className={cx("relative w-full rounded-lg perspective-[1200px]", RATIO[ratio])}>
-        <div ref={shadow} aria-hidden="true" className="absolute inset-0 rounded-[inherit] shadow-md" />
+      <div
+        ref={wrapper}
+        className={cx(
+          "relative isolate w-full rounded-lg perspective-[1200px] [--flip-shadow:1] after:absolute after:inset-0 after:-z-1 after:rounded-[inherit] after:opacity-(--flip-shadow) after:shadow-md",
+          RATIO[ratio],
+        )}
+      >
         <div
           ref={card}
           id={id}

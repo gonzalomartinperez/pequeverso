@@ -98,7 +98,7 @@ test("page gallery: arrows, dots, keyboard and zoom dialog", async ({ page }) =>
   // Embla swallows clicks that land during the snap animation.
   await expect(gallery.locator("[data-state='settled']")).toHaveCount(1);
   await gallery.locator("button[aria-label^='Ampliar']").nth(4).click();
-  const dialog = page.locator("dialog[open]");
+  const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(dialog).toHaveCount(0);
@@ -130,7 +130,7 @@ test("sticky bar stays hidden while the gallery zoom dialog is open", async ({ p
       return rect.height === 0 || rect.top >= window.innerHeight;
     });
   await page.locator("button[aria-label^='Ampliar']").first().click();
-  await expect(page.locator("dialog[open]")).toBeVisible();
+  await expect(page.getByRole("dialog")).toBeVisible();
   await expect.poll(offscreen, { timeout: 3_000 }).toBe(true);
   await page.keyboard.press("Escape");
 });
@@ -167,4 +167,34 @@ test("hero scene: WebGL canvas mounts after load, is absent under reduced motion
   );
   await stage.getByRole("button", { name: "Reanudar la animación" }).click();
   await expect(stage).toHaveAttribute("data-mode", "running");
+});
+
+test("gallery zoom dialog is centred in the viewport and traps focus", async ({ page }) => {
+  for (const [width, height] of [
+    [390, 844],
+    [768, 1024],
+    [1440, 900],
+  ] as const) {
+    await page.setViewportSize({ width, height });
+    await page.goto("/grafismo-fonetico/#paginas");
+    await page.locator("button[aria-label^='Ampliar']").first().click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+    await expect
+      .poll(() =>
+        dialog.evaluate((el) => {
+          const rect = el.getBoundingClientRect();
+          const dx = rect.left + rect.width / 2 - window.innerWidth / 2;
+          const dy = rect.top + rect.height / 2 - window.innerHeight / 2;
+          return Math.max(Math.abs(dx), Math.abs(dy));
+        }),
+      )
+      .toBeLessThanOrEqual(2);
+    const box = await dialog.boundingBox();
+    expect(box && box.width <= width && box.height <= height, `@${width}: fits the viewport`).toBe(true);
+    await page.keyboard.press("Tab");
+    expect(await dialog.evaluate((el) => el.contains(document.activeElement))).toBe(true);
+    await page.keyboard.press("Escape");
+    await expect(dialog).toHaveCount(0);
+  }
 });

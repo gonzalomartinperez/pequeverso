@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { cx } from "@/lib/cx";
+import { cn } from "@/lib/utils";
 
 type Props = {
   /** `loop`: a 48 s clock (hero, paused by the scene toggle); `scroll`: the star follows the scroll. */
@@ -22,7 +22,7 @@ export function Orbit({ motion = "loop", className }: Props) {
       data-slot="orbit"
       data-scene-orbit=""
       data-motion={motion}
-      className={cx("pv-orbit block h-auto overflow-visible", className)}
+      className={cn("pv-orbit block h-auto w-full overflow-visible", className)}
       viewBox="0 0 400 400"
       aria-hidden="true"
       focusable="false"

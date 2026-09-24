@@ -1,24 +1,27 @@
 "use client";
 
 import useEmblaCarousel from "embla-carousel-react";
-import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
+import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import {
   Children,
   createContext,
   isValidElement,
   type KeyboardEvent,
+  lazy,
   type MouseEvent,
   type ReactNode,
+  Suspense,
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import { buttonVariants } from "@/components/ui/button-variants";
-import { cx } from "@/lib/cx";
 
-type Zoom = { src: string; srcSet: string; width: number; height: number; alt: string; caption: string };
+import type { Zoom } from "./ZoomDialog";
+
+const loadZoom = () => import("./ZoomDialog");
+const ZoomDialog = lazy(() => loadZoom().then((module) => ({ default: module.ZoomDialog })));
 
 type Props = {
   label: string;
@@ -38,6 +41,8 @@ const ARROW = buttonVariants({ variant: "outline", size: "icon" });
 const DOT =
   "grid h-11 w-7 place-items-center p-0 before:size-2.5 before:rounded-full before:bg-line-strong before:transition-transform before:duration-(--duration-fast) aria-selected:before:scale-130 aria-selected:before:bg-navy";
 
+const preloadZoom = () => void loadZoom();
+
 const ZoomContext = createContext<(image: HTMLImageElement) => void>(() => undefined);
 
 /**
@@ -51,7 +56,7 @@ export function GalleryZoomButton({ label, children }: { label: string; children
     if (image) open(image);
   };
   return (
-    <button type="button" className={ZOOM} onClick={onClick} aria-label={label}>
+    <button type="button" className={ZOOM} onClick={onClick} onPointerEnter={preloadZoom} aria-label={label}>
       {children}
       <span
         className="absolute right-3 bottom-3 grid size-9 place-items-center rounded-full bg-navy text-white shadow-sm"
@@ -76,7 +81,7 @@ function zoomFrom(image: HTMLImageElement): Zoom {
 
 /**
  * Accessible carousel of real worksheet pages: drag/swipe, arrows, dots, keyboard,
- * live counter, and a native <dialog> zoom. Slides use a light 3D depth effect
+ * live counter, and a zoom on the Base UI dialog (loaded on first use). Slides use a light 3D depth effect
  * (inactive slides recede) that is disabled under reduced motion.
  */
 export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
@@ -89,8 +94,11 @@ export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
   const [selected, setSelected] = useState(0);
   const [settled, setSettled] = useState(true);
   const [zoom, setZoom] = useState<Zoom | null>(null);
-  const dialogRef = useRef<HTMLDialogElement | null>(null);
-  const open = useCallback((image: HTMLImageElement) => setZoom(zoomFrom(image)), []);
+  const [zoomOpen, setZoomOpen] = useState(false);
+  const open = useCallback((image: HTMLImageElement) => {
+    setZoom(zoomFrom(image));
+    setZoomOpen(true);
+  }, []);
   const slides = Children.toArray(children).map((node, index) => ({
     key: String((isValidElement(node) && node.key) || index),
     node,
@@ -118,13 +126,6 @@ export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
       embla.off("settle", onSettle);
     };
   }, [embla, onSelect]);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (zoom && !dialog.open) dialog.showModal();
-    if (!zoom && dialog.open) dialog.close();
-  }, [zoom]);
 
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "ArrowRight") {
@@ -200,38 +201,11 @@ export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
           ))}
         </div>
         {zoomHint ? <p className="text-center text-small text-subtle">{zoomHint}</p> : null}
-        <dialog
-          ref={dialogRef}
-          className="m-auto max-h-[92vh] max-w-[min(1000px,92vw)] rounded-lg border-0 bg-white p-0 shadow-lg backdrop:bg-navy-deep/72"
-          onClose={() => setZoom(null)}
-          aria-label={zoom?.alt ?? "Página ampliada"}
-        >
-          {zoom ? (
-            <div className="relative grid gap-3 p-6">
-              <button
-                type="button"
-                className={cx(
-                  buttonVariants({ variant: "secondary", size: "icon" }),
-                  "absolute top-3 right-3 z-1",
-                )}
-                onClick={() => setZoom(null)}
-                aria-label="Cerrar"
-              >
-                <X size={22} />
-              </button>
-              <img
-                className="mx-auto max-h-[76vh] w-auto max-w-full rounded-md"
-                src={zoom.src}
-                srcSet={zoom.srcSet}
-                sizes="90vw"
-                width={zoom.width}
-                height={zoom.height}
-                alt={zoom.alt}
-              />
-              <p className="text-center font-bold text-ink">{zoom.caption}</p>
-            </div>
-          ) : null}
-        </dialog>
+        {zoom ? (
+          <Suspense fallback={null}>
+            <ZoomDialog open={zoomOpen} zoom={zoom} onClose={() => setZoomOpen(false)} />
+          </Suspense>
+        ) : null}
       </section>
     </ZoomContext.Provider>
   );
