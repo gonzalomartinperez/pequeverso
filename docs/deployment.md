@@ -5,7 +5,7 @@
 | | **Node.js Web App** (currently connected in hPanel) | **Website + Git deployment** (static export) |
 |---|---|---|
 | What Hostinger does | Clones the connected branch, runs `npm install` + `npm run build` on its builder (Node 24, GLIBC 2.28), forces `output: 'standalone'`, starts the app | Pulls the connected branch into `public_html` as plain files; no build |
-| What the repo does | `next.config.mjs` detects the `/hbuilds/` builder and attaches redirects/headers from `config/edge-rules.json`; `npm run build` uses `--webpack` (native SWC/Turbopack bindings cannot load on GLIBC 2.28, the WASM fallback can); Hostinger's Next.js preset starts Next's standalone server directly; the Meta CAPI relay is the route handler `src/app/api/meta/events/route.standalone.ts`, compiled only in standalone builds (`pageExtensions`) | The Deploy workflow builds `out/` and publishes it to the orphan **`deploy`** branch with `.htaccess` (generated from the same edge rules) |
+| What the repo does | `config/next.ts` (re-exported by `next.config.mjs`) detects the `/hbuilds/` builder and attaches redirects/headers from `config/edge-rules.json`; `npm run build` uses `--webpack` (native SWC/Turbopack bindings cannot load on GLIBC 2.28, the WASM fallback can); Hostinger's Next.js preset starts Next's standalone server directly; the Meta CAPI relay is the route handler `src/app/api/meta/events/route.standalone.ts`, compiled only in standalone builds (`pageExtensions`) | The Deploy workflow builds `out/` and publishes it to the orphan **`deploy`** branch with `.htaccess` (generated from the same edge rules) |
 | Branch to connect in hPanel | **`release`** (recommended — only commits approved in the Deploy workflow) or `main` (every merged PR deploys immediately, gated only by CI) | **`deploy`** |
 | Revision check | `https://pequeverso.com/build-info.json` (`Cache-Control: no-store`) | same |
 | Trade-offs | Idle process stop (cold start on first visit), no rollback UI in hPanel (re-run Deploy with the previous tag), Hostinger build time ~2–4 min | No cold starts, `.htaccess` fully ours; no Node, so no Conversions API relay (`/api/meta/events/` is a 404 the browser ignores) |
@@ -28,7 +28,7 @@ build:standalone` is the Node parity build you can run locally).
 optional cached Playwright browser). `deploy.yml` keeps its setup inline because it checks out the
 *requested* tag, which may predate the composite (rollbacks must keep working).
 
-Build-time business values (required by `scripts/check-env.mjs`, no inline defaults in the app):
+Build-time business values (required by `scripts/check-env.ts`, no inline defaults in the app):
 
 | Workflow | `NEXT_PUBLIC_SITE_URL` | `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO` | `NEXT_PUBLIC_META_PIXEL_ID` |
 |---|---|---|---|
@@ -55,7 +55,7 @@ Manual (`workflow_dispatch`), `production` environment with required approval:
    `check:media -- --strict` (every media item `public-repo-approved`).
 3. Publishes `out/` to `deploy` (static mode) **and** fast-forwards `release` to the source commit
    (Node app mode). Hostinger picks up whichever branch is connected.
-4. Polls `build-info.json` until `sha` equals the built commit, then runs `scripts/smoke.mjs`.
+4. Polls `build-info.json` until `sha` equals the built commit, then runs `scripts/smoke.ts`.
    An HTTP 200 alone never counts as a verified deployment.
 
 > If hPanel is connected to `main`, Hostinger deploys on every merge and the launch gates above
@@ -77,7 +77,7 @@ Manual (`workflow_dispatch`), `production` environment with required approval:
 
 ## Environment variables (hPanel → Environment variables; GitHub `production` environment)
 
-`npm run build` runs `scripts/check-env.mjs` first: it validates formats, never prints values
+`npm run build` runs `scripts/check-env.ts` first: it validates formats, never prints values
 and exits 1 on a malformed one.
 `NEXT_PUBLIC_*` values are inlined at build time, so **saving a variable in hPanel triggers a
 redeploy**; there is nothing to reload at runtime. `META_CAPI_ACCESS_TOKEN` is read by the Node

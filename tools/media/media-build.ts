@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 // Build-time media pipeline for pequeverso.com.
 //
 // Reads tools/media/sources.json (declarative list of external sources), derives responsive WebP/AVIF
@@ -6,11 +5,11 @@
 // media/manifest.json (provenance, rights, export parameters, output hashes).
 //
 // Usage (from the repo root or from tools/media):
-//   node tools/media/media-build.mjs                 build everything that is missing (idempotent)
-//   node tools/media/media-build.mjs --only gf.page  build only ids equal to / starting with the value
-//   node tools/media/media-build.mjs --force         re-encode even when the output already exists
-//   node tools/media/media-build.mjs --check         verify media/manifest.json against disk (no sources needed)
-//   node tools/media/media-build.mjs --no-prune      keep files under public/media that the manifest does not list
+//   node tools/media/media-build.ts                 build everything that is missing (idempotent)
+//   node tools/media/media-build.ts --only gf.page  build only ids equal to / starting with the value
+//   node tools/media/media-build.ts --force         re-encode even when the output already exists
+//   node tools/media/media-build.ts --check         verify media/manifest.json against disk (no sources needed)
+//   node tools/media/media-build.ts --no-prune      keep files under public/media that the manifest does not list
 //
 // Originals never enter the repository: outputs are named <id-slug>-w<width>-<hash8>.<ext> where hash8
 // derives from the source sha256 plus the export parameters, so a changed source or a changed quality
@@ -23,8 +22,102 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import ffmpegPath from "ffmpeg-static";
 import ffprobeStatic from "ffprobe-static";
-import sharp from "sharp";
+import sharp, { type Sharp } from "sharp";
 import { optimize as svgoOptimize } from "svgo";
+
+// --- Shapes of tools/media/sources.json and media/manifest.json -----------------------------
+type Rgb = { r: number; g: number; b: number };
+type RoleSpec = {
+  widths: number[];
+  quality: number;
+  avif?: number[];
+  avifQuality?: number;
+  sharpen?: boolean;
+  alphaQuality?: number;
+};
+type OgCompose = {
+  kind: "og-card";
+  width: number;
+  height: number;
+  background: string;
+  band: string;
+  bandHeight: number;
+  logoWidth: number;
+  basename: string;
+};
+type FaviconCompose = {
+  kind: "favicons";
+  background: string;
+  mark?: "isolated" | "disc";
+  inset?: number;
+  appleInset?: number;
+};
+type VideoOptions = { maxSeconds: number; posterAt: number; posterWidths: number[]; webm: boolean };
+type SourceRef = { library: string; path: string };
+type SourceItem = {
+  id: string;
+  role: string;
+  page: string;
+  group: string;
+  source: SourceRef;
+  provenance: string | Record<string, unknown>;
+  alt: Record<string, string>;
+  outputs?: Partial<RoleSpec>;
+  compose?: OgCompose | FaviconCompose;
+  text?: unknown;
+  rights?: Record<string, unknown>;
+  video?: Partial<VideoOptions>;
+};
+type Sources = {
+  libraries: Record<string, { env: string; default: string }>;
+  roles: Record<string, RoleSpec | undefined>;
+  rights: Record<string, unknown> & { basis?: unknown };
+  provenanceProfiles: Record<string, Record<string, unknown> | undefined>;
+  items: SourceItem[];
+};
+type OutputRecord = {
+  file: string;
+  bytes: number;
+  sha256: string;
+  width?: number | undefined;
+  height?: number | undefined;
+  format: string;
+  quality: number | string | null;
+};
+type VideoEncode = {
+  codec: string;
+  profile: string;
+  pixelFormat: string;
+  shortSide: number;
+  fps: number;
+  crf: number;
+  maxrate: string;
+  bufsize: string;
+  gop: number;
+  audio: string;
+  maxSeconds: number;
+};
+type ManifestItem = {
+  id: string;
+  role: string;
+  page: string;
+  kind: "image" | "video";
+  source: SourceRef & {
+    sha256: string;
+    bytes: number;
+    width?: number | undefined;
+    height?: number | undefined;
+  };
+  provenance: Record<string, unknown>;
+  rights: Record<string, unknown>;
+  alt: Record<string, string>;
+  text?: unknown;
+  outputs: OutputRecord[];
+  video?: Record<string, unknown>;
+};
+type Manifest = { items: ManifestItem[] };
+type Encoded = { file: string; crf: number };
+type ImageEncodeSpec = RoleSpec & { width: number; format: "webp" | "avif" };
 
 const PIPELINE_VERSION = 1;
 const MAX_VIDEO_BYTES = 2_200_000;
@@ -41,8 +134,8 @@ const mediaDir = join(repoRoot, "public", "media");
 const publicDir = join(repoRoot, "public");
 
 const args = process.argv.slice(2);
-const flag = (name) => args.includes(name);
-const option = (name) => {
+const flag = (name: string): boolean => args.includes(name);
+const option = (name: string): string | undefined => {
   const i = args.indexOf(name);
   return i >= 0 ? args[i + 1] : undefined;
 };
@@ -52,20 +145,20 @@ const PRUNE = !flag("--no-prune");
 const ONLY = option("--only");
 const VERBOSE = flag("--verbose");
 
-const toPosix = (p) => p.split("\\").join("/");
-const relRepo = (abs) => toPosix(relative(repoRoot, abs));
-const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
-const sha256File = (file) => sha256(readFileSync(file));
-const slug = (id) => id.replace(/[^a-z0-9]+/gi, "-").toLowerCase();
-const mb = (bytes) => `${(bytes / 1048576).toFixed(2)} MB`;
-const log = (...m) => console.log(...m);
-const fail = (msg) => {
+const toPosix = (p: string): string => p.split("\\").join("/");
+const relRepo = (abs: string): string => toPosix(relative(repoRoot, abs));
+const sha256 = (buf: string | Buffer): string => createHash("sha256").update(buf).digest("hex");
+const sha256File = (file: string): string => sha256(readFileSync(file));
+const slug = (id: string): string => id.replace(/[^a-z0-9]+/gi, "-").toLowerCase();
+const mb = (bytes: number): string => `${(bytes / 1048576).toFixed(2)} MB`;
+const log = (...m: unknown[]): void => console.log(...m);
+const fail = (msg: string): never => {
   console.error(`media-build: ${msg}`);
   process.exit(1);
 };
 
-function walk(dir) {
-  const out = [];
+function walk(dir: string): string[] {
+  const out: string[] = [];
   if (!existsSync(dir)) return out;
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const full = join(dir, entry.name);
@@ -75,26 +168,26 @@ function walk(dir) {
   return out;
 }
 
-function ensureDir(file) {
+function ensureDir(file: string): void {
   mkdirSync(dirname(file), { recursive: true });
 }
 
-function readJson(file) {
-  return JSON.parse(readFileSync(file, "utf8"));
+function readJson<T>(file: string): T {
+  return JSON.parse(readFileSync(file, "utf8")) as T;
 }
 
-function paramsHash(sourceSha, params) {
+function paramsHash(sourceSha: string, params: unknown): string {
   return sha256(`${sourceSha}|v${PIPELINE_VERSION}|${JSON.stringify(params)}`).slice(0, 8);
 }
 
 // ---------------------------------------------------------------------------
 // --check: manifest vs disk, no external sources needed (runs in CI).
 // ---------------------------------------------------------------------------
-function checkManifest() {
+function checkManifest(): void {
   if (!existsSync(manifestPath)) fail("media/manifest.json is missing; run the build first");
-  const manifest = readJson(manifestPath);
-  const errors = [];
-  const declared = new Map();
+  const manifest = readJson<Manifest>(manifestPath);
+  const errors: string[] = [];
+  const declared = new Map<string, string>();
   let total = 0;
   for (const item of manifest.items) {
     for (const out of item.outputs) {
@@ -142,53 +235,59 @@ if (CHECK) {
 // ---------------------------------------------------------------------------
 // Build
 // ---------------------------------------------------------------------------
-const sources = readJson(sourcesPath);
+const sources = readJson<Sources>(sourcesPath);
 const ffprobePath = ffprobeStatic.path;
 if (!ffmpegPath || !existsSync(ffmpegPath))
   fail("ffmpeg-static binary not found; run `npm install` inside tools/media");
+const ffmpegBin: string = ffmpegPath ?? "";
 if (!existsSync(ffprobePath)) fail("ffprobe-static binary not found; run `npm install` inside tools/media");
 
-const libraryRoots = Object.fromEntries(
+const libraryRoots: Record<string, string | undefined> = Object.fromEntries(
   Object.entries(sources.libraries).map(([name, cfg]) => [
     name,
     toPosix(process.env[cfg.env] || cfg.default),
   ]),
 );
 
-function sourceAbs(source) {
-  const root = libraryRoots[source.library];
-  if (!root) fail(`unknown library "${source.library}"`);
+function sourceAbs(source: SourceRef): string {
+  const root = libraryRoots[source.library] ?? fail(`unknown library "${source.library}"`);
   const abs = resolve(root, source.path);
-  if (!existsSync(abs)) fail(`source not found: ${abs} (set ${sources.libraries[source.library].env})`);
+  if (!existsSync(abs)) fail(`source not found: ${abs} (set ${sources.libraries[source.library]?.env})`);
   return abs;
 }
 
-function resolveProvenance(item) {
+function resolveProvenance(item: SourceItem): Record<string, unknown> {
   const base = typeof item.provenance === "string" ? sources.provenanceProfiles[item.provenance] : {};
   if (typeof item.provenance === "string" && !base)
     fail(`${item.id}: unknown provenance profile ${item.provenance}`);
   return { ...base, ...(typeof item.provenance === "object" ? item.provenance : {}) };
 }
 
-function resolveRights(item) {
+function resolveRights(item: SourceItem): Record<string, unknown> {
   const { basis: _basis, ...defaults } = sources.rights;
   return { ...defaults, ...(item.rights || {}) };
 }
 
-function selected(item) {
+function selected(item: SourceItem): boolean {
   if (!ONLY) return true;
   return item.id === ONLY || item.id.startsWith(ONLY);
 }
 
-function run(bin, cmdArgs, opts = {}) {
-  const res = spawnSync(bin, cmdArgs, { encoding: "buffer", maxBuffer: 256 * 1024 * 1024, ...opts });
+function run(bin: string, cmdArgs: string[]): Buffer {
+  const res = spawnSync(bin, cmdArgs, { encoding: "buffer", maxBuffer: 256 * 1024 * 1024 });
   if (res.status !== 0) {
     throw new Error(`${bin} ${cmdArgs.join(" ")}\n${res.stderr?.toString() || ""}`);
   }
   return res.stdout;
 }
 
-function ffprobe(file) {
+function ffprobe(file: string): {
+  codec: string | undefined;
+  width: number | undefined;
+  height: number | undefined;
+  fps: number | null;
+  duration: number;
+} {
   const out = run(ffprobePath, [
     "-v",
     "error",
@@ -200,9 +299,16 @@ function ffprobe(file) {
     "json",
     file,
   ]).toString();
-  const json = JSON.parse(out);
-  const stream = json.streams?.[0] || {};
-  const [num, den] = String(stream.r_frame_rate || "30/1")
+  type Stream = {
+    codec_name?: string;
+    width?: number;
+    height?: number;
+    r_frame_rate?: string;
+    duration?: string;
+  };
+  const json = JSON.parse(out) as { streams?: Stream[]; format?: { duration?: string } };
+  const stream: Stream = json.streams?.[0] || {};
+  const [num = 0, den = 0] = String(stream.r_frame_rate || "30/1")
     .split("/")
     .map(Number);
   return {
@@ -214,17 +320,20 @@ function ffprobe(file) {
   };
 }
 
-async function outputRecord(abs, extra = {}) {
+async function outputRecord(
+  abs: string,
+  extra: Pick<OutputRecord, "width" | "height" | "format" | "quality">,
+): Promise<OutputRecord> {
   const buf = readFileSync(abs);
   return { file: relRepo(abs), bytes: buf.length, sha256: sha256(buf), ...extra };
 }
 
-async function imageDims(abs) {
+async function imageDims(abs: string): Promise<{ width: number; height: number }> {
   const meta = await sharp(abs).metadata();
   return { width: meta.width, height: meta.height };
 }
 
-function encoderFor(pipeline, spec) {
+function encoderFor(pipeline: Sharp, spec: ImageEncodeSpec): Sharp {
   const { format, quality, alphaQuality } = spec;
   if (format === "webp") {
     return pipeline.webp({ quality, effort: 6, smartSubsample: true, alphaQuality: alphaQuality ?? 100 });
@@ -234,7 +343,12 @@ function encoderFor(pipeline, spec) {
 }
 
 // Encodes one responsive width. Returns the manifest output record.
-async function encodeImage(item, src, sourceSha, spec) {
+async function encodeImage(
+  item: SourceItem,
+  src: string,
+  sourceSha: string,
+  spec: ImageEncodeSpec,
+): Promise<OutputRecord> {
   const { width, format, quality, sharpen, alphaQuality } = spec;
   const params = { width, format, quality, sharpen: Boolean(sharpen), alphaQuality: alphaQuality ?? null };
   const hash = paramsHash(sourceSha, params);
@@ -252,25 +366,26 @@ async function encodeImage(item, src, sourceSha, spec) {
 
 // Role defaults (sources.json roles.<role>) merged with the item-level `outputs` override:
 // `widths` (WebP), `avif` (AVIF widths, [] disables), `avifQuality`, `quality`, `sharpen`, `alphaQuality`.
-function imageSpec(item) {
-  const role = sources.roles[item.role];
-  if (!role) fail(`${item.id}: unknown role ${item.role}`);
+function imageSpec(item: SourceItem): RoleSpec & { avif: number[]; avifQuality: number } {
+  const role = sources.roles[item.role] ?? fail(`${item.id}: unknown role ${item.role}`);
   return { avif: [], avifQuality: AVIF_QUALITY, ...role, ...(item.outputs || {}) };
 }
 
-async function buildImage(item, src, sourceSha) {
+async function buildImage(item: SourceItem, src: string, sourceSha: string): Promise<OutputRecord[]> {
   const spec = imageSpec(item);
   // Never enlarge: widths above the source width collapse to the source width (deduplicated).
   const meta = await sharp(src).metadata();
-  const effective = (widths) =>
+  const effective = (widths: number[]): number[] =>
     [...new Set(widths.map((w) => Math.min(w, meta.width)))].sort((a, b) => a - b);
-  const outputs = [];
+  const outputs: OutputRecord[] = [];
   for (const width of effective(spec.widths)) {
     outputs.push(await encodeImage(item, src, sourceSha, { ...spec, width, format: "webp" }));
   }
-  const avif = { ...spec, format: "avif", quality: spec.avifQuality, alphaQuality: undefined };
+  const { alphaQuality: _alphaQuality, ...avif } = spec;
   for (const width of effective(spec.avif)) {
-    outputs.push(await encodeImage(item, src, sourceSha, { ...avif, width }));
+    outputs.push(
+      await encodeImage(item, src, sourceSha, { ...avif, quality: spec.avifQuality, width, format: "avif" }),
+    );
   }
   return outputs;
 }
@@ -278,8 +393,7 @@ async function buildImage(item, src, sourceSha) {
 // 1200x630 Open Graph card: cream background, centered logo, navy band at the bottom.
 // Fixed file names (src/lib/metadata.ts references the PNG); cheap enough to re-render every run,
 // and sharp's encoders are deterministic, so unchanged inputs produce byte-identical files.
-async function buildOgCard(item, src) {
-  const c = item.compose;
+async function buildOgCard(item: SourceItem, c: OgCompose, src: string): Promise<OutputRecord[]> {
   const png = join(mediaDir, item.group, `${c.basename}.png`);
   const webp = join(mediaDir, item.group, `${c.basename}.webp`);
   ensureDir(png);
@@ -313,7 +427,7 @@ async function buildOgCard(item, src) {
 }
 
 // ICO container wrapping a single PNG image (supported by every current browser).
-function icoFromPng(pngBuffer, size) {
+function icoFromPng(pngBuffer: Buffer, size: number): Buffer {
   const header = Buffer.alloc(6);
   header.writeUInt16LE(0, 0); // reserved
   header.writeUInt16LE(1, 2); // type: icon
@@ -334,24 +448,26 @@ function icoFromPng(pngBuffer, size) {
  * Lifts the brand mark off its disc: pixels close to `background` become transparent, the
  * anti-aliased rim is un-blended toward the foreground, and the result is trimmed to the mark.
  */
-async function isolateMark(src, background) {
+async function isolateMark(src: string, background: Rgb): Promise<Buffer> {
   const { data, info } = await sharp(src).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-  const bg = [background.r, background.g, background.b];
+  const bg = [background.r, background.g, background.b] as const;
   const noise = 14; // colour distance treated as flat background (encoder noise on the disc)
   const reach = Math.hypot(255 - bg[0], 255 - bg[1], 255 - bg[2]) * 0.55;
+  // Raw RGBA buffer: every index below is in bounds (i steps by 4 over a length divisible by 4).
+  const px = (index: number): number => data[index] ?? 0;
   for (let i = 0; i < data.length; i += 4) {
-    if (data[i + 3] === 0) continue;
-    const distance = Math.hypot(data[i] - bg[0], data[i + 1] - bg[1], data[i + 2] - bg[2]);
+    if (px(i + 3) === 0) continue;
+    const distance = Math.hypot(px(i) - bg[0], px(i + 1) - bg[1], px(i + 2) - bg[2]);
     const coverage = Math.min(1, Math.max(0, (distance - noise) / (reach - noise)));
     if (coverage === 0) {
       data[i + 3] = 0;
       continue;
     }
     for (let ch = 0; ch < 3; ch += 1) {
-      const lifted = (data[i + ch] - (1 - coverage) * bg[ch]) / coverage;
+      const lifted = (px(i + ch) - (1 - coverage) * (bg[ch] ?? 0)) / coverage;
       data[i + ch] = Math.max(0, Math.min(255, Math.round(lifted)));
     }
-    data[i + 3] = Math.round(data[i + 3] * coverage);
+    data[i + 3] = Math.round(px(i + 3) * coverage);
   }
   return sharp(data, { raw: { width: info.width, height: info.height, channels: 4 } })
     .trim({ threshold: 8 })
@@ -359,7 +475,7 @@ async function isolateMark(src, background) {
     .toBuffer();
 }
 
-function hexToRgb(hex) {
+function hexToRgb(hex: string): Rgb {
   const value = Number.parseInt(hex.replace("#", ""), 16);
   return { r: (value >> 16) & 255, g: (value >> 8) & 255, b: value & 255 };
 }
@@ -369,11 +485,10 @@ function hexToRgb(hex) {
  * it fills the transparent canvas; "disc" keeps the source as is. The Apple touch icon is always
  * the mark inset on an opaque disc-colour square.
  */
-async function buildFavicons(item, src) {
-  const c = item.compose;
+async function buildFavicons(c: FaviconCompose, src: string): Promise<OutputRecord[]> {
   const background = hexToRgb(c.background);
   const mark = c.mark === "disc" ? await sharp(src).png().toBuffer() : await isolateMark(src, background);
-  const fitted = (size, inset) =>
+  const fitted = (size: number, inset: number): Promise<Buffer> =>
     sharp(mark)
       .resize({
         width: Math.round(size * (1 - 2 * inset)),
@@ -383,19 +498,24 @@ async function buildFavicons(item, src) {
       })
       .png()
       .toBuffer();
-  const transparent = async (size) =>
+  const transparent = async (size: number): Promise<Buffer> =>
     sharp({ create: { width: size, height: size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
       .composite([{ input: await fitted(size, c.inset ?? 0.02), gravity: "centre" }])
       .png({ compressionLevel: 9 })
       .toBuffer();
-  const onBackground = async (size) =>
+  const onBackground = async (size: number): Promise<Buffer> =>
     sharp({ create: { width: size, height: size, channels: 3, background: c.background } })
       .composite([{ input: await fitted(size, c.appleInset ?? 0.14), gravity: "centre" }])
       .png({ compressionLevel: 9 })
       .toBuffer();
 
-  const files = [];
-  const write = async (name, buffer, dims, format) => {
+  const files: OutputRecord[] = [];
+  const write = async (
+    name: string,
+    buffer: Buffer,
+    dims: { width: number; height: number },
+    format: string,
+  ): Promise<void> => {
     const abs = join(publicDir, name);
     writeFileSync(abs, buffer);
     files.push(await outputRecord(abs, { ...dims, format, quality: null }));
@@ -431,13 +551,13 @@ const VIDEO_SCALE = "scale=w='if(gte(iw,ih),-2,720)':h='if(gte(iw,ih),720,-2)'";
 const MP4_CRF_LADDER = [26, 28, 30, 32];
 const WEBM_CRF_LADDER = [33, 37, 41];
 
-function ffmpegArgs(src, encode, codecArgs, out) {
+function ffmpegArgs(src: string, encode: VideoEncode, codecArgs: string[], out: string): string[] {
   const filters = `${VIDEO_SCALE},fps=${encode.fps},format=${encode.pixelFormat}`;
   const head = ["-y", "-v", "error", "-i", src, "-t", String(encode.maxSeconds), "-vf", filters];
   return [...head, ...codecArgs, "-an", "-map_metadata", "-1", out];
 }
 
-function mp4Args(encode, crf) {
+function mp4Args(encode: VideoEncode, crf: number): string[] {
   const gop = String(encode.gop);
   const rate = ["-maxrate", encode.maxrate, "-bufsize", encode.bufsize];
   const keyframes = ["-g", gop, "-keyint_min", gop, "-sc_threshold", "0", "-movflags", "+faststart"];
@@ -455,12 +575,12 @@ function mp4Args(encode, crf) {
   ];
 }
 
-function webmArgs(encode, crf) {
+function webmArgs(encode: VideoEncode, crf: number): string[] {
   const quality = ["-b:v", "0", "-crf", String(crf), "-row-mt", "1", "-deadline", "good"];
   return ["-c:v", "libvpx-vp9", ...quality, "-g", String(encode.gop)];
 }
 
-function findExisting(groupDir, prefix, suffix) {
+function findExisting(groupDir: string, prefix: string, suffix: string): string | undefined {
   if (!existsSync(groupDir)) return undefined;
   const name = readdirSync(groupDir).find((f) => f.startsWith(prefix) && f.endsWith(suffix));
   return name ? join(groupDir, name) : undefined;
@@ -469,10 +589,16 @@ function findExisting(groupDir, prefix, suffix) {
 // The final crf is part of the file name so a skipped (already built) clip reports the crf it was
 // actually encoded with; hash8 covers the source and the other parameters. The ceiling is enforced by
 // stepping crf up the ladder; returns undefined when even the last step is too large.
-function encodeLadder(item, target, ladder, ceiling, encodeAt) {
+function encodeLadder(
+  item: SourceItem,
+  target: { label: string; prefix: string; suffix: string },
+  ladder: readonly number[],
+  ceiling: number,
+  encodeAt: (crf: number, file: string) => void,
+): Encoded | undefined {
   const groupDir = join(mediaDir, item.group);
   const existing = findExisting(groupDir, target.prefix, target.suffix);
-  if (existing && !FORCE) return { file: existing, crf: Number(/-crf(\d+)-/.exec(existing)[1]) };
+  if (existing && !FORCE) return { file: existing, crf: Number(/-crf(\d+)-/.exec(existing)?.[1]) };
   if (existing) rmSync(existing);
   mkdirSync(groupDir, { recursive: true });
   for (const crf of ladder) {
@@ -488,18 +614,30 @@ function encodeLadder(item, target, ladder, ceiling, encodeAt) {
   return undefined;
 }
 
-function encodeMp4(item, src, sourceSha, encode) {
+function encodeMp4(
+  item: SourceItem,
+  src: string,
+  sourceSha: string,
+  encode: VideoEncode,
+): Encoded | undefined {
   const target = {
     label: "mp4",
     prefix: `${slug(item.id)}-crf`,
     suffix: `-${paramsHash(sourceSha, encode)}.mp4`,
   };
-  const encodeAt = (crf, file) => run(ffmpegPath, ffmpegArgs(src, encode, mp4Args(encode, crf), file));
+  const encodeAt = (crf: number, file: string): void =>
+    void run(ffmpegBin, ffmpegArgs(src, encode, mp4Args(encode, crf), file));
   return encodeLadder(item, target, MP4_CRF_LADDER, MAX_VIDEO_BYTES, encodeAt);
 }
 
 // Optional WebM (VP9, constant quality). Kept only when it is not larger than the mp4.
-function encodeWebm(item, src, sourceSha, encode, mp4) {
+function encodeWebm(
+  item: SourceItem,
+  src: string,
+  sourceSha: string,
+  encode: VideoEncode,
+  mp4: string,
+): Encoded | undefined {
   const params = {
     ...encode,
     codec: "vp9",
@@ -513,21 +651,27 @@ function encodeWebm(item, src, sourceSha, encode, mp4) {
     prefix: `${slug(item.id)}-vp9-crf`,
     suffix: `-${paramsHash(sourceSha, params)}.webm`,
   };
-  const encodeAt = (crf, file) => run(ffmpegPath, ffmpegArgs(src, encode, webmArgs(encode, crf), file));
+  const encodeAt = (crf: number, file: string): void =>
+    void run(ffmpegBin, ffmpegArgs(src, encode, webmArgs(encode, crf), file));
   const built = encodeLadder(item, target, WEBM_CRF_LADDER, statSync(mp4).size, encodeAt);
   if (!built) log(`  ${item.id}: webm skipped (larger than the mp4 at every crf)`);
   return built;
 }
 
-function pruneWebm(item) {
+function pruneWebm(item: SourceItem): void {
   const stale = findExisting(join(mediaDir, item.group), `${slug(item.id)}-vp9-`, ".webm");
   if (stale) rmSync(stale);
 }
 
 // Poster: a frame from the master at posterAt seconds, resized like a "poster" role image.
-async function buildPosters(item, src, sourceSha, v) {
-  const posterRole = sources.roles.poster;
-  const frame = run(ffmpegPath, [
+async function buildPosters(
+  item: SourceItem,
+  src: string,
+  sourceSha: string,
+  v: VideoOptions,
+): Promise<OutputRecord[]> {
+  const posterRole = sources.roles.poster ?? fail("sources.json needs a poster role");
+  const frame = run(ffmpegBin, [
     "-v",
     "error",
     "-ss",
@@ -542,7 +686,7 @@ async function buildPosters(item, src, sourceSha, v) {
     "png",
     "-",
   ]);
-  const outputs = [];
+  const outputs: OutputRecord[] = [];
   for (const width of v.posterWidths || posterRole.widths) {
     const params = { poster: true, posterAt: v.posterAt, width, quality: posterRole.quality };
     const phash = paramsHash(sourceSha, params);
@@ -560,25 +704,34 @@ async function buildPosters(item, src, sourceSha, v) {
   return outputs;
 }
 
-async function buildVideo(item, src, sourceSha) {
-  const v = { maxSeconds: 15, posterAt: 1, posterWidths: [480, 720], webm: false, ...(item.video || {}) };
+async function buildVideo(
+  item: SourceItem,
+  src: string,
+  sourceSha: string,
+): Promise<{ outputs: OutputRecord[]; video: Record<string, unknown> }> {
+  const v: VideoOptions = {
+    maxSeconds: 15,
+    posterAt: 1,
+    posterWidths: [480, 720],
+    webm: false,
+    ...item.video,
+  };
   const probe = ffprobe(src);
   const duration = Math.min(probe.duration, v.maxSeconds);
-  const encode = {
+  const encode: VideoEncode = {
     codec: "h264",
     profile: "high",
     pixelFormat: "yuv420p",
     shortSide: 720,
     fps: 30,
-    crf: MP4_CRF_LADDER[0],
+    crf: MP4_CRF_LADDER[0] ?? 26,
     maxrate: "1500k",
     bufsize: "3000k",
     gop: 60,
     audio: "stripped",
     maxSeconds: v.maxSeconds,
   };
-  const mp4 = encodeMp4(item, src, sourceSha, encode);
-  if (!mp4) fail(`${item.id}: mp4 still above ${MAX_VIDEO_MB}`);
+  const mp4 = encodeMp4(item, src, sourceSha, encode) ?? fail(`${item.id}: mp4 still above ${MAX_VIDEO_MB}`);
   const dims = ffprobe(mp4.file);
   const size = { width: dims.width, height: dims.height };
   const outputs = [await outputRecord(mp4.file, { ...size, format: "mp4", quality: `crf${mp4.crf}` })];
@@ -602,13 +755,13 @@ async function buildVideo(item, src, sourceSha) {
   };
 }
 
-async function buildItem(item) {
+async function buildItem(item: SourceItem): Promise<ManifestItem> {
   const src = sourceAbs(item.source);
   const bytes = statSync(src).size;
   const sourceSha = sha256File(src);
   const kind = item.role === "video" ? "video" : "image";
   const sourceMeta = kind === "video" ? ffprobe(src) : await sharp(src).metadata();
-  const record = {
+  const record: ManifestItem = {
     id: item.id,
     role: item.role,
     page: item.page,
@@ -624,10 +777,11 @@ async function buildItem(item) {
     provenance: resolveProvenance(item),
     rights: resolveRights(item),
     alt: item.alt,
+    outputs: [],
   };
   if (item.text) record.text = item.text;
-  if (item.compose?.kind === "og-card") record.outputs = await buildOgCard(item, src);
-  else if (item.compose?.kind === "favicons") record.outputs = await buildFavicons(item, src);
+  if (item.compose?.kind === "og-card") record.outputs = await buildOgCard(item, item.compose, src);
+  else if (item.compose?.kind === "favicons") record.outputs = await buildFavicons(item.compose, src);
   else if (kind === "video") {
     const built = await buildVideo(item, src, sourceSha);
     record.outputs = built.outputs;
@@ -636,11 +790,11 @@ async function buildItem(item) {
   return record;
 }
 
-async function main() {
-  const previous = existsSync(manifestPath) ? readJson(manifestPath) : { items: [] };
+async function main(): Promise<void> {
+  const previous: Manifest = existsSync(manifestPath) ? readJson<Manifest>(manifestPath) : { items: [] };
   const previousById = new Map(previous.items.map((i) => [i.id, i]));
-  const ids = new Set();
-  const items = [];
+  const ids = new Set<string>();
+  const items: ManifestItem[] = [];
   const started = Date.now();
   for (const item of sources.items) {
     if (ids.has(item.id)) fail(`duplicate id ${item.id}`);
@@ -678,7 +832,7 @@ async function main() {
   const manifest = {
     $schemaVersion: 1,
     generatedAt: new Date().toISOString(),
-    generator: `tools/media/media-build.mjs v${PIPELINE_VERSION} (sharp ${sharp.versions.sharp}, libvips ${sharp.versions.vips})`,
+    generator: `tools/media/media-build.ts v${PIPELINE_VERSION} (sharp ${sharp.versions.sharp}, libvips ${sharp.versions.vips})`,
     extras: ["public/manifest.webmanifest"],
     items,
   };

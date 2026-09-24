@@ -4,13 +4,13 @@ import {
   type MetaCapiRelay,
   metaCapiOptionsFromEnv,
   pickClientIp,
-} from "@server/meta-capi.mjs";
+} from "@server/meta-capi.ts";
 
 /**
  * Meta Conversions API relay for the standalone target (`POST /api/meta/events/`). The file
- * exists only in standalone builds: `next.config.mjs` adds the `standalone.ts` page extension
+ * exists only in standalone builds: `config/next.ts` adds the `standalone.ts` page extension
  * there and the static export ignores it (a POST handler breaks `output: "export"`). The
- * validation, dedup payload and upstream call live in `server/meta-capi.mjs`; environment is
+ * validation, dedup payload and upstream call live in `server/meta-capi.ts`; environment is
  * read at request time so the token never enters a build.
  */
 export const dynamic = "force-dynamic";

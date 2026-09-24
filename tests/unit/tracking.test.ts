@@ -2,8 +2,10 @@ import assert from "node:assert/strict";
 import { beforeEach, test } from "node:test";
 import { createMetaAdapter } from "../../src/features/tracking/adapters/meta.ts";
 import { createMetaCapiAdapter, META_CAPI_ENDPOINT } from "../../src/features/tracking/adapters/meta-capi.ts";
+import type { TrackedEvent, TrackingAdapter } from "../../src/features/tracking/adapters/types.ts";
 import {
   CONSENT_VERSION,
+  type ConsentState,
   DEFAULT_CHOICE,
   readConsent,
   serializeConsentCookie,
@@ -19,22 +21,37 @@ import {
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
-function installWindow() {
-  const storage = new Map();
-  const win = Object.assign(new EventTarget(), {
-    localStorage: {
-      getItem: (key) => storage.get(key) ?? null,
-      setItem: (key, value) => storage.set(key, String(value)),
-      removeItem: (key) => storage.delete(key),
-    },
-  });
-  globalThis.window = win;
-  globalThis.document = { cookie: "" };
-  return win;
+type RelayedEvent = { name: string; eventId: string; fbp?: string; fbc?: string };
+type CapiRequest = { url: string; init: RequestInit; body: { events: RelayedEvent[] } };
+type FakeAdapter = TrackingAdapter & { ready: boolean; sent: TrackedEvent[]; consents: ConsentState[] };
+
+/** Node has no browser globals: the code under test gets minimal fakes (typed as the real ones). */
+function setGlobal(target: object, name: string, value: object): void {
+  Object.defineProperty(target, name, { value, configurable: true, writable: true });
 }
 
-function fakeAdapter(overrides = {}) {
-  const adapter = {
+/** `track()` without the compile-time exclusion of Hotmart-owned events, to exercise the runtime guard. */
+const trackUnchecked = track as (name: string) => string;
+
+function setNodeEnv(value: "development" | "production"): void {
+  Object.assign(process.env, { NODE_ENV: value });
+}
+
+function installWindow(): void {
+  const storage = new Map<string, string>();
+  const win = Object.assign(new EventTarget(), {
+    localStorage: {
+      getItem: (key: string) => storage.get(key) ?? null,
+      setItem: (key: string, value: string) => void storage.set(key, String(value)),
+      removeItem: (key: string) => void storage.delete(key),
+    },
+  });
+  setGlobal(globalThis, "window", win);
+  setGlobal(globalThis, "document", { cookie: "" });
+}
+
+function fakeAdapter(overrides: Partial<FakeAdapter> = {}): FakeAdapter {
+  const adapter: FakeAdapter = {
     id: "meta",
     label: "Fake",
     category: "marketing",
@@ -43,10 +60,10 @@ function fakeAdapter(overrides = {}) {
     sent: [],
     consents: [],
     scripts: () => [],
-    onConsent(state) {
+    onConsent(state: ConsentState) {
       adapter.consents.push(state);
     },
-    send(event) {
+    send(event: TrackedEvent) {
       if (!adapter.ready) return false;
       adapter.sent.push(event);
       return true;
@@ -58,7 +75,7 @@ function fakeAdapter(overrides = {}) {
 
 beforeEach(() => {
   installWindow();
-  process.env.NODE_ENV = "development";
+  setNodeEnv("development");
   _resetForTests([]);
 });
 
@@ -66,11 +83,11 @@ test("forbidden events throw in development and are dropped in production", () =
   const adapter = fakeAdapter();
   _resetForTests([adapter]);
   writeConsent({ analytics: false, marketing: true });
-  for (const name of FORBIDDEN_EVENTS) assert.throws(() => track(name), /owned by Hotmart/);
-  process.env.NODE_ENV = "production";
-  for (const name of FORBIDDEN_EVENTS) assert.equal(track(name), "");
+  for (const name of FORBIDDEN_EVENTS) assert.throws(() => trackUnchecked(name), /owned by Hotmart/);
+  setNodeEnv("production");
+  for (const name of FORBIDDEN_EVENTS) assert.equal(trackUnchecked(name), "");
   assert.equal(window.dataLayer, undefined);
-  assert.deepEqual(adapter.sent, []);
+  assert.equal(adapter.sent.length, 0);
 });
 
 test("every event gets a UUID id and is mirrored to dataLayer with undefined params dropped", () => {
@@ -96,7 +113,7 @@ test("measurement is on by default: events reach a gated adapter before any deci
     adapter.sent.map((event) => event.eventId),
     [first, second],
   );
-  assert.deepEqual(adapter.sent[1].params, { content_ids: "gf" });
+  assert.deepEqual(adapter.sent[1]?.params, { content_ids: "gf" });
 });
 
 test("rejecting revokes the adapter, drops its queue and stops every later event", () => {
@@ -108,9 +125,9 @@ test("rejecting revokes the adapter, drops its queue and stops every later event
   adapter.ready = true;
   flush();
   track("ViewContent");
-  assert.deepEqual(adapter.sent, []);
+  assert.equal(adapter.sent.length, 0);
   writeConsent({ analytics: false, marketing: true });
-  assert.deepEqual(adapter.sent, []);
+  assert.equal(adapter.sent.length, 0);
   const id = track("CheckoutIntent");
   assert.deepEqual(
     adapter.sent.map((event) => event.eventId),
@@ -123,7 +140,7 @@ test("events stay queued while the vendor script is not ready and flush once it 
   _resetForTests([adapter]);
   writeConsent({ analytics: false, marketing: true });
   const id = track("PageView");
-  assert.deepEqual(adapter.sent, []);
+  assert.equal(adapter.sent.length, 0);
   adapter.ready = true;
   flush();
   assert.deepEqual(
@@ -158,22 +175,23 @@ test("meta adapter inits active, revokes on rejection (expiring _fbp/_fbc) and p
   assert.equal(adapter.enabled, true);
   assert.equal(createMetaAdapter("").enabled, false);
   const [bootstrap, loader] = adapter.scripts();
+  assert.ok(bootstrap?.inline && loader);
   assert.ok(bootstrap.inline.includes("fbq('init',\"1234567890123456\")"));
   assert.equal(bootstrap.inline.includes("revoke"), false);
   assert.equal(loader.src, "https://connect.facebook.net/en_US/fbevents.js");
 
-  const calls = [];
-  const cookieWrites = [];
-  globalThis.document = {
+  const calls: unknown[][] = [];
+  const cookieWrites: string[] = [];
+  setGlobal(globalThis, "document", {
     get cookie() {
       return "";
     },
-    set cookie(value) {
+    set cookie(value: string) {
       cookieWrites.push(value);
     },
-  };
-  window.location = { hostname: "www.pequeverso.com" };
-  window.fbq = (...args) => calls.push(args);
+  });
+  setGlobal(window, "location", { hostname: "www.pequeverso.com" });
+  window.fbq = (...args: unknown[]) => void calls.push(args);
   assert.ok(adapter.send({ name: "PageView", params: {}, eventId: "id-1" }));
   assert.ok(adapter.send({ name: "CheckoutIntent", params: { offer: "main" }, eventId: "id-2" }));
   adapter.onConsent({ version: 2, analytics: false, marketing: false, updatedAt: "" });
@@ -192,23 +210,35 @@ test("meta adapter inits active, revokes on rejection (expiring _fbp/_fbc) and p
     "_fbc=; Max-Age=0; Path=/; Domain=www.pequeverso.com",
     "_fbc=; Max-Age=0; Path=/; Domain=pequeverso.com",
   ]);
-  window.fbq = undefined;
+  delete window.fbq;
   assert.equal(adapter.send({ name: "PageView", params: {}, eventId: "id-3" }), false);
 });
 
 function installCapiPage({ href = "https://pequeverso.com/grafismo-fonetico/", cookie = "" } = {}) {
-  window.location = { href, search: new URL(href).search };
+  setGlobal(window, "location", { href, search: new URL(href).search });
   // biome-ignore lint/suspicious/noDocumentCookie: fake document in the unit-test window
   document.cookie = cookie;
-  const requests = [];
-  const fetchImpl = async (url, init) => {
-    requests.push({ url, init, body: JSON.parse(init.body) });
+  const requests: CapiRequest[] = [];
+  const fetchImpl = async (url: string | URL | Request, init?: RequestInit): Promise<Response> => {
+    requests.push({ url: String(url), init: init ?? {}, body: JSON.parse(String(init?.body)) });
     return new Response(null, { status: 202 });
   };
   return { requests, fetchImpl };
 }
 
-const tick = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+function firstRequest(requests: readonly CapiRequest[]): CapiRequest {
+  const [request] = requests;
+  assert.ok(request, "no relay request was sent");
+  return request;
+}
+
+function firstEvent(requests: readonly CapiRequest[]): RelayedEvent {
+  const [event] = firstRequest(requests).body.events;
+  assert.ok(event, "the relay request carried no event");
+  return event;
+}
+
+const tick = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 test("meta-capi adapter relays batched events with the pixel's event ids, _fbp and _fbc", async () => {
   const page = installCapiPage({ cookie: "_fbp=fb.1.1700000000000.123; _fbc=fb.1.1700000000000.click" });
@@ -222,15 +252,16 @@ test("meta-capi adapter relays batched events with the pixel's event ids, _fbp a
   assert.equal(createMetaCapiAdapter("").enabled, false);
   assert.deepEqual(capi.scripts(), []);
   assert.equal(capi.label, pixel.label);
-  const fbqCalls = [];
-  window.fbq = (...args) => fbqCalls.push(args);
+  const fbqCalls: unknown[][] = [];
+  window.fbq = (...args: unknown[]) => void fbqCalls.push(args);
   _resetForTests([pixel, capi]);
   const first = track("PageView");
   const second = track("ViewContent", { content_ids: "gf", value: 19.9, currency: "USD" });
-  assert.deepEqual(page.requests, []);
+  assert.equal(page.requests.length, 0);
   await tick(20);
   assert.equal(page.requests.length, 1);
   const [request] = page.requests;
+  assert.ok(request);
   assert.equal(request.url, META_CAPI_ENDPOINT);
   assert.equal(request.init.method, "POST");
   assert.equal(request.init.keepalive, true);
@@ -258,10 +289,10 @@ test("meta-capi adapter relays batched events with the pixel's event ids, _fbp a
     ],
   });
   assert.deepEqual(
-    fbqCalls.map((call) => call[3].eventID),
+    fbqCalls.map((call) => (call[3] as { eventID?: string } | undefined)?.eventID),
     [first, second],
   );
-  window.fbq = undefined;
+  delete window.fbq;
 });
 
 test("meta-capi adapter derives fbc from ?fbclid when the cookie is missing and omits absent ids", async () => {
@@ -277,8 +308,8 @@ test("meta-capi adapter derives fbc from ?fbclid when the cookie is missing and 
   _resetForTests([capi]);
   track("PageView");
   await tick(20);
-  assert.equal(page.requests[0].body.events[0].fbp, "fb.1.1.x");
-  assert.equal(page.requests[0].body.events[0].fbc, "fb.1.1700.IwAR2abc_def-ghi");
+  assert.equal(firstEvent(page.requests).fbp, "fb.1.1.x");
+  assert.equal(firstEvent(page.requests).fbc, "fb.1.1700.IwAR2abc_def-ghi");
 
   const bare = installCapiPage();
   const capi2 = createMetaCapiAdapter("1234567890123456", {
@@ -289,8 +320,8 @@ test("meta-capi adapter derives fbc from ?fbclid when the cookie is missing and 
   _resetForTests([capi2]);
   track("PageView");
   await tick(20);
-  assert.equal("fbp" in bare.requests[0].body.events[0], false);
-  assert.equal("fbc" in bare.requests[0].body.events[0], false);
+  assert.equal("fbp" in firstEvent(bare.requests), false);
+  assert.equal("fbc" in firstEvent(bare.requests), false);
 });
 
 test("meta-capi adapter sends nothing after Rechazar: buffered events dropped, later events never relayed", async () => {
@@ -304,10 +335,10 @@ test("meta-capi adapter sends nothing after Rechazar: buffered events dropped, l
   track("PageView");
   writeConsent({ analytics: false, marketing: false });
   await tick(20);
-  assert.deepEqual(page.requests, []);
+  assert.equal(page.requests.length, 0);
   track("CheckoutIntent", { product: "gf", offer: "main", cta_position: "hero" });
   await tick(20);
-  assert.deepEqual(page.requests, []);
+  assert.equal(page.requests.length, 0);
   writeConsent({ analytics: false, marketing: true });
   const id = track("PageView");
   await tick(20);
@@ -319,9 +350,9 @@ test("meta-capi adapter sends nothing after Rechazar: buffered events dropped, l
 
 test("meta-capi adapter flushes on pagehide with sendBeacon when available", async () => {
   const page = installCapiPage();
-  const beacons = [];
+  const beacons: Array<{ url: string; type: string }> = [];
   navigator.sendBeacon = (url, blob) => {
-    beacons.push({ url, type: blob.type });
+    beacons.push({ url: String(url), type: blob instanceof Blob ? blob.type : "" });
     return true;
   };
   try {
@@ -331,9 +362,9 @@ test("meta-capi adapter flushes on pagehide with sendBeacon when available", asy
     window.dispatchEvent(new Event("pagehide"));
     assert.deepEqual(beacons, [{ url: META_CAPI_ENDPOINT, type: "application/json" }]);
     await tick(20);
-    assert.deepEqual(page.requests, []);
+    assert.equal(page.requests.length, 0);
   } finally {
-    delete navigator.sendBeacon;
+    Reflect.deleteProperty(navigator, "sendBeacon");
   }
 });
 
@@ -347,13 +378,13 @@ test("meta-capi adapter waits briefly for fbevents.js to write _fbp, then relays
   _resetForTests([capi]);
   const id = track("PageView");
   await tick(30);
-  assert.deepEqual(page.requests, [], "held back while _fbp is missing");
+  assert.equal(page.requests.length, 0, "held back while _fbp is missing");
   // biome-ignore lint/suspicious/noDocumentCookie: fake document in the unit-test window
   document.cookie = "_fbp=fb.1.1.late";
   await tick(30);
   assert.equal(page.requests.length, 1);
   assert.deepEqual(
-    page.requests[0].body.events.map((e) => [e.eventId, e.fbp]),
+    firstRequest(page.requests).body.events.map((e) => [e.eventId, e.fbp]),
     [[id, "fb.1.1.late"]],
   );
 
@@ -367,5 +398,5 @@ test("meta-capi adapter waits briefly for fbevents.js to write _fbp, then relays
   track("PageView");
   await tick(100);
   assert.equal(never.requests.length, 1, "sent without fbp once the wait expires");
-  assert.equal("fbp" in never.requests[0].body.events[0], false);
+  assert.equal("fbp" in firstEvent(never.requests), false);
 });

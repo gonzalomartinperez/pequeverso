@@ -1,20 +1,19 @@
-// @ts-check
 // Minimal static server for out/ that mimics the production host: trailing-slash
 // directories resolve to index.html, missing paths return the real 404 page with
 // status 404, and .htaccess-equivalent cache headers are applied. Mounts the Meta
-// Conversions API relay (server/meta-capi.mjs, POST /api/meta/events/) before static
+// Conversions API relay (server/meta-capi.ts, POST /api/meta/events/) before static
 // resolution. Used by Playwright, Lighthouse CI and `npm start`.
 import { createReadStream, existsSync, readFileSync, statSync } from "node:fs";
-import { createServer } from "node:http";
+import { createServer, type OutgoingHttpHeaders, type ServerResponse } from "node:http";
 import { extname, join, normalize, resolve } from "node:path";
 import { brotliCompressSync, constants, gzipSync } from "node:zlib";
-import { createMetaCapiHandler, metaCapiOptionsFromEnv } from "../server/meta-capi.mjs";
+import { createMetaCapiHandler, metaCapiOptionsFromEnv } from "../server/meta-capi.ts";
 
 const root = resolve(process.cwd(), "out");
 const port = Number(process.env.PORT || 3000);
 const metaCapiOptions = metaCapiOptionsFromEnv(process.env);
 const metaCapi = createMetaCapiHandler(metaCapiOptions);
-const types = {
+const types: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -40,10 +39,10 @@ if (!existsSync(root)) {
 
 const COMPRESSIBLE = new Set([".html", ".css", ".js", ".json", ".xml", ".txt", ".svg", ".webmanifest"]);
 
-function send(res, file, status = 200, acceptEncoding = "") {
+function send(res: ServerResponse, file: string, status = 200, acceptEncoding = ""): void {
   const ext = extname(file);
   const stat = statSync(file);
-  const headers = {
+  const headers: OutgoingHttpHeaders = {
     "Content-Type": types[ext] || "application/octet-stream",
     "Content-Length": stat.size,
     "Accept-Ranges": "bytes",
@@ -75,7 +74,7 @@ function send(res, file, status = 200, acceptEncoding = "") {
   createReadStream(file).pipe(res);
 }
 
-function applyCache(headers, file, ext) {
+function applyCache(headers: OutgoingHttpHeaders, file: string, ext: string): void {
   const rel = file.slice(root.length).split("\\").join("/");
   if (rel.startsWith("/media/") || rel.startsWith("/fonts/") || rel.startsWith("/_next/static/")) {
     headers["Cache-Control"] = "public, max-age=31536000, immutable";

@@ -8,12 +8,22 @@ if (!existsSync(manifestPath)) {
   process.exit(0);
 }
 
-const runs = JSON.parse(readFileSync(manifestPath, "utf8")).filter((run) => run.isRepresentativeRun);
-const score = (value) => (value === undefined ? "–" : Math.round(value * 100));
-const ms = (audit) => (audit ? `${Math.round(audit.numericValue)} ms` : "–");
+type ManifestRun = { url: string; jsonPath: string; isRepresentativeRun: boolean };
+type Audit = { numericValue: number; displayValue?: string };
+type Lhr = {
+  categories: Record<string, { score?: number } | undefined>;
+  audits: Record<string, Audit | undefined>;
+};
+
+const runs = (JSON.parse(readFileSync(manifestPath, "utf8")) as ManifestRun[]).filter(
+  (run) => run.isRepresentativeRun,
+);
+const score = (value: number | undefined): number | string =>
+  value === undefined ? "–" : Math.round(value * 100);
+const ms = (audit: Audit | undefined): string => (audit ? `${Math.round(audit.numericValue)} ms` : "–");
 
 const rows = runs.map((run) => {
-  const lhr = JSON.parse(readFileSync(run.jsonPath, "utf8"));
+  const lhr = JSON.parse(readFileSync(run.jsonPath, "utf8")) as Lhr;
   const c = lhr.categories;
   const a = lhr.audits;
   return `| ${new URL(run.url).pathname} | ${score(c.performance?.score)} | ${score(c.accessibility?.score)} | ${score(c["best-practices"]?.score)} | ${score(c.seo?.score)} | ${ms(a["largest-contentful-paint"])} | ${a["cumulative-layout-shift"]?.displayValue ?? "–"} | ${ms(a["total-blocking-time"])} |`;

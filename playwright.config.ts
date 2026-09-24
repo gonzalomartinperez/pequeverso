@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
- * E2E runs against the static export served by scripts/serve-static.mjs (same
+ * E2E runs against the static export served by scripts/serve-static.ts (same
  * trailing-slash and 404 semantics as production) unless E2E_BASE_URL points elsewhere.
  *
  * Project sets are selected with PW_SET:
@@ -83,7 +83,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 2 : undefined,
+  ...(process.env.CI ? { workers: 2 } : {}),
   reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : [["list"]],
   timeout: 30_000,
   expect: { timeout: 5_000, toHaveScreenshot: { maxDiffPixelRatio: 0.01, animations: "disabled" } },
@@ -95,14 +95,16 @@ export default defineConfig({
     locale: "es-AR",
     timezoneId: "America/Argentina/Buenos_Aires",
   },
-  webServer: process.env.E2E_BASE_URL
-    ? undefined
+  ...(process.env.E2E_BASE_URL
+    ? {}
     : {
-        command: "node scripts/serve-static.mjs",
-        url: `${baseURL}/`,
-        reuseExistingServer: !process.env.CI,
-        env: { PORT: String(port) },
-        timeout: 30_000,
-      },
+        webServer: {
+          command: "node scripts/serve-static.ts",
+          url: `${baseURL}/`,
+          reuseExistingServer: !process.env.CI,
+          env: { PORT: String(port) },
+          timeout: 30_000,
+        },
+      }),
   projects: projectSets[set],
 });

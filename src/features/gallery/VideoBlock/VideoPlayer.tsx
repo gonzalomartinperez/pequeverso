@@ -49,7 +49,7 @@ export function VideoGroup({ children }: { children: ReactNode }) {
 type Props = {
   id: string;
   mp4: string;
-  webm?: string;
+  webm?: string | undefined;
   width: number;
   height: number;
   title: string;

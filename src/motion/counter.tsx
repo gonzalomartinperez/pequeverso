@@ -7,8 +7,8 @@ import { useMotionOK } from "./use-motion-ok";
 type Props = {
   value: number;
   /** Formats the displayed number (defaults to `String`). */
-  format?: (value: number) => string;
-  className?: string;
+  format?: ((value: number) => string) | undefined;
+  className?: string | undefined;
 };
 
 const DURATION_MS = 900;

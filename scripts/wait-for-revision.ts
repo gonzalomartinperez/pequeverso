@@ -1,6 +1,6 @@
 // Polls <origin>/build-info.json until it reports the expected commit, or a newer commit that
 // already contains it (Hostinger builds only the latest push when merges land close together).
-// Usage: node scripts/wait-for-revision.mjs <origin> <sha> [timeoutSeconds]
+// Usage: node scripts/wait-for-revision.ts <origin> <sha> [timeoutSeconds]
 // Writes `live_sha` to $GITHUB_OUTPUT and a short table to $GITHUB_STEP_SUMMARY when set; the
 // descendant check uses the GitHub compare API ($GITHUB_REPOSITORY, optional $GITHUB_TOKEN).
 import { appendFileSync } from "node:fs";
@@ -16,40 +16,44 @@ if (!origin || !expected) {
 
 const base = origin.replace(/\/$/, "");
 
-async function liveInfo() {
+type BuildInfo = { sha?: string; ref?: string; builtAt?: string };
+
+async function liveInfo(): Promise<BuildInfo | null> {
   try {
     const res = await fetch(`${base}/build-info.json`, { cache: "no-store" });
     if (!res.ok) return null;
-    return await res.json();
+    return (await res.json()) as BuildInfo;
   } catch {
     return null;
   }
 }
 
 /** True when `live` is a later commit on the same history as `expected`. */
-async function supersedes(live) {
+async function supersedes(live: string): Promise<boolean> {
   const repo = process.env.GITHUB_REPOSITORY;
   if (!repo || !live) return false;
-  const headers = { accept: "application/vnd.github+json" };
+  const headers: Record<string, string> = { accept: "application/vnd.github+json" };
   if (process.env.GITHUB_TOKEN) headers.authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   try {
     const res = await fetch(`https://api.github.com/repos/${repo}/compare/${expected}...${live}`, {
       headers,
     });
     if (!res.ok) return false;
-    const { status } = await res.json();
+    const { status } = (await res.json()) as { status?: string };
     return status === "ahead";
   } catch {
     return false;
   }
 }
 
-function output(sha) {
-  if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, `live_sha=${sha}\n`);
+function output(sha: string): void {
+  const stepOutput = process.env.GITHUB_OUTPUT;
+  if (stepOutput) appendFileSync(stepOutput, `live_sha=${sha}\n`);
 }
 
-function summarize(rows) {
-  if (!process.env.GITHUB_STEP_SUMMARY) return;
+function summarize(rows: Array<[string, string]>): void {
+  const stepSummary = process.env.GITHUB_STEP_SUMMARY;
+  if (!stepSummary) return;
   const table = [
     "## Production revision",
     "",
@@ -58,13 +62,13 @@ function summarize(rows) {
     ...rows.map(([k, v]) => `| ${k} | ${v} |`),
     "",
   ];
-  appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${table.join("\n")}\n`);
+  appendFileSync(stepSummary, `${table.join("\n")}\n`);
 }
 
 const started = Date.now();
 const deadline = started + timeoutSeconds * 1000;
 let polls = 0;
-let last = null;
+let last: BuildInfo | null = null;
 while (Date.now() < deadline) {
   polls += 1;
   last = await liveInfo();

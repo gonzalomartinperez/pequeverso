@@ -23,7 +23,7 @@ Decision record: `docs/decisions/ADR-0006-shadcn-tailwind-design-system.md`; spe
 
 Raw brand values are OKLCH (`--pv-*`); semantic roles (shadcn names plus project roles) point at
 them; `@theme inline` exposes both as utilities. Contrast pairs are recomputed from the token
-source by `tests/unit/design-system.test.mjs`.
+source by `tests/unit/design-system.test.ts`.
 
 | Token (utility) | Value (sRGB) | Use | Contrast |
 |---|---|---|---|

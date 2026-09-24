@@ -10,8 +10,8 @@ if (!existsSync(root)) {
   process.exit(1);
 }
 
-const pages = [];
-const walk = (dir) => {
+const pages: string[] = [];
+const walk = (dir: string): void => {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) walk(full);
@@ -25,12 +25,12 @@ const forbiddenText = ["Trazos y Sonidos", "lorem ipsum", "Digital Products Team
 const usdPrice = "US$";
 const localCurrencyWording = "moneda local";
 const placeholderPattern = /\[\[[A-Z0-9_]+\]\]/;
-const count = (html, pattern) => (html.match(pattern) ?? []).length;
+const count = (html: string, pattern: RegExp): number => (html.match(pattern) ?? []).length;
 
-function check(page) {
+function check(page: string): string[] {
   const html = readFileSync(page, "utf8");
   const name = relative(root, page).split("\\").join("/");
-  const errors = [];
+  const errors: string[] = [];
   const isOfferPage = html.includes("data-offer-root");
   const h1s = count(html, /<h1[\s>]/g);
   if (h1s !== (isOfferPage ? 2 : 1)) errors.push(`expected ${isOfferPage ? 2 : 1} h1, found ${h1s}`);
@@ -50,7 +50,7 @@ function check(page) {
   }
   const ids = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]));
   for (const match of html.matchAll(/href="#([^"]+)"/g)) {
-    if (!ids.has(match[1])) errors.push(`anchor #${match[1]} has no target`);
+    if (!ids.has(match[1] ?? "")) errors.push(`anchor #${match[1]} has no target`);
   }
   return errors.map((error) => `${name}: ${error}`);
 }

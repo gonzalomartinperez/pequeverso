@@ -14,11 +14,12 @@ import {
   products,
 } from "../../src/products/index.ts";
 import { breadcrumbJsonLd, productJsonLd } from "../../src/products/jsonld.ts";
+import type { Product } from "../../src/products/schema.ts";
 import { RegistrySchema } from "../../src/products/schema.ts";
 
 const FORBIDDEN_JSONLD = ["aggregateRating", "review", "shippingDetails", "hasMerchantReturnPolicy"];
 
-function sumPages(product) {
+function sumPages(product: Product): number {
   return product.resources.reduce((sum, resource) => sum + (resource.pages ?? 0), 0);
 }
 
@@ -88,7 +89,8 @@ test("the checkout URL comes only from static env references Next can inline", (
 test("registry refinements reject broken registries", () => {
   const core = grafismoFonetico;
   const offer = imprimeYJuega;
-  const rejects = (registry) => assert.equal(RegistrySchema.safeParse(registry).success, false);
+  const rejects = (registry: unknown): void =>
+    assert.equal(RegistrySchema.safeParse(registry).success, false);
   assert.ok(RegistrySchema.safeParse([core, offer]).success);
   rejects([core, { ...offer, slug: core.slug }]);
   rejects([core, { ...offer, code: core.code }]);
@@ -121,5 +123,6 @@ test("Product JSON-LD carries one Offer and never ratings, reviews or merchant-l
   assert.equal(productJsonLd({ ...product, seo: { ...product.seo, index: false } }), null);
   const crumbs = breadcrumbJsonLd(product);
   assert.equal(crumbs["@type"], "BreadcrumbList");
+  assert.ok(Array.isArray(crumbs.itemListElement));
   assert.equal(crumbs.itemListElement.length, 2);
 });

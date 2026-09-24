@@ -24,8 +24,8 @@ Also decide and confirm (no placeholder, but must be verified):
   keep 7 with the EU exception wording already present on `/terminos/` and
   `/compras-y-reembolsos/`). Owner decision pending.
 - **Brand and mailbox.** The site is branded Pequeverso only; the former operator name is
-  retired from every customer-facing surface (unit invariant in `tests/unit/content-invariants.test.mjs`
-  and `scripts/check-rendered.mjs`). A single mailbox, `somospequeverso@gmail.com`, handles support
+  retired from every customer-facing surface (unit invariant in `tests/unit/content-invariants.test.ts`
+  and `scripts/check-rendered.ts`). A single mailbox, `somospequeverso@gmail.com`, handles support
   and privacy requests (`config/site.ts`, `content/es/legal/seller.ts`). If it ever changes, update
   both files; nothing else retypes it.
 - **Response time.** Currently "48 horas hábiles" — keep only if you can honour it.

@@ -14,6 +14,7 @@ test("USD formatting uses the Spanish decimal comma", () => {
 });
 
 test("off and ref are not in the passthrough allowlist", () => {
-  assert.ok(!checkoutPassthroughParams.includes("off"));
-  assert.ok(!checkoutPassthroughParams.includes("ref"));
+  const allowed: readonly string[] = checkoutPassthroughParams;
+  assert.ok(!allowed.includes("off"));
+  assert.ok(!allowed.includes("ref"));
 });

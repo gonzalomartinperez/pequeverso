@@ -4,10 +4,10 @@ import styles from "./CenteredHeading.module.css";
 
 type Props = {
   id: string;
-  kicker?: string;
+  kicker?: string | undefined;
   title: string;
-  lead?: string;
-  tone?: "light" | "dark";
+  lead?: string | undefined;
+  tone?: "light" | "dark" | undefined;
 };
 
 /** Centred section header (kicker + h2 + lead) composed from Stack and Eyebrow. */

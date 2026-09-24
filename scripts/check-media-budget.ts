@@ -1,4 +1,3 @@
-// @ts-check
 // Guards the public repository against heavy or undocumented media:
 // - every file under public/media must have a record in media/manifest.json
 // - no single media file above MAX_FILE_BYTES, no group (folder under public/media, the
@@ -18,19 +17,26 @@ const MAX_GROUP_BYTES = 9 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 30 * 1024 * 1024;
 const FORBIDDEN_EXT = new Set([".psd", ".ai", ".mov", ".tif", ".tiff", ".pdf", ".zip", ".sql"]);
 
-const toPosix = (p) => p.split("\\").join("/");
-const mb = (bytes) => (bytes / 1048576).toFixed(2);
+type ManifestItem = {
+  id: string;
+  group?: string;
+  outputs?: Array<{ file: string }>;
+  rights?: { redistribution?: string };
+};
+
+const toPosix = (p: string): string => p.split("\\").join("/");
+const mb = (bytes: number): string => (bytes / 1048576).toFixed(2);
 
 /** Group of a manifest item: its declared `group`, else the folder under public/media of its outputs. */
-function groupOf(item) {
+function groupOf(item: ManifestItem): string {
   if (item.group) return item.group;
   const file = toPosix(item.outputs?.[0]?.file ?? "");
   const match = file.match(/^public\/media\/([^/]+)\//);
-  return match ? match[1] : "root";
+  return match?.[1] ?? "root";
 }
 
-function walk(dir) {
-  const out = [];
+function walk(dir: string): string[] {
+  const out: string[] = [];
   if (!existsSync(dir)) return out;
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const full = join(dir, entry.name);
@@ -41,9 +47,11 @@ function walk(dir) {
 }
 
 const files = walk(mediaDir);
-const manifest = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, "utf8")) : { items: [] };
-const declared = new Set();
-const groupOfFile = new Map();
+const manifest: { items?: ManifestItem[] } = existsSync(manifestPath)
+  ? JSON.parse(readFileSync(manifestPath, "utf8"))
+  : { items: [] };
+const declared = new Set<string>();
+const groupOfFile = new Map<string, string>();
 for (const item of manifest.items || []) {
   for (const output of item.outputs || []) {
     declared.add(toPosix(output.file));
@@ -51,8 +59,8 @@ for (const item of manifest.items || []) {
   }
 }
 
-const errors = [];
-const groupTotals = new Map();
+const errors: string[] = [];
+const groupTotals = new Map<string, number>();
 let total = 0;
 for (const file of files) {
   const rel = toPosix(relative(root, file));

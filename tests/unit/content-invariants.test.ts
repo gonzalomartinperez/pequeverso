@@ -20,9 +20,9 @@ const lineBreak = /\r?\n/;
 const retiredOperator = ["Digital Products Team", "digitalproductsteam"];
 const retiredOperatorRoots = ["src", "content", "config"];
 
-function sourceFiles(dir, pattern = /\.(ts|tsx)$/) {
-  const files = [];
-  const walk = (current) => {
+function sourceFiles(dir: string, pattern = /\.(ts|tsx)$/): string[] {
+  const files: string[] = [];
+  const walk = (current: string): void => {
     for (const entry of readdirSync(current)) {
       const full = join(current, entry);
       if (statSync(full).isDirectory()) walk(full);
@@ -38,10 +38,10 @@ function sourceFiles(dir, pattern = /\.(ts|tsx)$/) {
 }
 
 const files = roots.flatMap((dir) => sourceFiles(dir));
-const read = (file) => readFileSync(file, "utf8");
-const toPosix = (file) => file.split("\\").join("/");
-const isSellerModule = (file) => toPosix(file).endsWith("content/es/legal/seller.ts");
-const isQuestion = (line) => /[¿?]/.test(line);
+const read = (file: string): string => readFileSync(file, "utf8");
+const toPosix = (file: string): string => file.split("\\").join("/");
+const isSellerModule = (file: string): boolean => toPosix(file).endsWith("content/es/legal/seller.ts");
+const isQuestion = (line: string): boolean => /[¿?]/.test(line);
 
 test("customer-facing sources never use the retired product name or generic placeholders", () => {
   for (const file of files) {
@@ -107,7 +107,7 @@ test("price literals in copy use the shared formatter", () => {
     [...read(file).matchAll(/US\$\s?(\d+[.,]\d{2})/g)].map((match) => ({
       file,
       raw: match[0],
-      value: Number(match[1].replace(",", ".")),
+      value: Number((match[1] ?? "").replace(",", ".")),
     })),
   );
   for (const { file, raw, value } of prices) {

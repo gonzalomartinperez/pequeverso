@@ -2,7 +2,7 @@ name: Production daily
 
 # End-to-end daily check of https://pequeverso.com. Never builds the site. Reuses
 # post-deploy-verify.yml for revision, smoke, headers, PW_SET=prod and Lighthouse, adds the live
-# checks it does not cover (scripts/check-live.mjs), and keeps one `production` issue open while
+# checks it does not cover (scripts/check-live.ts), and keeps one `production` issue open while
 # anything fails (closed automatically by the next green run).
 on:
   schedule:
@@ -67,7 +67,7 @@ jobs:
           node-version-file: .nvmrc
       - name: Live checks
         id: check
-        run: node scripts/check-live.mjs "$SITE_URL"
+        run: node scripts/check-live.ts "$SITE_URL"
 
   report:
     name: Report to the production issue

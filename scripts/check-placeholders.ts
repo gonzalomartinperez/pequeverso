@@ -1,9 +1,8 @@
-// @ts-check
 // Legal/support pages ship with [[PLACEHOLDER]] tokens until the owner supplies the
 // business details listed in docs/legal-checklist.md. Default mode reports them;
 // --strict (used by the deploy workflow) fails so a launch cannot happen with
 // placeholders in customer-facing content.
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, type Stats, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 
 const strict = process.argv.includes("--strict");
@@ -11,8 +10,8 @@ const root = process.cwd();
 const targets = [resolve(root, "content"), resolve(root, "src")];
 const pattern = /\[\[[A-Z0-9_]+\]\]/g;
 
-function walk(dir) {
-  const out = [];
+function walk(dir: string): string[] {
+  const out: string[] = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const full = join(dir, entry.name);
     if (entry.isDirectory()) out.push(...walk(full));
@@ -21,9 +20,9 @@ function walk(dir) {
   return out;
 }
 
-const found = new Map();
+const found = new Map<string, string[]>();
 for (const dir of targets) {
-  let stat;
+  let stat: Stats;
   try {
     stat = statSync(dir);
   } catch {

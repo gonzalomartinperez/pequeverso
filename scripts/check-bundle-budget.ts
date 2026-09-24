@@ -6,34 +6,40 @@ import { gzipSync } from "node:zlib";
 
 const root = process.cwd();
 const outDir = resolve(root, "out");
-const budgets = JSON.parse(readFileSync(resolve(root, "config/budgets.json"), "utf8"));
+type Metric = "html" | "js" | "css";
+type Budgets = {
+  default: Record<Metric, number>;
+  routes: Record<string, Partial<Record<Metric, number>>>;
+};
+const budgets = JSON.parse(readFileSync(resolve(root, "config/budgets.json"), "utf8")) as Budgets;
+const metrics: readonly Metric[] = ["html", "js", "css"];
 
 if (!existsSync(outDir)) {
   console.error("check-bundle: out/ not found; run `npm run build` first");
   process.exit(1);
 }
 
-const gzipBytes = (file) => gzipSync(readFileSync(file), { level: 9 }).length;
+const gzipBytes = (file: string): number => gzipSync(readFileSync(file), { level: 9 }).length;
 
-function measureRoute(route) {
+function measureRoute(route: string): Record<Metric, number> & { route: string; scripts: number } {
   const html = join(outDir, route === "/" ? "index.html" : `${route.replace(/^\//, "")}index.html`);
   const source = readFileSync(html, "utf8");
   const scripts = [...new Set(source.match(/\/_next\/static\/chunks\/[^"']+\.js/g) ?? [])].filter(
     (src) => !/polyfills/.test(src),
   );
   const styles = [...new Set(source.match(/\/_next\/static\/css\/[^"']+\.css/g) ?? [])];
-  const sum = (files) =>
+  const sum = (files: string[]): number =>
     files.reduce((total, file) => total + gzipBytes(join(outDir, decodeURIComponent(file))), 0);
   return { route, html: gzipBytes(html), js: sum(scripts), css: sum(styles), scripts: scripts.length };
 }
 
-const kb = (bytes) => `${(bytes / 1024).toFixed(1)} KB`;
-const rows = [];
-const failures = [];
+const kb = (bytes: number): string => `${(bytes / 1024).toFixed(1)} KB`;
+const rows: string[] = [];
+const failures: string[] = [];
 
 for (const [route, limits] of Object.entries(budgets.routes)) {
   const measured = measureRoute(route);
-  for (const metric of ["html", "js", "css"]) {
+  for (const metric of metrics) {
     const limit = limits[metric] ?? budgets.default[metric];
     const over = measured[metric] > limit;
     if (over) failures.push(`${route} ${metric} ${kb(measured[metric])} > ${kb(limit)}`);

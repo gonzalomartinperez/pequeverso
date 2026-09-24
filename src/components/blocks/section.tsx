@@ -28,21 +28,21 @@ const sectionVariants = cva("relative section-pad", {
 });
 
 type Props = {
-  tone?: SectionTone;
-  id?: string;
+  tone?: SectionTone | undefined;
+  id?: string | undefined;
   /** Id of the heading that labels the section (aria-labelledby). */
-  labelledBy?: string;
+  labelledBy?: string | undefined;
   /** Accessible name when the section has no heading. */
-  label?: string;
+  label?: string | undefined;
   /** Wave edges are drawn inside the section with `dividerTone`; "overlap" pulls the content up over the previous band. */
-  divider?: SectionDivider;
+  divider?: SectionDivider | undefined;
   /** Tone of the neighbouring band a wave divider belongs to (default cream). */
-  dividerTone?: WaveFill;
+  dividerTone?: WaveFill | undefined;
   /** Skips rendering work until the section nears the viewport (content-visibility: auto). Not for overlap sections. */
-  defer?: boolean;
+  defer?: boolean | undefined;
   /** Wrap children in the centred container (default true). */
-  container?: boolean;
-  className?: string;
+  container?: boolean | undefined;
+  className?: string | undefined;
   children: ReactNode;
 };
 

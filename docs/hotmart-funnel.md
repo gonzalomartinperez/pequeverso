@@ -40,7 +40,7 @@ click, only on click.
 
 | Behaviour | How verified |
 |---|---|
-| Exactly one `#hotmart-sales-funnel` and one widget script on upsell and downsell | Playwright `offer-mode.spec.ts`, `smoke.mjs` against production |
+| Exactly one `#hotmart-sales-funnel` and one widget script on upsell and downsell | Playwright `offer-mode.spec.ts`, `smoke.ts` against production |
 | Downsell variant applied before paint for `?downsell=1`, `?offer=downsell`, with UTMs | Playwright (attribute at DOMContentLoaded) |
 | Canonical → base URL, `noindex` on upsell/downsell/thank-you | Playwright |
 | Editorial CTAs focus `#gfp-decision`; no `pay.hotmart.com` links on post-purchase pages | Playwright |

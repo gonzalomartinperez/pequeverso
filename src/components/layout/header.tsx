@@ -10,11 +10,11 @@ export type NavItem = { href: string; label: string };
 
 type Props = {
   /** Up to four in-page or site anchors. */
-  nav?: readonly NavItem[];
+  nav?: readonly NavItem[] | undefined;
   /** Header CTA (a verb plus price where relevant). */
-  cta?: ReactNode;
+  cta?: ReactNode | undefined;
   /** Small subtitle under the brand on product pages. */
-  subtitle?: string;
+  subtitle?: string | undefined;
 };
 
 /**

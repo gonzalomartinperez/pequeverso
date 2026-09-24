@@ -1,7 +1,7 @@
 {
   "ci": {
     "collect": {
-      "startServerCommand": "node scripts/serve-static.mjs",
+      "startServerCommand": "node scripts/serve-static.ts",
       "startServerReadyPattern": "serve-static: http",
       "startServerReadyTimeout": 30000,
       "url": [

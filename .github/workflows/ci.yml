@@ -17,7 +17,7 @@ concurrency:
 
 env:
   NEXT_TELEMETRY_DISABLED: "1"
-  # Business values are required at build time (scripts/check-env.mjs); CI builds use the public
+  # Business values are required at build time (scripts/check-env.ts); CI builds use the public
   # origin and a fake Hotmart offer code (tests assert only the pay.hotmart.com origin and checkoutMode=10).
   NEXT_PUBLIC_SITE_URL: https://pequeverso.com
   NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO: https://pay.hotmart.com/TEST0000000?checkoutMode=10
@@ -67,6 +67,10 @@ jobs:
         run: npx biome ci --error-on-warnings --reporter=github .
       - name: Typecheck
         run: npm run typecheck
+      - name: Typecheck tools/media (own package; binaries not downloaded)
+        run: |
+          npm ci --prefix tools/media --ignore-scripts --no-audit --no-fund
+          npm run typecheck:media
       - name: Unit tests
         run: npm test
       - name: Dead code (production)
@@ -144,10 +148,10 @@ jobs:
       - name: Smoke the standalone server
         run: |
           set -euo pipefail
-          # Docker exports HOSTNAME=<container id>, which scripts/start.mjs honours (as the host does).
+          # Docker exports HOSTNAME=<container id>, which scripts/start.ts honours (as the host does).
           HOSTNAME=127.0.0.1 PORT=3000 npm start > standalone.log 2>&1 &
           node -e 'const until=Date.now()+30000;(async()=>{while(Date.now()<until){try{if((await fetch("http://localhost:3000/")).ok)process.exit(0)}catch{}await new Promise(r=>setTimeout(r,1000))}console.error("standalone server did not start");process.exit(1)})()'
-          node scripts/smoke.mjs http://localhost:3000 "$GITHUB_SHA"
+          node scripts/smoke.ts http://localhost:3000 "$GITHUB_SHA"
           kill %1
       - name: Server log
         if: failure()
@@ -211,7 +215,7 @@ jobs:
         run: npx lhci autorun
       - name: Summary
         if: always()
-        run: node scripts/lhci-summary.mjs >> "$GITHUB_STEP_SUMMARY"
+        run: node scripts/lhci-summary.ts >> "$GITHUB_STEP_SUMMARY"
       - name: Upload Lighthouse reports
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

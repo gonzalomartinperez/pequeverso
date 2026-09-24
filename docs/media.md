@@ -6,7 +6,7 @@ Every file under `public/media` (and the favicon set at the `public/` root) has 
 hard-code `/media/...` paths: they call `getImage(id)` / `getVideo(id)` from `src/lib/media.ts`.
 
 Budget: **5 MB per file, 25 MB for `public/media` in total** (target 16–20 MB), enforced by
-`npm run check:media` (`scripts/check-media-budget.mjs`) and by `media-build.mjs --check`.
+`npm run check:media` (`scripts/check-media-budget.ts`) and by `media-build.ts --check`.
 Current state: 68 items, 229 outputs (223 under `public/media` + the favicon set), 16.6 MB.
 
 ## Pipeline
@@ -14,7 +14,7 @@ Current state: 68 items, 229 outputs (223 under `public/media` + the favicon set
 ```
 external libraries (read-only, outside the repo)      tools/media/sources.json (declarative)
   ai-business-assets  ─┐                                  id, role, page, source, provenance,
-  ai-business-ops     ─┼─►  tools/media/media-build.mjs ◄─ rights, alt, output spec
+  ai-business-ops     ─┼─►  tools/media/media-build.ts ◄─ rights, alt, output spec
   content-studio      ─┘        sharp + ffmpeg-static
                                       │
                        ┌──────────────┼──────────────────┐
@@ -48,12 +48,12 @@ Library roots default to the local workstation layout and can be overridden:
 
 | Command | Effect |
 |---|---|
-| `node tools/media/media-build.mjs` | Build everything that is missing, prune orphans, rewrite the manifest. Idempotent: an unchanged source with unchanged parameters is skipped. |
-| `node tools/media/media-build.mjs --only gf.page` | Only ids equal to or starting with the value (previous manifest records are kept for the rest; no pruning). |
-| `node tools/media/media-build.mjs --force` | Re-encode even when the output file exists. |
-| `node tools/media/media-build.mjs --check` | Verify `media/manifest.json` against disk (bytes + sha256, orphans, ceilings). Needs no external sources; safe in CI. |
-| `node tools/media/media-build.mjs --no-prune` | Keep undeclared files under `public/media` (debugging only). |
-| `node scripts/check-media-budget.mjs` | Repository guard: every file declared, per-file and total ceilings, no forbidden formats. |
+| `node tools/media/media-build.ts` | Build everything that is missing, prune orphans, rewrite the manifest. Idempotent: an unchanged source with unchanged parameters is skipped. |
+| `node tools/media/media-build.ts --only gf.page` | Only ids equal to or starting with the value (previous manifest records are kept for the rest; no pruning). |
+| `node tools/media/media-build.ts --force` | Re-encode even when the output file exists. |
+| `node tools/media/media-build.ts --check` | Verify `media/manifest.json` against disk (bytes + sha256, orphans, ceilings). Needs no external sources; safe in CI. |
+| `node tools/media/media-build.ts --no-prune` | Keep undeclared files under `public/media` (debugging only). |
+| `node scripts/check-media-budget.ts` | Repository guard: every file declared, per-file and total ceilings, no forbidden formats. |
 
 ### Roles, widths, quality
 
@@ -140,7 +140,7 @@ hashes.
 }
 ```
 
-`outputs[].file` is repo-relative with forward slashes, exactly what `scripts/check-media-budget.mjs`
+`outputs[].file` is repo-relative with forward slashes, exactly what `scripts/check-media-budget.ts`
 expects. Source paths are relative to the library root, never absolute, and no original is copied.
 
 ## Using media in pages
@@ -211,9 +211,9 @@ const demo = getVideo("video.gf.mapa"); // { mp4, webm?, poster: { src, srcSet }
    `page`, `group` (folder under `public/media`), `source` (`library` + relative `path`),
    `provenance` (profile name or inline object), optional `rights` override, `alt.es`, optional
    `outputs` (`widths`, `avif`, `avifQuality`) or `video` (`maxSeconds`, `posterAt`, `posterWidths`, `webm`).
-3. `node tools/media/media-build.mjs --only <id>` then a full `node tools/media/media-build.mjs`
+3. `node tools/media/media-build.ts --only <id>` then a full `node tools/media/media-build.ts`
    (prunes and rewrites the manifest).
-4. `node scripts/check-media-budget.mjs` and `node tools/media/media-build.mjs --check`.
+4. `node scripts/check-media-budget.ts` and `node tools/media/media-build.ts --check`.
 5. Reference it with `getImage("<id>")` / `getVideo("<id>")` and commit outputs + manifest together.
 
 ## Pending owner confirmations

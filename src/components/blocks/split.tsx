@@ -5,13 +5,13 @@ type Ratio = "1/1" | "1.1/0.9" | "0.9/1.1" | "1.2/0.8" | "0.8/1.2";
 
 type Props = {
   /** Width ratio of the first and second child from md up. */
-  ratio?: Ratio;
-  align?: "start" | "center" | "stretch";
+  ratio?: Ratio | undefined;
+  align?: "start" | "center" | "stretch" | undefined;
   /** Keeps the second child in view while the first scrolls (md up). */
-  stickyAside?: boolean;
+  stickyAside?: boolean | undefined;
   /** Shows the second child (media) first on tablet-width containers only. */
-  mediaFirstOnTablet?: boolean;
-  className?: string;
+  mediaFirstOnTablet?: boolean | undefined;
+  className?: string | undefined;
   /** Exactly two children: copy first, media or aside second. */
   children: [ReactNode, ReactNode];
 };

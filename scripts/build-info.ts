@@ -1,4 +1,3 @@
-// @ts-check
 // Writes public/build-info.json so a deployed revision can be verified over HTTP
 // (deploy.yml compares .sha with the commit it built). Served with Cache-Control: no-store.
 import { execSync } from "node:child_process";
@@ -8,7 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
-function git(cmd) {
+function git(cmd: string): string {
   try {
     return execSync(`git ${cmd}`, { cwd: root, stdio: ["ignore", "pipe", "ignore"] })
       .toString()

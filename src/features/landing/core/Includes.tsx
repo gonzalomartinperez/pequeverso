@@ -10,11 +10,11 @@ type Props = {
   titleId: string;
   kicker: string;
   title: string;
-  lead?: string;
+  lead?: string | undefined;
   total: string;
   counts: { pdf: number; pages: number };
   /** Unit labels of the counted facts; the count line is omitted without them. */
-  units?: { pdf: string; pages: string };
+  units?: { pdf: string; pages: string } | undefined;
   resources: Resource[];
 };
 

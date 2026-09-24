@@ -11,16 +11,16 @@ type Props = {
   title: string;
   lead: string;
   /** Copy-column content between the lead and the actions (age selector, fact chips). */
-  children?: ReactNode;
-  actions?: ReactNode;
+  children?: ReactNode | undefined;
+  actions?: ReactNode | undefined;
   /** One-line assurance under the actions (built from config by the page). */
-  trust?: string;
+  trust?: string | undefined;
   /** The `HeroStack`, placed on the sky/desk boundary. */
   stack: ReactNode;
   /** Price or product card; sticks beside `desk` from lg up. */
   aside: ReactNode;
   /** Desk content beside the sticky aside (e.g. "Qué recibes"). */
-  desk?: ReactNode;
+  desk?: ReactNode | undefined;
 };
 
 const enter = (order: number): CSSProperties => ({ "--i": order }) as CSSProperties;

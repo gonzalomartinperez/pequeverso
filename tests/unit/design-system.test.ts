@@ -3,10 +3,10 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { test } from "node:test";
 
-const toPosix = (file) => file.split("\\").join("/");
-function files(dir, pattern) {
-  const found = [];
-  const walk = (current) => {
+const toPosix = (file: string): string => file.split("\\").join("/");
+function files(dir: string, pattern: RegExp): string[] {
+  const found: string[] = [];
+  const walk = (current: string): void => {
     for (const entry of readdirSync(current)) {
       const full = join(current, entry);
       if (statSync(full).isDirectory()) walk(full);
@@ -16,7 +16,7 @@ function files(dir, pattern) {
   walk(dir);
   return found;
 }
-const read = (file) => readFileSync(file, "utf8");
+const read = (file: string): string => readFileSync(file, "utf8");
 const globals = read("src/app/globals.css");
 
 test("CSS Modules never use @apply", () => {
@@ -68,33 +68,35 @@ test("light theme only; !important only in the annotated reduced-motion kill swi
 });
 
 /* OKLCH → sRGB → WCAG 2.x relative luminance, computed from the token source itself. */
-function oklchToLinearRgb([L, C, H]) {
+type Triple = [number, number, number];
+function oklchToLinearRgb([L, C, H]: Triple): Triple {
   const a = C * Math.cos((H * Math.PI) / 180);
   const b = C * Math.sin((H * Math.PI) / 180);
   const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
   const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
   const s = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+  const clamp = (value: number): number => Math.min(1, Math.max(0, value));
   return [
-    4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
-    -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
-    -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s,
-  ].map((value) => Math.min(1, Math.max(0, value)));
+    clamp(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s),
+    clamp(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s),
+    clamp(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s),
+  ];
 }
-function luminance(name) {
+function luminance(name: string): number {
   const match = globals.match(
     new RegExp(`--pv-${name}:\\s*oklch\\(\\s*([\\d.]+)\\s+([\\d.]+)\\s+([\\d.]+)\\s*\\)`),
   );
   assert.ok(match, `--pv-${name} is not a plain oklch() token`);
-  const [r, g, b] = oklchToLinearRgb(match.slice(1).map(Number));
+  const [r, g, b] = oklchToLinearRgb([Number(match[1]), Number(match[2]), Number(match[3])]);
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
-function contrast(fg, bg) {
+function contrast(fg: string, bg: string): number {
   const [a, b] = [luminance(fg), luminance(bg)];
   return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 }
 
 test("documented WCAG 2.2 AA contrast pairs hold for the OKLCH tokens", () => {
-  const pairs = [
+  const pairs: Array<[fg: string, bg: string, min: number]> = [
     ["white", "navy", 12.5],
     ["white", "navy-deep", 15],
     ["white", "coral", 4.5],

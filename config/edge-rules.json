@@ -1,6 +1,6 @@
 {
   "$schema": "./edge-rules.schema.json",
-  "description": "Single source of truth for redirects and response headers on pequeverso.com. scripts/gen-htaccess.mjs renders it to out/.htaccess (static target); next.config.mjs attaches it as redirects()/headers() (standalone target). The old-domain cutover block lives in docs/migration/old-domain.htaccess and is not part of this file. The ?offer=downsell alias is handled client-side by the offer-mode script (no redirect, to avoid query-merge loops).",
+  "description": "Single source of truth for redirects and response headers on pequeverso.com. scripts/gen-htaccess.ts renders it to out/.htaccess (static target); config/next.ts attaches it as redirects()/headers() (standalone target). The old-domain cutover block lives in docs/migration/old-domain.htaccess and is not part of this file. The ?offer=downsell alias is handled client-side by the offer-mode script (no redirect, to avoid query-merge loops).",
   "canonicalHost": "pequeverso.com",
   "hsts": {
     "enabled": true,

@@ -23,7 +23,7 @@ tracking logic, the Hotmart widget behaviour.
 - **AC-1 Single token source.** Every colour, font, size, space, radius, shadow, easing,
   duration and layout constant lives in `globals.css` `:root`; `@theme inline` bridges them to
   utilities; `src/styles/*` is gone. Light theme only; no `!important` except the annotated
-  reduced-motion kill switch. (unit: `design-system.test.mjs`)
+  reduced-motion kill switch. (unit: `design-system.test.ts`)
 - **AC-2 Contrast.** Colours are OKLCH equal to the previous sRGB values; the documented WCAG
   pairs are recomputed from the token source by a unit test.
 - **AC-3 Primitives.** `src/components/ui` holds shadcn/ui (Base UI, `base-vega`) components
@@ -35,7 +35,7 @@ tracking logic, the Hotmart widget behaviour.
   `prefers-reduced-motion: no-preference`), React `<ViewTransition>` second, WAAPI section
   entrances third; decorative 3D only in the lazily imported `src/motion/scene` runtime with
   a server-rendered static fallback and a pause control (WCAG 2.2.2).
-- **AC-6 Scene budget.** `scripts/check-scene-budget.mjs` proves the three + gsap closure is
+- **AC-6 Scene budget.** `scripts/check-scene-budget.ts` proves the three + gsap closure is
   never in an initial chunk and ≤ 250 KB gzip; route JS does not count it.
 - **AC-7 Responsive contract.** 320–1920 px: no horizontal overflow, no clipped control text,
   no stretched images, header CTA in the first viewport at ≤ 768 px, no fixed layer covering a
@@ -59,7 +59,7 @@ tracking logic, the Hotmart widget behaviour.
   `bg-navy`, `text-h2`, `rounded-lg`, `shadow-cta`, `ease-emphasis`). `on-navy` / `on-light`
   re-scope the roles for a subtree, so blocks adapt to their band without tone props.
 - **Class merging.** `cn` runs on merge tables compiled from the sources by `cn build`
-  (`withCn` in `next.config.mjs`, output gitignored); client islands outside `ui/` join classes
+  (`withCn` in `config/next.ts`, output gitignored); client islands outside `ui/` join classes
   with `cx` (0.2 KB) or receive server-computed class strings.
 - **Container queries.** Blocks adapt to their container (`cq` + `cq-sm…cq-xl`, thresholds
   = the sm/md/lg/xl breakpoints); pages never write media queries.

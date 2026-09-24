@@ -1,7 +1,7 @@
 /**
  * Typed access to the build-time media manifest (media/manifest.json).
  *
- * Every image and clip under public/media is produced by tools/media/media-build.mjs and described in
+ * Every image and clip under public/media is produced by tools/media/media-build.ts and described in
  * the manifest (source, provenance, rights, export parameters). Pages never hard-code /media/ paths:
  * they ask for an id (`gf.hero`, `gf.page.07`, `video.gf.mapa`, ...) and render what comes back.
  *
@@ -93,7 +93,7 @@ function lookup(id: MediaId, kind: ManifestItem["kind"]): ManifestItem {
   const item = byId.get(id);
   if (!item) {
     throw new Error(
-      `media: unknown id "${id}". Declare it in tools/media/sources.json and run "node tools/media/media-build.mjs".`,
+      `media: unknown id "${id}". Declare it in tools/media/sources.json and run "node tools/media/media-build.ts".`,
     );
   }
   if (item.kind !== kind) {

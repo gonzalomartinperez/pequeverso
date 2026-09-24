@@ -15,8 +15,8 @@ type Props = {
   /** Colour token (`--pv-<fill>`) of the band the wave belongs to. */
   fill: WaveFill;
   /** Flip vertically for a wave that sits at the top of a section. */
-  flip?: boolean;
-  className?: string;
+  flip?: boolean | undefined;
+  className?: string | undefined;
 };
 
 const PATH = "M0 40 C 240 88 480 -8 720 40 C 960 88 1200 -8 1440 40 L1440 72 L0 72 Z";

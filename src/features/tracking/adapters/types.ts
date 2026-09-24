@@ -42,7 +42,7 @@ export type TrackedEvent = {
  *    and passes `eventId` as the vendor's deduplication id; return `false` when the vendor
  *    global is not ready so the tracker keeps the event queued.
  * 4. Register the factory in `env.ts` (`enabledAdapters`), validate its variable in
- *    `scripts/check-env.mjs`, and document it in `docs/tracking.md` and `/cookies/`.
+ *    `scripts/check-env.ts`, and document it in `docs/tracking.md` and `/cookies/`.
  */
 export interface TrackingAdapter {
   readonly id: AdapterId;

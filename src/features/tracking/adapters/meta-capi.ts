@@ -1,7 +1,7 @@
 import type { ConsentState } from "../consent.ts";
 import type { EventParams, ScriptSpec, TrackedEvent, TrackingAdapter } from "./types.ts";
 
-/** One event in the body of `POST /api/meta/events` (validated by `server/meta-capi.mjs`). */
+/** One event in the body of `POST /api/meta/events` (validated by `server/meta-capi.ts`). */
 export type RelayEvent = {
   name: string;
   eventId: string;
@@ -58,7 +58,7 @@ function chunk<T>(items: T[], size: number): T[][] {
 
 /**
  * Meta Conversions API adapter: relays every event the browser pixel receives, with the same
- * `eventId`, to the same-origin endpoint served by `server/meta-capi.mjs`, so Meta deduplicates
+ * `eventId`, to the same-origin endpoint served by `server/meta-capi.ts`, so Meta deduplicates
  * the pair. Events are coalesced for `flushDelayMs`; on a fresh visit the flush waits up to
  * `fbpWaitMs` for fbevents.js to write `_fbp` (the only match key the site has), and `pagehide`
  * flushes at once with `sendBeacon`. No vendor script and nothing to revoke: the tracker stops

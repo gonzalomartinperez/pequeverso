@@ -3,7 +3,7 @@
  * Each folder holds `copy.ts` (landing copy), `resources.ts` (the real PDFs) and `faq.ts`;
  * the product module in `src/products/<slug>.ts` assembles them with the business facts.
  */
-import type { IconName } from "@/components/blocks/icon";
+import type { IconName } from "@/components/blocks/icon.tsx";
 
 export type Resource = {
   id: string;
@@ -14,7 +14,7 @@ export type Resource = {
   pagesLabel: string;
   description: string;
   /** True for bonuses embedded inside another PDF of the same product. */
-  embedded?: boolean;
+  embedded?: boolean | undefined;
 };
 
 export type FaqItem = { q: string; a: string };

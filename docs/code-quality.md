@@ -2,7 +2,12 @@
 
 ## Standard
 
-TypeScript strict with `noUncheckedIndexedAccess`; Server Components by default and client
+TypeScript everywhere (ADR-0007): application, scripts, server, unit/e2e tests, media tool and
+Next config; files Node runs directly are erasable TypeScript executed by Node's type stripping
+(`node scripts/x.ts`, relative imports with `.ts`, `import type` for types). TypeScript 7 with
+`strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes` (optional props that receive
+forwarded values declare `| undefined`), `noImplicitReturns`, `noImplicitOverride`,
+`erasableSyntaxOnly`, `verbatimModuleSyntax`; unused code is Biome's job. Server Components by default and client
 islands only where the browser is required; Tailwind utilities over the tokens in
 `src/app/globals.css` (kebab-case files, `data-slot` roots, cva variants; CSS Modules only for
 custom geometry, never with `@apply`; see `docs/design-system.md`); concise JSDoc on exported symbols, no narrative
@@ -13,14 +18,14 @@ comments; no dead code (knip is a gate); business facts come from `config/` and 
 | Gate | Tool | Runs on | Blocking |
 |---|---|---|---|
 | Format + lint | Biome 2.5 (`biome ci --error-on-warnings`), `next`/`react` domains | PR, main | yes |
-| Types | `next typegen` + `tsc --noEmit` | PR, main | yes |
+| Types | TypeScript 7 `tsc`: `next typegen` + root project (app, scripts, server, unit + e2e tests) + `tsconfig.node.json` (Node-run graph under `nodenext`) + `tools/media`; `next build` re-checks through the `tsc` CLI | PR, main | yes |
 | Unit | `node --test`: edge rules ↔ golden `.htaccess`, checkout params, commerce facts, media manifest, content invariants (retired names, outcome claims, placeholders, guarantee days, price format), design-system invariants (no `@apply` in modules, no retired style paths, kebab-case + `data-slot`, light-only, OKLCH contrast pairs), scene-budget plugin | PR, main | yes |
 | Dead code | `knip --production` (PR/main), full `knip` (nightly) | PR, main, nightly | yes |
 | Build | static export; generated golden files committed | PR, main | yes |
 | Media | manifest record per file, ≤ 5 MB/file, total budget, `--strict` rights gate on deploy | PR, main, deploy | yes |
 | Bundle | gzip per route vs `config/budgets.json` (html/js/css) | PR, main | yes |
-| Scene | `scripts/check-scene-budget.mjs`: the three + gsap closure is never initial and ≤ `scene.js` (250 KB) | PR, main | yes |
-| Rendered HTML | `scripts/check-rendered.mjs`: landmarks, single visible h1, `lang`, canonical, skip link, resolvable anchors, no placeholders or retired text | PR, main | yes |
+| Scene | `scripts/check-scene-budget.ts`: the three + gsap closure is never initial and ≤ `scene.js` (250 KB) | PR, main | yes |
+| Rendered HTML | `scripts/check-rendered.ts`: landmarks, single visible h1, `lang`, canonical, skip link, resolvable anchors, no placeholders or retired text | PR, main | yes |
 | Placeholders | report on PR; `--strict` on deploy | PR / deploy | deploy |
 | Dependencies | `npm audit --omit=dev --audit-level=high`; Dependabot weekly with cooldowns (npm, `tools/media`, actions incl. `.github/actions/*`) | PR, main | yes |
 | Workflows | `actionlint` (with shellcheck) + `zizmor` (`.github/zizmor.yml`) on every workflow and composite action | PR, main | yes |
@@ -63,7 +68,7 @@ Two scheduled workflows, both reporting in their job summary:
    `playwright.config.ts` and it joins the nightly matrix automatically.
 2. **Production daily (09:00 UTC, the live site)** — never builds. Reads the live sha from
    `build-info.json`, reuses `post-deploy-verify.yml` (smoke, headers, `PW_SET=prod`, informative
-   Lighthouse) and runs `scripts/check-live.mjs`: TLS certificate ≥ 14 days, header matrix (HSTS,
+   Lighthouse) and runs `scripts/check-live.ts`: TLS certificate ≥ 14 days, header matrix (HSTS,
    nosniff, referrer, frame, CSP, HTML `no-cache`, immutable `/_next/static`; `build-info.json`
    `no-store` as a warning), robots and sitemap, Hotmart checkout href on the landing, Conversions
    API relay probe (`POST /api/meta/events/` with `{"events":[]}`: 400 = enabled, 204 = disabled,
