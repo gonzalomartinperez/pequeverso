@@ -67,6 +67,10 @@ jobs:
         run: npx biome ci --error-on-warnings --reporter=github .
       - name: Typecheck
         run: npm run typecheck
+      - name: Typecheck tools/media (own package; binaries not downloaded)
+        run: |
+          npm ci --prefix tools/media --ignore-scripts --no-audit --no-fund
+          npm run typecheck:media
       - name: Unit tests
         run: npm test
       - name: Dead code (production)

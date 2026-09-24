@@ -41,6 +41,10 @@ Spanish. Read this file first, then the doc that matches your task.
   required at build time (`scripts/check-env.ts`; copy `.env.example` to `.env.local` locally),
   optional integrations are no-ops when their variable is empty. The Meta Pixel runs when its id is
   set and the cookie banner withdraws it.
+- **TypeScript first.** Every file we write is TypeScript under the strict tsconfig (TypeScript 7,
+  `exactOptionalPropertyTypes`, `erasableSyntaxOnly`); scripts, server code and unit tests run as
+  `node file.ts` (erasable syntax, `.ts` import extensions, `import type`). The only JavaScript is
+  the one-line `next.config.mjs` re-export of `config/next.ts` (ADR-0007).
 - **Placeholders `[[LIKE_THIS]]` are allowed in legal copy until the owner supplies the details**;
   the deploy workflow refuses to ship them.
 

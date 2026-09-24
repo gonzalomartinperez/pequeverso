@@ -102,7 +102,12 @@ type ManifestItem = {
   role: string;
   page: string;
   kind: "image" | "video";
-  source: SourceRef & { sha256: string; bytes: number; width?: number | undefined; height?: number | undefined };
+  source: SourceRef & {
+    sha256: string;
+    bytes: number;
+    width?: number | undefined;
+    height?: number | undefined;
+  };
   provenance: Record<string, unknown>;
   rights: Record<string, unknown>;
   alt: Record<string, string>;
@@ -294,7 +299,13 @@ function ffprobe(file: string): {
     "json",
     file,
   ]).toString();
-  type Stream = { codec_name?: string; width?: number; height?: number; r_frame_rate?: string; duration?: string };
+  type Stream = {
+    codec_name?: string;
+    width?: number;
+    height?: number;
+    r_frame_rate?: string;
+    duration?: string;
+  };
   const json = JSON.parse(out) as { streams?: Stream[]; format?: { duration?: string } };
   const stream: Stream = json.streams?.[0] || {};
   const [num = 0, den = 0] = String(stream.r_frame_rate || "30/1")
@@ -603,7 +614,12 @@ function encodeLadder(
   return undefined;
 }
 
-function encodeMp4(item: SourceItem, src: string, sourceSha: string, encode: VideoEncode): Encoded | undefined {
+function encodeMp4(
+  item: SourceItem,
+  src: string,
+  sourceSha: string,
+  encode: VideoEncode,
+): Encoded | undefined {
   const target = {
     label: "mp4",
     prefix: `${slug(item.id)}-crf`,
@@ -654,7 +670,7 @@ async function buildPosters(
   sourceSha: string,
   v: VideoOptions,
 ): Promise<OutputRecord[]> {
-  const posterRole = sources.roles["poster"] ?? fail("sources.json needs a poster role");
+  const posterRole = sources.roles.poster ?? fail("sources.json needs a poster role");
   const frame = run(ffmpegBin, [
     "-v",
     "error",
@@ -693,7 +709,13 @@ async function buildVideo(
   src: string,
   sourceSha: string,
 ): Promise<{ outputs: OutputRecord[]; video: Record<string, unknown> }> {
-  const v: VideoOptions = { maxSeconds: 15, posterAt: 1, posterWidths: [480, 720], webm: false, ...item.video };
+  const v: VideoOptions = {
+    maxSeconds: 15,
+    posterAt: 1,
+    posterWidths: [480, 720],
+    webm: false,
+    ...item.video,
+  };
   const probe = ffprobe(src);
   const duration = Math.min(probe.duration, v.maxSeconds);
   const encode: VideoEncode = {

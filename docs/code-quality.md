@@ -2,7 +2,12 @@
 
 ## Standard
 
-TypeScript strict with `noUncheckedIndexedAccess`; Server Components by default and client
+TypeScript everywhere (ADR-0007): application, scripts, server, unit/e2e tests, media tool and
+Next config; files Node runs directly are erasable TypeScript executed by Node's type stripping
+(`node scripts/x.ts`, relative imports with `.ts`, `import type` for types). TypeScript 7 with
+`strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes` (optional props that receive
+forwarded values declare `| undefined`), `noImplicitReturns`, `noImplicitOverride`,
+`erasableSyntaxOnly`, `verbatimModuleSyntax`; unused code is Biome's job. Server Components by default and client
 islands only where the browser is required; Tailwind utilities over the tokens in
 `src/app/globals.css` (kebab-case files, `data-slot` roots, cva variants; CSS Modules only for
 custom geometry, never with `@apply`; see `docs/design-system.md`); concise JSDoc on exported symbols, no narrative
@@ -13,7 +18,7 @@ comments; no dead code (knip is a gate); business facts come from `config/` and 
 | Gate | Tool | Runs on | Blocking |
 |---|---|---|---|
 | Format + lint | Biome 2.5 (`biome ci --error-on-warnings`), `next`/`react` domains | PR, main | yes |
-| Types | `next typegen` + `tsc --noEmit` | PR, main | yes |
+| Types | TypeScript 7 `tsc`: `next typegen` + root project (app, scripts, server, unit + e2e tests) + `tsconfig.node.json` (Node-run graph under `nodenext`) + `tools/media`; `next build` re-checks through the `tsc` CLI | PR, main | yes |
 | Unit | `node --test`: edge rules ↔ golden `.htaccess`, checkout params, commerce facts, media manifest, content invariants (retired names, outcome claims, placeholders, guarantee days, price format), design-system invariants (no `@apply` in modules, no retired style paths, kebab-case + `data-slot`, light-only, OKLCH contrast pairs), scene-budget plugin | PR, main | yes |
 | Dead code | `knip --production` (PR/main), full `knip` (nightly) | PR, main, nightly | yes |
 | Build | static export; generated golden files committed | PR, main | yes |

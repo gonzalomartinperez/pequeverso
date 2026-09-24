@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Node 24 (`.nvmrc`; `engines` allows 22.12+). `nvm use` on macOS/Linux, `nvm use $(cat .nvmrc)` on Windows nvm.
+- Node 24 (`.nvmrc`; `engines` allows 22.18+, the first release that runs `.ts` files without a flag). `nvm use` on macOS/Linux, `nvm use $(cat .nvmrc)` on Windows nvm.
 - npm bundled with Node. `.npmrc` enforces exact versions, engine checks and **no lifecycle scripts**.
 - No system ffmpeg/ImageMagick needed: media outputs are committed; the pipeline in `tools/media` is
   optional and has its own `package.json` (it allows install scripts for `ffmpeg-static`).
@@ -15,7 +15,8 @@
 | `npm run build` | `build-info.json` → `next build` (static export to `out/`) → `out/.htaccess` |
 | `npm start` | Serves `out/` with production-like semantics (`scripts/serve-static.ts`), or the standalone server when `.next/standalone` exists; both serve `/api/meta/events/` (`META_CAPI_ACCESS_TOKEN=… npm start` to enable the relay locally) |
 | `npm run lint` / `lint:fix` / `format` | Biome |
-| `npm run typecheck` | `next typegen` + `tsc --noEmit` |
+| `npm run typecheck` | `next typegen` + `tsc --noEmit` (TypeScript 7) + `tsc -p tsconfig.node.json` (Node-run files under `nodenext`) |
+| `npm run typecheck:media` | `tools/media` project (after `npm ci --prefix tools/media --ignore-scripts`) |
 | `npm test` | Unit tests (`node --test`, TypeScript via Node type stripping) |
 | `npm run test:e2e` | Playwright against `out/` (build first) |
 | `npm run check` | Everything CI runs in the quality job |
@@ -36,8 +37,14 @@ With the optional variables empty no pixel is injected and the Conversions API r
 - Server Components by default; `"use client"` only at leaves that need the browser.
 - Copy in `content/es/*.ts` (typed objects), facts in `config/*.ts`, styles in CSS Modules with
   tokens from `src/styles/tokens.css`. No CSS-in-JS, no Tailwind.
-- Path aliases: `@/…` → `src`, `@config/…`, `@content/…`. Pure libraries that unit tests import
-  use relative `.ts` imports so Node can run them directly.
+- TypeScript for every new file (ADR-0007). Scripts, server code, unit tests and anything they
+  import run under Node's type stripping: erasable syntax only (no `enum`, runtime `namespace`
+  or parameter properties), `import type` for types, relative imports with the `.ts` extension,
+  no `paths` aliases for values. Run them with `node scripts/x.ts`; no tsx/ts-node.
+- Path aliases: `@/…` → `src`, `@config/…`, `@content/…`, `@server/…` for bundled code. Pure
+  libraries that unit tests import use relative `.ts` imports so Node can run them directly.
+- Optional props that receive forwarded values (`className={styles.x}`) are typed
+  `prop?: T | undefined` (`exactOptionalPropertyTypes`).
 - Every media file referenced from the UI must exist in `media/manifest.json` (CI fails otherwise).
 - Tests: add a Playwright spec for behaviours (offer modes, CTA params, widget lifecycle, a11y) and
   a unit test for pure logic (params, edge rules, content invariants).

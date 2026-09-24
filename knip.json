@@ -14,14 +14,7 @@
     "src/app/**/route.standalone.ts!",
     "config/next.ts!"
   ],
-  "project": [
-    "src/**!",
-    "config/**!",
-    "content/**!",
-    "scripts/**",
-    "server/**",
-    "tests/**"
-  ],
+  "project": ["src/**!", "config/**!", "content/**!", "scripts/**", "server/**", "tests/**"],
   "ignoreExportsUsedInFile": true,
   "tags": ["-internal"]
 }
