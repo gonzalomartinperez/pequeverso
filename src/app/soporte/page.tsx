@@ -32,7 +32,14 @@ export default function SoportePage() {
         </Stack>
         <Grid cols={3} as="ul">
           {copy.routes.map((route, index) => (
-            <Card key={route.title} as="li" pad="lg" reveal stagger={index}>
+            <Card
+              key={route.title}
+              as="li"
+              pad="lg"
+              reveal
+              stagger={index}
+              className="grid-rows-[auto_auto_1fr_auto]"
+            >
               <IconBadge icon={route.icon} />
               <CardTitle as="h2">{route.title}</CardTitle>
               <p>{route.text}</p>

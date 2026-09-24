@@ -14,7 +14,7 @@ type Props = { title: string; intro?: string; updatedAt: string; sections?: Sect
 export function LegalLayout({ title, intro, updatedAt, sections = [], children }: Props) {
   return (
     <PageShell>
-      <div data-slot="legal-layout" className="page-container section-pad cq grid gap-12">
+      <div data-slot="legal-layout" className="page-container section-pad cq grid gap-8">
         <header className="grid max-w-[68ch] gap-4">
           <h1>{title}</h1>
           {intro ? <p className="lead text-pretty">{intro}</p> : null}

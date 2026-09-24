@@ -36,11 +36,16 @@ function offerOf(product: CoreProduct): OfferProduct | undefined {
   return offerProducts().find((offer) => offer.parent === product.slug);
 }
 
+/** What the main purchase contains: the principal material plus every other PDF as an included bonus. */
+function includedName(main: CoreProduct): string {
+  return `${main.name} + ${main.resources.length - 1} bonos incluidos`;
+}
+
 type PriceRow = { name: string; price: string; when: string };
 
 function priceRows({ main, pack }: ProductLine): PriceRow[] {
   const rows: PriceRow[] = [
-    { name: main.name, price: formatUsd(main.pricing.list), when: "Compra principal" },
+    { name: includedName(main), price: formatUsd(main.pricing.list), when: "Compra principal" },
   ];
   if (pack) {
     rows.push(
@@ -294,7 +299,7 @@ function ProductRows({ main, pack }: ProductLine) {
   return (
     <>
       <TableRow>
-        <TableHead scope="row">{main.name}</TableHead>
+        <TableHead scope="row">{includedName(main)}</TableHead>
         <TableCell>
           {main.composition.pdfCount} archivos PDF, {main.composition.pageCount} páginas en total
         </TableCell>

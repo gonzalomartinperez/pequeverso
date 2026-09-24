@@ -626,21 +626,35 @@
     background: var(--muted);
   }
 
+  /* Narrow columns: tighter cells and Spanish hyphenation keep 4–5 column tables inside the
+     phone column instead of scrolling. */
+  & [data-slot="table-head"],
+  & [data-slot="table-cell"] {
+    hyphens: auto;
+  }
+
+  @container (width < 40rem) {
+    & [data-slot="table-head"],
+    & [data-slot="table-cell"] {
+      padding-inline: var(--space-2);
+      overflow-wrap: anywhere;
+    }
+  }
+
   & dl {
     display: grid;
     margin-bottom: var(--space-5);
-    border-top: 1px solid var(--border);
   }
 
   & dt {
     padding-top: var(--space-3);
+    border-top: 1px solid var(--border);
     font-weight: 800;
     color: var(--heading);
   }
 
   & dd {
     padding-bottom: var(--space-3);
-    border-bottom: 1px solid var(--border);
     color: var(--body);
   }
 
@@ -650,13 +664,10 @@
       column-gap: var(--space-5);
     }
 
-    & dt {
-      padding-bottom: var(--space-3);
-      border-bottom: 1px solid var(--border);
-    }
-
+    & dt,
     & dd {
-      padding-top: var(--space-3);
+      padding-block: var(--space-3);
+      border-top: 1px solid var(--border);
     }
   }
 }

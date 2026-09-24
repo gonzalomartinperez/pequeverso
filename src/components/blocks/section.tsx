@@ -11,7 +11,7 @@ const sectionVariants = cva("relative section-pad", {
     tone: {
       cream: "bg-cream",
       white: "bg-white",
-      mint: "bg-mint",
+      mint: "bg-mint [--chip:var(--pv-white)]",
       sky: "bg-sky",
       lemon: "bg-lemon",
       rose: "bg-rose",
