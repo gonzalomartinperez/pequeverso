@@ -75,6 +75,15 @@ removed). JS: `/` 150.0 → 150.2 KB, landing 163.7 → 163.3 KB; scene closure 
 250 KB, gsap core ≈ 19.5 KB + ScrollTrigger ≈ 17 KB inside, never initial). HTML stays within
 the existing budgets (`/` 26.8 KB, landing 49.3 KB).
 
+### Addendum 2026-09-24 — Argentine legal re-anchoring
+
+The footer now carries the seller identification (Res. SCI 270/2020) and the "Botón de
+arrepentimiento" link (Disp. SSDCyLC 954/2025) on every page, and the legal pages were rewritten
+with numbered sections and Argentine sources. Measured html (gzip level 9) and new budgets at
+measured + 10 %: `/` 27 773 B → 30 550 B, `/grafismo-fonetico/` 51 215 B → 56 337 B, `/terminos/`
+21 413 B → 23 554 B, `/privacidad/` 20 901 B → 22 991 B, and the new `/arrepentimiento/` 23 747 B
+(per-country table) → 26 122 B. JS and CSS unchanged.
+
 ## Consequences
 
 - One file changes the brand; semantic roles make blocks adapt to their band without tone props.
