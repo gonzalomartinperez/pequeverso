@@ -67,7 +67,7 @@ export function HeroScene({
             </div>
           ) : null}
           {actions ? (
-            <div className="flex flex-wrap items-center gap-3" data-hero-enter="" style={enter(4)}>
+            <div className="flex w-full flex-wrap items-center gap-3" data-hero-enter="" style={enter(4)}>
               {actions}
             </div>
           ) : null}

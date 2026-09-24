@@ -393,6 +393,8 @@ export function mountScene(
     }
     if (orbitElement) {
       const rect = orbitElement.getBoundingClientRect();
+      // The static orbit is display:none where it would cross the copy; so is the WebGL one.
+      orbit.visible = rect.width > 0;
       const scale = rect.width / 400;
       const unit = unitAt(0);
       orbitUniforms.center.value.set(

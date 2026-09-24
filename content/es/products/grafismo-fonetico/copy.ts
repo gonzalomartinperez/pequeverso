@@ -20,7 +20,7 @@ export const grafismoCopy = {
     { href: "#preguntas", label: "Preguntas" },
   ],
   hero: {
-    kicker: "Kit imprimible · 3 a 7 años · 9 PDF",
+    kicker: "Kit imprimible · 3 a 7 años · 9 PDF",
     title: "De las letras a las primeras palabras, un paso por día.",
     lead: "Grafismo Fonético reúne 9 PDF y 414 páginas con sílabas grandes, imágenes reconocibles y palabras para trazar. Eliges una hoja, la imprimes y practican 10 minutos: mira, di, traza y une.",
     facts: [

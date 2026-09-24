@@ -1,5 +1,6 @@
 import { formatUsd, localCurrencyNoteShort } from "@config/commerce";
 import { site } from "@config/site";
+import type { ReactNode } from "react";
 import { AssuranceList } from "@/components/blocks/assurance-list";
 import { BulletList } from "@/components/blocks/bullet-list";
 import { Eyebrow } from "@/components/blocks/eyebrow";
@@ -45,7 +46,8 @@ const HERO_STACK_PAGES = [6, 1, 12] as const;
 const HERO_STACK_SIZES =
   "(min-width: 1280px) 480px, (min-width: 1024px) 400px, (min-width: 640px) 360px, 272px";
 const SCENE_SIZES = "(min-width: 1024px) 520px, 92vw";
-const CTA = buttonVariants();
+/** Price-card CTA: tighter padding and no leading icon when the card (its container) is narrow. */
+const CTA = `${buttonVariants()} @max-[24rem]:px-4 @max-[24rem]:[&_svg[data-icon=inline-start]]:hidden`;
 const CTA_HERO = `${buttonVariants({ size: "lg" })} w-full cq-sm:w-auto`;
 
 function checkoutTarget(product: CoreProduct): CheckoutTarget {
@@ -66,6 +68,25 @@ function jsonLdScript(data: Record<string, unknown> | null) {
       // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD built from the registry
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
     />
+  );
+}
+
+/** Full CTA label, or the sticky bar's short one when the enclosing container is narrow. */
+const LABEL = {
+  /** Price cards (the card itself is the container): short under 26rem. */
+  card: ["@max-[26rem]:hidden", "hidden @max-[26rem]:inline"],
+  /** The full-width hero CTA (the hero is the container): short under 22rem. */
+  hero: ["@max-[22rem]:hidden", "hidden @max-[22rem]:inline"],
+} as const;
+
+/** CTA label that never wraps at ≥ 320 px. */
+function ctaLabel(full: string, short: string, fit: keyof typeof LABEL = "card"): ReactNode {
+  const [long, compact] = LABEL[fit];
+  return (
+    <>
+      <span className={long}>{full}</span>
+      <span className={compact}>{short}</span>
+    </>
   );
 }
 
@@ -142,7 +163,7 @@ export function CoreLanding({ product }: Props) {
           lead={copy.hero.lead}
           actions={
             <CheckoutLink product={target} position="hero" className={CTA_HERO}>
-              {copy.hero.cta}
+              {ctaLabel(copy.hero.cta, copy.sticky.cta, "hero")}
             </CheckoutLink>
           }
           trust={
@@ -166,11 +187,11 @@ export function CoreLanding({ product }: Props) {
                 taxNote={copy.hero.taxNote}
                 cta={
                   <CheckoutLink product={target} position="hero-card" className={CTA}>
-                    {copy.hero.cta}
+                    {ctaLabel(copy.hero.cta, copy.sticky.cta)}
                   </CheckoutLink>
                 }
                 ctaNote={copy.hero.ctaNote}
-                className="scroll-mt-(--header-height) border-2 border-navy p-6 shadow-lg cq-sm:p-8"
+                className="cq scroll-mt-(--header-height) border-2 border-navy p-6 shadow-lg sm:p-8"
               />
               {bundle ? (
                 <p className="text-center font-extrabold text-balance text-ink">{bundle.allIncluded}</p>
@@ -307,7 +328,7 @@ export function CoreLanding({ product }: Props) {
           }}
           cta={
             <CheckoutLink product={target} position="oferta" className={CTA}>
-              {copy.midOffer.cta}
+              {ctaLabel(copy.midOffer.cta, copy.sticky.cta)}
             </CheckoutLink>
           }
           footer={<AssuranceList items={copy.trust} className="justify-center border-t border-border pt-6" />}
@@ -374,11 +395,11 @@ export function CoreLanding({ product }: Props) {
             taxNote={copy.hero.taxNote}
             cta={
               <CheckoutLink product={target} position="final" className={CTA}>
-                {copy.finalOffer.cta}
+                {ctaLabel(copy.finalOffer.cta, copy.sticky.cta)}
               </CheckoutLink>
             }
             ctaNote={copy.finalOffer.note}
-            className="border-2 border-navy p-8 shadow-lg"
+            className="cq border-2 border-navy p-6 shadow-lg sm:p-8"
           />
         </Split>
       </Section>

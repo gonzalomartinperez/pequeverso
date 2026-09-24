@@ -44,7 +44,7 @@ export function OfferCard({ titleId, kicker, title, text, checks, price, cta, hi
           price={price.value}
           taxNote={price.taxNote}
           cta={cta}
-          className="border-2 border-navy/12 bg-cream shadow-none"
+          className="cq border-2 border-navy/12 bg-cream p-4 shadow-none sm:p-6"
         />
       </Split>
       {footer}
