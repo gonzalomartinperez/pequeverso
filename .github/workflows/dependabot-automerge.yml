@@ -1,0 +1,39 @@
+name: Dependabot auto-merge
+
+# Approves Dependabot's minor/patch PRs and enables GitHub auto-merge: the PR merges (squash) only
+# once the required checks (`ci`, `Branch policy`) pass and the branch is up to date; Hostinger then
+# deploys main and post-deploy-verify checks production. Majors are left for a human.
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions: {}
+
+concurrency:
+  group: dependabot-automerge-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  automerge:
+    name: Enable auto-merge
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'gonzalomartinperez/pequeverso'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Read update metadata
+        id: meta
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+      - name: Approve and enable auto-merge (minor and patch only)
+        if: steps.meta.outputs.update-type != 'version-update:semver-major'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          UPDATE_TYPE: ${{ steps.meta.outputs.update-type }}
+        run: |
+          set -euo pipefail
+          gh pr review "$PR_URL" --approve --body "Auto-approved ${UPDATE_TYPE:-grouped update}: merges only after the required checks pass."
+          gh pr merge "$PR_URL" --auto --squash
+          echo "Auto-merge enabled for $PR_URL (${UPDATE_TYPE:-grouped})" >> "$GITHUB_STEP_SUMMARY"
