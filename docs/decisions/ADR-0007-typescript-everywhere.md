@@ -91,14 +91,15 @@ exports the version), which matters in two places:
 Type-check time (Windows, warm cache, same tree, `tsc --noEmit --incremental false` after
 `next typegen`): TypeScript 5.9.3 total 8.0 s (check 4.1 s, 1751 files); TypeScript 7.0.2 total
 2.2 s (check 0.9 s, 1758 files, 329 MB). Wall clock with `npx`: 7–15 s before, 3.7–6.6 s after;
-`tsc -p tsconfig.node.json` adds 2.7–4.9 s. The whole tree also type-checks cleanly with 5.9.3, so
+`tsc -p tsconfig.node.json` adds 2.7–4.9 s. On the CI runner the whole `npm run typecheck` step
+(typegen + both projects) takes 2 s, `typecheck:media` including its install 3 s. The whole tree also type-checks cleanly with 5.9.3, so
 a rollback is a one-line pin change.
 
 ### 4. Exceptions (the only JavaScript left)
 
 | File | Why it is not TypeScript |
 |---|---|
-| `next.config.mjs` | One line: `export { default } from "./config/next.ts"`; the configuration itself is `config/next.ts`. A root `next.config.ts` is loaded by Next either through Node's native loader, which Next only uses behind the `--experimental-next-config-strip-types` CLI flag, or by transpiling it with SWC to CommonJS; on Hostinger's GLIBC 2.28 image only the WASM SWC binding loads, and that path is reported to fail on `next.config.ts` (sources below). Hostinger's Node.js preset also wraps the config file to force `output: "standalone"`, a mechanism we cannot run in CI. The `.mjs` name keeps both unchanged, and Node 24 imports the `.ts` module natively (the same mechanism `npm run build` already relies on for `scripts/check-env.ts`). Verified in the Hostinger parity lane (GLIBC 2.28, WASM SWC, `build:standalone`, smoke). |
+| `next.config.mjs` | One line: `export { default } from "./config/next.ts"`; the configuration itself is `config/next.ts`. A root `next.config.ts` is loaded by Next either through Node's native loader, which Next only uses behind the `--experimental-next-config-strip-types` CLI flag, or by transpiling it with SWC to CommonJS; on Hostinger's GLIBC 2.28 image only the WASM SWC binding loads, and that path is reported to fail on `next.config.ts` (sources below). Hostinger's Node.js preset also wraps the config file to force `output: "standalone"`, a mechanism we cannot run in CI. The `.mjs` name keeps both unchanged, and Node 24 imports the `.ts` module natively (the same mechanism `npm run build` already relies on for `scripts/check-env.ts`). Verified in the Hostinger parity lane (CI run 36003644578: GLIBC 2.28, WASM SWC bindings, `Running next.config.mjs`, TypeScript 7 `tsc` in 1.1 s, `build:standalone`, smoke 10/10). |
 | `src/lib/cn-tables.js` | Generated and gitignored (`cn build` via `withCn`); typed by `cn-tables.d.ts`. |
 | `postcss.config.json` | JSON, not code: Next reads `postcss.config.json`, knip's PostCSS plugin too; there is no TypeScript form Next loads. |
 
