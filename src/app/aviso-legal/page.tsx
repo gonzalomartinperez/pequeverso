@@ -63,7 +63,7 @@ export default function AvisoLegalPage() {
       <SectionHeading sections={sections} id="definiciones" />
       <dl>
         <dt>Titular</dt>
-        <dd>{seller.legalName}, identificado en el punto 1.</dd>
+        <dd>{seller.legalName}, identificado en la sección anterior.</dd>
         <dt>Sitio</dt>
         <dd>El sitio web pequeverso.com y todas sus páginas.</dd>
         <dt>Usuario</dt>

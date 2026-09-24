@@ -165,22 +165,21 @@ export default function ArrepentimientoPage() {
         <TableHeader>
           <TableRow>
             <TableHead scope="col">País</TableHead>
-            <TableHead scope="col">Plazo legal</TableHead>
-            <TableHead scope="col">Autoridad de consumo</TableHead>
+            <TableHead scope="col">Plazo legal y autoridad de consumo</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {consumerRights.map((entry) => (
             <TableRow key={entry.country}>
-              <TableHead scope="row">{entry.country}</TableHead>
+              <TableHead scope="row" className="align-top">
+                {entry.country}
+              </TableHead>
               <TableCell>
-                <span className="block font-bold text-heading">
-                  {entry.period ?? "Consulta la ley local"}
-                </span>
-                <span className="block text-small">{entry.note}</span>
-              </TableCell>
-              <TableCell>
-                <a href={entry.url}>{entry.authority}</a>
+                <div className="grid gap-1">
+                  <span className="font-bold text-heading">{entry.period ?? "Consulta la ley de tu país"}</span>
+                  <span className="text-small">{entry.note}</span>
+                  <a href={entry.url}>{entry.authority}</a>
+                </div>
               </TableCell>
             </TableRow>
           ))}
