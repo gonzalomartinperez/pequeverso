@@ -13,7 +13,7 @@
 |---|---|
 | `npm run dev` | Next dev server (Turbopack) |
 | `npm run build` | `build-info.json` → `next build` (static export to `out/`) → `out/.htaccess` |
-| `npm start` | Serves `out/` with production-like semantics (`scripts/serve-static.mjs`), or the standalone build behind the front server when `.next/standalone` exists; both mount `/api/meta/events` (`META_CAPI_ACCESS_TOKEN=… npm start` to enable the relay locally) |
+| `npm start` | Serves `out/` with production-like semantics (`scripts/serve-static.mjs`), or the standalone server when `.next/standalone` exists; both serve `/api/meta/events/` (`META_CAPI_ACCESS_TOKEN=… npm start` to enable the relay locally) |
 | `npm run lint` / `lint:fix` / `format` | Biome |
 | `npm run typecheck` | `next typegen` + `tsc --noEmit` |
 | `npm test` | Unit tests (`node --test`, TypeScript via Node type stripping) |

@@ -1,8 +1,9 @@
 // @ts-check
 // First-party relay for the Meta Conversions API: the browser posts the events it already sent
 // to the pixel (same event ids) and this handler forwards them to Graph API from the server so
-// Meta deduplicates browser/server pairs. Mounted by scripts/serve-static.mjs (static export)
-// and scripts/start.mjs (standalone front server). Zero dependencies; Node 24 built-ins only.
+// Meta deduplicates browser/server pairs. Transport-agnostic core (createMetaCapiRelay) used by
+// the Node adapter in scripts/serve-static.mjs (static export) and by the standalone route
+// handler src/app/api/meta/events/route.standalone.ts. Zero dependencies; Node built-ins only.
 import { isIP } from "node:net";
 
 /**
@@ -20,14 +21,18 @@ import { isIP } from "node:net";
  *   onResult?: (result: UpstreamResult) => void,
  *   rateLimit?: { events: number, windowMs: number },
  *   timeoutMs?: number,
- * }} HandlerOptions
+ * }} RelayOptions
+ * @typedef {{ method: string, bodyText: string, contentType?: string, origin?: string, host?: string, ip?: string, userAgent?: string }} RelayInput
+ * @typedef {{ status: number, headers: Record<string, string>, body?: string }} RelayResult
+ * @typedef {{ enabled: boolean, process: (input: RelayInput) => RelayResult, pending: Set<Promise<void>> }} MetaCapiRelay
  * @typedef {((req: IncomingMessage, res: ServerResponse) => Promise<boolean>) & { pending: Set<Promise<void>> }} MetaCapiHandler
  */
 
-export const META_CAPI_PATH = "/api/meta/events";
+/** Canonical relay path (trailing slash: the standalone target redirects the slash-less form). */
+export const META_CAPI_PATH = "/api/meta/events/";
 export const GRAPH_API_VERSION = "v26.0";
+export const MAX_BODY_BYTES = 16 * 1024;
 const DEFAULT_SITE_URL = "https://pequeverso.com";
-const MAX_BODY_BYTES = 16 * 1024;
 const MAX_EVENTS = 10;
 const MAX_STRING = 200;
 const MAX_URL = 2048;
@@ -128,22 +133,6 @@ function validateBody(body, origins, now) {
   return body.events.map((event) => validateEvent(event, origins, now));
 }
 
-/** @param {IncomingMessage} req */
-function clientIp(req) {
-  const cf = req.headers["cf-connecting-ip"];
-  const xff = req.headers["x-forwarded-for"];
-  const candidates = [
-    typeof cf === "string" ? cf : "",
-    typeof xff === "string" ? xff.split(",")[0] : "",
-    req.socket?.remoteAddress || "",
-  ];
-  for (const raw of candidates) {
-    const value = raw.trim().replace(/^::ffff:/i, "");
-    if (value && isIP(value)) return value;
-  }
-  return "";
-}
-
 /** @param {string} value */
 function parseOrigin(value) {
   try {
@@ -151,46 +140,6 @@ function parseOrigin(value) {
   } catch {
     return null;
   }
-}
-
-/** @param {IncomingMessage} req @param {string} siteOrigin */
-function allowedOrigins(req, siteOrigin) {
-  const origins = new Set([siteOrigin]);
-  const host = req.headers.host;
-  if (typeof host === "string" && /^[a-z0-9.:[\]-]+$/i.test(host)) {
-    origins.add(`https://${host}`);
-    origins.add(`http://${host}`);
-  }
-  return origins;
-}
-
-/** @param {IncomingMessage} req @param {number} limit @returns {Promise<string>} */
-function readBody(req, limit) {
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    let size = 0;
-    req.on("data", (chunk) => {
-      size += chunk.length;
-      if (size > limit) {
-        reject(new ValidationError("size"));
-        req.destroy();
-        return;
-      }
-      chunks.push(chunk);
-    });
-    req.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
-    req.on("error", reject);
-  });
-}
-
-/** @param {ServerResponse} res @param {number} status @param {string} [reason] */
-function reply(res, status, reason) {
-  if (reason === undefined) {
-    res.writeHead(status, NO_STORE).end();
-    return;
-  }
-  res.writeHead(status, { ...NO_STORE, "Content-Type": "application/json; charset=utf-8" });
-  res.end(JSON.stringify({ error: reason }));
 }
 
 /** Token bucket per client IP. */
@@ -228,6 +177,43 @@ class RateLimiter {
 }
 
 /**
+ * Client IP from the first candidate that is a plain IPv4/IPv6 address (`::ffff:` prefix
+ * stripped). Callers pass `cf-connecting-ip`, the first `x-forwarded-for` entry, then a socket
+ * address when they have one.
+ * @param {Array<string | undefined>} candidates
+ */
+export function pickClientIp(candidates) {
+  for (const raw of candidates) {
+    const value = (raw || "")
+      .split(",")[0]
+      .trim()
+      .replace(/^::ffff:/i, "");
+    if (value && isIP(value)) return value;
+  }
+  return "";
+}
+
+/** @param {string | undefined} host @param {string} siteOrigin */
+function allowedOrigins(host, siteOrigin) {
+  const origins = new Set([siteOrigin]);
+  if (typeof host === "string" && /^[a-z0-9.:[\]-]+$/i.test(host)) {
+    origins.add(`https://${host}`);
+    origins.add(`http://${host}`);
+  }
+  return origins;
+}
+
+/** @param {number} status @param {string} [reason] @returns {RelayResult} */
+function result(status, reason) {
+  if (reason === undefined) return { status, headers: { ...NO_STORE } };
+  return {
+    status,
+    headers: { ...NO_STORE, "Content-Type": "application/json; charset=utf-8" },
+    body: JSON.stringify({ error: reason }),
+  };
+}
+
+/**
  * Handler options from the process environment: `NEXT_PUBLIC_META_PIXEL_ID` (shared with the
  * browser pixel), the server-only `META_CAPI_ACCESS_TOKEN` and `NEXT_PUBLIC_SITE_URL`.
  * @param {NodeJS.ProcessEnv} env
@@ -242,15 +228,15 @@ export function metaCapiOptionsFromEnv(env) {
 }
 
 /**
- * Builds the `(req, res) => Promise<boolean>` handler for `POST /api/meta/events`. Returns
- * `false` for any other path so the caller continues. With an empty `pixelId` or
- * `accessToken` every valid request gets `204` and Meta is never called. Upstream calls run
- * after the `202` response (bearer token header, one retry on 429/5xx/network error);
- * `handler.pending` holds their promises for tests and shutdown.
- * @param {HandlerOptions} options
- * @returns {MetaCapiHandler}
+ * Transport-agnostic relay: `process(input)` validates one request and describes the response;
+ * a valid batch is forwarded to Graph API in the background (bearer token header, 3 s timeout,
+ * one retry on 429/5xx/network error) and its promise is kept in `pending`. With an empty
+ * `pixelId` or `accessToken` every valid request gets `204` and Meta is never called. Used by
+ * the Node adapter below (static server) and by the standalone route handler.
+ * @param {RelayOptions} options
+ * @returns {MetaCapiRelay}
  */
-export function createMetaCapiHandler(options) {
+export function createMetaCapiRelay(options) {
   const {
     pixelId,
     accessToken,
@@ -340,67 +326,110 @@ export function createMetaCapiHandler(options) {
     onResult?.({ status, ok, attempts });
   }
 
+  /** @param {RelayInput} input @returns {RelayResult} */
+  function process(input) {
+    if (input.method !== "POST") return { status: 405, headers: { ...NO_STORE, Allow: "POST" } };
+    const origins = allowedOrigins(input.host, siteOrigin);
+    if (input.origin && !origins.has(input.origin)) return result(403, "origin");
+    if (!enabled) return result(204);
+    if (!/^application\/json\b/i.test(input.contentType || "")) return result(415, "content-type");
+    if (Buffer.byteLength(input.bodyText, "utf8") > MAX_BODY_BYTES) return result(413, "size");
+    let events;
+    try {
+      events = validateBody(JSON.parse(input.bodyText), origins, now());
+    } catch (error) {
+      return result(400, error instanceof ValidationError ? error.reason : "json");
+    }
+    const ip = input.ip || "";
+    if (!limiter.take(ip || "unknown", events.length)) return result(429, "rate");
+    const body = JSON.stringify(payload(events, ip, input.userAgent || ""));
+    const job = relay(body).finally(() => pending.delete(job));
+    pending.add(job);
+    return result(202);
+  }
+
+  return { enabled, process, pending };
+}
+
+/** @param {IncomingMessage} req @param {number} limit @returns {Promise<string>} */
+function readBody(req, limit) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    let size = 0;
+    req.on("data", (chunk) => {
+      size += chunk.length;
+      if (size > limit) {
+        reject(new ValidationError("size"));
+        req.destroy();
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+    req.on("error", reject);
+  });
+}
+
+/** @param {ServerResponse} res @param {RelayResult} outcome */
+function write(res, outcome) {
+  res.writeHead(outcome.status, outcome.headers);
+  res.end(outcome.body);
+}
+
+/** @param {IncomingMessage["headers"]} headers @param {string} name */
+function header(headers, name) {
+  const value = headers[name];
+  return typeof value === "string" ? value : undefined;
+}
+
+/**
+ * Node `http` adapter for the static server: `(req, res) => Promise<boolean>` that answers
+ * `/api/meta/events/` (slash-less form accepted) and returns `false` for any other path so the
+ * caller continues. `handler.pending` is the relay's set of upstream promises.
+ * @param {RelayOptions} options
+ * @returns {MetaCapiHandler}
+ */
+export function createMetaCapiHandler(options) {
+  const relay = createMetaCapiRelay(options);
   /** @type {MetaCapiHandler} */
   const handler = Object.assign(
     /** @param {IncomingMessage} req @param {ServerResponse} res */
     async (req, res) => {
       const pathname = (req.url || "/").split("?")[0];
-      if (pathname !== META_CAPI_PATH) return false;
-      if (req.method !== "POST") {
-        res.writeHead(405, { ...NO_STORE, Allow: "POST" }).end();
+      if (pathname !== META_CAPI_PATH && `${pathname}/` !== META_CAPI_PATH) return false;
+      const base = {
+        method: req.method || "GET",
+        contentType: header(req.headers, "content-type"),
+        origin: header(req.headers, "origin"),
+        host: header(req.headers, "host"),
+        ip: pickClientIp([
+          header(req.headers, "cf-connecting-ip"),
+          header(req.headers, "x-forwarded-for"),
+          req.socket?.remoteAddress,
+        ]),
+        userAgent: header(req.headers, "user-agent"),
+      };
+      if (req.method !== "POST" || !relay.enabled) {
         req.resume();
-        return true;
-      }
-      const origins = allowedOrigins(req, siteOrigin);
-      const origin = req.headers.origin;
-      if (typeof origin === "string" && !origins.has(origin)) {
-        reply(res, 403, "origin");
-        req.resume();
-        return true;
-      }
-      if (!enabled) {
-        reply(res, 204);
-        req.resume();
-        return true;
-      }
-      const type = String(req.headers["content-type"] || "");
-      if (!/^application\/json\b/i.test(type)) {
-        reply(res, 415, "content-type");
-        req.resume();
+        write(res, relay.process({ ...base, bodyText: "" }));
         return true;
       }
       if (Number(req.headers["content-length"] || 0) > MAX_BODY_BYTES) {
-        reply(res, 413, "size");
         req.resume();
+        write(res, result(413, "size"));
         return true;
       }
-      let text;
+      let bodyText;
       try {
-        text = await readBody(req, MAX_BODY_BYTES);
+        bodyText = await readBody(req, MAX_BODY_BYTES);
       } catch (error) {
-        if (error instanceof ValidationError) reply(res, 413, error.reason);
-        else reply(res, 400, "body");
+        write(res, error instanceof ValidationError ? result(413, error.reason) : result(400, "body"));
         return true;
       }
-      let events;
-      try {
-        events = validateBody(JSON.parse(text), origins, now());
-      } catch (error) {
-        reply(res, 400, error instanceof ValidationError ? error.reason : "json");
-        return true;
-      }
-      const ip = clientIp(req);
-      if (!limiter.take(ip || "unknown", events.length)) {
-        reply(res, 429, "rate");
-        return true;
-      }
-      const body = JSON.stringify(payload(events, ip, String(req.headers["user-agent"] || "")));
-      reply(res, 202);
-      const job = relay(body).finally(() => pending.delete(job));
-      pending.add(job);
+      write(res, relay.process({ ...base, bodyText }));
       return true;
     },
-    { pending },
+    { pending: relay.pending },
   );
   return handler;
 }

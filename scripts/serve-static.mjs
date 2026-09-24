@@ -2,8 +2,8 @@
 // Minimal static server for out/ that mimics the production host: trailing-slash
 // directories resolve to index.html, missing paths return the real 404 page with
 // status 404, and .htaccess-equivalent cache headers are applied. Mounts the Meta
-// Conversions API relay (server/meta-capi.mjs) before static resolution. Used by
-// Playwright, Lighthouse CI and `npm start`.
+// Conversions API relay (server/meta-capi.mjs, POST /api/meta/events/) before static
+// resolution. Used by Playwright, Lighthouse CI and `npm start`.
 import { createReadStream, existsSync, readFileSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join, normalize, resolve } from "node:path";

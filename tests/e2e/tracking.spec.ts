@@ -6,12 +6,12 @@ import { expect, test } from "./fixtures";
  * and E2E_EXPECT_CONSENT=1): the pixel runs by default and "Rechazar" revokes it. Meta hosts
  * are stubbed so nothing leaves the machine; the fake fbevents.js records every fbq call in
  * window.__fbqCalls and writes the _fbp cookie the real one would. The same-origin Conversions
- * API relay (/api/meta/events) is intercepted so the browser/server pair can be compared.
+ * API relay (/api/meta/events/) is intercepted so the browser/server pair can be compared.
  */
 const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || "1234567890123456";
 const FORBIDDEN = ["InitiateCheckout", "Purchase", "PlaceAnOrder", "begin_checkout"];
 const PIXEL_SCRIPT = 'script[src*="connect.facebook.net"]';
-const RELAY = "**/api/meta/events";
+const RELAY = "**/api/meta/events/";
 const FAKE_FBEVENTS = [
   "window.__fbqCalls=[];",
   "document.cookie='_fbp=fb.1.1.test; Path=/';",

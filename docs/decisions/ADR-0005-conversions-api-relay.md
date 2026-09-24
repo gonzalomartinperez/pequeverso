@@ -17,13 +17,22 @@ stays with Hotmart's own pixel + CAPI integration.
 
 ## Decision
 
-- A same-origin endpoint `POST /api/meta/events` implemented as a plain Node handler
-  (`server/meta-capi.mjs`, zero dependencies) and mounted in the servers we already run:
-  `scripts/serve-static.mjs` for the export, and for the standalone target a small front server
-  (`server/front.mjs`) that answers the endpoint itself and proxies everything else to Next's
-  standalone `server.js` on a loopback port (`PORT + 1`).
-- Not a Next route handler: `output: "export"` fails the build on a non-GET handler, and the
-  static export is the primary target and the CI artifact.
+- A same-origin endpoint `POST /api/meta/events/` whose logic is a transport-agnostic core
+  (`server/meta-capi.mjs`, zero dependencies): `process(input) → { status, headers, body? }` plus
+  the background upstream sender. Two thin transports call it: the Node `req/res` adapter in
+  `scripts/serve-static.mjs` (static export), and a Next route handler
+  `src/app/api/meta/events/route.standalone.ts` (standalone target).
+- The route handler is gated by `pageExtensions`: `standalone.ts` is a page extension only when
+  `output === "standalone"`, so the export build never sees the file (`output: "export"` fails on a
+  non-GET handler and `out/` gets no `api/` folder). Revision 2026-09-23: production showed that
+  Hostinger's Next.js preset starts Next's standalone server itself (`x-nextjs-*` headers), so
+  neither `scripts/start.mjs` nor the first version's front proxy (`server/front.mjs`, relay +
+  loopback proxy on `PORT + 1`) was in the request path; `POST /api/meta/events` got Next's
+  trailing-slash 308 and then a 404. The proxy was removed: redundant with the route handler, an
+  extra hop, and dead code on the host that matters.
+- Canonical path with a trailing slash (`trailingSlash: true` makes Next 308 the slash-less
+  form); the client posts `/api/meta/events/` so `fetch`/`sendBeacon` never follow a redirect.
+  The static server accepts both forms; no edge rule redirects `/api/*`.
 - Not a Cloudflare Worker: it would need Cloudflare deploy credentials in CI or a manual deploy
   step outside the repository's release flow, and a second place to keep in sync with the event
   allowlist. The Node server is already deployed with every release.
@@ -49,5 +58,6 @@ stays with Hotmart's own pixel + CAPI integration.
   drops its buffer and the pixel adapter expires `_fbp`/`_fbc`.
 - The static hosting mode (`deploy` branch on LiteSpeed, no Node) has no relay: the endpoint
   returns the 404 page and the browser ignores it. Only the Node.js Web App mode gains CAPI.
-- One more process hop on the standalone target (front server → Next). Measured locally as
-  negligible; headers, status, ranges and compression pass through unchanged.
+- The standalone relay reads `META_CAPI_ACCESS_TOKEN`/`NEXT_PUBLIC_META_PIXEL_ID` from
+  `process.env` at request time (`dynamic = "force-dynamic"`, `runtime = "nodejs"`); rate-limit
+  buckets are per process, as before.

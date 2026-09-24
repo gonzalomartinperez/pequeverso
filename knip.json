@@ -6,9 +6,18 @@
     "scripts/*.mjs",
     "scripts/lib/*.mjs",
     "tests/unit/**/*.test.mjs",
-    "tests/e2e/**/*.spec.ts"
+    "tests/e2e/**/*.spec.ts",
+    "src/app/**/route.standalone.ts!"
   ],
-  "project": ["src/**!", "config/**!", "content/**!", "scripts/**", "server/**", "tests/**"],
+  "project": [
+    "src/**!",
+    "config/**!",
+    "content/**!",
+    "scripts/**",
+    "server/**",
+    "!server/*.d.mts",
+    "tests/**"
+  ],
   "ignoreExportsUsedInFile": true,
   "tags": ["-internal"]
 }

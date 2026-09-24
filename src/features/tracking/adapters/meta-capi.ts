@@ -20,7 +20,8 @@ export type MetaCapiDeps = {
   endpoint?: string;
 };
 
-export const META_CAPI_ENDPOINT = "/api/meta/events";
+/** Trailing slash on purpose: the standalone target 308-redirects the slash-less form. */
+export const META_CAPI_ENDPOINT = "/api/meta/events/";
 const MAX_BATCH = 10;
 const DEFAULT_FLUSH_DELAY_MS = 250;
 const DEFAULT_FBP_WAIT_MS = 2000;

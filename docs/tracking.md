@@ -10,7 +10,7 @@ Conversions API relay (below); every other behaviour is policy in code.
 | Adapter (`id`) | Variable | Category | Loads | Withdrawn by |
 |---|---|---|---|---|
 | Meta Pixel (`meta`) | `NEXT_PUBLIC_META_PIXEL_ID` | `marketing` | after hydration, active from `init`, unless a stored rejection exists | "Rechazar" → `fbq('consent','revoke')`, `_fbp`/`_fbc` expired; no script on later visits |
-| Meta Conversions API (`meta-capi`, label "Meta Pixel") | `NEXT_PUBLIC_META_PIXEL_ID` (+ `META_CAPI_ACCESS_TOKEN` on the server) | `marketing` | no script; `POST /api/meta/events` batches from the first event | the tracker stops dispatching; the buffer is dropped |
+| Meta Conversions API (`meta-capi`, label "Meta Pixel") | `NEXT_PUBLIC_META_PIXEL_ID` (+ `META_CAPI_ACCESS_TOKEN` on the server) | `marketing` | no script; `POST /api/meta/events/` batches from the first event | the tracker stops dispatching; the buffer is dropped |
 
 An adapter is `enabled` only when its variable is set at build time. With none enabled the
 module is inert: no scripts, no banner (the footer control shows a necessary-cookies notice),
@@ -40,7 +40,8 @@ throws in development and no-ops in production. Unit and E2E tests assert they n
 ## Conversions API
 
 Same events, second channel: the `meta-capi` adapter posts every event the pixel received to
-the same-origin endpoint `POST /api/meta/events`, and `server/meta-capi.mjs` forwards the batch
+the same-origin endpoint `POST /api/meta/events/` (trailing slash: the standalone target
+308-redirects the slash-less form), and `server/meta-capi.mjs` forwards the batch
 to `https://graph.facebook.com/v26.0/<pixelId>/events` from the Node server. ADR:
 `docs/decisions/ADR-0005-conversions-api-relay.md`.
 
@@ -52,11 +53,19 @@ and `fbc` (cookie `_fbc`, or `fb.1.<now ms>.<fbclid>` derived from `?fbclid`), a
 `202` at once and calls Graph API in the background (3 s timeout, one retry on 429/5xx/network
 error, token in the `Authorization: Bearer` header, never logged).
 
-Server contract (`server/meta-capi.mjs`):
+Server: `createMetaCapiRelay()` in `server/meta-capi.mjs` is a transport-agnostic core
+(`process({ method, bodyText, contentType, origin, host, ip, userAgent }) → { status, headers,
+body? }` plus the background upstream sender). Two thin adapters call it: the Node `req/res`
+handler mounted by `scripts/serve-static.mjs` (accepts both `/api/meta/events/` and
+`/api/meta/events`), and the standalone route handler
+`src/app/api/meta/events/route.standalone.ts` (Next's own server on Hostinger; env read at
+request time; IP from `cf-connecting-ip` → first `x-forwarded-for`).
+
+Contract:
 
 | Request | Response |
 |---|---|
-| `POST /api/meta/events`, `Content-Type: application/json`, body `{ events: [{ name, eventId, time, sourceUrl, params, fbp?, fbc? }] }` (1–10 events, ≤ 16 KB) | `202` (relayed), `204` (relay disabled: no token or no pixel id) |
+| `POST /api/meta/events/`, `Content-Type: application/json`, body `{ events: [{ name, eventId, time, sourceUrl, params, fbp?, fbc? }] }` (1–10 events, ≤ 16 KB) | `202` (relayed), `204` (relay disabled: no token or no pixel id) |
 | `name` outside `PageView`/`ViewContent`/`PequeversoProductInterest`/`CheckoutIntent`, `eventId` not a UUID v4, `sourceUrl` off-origin, unknown `params` key, non-finite number, string > 200 chars, malformed `fbp`/`fbc`, bad JSON | `400 { "error": "<field>" }` (input never echoed) |
 | body > 16 KB · other `Content-Type` · `Origin` not the site/host · non-POST · > 60 events/min per IP | `413` · `415` · `403` · `405` · `429` |
 
@@ -160,7 +169,7 @@ events remain complete.
 - `tests/e2e/tracking.spec.ts` (only with `E2E_EXPECT_CONSENT=1`): the pixel runs by default with
   ids, Aceptar keeps it, Rechazar → revoke and nothing later (pixel and relay), Configurar →
   per-category save, CTA click never emits a forbidden event, version bump re-prompts, the relay
-  receives the pixel's event ids with `_fbp`. Third-party hosts are stubbed; `/api/meta/events`
+  receives the pixel's event ids with `_fbp`. Third-party hosts are stubbed; `/api/meta/events/`
   is intercepted.
 - `tests/e2e/consent.spec.ts`: no banner on the public build; banner controls and footer reopen
   when configured. `tests/e2e/smoke.spec.ts`: the relay answers `204` on a build without token.

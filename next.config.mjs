@@ -23,6 +23,10 @@ const edgeRules = loadEdgeRules();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output,
+  // Route handlers live only in the standalone build: `*.standalone.ts` is a page extension there
+  // and plain `route.standalone.ts` files are ignored by the static export (a POST handler breaks
+  // `output: "export"`). See docs/decisions/ADR-0005-conversions-api-relay.md.
+  pageExtensions: output === "standalone" ? ["standalone.ts", "standalone.tsx", "tsx", "ts"] : ["tsx", "ts"],
   trailingSlash: true,
   poweredByHeader: false,
   reactStrictMode: true,
