@@ -83,6 +83,8 @@ export const grafismoCopy = {
     lead: "Veinte páginas reales del PDF principal. Sin maquetas: lo que ves es lo que descargas.",
     zoomHint: "Toca una página para verla en grande.",
     galleryLabel: "Páginas reales del kit",
+    itemLabel: "Página real",
+    zoomTitle: "Página real del kit",
   },
   included: {
     kicker: "Qué recibes",
@@ -113,9 +115,10 @@ export const grafismoCopy = {
     ],
   },
   videos: {
-    kicker: "En movimiento",
-    title: "Así se practica una página.",
-    lead: "Cuatro demostraciones breves con hojas reales del kit. Pulsa para reproducir.",
+    kicker: "Videos ilustrativos",
+    title: "Así se ve la práctica en casa.",
+    lead: "Cuatro videos breves ilustran cómo se acompaña una hoja: mira, di, traza y une. No son grabaciones del producto; las páginas reales del kit están en la sección siguiente. Pulsa para reproducir.",
+    illustrative: "Video ilustrativo",
   },
   credibility: {
     kicker: "Enfoque",

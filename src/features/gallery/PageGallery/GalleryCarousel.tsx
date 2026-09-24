@@ -30,6 +30,10 @@ type Props = {
   children: ReactNode;
   /** Number of slides in `children`; defaults to the child count. */
   count?: number | undefined;
+  /** Noun before the counter ("Página real" → "Página real 3 de 20"). */
+  itemLabel?: string | undefined;
+  /** Visible title of the zoom dialog. */
+  zoomTitle?: string | undefined;
 };
 
 const ZOOM =
@@ -84,7 +88,7 @@ function zoomFrom(image: HTMLImageElement): Zoom {
  * live counter, and a zoom on the Base UI dialog (loaded on first use). Slides use a light 3D depth effect
  * (inactive slides recede) that is disabled under reduced motion.
  */
-export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
+export function GalleryCarousel({ label, zoomHint, children, count, itemLabel, zoomTitle }: Props) {
   const [emblaRef, embla] = useEmblaCarousel({
     loop: true,
     align: "center",
@@ -104,6 +108,7 @@ export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
     node,
   }));
   const total = count ?? slides.length;
+  const position = (index: number) => `${itemLabel ? `${itemLabel} ` : ""}${index + 1} de ${total}`;
 
   const onSelect = useCallback(() => {
     if (!embla) return;
@@ -159,7 +164,7 @@ export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
                 className={SLIDE}
                 data-active={index === selected ? "" : undefined}
                 aria-roledescription="diapositiva"
-                aria-label={`${index + 1} de ${total}`}
+                aria-label={position(index)}
               >
                 {slide.node}
               </li>
@@ -176,7 +181,7 @@ export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
             <ChevronLeft size={24} />
           </button>
           <p className="min-w-[6ch] text-center font-extrabold text-ink" aria-live="polite">
-            {selected + 1} de {total}
+            {position(selected)}
           </p>
           <button
             type="button"
@@ -203,7 +208,7 @@ export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
         {zoomHint ? <p className="text-center text-small text-subtle">{zoomHint}</p> : null}
         {zoom ? (
           <Suspense fallback={null}>
-            <ZoomDialog open={zoomOpen} zoom={zoom} onClose={() => setZoomOpen(false)} />
+            <ZoomDialog open={zoomOpen} zoom={zoom} title={zoomTitle} onClose={() => setZoomOpen(false)} />
           </Suspense>
         ) : null}
       </section>

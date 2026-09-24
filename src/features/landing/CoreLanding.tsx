@@ -284,7 +284,7 @@ export function CoreLanding({ product }: Props) {
           lead={copy.videos.lead}
           align="center"
         />
-        <VideoBlock items={videos} />
+        <VideoBlock items={videos} illustrativeLabel={copy.videos.illustrative} />
       </Section>
 
       <Section
@@ -305,6 +305,8 @@ export function CoreLanding({ product }: Props) {
         <PageGallery
           count={media.pageIds.length}
           label={copy.pages.galleryLabel}
+          itemLabel={copy.pages.itemLabel}
+          zoomTitle={copy.pages.zoomTitle}
           zoomHint={copy.pages.zoomHint}
         >
           {media.pageIds.map((id) => (

@@ -50,7 +50,7 @@ export type CoreLandingCopy = {
   trust: readonly IconPoint[];
   problem: Section & { paragraphs: readonly string[]; bullets: readonly string[] };
   method: Section & { steps: readonly IconStep[] };
-  pages: Section & { zoomHint: string; galleryLabel: string };
+  pages: Section & { zoomHint: string; galleryLabel: string; itemLabel?: string; zoomTitle?: string };
   included: Section & {
     total: string;
     units?: { pdf: string; pages: string };
@@ -70,7 +70,7 @@ export type CoreLandingCopy = {
     paragraphs: readonly string[];
     signature: string;
   };
-  videos: Section;
+  videos: Section & { illustrative?: string };
   credibility: { kicker: string; title: string; text: string; points: readonly string[] };
   benefits: Section & { items: readonly IconStep[]; callout: string };
   faq: Section & { items: readonly FaqItem[]; supportNote: string };

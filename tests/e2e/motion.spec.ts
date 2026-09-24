@@ -198,3 +198,18 @@ test("gallery zoom dialog is centred in the viewport and traps focus", async ({ 
     await expect(dialog).toHaveCount(0);
   }
 });
+
+test("videos are labelled illustrative; the carousel is labelled as the kit's real pages", async ({
+  page,
+}) => {
+  await page.goto("/grafismo-fonetico/");
+  const figures = page.locator("#videos figure");
+  await expect(figures).toHaveCount(4);
+  for (const figure of await figures.all()) {
+    await expect(figure).toContainText("Video ilustrativo");
+    await expect(figure.getByRole("button", { name: /video ilustrativo/i })).toHaveCount(1);
+  }
+  const gallery = page.getByRole("region", { name: /Páginas reales/ });
+  await expect(gallery).toHaveCount(1);
+  await expect(gallery.getByText("Página real 1 de 20")).toBeVisible();
+});

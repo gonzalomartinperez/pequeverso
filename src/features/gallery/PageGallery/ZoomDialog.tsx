@@ -18,6 +18,8 @@ type Props = {
   open: boolean;
   /** Last zoomed page; kept while the dialog animates out. */
   zoom: Zoom | null;
+  /** Visible heading (e.g. "Página real del kit"); the page's alt text stays the image's name. */
+  title?: string | undefined;
   onClose: () => void;
 };
 
@@ -26,7 +28,7 @@ type Props = {
  * the popup at any size, the image is contained within the viewport minus safe-area padding,
  * focus is trapped, Escape and the close button dismiss it, and the page scroll is locked.
  */
-export function ZoomDialog({ open, zoom, onClose }: Props) {
+export function ZoomDialog({ open, zoom, title, onClose }: Props) {
   return (
     <Dialog.Root
       open={open}
@@ -43,7 +45,15 @@ export function ZoomDialog({ open, zoom, onClose }: Props) {
           >
             {zoom ? (
               <>
-                <Dialog.Title className="sr-only">{zoom.alt}</Dialog.Title>
+                <Dialog.Title
+                  className={
+                    title
+                      ? "pr-12 text-small font-extrabold tracking-[0.06em] text-teal-text uppercase"
+                      : "sr-only"
+                  }
+                >
+                  {title ?? zoom.alt}
+                </Dialog.Title>
                 <img
                   className="mx-auto max-h-[calc(100dvh-9rem)] w-auto max-w-full rounded-md object-contain"
                   src={zoom.src}
