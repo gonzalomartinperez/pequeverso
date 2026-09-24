@@ -211,6 +211,13 @@ function tokenColor(host: HTMLElement, token: string, fallback: string): Color {
   return color.setRGB(r / 255, g / 255, b / 255, SRGBColorSpace);
 }
 
+function isSoftwareRenderer(renderer: WebGLRenderer): boolean {
+  const gl = renderer.getContext();
+  const info = gl.getExtension("WEBGL_debug_renderer_info");
+  const name = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : "";
+  return /swiftshader|llvmpipe|softpipe|software|basic render/i.test(name);
+}
+
 type Planet = {
   element: HTMLElement;
   mesh: Mesh<PlaneGeometry, ShaderMaterial>;
@@ -353,7 +360,10 @@ export function mountScene(
   let elapsed = 0;
   let width = 0;
   let height = 0;
-  let quality = 0;
+  /** Software rasterisers (SwiftShader, llvmpipe…) start at the lowest quality and draw at ~30 fps. */
+  const software = isSoftwareRenderer(renderer);
+  let quality = software ? 2 : 0;
+  let skip = false;
   let pixelRatio = 0;
   let sampleTime = 0;
   let sampleFrames = 0;
@@ -448,7 +458,11 @@ export function mountScene(
     slowWindows = averageMs > 24 ? slowWindows + 1 : 0;
     fastWindows = averageMs < 18 ? fastWindows + 1 : 0;
     const next =
-      slowWindows >= 2 ? Math.min(2, quality + 1) : fastWindows >= 5 ? Math.max(0, quality - 1) : quality;
+      slowWindows >= 2
+        ? Math.min(2, quality + 1)
+        : fastWindows >= 5
+          ? Math.max(software ? 2 : 0, quality - 1)
+          : quality;
     if (next !== quality) {
       quality = next;
       slowWindows = 0;
@@ -486,6 +500,8 @@ export function mountScene(
   const tick = (_time: number, deltaTime: number) => {
     const raw = deltaTime / 1000;
     elapsed += Math.min(raw, 0.05);
+    skip = software && !skip;
+    if (skip) return;
     render();
     if (raw > 0) measureQuality(Math.min(raw, 0.25));
   };
