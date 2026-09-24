@@ -63,7 +63,7 @@ export function Universe({ variant = "hero", className }: Props) {
           data-scene-bands="0.03"
           className="planet-gold absolute -bottom-[8%] left-[6%] size-[clamp(90px,12vw,160px)] rounded-full"
         />
-        <Orbit className="absolute top-[6%] right-[4%] w-[clamp(280px,40vw,560px)] max-md:-top-[10%] max-md:-right-[42%]" />
+        <Orbit className="absolute top-[6%] right-[4%] w-[clamp(280px,40vw,560px)] max-md:-top-[10%] max-md:-right-[42%] md:max-lg:top-0 md:max-lg:-right-[16%]" />
       </SceneStage>
     </div>
   );
