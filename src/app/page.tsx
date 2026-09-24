@@ -2,28 +2,29 @@ import { formatUsd, localCurrencyNote, localCurrencyNoteShort } from "@config/co
 import { site } from "@config/site";
 import { homeCopy as copy } from "@content/es/home";
 import type { Metadata } from "next";
-import { PageShell } from "@/components/layout/PageShell/PageShell";
-import { BulletList } from "@/components/ui/BulletList/BulletList";
-import { Card } from "@/components/ui/Card/Card";
-import { ChipRow } from "@/components/ui/ChipRow/ChipRow";
-import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
-import { FactChip } from "@/components/ui/FactChip/FactChip";
-import { Grid } from "@/components/ui/Grid/Grid";
-import { Icon } from "@/components/ui/Icon/Icon";
-import { IconCardList } from "@/components/ui/IconCardList/IconCardList";
-import { MediaImage } from "@/components/ui/MediaImage/MediaImage";
-import { Section } from "@/components/ui/Section/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading/SectionHeading";
-import { SocialLinks } from "@/components/ui/SocialLinks/SocialLinks";
-import { Stack } from "@/components/ui/Stack/Stack";
-import { Steps } from "@/components/ui/Steps/Steps";
+import { BulletList } from "@/components/blocks/bullet-list";
+import { ChipRow } from "@/components/blocks/chip-row";
+import { Eyebrow } from "@/components/blocks/eyebrow";
+import { FactChip } from "@/components/blocks/fact-chip";
+import { Grid } from "@/components/blocks/grid";
+import { Icon } from "@/components/blocks/icon";
+import { IconCardList } from "@/components/blocks/icon-card-list";
+import { MediaImage } from "@/components/blocks/media-image";
+import { Section } from "@/components/blocks/section";
+import { SectionHeading } from "@/components/blocks/section-heading";
+import { SocialLinks } from "@/components/blocks/social-links";
+import { Stack } from "@/components/blocks/stack";
+import { Steps } from "@/components/blocks/steps";
+import { PageShell } from "@/components/layout/page-shell";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { Card } from "@/components/ui/card";
 import { ProductInterestLink } from "@/features/commerce/ProductInterestLink/ProductInterestLink";
 import { CenteredHeading } from "@/features/landing/core/CenteredHeading";
 import { HeroScene } from "@/features/landing/core/HeroScene";
 import { HeroStack } from "@/features/landing/core/HeroStack";
 import { buildMetadata } from "@/lib/metadata";
-import { FlipPreview } from "@/motion/FlipPreview";
-import { Orbit } from "@/motion/Orbit";
+import { FlipPreview } from "@/motion/flip-preview";
+import { Orbit } from "@/motion/orbit";
 import { featuredProduct } from "@/products";
 import styles from "./page.module.css";
 
@@ -92,10 +93,7 @@ export default function HomePage() {
   }));
 
   return (
-    <PageShell
-      nav={copy.nav}
-      cta={productLink("header", "button button--primary button--small", copy.hero.cta)}
-    >
+    <PageShell nav={copy.nav} cta={productLink("header", buttonVariants({ size: "sm" }), copy.hero.cta)}>
       <script
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD built from config
@@ -129,7 +127,7 @@ export default function HomePage() {
               <Icon name="globe" size={16} />
               <span>{localCurrencyNote}</span>
             </p>
-            {productLink("hero", "button button--primary button--block", `${copy.product.cta} · ${price}`)}
+            {productLink("hero", buttonVariants({ block: true }), `${copy.product.cta} · ${price}`)}
           </Card>
         }
         desk={
@@ -147,7 +145,11 @@ export default function HomePage() {
                 <p>{copy.start.principal.text}</p>
                 <BulletList items={copy.start.principal.points} icon="link" />
                 <div>
-                  {productLink("start", "button button--secondary button--small", copy.start.principal.cta)}
+                  {productLink(
+                    "start",
+                    buttonVariants({ variant: "outline", size: "sm" }),
+                    copy.start.principal.cta,
+                  )}
                 </div>
               </Card>
               <Card variant="soft" pad="lg" as="article" reveal>
@@ -187,7 +189,7 @@ export default function HomePage() {
           ))}
         </Grid>
         <p className={styles.previewCta}>
-          {productLink("preview", "button button--secondary", copy.preview.cta, "#paginas")}
+          {productLink("preview", buttonVariants({ variant: "outline" }), copy.preview.cta, "#paginas")}
         </p>
       </Section>
 
@@ -229,7 +231,7 @@ export default function HomePage() {
           <h2 id="cierre-title">{copy.closing.title}</h2>
           <p className="lead">{copy.closing.text}</p>
           <div className={styles.closingActions}>
-            {productLink("closing", "button button--primary", copy.closing.cta)}
+            {productLink("closing", buttonVariants(), copy.closing.cta)}
             <span className={styles.closingPrice}>
               {price} · {copy.closing.priceSuffix}
               <span className={styles.closingCurrency}>{localCurrencyNoteShort}</span>

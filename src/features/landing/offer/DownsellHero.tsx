@@ -1,10 +1,10 @@
-import { Card } from "@/components/ui/Card/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
-import { FactChip } from "@/components/ui/FactChip/FactChip";
-import { PriceBlock } from "@/components/ui/PriceBlock/PriceBlock";
-import { Section } from "@/components/ui/Section/Section";
-import { Split } from "@/components/ui/Split/Split";
-import { Stack } from "@/components/ui/Stack/Stack";
+import { Eyebrow } from "@/components/blocks/eyebrow";
+import { FactChip } from "@/components/blocks/fact-chip";
+import { PriceBlock } from "@/components/blocks/price-block";
+import { Section } from "@/components/blocks/section";
+import { Split } from "@/components/blocks/split";
+import { Stack } from "@/components/blocks/stack";
+import { Card } from "@/components/ui/card";
 import { DecisionLink } from "@/features/commerce/DecisionLink/DecisionLink";
 import type { OfferProduct } from "@/products/schema";
 

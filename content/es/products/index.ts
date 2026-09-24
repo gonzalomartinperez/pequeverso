@@ -3,7 +3,7 @@
  * Each folder holds `copy.ts` (landing copy), `resources.ts` (the real PDFs) and `faq.ts`;
  * the product module in `src/products/<slug>.ts` assembles them with the business facts.
  */
-import type { IconName } from "@/components/ui/Icon/Icon";
+import type { IconName } from "@/components/blocks/icon";
 
 export type Resource = {
   id: string;

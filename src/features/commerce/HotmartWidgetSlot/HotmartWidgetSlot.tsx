@@ -3,6 +3,7 @@
 import { hotmart } from "@config/commerce";
 import Script from "next/script";
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { buttonVariants } from "@/components/ui/button-variants";
 import styles from "./HotmartWidgetSlot.module.css";
 
 declare global {
@@ -121,7 +122,12 @@ export function HotmartWidgetSlot({
   }, [timeoutMs]);
 
   return (
-    <section className={styles.slot} aria-labelledby="gfp-decision-title" id={DECISION_ANCHOR} tabIndex={-1}>
+    <section
+      className={`on-light ${styles.slot}`}
+      aria-labelledby="gfp-decision-title"
+      id={DECISION_ANCHOR}
+      tabIndex={-1}
+    >
       <div className={styles.heading}>{heading}</div>
       <div
         id={hotmart.salesFunnelContainerId}
@@ -138,7 +144,7 @@ export function HotmartWidgetSlot({
           <p>{fallbackText}</p>
           <button
             type="button"
-            className="button button--secondary button--small"
+            className={buttonVariants({ variant: "outline", size: "sm" })}
             onClick={() => window.location.reload()}
           >
             {reloadLabel}

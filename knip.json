@@ -3,6 +3,10 @@
   "entry": [
     "src/app/**/{page,layout,error,global-error,not-found}.tsx!",
     "src/app/**/{sitemap,robots}.ts!",
+    "src/components/ui/*.{ts,tsx}!",
+    "src/components/blocks/*.tsx!",
+    "src/motion/*.{ts,tsx}!",
+    "src/motion/scene/*.{ts,tsx}!",
     "scripts/*.mjs",
     "scripts/lib/*.mjs",
     "tests/unit/**/*.test.mjs",

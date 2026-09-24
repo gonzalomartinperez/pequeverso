@@ -1,5 +1,5 @@
-import { Card } from "@/components/ui/Card/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
+import { Eyebrow } from "@/components/blocks/eyebrow";
+import { Card } from "@/components/ui/card";
 import styles from "./CreatorNote.module.css";
 
 type Props = {

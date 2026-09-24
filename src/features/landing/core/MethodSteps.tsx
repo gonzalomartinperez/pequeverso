@@ -1,8 +1,8 @@
-import { Card } from "@/components/ui/Card/Card";
-import type { IconName } from "@/components/ui/Icon/Icon";
-import { IconBadge } from "@/components/ui/IconBadge/IconBadge";
-import { Steps } from "@/components/ui/Steps/Steps";
-import { StickyStack } from "@/motion/StickyStack";
+import type { IconName } from "@/components/blocks/icon";
+import { IconBadge } from "@/components/blocks/icon-badge";
+import { Steps } from "@/components/blocks/steps";
+import { Card } from "@/components/ui/card";
+import { StickyStack } from "@/motion/sticky-stack";
 import styles from "./MethodSteps.module.css";
 
 type Step = { icon: IconName; title: string; text: string };

@@ -34,7 +34,7 @@ export function ProductInterestLink({ href, product, position, children, classNa
       onClick={() => trackProductInterest({ product, position, destination: href })}
     >
       <span>{children}</span>
-      <ArrowRight aria-hidden="true" focusable="false" size={18} strokeWidth={2.4} className="button__icon" />
+      <ArrowRight aria-hidden="true" focusable="false" size={18} strokeWidth={2.4} data-icon="inline-end" />
     </Link>
   );
 }

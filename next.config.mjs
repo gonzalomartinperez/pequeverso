@@ -1,6 +1,8 @@
 // @ts-check
 import bundleAnalyzer from "@next/bundle-analyzer";
+import { withCn } from "cn/next";
 import { loadEdgeRules, toNextHeaders, toNextRedirects } from "./scripts/lib/edge-rules.mjs";
+import { SceneBudgetPlugin } from "./scripts/scene-budget-plugin.mjs";
 
 /**
  * Build target selection.
@@ -15,6 +17,10 @@ import { loadEdgeRules, toNextHeaders, toNextRedirects } from "./scripts/lib/edg
  * Builds use `next build --webpack` (package.json): Hostinger's builder has GLIBC 2.28, where the
  * native SWC/Turbopack bindings cannot load and only the WASM fallback (webpack-compatible) works.
  * See docs/architecture.md and docs/decisions/ADR-0001-hosting-target.md.
+ *
+ * `withCn` compiles the Tailwind class-merge tables used by `src/lib/utils.ts` from the sources
+ * before the compiler starts (dev, build and typegen alike); `SceneBudgetPlugin` records the
+ * chunk closure of the deferred 3D scene for `scripts/check-scene-budget.mjs`.
  */
 const onHostingerNodeApp = process.cwd().replace(/\\/g, "/").includes("/hbuilds/");
 const output = process.env.NEXT_OUTPUT === "standalone" || onHostingerNodeApp ? "standalone" : "export";
@@ -36,8 +42,9 @@ const nextConfig = {
     unoptimized: true,
   },
   generateBuildId: async () => process.env.GITHUB_SHA || null,
-  experimental: {
-    optimizePackageImports: ["lucide-react"],
+  webpack(config, { dev, isServer }) {
+    if (!dev && !isServer) config.plugins.push(new SceneBudgetPlugin());
+    return config;
   },
   ...(output === "standalone"
     ? {
@@ -49,4 +56,7 @@ const nextConfig = {
 
 const withAnalyzer = bundleAnalyzer({ enabled: process.env.ANALYZE === "1", openAnalyzer: false });
 
-export default withAnalyzer(nextConfig);
+export default withCn(withAnalyzer(nextConfig), {
+  content: ["src/**/*.{ts,tsx}"],
+  out: "src/lib/cn-tables.js",
+});

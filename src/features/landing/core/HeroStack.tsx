@@ -2,8 +2,8 @@
 
 import { type CSSProperties, type ReactNode, ViewTransition } from "react";
 import { useAge } from "@/features/landing/AgeSelector/AgeContext";
-import { Orbit } from "@/motion/Orbit";
-import { useMotionOK } from "@/motion/useMotionOK";
+import { Orbit } from "@/motion/orbit";
+import { useMotionOK } from "@/motion/use-motion-ok";
 import styles from "./HeroStack.module.css";
 
 export type StackPage = { id: string; node: ReactNode };

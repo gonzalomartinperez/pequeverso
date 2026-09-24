@@ -1,0 +1,697 @@
+/*
+ * Pequeverso design system — single source of truth for colour, type, spacing, radius,
+ * elevation, motion and layout (docs/design-system.md, docs/specs/design-system.md).
+ *
+ * 1. Fonts        self-hosted @font-face with metric-matched fallbacks (docs/performance.md)
+ * 2. Tokens       raw values in :root (`--pv-*` where a Tailwind theme namespace would claim the
+ *                 name) and the semantic aliases shadcn/ui primitives read (`--primary`, …)
+ * 3. Theme        @theme inline maps tokens to Tailwind utilities (bg-navy, text-h2, text-base, rounded-lg, …)
+ * 4. Variants     container-query breakpoints (cq-sm … cq-xl) mirroring src/lib/breakpoints.ts
+ * 5. Base         typography, links, focus, offer mode, reduced-motion kill switch
+ * 6. Utilities    project utilities (page-container, section-pad, lead, prose, on-navy, cq, defer-render)
+ * 7. Motion       ../motion/motion.css (reveal, hero, flip, orbit, parallax, sticky stack)
+ *
+ * Breakpoints (min-width): sm 640 · md 768 · lg 1024 · xl 1280 (Tailwind defaults, also used as
+ * container thresholds). Contrast pairs are asserted by tests/unit/design-tokens.test.mjs.
+ */
+@import "tailwindcss" source("../");
+@import "../motion/motion.css";
+
+/* 1. Fonts (public/fonts, preloaded in src/app/layout.tsx) */
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/fraunces-latin-wght-7f9d191d.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+    U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Fraunces Fallback";
+  font-weight: 400;
+  src: local("Georgia");
+  size-adjust: 108.1%;
+  ascent-override: 90.47%;
+  descent-override: 23.59%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Fraunces Fallback";
+  font-weight: 700;
+  src: local("Georgia Bold"), local("Georgia-Bold");
+  size-adjust: 97.04%;
+  ascent-override: 100.79%;
+  descent-override: 26.28%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Nunito Sans";
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+  src: url("/fonts/nunito-sans-latin-wght-29e38904.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+    U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Nunito Sans Fallback";
+  font-weight: 400;
+  src: local("Arial");
+  size-adjust: 102.22%;
+  ascent-override: 98.9%;
+  descent-override: 34.53%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Nunito Sans Fallback";
+  font-weight: 700;
+  src: local("Arial Bold"), local("Arial-BoldMT");
+  size-adjust: 99.48%;
+  ascent-override: 101.63%;
+  descent-override: 35.48%;
+  line-gap-override: 0%;
+}
+
+/* 2. Tokens */
+:root {
+  color-scheme: light;
+
+  /* Brand palette (OKLCH; sRGB equivalents and contrast in docs/design-system.md) */
+  --pv-navy: oklch(0.3175 0.1094 256.25); /* #003068 · white on navy 12.9:1 */
+  --pv-navy-deep: oklch(0.2619 0.0887 255.79); /* #00234e · footer, closing bands */
+  --pv-teal: oklch(0.5324 0.0917 190.84); /* #007d79 · icons; white on teal 5.0:1 */
+  --pv-teal-text: oklch(0.4352 0.0749 190.98); /* #005e5b · links and small labels, 7.6:1 on white */
+  --pv-coral: oklch(0.5623 0.1722 28.49); /* #c64035 · CTA and price only; white on coral 5.0:1 */
+  --pv-coral-hover: oklch(0.4929 0.1566 28.11); /* #a83129 · 6.7:1 */
+  --pv-gold: oklch(
+    0.8908 0.1645 93.89
+  ); /* #ffd840 · accents, chips; ink on gold 11.9:1, never gold text on light */
+  --pv-turquoise: oklch(0.8521 0.0956 187.2); /* #7fe3d9 · accent on navy only, 8.6:1 */
+  --pv-hero-top: var(--pv-navy-deep);
+  --pv-hero-bottom: var(--pv-navy);
+  --pv-on-navy: oklch(1 0 0 / 86%); /* body text on navy 9.9:1 */
+  --pv-on-navy-chip: oklch(1 0 0 / 12%);
+
+  /* Neutrals */
+  --pv-cream: oklch(0.9868 0.0118 79.79); /* #fffaf2 */
+  --pv-white: oklch(1 0 0);
+  --pv-ink: oklch(0.2393 0.0581 256.66); /* #0b1f3a · 15.9:1 on cream */
+  --pv-body: oklch(0.4336 0.0403 255.38); /* #425267 · 7.7:1 on cream */
+  --pv-muted: oklch(0.524 0.0374 258.36); /* #5d6b80 · 5.2:1 on cream */
+  --pv-line: oklch(0.3175 0.1094 256.25 / 14%);
+  --pv-line-strong: oklch(0.3175 0.1094 256.25 / 28%);
+
+  /* Soft section bands (at most one soft band between two neutral bands) */
+  --pv-mint: oklch(0.9616 0.0201 189.22); /* #e4f7f5 */
+  --pv-sky: oklch(0.9594 0.02 250.38); /* #e8f3ff */
+  --pv-lemon: oklch(0.965 0.0699 98.77); /* #fff5bf */
+  --pv-rose: oklch(0.9656 0.0176 39.4); /* #fff0eb */
+
+  /* Semantic surface and text roles (shadcn/ui names). The `on-navy` utility re-scopes them. */
+  --background: var(--pv-cream);
+  --foreground: var(--pv-ink);
+  --card: var(--pv-white);
+  --card-foreground: var(--pv-ink);
+  --popover: var(--pv-white);
+  --popover-foreground: var(--pv-ink);
+  --primary: var(--pv-coral);
+  --primary-foreground: var(--pv-white);
+  --primary-hover: var(--pv-coral-hover);
+  --secondary: var(--pv-navy);
+  --secondary-foreground: var(--pv-white);
+  --secondary-hover: var(--pv-navy-deep);
+  --muted: var(--pv-sky);
+  --muted-foreground: var(--pv-muted);
+  --accent: var(--pv-teal);
+  --accent-foreground: var(--pv-white);
+  --destructive: var(--pv-coral-hover);
+  --border: var(--pv-line);
+  --input: var(--pv-line-strong);
+  --ring: var(--pv-navy);
+  --heading: var(--pv-ink);
+  --body: var(--pv-body);
+  --link: var(--pv-teal-text);
+  --link-hover: var(--pv-navy);
+  --chip: var(--pv-mint);
+  --chip-foreground: var(--pv-navy);
+  --icon: var(--pv-teal);
+  --surface-veil: oklch(0.9868 0.0118 79.79 / 96%); /* header and sticky bar over content */
+
+  /* Type: Fraunces for display, Nunito Sans for everything else; fluid sizes via clamp() */
+  --pv-font-display: "Fraunces", "Fraunces Fallback", Georgia, "Times New Roman", serif;
+  --pv-font-sans: "Nunito Sans", "Nunito Sans Fallback", system-ui, "Segoe UI", Roboto, sans-serif;
+  --pv-text-display: clamp(2.125rem, 1.4rem + 2.6vw, 3.75rem); /* 34 → 60 */
+  --pv-text-h2: clamp(1.875rem, 1.45rem + 1.4vw, 2.625rem); /* 30 → 42 */
+  --pv-text-h3: clamp(1.25rem, 1.2rem + 0.2vw, 1.375rem); /* 20 → 22 */
+  --pv-text-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem); /* 17 → 19 */
+  --pv-text-body: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem); /* 16 → 17 */
+  --pv-text-small: 0.875rem;
+  --pv-text-tiny: 0.8125rem;
+  --pv-text-price: clamp(2.375rem, 2rem + 1.2vw, 2.75rem); /* 38 → 44 */
+  --pv-leading-display: 1.06;
+  --pv-leading-heading: 1.12;
+  --pv-leading-body: 1.6;
+
+  /* Spacing (4-pt; Tailwind's `--spacing` of 0.25rem gives the same steps: p-4 = --space-4) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --section-pad: clamp(3.5rem, 2.5rem + 3vw, 6rem);
+  --gutter: clamp(1.25rem, 4vw, 1.5rem);
+  --page-max: 1200px;
+
+  /* Radius */
+  --radius: 0.5rem; /* shadcn base; the scale below is explicit */
+  --pv-radius-sm: 4px;
+  --pv-radius-chip: 6px;
+  --pv-radius-md: 8px; /* buttons, media, small cards */
+  --pv-radius-lg: 12px; /* large cards, dialogs */
+  --pv-radius-xl: 16px;
+  --pv-radius-pill: 999px; /* primary CTA and chips */
+
+  /* Elevation (navy-tinted) and the coral CTA glow */
+  --pv-shadow-sm: 0 4px 12px oklch(0.3175 0.1094 256.25 / 8%);
+  --pv-shadow-md: 0 12px 32px oklch(0.3175 0.1094 256.25 / 12%);
+  --pv-shadow-lg: 0 24px 56px oklch(0.3175 0.1094 256.25 / 16%);
+  --pv-shadow-cta: 0 10px 24px oklch(0.5623 0.1722 28.49 / 24%);
+
+  /* Motion */
+  --pv-ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --pv-ease-emphasis: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration: 220ms;
+  --duration-reveal: 480ms;
+  --duration-hero: 600ms;
+  --duration-orbit: 48s;
+  --stagger: 60ms;
+  --reveal-y: 16px;
+  --parallax-range: 20px;
+  --tilt-max: 6deg;
+  --tilt-perspective: 900px;
+
+  /* Layout */
+  --header-height: 4.25rem;
+  --sticky-bar-height: 4.5rem;
+  --section-overlap: var(--space-8);
+  --section-intrinsic: 640px; /* contain-intrinsic-size for deferred sections */
+  --wave-height: clamp(2rem, 6vw, 4.5rem);
+  --badge-sm: 3rem;
+  --badge-md: 3.5rem;
+  --badge-lg: 4.5rem;
+}
+
+/* 3. Theme: utilities read the tokens above (inline, so scoped overrides resolve at use site) */
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-black: oklch(0 0 0);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-heading: var(--heading);
+  --color-body: var(--body);
+  --color-link: var(--link);
+  --color-link-hover: var(--link-hover);
+  --color-chip: var(--chip);
+  --color-chip-foreground: var(--chip-foreground);
+  --color-icon: var(--icon);
+  --color-surface-veil: var(--surface-veil);
+  --color-navy: var(--pv-navy);
+  --color-navy-deep: var(--pv-navy-deep);
+  --color-teal: var(--pv-teal);
+  --color-teal-text: var(--pv-teal-text);
+  --color-coral: var(--pv-coral);
+  --color-coral-hover: var(--pv-coral-hover);
+  --color-gold: var(--pv-gold);
+  --color-turquoise: var(--pv-turquoise);
+  --color-hero-top: var(--pv-hero-top);
+  --color-hero-bottom: var(--pv-hero-bottom);
+  --color-on-navy: var(--pv-on-navy);
+  --color-on-navy-chip: var(--pv-on-navy-chip);
+  --color-cream: var(--pv-cream);
+  --color-white: var(--pv-white);
+  --color-ink: var(--pv-ink);
+  --color-subtle: var(--pv-muted);
+  --color-line: var(--pv-line);
+  --color-line-strong: var(--pv-line-strong);
+  --color-mint: var(--pv-mint);
+  --color-sky: var(--pv-sky);
+  --color-lemon: var(--pv-lemon);
+  --color-rose: var(--pv-rose);
+
+  --font-sans: var(--pv-font-sans);
+  --font-display: var(--pv-font-display);
+  --font-heading: var(--pv-font-display);
+
+  --text-display: var(--pv-text-display);
+  --text-display--line-height: var(--pv-leading-display);
+  --text-h2: var(--pv-text-h2);
+  --text-h2--line-height: var(--pv-leading-heading);
+  --text-h3: var(--pv-text-h3);
+  --text-h3--line-height: 1.25;
+  --text-lead: var(--pv-text-lead);
+  --text-lead--line-height: var(--pv-leading-body);
+  --text-base: var(--pv-text-body);
+  --text-base--line-height: var(--pv-leading-body);
+  --text-small: var(--pv-text-small);
+  --text-small--line-height: 1.5;
+  --text-tiny: var(--pv-text-tiny);
+  --text-tiny--line-height: 1.4;
+  --text-price: var(--pv-text-price);
+  --text-price--line-height: 1;
+  --leading-display: var(--pv-leading-display);
+  --leading-heading: var(--pv-leading-heading);
+  --leading-body: var(--pv-leading-body);
+
+  --radius-sm: var(--pv-radius-sm);
+  --radius-chip: var(--pv-radius-chip);
+  --radius-md: var(--pv-radius-md);
+  --radius-lg: var(--pv-radius-lg);
+  --radius-xl: var(--pv-radius-xl);
+  --radius-pill: var(--pv-radius-pill);
+
+  --shadow-sm: var(--pv-shadow-sm);
+  --shadow-md: var(--pv-shadow-md);
+  --shadow-lg: var(--pv-shadow-lg);
+  --shadow-cta: var(--pv-shadow-cta);
+
+  --ease-out: var(--pv-ease-out);
+  --ease-emphasis: var(--pv-ease-emphasis);
+
+  --animate-accordion-down: pv-accordion-down var(--duration) var(--pv-ease-out);
+  --animate-accordion-up: pv-accordion-up var(--duration) var(--pv-ease-out);
+
+  @keyframes pv-accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--accordion-panel-height);
+    }
+  }
+
+  @keyframes pv-accordion-up {
+    from {
+      height: var(--accordion-panel-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+/* 4. Container-query breakpoints: primitives adapt to their container, never to the viewport */
+@custom-variant cq-sm {
+  @container (width >= 40rem) {
+    @slot;
+  }
+}
+@custom-variant cq-md {
+  @container (width >= 48rem) {
+    @slot;
+  }
+}
+@custom-variant cq-lg {
+  @container (width >= 64rem) {
+    @slot;
+  }
+}
+@custom-variant cq-xl {
+  @container (width >= 80rem) {
+    @slot;
+  }
+}
+@custom-variant cq-tablet {
+  @container (40rem <= width < 48rem) {
+    @slot;
+  }
+}
+@custom-variant scroll-timeline {
+  @supports (animation-timeline: view()) {
+    @slot;
+  }
+}
+
+/* 5. Base */
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-height) + 1rem);
+    font-family: var(--pv-font-sans);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-size: var(--pv-text-body);
+    line-height: var(--pv-leading-body);
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2 {
+    font-family: var(--pv-font-display);
+    font-weight: 700;
+    letter-spacing: 0;
+    text-wrap: balance;
+    color: var(--heading);
+  }
+
+  h1 {
+    font-size: var(--pv-text-display);
+    line-height: var(--pv-leading-display);
+  }
+
+  h2 {
+    font-size: var(--pv-text-h2);
+    line-height: var(--pv-leading-heading);
+  }
+
+  h3,
+  h4 {
+    font-size: var(--pv-text-h3);
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--heading);
+  }
+
+  p {
+    color: var(--body);
+  }
+
+  strong {
+    font-weight: 800;
+    color: var(--heading);
+  }
+
+  a {
+    color: var(--link);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
+  }
+
+  a:hover {
+    color: var(--link-hover);
+  }
+
+  img,
+  video,
+  svg {
+    height: auto;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  /* Focus: always visible, never obscured (WCAG 2.4.7 / 2.4.11). `on-navy` swaps the ring to gold. */
+  :focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: var(--pv-radius-sm);
+  }
+
+  ::selection {
+    background: var(--pv-gold);
+    color: var(--pv-ink);
+  }
+
+  /* Offer mode: both views ship in the HTML; a pre-hydration script sets data-offer. */
+  [data-offer="downsell"] .only-upsell,
+  [data-offer="upsell"] .only-downsell {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      /* biome-ignore lint/complexity/noImportantStyles: reduced-motion kill switch must override every component */
+      animation-duration: 0.01ms !important;
+      /* biome-ignore lint/complexity/noImportantStyles: see above */
+      animation-iteration-count: 1 !important;
+      /* biome-ignore lint/complexity/noImportantStyles: see above */
+      transition-duration: 0.01ms !important;
+      /* biome-ignore lint/complexity/noImportantStyles: see above */
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* 6. Project utilities */
+
+/* Centred page column: 1200 px with a fluid gutter that never drops below 20 px (Tailwind's own
+   `container` utility is not used: its breakpoint max-widths fight the fluid column). */
+@utility page-container {
+  width: min(var(--page-max), 100% - 2 * var(--gutter));
+  margin-inline: auto;
+}
+
+/* Section band padding (56 → 96 px). */
+@utility section-pad {
+  padding-block: var(--section-pad);
+}
+
+/* Intro paragraph under a heading. */
+@utility lead {
+  font-size: var(--pv-text-lead);
+  font-weight: 600;
+  color: var(--body);
+}
+
+/* Navy surface: re-scopes the semantic roles so children styled with `text-body`,
+   `text-heading`, `text-icon`, `bg-chip`, `border-border`, `text-link` adapt without props. */
+@utility on-navy {
+  --background: var(--pv-navy);
+  --foreground: var(--pv-white);
+  --heading: var(--pv-white);
+  --body: var(--pv-on-navy);
+  --muted-foreground: var(--pv-on-navy);
+  --card: var(--pv-navy-deep);
+  --card-foreground: var(--pv-white);
+  --accent: var(--pv-turquoise);
+  --accent-foreground: var(--pv-navy);
+  --border: var(--pv-on-navy-chip);
+  --input: oklch(1 0 0 / 22%);
+  --ring: var(--pv-gold);
+  --link: var(--pv-white);
+  --link-hover: var(--pv-gold);
+  --chip: var(--pv-on-navy-chip);
+  --chip-foreground: var(--pv-gold);
+  --icon: var(--pv-gold);
+  color: var(--foreground);
+}
+
+/* Light surface inside a navy band (cards, price blocks, widget slot): restores the light roles. */
+@utility on-light {
+  --background: var(--pv-cream);
+  --foreground: var(--pv-ink);
+  --heading: var(--pv-ink);
+  --body: var(--pv-body);
+  --muted-foreground: var(--pv-muted);
+  --card: var(--pv-white);
+  --card-foreground: var(--pv-ink);
+  --accent: var(--pv-teal);
+  --accent-foreground: var(--pv-white);
+  --border: var(--pv-line);
+  --input: var(--pv-line-strong);
+  --ring: var(--pv-navy);
+  --link: var(--pv-teal-text);
+  --link-hover: var(--pv-navy);
+  --chip: var(--pv-mint);
+  --chip-foreground: var(--pv-navy);
+  --icon: var(--pv-teal);
+  color: var(--foreground);
+}
+
+/* Long-form legal prose (LegalLayout): measure, rhythm, lists and tables. */
+@utility prose {
+  max-width: 65ch;
+
+  & h2 {
+    margin-top: var(--space-7);
+    margin-bottom: var(--space-3);
+    font-size: 1.75rem;
+  }
+
+  & h3 {
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+  }
+
+  & p,
+  & ul,
+  & ol {
+    margin-bottom: var(--space-4);
+  }
+
+  & ul {
+    list-style: disc;
+    padding-left: 1.25em;
+  }
+
+  & ol {
+    list-style: decimal;
+    padding-left: 1.25em;
+  }
+
+  & li {
+    margin-bottom: var(--space-2);
+    color: var(--body);
+  }
+
+  & table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--pv-text-small);
+    margin-bottom: var(--space-4);
+  }
+
+  & th,
+  & td {
+    text-align: left;
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  & th {
+    color: var(--heading);
+  }
+
+  & .table-wrap {
+    overflow-x: auto;
+    margin-bottom: var(--space-4);
+  }
+
+  & .table-wrap table {
+    margin-bottom: 0;
+  }
+
+  & dl {
+    display: grid;
+    gap: var(--space-2) var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+
+  & dt {
+    font-weight: 800;
+    color: var(--heading);
+  }
+
+  & dd {
+    color: var(--body);
+  }
+
+  & dd + dt {
+    margin-top: var(--space-2);
+  }
+
+  @container (width >= 40rem) {
+    & dl {
+      grid-template-columns: minmax(10rem, 14rem) minmax(0, 1fr);
+    }
+
+    & dd + dt {
+      margin-top: 0;
+    }
+  }
+}
+
+/* Deferred rendering for below-the-fold sections (never on overlap or sentinel sections). */
+@utility defer-render {
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--section-intrinsic);
+}
+
+/* Query container for blocks whose columns follow their own width. */
+@utility cq {
+  container-type: inline-size;
+}
+
+/* "Pequeño universo" backdrop compositions (Universe): named here so the markup stays short. */
+@utility sky-hero {
+  background:
+    radial-gradient(120% 80% at 80% 10%, oklch(0.5324 0.0917 190.84 / 35%), transparent 60%),
+    radial-gradient(90% 70% at 10% 90%, oklch(0.65 0.1 190 / 18%), transparent 60%),
+    linear-gradient(160deg, var(--pv-hero-top) 0%, var(--pv-hero-bottom) 100%);
+}
+
+@utility sky-band {
+  background:
+    radial-gradient(90% 70% at 90% 20%, oklch(0.5324 0.0917 190.84 / 28%), transparent 60%),
+    linear-gradient(160deg, var(--pv-hero-bottom) 0%, var(--pv-hero-top) 100%);
+}
+
+@utility planet-teal {
+  background: radial-gradient(
+    circle at 35% 30%,
+    oklch(0.7 0.1 190),
+    var(--pv-teal) 55%,
+    oklch(0.38 0.07 190) 100%
+  );
+  box-shadow:
+    inset -30px -40px 80px oklch(0 0 0 / 35%),
+    0 40px 120px oklch(0.5324 0.0917 190.84 / 35%);
+}
+
+@utility planet-gold {
+  background: radial-gradient(
+    circle at 35% 30%,
+    oklch(0.93 0.12 95),
+    var(--pv-gold) 55%,
+    oklch(0.72 0.14 90) 100%
+  );
+  box-shadow:
+    inset -16px -22px 40px oklch(0 0 0 / 25%),
+    0 30px 80px oklch(0.8908 0.1645 93.89 / 25%);
+}

@@ -15,10 +15,10 @@
 
 .frame {
   position: relative;
-  border-radius: var(--radius-lg);
+  border-radius: var(--pv-radius-lg);
   overflow: hidden;
   background: var(--pv-navy-deep);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--pv-shadow-md);
 }
 
 .frame video,
@@ -51,8 +51,8 @@
   place-items: center;
   background: var(--pv-coral);
   color: var(--pv-white);
-  box-shadow: var(--shadow-cta);
-  transition: transform var(--duration-fast) var(--ease-out);
+  box-shadow: var(--pv-shadow-cta);
+  transition: transform var(--duration-fast) var(--pv-ease-out);
 }
 
 .playButton:hover .playIcon {
@@ -62,7 +62,7 @@
 .caption {
   display: grid;
   gap: var(--space-1);
-  font-size: var(--text-small);
+  font-size: var(--pv-text-small);
   color: var(--pv-body);
 }
 

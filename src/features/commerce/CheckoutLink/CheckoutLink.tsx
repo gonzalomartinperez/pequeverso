@@ -57,10 +57,10 @@ export function CheckoutLink({ product, position, children, className, title }: 
         focusable="false"
         size={20}
         strokeWidth={2.4}
-        className="button__icon"
+        data-icon="inline-start"
       />
       <span>{children}</span>
-      <ArrowRight aria-hidden="true" focusable="false" size={18} strokeWidth={2.4} className="button__icon" />
+      <ArrowRight aria-hidden="true" focusable="false" size={18} strokeWidth={2.4} data-icon="inline-end" />
     </a>
   );
 }

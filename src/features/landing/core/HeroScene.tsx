@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
-import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
-import { Universe } from "@/motion/Universe";
-import { WaveDivider } from "@/motion/WaveDivider";
+import { Eyebrow } from "@/components/blocks/eyebrow";
+import { Universe } from "@/motion/universe";
+import { WaveDivider } from "@/motion/wave-divider";
 import styles from "./HeroScene.module.css";
 
 type Props = {
@@ -46,7 +46,7 @@ export function HeroScene({
   return (
     <section id={id} className={styles.scene} aria-labelledby={titleId}>
       <div className={styles.grid}>
-        <div className={styles.sky} aria-hidden="true">
+        <div className={styles.sky}>
           <Universe variant="hero" />
           <WaveDivider fill="cream" className={styles.wave} />
         </div>

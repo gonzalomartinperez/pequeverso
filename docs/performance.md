@@ -8,21 +8,20 @@ or the client bundle; tighten the budgets, never loosen them without a decision 
 ## Budgets (`config/budgets.json`)
 
 Gzip bytes per route, enforced by `npm run check:bundle` on the static export. Values are the
-measured size plus 10 % headroom, rounded up to 512 bytes.
+measured size plus 10 % headroom, rounded up to 512 bytes. Re-baselined for the Tailwind +
+shadcn migration in ADR-0006 (main = the export before the migration, 2026-09-22).
 
-| Route | Metric | Measured 2026-09-13 | Budget before | Budget now |
+| Route | Metric | main | Measured 2026-09-24 | Budget |
 |---|---|---|---|---|
-| `/` | html | 17.9 KB | 30.0 KB | 20.0 KB |
-| `/` | js | 142.1 KB | 195.0 KB | 156.5 KB |
-| `/grafismo-fonetico/` | html | 33.2 KB | 45.0 KB | 36.0 KB |
-| `/grafismo-fonetico/` | js | 153.1 KB | 195.0 KB | 169.5 KB (default) |
-| `/imprime-y-juega/` | html | 25.1 KB | 40.0 KB | 27.5 KB |
-| `/imprime-y-juega/` | js | 154.0 KB | 195.0 KB | 169.5 KB (default) |
-| `/grafismo-fonetico/gracias/` | html | 15.4 KB | 40.0 KB | 17.0 KB (default) |
-| `/grafismo-fonetico/gracias/` | js | 139.8 KB | 195.0 KB | 154.0 KB |
-| `/soporte/` | html | 8.3 KB | 40.0 KB | 9.5 KB |
-| `/soporte/` | js | 138.6 KB | 195.0 KB | 152.5 KB |
-| all | css | 11.2–11.4 KB | 16.0 KB | 13.0 KB (default) |
+| `/` | html / js / css | 20.4 / 147.4 / 13.2 KB | 24.3 / 150.0 / 16.0 KB | 27.0 / 156.5 / 18.0 KB |
+| `/grafismo-fonetico/` | html / js / css | 39.8 / 162.1 / 13.2 KB | 45.0 / 163.7 / 16.0 KB | 50.0 / 169.5 (default) / 18.0 KB |
+| `/imprime-y-juega/` | html / js / css | 27.1 / 162.1 / 13.2 KB | 31.1 / 163.7 / 16.0 KB | 34.5 / 169.5 (default) / 18.0 KB |
+| `/grafismo-fonetico/gracias/` | html / js / css | 18.5 / 143.1 / 13.2 KB | 22.2 / 144.5 / 12.3 KB | 24.5 / 154.0 / 14.0 KB (default) |
+| `/soporte/` | html / js / css | 9.9 / 141.4 / 13.2 KB | 11.3 / 142.5 / 12.1 KB | 12.5 / 152.5 / 13.5 KB |
+| deferred scene (`scene.js`) | js | — | 177.6 KB (5 chunks, never initial) | 250.0 KB |
+
+Product pages still load their legacy CSS Modules next to the global stylesheet; their `css`
+budgets drop to the default once the page redesigns delete those modules.
 
 `html` counts the exported document including the embedded RSC payload (roughly 60 % of the
 bytes on the product pages). `js` sums every `/_next/static/chunks/*.js` referenced by the page
@@ -127,9 +126,9 @@ poster button for `<video controls>` on demand, taking the poster URL from the p
 
 ## JavaScript
 
-`experimental.optimizePackageImports: ["lucide-react"]` is set explicitly (Next already applies it
-by default; the analyzer confirms per-icon modules of 0.1–0.2 KB gzip each). `npm run analyze`
-on this build, App Router chunks loaded by every page:
+`lucide-react` is in Next's default `optimizePackageImports` list, so the explicit
+`experimental` entry was removed (the analyzer still shows per-icon modules of 0.1–0.2 KB gzip).
+`npm run analyze` on the pre-migration build, App Router chunks loaded by every page:
 
 | Chunk | gzip | Largest modules |
 |---|---|---|
@@ -146,19 +145,25 @@ the framework itself; the remaining lever is what each page imports, not a depen
 
 ## CSS
 
-Two blocking stylesheets per page in a fixed order: the layout globals (`tokens.css` with the
-`@font-face` rules first, then `base.css`, `utilities.css`; 2.9 KB gzip) and the CSS-module bundle
-for the route (8.3–8.5 KB gzip). `experimental.inlineCss` was trialled on this build and rejected:
-the exported HTML grows from 17.9 to 48.2 KB gzip on `/` and from 32.3 to 63.3 KB on
-`/grafismo-fonetico/` (the CSS is inlined in the document and repeated in the RSC payload), well
-over the HTML budgets, `scripts/check-bundle-budget.mjs` cannot parse the combined `data-href`
-value it emits, and the median LCP at 390 px did not improve (871 ms vs 832 ms on `/`, 996 ms vs
-823 ms on `/grafismo-fonetico/`).
+One blocking stylesheet per page from the layout: `src/app/globals.css` (fonts, tokens, the
+Tailwind v4 base/utilities generated from the sources, `motion.css`; ≈ 12.1–12.6 KB gzip), plus
+the legacy CSS-module bundle on product pages until their redesign. Tailwind's palette is reset
+(`--color-*: initial`), so only brand utilities are generated. `experimental.inlineCss` was
+trialled before the migration and rejected (the CSS is repeated in the RSC payload and blows the
+HTML budgets without improving LCP).
+
+## Design-system JavaScript
+
+`cn` runs on merge tables compiled from the sources (`withCn`, 3.2 KB gzip instead of the full
+13 KB table); client islands outside `src/components/ui` use `cx` or receive class strings from
+the server, so the always-loaded layout, error boundaries and header ship no variant tables. The
+mobile-nav sheet (Base UI dialog) is a separate chunk loaded on intent. three + gsap load only in
+`src/motion/scene/scene-runtime.ts`, behind `await import()` and motion/Save-Data/viewport gates.
 
 ## Re-measuring
 
 ```sh
-npm run build && npm run check:bundle          # budgets
+npm run build && npm run check:bundle && npm run check:scene   # budgets
 npm run lhci                                   # Lighthouse at 390 (lighthouserc.json)
 npx playwright test lcp                        # LCP element and preloads (once `lcp` is in the PR project matcher)
 ```

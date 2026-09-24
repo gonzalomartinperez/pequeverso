@@ -1,6 +1,6 @@
-import { BulletList } from "@/components/ui/BulletList/BulletList";
-import { Card } from "@/components/ui/Card/Card";
-import { Grid } from "@/components/ui/Grid/Grid";
+import { BulletList } from "@/components/blocks/bullet-list";
+import { Grid } from "@/components/blocks/grid";
+import { Card } from "@/components/ui/card";
 
 type AudienceCard = { title: string; items: readonly string[] };
 

@@ -4,6 +4,14 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
 
 ## [Unreleased]
 
+### Changed
+- Design system rebuilt on Tailwind CSS 4.3 + shadcn/ui (Base UI, `base-vega`): one token file
+  (`src/app/globals.css`, OKLCH), shadcn primitives in `src/components/ui`, server blocks in
+  `src/components/blocks`, kebab-case layout with a Base UI sheet for mobile navigation,
+  `motion.css` + WAAPI section entrances, and a lazy three + gsap starfield with a static SVG
+  fallback and pause control (`src/motion/scene`, budgeted by `check:scene`). Responsive contract
+  enforced by `tests/e2e/responsive.spec.ts`. ADR-0006.
+
 ### Added
 - Meta Conversions API relay: the browser posts every pixel event (same UUID id) to the
   same-origin `POST /api/meta/events/`, served by `server/meta-capi.mjs` in both Node targets

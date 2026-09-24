@@ -1,12 +1,13 @@
 .slot {
   --widget-min-h: 220px;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-3);
   padding: var(--space-4);
-  border-radius: var(--radius-lg);
+  border-radius: var(--pv-radius-lg);
   background: var(--pv-white);
   border: 2px solid var(--pv-teal);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--pv-shadow-md);
   scroll-margin-top: calc(var(--header-height) + var(--space-4));
 }
 
@@ -24,12 +25,13 @@
 }
 
 .heading p:last-child {
-  font-size: var(--text-small);
+  font-size: var(--pv-text-small);
 }
 
 .container {
+  min-width: 0;
   min-height: var(--widget-min-h);
-  border-radius: var(--radius);
+  border-radius: var(--pv-radius-md);
 }
 
 @media (min-width: 768px) {
@@ -59,7 +61,7 @@
 }
 
 .status {
-  font-size: var(--text-small);
+  font-size: var(--pv-text-small);
   color: var(--pv-muted);
   min-height: 1.4em;
 }
@@ -72,11 +74,24 @@
   display: grid;
   gap: var(--space-2);
   padding: var(--space-4);
-  border-radius: var(--radius);
+  border-radius: var(--pv-radius-md);
   background: var(--pv-lemon);
 }
 
 .fallbackTitle {
   font-weight: 800;
   color: var(--pv-ink);
+}
+
+/*
+ * Hotmart's iframe carries an inline `min-width: 320px`. On phones narrower than the slot plus
+ * gutters, the widget bleeds to the viewport edges (exactly 320 px at a 320 px viewport) rather
+ * than clipping the decision buttons or scrolling the page sideways.
+ */
+@media (max-width: 399.98px) {
+  .container {
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    border-radius: 0;
+  }
 }

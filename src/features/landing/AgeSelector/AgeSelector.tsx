@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, ViewTransition } from "react";
-import { useMotionOK } from "@/motion/useMotionOK";
+import { useMotionOK } from "@/motion/use-motion-ok";
 import { useAge } from "./AgeContext";
 import styles from "./AgeSelector.module.css";
 

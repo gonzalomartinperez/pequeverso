@@ -1,0 +1,312 @@
+/*
+ * Motion rules of the design system (imported once by src/app/globals.css). Every effect is
+ * transform/opacity only, gated by `prefers-reduced-motion` (plus the global kill switch in
+ * globals.css) and, where scroll-driven, by `@supports (animation-timeline: view())`.
+ * Components reference the `pv-*` classes; tokens (durations, easings, travel) come from :root.
+ * See docs/design-system.md → Motion.
+ */
+@layer components {
+  .pv-scene-static {
+    transition: opacity var(--duration-reveal) var(--pv-ease-out);
+  }
+
+  .pv-orbit-traveller {
+    offset-path: path("M 10 200 A 190 72 0 1 1 390 200 A 190 72 0 1 1 10 200");
+    offset-rotate: 0deg;
+    offset-distance: 0%;
+  }
+
+  /*
+   * Reveal on scroll for [data-reveal]. Scroll-driven where supported: an element already in
+   * view at load sits at progress 100%, so nothing flashes. Stagger siblings with `--i`.
+   * Without view timelines, RevealObserver marks only below-the-fold elements with
+   * data-reveal-state and reveals them once. Content is always visible without JS.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      [data-reveal] {
+        animation: pv-reveal var(--duration-reveal) var(--pv-ease-emphasis) both;
+        animation-timeline: view();
+        animation-range-start: entry calc(var(--i, 0) * 6%);
+        animation-range-end: entry calc(35% + var(--i, 0) * 6%);
+      }
+    }
+
+    [data-reveal-state] {
+      transition:
+        opacity var(--duration-reveal) var(--pv-ease-emphasis),
+        transform var(--duration-reveal) var(--pv-ease-emphasis);
+      transition-delay: calc(var(--i, 0) * var(--stagger));
+    }
+
+    [data-reveal-state="pending"] {
+      opacity: 0;
+      transform: translateY(var(--reveal-y));
+    }
+
+    /*
+     * Hero entrance for [data-hero-enter]: ≤ --duration-hero, staggered with `--i`. The title
+     * (`h1` or data-hero-enter="title") and the media (data-hero-enter="media") never animate
+     * opacity, so the LCP candidate paints at once.
+     */
+    [data-hero-enter] {
+      animation: pv-hero-rise var(--duration-hero) var(--pv-ease-emphasis) both;
+      animation-delay: calc(var(--i, 0) * var(--stagger));
+    }
+
+    h1[data-hero-enter],
+    [data-hero-enter="title"] {
+      animation-name: pv-hero-lift;
+    }
+
+    [data-hero-enter="media"] {
+      animation-name: pv-hero-settle;
+    }
+
+    /* Orbit: the gold star travels the dashed ellipse on an offset-path (48 s loop). */
+    .pv-orbit-traveller {
+      animation: pv-orbit-travel var(--duration-orbit) linear infinite;
+    }
+
+    /* Scroll-linked drift of ±--parallax-range on a view timeline. */
+    @supports (animation-timeline: view()) {
+      .pv-parallax-layer {
+        animation: pv-drift-up linear both;
+        animation-timeline: view();
+        animation-range: cover 0% cover 100%;
+      }
+
+      .pv-parallax-layer[data-direction="down"] {
+        animation-name: pv-drift-down;
+      }
+    }
+
+    /* Sticky stack: each card sticks under the header and recedes on the next card's timeline. */
+    @supports (animation-timeline: view()) and (timeline-scope: --a) {
+      .pv-stack {
+        timeline-scope: --stack-1, --stack-2, --stack-3, --stack-4, --stack-5, --stack-6;
+      }
+
+      .pv-stack-item {
+        position: sticky;
+        top: var(--stack-top);
+        view-timeline-axis: block;
+        view-timeline-inset: var(--stack-top) 0;
+        animation: pv-recede linear both;
+        animation-range: contain 0% contain 100%;
+      }
+
+      .pv-stack-item:nth-child(1) {
+        view-timeline-name: --stack-1;
+        animation-timeline: --stack-2;
+      }
+      .pv-stack-item:nth-child(2) {
+        view-timeline-name: --stack-2;
+        animation-timeline: --stack-3;
+      }
+      .pv-stack-item:nth-child(3) {
+        view-timeline-name: --stack-3;
+        animation-timeline: --stack-4;
+      }
+      .pv-stack-item:nth-child(4) {
+        view-timeline-name: --stack-4;
+        animation-timeline: --stack-5;
+      }
+      .pv-stack-item:nth-child(5) {
+        view-timeline-name: --stack-5;
+        animation-timeline: --stack-6;
+      }
+      .pv-stack-item:nth-child(6) {
+        view-timeline-name: --stack-6;
+        animation-timeline: none;
+      }
+    }
+
+    /* Pointer tilt glare (TiltCard sets --glare-x/--glare-y from the pointer). */
+    @media (hover: hover) and (pointer: fine) {
+      .pv-tilt:hover::after {
+        opacity: 1;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pv-orbit-traveller {
+      animation-play-state: paused;
+    }
+
+    .pv-tilt {
+      transform: none;
+    }
+  }
+
+  /* Native <details> (FAQ): the answer's height interpolates where the platform can. */
+  @supports (interpolate-size: allow-keywords) {
+    @media (prefers-reduced-motion: no-preference) {
+      .pv-details {
+        interpolate-size: allow-keywords;
+      }
+
+      .pv-details::details-content {
+        height: 0;
+        overflow: clip;
+        transition:
+          height var(--duration) var(--pv-ease-out),
+          content-visibility var(--duration) allow-discrete;
+      }
+
+      .pv-details[open]::details-content {
+        height: auto;
+      }
+    }
+  }
+
+  /* A paused 3D scene (SceneStage toggle) also pauses the hero's orbit. */
+  [data-scene-mode="paused"] .pv-orbit-traveller {
+    animation-play-state: paused;
+  }
+
+  /* While the WebGL starfield runs, the static SVG fallback fades out underneath it. */
+  [data-scene-mode="running"] .pv-scene-static,
+  [data-scene-mode="paused"] .pv-scene-static {
+    opacity: 0;
+  }
+
+  .pv-stack {
+    --stack-top: calc(var(--header-height) + var(--space-5));
+  }
+
+  .pv-stack-item {
+    transform-origin: top center;
+  }
+
+  .pv-tilt {
+    --tilt-rx: 0;
+    --tilt-ry: 0;
+    --glare-x: 50%;
+    --glare-y: 50%;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: perspective(var(--tilt-perspective)) rotateX(calc(var(--tilt-rx) * var(--tilt-max)))
+      rotateY(calc(var(--tilt-ry) * var(--tilt-max)));
+    transition: transform var(--duration) var(--pv-ease-out);
+  }
+
+  .pv-tilt::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      circle at var(--glare-x) var(--glare-y),
+      oklch(1 0 0 / 28%),
+      oklch(1 0 0 / 0%) 55%
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration) var(--pv-ease-out);
+  }
+
+  /*
+   * View-transition faces for FlipPreview (class "pv-flip"): the old snapshot turns away and the
+   * new one turns in, half a reveal each, inside a perspective. Global because view-transition
+   * pseudo-elements live on the document root.
+   */
+  ::view-transition-image-pair(.pv-flip) {
+    perspective: var(--tilt-perspective);
+  }
+
+  ::view-transition-old(.pv-flip) {
+    animation: pv-flip-out calc(var(--duration-reveal) / 2) var(--pv-ease-out) both;
+  }
+
+  ::view-transition-new(.pv-flip) {
+    animation: pv-flip-in calc(var(--duration-reveal) / 2) calc(var(--duration-reveal) / 2) var(--pv-ease-out)
+      both;
+  }
+}
+
+@keyframes pv-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-y));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pv-hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-y));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pv-hero-lift {
+  from {
+    transform: translateY(var(--reveal-y));
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes pv-hero-settle {
+  from {
+    transform: translateY(var(--reveal-y)) scale(0.97);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes pv-orbit-travel {
+  to {
+    offset-distance: 100%;
+  }
+}
+
+@keyframes pv-drift-up {
+  from {
+    transform: translateY(var(--parallax-range));
+  }
+  to {
+    transform: translateY(calc(-1 * var(--parallax-range)));
+  }
+}
+
+@keyframes pv-drift-down {
+  from {
+    transform: translateY(calc(-1 * var(--parallax-range)));
+  }
+  to {
+    transform: translateY(var(--parallax-range));
+  }
+}
+
+@keyframes pv-recede {
+  to {
+    transform: scale(0.94);
+  }
+}
+
+@keyframes pv-flip-out {
+  to {
+    transform: rotateY(-90deg);
+  }
+}
+
+@keyframes pv-flip-in {
+  from {
+    transform: rotateY(90deg);
+  }
+  to {
+    transform: none;
+  }
+}

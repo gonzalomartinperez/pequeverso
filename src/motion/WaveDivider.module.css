@@ -1,9 +1,0 @@
-.wave {
-  display: block;
-  width: 100%;
-  height: var(--wave-height);
-}
-
-.flip {
-  transform: scaleY(-1);
-}

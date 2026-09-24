@@ -24,9 +24,9 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  border-radius: var(--radius);
+  border-radius: var(--pv-radius-md);
   background: var(--pv-white);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--pv-shadow-lg);
   transform-origin: center;
 }
 
