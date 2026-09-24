@@ -7,6 +7,8 @@ test("upsell mode by default: upsell view visible, downsell hidden, one widget c
   await expect(page.locator("[data-offer-root]")).toHaveAttribute("data-offer", "upsell");
   await expect(page.locator("#hero-title-upsell")).toBeVisible();
   await expect(page.locator("#hero-title-downsell")).toBeHidden();
+  await expect(page.locator("#gfp-decision-title")).toBeVisible();
+  await expect(page.locator("#gfp-decision-title-downsell")).toBeHidden();
   await expect(page.locator("#hotmart-sales-funnel")).toHaveCount(1);
   await expect(page.locator('script[src*="hotmart-checkout-elements.js"]')).toHaveCount(1);
   await expect(page.locator("a[href*='pay.hotmart.com']")).toHaveCount(0);
@@ -30,6 +32,8 @@ for (const query of ["?downsell=1", "?offer=downsell", "?downsell=1&utm_source=x
     await expect(page.locator("[data-offer-root]")).toHaveAttribute("data-offer", "downsell");
     await expect(page.locator("#hero-title-downsell")).toBeVisible();
     await expect(page.locator("#hero-title-upsell")).toBeHidden();
+    await expect(page.locator("#gfp-decision-title-downsell")).toBeVisible();
+    await expect(page.locator("#gfp-decision-title")).toBeHidden();
     await expect(page.locator("#hero")).toHaveAttribute("aria-hidden", "true");
     await expect(page.locator("#hotmart-sales-funnel")).toHaveCount(1);
     await expect(page.getByText("US$7,49").first()).toBeVisible();
@@ -74,3 +78,13 @@ for (const [query, visible, hidden, price] of [
     expect(displays[1]).toBe("none");
   });
 }
+
+test("sticky decision bar stays hidden over the offer hero and appears after it", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/imprime-y-juega/");
+  const bar = page.getByTestId("sticky-cta");
+  await expect(bar).not.toHaveAttribute("data-visible", "");
+  await page.locator("#complemento-title").scrollIntoViewIfNeeded();
+  await page.mouse.wheel(0, 400);
+  await expect(bar).toHaveAttribute("data-visible", "");
+});

@@ -465,12 +465,6 @@
     color: var(--pv-ink);
   }
 
-  /* Offer mode: both views ship in the HTML; a pre-hydration script sets data-offer. */
-  [data-offer="downsell"] .only-upsell,
-  [data-offer="upsell"] .only-downsell {
-    display: none;
-  }
-
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -485,6 +479,13 @@
       scroll-behavior: auto !important;
     }
   }
+}
+
+/* Offer mode: both views ship in the HTML; a pre-hydration script sets data-offer. Unlayered on
+   purpose so it beats any display utility (`grid`, `flex`) on the hidden view. */
+[data-offer="downsell"] .only-upsell,
+[data-offer="upsell"] .only-downsell {
+  display: none;
 }
 
 /* 6. Project utilities */

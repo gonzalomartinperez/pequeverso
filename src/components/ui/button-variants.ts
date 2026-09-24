@@ -4,9 +4,11 @@ import { cva, type VariantProps } from "class-variance-authority";
  * Button classes shared by the Base UI `Button` (client) and by links styled as buttons
  * (`CTAButton`, `CheckoutLink`, …), which stay server-safe by importing only this module.
  * Targets are ≥ 44 px in every size; `primary` (coral pill) is reserved for the purchase action.
+ * Every variant sets its own border colour (no base `border-transparent`), so the classes stay
+ * correct when used without `cn` (client islands, error boundary).
  */
 export const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 border-2 border-transparent text-center font-sans font-extrabold leading-tight no-underline transition-[background-color,border-color,color,transform,box-shadow] duration-(--duration-fast) ease-out disabled:pointer-events-none disabled:opacity-50 motion-safe:active:translate-y-px [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
+  "inline-flex shrink-0 items-center justify-center gap-2 border-2 text-center font-sans font-extrabold leading-tight no-underline transition-[background-color,border-color,color,transform,box-shadow] duration-(--duration-fast) ease-out disabled:pointer-events-none disabled:opacity-50 motion-safe:active:translate-y-px [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
   {
     variants: {
       variant: {
@@ -19,7 +21,7 @@ export const buttonVariants = cva(
         inverse: "rounded-md border-white bg-white text-navy hover:border-gold hover:bg-gold hover:text-ink",
         ghost:
           "rounded-md border-line-strong bg-transparent text-secondary hover:border-secondary hover:bg-muted hover:text-secondary",
-        link: "min-h-0 rounded-sm px-0 text-link underline underline-offset-4 hover:text-link-hover",
+        link: "min-h-0 rounded-sm border-transparent px-0 text-link underline underline-offset-4 hover:text-link-hover",
       },
       size: {
         default: "min-h-14 px-8 text-[1.0625rem]",

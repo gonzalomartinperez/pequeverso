@@ -30,7 +30,7 @@ import { type CounterFact, UpsellHero } from "./offer/UpsellHero";
 
 type Props = { product: OfferProduct };
 
-const STICKY_HIDE_OVER = ["#gfp-decision", "#cierre", "footer"];
+const STICKY_HIDE_OVER = ["#hero", "#hero-downsell", "#gfp-decision", "#cierre", "footer"];
 
 function counterFacts({ composition, copy, resources }: OfferProduct): CounterFact[] {
   const units = copy.counters;
