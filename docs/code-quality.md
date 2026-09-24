@@ -22,6 +22,7 @@ comments; no dead code (knip is a gate); business facts come from `config/` and 
 | Placeholders | report on PR; `--strict` on deploy | PR / deploy | deploy |
 | Dependencies | `npm audit --omit=dev --audit-level=high`; Dependabot weekly with cooldowns (npm, `tools/media`, actions incl. `.github/actions/*`) | PR, main | yes |
 | Workflows | `actionlint` (with shellcheck) + `zizmor` (`.github/zizmor.yml`) on every workflow and composite action | PR, main | yes |
+| Hostinger parity | `rockylinux:8` (GLIBC 2.28) container: WASM SWC fallback asserted, `build:standalone`, smoke against `npm start` | PR, main | yes |
 | E2E | Playwright `PW_SET=pr`: chromium 390/768/1440 + reduced motion (smoke, axe WCAG 2.2 AA, offer modes, widget lifecycle, commerce, consent, motion, navigation) | PR | yes |
 | Lighthouse | LHCI on the export, 2 runs, mobile emulation; a11y ≥ 0.95 and CLS ≤ 0.1 are errors; report kept as artifact and job summary | PR | a11y/CLS |
 | Production | `post-deploy-verify`: revision match, smoke, headers, `PW_SET=prod`, informative Lighthouse | main push, deploy | yes |
@@ -40,10 +41,10 @@ restore (caches created on a PR branch are invisible to other branches).
 
 | Workflow | Trigger | Jobs | Wall time | Billed minutes |
 |---|---|---|---|---|
-| `ci.yml` (pull request) | PR, `workflow_dispatch` | workflows ≈ 0:20 · build ≈ 0:45 · e2e ≈ 3:30 · lighthouse ≈ 2:15 · ci | ≈ 4:30–5:00 | ≈ 7 |
-| `ci.yml` (push to main) | push | workflows · build · ci (e2e/lighthouse skipped) | ≈ 1:10 | ≈ 1.5 |
-| `post-deploy-verify.yml` | push to main, `workflow_dispatch`, called by Deploy | verify (wait for Hostinger ≈ 1–3 min, smoke, headers, `PW_SET=prod`, Lighthouse) | ≈ 3:00 | ≈ 3 |
-| `nightly.yml` | 04:17 UTC, `workflow_dispatch` | build ≈ 0:40 · chromium ≈ 6:30 · webkit ≈ 11:00 · visual ≈ 1:10 · clean-clone ≈ 1:00 · quality ≈ 5:00 | ≈ 12:00 | ≈ 26 |
+| `ci.yml` (pull request) | PR, `workflow_dispatch` | workflows 0:17 · build 0:50 · hostinger 1:50 · e2e 3:25 · lighthouse 2:20 · ci | 5:05 (run 35535556322) | ≈ 9 |
+| `ci.yml` (push to main) | push | workflows · build · hostinger · ci (e2e/lighthouse skipped) | ≈ 2:00 | ≈ 3 |
+| `post-deploy-verify.yml` | push to main, `workflow_dispatch` (`sha`), called by Deploy | verify: wait for Hostinger (≈ 1–3 min after a push), smoke, headers, `PW_SET=prod`, Lighthouse | 1:10 once live (run 35536094502) | ≈ 2 |
+| `nightly.yml` | 04:17 UTC, `workflow_dispatch` | build 0:51 · chromium 6:22 · webkit 9:13 · visual 1:03 · clean-clone 0:51 · quality 5:13 | 10:14 (run 35535185028) | ≈ 24 |
 | `deploy.yml` | manual, environment approval | release ≈ 2:00 + verify | ≈ 5:00 | ≈ 5 |
 | `branch-policy.yml` | `pull_request_target` (no checkout, no permissions) | 1 shell step | ≈ 0:10 | < 0.5 |
 

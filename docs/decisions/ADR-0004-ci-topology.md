@@ -75,6 +75,83 @@ the zizmor audit catalogue and the 2026 GitHub Actions changelog.
   `staging`; a `production` deploy without a real checkout URL fails before building.
   `post-deploy-verify.yml` does not build and needs none of them.
 
+- **Hostinger parity lane** (`hostinger`, ported from the owner's portfolio CI): `rockylinux:8`
+  container pinned by digest, Node from `.nvmrc`, asserts `getconf GNU_LIBC_VERSION == glibc 2.28`
+  and that `next/dist/build/swc` loads the WASM bindings (the log shows the native binding failing
+  with `GLIBC_2.29 not found`), then `npm run build:standalone` and `scripts/smoke.mjs` against
+  `npm start` (10 checks: routes, 308 slash redirect, 404, `build-info.json` sha, one
+  `#hotmart-sales-funnel`). It proves what the Ubuntu job structurally cannot — PR #5 (86a4bab) was
+  green in CI and failed on the host — and it is the only place the standalone target and the
+  Node-mode redirects/headers run at all. About 1:50 in parallel with `build`, shorter than the E2E
+  job, so it adds no wall time; it runs on every pull request and push and gates `ci` (a required
+  check must not be path-filtered).
+- **Whole-tree clean check** after the build (`git diff --exit-code`, from the portfolio): catches
+  any generator writing into tracked files, not only `docs/generated`.
+
+### Every step, what it catches, measured cost
+
+Durations from the green dispatched runs 35535556322 (CI), 35535185028 (Nightly) and
+35536094502 (post-deploy verify) on 2026-09-20; "caught before" cites real failures in this
+repository. `npm run check` is the local mirror of the `build` job; CI runs the same commands as
+separate named steps so the failing gate is visible in the job list and each one is timed.
+
+`ci.yml` — required check `ci` = workflows and build and hostinger and (e2e and lighthouse on pull requests)
+
+| Job / step | Catches | Caught before | Cost |
+|---|---|---|---|
+| workflows · actionlint (+ shellcheck) | invalid YAML/expressions, unknown contexts, unquoted shell | new; a broken snippet fails locally with 3 errors | 2 s |
+| workflows · zizmor | template injection, unpinned or vulnerable actions, excessive permissions, credential persistence | new; the baseline had 24 findings | 4 s |
+| build · Setup (composite) | — | — | 17 s |
+| build · Lint (`biome ci --error-on-warnings`) | style, unused imports, a11y lint rules | runs 34801819186, 34801760805, 34792954517, 34789720759, 34789674042 | 1 s |
+| build · Typecheck | type errors, stale route types | no red run yet | 4 s |
+| build · Unit tests | commerce facts, content invariants, edge rules vs `.htaccess` golden, checkout params | run 35534303641 (offer-code assertion) | 1 s |
+| build · Dead code (`knip --production`) | unused files/exports/deps shipped to production | run 34789581150 | 1 s |
+| build · Build static export | build/prerender errors, `check-env` formats | — | 16 s (Next cache hit) |
+| build · Tree clean | generators drifting from committed golden files | 7089975 (`.htaccess` dotfile rule) motivated the golden | 0 s |
+| build · Media / Placeholders / Bundle / Rendered HTML | media rights and 5 MB / 25 MB budgets; `[[PLACEHOLDER]]` report; gzip per route vs `config/budgets.json`; landmarks, single h1, canonical, anchors | budgets tightened in cd894af (#15); structural checks since d5c6040 (#10) | 0–1 s |
+| build · `npm audit --omit=dev --audit-level=high` | known-vulnerable production dependencies | — | 1 s |
+| build · Upload export | feeds e2e / lighthouse without a second build | — | 2 s |
+| hostinger (see above) | GLIBC 2.28 / WASM SWC / standalone / `npm start` | PR #5 (86a4bab) | 1:50 (dnf 31 s, npm ci 15 s, build 35 s, smoke 2 s) |
+| e2e · Setup with cached Chromium | — | cache hit on new branches now (`playwright-Linux-1.63.0-chromium` written by nightly on `main`) | 33 s |
+| e2e · Playwright `PW_SET=pr` | smoke, axe WCAG 2.2 AA, offer modes, widget lifecycle, commerce, consent, motion, navigation at 390/768/1440 + reduced motion | runs 34789782195, 34718808308 (TypeScript 7 major bump) | 2:44 |
+| lighthouse · LHCI 2 runs | a11y >= 0.95 and CLS <= 0.1 as errors; perf/LCP/TBT/byte budgets as warnings | run 34718808308 | 1:54 |
+| ci · Evaluate gates | single required status for the ruleset | every red run above | 3 s |
+
+`nightly.yml` — report only (never gates a pull request)
+
+| Job | Catches | Caught before | Cost |
+|---|---|---|---|
+| build (+ bundle budget summary) | — | — | 51 s |
+| matrix chromium × 7 widths | layout/behaviour at 1280/1024/430/360 that the PR set skips | run 34749691820 | 6:22 |
+| matrix webkit × 7 widths | Safari-only regressions | runs 35327273382, 34803557699 (led to #23) | 9:13 (WebKit cache now written) |
+| visual (2 widths, Chromium) | unintended pixel changes vs committed baselines | baselines regenerated in #22 / #25 | 1:03 |
+| clean-clone | banner or cookies appearing without any integration id | consent redesign in #24 | 51 s |
+| quality: full knip, LHCI ×5, links, bundle analysis | dev-only dead code, stable lab numbers, broken internal links, chunk composition | run 34749691820 (knip) | 5:13 |
+
+`post-deploy-verify.yml` — after every push to `main` and after Deploy (about 1:10 once the revision is live)
+
+| Step | Catches | Cost |
+|---|---|---|
+| Wait for revision (`build-info.json`, up to 20 min) | host built a different commit, or nothing | 1 s when already live |
+| Smoke (10 checks) | broken routes/redirects/404, missing widget container | 8 s |
+| Headers | HSTS, nosniff, CSP, cache classes, Cloudflare status | 0 s |
+| Playwright `PW_SET=prod` | real-origin smoke spec at 1440 | 18 s |
+| Lighthouse (informative, `--no-lighthouserc`) | lab scores of the live origin in the job summary | about 1 min |
+
+### Before / after
+
+| | Before (de93077) | After |
+|---|---|---|
+| PR wall time | 4:29 (run 34807820902) | 5:05 (run 35535556322; the parity lane runs in parallel, E2E is the critical path) |
+| Push-to-main wall time | 1:10 | about 2:00 (parity lane; build alone 0:50) |
+| Nightly wall time | 11:50 (run 35501884777) | 10:14 (run 35535185028; cached browsers) |
+| Steps per PR | 30 unnamed `run:` steps | 42 named steps, 12 of them in the parity lane and 2 lint steps |
+| Playwright browser cache on a new branch | miss (key only ever written by PR branches) | hit (written nightly on `main`) |
+| npm cache | hit | hit (all jobs) |
+| Workflow permissions | `contents: read` at workflow level; `contents: write` for the whole Deploy workflow | `permissions: {}` + per-job; `contents: write` on one job |
+| zizmor findings (pedantic) | 24 | 0 (2 justified inline ignores) |
+| Informative Lighthouse in post-deploy verify | failed silently on every run (`out/` missing) | audits the live origin |
+
 Evaluated and rejected:
 
 - **`$/` self-repository references** (GitHub, July 2026): actionlint 1.7.12 rejects the syntax, so
