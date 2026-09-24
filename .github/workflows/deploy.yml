@@ -24,8 +24,7 @@ on:
         type: choice
         options: [production, staging]
 
-permissions:
-  contents: write
+permissions: {}
 
 concurrency:
   group: deploy-${{ inputs.target }}
@@ -36,38 +35,50 @@ env:
 
 jobs:
   release:
-    name: Build, publish deploy branch, verify
+    name: Build, publish deploy branch, promote release branch
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    permissions:
+      contents: write # pushes the deploy(-staging) and release(-staging) branches
     environment:
       name: ${{ inputs.target }}
-      url: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+      url: ${{ env.NEXT_PUBLIC_SITE_URL }}
+    env:
+      REF_NAME: ${{ inputs.ref }}
+      DEPLOY_BRANCH: ${{ inputs.target == 'production' && 'deploy' || 'deploy-staging' }}
+      RELEASE_BRANCH: ${{ inputs.target == 'production' && 'release' || 'release-staging' }}
+      # Business values come from the environment's variables (Settings → Environments → <target>);
+      # environment-scoped `vars` resolve only inside a job that declares the environment, hence
+      # job-level. The site URL falls back to the public origin; the checkout falls back to a fake
+      # offer code for staging only — a production deploy without a real checkout URL fails to build.
+      NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL || 'https://pequeverso.com' }}
+      NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO: ${{ vars.NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO || vars.NEXT_PUBLIC_CHECKOUT_URL || (inputs.target != 'production' && 'https://pay.hotmart.com/TEST0000000?checkoutMode=10') || '' }}
     outputs:
       sha: ${{ steps.meta.outputs.sha }}
-      site_url: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+      site_url: ${{ env.NEXT_PUBLIC_SITE_URL }}
     steps:
       - name: Checkout requested ref
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        # Credentials stay on purpose: the token is what pushes the branches below.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 # zizmor: ignore[artipacked]
         with:
           ref: ${{ inputs.ref }}
           fetch-depth: 0
 
       - name: Resolve commit
         id: meta
-        run: |
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-          echo "branch=${{ inputs.target == 'production' && 'deploy' || 'deploy-staging' }}" >> "$GITHUB_OUTPUT"
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+      # Inline rather than ./.github/actions/setup: the working tree is the *requested* ref and a
+      # rollback to a tag that predates the composite action must still deploy.
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
           cache: npm
-
-      - name: Install
+      - name: Install dependencies
         run: npm ci
 
-      - name: Launch gates — no placeholders, media rights confirmed
+      - name: Launch gates (no placeholders, media rights confirmed)
         run: |
           npm run check:placeholders:strict
           npm run check:media -- --strict
@@ -76,27 +87,22 @@ jobs:
         env:
           GITHUB_SHA: ${{ steps.meta.outputs.sha }}
           GITHUB_REF_NAME: ${{ inputs.ref }}
-          NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
-          NEXT_PUBLIC_CHECKOUT_URL: ${{ vars.NEXT_PUBLIC_CHECKOUT_URL }}
           NEXT_PUBLIC_META_PIXEL_ID: ${{ vars.NEXT_PUBLIC_META_PIXEL_ID }}
-          NEXT_PUBLIC_UMAMI_SCRIPT_URL: ${{ vars.NEXT_PUBLIC_UMAMI_SCRIPT_URL }}
-          NEXT_PUBLIC_UMAMI_WEBSITE_ID: ${{ vars.NEXT_PUBLIC_UMAMI_WEBSITE_ID }}
         run: |
-          test -n "$NEXT_PUBLIC_SITE_URL" || { echo "NEXT_PUBLIC_SITE_URL is not set for this environment"; exit 1; }
+          set -euo pipefail
+          test -n "$NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO" || { echo "::error::Set NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO (or NEXT_PUBLIC_CHECKOUT_URL) in the environment's variables"; exit 1; }
           npm run build
           test -f out/.htaccess && test -f out/build-info.json && test -f out/index.html
 
       - name: Publish static export to the deploy branch
         env:
           SHA: ${{ steps.meta.outputs.sha }}
-          BRANCH: ${{ steps.meta.outputs.branch }}
-          REF_NAME: ${{ inputs.ref }}
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Orphan commit containing only the exported files; history stays tiny.
-          git checkout --orphan "$BRANCH-tmp"
+          git checkout --orphan "$DEPLOY_BRANCH-tmp"
           git rm -rfq --cached . >/dev/null
           find . -mindepth 1 -maxdepth 1 ! -name out ! -name .git -exec rm -rf {} +
           shopt -s dotglob
@@ -105,20 +111,38 @@ jobs:
           printf 'Static export of %s (%s). Built by the Deploy workflow; do not edit.\n' "$REF_NAME" "$SHA" > DEPLOY-README.txt
           git add -A
           git commit -qm "deploy: $REF_NAME ($SHA)"
-          git push --force origin "HEAD:refs/heads/$BRANCH"
-          echo "published $BRANCH at $(git rev-parse HEAD)"
+          git push --force origin "HEAD:refs/heads/$DEPLOY_BRANCH"
+          echo "published $DEPLOY_BRANCH at $(git rev-parse HEAD)"
 
       - name: Promote the source commit to the release branch (Hostinger Node.js Web App mode)
         # If the hPanel Node.js app is connected to `release` instead of `main`, this is what
         # triggers Hostinger's own build of exactly the approved commit.
         env:
           SHA: ${{ steps.meta.outputs.sha }}
-          BRANCH: ${{ inputs.target == 'production' && 'release' || 'release-staging' }}
-        run: git push --force origin "$SHA:refs/heads/$BRANCH"
+        run: git push --force origin "$SHA:refs/heads/$RELEASE_BRANCH"
+
+      - name: Summary
+        env:
+          SHA: ${{ steps.meta.outputs.sha }}
+          TARGET: ${{ inputs.target }}
+          SITE_URL: ${{ env.NEXT_PUBLIC_SITE_URL }}
+        run: |
+          {
+            echo "## Deploy $REF_NAME to $TARGET"
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Commit | $SHA |"
+            echo "| Static export branch | $DEPLOY_BRANCH |"
+            echo "| Node app source branch | $RELEASE_BRANCH |"
+            echo "| Site | $SITE_URL |"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   verify:
     name: Verify deployed revision
     needs: release
+    permissions:
+      contents: read
     uses: ./.github/workflows/post-deploy-verify.yml
     with:
       sha: ${{ needs.release.outputs.sha }}

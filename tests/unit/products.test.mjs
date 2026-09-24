@@ -78,7 +78,8 @@ test("the checkout URL is read through static env references Next can inline", (
   const source = readFileSync(new URL("../../src/products/grafismo-fonetico.ts", import.meta.url), "utf8");
   assert.match(source, /process\.env\.NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO \|\|/);
   assert.match(source, /process\.env\.NEXT_PUBLIC_CHECKOUT_URL \|\|/);
-  assert.match(grafismoFonetico.checkout.url, /^https:\/\/pay\.hotmart\.com\/D106959604R\?checkoutMode=10$/);
+  // CI builds override the offer code with a fake one; only the origin and the checkout mode are invariant.
+  assert.match(grafismoFonetico.checkout.url, /^https:\/\/pay\.hotmart\.com\/[A-Za-z0-9]+\?checkoutMode=10$/);
   assert.equal(grafismoFonetico.checkout.envKey, "NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO");
   assert.match(grafismoFonetico.checkout.sckPrefix, /^[a-z0-9]{1,6}$/);
 });

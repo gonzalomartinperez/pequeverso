@@ -1,18 +1,24 @@
 name: Branch policy
 
-# Validates branch naming for pull requests into main without checking out code
-# (pull_request_target runs with the base repository's permissions; no untrusted code runs).
+# Validates branch naming and PR title for pull requests into main. pull_request_target is used on
+# purpose so the policy comes from main and cannot be edited away by the PR itself; the job has no
+# permissions, checks out nothing and runs nothing from the head, so no untrusted code executes.
 on:
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers] no checkout, no permissions, no untrusted code
     types: [opened, edited, synchronize, reopened]
 
 permissions: {}
+
+concurrency:
+  group: branch-policy-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
   branch-policy:
     name: Branch policy
     runs-on: ubuntu-24.04
     timeout-minutes: 2
+    permissions: {}
     steps:
       - name: Validate head branch and base
         env:

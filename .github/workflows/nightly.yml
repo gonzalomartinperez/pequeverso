@@ -1,5 +1,8 @@
 name: Nightly
 
+# Full matrix and slow checks that do not gate pull requests: Chromium + WebKit at seven widths,
+# visual snapshots, the clean-clone invariant, full knip, Lighthouse ×5, link check, bundle analysis.
+# Runs on main and therefore also warms the Playwright browser caches that pull requests restore.
 on:
   schedule:
     - cron: "17 4 * * *"
@@ -10,60 +13,81 @@ on:
         type: boolean
         default: false
 
-permissions:
-  contents: read
+permissions: {}
+
+concurrency:
+  group: nightly
+  cancel-in-progress: false
 
 env:
   NEXT_TELEMETRY_DISABLED: "1"
+  # Required build-time values (scripts/check-env.mjs) with a fake offer code; deliberately no
+  # NEXT_PUBLIC_META_PIXEL_ID so the clean-clone job proves the export has no banner and no cookies.
   NEXT_PUBLIC_SITE_URL: https://pequeverso.com
+  NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO: https://pay.hotmart.com/TEST0000000?checkoutMode=10
 
 jobs:
   build:
     name: Build export (public defaults)
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+          persist-credentials: false
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Build static export
+        run: npm run build
+      - name: Bundle budget
+        run: npm run check:bundle
+      - name: Upload export
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: nightly-export
+          name: site-export
           path: out
           retention-days: 3
+          if-no-files-found: error
 
   matrix:
     name: Playwright ${{ matrix.browser }} × 7 widths
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     needs: build
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
         browser: [chromium, webkit]
+    env:
+      BROWSER: ${{ matrix.browser }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+          persist-credentials: false
+      - name: Setup
+        uses: ./.github/actions/setup
         with:
-          name: nightly-export
+          browser: ${{ matrix.browser }}
+      - name: Download export
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: site-export
           path: out
-      - run: npx playwright install --with-deps ${{ matrix.browser }}
-      - run: npx playwright test --project="${{ matrix.browser }}-*"
+      - name: Playwright (PW_SET=nightly)
         env:
           PW_SET: nightly
-      - if: failure()
+        run: npx playwright test --project="$BROWSER-*"
+      - name: Upload Playwright report
+        if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: nightly-report-${{ matrix.browser }}
+          name: playwright-report-${{ matrix.browser }}
           path: playwright-report
           retention-days: 14
 
@@ -72,23 +96,30 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     needs: build
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+          persist-credentials: false
+      - name: Setup
+        uses: ./.github/actions/setup
         with:
-          name: nightly-export
+          browser: chromium
+      - name: Download export
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: site-export
           path: out
-      - run: npx playwright install --with-deps chromium
-      - if: ${{ !inputs.update_snapshots }}
+      - name: Compare with baselines
+        if: ${{ !inputs.update_snapshots }}
         run: npm run test:e2e:visual
-      - if: ${{ inputs.update_snapshots }}
+      - name: Regenerate baselines
+        if: ${{ inputs.update_snapshots }}
         run: npm run test:e2e:visual -- --update-snapshots
-      - if: always()
+      - name: Upload snapshots and report
+        if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: visual-results
@@ -103,46 +134,60 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     needs: build
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+          persist-credentials: false
+      - name: Setup
+        uses: ./.github/actions/setup
         with:
-          name: nightly-export
+          browser: chromium
+      - name: Download export
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: site-export
           path: out
-      - run: npx playwright install --with-deps chromium
-      - run: npx playwright test --project=chromium-1440 tests/e2e/consent.spec.ts tests/e2e/commerce.spec.ts
+      - name: Consent and commerce specs without any integration id
+        run: npx playwright test --project=chromium-1440 tests/e2e/consent.spec.ts tests/e2e/commerce.spec.ts
 
   quality:
     name: knip, Lighthouse (5 runs), links, bundle analysis
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     needs: build
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - run: npm run knip
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+          persist-credentials: false
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Dead code (full)
+        run: npm run knip
+      - name: Download export
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: nightly-export
+          name: site-export
           path: out
-      - run: npx lhci autorun --collect.numberOfRuns=5
-      - if: always()
+      - name: Lighthouse (5 runs, mobile emulation)
+        run: npx lhci autorun --collect.numberOfRuns=5
+      - name: Summary
+        if: always()
         run: node scripts/lhci-summary.mjs >> "$GITHUB_STEP_SUMMARY"
-      - run: node scripts/check-links.mjs
-      - run: npm run analyze
-      - if: always()
+      - name: Link check
+        run: node scripts/check-links.mjs
+      - name: Bundle analysis
+        run: npm run analyze
+      - name: Upload Lighthouse and bundle reports
+        if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: nightly-quality
+          name: quality-reports
           path: |
             .lighthouseci
             .next/analyze
