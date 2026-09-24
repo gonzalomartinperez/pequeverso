@@ -124,7 +124,10 @@ Hotmart
   never sees card data. The site never emits `InitiateCheckout`/`Purchase`.
 - Cookies table (`pv_consent`, `_fbp`, `_fbc`) and the opt-out banner (Aceptar / Rechazar /
   Configurar) mirror `src/features/tracking`.
-- Single mailbox `somospequeverso@gmail.com` (`config/site.ts`, `content/es/legal/seller.ts`);
-  response time "48 horas hábiles" (support) and 24 h (arrepentimiento code).
+- Primary mailbox `somospequeverso@gmail.com` (`config/site.ts`, `content/es/legal/seller.ts`);
+  response time "48 horas hábiles" (support) and 24 h (arrepentimiento code). The Titular's own
+  mailbox `seller.legalEmail` (registered in the Hotmart account, where Hotmart forwards buyer
+  contacts) appears as a secondary contact on the six legal routes only (`legalRoutes`), enforced by
+  `tests/unit/legal-email.test.ts` and `scripts/check-rendered.ts`.
 - Voluntary accessibility statement on `/aviso-legal/` (WCAG 2.2 AA as the reference, not a
   conformance claim).

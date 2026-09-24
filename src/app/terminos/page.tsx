@@ -1,5 +1,6 @@
 import { formatUsd, guaranteeDays, hotmart, localCurrencyNote } from "@config/commerce";
 import { consumerAuthority, consumerLaw, jurisdictionClause } from "@content/es/legal/argentina";
+import { hotmartFacts } from "@content/es/legal/hotmart";
 import { seller, sellerIdentity } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -106,7 +107,7 @@ export default function TerminosPage() {
           La plataforma que actúa como intermediaria y facilitadora de pago: muestra el precio en tu moneda,
           cobra, emite el comprobante, entrega el acceso digital y gestiona los reembolsos conforme a sus
           propios términos de compra. Para compradores fuera de Brasil y Estados Unidos, la entidad
-          contratante es Hotmart B.V. (Ámsterdam, Países Bajos). El Titular nunca ve tus datos de tarjeta ni
+          contratante es {hotmartFacts.entity}. El Titular nunca ve tus datos de tarjeta ni
           de otros medios de pago.
         </dd>
         <dt>Sitio</dt>
@@ -241,18 +242,20 @@ export default function TerminosPage() {
 
       <SectionHeading sections={sections} id="garantia" />
       <p>
-        Dispones de <strong>{guaranteeDays} días</strong> desde la compra para solicitar el reembolso a través
-        de Hotmart, sin necesidad de justificar el motivo, cualquiera sea tu país. La solicitud se hace en{" "}
-        <a href={hotmart.refunds}>refund.hotmart.com</a> con el correo de la compra y el número de transacción
-        (empieza con HP), o escribiéndonos para gestionarla contigo. Hotmart da al Titular cinco días para
-        responder la solicitud; si no responde, el reembolso se aprueba automáticamente. El importe vuelve por
-        el mismo medio de pago, en los plazos de Hotmart (hasta 30 días en cuenta bancaria y hasta 90 días en
-        tarjeta, según el emisor).
+        Toda compra cuenta con una garantía comercial de <strong>{guaranteeDays} días</strong>, contados desde
+        la aprobación del pago, para solicitar el reembolso a través de Hotmart sin necesidad de justificar el
+        motivo, cualquiera sea tu país. La solicitud se hace en{" "}
+        <a href={hotmartFacts.urls.refundForm}>refund.hotmart.com</a> con el número de transacción (empieza
+        con HP), o escribiéndonos para gestionarla contigo. Hotmart da al Titular{" "}
+        {hotmartFacts.producerResponseDays} días naturales para responder. El importe vuelve por el mismo
+        medio de pago, en los plazos de Hotmart: {hotmartFacts.refundTiming}.
       </p>
       <p>
-        Si resides en la Unión Europea, Hotmart aplica el plazo mínimo que exige la normativa de consumo para
-        contenidos digitales; el plazo aplicable se indica en la página de pago y prevalece si es mayor. Paso
-        a paso en <Link href="/compras-y-reembolsos/">Compras y reembolsos</Link>.
+        Esta garantía se suma a los derechos que te reconozca la ley de tu país y no los reemplaza. Para
+        ventas en Europa, Hotmart exige un plazo mínimo de 15 días; el plazo aplicable figura en los términos
+        de la página de pago y prevalece si es mayor. Fuera del plazo de garantía, el reembolso depende de la
+        autorización del Titular, salvo que la ley te otorgue un plazo mayor. Paso a paso en{" "}
+        <Link href="/compras-y-reembolsos/">Compras y reembolsos</Link>.
       </p>
 
       <SectionHeading sections={sections} id="arrepentimiento" />

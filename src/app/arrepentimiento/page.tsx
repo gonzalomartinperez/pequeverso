@@ -1,6 +1,7 @@
 import { guaranteeDays, hotmart } from "@config/commerce";
 import { consumerAuthority, consumerLaw } from "@content/es/legal/argentina";
 import { consumerRights } from "@content/es/legal/consumer-rights";
+import { hotmartFacts } from "@content/es/legal/hotmart";
 import { seller } from "@content/es/legal/seller";
 import { Mail, RotateCcw } from "lucide-react";
 import type { Metadata } from "next";
@@ -46,8 +47,7 @@ const deadlines = [
   },
   {
     step: "Devolución del dinero",
-    period:
-      "La ejecuta Hotmart por el mismo medio de pago: hasta 30 días en cuenta bancaria y hasta 90 días en tarjeta, según el emisor.",
+    period: `La ejecuta Hotmart por el mismo medio de pago: ${hotmartFacts.refundTiming}.`,
   },
 ];
 
@@ -63,7 +63,7 @@ export default function ArrepentimientoPage() {
         <CTAButton href={mailto} variant="secondary" size="sm" icon={Mail}>
           Pedir el arrepentimiento por correo
         </CTAButton>
-        <CTAButton href={hotmart.refunds} variant="outline" size="sm" icon={RotateCcw}>
+        <CTAButton href={hotmartFacts.urls.refundForm} variant="outline" size="sm" icon={RotateCcw}>
           Pedirlo en refund.hotmart.com
         </CTAButton>
       </div>
@@ -110,7 +110,10 @@ export default function ArrepentimientoPage() {
         <li>
           Entra en <a href={hotmart.refunds}>refund.hotmart.com</a>.
         </li>
-        <li>Indica el correo de la compra y el código de transacción (HP…).</li>
+        <li>
+          Indica el código de transacción (HP…) y confirma con el código de seguridad que llega al correo de
+          la compra.
+        </li>
         <li>Envía la solicitud; Hotmart te confirma por correo cada cambio de estado.</li>
       </ol>
 
