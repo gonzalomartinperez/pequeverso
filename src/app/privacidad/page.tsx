@@ -136,7 +136,11 @@ export default function PrivacidadPage() {
         <dd>{seller.address}</dd>
         <dt>Contacto</dt>
         <dd>
-          <a href={`mailto:${seller.privacyEmail}`}>{seller.privacyEmail}</a>
+          <a href={`mailto:${seller.privacyEmail}`}>{seller.privacyEmail}</a> (principal)
+        </dd>
+        <dt>{seller.legalEmailLabel}</dt>
+        <dd>
+          <a href={`mailto:${seller.legalEmail}`}>{seller.legalEmail}</a>
         </dd>
       </dl>
       <p>

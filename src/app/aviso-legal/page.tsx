@@ -52,9 +52,13 @@ export default function AvisoLegalPage() {
         <dd>{seller.taxId}</dd>
         <dt>Domicilio</dt>
         <dd>{seller.address}</dd>
-        <dt>Correo electrónico</dt>
+        <dt>Correo electrónico (principal)</dt>
         <dd>
           <a href={`mailto:${seller.supportEmail}`}>{seller.supportEmail}</a>
+        </dd>
+        <dt>{seller.legalEmailLabel}</dt>
+        <dd>
+          <a href={`mailto:${seller.legalEmail}`}>{seller.legalEmail}</a>
         </dd>
         <dt>Marca comercial</dt>
         <dd>{seller.brand}</dd>
@@ -79,10 +83,13 @@ export default function AvisoLegalPage() {
 
       <SectionHeading sections={sections} id="contacto" />
       <p>
-        Un único correo atiende todas las consultas: soporte, dudas sobre los materiales, solicitudes sobre
-        datos personales y pedidos de arrepentimiento:{" "}
+        El canal principal para todas las consultas (soporte, dudas sobre los materiales, solicitudes sobre
+        datos personales y pedidos de arrepentimiento) es{" "}
         <a href={`mailto:${seller.supportEmail}`}>{seller.supportEmail}</a>. El Titular responde normalmente
-        en {seller.responseTime}. Hay más ayuda en <Link href="/soporte/">Soporte y contacto</Link>.
+        en {seller.responseTime}. También puedes escribir a{" "}
+        <a href={`mailto:${seller.legalEmail}`}>{seller.legalEmail}</a>, el correo registrado en su cuenta de
+        Hotmart, al que Hotmart reenvía los contactos de los compradores. Hay más ayuda en{" "}
+        <Link href="/soporte/">Soporte y contacto</Link>.
       </p>
 
       <SectionHeading sections={sections} id="objeto" />

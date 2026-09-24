@@ -57,7 +57,10 @@ export default function CookiesPage() {
     >
       <p>
         Esta política complementa la <Link href="/privacidad/">Política de privacidad</Link> de pequeverso.com
-        (el “Sitio”), cuyo titular es {seller.legalName} (el “Titular”).
+        (el “Sitio”), cuyo titular es {seller.legalName} (el “Titular”). Consultas:{" "}
+        <a href={`mailto:${seller.privacyEmail}`}>{seller.privacyEmail}</a> o{" "}
+        <a href={`mailto:${seller.legalEmail}`}>{seller.legalEmail}</a> (correo del titular en su cuenta de
+        Hotmart).
       </p>
 
       <SectionHeading sections={sections} id="que-son" />

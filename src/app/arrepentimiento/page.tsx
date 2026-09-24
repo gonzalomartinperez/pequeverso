@@ -95,7 +95,9 @@ export default function ArrepentimientoPage() {
       <h3>Por correo electrónico</h3>
       <ol>
         <li>
-          Escribe a <a href={mailto}>{seller.supportEmail}</a> con el asunto “{mailSubject}”.
+          Escribe a <a href={mailto}>{seller.supportEmail}</a> con el asunto “{mailSubject}”. También se
+          acepta el correo del titular registrado en Hotmart:{" "}
+          <a href={`mailto:${seller.legalEmail}`}>{seller.legalEmail}</a>.
         </li>
         <li>
           Indica tu nombre, el correo electrónico con el que compraste y, si lo tienes, el código de
@@ -176,7 +178,9 @@ export default function ArrepentimientoPage() {
               </TableHead>
               <TableCell>
                 <div className="grid gap-1">
-                  <span className="font-bold text-heading">{entry.period ?? "Consulta la ley de tu país"}</span>
+                  <span className="font-bold text-heading">
+                    {entry.period ?? "Consulta la ley de tu país"}
+                  </span>
                   <span className="text-small">{entry.note}</span>
                   <a href={entry.url}>{entry.authority}</a>
                 </div>

@@ -19,9 +19,26 @@ export const seller = {
     "los tribunales ordinarios del Departamento Judicial de Bahía Blanca, provincia de Buenos Aires",
   supportEmail: "somospequeverso@gmail.com",
   privacyEmail: "somospequeverso@gmail.com",
+  /**
+   * The Titular's own mailbox, registered in the seller's Hotmart account (Hotmart forwards buyer
+   * contacts there). Secondary channel shown on the legal pages only (`legalRoutes`); commercial
+   * pages, footer, soporte and config/site.ts show `supportEmail` alone (unit + rendered checks).
+   */
+  legalEmail: "gonzalomartinperez2002@gmail.com",
+  legalEmailLabel: "Correo del titular (cuenta de Hotmart)",
   responseTime: "48 horas hábiles",
   updatedAt: "24 de septiembre de 2026",
 } as const;
+
+/** Routes allowed to render `seller.legalEmail` (checked by tests/unit and scripts/check-rendered.ts). */
+export const legalRoutes = [
+  "/aviso-legal/",
+  "/privacidad/",
+  "/cookies/",
+  "/terminos/",
+  "/compras-y-reembolsos/",
+  "/arrepentimiento/",
+] as const;
 
 /** "Gonzalo Martín Pérez (CUIL 23-43891426-9)": the identification used in running text. */
 export const sellerIdentity = `${seller.legalName} (${seller.taxIdLabel} ${seller.taxId})`;

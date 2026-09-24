@@ -144,8 +144,10 @@ export default function ComprasPage() {
         </li>
       </ol>
       <p>
-        También puedes escribirnos y gestionamos la solicitud contigo; el reembolso siempre lo ejecuta
-        Hotmart. Tras el reembolso, Hotmart retira el acceso a los archivos.
+        También puedes escribirnos a <a href={`mailto:${seller.supportEmail}`}>{seller.supportEmail}</a> (o a{" "}
+        <a href={`mailto:${seller.legalEmail}`}>{seller.legalEmail}</a>, el correo del titular en Hotmart) y
+        gestionamos la solicitud contigo; el reembolso siempre lo ejecuta Hotmart. Tras el reembolso, Hotmart
+        retira el acceso a los archivos.
       </p>
 
       <SectionHeading sections={sections} id="arrepentimiento" />

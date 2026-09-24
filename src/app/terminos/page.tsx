@@ -94,8 +94,10 @@ export default function TerminosPage() {
         <dt>Titular</dt>
         <dd>
           {sellerIdentity}, con domicilio en {seller.address}, titular de la marca {seller.brand} y vendedor
-          de los materiales. Crea y publica los materiales y atiende el soporte por correo. Datos completos en
-          el <Link href="/aviso-legal/">Aviso legal</Link>.
+          de los materiales. Crea y publica los materiales y atiende el soporte en{" "}
+          <a href={`mailto:${seller.supportEmail}`}>{seller.supportEmail}</a> (canal principal) y en{" "}
+          <a href={`mailto:${seller.legalEmail}`}>{seller.legalEmail}</a> (correo de su cuenta de Hotmart).
+          Datos completos en el <Link href="/aviso-legal/">Aviso legal</Link>.
         </dd>
         <dt>Comprador</dt>
         <dd>La persona que adquiere un material a través de Hotmart; en estos términos, “tú”.</dd>

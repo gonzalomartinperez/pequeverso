@@ -1,8 +1,10 @@
 // Structural checks over every exported page: landmarks, single visible h1, language,
 // canonical, skip link, resolvable in-page anchors, no placeholder or retired text, and the
-// local-currency wording next to every USD price.
+// local-currency wording next to every USD price, and the Titular's personal mailbox only on the
+// legal routes.
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
+import { legalRoutes, seller } from "../content/es/legal/seller.ts";
 
 const root = resolve(process.cwd(), "out");
 if (!existsSync(root)) {
@@ -45,6 +47,10 @@ function check(page: string): string[] {
     if (html.includes(text)) errors.push(`contains "${text}"`);
   }
   if (placeholderPattern.test(html)) errors.push("contains an owner placeholder");
+  const route = `/${name.replace(/(^|\/)index\.html$/, "$1")}`;
+  if (html.includes(seller.legalEmail) && !(legalRoutes as readonly string[]).includes(route)) {
+    errors.push("shows the Titular's personal email outside the legal pages");
+  }
   if (html.includes(usdPrice) && !html.includes(localCurrencyWording)) {
     errors.push(`shows a ${usdPrice} price without the "${localCurrencyWording}" wording`);
   }
