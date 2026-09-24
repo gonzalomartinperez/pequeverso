@@ -100,6 +100,14 @@
   --pv-on-navy: oklch(1 0 0 / 86%); /* body text on navy 9.9:1 */
   --pv-on-navy-chip: oklch(1 0 0 / 12%);
 
+  /* "Pequeño universo" planets: highlight and shade stops shared by the CSS spheres and WebGL */
+  --pv-planet-teal-hi: oklch(0.7 0.1 190);
+  --pv-planet-teal-lo: oklch(0.38 0.07 190);
+  --pv-planet-gold-hi: oklch(0.93 0.12 95);
+  --pv-planet-gold-lo: oklch(0.72 0.14 90);
+  --pv-planet-turquoise-hi: oklch(0.96 0.04 187);
+  --pv-planet-turquoise-lo: oklch(0.5 0.09 191);
+
   /* Neutrals */
   --pv-cream: oklch(0.9868 0.0118 79.79); /* #fffaf2 */
   --pv-white: oklch(1 0 0);
@@ -188,6 +196,7 @@
   --pv-shadow-md: 0 12px 32px oklch(0.3175 0.1094 256.25 / 12%);
   --pv-shadow-lg: 0 24px 56px oklch(0.3175 0.1094 256.25 / 16%);
   --pv-shadow-cta: 0 10px 24px oklch(0.5623 0.1722 28.49 / 24%);
+  --pv-shadow-cta-hover: 0 16px 32px oklch(0.5623 0.1722 28.49 / 32%);
 
   /* Motion */
   --pv-ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -306,6 +315,7 @@
   --shadow-md: var(--pv-shadow-md);
   --shadow-lg: var(--pv-shadow-lg);
   --shadow-cta: var(--pv-shadow-cta);
+  --shadow-cta-hover: var(--pv-shadow-cta-hover);
 
   --ease-out: var(--pv-ease-out);
   --ease-emphasis: var(--pv-ease-emphasis);
@@ -725,18 +735,19 @@
     linear-gradient(160deg, var(--pv-hero-top) 0%, var(--pv-hero-bottom) 100%);
 }
 
+/* Navy bands open and close on navy-deep, so waves (`navy-deep`) and the footer meet flush. */
 @utility sky-band {
   background:
-    radial-gradient(90% 70% at 90% 20%, oklch(0.5324 0.0917 190.84 / 28%), transparent 60%),
-    linear-gradient(160deg, var(--pv-hero-bottom) 0%, var(--pv-hero-top) 100%);
+    radial-gradient(55% 40% at 88% 28%, oklch(0.5324 0.0917 190.84 / 24%), transparent 70%),
+    linear-gradient(180deg, var(--pv-hero-top) 0%, var(--pv-hero-bottom) 45%, var(--pv-hero-top) 100%);
 }
 
 @utility planet-teal {
   background: radial-gradient(
     circle at 35% 30%,
-    oklch(0.7 0.1 190),
+    var(--pv-planet-teal-hi),
     var(--pv-teal) 55%,
-    oklch(0.38 0.07 190) 100%
+    var(--pv-planet-teal-lo) 100%
   );
   box-shadow:
     inset -30px -40px 80px oklch(0 0 0 / 35%),
@@ -746,11 +757,23 @@
 @utility planet-gold {
   background: radial-gradient(
     circle at 35% 30%,
-    oklch(0.93 0.12 95),
+    var(--pv-planet-gold-hi),
     var(--pv-gold) 55%,
-    oklch(0.72 0.14 90) 100%
+    var(--pv-planet-gold-lo) 100%
   );
   box-shadow:
     inset -16px -22px 40px oklch(0 0 0 / 25%),
     0 30px 80px oklch(0.8908 0.1645 93.89 / 25%);
+}
+
+@utility planet-turquoise {
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--pv-planet-turquoise-hi),
+    var(--pv-turquoise) 55%,
+    var(--pv-planet-turquoise-lo) 100%
+  );
+  box-shadow:
+    inset -6px -8px 16px oklch(0 0 0 / 25%),
+    0 10px 30px oklch(0.8521 0.0956 187.2 / 30%);
 }

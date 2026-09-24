@@ -50,6 +50,17 @@ sitemap, footer, 404 and terms derive from the registry.
 - Localization: one neutral-LATAM version (`lang="es"`). Voseo (AR) and peninsular (ES) variants
   from the WordPress era are not shipped in v1; they can return as build-time locale files.
 
+## Offer framing (home and principal landing)
+
+What a visitor buys is the principal product: **the main PDF plus its bonuses, all included in
+the single price** (owner decision, 2026-09-24). Pages build "Material principal + N bonos
+incluidos", the per-card badges ("Bono 1 · incluido"…) and "Todo incluido en un único pago de
+US$…" from the registry (`resources`, first entry = main PDF) and `formatUsd`, with labels from
+`included.bundle` / `product.bundle`; copy never hardcodes the counts. Paid extras (the
+post-purchase pack, checkout order bumps) never appear before purchase: no pack name and no
+"opcional" offer wording on home or the principal landing (unit invariant plus an e2e check on
+the rendered HTML). The pack belongs to the Hotmart funnel after payment only.
+
 ## Adding or changing copy
 
 1. Edit the typed object; keep keys stable (components import them).

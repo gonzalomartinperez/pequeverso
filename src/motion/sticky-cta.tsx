@@ -62,8 +62,9 @@ export function StickyCTA({ hideWhenVisible, label, note, children }: Props) {
       data-visible={visible ? "" : undefined}
       inert={!visible}
       className={cx(
-        "fixed inset-x-0 bottom-0 z-60 hidden translate-y-[110%] items-center justify-between gap-3 border-t border-border bg-surface-veil px-(--gutter) pt-2 pb-[calc(var(--space-2)+env(safe-area-inset-bottom))] shadow-lg transition-transform duration-(--duration) ease-out max-lg:flex [body:has(dialog[open])_&]:translate-y-[110%]",
-        visible && "translate-y-0",
+        "fixed inset-x-0 bottom-0 z-60 hidden items-center justify-between gap-3 border-t border-border bg-surface-veil px-(--gutter) pt-2 pb-[calc(var(--space-2)+env(safe-area-inset-bottom))] shadow-lg transition-[translate,visibility] duration-(--duration) ease-out max-lg:flex [body:has(dialog[open],[role=dialog][data-open])_&]:invisible [body:has(dialog[open],[role=dialog][data-open])_&]:translate-y-[110%]",
+        // Hidden means off-screen *and* invisible, so full-page captures never show it over content.
+        visible ? "visible translate-y-0" : "invisible translate-y-[110%]",
       )}
     >
       <div className="grid min-w-0 gap-0.5">

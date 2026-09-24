@@ -118,3 +118,16 @@ test("documented WCAG 2.2 AA contrast pairs hold for the OKLCH tokens", () => {
     assert.ok(ratio >= min, `${fg} on ${bg} is ${ratio.toFixed(2)}:1, expected ≥ ${min}`);
   }
 });
+
+test("cn keeps the project's font sizes and shadows next to colours (config/cn.ts)", async () => {
+  const { createCn } = await import("cn/engine");
+  const { default: tables } = await import("../../src/lib/cn-tables.js");
+  const cn = createCn(tables);
+  assert.equal(
+    cn("font-display text-price font-bold", "text-coral"),
+    "font-display text-price font-bold text-coral",
+  );
+  assert.equal(cn("text-h3 text-heading"), "text-h3 text-heading");
+  assert.equal(cn("text-small", "text-tiny"), "text-tiny");
+  assert.equal(cn("shadow-cta", "shadow-cta-hover"), "shadow-cta-hover");
+});

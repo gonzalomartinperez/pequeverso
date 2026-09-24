@@ -20,7 +20,7 @@ export const grafismoCopy = {
     { href: "#preguntas", label: "Preguntas" },
   ],
   hero: {
-    kicker: "Kit imprimible · 3 a 7 años · 9 PDF",
+    kicker: "Kit imprimible · 3 a 7 años · 9 PDF",
     title: "De las letras a las primeras palabras, un paso por día.",
     lead: "Grafismo Fonético reúne 9 PDF y 414 páginas con sílabas grandes, imágenes reconocibles y palabras para trazar. Eliges una hoja, la imprimes y practican 10 minutos: mira, di, traza y une.",
     facts: [
@@ -83,17 +83,26 @@ export const grafismoCopy = {
     lead: "Veinte páginas reales del PDF principal. Sin maquetas: lo que ves es lo que descargas.",
     zoomHint: "Toca una página para verla en grande.",
     galleryLabel: "Páginas reales del kit",
+    itemLabel: "Página real",
+    zoomTitle: "Página real del kit",
   },
   included: {
     kicker: "Qué recibes",
-    title: "Nueve PDF que se complementan.",
-    lead: "Un material central y ocho recursos para variar el formato de la práctica: guía, tarjetas, reto, animales, juegos, sonidos del hogar, pósteres y páginas sobre el nombre y la familia.",
+    title: "El material principal y sus bonos, todo en el mismo kit.",
+    lead: "Grafismo Fonético Paso a Paso es el material principal. Los bonos varían el formato de la práctica: guía, tarjetas, reto, animales, juegos, sonidos del hogar, pósteres y páginas sobre el nombre y la familia. Vienen incluidos: no se pagan aparte.",
     total: "9 PDF · 414 páginas en A4 · Acceso digital",
     units: { pdf: "PDF", pages: "páginas" },
+    bundle: {
+      main: "Material principal",
+      bonus: "Bono",
+      included: "incluido",
+      bonuses: "bonos incluidos",
+      allIncluded: "Todo incluido en un único pago de",
+    },
   },
   midOffer: {
     title: "Todo el kit, por un solo pago.",
-    text: "Recibes los 9 PDF juntos. Imprimes lo que necesites, cuando lo necesites, y vuelves a usarlos con cada niño.",
+    text: "El material principal y los ocho bonos llegan juntos, en un único pago. Imprimes lo que necesites, cuando lo necesites, y vuelves a usarlos con cada niño.",
     cta: "Quiero el kit completo",
   },
   offer: {
@@ -106,9 +115,10 @@ export const grafismoCopy = {
     ],
   },
   videos: {
-    kicker: "En movimiento",
-    title: "Así se practica una página.",
-    lead: "Cuatro demostraciones breves con hojas reales del kit. Pulsa para reproducir.",
+    kicker: "Videos ilustrativos",
+    title: "Así se ve la práctica en casa.",
+    lead: "Cuatro videos breves ilustran cómo se acompaña una hoja: mira, di, traza y une. No son grabaciones del producto; las páginas reales del kit están en la sección siguiente. Pulsa para reproducir.",
+    illustrative: "Video ilustrativo",
   },
   credibility: {
     kicker: "Enfoque",

@@ -1,5 +1,0 @@
-.card {
-  max-width: calc(var(--page-max) * 0.8);
-  margin-inline: auto;
-  scroll-margin-top: var(--header-height);
-}

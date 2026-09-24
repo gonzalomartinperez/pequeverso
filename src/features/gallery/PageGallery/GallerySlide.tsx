@@ -1,6 +1,5 @@
 import { getImage } from "@/lib/media";
 import { GalleryZoomButton } from "./GalleryCarousel";
-import styles from "./PageGallery.module.css";
 
 type Props = {
   /** Manifest image id, e.g. `gf.page.07`. */
@@ -35,7 +34,9 @@ export function GallerySlide({ id, caption, sizes = "(min-width: 1024px) 640px, 
           data-alt={image.alt}
         />
       </GalleryZoomButton>
-      <p className={styles.caption}>{text}</p>
+      <p className="invisible text-center text-small font-bold text-ink group-data-active/slide:visible">
+        {text}
+      </p>
     </>
   );
 }

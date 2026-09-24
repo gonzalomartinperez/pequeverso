@@ -8,12 +8,12 @@ import { cva, type VariantProps } from "class-variance-authority";
  * correct when used without `cn` (client islands, error boundary).
  */
 export const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 border-2 text-center font-sans font-extrabold leading-tight no-underline transition-[background-color,border-color,color,transform,box-shadow] duration-(--duration-fast) ease-out disabled:pointer-events-none disabled:opacity-50 motion-safe:active:translate-y-px [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
+  "inline-flex shrink-0 items-center justify-center gap-2 border-2 text-center font-sans font-extrabold leading-tight no-underline transition-[background-color,border-color,color,translate,box-shadow] duration-(--duration-fast) ease-out disabled:pointer-events-none disabled:opacity-50 motion-safe:active:translate-y-px [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
   {
     variants: {
       variant: {
         primary:
-          "rounded-pill border-primary bg-primary text-primary-foreground shadow-cta hover:border-primary-hover hover:bg-primary-hover hover:text-primary-foreground",
+          "rounded-pill border-primary bg-primary text-primary-foreground shadow-cta hover:border-primary-hover hover:bg-primary-hover hover:text-primary-foreground hover:shadow-cta-hover motion-safe:hover:-translate-y-0.5 active:shadow-cta",
         secondary:
           "rounded-md border-secondary bg-secondary text-secondary-foreground hover:border-secondary-hover hover:bg-secondary-hover hover:text-secondary-foreground",
         outline:

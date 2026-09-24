@@ -21,6 +21,17 @@ for (const route of routes) {
   });
 }
 
+for (const route of ["/", "/grafismo-fonetico/"]) {
+  test(`${route} never shows paid extras before purchase (only the kit and its included bonuses)`, async ({
+    page,
+  }) => {
+    await page.goto(route);
+    const html = await page.content();
+    expect(html).not.toMatch(/Imprime y Juega/i);
+    expect(html).not.toMatch(/opcional/i);
+  });
+}
+
 test("unknown route returns a real 404 with navigation", async ({ page }) => {
   const response = await page.goto("/esta-ruta-no-existe/");
   expect(response?.status()).toBe(404);

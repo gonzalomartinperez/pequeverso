@@ -4,10 +4,19 @@ import { MediaImage } from "@/components/blocks/media-image";
 import { cn } from "@/lib/utils";
 import { TiltCard } from "@/motion/tilt-card";
 
-type Props = { resources: Resource[]; compact?: boolean; total?: string; className?: string };
+type Badge = { label: string; tone?: "navy" | "gold" | undefined };
+
+type Props = {
+  resources: Resource[];
+  compact?: boolean | undefined;
+  total?: string | undefined;
+  /** One label per resource replacing the running number (e.g. "Material principal", "Bono 1 · incluido"). */
+  badges?: readonly Badge[] | undefined;
+  className?: string | undefined;
+};
 
 /** The real resources of a product: cover, name, page count and what the file contains. */
-export function ResourceGrid({ resources, compact = false, total, className }: Props) {
+export function ResourceGrid({ resources, compact = false, total, badges, className }: Props) {
   return (
     <div data-slot="resource-grid" className={cn("cq grid gap-6", className)}>
       <ol
@@ -34,12 +43,23 @@ export function ResourceGrid({ resources, compact = false, total, className }: P
                   id={resource.card}
                   sizes="(min-width: 1024px) 300px, (min-width: 640px) 45vw, 90vw"
                 />
-                <span
-                  className="absolute top-3 left-3 grid h-8 min-w-10 place-items-center rounded-chip bg-navy px-2 text-small font-extrabold text-gold"
-                  aria-hidden="true"
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
+                {badges?.[index] ? (
+                  <span
+                    className={cn(
+                      "absolute top-3 left-3 grid h-8 place-items-center rounded-chip px-3 text-small font-extrabold shadow-sm",
+                      badges[index]?.tone === "gold" ? "bg-gold text-ink" : "bg-navy text-gold",
+                    )}
+                  >
+                    {badges[index]?.label}
+                  </span>
+                ) : (
+                  <span
+                    className="absolute top-3 left-3 grid h-8 min-w-10 place-items-center rounded-chip bg-navy px-2 text-small font-extrabold text-gold"
+                    aria-hidden="true"
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                )}
               </div>
               <div className={cn("grid content-start gap-2", compact ? "p-3" : "px-6 pt-4 pb-6")}>
                 <p className="text-tiny font-extrabold tracking-[0.06em] text-teal-text uppercase">

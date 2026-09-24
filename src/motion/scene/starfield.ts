@@ -50,6 +50,12 @@ export type StaticLayer = { depth: number; tint: 0 | 1; path: string };
 export const TILE_STARS = 36;
 export const TILE_SIZE = 320;
 
+/** WebGL star count for a stage of `width` × `height` px: the static tile's density, bounded. */
+export function starCountFor(width: number, height: number): number {
+  const tiles = (Math.max(1, width) * Math.max(1, height)) / (TILE_SIZE * TILE_SIZE);
+  return Math.round(Math.min(900, Math.max(STAR_COUNT, tiles * TILE_STARS * 1.15)));
+}
+
 /**
  * Groups the stars into `DEPTH_LAYERS` × 2 SVG paths (depth band × tint) of tiny squares in a
  * `TILE_SIZE` box, so the fallback costs a handful of elements instead of one per star.

@@ -2,6 +2,7 @@ import { formatUsd, localCurrencyNote, localCurrencyNoteShort } from "@config/co
 import { site } from "@config/site";
 import { homeCopy as copy } from "@content/es/home";
 import type { Metadata } from "next";
+import { AssuranceList } from "@/components/blocks/assurance-list";
 import { BulletList } from "@/components/blocks/bullet-list";
 import { ChipRow } from "@/components/blocks/chip-row";
 import { Eyebrow } from "@/components/blocks/eyebrow";
@@ -19,14 +20,12 @@ import { PageShell } from "@/components/layout/page-shell";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { Card } from "@/components/ui/card";
 import { ProductInterestLink } from "@/features/commerce/ProductInterestLink/ProductInterestLink";
-import { CenteredHeading } from "@/features/landing/core/CenteredHeading";
 import { HeroScene } from "@/features/landing/core/HeroScene";
 import { HeroStack } from "@/features/landing/core/HeroStack";
 import { buildMetadata } from "@/lib/metadata";
 import { FlipPreview } from "@/motion/flip-preview";
-import { Orbit } from "@/motion/orbit";
+import { Universe } from "@/motion/universe";
 import { featuredProduct } from "@/products";
-import styles from "./page.module.css";
 
 export const metadata: Metadata = buildMetadata({
   path: "/",
@@ -60,11 +59,13 @@ const organizationJsonLd = {
 const product = featuredProduct();
 const price = formatUsd(product.pricing.list);
 const pageAt = (index: number): string => product.media.pageIds[index] ?? product.media.hero;
+/** The main PDF and the bonuses included in the same price (registry order). */
+const [mainResource, ...bonuses] = product.resources;
 
 /** Hero stack: the kit itself in front, two real pages fanned behind it. */
 const HERO_STACK = [product.media.hero, pageAt(1), pageAt(4)] as const;
 const HERO_STACK_SIZES =
-  "(min-width: 1280px) 480px, (min-width: 1024px) 400px, (min-width: 640px) 360px, 240px";
+  "(min-width: 1280px) 480px, (min-width: 1024px) 400px, (min-width: 640px) 360px, 272px";
 /** Real pages of the flip cards: front and back of each. */
 const PREVIEW_PAGES = [
   [pageAt(0), pageAt(1)],
@@ -72,6 +73,10 @@ const PREVIEW_PAGES = [
   [pageAt(12), pageAt(13)],
 ] as const;
 const PREVIEW_SIZES = "(min-width: 1024px) 380px, (min-width: 640px) 45vw, 90vw";
+/** Home links lead to the product page, not to payment: white/navy buttons, never the coral CTA. */
+const LINK_HERO = `${buttonVariants({ variant: "inverse", size: "lg" })} w-full cq-sm:w-auto @max-[22rem]:px-6 @max-[22rem]:text-base`;
+const LINK_CARD = `${buttonVariants({ variant: "secondary", block: true })} @max-[24rem]:px-4`;
+const START_TITLE = "font-display text-h3 font-bold";
 
 function productLink(position: string, className: string, label: string, hash = "") {
   return (
@@ -86,6 +91,10 @@ function productLink(position: string, className: string, label: string, hash = 
   );
 }
 
+/**
+ * Hub: the universe hero (H1, value, real pages, one action), the product card with its price and
+ * assurances, where to start, real pages, the method, what to expect and a closing band.
+ */
 export default function HomePage() {
   const stackPages = HERO_STACK.map((id, index) => ({
     id,
@@ -93,7 +102,10 @@ export default function HomePage() {
   }));
 
   return (
-    <PageShell nav={copy.nav} cta={productLink("header", buttonVariants({ size: "sm" }), copy.hero.cta)}>
+    <PageShell
+      nav={copy.nav}
+      cta={productLink("header", buttonVariants({ variant: "secondary", size: "sm" }), copy.hero.cta)}
+    >
       <script
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD built from config
@@ -106,32 +118,39 @@ export default function HomePage() {
         eyebrow={copy.hero.kicker}
         title={copy.hero.title}
         lead={copy.hero.lead}
+        actions={productLink("hero", LINK_HERO, copy.hero.cta)}
         stack={<HeroStack pages={stackPages} featured={0} />}
         aside={
-          <Card variant="emphasis" pad="lg" as="article" className={styles.productCard}>
+          <Card variant="emphasis" pad="lg" as="article" className="cq gap-4 shadow-lg">
             <Eyebrow>{copy.product.kicker}</Eyebrow>
-            <h2 className={styles.productTitle}>{copy.product.title}</h2>
-            <p>{copy.product.promise}</p>
+            <h2 className="text-h2">{copy.product.title}</h2>
+            <p className="text-pretty">{copy.product.promise}</p>
+            <p className="rounded-md bg-lemon px-4 py-2 font-extrabold text-ink">
+              {copy.product.bundle.main} + {bonuses.length} {copy.product.bundle.bonuses}
+            </p>
             <ChipRow>
               {copy.product.facts.map((fact) => (
-                <Eyebrow key={fact} as="span">
+                <Eyebrow key={fact} as="span" className="bg-sky">
                   {fact}
                 </Eyebrow>
               ))}
             </ChipRow>
-            <p className={styles.productPrice}>
-              <span className={styles.productPriceKicker}>{copy.product.priceKicker}</span>
+            <p className="mt-2 grid font-display text-price font-bold text-coral">
+              <span className="font-sans text-tiny font-extrabold tracking-[0.06em] text-subtle uppercase">
+                {copy.product.priceKicker}
+              </span>
               <span>{price}</span>
             </p>
-            <p className={styles.productCurrency}>
-              <Icon name="globe" size={16} />
+            <p className="flex items-start gap-2 text-small text-pretty text-subtle">
+              <Icon name="globe" size={16} className="mt-[0.2em] shrink-0 text-teal-text" />
               <span>{localCurrencyNote}</span>
             </p>
-            {productLink("hero", buttonVariants({ block: true }), `${copy.product.cta} · ${price}`)}
+            {productLink("hero-card", LINK_CARD, copy.product.cta)}
+            <AssuranceList items={copy.product.assurance} />
           </Card>
         }
         desk={
-          <section id="empieza" className={styles.start} aria-labelledby="empieza-title">
+          <section id="empieza" className="scroll-mt-(--header-height)" aria-labelledby="empieza-title">
             <SectionHeading
               id="empieza-title"
               kicker={copy.start.kicker}
@@ -141,7 +160,7 @@ export default function HomePage() {
             <Stack gap={5}>
               <Card variant="emphasis" pad="lg" as="article" reveal>
                 <Eyebrow>{copy.start.principal.label}</Eyebrow>
-                <h3 className={styles.startTitle}>{copy.start.principal.title}</h3>
+                <h3 className={START_TITLE}>{mainResource?.title ?? product.name}</h3>
                 <p>{copy.start.principal.text}</p>
                 <BulletList items={copy.start.principal.points} icon="link" />
                 <div>
@@ -152,11 +171,16 @@ export default function HomePage() {
                   )}
                 </div>
               </Card>
-              <Card variant="soft" pad="lg" as="article" reveal>
-                <Eyebrow>{copy.start.complement.label}</Eyebrow>
-                <h3 className={styles.startTitle}>{copy.start.complement.title}</h3>
-                <p>{copy.start.complement.text}</p>
-                <BulletList items={copy.start.complement.points} icon="link" />
+              <Card variant="soft" pad="lg" as="article" reveal stagger={1}>
+                <Eyebrow>{copy.start.bonuses.label}</Eyebrow>
+                <h3 className={START_TITLE}>
+                  {bonuses.length} {copy.start.bonuses.title}
+                </h3>
+                <p>{copy.start.bonuses.text}</p>
+                <BulletList
+                  items={bonuses.map((bonus) => `${bonus.title} · ${bonus.pagesLabel}`)}
+                  icon="sparkles"
+                />
               </Card>
             </Stack>
           </section>
@@ -169,12 +193,20 @@ export default function HomePage() {
         </ChipRow>
       </HeroScene>
 
-      <Section tone="sky" id="paginas" labelledBy="preview-title" defer>
-        <CenteredHeading
+      <Section
+        tone="sky"
+        id="paginas"
+        labelledBy="preview-title"
+        divider="wave-top"
+        dividerTone="cream"
+        defer
+      >
+        <SectionHeading
           id="preview-title"
           kicker={copy.preview.kicker}
           title={copy.preview.title}
           lead={copy.preview.lead}
+          align="center"
         />
         <Grid cols={3} as="ul">
           {PREVIEW_PAGES.map(([front, back]) => (
@@ -188,7 +220,7 @@ export default function HomePage() {
             </li>
           ))}
         </Grid>
-        <p className={styles.previewCta}>
+        <p className="mt-10 flex justify-center">
           {productLink("preview", buttonVariants({ variant: "outline" }), copy.preview.cta, "#paginas")}
         </p>
       </Section>
@@ -199,46 +231,52 @@ export default function HomePage() {
         labelledBy="metodo-title"
         divider="wave-top"
         dividerTone="sky"
-        className={styles.band}
+        backdrop={<Universe variant="band" />}
         defer
       >
-        <div className={styles.bandOrbit} aria-hidden="true">
-          <Orbit />
-        </div>
-        <div className={styles.bandInner}>
-          <CenteredHeading
-            id="metodo-title"
-            kicker={copy.method.kicker}
-            title={copy.method.title}
-            lead={copy.method.lead}
-            tone="dark"
-          />
-          <Steps steps={copy.method.steps} tone="dark" />
-        </div>
+        <SectionHeading
+          id="metodo-title"
+          kicker={copy.method.kicker}
+          title={copy.method.title}
+          lead={copy.method.lead}
+          align="center"
+        />
+        <Steps steps={copy.method.steps} tone="dark" />
       </Section>
 
-      <Section id="valores" labelledBy="valores-title" defer>
-        <SectionHeading id="valores-title" kicker={copy.values.kicker} title={copy.values.title} />
+      <Section id="valores" labelledBy="valores-title" divider="wave-top" dividerTone="navy-deep" defer>
+        <SectionHeading
+          id="valores-title"
+          kicker={copy.values.kicker}
+          title={copy.values.title}
+          align="center"
+        />
         <IconCardList items={copy.values.items} cols={3} />
       </Section>
 
-      <Section tone="navy" labelledBy="cierre-title" className={styles.band} defer>
-        <div className={styles.bandOrbit} aria-hidden="true">
-          <Orbit />
-        </div>
-        <Stack gap={4} maxWidth="60ch" className={styles.bandInner}>
-          <Eyebrow tone="dark">{copy.closing.kicker}</Eyebrow>
+      <Section
+        tone="navy"
+        labelledBy="cierre-title"
+        divider="wave-top"
+        dividerTone="cream"
+        backdrop={<Universe variant="band" />}
+        defer
+      >
+        <Stack gap={5} maxWidth="60ch" align="center">
+          <Eyebrow>{copy.closing.kicker}</Eyebrow>
           <h2 id="cierre-title">{copy.closing.title}</h2>
-          <p className="lead">{copy.closing.text}</p>
-          <div className={styles.closingActions}>
-            {productLink("closing", buttonVariants(), copy.closing.cta)}
-            <span className={styles.closingPrice}>
-              {price} · {copy.closing.priceSuffix}
-              <span className={styles.closingCurrency}>{localCurrencyNoteShort}</span>
-            </span>
+          <p className="lead text-pretty">{copy.closing.text}</p>
+          <div className="grid justify-items-center gap-3">
+            {productLink("closing", buttonVariants({ variant: "inverse", size: "lg" }), copy.closing.cta)}
+            <p className="grid font-extrabold text-gold">
+              <span>
+                {price} · {copy.closing.priceSuffix}
+              </span>
+              <span className="text-small font-semibold text-body">{localCurrencyNoteShort}</span>
+            </p>
           </div>
-          <div className={styles.closingSocial}>
-            <p>{copy.closing.social}</p>
+          <div className="mt-4 grid w-full justify-items-center gap-3 border-t border-border pt-8">
+            <p className="text-small">{copy.closing.social}</p>
             <SocialLinks tone="dark" />
           </div>
         </Stack>

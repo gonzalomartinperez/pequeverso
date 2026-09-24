@@ -1,9 +1,9 @@
 import { formatUsd, localCurrencyNoteShort } from "@config/commerce";
 import { site } from "@config/site";
+import type { ReactNode } from "react";
+import { AssuranceList } from "@/components/blocks/assurance-list";
 import { BulletList } from "@/components/blocks/bullet-list";
-import { ChipRow } from "@/components/blocks/chip-row";
 import { Eyebrow } from "@/components/blocks/eyebrow";
-import { FactChip } from "@/components/blocks/fact-chip";
 import { FAQ } from "@/components/blocks/faq";
 import { IconCardList } from "@/components/blocks/icon-card-list";
 import { MediaFrame } from "@/components/blocks/media-frame";
@@ -25,7 +25,6 @@ import { VideoBlock } from "@/features/gallery/VideoBlock/VideoBlock";
 import { AgeProvider } from "@/features/landing/AgeSelector/AgeContext";
 import { AgeSelector } from "@/features/landing/AgeSelector/AgeSelector";
 import { AudienceCards } from "@/features/landing/core/AudienceCards";
-import { CenteredHeading } from "@/features/landing/core/CenteredHeading";
 import { CreatorNote } from "@/features/landing/core/CreatorNote";
 import { HeroScene } from "@/features/landing/core/HeroScene";
 import { HeroStack } from "@/features/landing/core/HeroStack";
@@ -33,21 +32,23 @@ import { Includes } from "@/features/landing/core/Includes";
 import { MethodSteps } from "@/features/landing/core/MethodSteps";
 import { OfferCard } from "@/features/landing/core/OfferCard";
 import { getImage, getVideo } from "@/lib/media";
-import { Orbit } from "@/motion/orbit";
 import { Parallax } from "@/motion/parallax";
 import { StickyCTA } from "@/motion/sticky-cta";
+import { Universe } from "@/motion/universe";
 import { checkoutFallbackPath } from "@/products";
 import { breadcrumbJsonLd, productJsonLd } from "@/products/jsonld";
 import type { CoreProduct } from "@/products/schema";
-import styles from "./CoreLanding.module.css";
 
 type Props = { product: CoreProduct };
 
 /** Positions in `media.pageIds` of the hero worksheets, one per age option (3–4 · 5 · 6–7). */
 const HERO_STACK_PAGES = [6, 1, 12] as const;
 const HERO_STACK_SIZES =
-  "(min-width: 1280px) 480px, (min-width: 1024px) 400px, (min-width: 640px) 360px, 240px";
+  "(min-width: 1280px) 480px, (min-width: 1024px) 400px, (min-width: 640px) 360px, 272px";
 const SCENE_SIZES = "(min-width: 1024px) 520px, 92vw";
+/** Price-card CTA: tighter padding and no leading icon when the card (its container) is narrow. */
+const CTA = `${buttonVariants()} @max-[24rem]:px-4 @max-[24rem]:[&_svg[data-icon=inline-start]]:hidden`;
+const CTA_HERO = `${buttonVariants({ size: "lg" })} w-full cq-sm:w-auto`;
 
 function checkoutTarget(product: CoreProduct): CheckoutTarget {
   return {
@@ -70,14 +71,34 @@ function jsonLdScript(data: Record<string, unknown> | null) {
   );
 }
 
+/** Full CTA label, or the sticky bar's short one when the enclosing container is narrow. */
+const LABEL = {
+  /** Price cards (the card itself is the container): short under 26rem. */
+  card: ["@max-[26rem]:hidden", "hidden @max-[26rem]:inline"],
+  /** The full-width hero CTA (the hero is the container): short under 22rem. */
+  hero: ["@max-[22rem]:hidden", "hidden @max-[22rem]:inline"],
+} as const;
+
+/** CTA label that never wraps at ≥ 320 px. */
+function ctaLabel(full: string, short: string, fit: keyof typeof LABEL = "card"): ReactNode {
+  const [long, compact] = LABEL[fit];
+  return (
+    <>
+      <span className={long}>{full}</span>
+      <span className={compact}>{short}</span>
+    </>
+  );
+}
+
 function captionFor(id: string): string {
   return getImage(id).alt.replace(/^Página real \d+: /i, "");
 }
 
 /**
- * Principal product landing in conversion order: hero with the age-aware worksheet stack and the
- * price card, what you receive, the problem, the method, videos, real pages, the offer, who it is
- * for, the author's note, FAQ and the final offer, plus the mobile sticky bar.
+ * Principal product landing in conversion order: hero (H1, age-aware real worksheets, CTA with
+ * its assurances, the sticky price card) → what you receive → the problem → the method → videos
+ * → real pages → the offer → who it is for → author's note → FAQ → final offer, plus the mobile
+ * sticky bar. Bands are joined by waves and one overlap; navy bands carry the static universe.
  */
 export function CoreLanding({ product }: Props) {
   const { copy, media, composition } = product;
@@ -95,9 +116,20 @@ export function CoreLanding({ product }: Props) {
     return { id, node: <MediaImage id={id} sizes={HERO_STACK_SIZES} priority={index === defaultAge} /> };
   });
   const assurance = copy.hero.assurance;
-  const trustLine = assurance
-    ? [assurance.payment, formatUsd(price), assurance.access, assurance.guarantee].join(" · ")
+  const labels = copy.included.bundle;
+  const bonusCount = product.resources.length - 1;
+  const bundle = labels
+    ? {
+        line: `${labels.main} + ${bonusCount} ${labels.bonuses}`,
+        badges: product.resources.map((_, index) =>
+          index === 0
+            ? { label: labels.main, tone: "gold" as const }
+            : { label: `${labels.bonus} ${index} · ${labels.included}` },
+        ),
+        allIncluded: `${labels.allIncluded} ${formatUsd(price)}.`,
+      }
     : undefined;
+  const withBundle = (checks: readonly string[]) => (bundle ? [bundle.line, ...checks] : checks);
   const videos = media.videoIds.map((id) => getVideo(id));
 
   const headerCta = (
@@ -130,25 +162,42 @@ export function CoreLanding({ product }: Props) {
           title={copy.hero.title}
           lead={copy.hero.lead}
           actions={
-            <CheckoutLink product={target} position="hero" className={buttonVariants()}>
-              {copy.hero.cta}
+            <CheckoutLink product={target} position="hero" className={CTA_HERO}>
+              {ctaLabel(copy.hero.cta, copy.sticky.cta, "hero")}
             </CheckoutLink>
           }
-          trust={trustLine}
+          trust={
+            assurance ? (
+              <AssuranceList
+                items={[
+                  { icon: "shield", text: `${assurance.payment} · ${formatUsd(price)}` },
+                  { icon: "download", text: assurance.access },
+                  { icon: "refresh", text: assurance.guarantee },
+                ]}
+              />
+            ) : null
+          }
           stack={<HeroStack pages={stackPages} featured={defaultAge} />}
           aside={
-            <PriceBlock
-              id="comprar"
-              kicker={copy.hero.priceKicker}
-              price={price}
-              taxNote={copy.hero.taxNote}
-              cta={
-                <CheckoutLink product={target} position="hero-card" className={buttonVariants()}>
-                  {copy.hero.cta}
-                </CheckoutLink>
-              }
-              ctaNote={copy.hero.ctaNote}
-            />
+            <div className="grid gap-5">
+              <PriceBlock
+                id="comprar"
+                kicker={copy.hero.priceKicker}
+                price={price}
+                taxNote={copy.hero.taxNote}
+                cta={
+                  <CheckoutLink product={target} position="hero-card" className={CTA}>
+                    {ctaLabel(copy.hero.cta, copy.sticky.cta)}
+                  </CheckoutLink>
+                }
+                ctaNote={copy.hero.ctaNote}
+                className="cq scroll-mt-(--header-height) border-2 border-navy p-6 shadow-lg sm:p-8"
+              />
+              {bundle ? (
+                <p className="text-center font-extrabold text-balance text-ink">{bundle.allIncluded}</p>
+              ) : null}
+              <AssuranceList items={copy.trust} layout="stack" className="px-2 font-semibold" />
+            </div>
           }
           desk={
             <Includes
@@ -161,6 +210,7 @@ export function CoreLanding({ product }: Props) {
               counts={{ pdf: composition.pdfCount, pages: composition.pageCount }}
               units={copy.included.units}
               resources={product.resources}
+              bundle={bundle}
             />
           }
         >
@@ -168,13 +218,13 @@ export function CoreLanding({ product }: Props) {
         </HeroScene>
       </AgeProvider>
 
-      <Section tone="white" labelledBy="problema-title" defer>
+      <Section tone="white" labelledBy="problema-title" divider="wave-top" dividerTone="cream" defer>
         <Split ratio="1.1/0.9" align="center">
           <Stack gap={4}>
             <Eyebrow>{copy.problem.kicker}</Eyebrow>
             <h2 id="problema-title">{copy.problem.title}</h2>
             {copy.problem.paragraphs.map((paragraph) => (
-              <p key={paragraph} className="lead">
+              <p key={paragraph} className="lead max-w-[62ch] text-pretty">
                 {paragraph}
               </p>
             ))}
@@ -186,55 +236,77 @@ export function CoreLanding({ product }: Props) {
             </MediaFrame>
           </Parallax>
         </Split>
-        <div className={styles.benefits}>
+        <div className="mt-16 grid gap-8">
           <IconCardList items={copy.benefits.items} cols={4} />
-          <p className={styles.callout} data-reveal>
+          <p
+            className="max-w-[60ch] justify-self-center rounded-md border-l-4 border-gold bg-cream px-8 py-6 text-center font-display text-h3 text-balance text-ink"
+            data-reveal=""
+          >
             {copy.benefits.callout}
           </p>
         </div>
       </Section>
 
-      <Section tone="navy" id="metodo" labelledBy="metodo-title" divider="wave-top" dividerTone="white" defer>
-        <CenteredHeading
+      <Section
+        tone="navy"
+        id="metodo"
+        labelledBy="metodo-title"
+        divider="wave-top"
+        dividerTone="white"
+        backdrop={<Universe variant="band" />}
+        defer
+      >
+        <SectionHeading
           id="metodo-title"
           kicker={copy.method.kicker}
           title={copy.method.title}
           lead={copy.method.lead}
-          tone="dark"
+          align="center"
         />
         <MethodSteps steps={copy.method.steps} />
-        <Card variant="navy" pad="lg" className={styles.approach} reveal>
+        <Card variant="navy" pad="lg" className="mt-16 bg-navy-deep/80" reveal>
           <Split ratio="0.9/1.1" align="center">
             <Stack gap={3}>
-              <Eyebrow tone="dark">{copy.credibility.kicker}</Eyebrow>
-              <h3>{copy.credibility.title}</h3>
-              <p>{copy.credibility.text}</p>
+              <Eyebrow>{copy.credibility.kicker}</Eyebrow>
+              <h3 className="font-display text-h2">{copy.credibility.title}</h3>
+              <p className="text-pretty">{copy.credibility.text}</p>
             </Stack>
             <BulletList items={copy.credibility.points} icon="link" tone="dark" />
           </Split>
         </Card>
       </Section>
 
-      <Section id="videos" labelledBy="videos-title" defer>
-        <CenteredHeading
+      <Section id="videos" labelledBy="videos-title" divider="wave-top" dividerTone="navy-deep" defer>
+        <SectionHeading
           id="videos-title"
           kicker={copy.videos.kicker}
           title={copy.videos.title}
           lead={copy.videos.lead}
+          align="center"
         />
-        <VideoBlock items={videos} />
+        <VideoBlock items={videos} illustrativeLabel={copy.videos.illustrative} />
       </Section>
 
-      <Section tone="sky" id="paginas" labelledBy="paginas-title" divider="overlap">
-        <CenteredHeading
+      <Section
+        tone="sky"
+        id="paginas"
+        labelledBy="paginas-title"
+        divider="wave-top"
+        dividerTone="cream"
+        className="pb-[calc(var(--section-pad)+var(--section-overlap))]"
+      >
+        <SectionHeading
           id="paginas-title"
           kicker={copy.pages.kicker}
           title={copy.pages.title}
           lead={copy.pages.lead}
+          align="center"
         />
         <PageGallery
           count={media.pageIds.length}
           label={copy.pages.galleryLabel}
+          itemLabel={copy.pages.itemLabel}
+          zoomTitle={copy.pages.zoomTitle}
           zoomHint={copy.pages.zoomHint}
         >
           {media.pageIds.map((id) => (
@@ -243,34 +315,36 @@ export function CoreLanding({ product }: Props) {
         </PageGallery>
       </Section>
 
-      <Section id="oferta" labelledBy="oferta-title" defer>
+      <Section id="oferta" labelledBy="oferta-title" divider="overlap">
         <OfferCard
           titleId="oferta-title"
           kicker={copy.offer?.kicker ?? copy.hero.priceKicker}
           title={copy.midOffer.title}
           text={copy.midOffer.text}
-          checks={copy.offer?.checks ?? copy.finalOffer.checks}
+          checks={withBundle(copy.offer?.checks ?? copy.finalOffer.checks)}
+          highlight={bundle?.allIncluded}
           price={{
             kicker: copy.hero.priceKicker,
             value: price,
             taxNote: copy.hero.taxNote,
           }}
           cta={
-            <CheckoutLink product={target} position="oferta" className={buttonVariants()}>
-              {copy.midOffer.cta}
+            <CheckoutLink product={target} position="oferta" className={CTA}>
+              {ctaLabel(copy.midOffer.cta, copy.sticky.cta)}
             </CheckoutLink>
           }
+          footer={<AssuranceList items={copy.trust} className="justify-center border-t border-border pt-6" />}
         />
-        <ChipRow align="center" className={styles.trust}>
-          {copy.trust.map((item) => (
-            <FactChip key={item.text} icon={item.icon} label={item.text} />
-          ))}
-        </ChipRow>
       </Section>
 
       {copy.audience ? (
         <Section tone="white" id="para-quien" labelledBy="audience-title" defer>
-          <SectionHeading id="audience-title" kicker={copy.audience.kicker} title={copy.audience.title} />
+          <SectionHeading
+            id="audience-title"
+            kicker={copy.audience.kicker}
+            title={copy.audience.title}
+            align="center"
+          />
           <AudienceCards yes={copy.audience.yes} no={copy.audience.no} />
         </Section>
       ) : null}
@@ -289,9 +363,9 @@ export function CoreLanding({ product }: Props) {
 
       <Section tone="mint" id="preguntas" labelledBy="faq-title" defer>
         <Split ratio="0.8/1.2">
-          <Stack gap={3}>
-            <SectionHeading id="faq-title" kicker={copy.faq.kicker} title={copy.faq.title} />
-            <p className={styles.support}>
+          <Stack gap={3} className="cq-md:sticky cq-md:top-[calc(var(--header-height)+1.5rem)]">
+            <SectionHeading id="faq-title" kicker={copy.faq.kicker} title={copy.faq.title} className="mb-0" />
+            <p className="text-small">
               {copy.faq.supportNote} <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>
             </p>
           </Stack>
@@ -299,27 +373,35 @@ export function CoreLanding({ product }: Props) {
         </Split>
       </Section>
 
-      <Section tone="navy" id="oferta-final" labelledBy="final-title" className={styles.final} defer>
-        <div className={styles.finalOrbit} aria-hidden="true">
-          <Orbit />
-        </div>
-        <Split ratio="1.1/0.9" align="center" className={styles.finalInner}>
-          <Stack gap={4}>
-            <Eyebrow tone="dark">{copy.finalOffer.kicker}</Eyebrow>
-            <h2 id="final-title">{copy.finalOffer.title}</h2>
-            <BulletList items={copy.finalOffer.checks} icon="shield" tone="dark" />
+      <Section
+        tone="navy"
+        id="oferta-final"
+        labelledBy="final-title"
+        divider="wave-top"
+        dividerTone="mint"
+        backdrop={<Universe variant="band" />}
+        className="scroll-mt-(--header-height)"
+        defer
+      >
+        <Split ratio="1.1/0.9" align="center">
+          <Stack gap={5}>
+            <Eyebrow>{copy.finalOffer.kicker}</Eyebrow>
+            <h2 id="final-title" className="max-w-[18ch]">
+              {copy.finalOffer.title}
+            </h2>
+            <BulletList items={withBundle(copy.finalOffer.checks)} icon="shield" tone="dark" />
           </Stack>
           <PriceBlock
             kicker={copy.hero.priceKicker}
             price={price}
             taxNote={copy.hero.taxNote}
-            tone="dark"
             cta={
-              <CheckoutLink product={target} position="final" className={buttonVariants()}>
-                {copy.finalOffer.cta}
+              <CheckoutLink product={target} position="final" className={CTA}>
+                {ctaLabel(copy.finalOffer.cta, copy.sticky.cta)}
               </CheckoutLink>
             }
             ctaNote={copy.finalOffer.note}
+            className="cq border-2 border-navy p-6 shadow-lg sm:p-8"
           />
         </Split>
       </Section>
@@ -329,7 +411,7 @@ export function CoreLanding({ product }: Props) {
         label={`${copy.sticky.label} · ${formatUsd(price)}`}
         note={localCurrencyNoteShort}
       >
-        <CheckoutLink product={target} position="sticky" className={buttonVariants()}>
+        <CheckoutLink product={target} position="sticky" className={CTA}>
           {copy.sticky.cta}
         </CheckoutLink>
       </StickyCTA>

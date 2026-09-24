@@ -43,6 +43,21 @@ const toPosix = (file: string): string => file.split("\\").join("/");
 const isSellerModule = (file: string): boolean => toPosix(file).endsWith("content/es/legal/seller.ts");
 const isQuestion = (line: string): boolean => /[¿?]/.test(line);
 
+test("pre-purchase copy (home, principal landing) never offers paid extras", () => {
+  const prePurchase = [
+    "content/es/home.ts",
+    "content/es/products/grafismo-fonetico/copy.ts",
+    "content/es/products/grafismo-fonetico/faq.ts",
+    "src/app/page.tsx",
+    "src/features/landing/CoreLanding.tsx",
+  ];
+  for (const file of prePurchase) {
+    const text = read(file);
+    assert.ok(!/Imprime y Juega/i.test(text), `${file} mentions the post-purchase pack`);
+    assert.ok(!/opcional/i.test(text), `${file} uses "opcional" offer wording`);
+  }
+});
+
 test("customer-facing sources never use the retired product name or generic placeholders", () => {
   for (const file of files) {
     if (isSellerModule(file)) continue;

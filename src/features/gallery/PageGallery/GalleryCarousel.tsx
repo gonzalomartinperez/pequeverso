@@ -1,23 +1,27 @@
 "use client";
 
 import useEmblaCarousel from "embla-carousel-react";
-import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
+import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import {
   Children,
   createContext,
   isValidElement,
   type KeyboardEvent,
+  lazy,
   type MouseEvent,
   type ReactNode,
+  Suspense,
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from "react";
-import styles from "./PageGallery.module.css";
+import { buttonVariants } from "@/components/ui/button-variants";
 
-type Zoom = { src: string; srcSet: string; width: number; height: number; alt: string; caption: string };
+import type { Zoom } from "./ZoomDialog";
+
+const loadZoom = () => import("./ZoomDialog");
+const ZoomDialog = lazy(() => loadZoom().then((module) => ({ default: module.ZoomDialog })));
 
 type Props = {
   label: string;
@@ -26,7 +30,22 @@ type Props = {
   children: ReactNode;
   /** Number of slides in `children`; defaults to the child count. */
   count?: number | undefined;
+  /** Noun before the counter ("Página real" → "Página real 3 de 20"). */
+  itemLabel?: string | undefined;
+  /** Visible title of the zoom dialog. */
+  zoomTitle?: string | undefined;
 };
+
+const ZOOM =
+  "relative block w-full cursor-zoom-in overflow-hidden rounded-lg border border-border bg-white p-0 opacity-60 shadow-md transition-opacity duration-(--duration) ease-out group-data-active/slide:opacity-100 [&_img]:aspect-[4/3] [&_img]:w-full [&_img]:object-cover";
+/** Inactive slides recede in depth (not under reduced motion); only the image dims, never the caption. */
+const SLIDE =
+  "group/slide grid min-w-0 flex-[0_0_min(640px,88%)] gap-2 pl-4 transition-[scale,translate] duration-(--duration) ease-out motion-safe:not-data-active:scale-92 motion-safe:not-data-active:-translate-z-10";
+const ARROW = buttonVariants({ variant: "outline", size: "icon" });
+const DOT =
+  "grid h-11 w-7 place-items-center p-0 before:size-2.5 before:rounded-full before:bg-line-strong before:transition-transform before:duration-(--duration-fast) aria-selected:before:scale-130 aria-selected:before:bg-navy";
+
+const preloadZoom = () => void loadZoom();
 
 const ZoomContext = createContext<(image: HTMLImageElement) => void>(() => undefined);
 
@@ -41,9 +60,12 @@ export function GalleryZoomButton({ label, children }: { label: string; children
     if (image) open(image);
   };
   return (
-    <button type="button" className={styles.zoomButton} onClick={onClick} aria-label={label}>
+    <button type="button" className={ZOOM} onClick={onClick} onPointerEnter={preloadZoom} aria-label={label}>
       {children}
-      <span className={styles.zoomIcon} aria-hidden="true">
+      <span
+        className="absolute right-3 bottom-3 grid size-9 place-items-center rounded-full bg-navy text-white shadow-sm"
+        aria-hidden="true"
+      >
         <ZoomIn size={18} />
       </span>
     </button>
@@ -63,10 +85,10 @@ function zoomFrom(image: HTMLImageElement): Zoom {
 
 /**
  * Accessible carousel of real worksheet pages: drag/swipe, arrows, dots, keyboard,
- * live counter, and a native <dialog> zoom. Slides use a light 3D depth effect
+ * live counter, and a zoom on the Base UI dialog (loaded on first use). Slides use a light 3D depth effect
  * (inactive slides recede) that is disabled under reduced motion.
  */
-export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
+export function GalleryCarousel({ label, zoomHint, children, count, itemLabel, zoomTitle }: Props) {
   const [emblaRef, embla] = useEmblaCarousel({
     loop: true,
     align: "center",
@@ -76,13 +98,17 @@ export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
   const [selected, setSelected] = useState(0);
   const [settled, setSettled] = useState(true);
   const [zoom, setZoom] = useState<Zoom | null>(null);
-  const dialogRef = useRef<HTMLDialogElement | null>(null);
-  const open = useCallback((image: HTMLImageElement) => setZoom(zoomFrom(image)), []);
+  const [zoomOpen, setZoomOpen] = useState(false);
+  const open = useCallback((image: HTMLImageElement) => {
+    setZoom(zoomFrom(image));
+    setZoomOpen(true);
+  }, []);
   const slides = Children.toArray(children).map((node, index) => ({
     key: String((isValidElement(node) && node.key) || index),
     node,
   }));
   const total = count ?? slides.length;
+  const position = (index: number) => `${itemLabel ? `${itemLabel} ` : ""}${index + 1} de ${total}`;
 
   const onSelect = useCallback(() => {
     if (!embla) return;
@@ -106,13 +132,6 @@ export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
     };
   }, [embla, onSelect]);
 
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (zoom && !dialog.open) dialog.showModal();
-    if (!zoom && dialog.open) dialog.close();
-  }, [zoom]);
-
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "ArrowRight") {
       event.preventDefault();
@@ -125,49 +144,55 @@ export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
 
   return (
     <ZoomContext.Provider value={open}>
-      <section className={styles.gallery} aria-roledescription="carrusel" aria-label={label}>
+      <section
+        data-slot="page-gallery"
+        className="grid gap-4"
+        aria-roledescription="carrusel"
+        aria-label={label}
+      >
         {/* biome-ignore lint/a11y/noStaticElementInteractions: keyboard navigation for the carousel viewport (roving focus lives on the controls) */}
         <div
-          className={styles.viewport}
+          className="overflow-hidden rounded-lg perspective-[1200px]"
           ref={emblaRef}
           onKeyDown={onKeyDown}
           data-state={settled ? "settled" : "scrolling"}
         >
-          <ul className={styles.track} role="list">
+          <ul className="-ml-4 flex touch-pan-y touch-pinch-zoom" role="list">
             {slides.map((slide, index) => (
               <li
                 key={slide.key}
-                className={`${styles.slide} ${index === selected ? styles.active : ""}`}
+                className={SLIDE}
+                data-active={index === selected ? "" : undefined}
                 aria-roledescription="diapositiva"
-                aria-label={`${index + 1} de ${total}`}
+                aria-label={position(index)}
               >
                 {slide.node}
               </li>
             ))}
           </ul>
         </div>
-        <div className={styles.controls}>
+        <div className="flex items-center justify-center gap-4">
           <button
             type="button"
-            className={styles.arrow}
+            className={ARROW}
             onClick={() => embla?.scrollPrev()}
             aria-label="Página anterior"
           >
             <ChevronLeft size={24} />
           </button>
-          <p className={styles.counter} aria-live="polite">
-            {selected + 1} de {total}
+          <p className="min-w-[6ch] text-center font-extrabold text-ink" aria-live="polite">
+            {position(selected)}
           </p>
           <button
             type="button"
-            className={styles.arrow}
+            className={ARROW}
             onClick={() => embla?.scrollNext()}
             aria-label="Página siguiente"
           >
             <ChevronRight size={24} />
           </button>
         </div>
-        <div className={styles.dots} role="tablist" aria-label="Ir a una página">
+        <div className="flex flex-wrap justify-center" role="tablist" aria-label="Ir a una página">
           {slides.map((slide, index) => (
             <button
               key={slide.key}
@@ -175,40 +200,17 @@ export function GalleryCarousel({ label, zoomHint, children, count }: Props) {
               role="tab"
               aria-selected={index === selected}
               aria-label={`Ir a la página ${index + 1}`}
-              className={`${styles.dot} ${index === selected ? styles.dotActive : ""}`}
+              className={DOT}
               onClick={() => embla?.scrollTo(index)}
             />
           ))}
         </div>
-        {zoomHint ? <p className={styles.hint}>{zoomHint}</p> : null}
-        <dialog
-          ref={dialogRef}
-          className={styles.dialog}
-          onClose={() => setZoom(null)}
-          aria-label={zoom?.alt ?? "Página ampliada"}
-        >
-          {zoom ? (
-            <div className={styles.dialogInner}>
-              <button
-                type="button"
-                className={styles.close}
-                onClick={() => setZoom(null)}
-                aria-label="Cerrar"
-              >
-                <X size={22} />
-              </button>
-              <img
-                src={zoom.src}
-                srcSet={zoom.srcSet}
-                sizes="90vw"
-                width={zoom.width}
-                height={zoom.height}
-                alt={zoom.alt}
-              />
-              <p className={styles.dialogCaption}>{zoom.caption}</p>
-            </div>
-          ) : null}
-        </dialog>
+        {zoomHint ? <p className="text-center text-small text-subtle">{zoomHint}</p> : null}
+        {zoom ? (
+          <Suspense fallback={null}>
+            <ZoomDialog open={zoomOpen} zoom={zoom} title={zoomTitle} onClose={() => setZoomOpen(false)} />
+          </Suspense>
+        ) : null}
       </section>
     </ZoomContext.Provider>
   );

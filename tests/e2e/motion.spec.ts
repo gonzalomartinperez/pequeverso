@@ -98,7 +98,7 @@ test("page gallery: arrows, dots, keyboard and zoom dialog", async ({ page }) =>
   // Embla swallows clicks that land during the snap animation.
   await expect(gallery.locator("[data-state='settled']")).toHaveCount(1);
   await gallery.locator("button[aria-label^='Ampliar']").nth(4).click();
-  const dialog = page.locator("dialog[open]");
+  const dialog = page.getByRole("dialog", { name: /Página real/ });
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(dialog).toHaveCount(0);
@@ -130,7 +130,86 @@ test("sticky bar stays hidden while the gallery zoom dialog is open", async ({ p
       return rect.height === 0 || rect.top >= window.innerHeight;
     });
   await page.locator("button[aria-label^='Ampliar']").first().click();
-  await expect(page.locator("dialog[open]")).toBeVisible();
+  await expect(page.getByRole("dialog", { name: /Página real/ })).toBeVisible();
   await expect.poll(offscreen, { timeout: 3_000 }).toBe(true);
   await page.keyboard.press("Escape");
+});
+
+test("hero scene: WebGL canvas mounts after load, is absent under reduced motion, and pauses", async ({
+  page,
+}) => {
+  await page.goto("/grafismo-fonetico/");
+  const stage = page.locator('#hero [data-slot="scene-stage"]');
+  const reduced = await page.evaluate(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  if (reduced) {
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(1_000);
+    await expect(stage.locator("canvas")).toHaveCount(0);
+    await expect(stage).toHaveAttribute("data-mode", "static");
+    await expect(stage.getByRole("button")).toHaveCount(0);
+    return;
+  }
+  const webgl = await page.evaluate(() => !!document.createElement("canvas").getContext("webgl2"));
+  test.skip(!webgl, "no WebGL in this browser; the static layers are the finished fallback");
+  await expect(stage.locator("canvas")).toHaveCount(1, { timeout: 10_000 });
+  await expect(stage).toHaveAttribute("data-mode", "running", { timeout: 10_000 });
+  expect(await stage.locator("canvas").evaluate((el) => el.closest("[aria-hidden='true']") !== null)).toBe(
+    true,
+  );
+  const pause = stage.getByRole("button", { name: "Pausar la animación" });
+  const box = await pause.boundingBox();
+  expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+  await pause.click();
+  await expect(stage).toHaveAttribute("data-mode", "paused");
+  await expect(stage.getByRole("button", { name: "Reanudar la animación" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await stage.getByRole("button", { name: "Reanudar la animación" }).click();
+  await expect(stage).toHaveAttribute("data-mode", "running");
+});
+
+test("gallery zoom dialog is centred in the viewport and traps focus", async ({ page }) => {
+  for (const [width, height] of [
+    [390, 844],
+    [768, 1024],
+    [1440, 900],
+  ] as const) {
+    await page.setViewportSize({ width, height });
+    await page.goto("/grafismo-fonetico/#paginas");
+    await page.locator("button[aria-label^='Ampliar']").first().click();
+    const dialog = page.getByRole("dialog", { name: /Página real/ });
+    await expect(dialog).toBeVisible();
+    await expect
+      .poll(() =>
+        dialog.evaluate((el) => {
+          const rect = el.getBoundingClientRect();
+          const dx = rect.left + rect.width / 2 - window.innerWidth / 2;
+          const dy = rect.top + rect.height / 2 - window.innerHeight / 2;
+          return Math.max(Math.abs(dx), Math.abs(dy));
+        }),
+      )
+      .toBeLessThanOrEqual(2);
+    const box = await dialog.boundingBox();
+    expect(box && box.width <= width && box.height <= height, `@${width}: fits the viewport`).toBe(true);
+    await page.keyboard.press("Tab");
+    expect(await dialog.evaluate((el) => el.contains(document.activeElement))).toBe(true);
+    await page.keyboard.press("Escape");
+    await expect(dialog).toHaveCount(0);
+  }
+});
+
+test("videos are labelled illustrative; the carousel is labelled as the kit's real pages", async ({
+  page,
+}) => {
+  await page.goto("/grafismo-fonetico/");
+  const figures = page.locator("#videos figure");
+  await expect(figures).toHaveCount(4);
+  for (const figure of await figures.all()) {
+    await expect(figure).toContainText("Video ilustrativo");
+    await expect(figure.getByRole("button", { name: /video ilustrativo/i })).toHaveCount(1);
+  }
+  const gallery = page.getByRole("region", { name: /Páginas reales/ });
+  await expect(gallery).toHaveCount(1);
+  await expect(gallery.getByText("Página real 1 de 20")).toBeVisible();
 });
