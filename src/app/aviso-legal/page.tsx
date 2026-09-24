@@ -39,8 +39,9 @@ export default function AvisoLegalPage() {
       <p>
         El sitio web pequeverso.com (el “Sitio”) y la marca <strong>{seller.brand}</strong> son titularidad de
         la persona que se identifica a continuación, en cumplimiento del deber de información al consumidor
-        (art. 4 de la Ley 24.240 de Defensa del Consumidor y art. 1100 del Código Civil y Comercial de la
-        Nación).
+        (art. 4 de la Ley 24.240 de Defensa del Consumidor, art. 1100 del Código Civil y Comercial de la
+        Nación y Resolución SCI 270/2020, que incorpora la Resolución GMC 37/19 del MERCOSUR sobre comercio
+        electrónico).
       </p>
       <dl>
         <dt>Titular</dt>
@@ -140,12 +141,11 @@ export default function AvisoLegalPage() {
       <SectionHeading sections={sections} id="consumidor" />
       <p>
         Si compraste como consumidor, puedes revocar la compra a través del{" "}
-        <Link href="/arrepentimiento/">Botón de arrepentimiento</Link>. Si tienes un reclamo que no resolvimos
-        por correo, puedes presentarlo ante la autoridad de defensa del consumidor: en la República Argentina,
-        a través de la <a href={consumerAuthority.national.url}>{consumerAuthority.national.name}</a> o, en la
-        provincia de Buenos Aires, ante la{" "}
-        <a href={consumerAuthority.province.url}>{consumerAuthority.province.name}</a>. Si resides en otro
-        país, puedes acudir a la autoridad de consumo de tu país.
+        <Link href="/arrepentimiento/">Botón de arrepentimiento</Link>. Si tienes un reclamo que no se
+        resolvió por correo, puedes presentarlo ante la autoridad de defensa del consumidor: en la República
+        Argentina, ante <a href={consumerAuthority.url}>{consumerAuthority.name}</a>. Si resides en otro país,
+        puedes acudir a la autoridad de consumo de tu país; la{" "}
+        <Link href="/arrepentimiento/#paises">referencia por país</Link> reúne los enlaces oficiales.
       </p>
 
       <SectionHeading sections={sections} id="accesibilidad" />

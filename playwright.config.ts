@@ -24,7 +24,7 @@ const desktopChrome = devices["Desktop Chrome"];
 const desktopSafari = devices["Desktop Safari"];
 const specs = {
   functional:
-    /(smoke|a11y|offer-mode|widget|commerce|consent|motion|navigation|tracking|lcp|responsive)\.spec\.ts/,
+    /(smoke|a11y|offer-mode|widget|commerce|consent|legal|motion|navigation|tracking|lcp|responsive)\.spec\.ts/,
   visual: /visual\.spec\.ts/,
   prod: /smoke\.spec\.ts/,
 };

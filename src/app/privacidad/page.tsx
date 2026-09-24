@@ -138,8 +138,9 @@ export default function PrivacidadPage() {
       <p>
         El tratamiento se rige por la Ley 25.326 de Protección de los Datos Personales de la República
         Argentina y su Decreto reglamentario 1558/2001. El órgano de control es la{" "}
-        <a href={dataAuthority.url}>{dataAuthority.name}</a>. Si navegas desde otro país, pueden aplicarse
-        además las normas de protección de datos de tu país (ver el punto 9 para la Unión Europea).
+        <a href={dataAuthority.url}>{dataAuthority.name}</a>. Los datos de Usuarios y Compradores de cualquier
+        país se tratan conforme a esta ley; si resides en un país con su propia ley de protección de datos,
+        puedes ejercer además los derechos que esa ley te reconozca (ver el punto 9).
       </p>
 
       <SectionHeading sections={sections} id="datos" />
@@ -211,11 +212,13 @@ export default function PrivacidadPage() {
 
       <SectionHeading sections={sections} id="transferencias" />
       <p>
-        Los proveedores indicados tratan datos fuera de la República Argentina (en la Unión Europea, el Reino
-        Unido o los Estados Unidos, entre otros). Estas transferencias internacionales se realizan conforme al
-        art. 12 de la Ley 25.326 y a los criterios de la AAIP: hacia países con nivel de protección adecuado
-        o, en los demás casos, con las garantías contractuales que ofrecen esos proveedores. Puedes pedir más
-        detalle por correo.
+        Los proveedores indicados tratan datos fuera de la República Argentina. Las transferencias a Hotmart
+        B.V. (Países Bajos) y a Meta Platforms Ireland se dirigen a países que la AAIP considera con nivel de
+        protección adecuado (Disposición DNPDP 60/2016, modificada por la Resolución AAIP 34/2019). Otros
+        proveedores, como Hostinger, Cloudflare, Google o las empresas de Meta en los Estados Unidos, pueden
+        tratar datos en países que no figuran en esa lista; en esos casos, la transferencia se apoya en las
+        cláusulas contractuales de protección de datos que esos proveedores ofrecen, conforme al art. 12 de la
+        Ley 25.326 y a las cláusulas modelo aprobadas por la AAIP. Puedes pedir más detalle por correo.
       </p>
 
       <SectionHeading sections={sections} id="conservacion" />
@@ -256,10 +259,10 @@ export default function PrivacidadPage() {
         Los datos que Hotmart trata como responsable (compra, facturación, reembolsos) se solicitan
         directamente a Hotmart desde su centro de ayuda; si escribes al Titular, te indicará cómo hacerlo.
       </p>
-      <Notice title="Información obligatoria (Disposición DNPDP 10/2008)">
+      <Notice title="Órgano de control (Resolución AAIP 14/2018)">
         <p>{dataAuthority.notice}</p>
         <p>
-          Sitio de la AAIP: <a href={dataAuthority.url}>{dataAuthority.url.replace("https://", "")}</a>
+          Denuncias ante la AAIP: <a href={dataAuthority.complaintUrl}>argentina.gob.ar</a>
         </p>
       </Notice>
 

@@ -286,10 +286,9 @@ export default function TerminosPage() {
         <Link href="/soporte/">Soporte y contacto</Link>.
       </p>
       <p>
-        Si tu reclamo no se resuelve, puedes presentarlo ante la{" "}
-        <a href={consumerAuthority.national.url}>{consumerAuthority.national.name}</a>, ante la{" "}
-        <a href={consumerAuthority.province.url}>{consumerAuthority.province.name}</a> o ante la autoridad de
-        consumo de tu país.
+        Si tu reclamo no se resuelve, puedes presentarlo ante la autoridad de consumo de tu país; en la
+        República Argentina, ante <a href={consumerAuthority.url}>{consumerAuthority.name}</a>. La{" "}
+        <Link href="/arrepentimiento/#paises">referencia por país</Link> reúne los enlaces oficiales.
       </p>
 
       <SectionHeading sections={sections} id="cambios" />

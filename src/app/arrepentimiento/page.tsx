@@ -152,11 +152,10 @@ export default function ArrepentimientoPage() {
 
       <SectionHeading sections={sections} id="reclamos" />
       <p>
-        Si tu pedido no se resolvió, puedes presentar un reclamo ante la{" "}
-        <a href={consumerAuthority.national.url}>{consumerAuthority.national.name}</a> o, en la provincia de
-        Buenos Aires, ante la <a href={consumerAuthority.province.url}>{consumerAuthority.province.name}</a>.
-        Si resides en otro país, puedes acudir a la autoridad de consumo de tu país. Las condiciones completas
-        están en los <Link href="/terminos/">Términos de compra</Link>.
+        Si tu pedido no se resolvió, puedes presentar un reclamo ante{" "}
+        <a href={consumerAuthority.url}>{consumerAuthority.name}</a> o, si resides en otro país, ante la
+        autoridad de consumo indicada en la tabla anterior. Las condiciones completas están en los{" "}
+        <Link href="/terminos/">Términos de compra</Link>.
       </p>
     </LegalLayout>
   );
