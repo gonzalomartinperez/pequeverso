@@ -2,6 +2,7 @@
 
 import { Dialog } from "@base-ui/react/dialog";
 import { XIcon } from "lucide-react";
+import type { KeyboardEvent } from "react";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cx } from "@/lib/cx";
 
@@ -13,6 +14,25 @@ export type Zoom = {
   alt: string;
   caption: string;
 };
+
+const TABBABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/**
+ * Keeps Tab and Shift+Tab cycling inside the popup. Base UI's focus guards do not redirect focus
+ * in WebKit when it is moved with Alt+Tab (Safari's default for buttons), so focus escaped.
+ */
+function trapTab(event: KeyboardEvent<HTMLDivElement>): void {
+  if (event.key !== "Tab") return;
+  const items = [...event.currentTarget.querySelectorAll<HTMLElement>(TABBABLE)];
+  const first = items[0];
+  const last = items[items.length - 1];
+  if (!first || !last) return;
+  const active = document.activeElement;
+  if (event.shiftKey ? active === first || !event.currentTarget.contains(active) : active === last) {
+    event.preventDefault();
+    (event.shiftKey ? last : first).focus();
+  }
+}
 
 type Props = {
   open: boolean;
@@ -41,6 +61,7 @@ export function ZoomDialog({ open, zoom, title, onClose }: Props) {
         <Dialog.Viewport className="fixed inset-0 z-70 grid place-items-center pt-[max(1rem,env(safe-area-inset-top))] pr-[max(1rem,env(safe-area-inset-right))] pb-[max(1rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))]">
           <Dialog.Popup
             data-slot="gallery-zoom"
+            onKeyDown={trapTab}
             className="relative grid max-h-full w-fit max-w-[min(1000px,100%)] gap-3 overflow-auto rounded-lg bg-white p-4 shadow-lg outline-none transition-[opacity,scale] duration-(--duration) ease-out data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0 sm:p-6"
           >
             {zoom ? (

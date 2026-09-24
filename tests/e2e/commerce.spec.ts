@@ -54,6 +54,8 @@ test("every principal CTA points to the configured checkout with allowlisted par
 
 test("each CTA click fires exactly one CheckoutIntent with a unique event id", async ({ page }) => {
   await page.goto("/grafismo-fonetico/");
+  // Click tracking attaches on hydration; a pre-hydration click still reaches Hotmart untracked.
+  await page.waitForLoadState("networkidle");
   await preventNavigation(page, "a[data-checkout]");
   const positions = await page
     .locator("a[data-checkout]")
@@ -62,8 +64,8 @@ test("each CTA click fires exactly one CheckoutIntent with a unique event id", a
   const hero = page.locator('a[data-checkout][data-position="hero"]');
   await hero.click();
   await hero.click();
+  await expect.poll(async () => (await dataLayer(page, "CheckoutIntent")).length).toBe(2);
   const events = await dataLayer(page, "CheckoutIntent");
-  expect(events).toHaveLength(2);
   expect(new Set(events.map((e) => e.event_id)).size).toBe(2);
   expect(events[0]?.cta_position).toBe("hero");
 });

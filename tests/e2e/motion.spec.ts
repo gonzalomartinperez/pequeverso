@@ -106,6 +106,8 @@ test("page gallery: arrows, dots, keyboard and zoom dialog", async ({ page }) =>
 
 test("age selector swaps the featured worksheet and keeps a single h1", async ({ page }) => {
   await page.goto("/grafismo-fonetico/");
+  // A controlled radio clicked before hydration is reset by React to its initial state.
+  await page.waitForLoadState("networkidle");
   const heading = page.locator("h1:visible");
   await expect(heading).toHaveCount(1);
   const title = await heading.textContent();
@@ -169,7 +171,9 @@ test("hero scene: WebGL canvas mounts after load, is absent under reduced motion
   await expect(stage).toHaveAttribute("data-mode", "running");
 });
 
-test("gallery zoom dialog is centred in the viewport and traps focus", async ({ page }) => {
+test("gallery zoom dialog is centred in the viewport and traps focus", async ({ page, browserName }) => {
+  // WebKit only moves focus to buttons and links with Alt+Tab (Safari's default).
+  const tab = browserName === "webkit" ? "Alt+Tab" : "Tab";
   for (const [width, height] of [
     [390, 844],
     [768, 1024],
@@ -192,7 +196,8 @@ test("gallery zoom dialog is centred in the viewport and traps focus", async ({ 
       .toBeLessThanOrEqual(2);
     const box = await dialog.boundingBox();
     expect(box && box.width <= width && box.height <= height, `@${width}: fits the viewport`).toBe(true);
-    await page.keyboard.press("Tab");
+    await expect.poll(() => dialog.evaluate((el) => el.contains(document.activeElement))).toBe(true);
+    await page.keyboard.press(tab);
     expect(await dialog.evaluate((el) => el.contains(document.activeElement))).toBe(true);
     await page.keyboard.press("Escape");
     await expect(dialog).toHaveCount(0);
