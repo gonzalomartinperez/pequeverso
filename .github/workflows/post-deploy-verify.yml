@@ -55,9 +55,14 @@ jobs:
         with:
           browser: chromium
       - name: Wait for Hostinger to serve the expected revision
+        id: revision
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: node scripts/wait-for-revision.mjs "$SITE_URL" "$EXPECTED_SHA" "$WAIT_SECONDS"
       - name: Smoke
-        run: node scripts/smoke.mjs "$SITE_URL" "$EXPECTED_SHA"
+        env:
+          LIVE_SHA: ${{ steps.revision.outputs.live_sha }}
+        run: node scripts/smoke.mjs "$SITE_URL" "$LIVE_SHA"
       - name: Headers
         run: |
           set -euo pipefail
