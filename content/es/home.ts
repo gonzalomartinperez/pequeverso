@@ -32,6 +32,8 @@ export const homeCopy = {
     promise: "Primeros pasos para reconocer letras, sonidos, sílabas y palabras, con trazos guiados.",
     facts: ["9 PDF", "414 páginas", "Acceso digital"],
     priceKicker: "Kit completo · pago único",
+    /** "Material principal + N bonos incluidos"; N comes from the registry. */
+    bundle: { main: "Material principal", bonuses: "bonos incluidos" },
     cta: "Ver Grafismo Fonético",
     assurance: [
       { icon: "shield", text: "Pago seguro a través de Hotmart" },
@@ -40,28 +42,23 @@ export const homeCopy = {
   },
   start: {
     kicker: "Empieza por aquí",
-    title: "Un material principal y un complemento opcional.",
-    lead: "Cada recurso tiene un papel claro. Así sabes qué comprar primero y qué sumar después, si tiene sentido para tu familia.",
+    title: "Un kit completo: el material principal y sus bonos.",
+    lead: "El material principal es por donde se empieza; los bonos varían el formato de la práctica. Todo llega junto, en un único pago.",
     principal: {
-      label: "Producto principal",
-      title: "Grafismo Fonético",
+      label: "Material principal",
       text: "Letras, sonidos, sílabas, palabras y trazos. Es el material con el que se empieza.",
       points: [
-        "Sílabas grandes y palabras para trazar",
-        "Guía de 10 minutos para acompañar",
-        "Tarjetas, juegos, pósteres y reto de 21 días",
+        "Sílabas grandes con una imagen reconocible",
+        "Palabras punteadas para trazar",
+        "Actividades listas para imprimir",
       ],
       cta: "Ver el kit completo",
     },
-    complement: {
-      label: "Complemento opcional",
-      title: "Pack Imprime y Juega",
-      text: "Actividades para tardes tranquilas, viajes, esperas y momentos creativos. Se ofrece como opción después de comprar el kit principal.",
-      points: [
-        "6 PDF · 384 páginas · 9 recursos",
-        "Colorear, observar, contar, recortar, jugar",
-        "No repite el material de Grafismo Fonético",
-      ],
+    bonuses: {
+      label: "Incluidos en el mismo pago",
+      /** Preceded by the bonus count from the registry. */
+      title: "bonos incluidos",
+      text: "Guía, tarjetas, reto, animales, juegos, sonidos del hogar, pósteres y páginas sobre el nombre y la familia. No se pagan aparte.",
     },
   },
   preview: {

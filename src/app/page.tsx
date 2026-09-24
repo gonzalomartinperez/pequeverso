@@ -59,6 +59,8 @@ const organizationJsonLd = {
 const product = featuredProduct();
 const price = formatUsd(product.pricing.list);
 const pageAt = (index: number): string => product.media.pageIds[index] ?? product.media.hero;
+/** The main PDF and the bonuses included in the same price (registry order). */
+const [mainResource, ...bonuses] = product.resources;
 
 /** Hero stack: the kit itself in front, two real pages fanned behind it. */
 const HERO_STACK = [product.media.hero, pageAt(1), pageAt(4)] as const;
@@ -123,6 +125,9 @@ export default function HomePage() {
             <Eyebrow>{copy.product.kicker}</Eyebrow>
             <h2 className="text-h2">{copy.product.title}</h2>
             <p className="text-pretty">{copy.product.promise}</p>
+            <p className="rounded-md bg-lemon px-4 py-2 font-extrabold text-ink">
+              {copy.product.bundle.main} + {bonuses.length} {copy.product.bundle.bonuses}
+            </p>
             <ChipRow>
               {copy.product.facts.map((fact) => (
                 <Eyebrow key={fact} as="span" className="bg-sky">
@@ -155,7 +160,7 @@ export default function HomePage() {
             <Stack gap={5}>
               <Card variant="emphasis" pad="lg" as="article" reveal>
                 <Eyebrow>{copy.start.principal.label}</Eyebrow>
-                <h3 className={START_TITLE}>{copy.start.principal.title}</h3>
+                <h3 className={START_TITLE}>{mainResource?.title ?? product.name}</h3>
                 <p>{copy.start.principal.text}</p>
                 <BulletList items={copy.start.principal.points} icon="link" />
                 <div>
@@ -167,10 +172,15 @@ export default function HomePage() {
                 </div>
               </Card>
               <Card variant="soft" pad="lg" as="article" reveal stagger={1}>
-                <Eyebrow>{copy.start.complement.label}</Eyebrow>
-                <h3 className={START_TITLE}>{copy.start.complement.title}</h3>
-                <p>{copy.start.complement.text}</p>
-                <BulletList items={copy.start.complement.points} icon="link" />
+                <Eyebrow>{copy.start.bonuses.label}</Eyebrow>
+                <h3 className={START_TITLE}>
+                  {bonuses.length} {copy.start.bonuses.title}
+                </h3>
+                <p>{copy.start.bonuses.text}</p>
+                <BulletList
+                  items={bonuses.map((bonus) => `${bonus.title} · ${bonus.pagesLabel}`)}
+                  icon="sparkles"
+                />
               </Card>
             </Stack>
           </section>

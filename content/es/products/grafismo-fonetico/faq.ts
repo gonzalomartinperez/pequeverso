@@ -24,7 +24,7 @@ export const grafismoFaq: readonly FaqItem[] = [
   },
   {
     q: "¿Qué incluye exactamente la compra?",
-    a: "Recibes un PDF principal y ocho PDF complementarios: guía, tarjetas, reto, animales, juegos, sonidos del hogar, pósteres y actividades sobre el nombre y la familia. En total, 9 PDF y 414 páginas.",
+    a: "Recibes el material principal, Grafismo Fonético Paso a Paso, y ocho bonos incluidos en el mismo pago: guía, tarjetas, reto, animales, juegos, sonidos del hogar, pósteres y actividades sobre el nombre y la familia. En total, 9 PDF y 414 páginas. Los bonos no se pagan aparte.",
   },
   {
     q: "¿Recibo un producto físico?",

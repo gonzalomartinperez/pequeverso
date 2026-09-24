@@ -95,6 +95,20 @@ export function CoreLanding({ product }: Props) {
     return { id, node: <MediaImage id={id} sizes={HERO_STACK_SIZES} priority={index === defaultAge} /> };
   });
   const assurance = copy.hero.assurance;
+  const labels = copy.included.bundle;
+  const bonusCount = product.resources.length - 1;
+  const bundle = labels
+    ? {
+        line: `${labels.main} + ${bonusCount} ${labels.bonuses}`,
+        badges: product.resources.map((_, index) =>
+          index === 0
+            ? { label: labels.main, tone: "gold" as const }
+            : { label: `${labels.bonus} ${index} · ${labels.included}` },
+        ),
+        allIncluded: `${labels.allIncluded} ${formatUsd(price)}.`,
+      }
+    : undefined;
+  const withBundle = (checks: readonly string[]) => (bundle ? [bundle.line, ...checks] : checks);
   const videos = media.videoIds.map((id) => getVideo(id));
 
   const headerCta = (
@@ -158,6 +172,9 @@ export function CoreLanding({ product }: Props) {
                 ctaNote={copy.hero.ctaNote}
                 className="scroll-mt-(--header-height) border-2 border-navy p-6 shadow-lg cq-sm:p-8"
               />
+              {bundle ? (
+                <p className="text-center font-extrabold text-balance text-ink">{bundle.allIncluded}</p>
+              ) : null}
               <AssuranceList items={copy.trust} layout="stack" className="px-2 font-semibold" />
             </div>
           }
@@ -172,6 +189,7 @@ export function CoreLanding({ product }: Props) {
               counts={{ pdf: composition.pdfCount, pages: composition.pageCount }}
               units={copy.included.units}
               resources={product.resources}
+              bundle={bundle}
             />
           }
         >
@@ -280,7 +298,8 @@ export function CoreLanding({ product }: Props) {
           kicker={copy.offer?.kicker ?? copy.hero.priceKicker}
           title={copy.midOffer.title}
           text={copy.midOffer.text}
-          checks={copy.offer?.checks ?? copy.finalOffer.checks}
+          checks={withBundle(copy.offer?.checks ?? copy.finalOffer.checks)}
+          highlight={bundle?.allIncluded}
           price={{
             kicker: copy.hero.priceKicker,
             value: price,
@@ -347,7 +366,7 @@ export function CoreLanding({ product }: Props) {
             <h2 id="final-title" className="max-w-[18ch]">
               {copy.finalOffer.title}
             </h2>
-            <BulletList items={copy.finalOffer.checks} icon="shield" tone="dark" />
+            <BulletList items={withBundle(copy.finalOffer.checks)} icon="shield" tone="dark" />
           </Stack>
           <PriceBlock
             kicker={copy.hero.priceKicker}

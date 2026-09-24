@@ -86,14 +86,21 @@ export const grafismoCopy = {
   },
   included: {
     kicker: "Qué recibes",
-    title: "Nueve PDF que se complementan.",
-    lead: "Un material central y ocho recursos para variar el formato de la práctica: guía, tarjetas, reto, animales, juegos, sonidos del hogar, pósteres y páginas sobre el nombre y la familia.",
+    title: "El material principal y sus bonos, todo en el mismo kit.",
+    lead: "Grafismo Fonético Paso a Paso es el material principal. Los bonos varían el formato de la práctica: guía, tarjetas, reto, animales, juegos, sonidos del hogar, pósteres y páginas sobre el nombre y la familia. Vienen incluidos: no se pagan aparte.",
     total: "9 PDF · 414 páginas en A4 · Acceso digital",
     units: { pdf: "PDF", pages: "páginas" },
+    bundle: {
+      main: "Material principal",
+      bonus: "Bono",
+      included: "incluido",
+      bonuses: "bonos incluidos",
+      allIncluded: "Todo incluido en un único pago de",
+    },
   },
   midOffer: {
     title: "Todo el kit, por un solo pago.",
-    text: "Recibes los 9 PDF juntos. Imprimes lo que necesites, cuando lo necesites, y vuelves a usarlos con cada niño.",
+    text: "El material principal y los ocho bonos llegan juntos, en un único pago. Imprimes lo que necesites, cuando lo necesites, y vuelves a usarlos con cada niño.",
     cta: "Quiero el kit completo",
   },
   offer: {
