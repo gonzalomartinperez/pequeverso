@@ -111,7 +111,14 @@ Layers, in order of preference: **(1) CSS** — `[data-reveal]` on a view timeli
 staggered by `--i`; an element already in view is at 100 %, nothing flashes), `[data-hero-enter]`
 (h1 and media never animate opacity, so LCP paints at once), Base UI transitions on
 `data-starting-style`/`data-ending-style`, native `<details>` height via `interpolate-size`;
-**(2) React `<ViewTransition>`** (FlipPreview, HeroStack, AgeSelector); **(3) WAAPI** —
+**(2) React `<ViewTransition>`** (HeroStack, AgeSelector); **(3) gsap, lazily** — `loadGsap()`
+(`src/motion/gsap-loader.ts`) imports gsap in its own async chunk on intent or when a component
+nears the viewport: the FlipPreview turn, the 3D scene (ticker, `quickTo`, scrubbed ScrollTrigger)
+and, only where CSS view timelines are missing (Firefox), `RevealObserver` → `fallback-motion.ts`
+(ScrollTrigger.batch reveals and scrubbed `Parallax`, `gsap.matchMedia` for reduced motion). gsap
+core ≈ 19.5 KB and ScrollTrigger ≈ 17 KB gzip live in the deferred closure (`check:scene`), never
+in a route's initial JS. The hero entrance stays CSS (it must run before any JavaScript so LCP is
+untouched); **(4) WAAPI** —
 `PageMotion` raises below-the-fold sections 8 px (240 ms, no fill mode, cancelled when reduced
 motion turns on). **3D** is limited to `src/motion/scene`: `SceneStage` keeps the server-rendered
 static layers (`StaticStarfield`: a seeded 320 px SVG pattern tile defined once by the hero and
@@ -138,7 +145,7 @@ blur or filter keyframes; no autoplaying video.
 | `useMotionOK()` | hook | `{ ok, reducedMotion, finePointer, saveData }` |
 | `RevealObserver` | client (layout) | fallback for browsers without view timelines |
 | `PageMotion` | client (PageShell) | wraps main content |
-| `TiltCard`, `Counter`, `FlipPreview` | client | `max?`, `as?` / `value`, `format?` / `front`, `back`, `showLabel?`, `hideLabel?`, `ratio?` |
+| `TiltCard`, `Counter`, `FlipPreview` | client | `max?`, `as?` / `value`, `format?` / `front`, `back`, `showLabel?`, `hideLabel?`, `ratio?` — a real 3D turn: one inner element rotates on Y (gsap, 560 ms `power2.inOut`) in a `perspective` parent with `preserve-3d`, faces `backface-visibility: hidden` (+ `-webkit-`), back pre-rotated 180°, `will-change` only while turning, the shadow is a separate layer whose opacity dips (no box-shadow animation), images `decode()`d first; reduced motion crossfades |
 | `Parallax`, `StickyStack`, `WaveDivider`, `Orbit` | server | `direction?` / `items` (≤ 6) / `fill`, `flip?` / `className?` |
 | `Universe` | server | `variant?: hero\|band` — hero: sky + planets + `SceneStage` (live); band: static stars + scroll-driven orbit |
 | `SceneStage`, `useSceneRuntime` | client | `children` (static layers), `pauseLabel?`, `playLabel?`, `options?: { seed, count, parallax }`; stage carries `data-mode` and `data-live` |

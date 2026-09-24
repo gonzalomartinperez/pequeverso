@@ -19,8 +19,8 @@
   /*
    * Reveal on scroll for [data-reveal]. Scroll-driven where supported: an element already in
    * view at load sits at progress 100%, so nothing flashes. Stagger siblings with `--i`.
-   * Without view timelines, RevealObserver marks only below-the-fold elements with
-   * data-reveal-state and reveals them once. Content is always visible without JS.
+   * Without view timelines, RevealObserver (gsap ScrollTrigger, lazy) marks only below-the-fold
+   * elements with data-reveal-state and reveals them once. Content is always visible without JS.
    */
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
@@ -30,13 +30,6 @@
         animation-range-start: entry calc(var(--i, 0) * 6%);
         animation-range-end: entry calc(35% + var(--i, 0) * 6%);
       }
-    }
-
-    [data-reveal-state] {
-      transition:
-        opacity var(--duration-reveal) var(--pv-ease-emphasis),
-        transform var(--duration-reveal) var(--pv-ease-emphasis);
-      transition-delay: calc(var(--i, 0) * var(--stagger));
     }
 
     [data-reveal-state="pending"] {
@@ -179,9 +172,14 @@
     animation-play-state: paused;
   }
 
-  /* While the WebGL scene runs (data-live), the static layers fade out underneath it. */
+  /* While the WebGL scene runs (data-live), the static layers fade out underneath it and their
+     CSS orbit stops (WebKit keeps repainting an offset-path loop even at opacity 0). */
   [data-live] > * > .pv-scene-static {
     opacity: 0;
+  }
+
+  [data-live] .pv-orbit-traveller {
+    animation: none;
   }
 
   .pv-stack {
@@ -217,24 +215,6 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--duration) var(--pv-ease-out);
-  }
-
-  /*
-   * View-transition faces for FlipPreview (class "pv-flip"): the old snapshot turns away and the
-   * new one turns in, half a reveal each, inside a perspective. Global because view-transition
-   * pseudo-elements live on the document root.
-   */
-  ::view-transition-image-pair(.pv-flip) {
-    perspective: var(--tilt-perspective);
-  }
-
-  ::view-transition-old(.pv-flip) {
-    animation: pv-flip-out calc(var(--duration-reveal) / 2) var(--pv-ease-out) both;
-  }
-
-  ::view-transition-new(.pv-flip) {
-    animation: pv-flip-in calc(var(--duration-reveal) / 2) calc(var(--duration-reveal) / 2) var(--pv-ease-out)
-      both;
   }
 }
 
@@ -305,20 +285,5 @@
 @keyframes pv-recede {
   to {
     transform: scale(0.94);
-  }
-}
-
-@keyframes pv-flip-out {
-  to {
-    transform: rotateY(-90deg);
-  }
-}
-
-@keyframes pv-flip-in {
-  from {
-    transform: rotateY(90deg);
-  }
-  to {
-    transform: none;
   }
 }

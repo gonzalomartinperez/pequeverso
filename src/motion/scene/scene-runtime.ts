@@ -227,8 +227,8 @@ const round = (value: number) => Math.round(value * 10000) / 10000;
  * Mounts the "pequeño universo" on `canvas` inside the scene stage `host`: a layered starfield
  * with depth, the soft planets and the gold star on its orbit, each placed exactly where the
  * server-rendered static layers (`[data-scene-planet]`, `[data-scene-orbit]`) sit, so the
- * crossfade is seamless. One scroll progress (gsap ScrollTrigger) drives a gentle dolly with
- * frame-rate independent smoothing; fine pointers add parallax. Adaptive quality lowers the
+ * crossfade is seamless. One scroll progress (a scrubbed gsap ScrollTrigger) drives a gentle
+ * dolly; fine pointers add parallax through gsap.quickTo; the loop runs on gsap's ticker. Adaptive quality lowers the
  * pixel ratio and star count on slow frames; the loop stops off-screen and in hidden tabs.
  * Throws when WebGL is unavailable so the caller keeps the static fallback.
  */
@@ -349,8 +349,7 @@ export function mountScene(
   const finePointer = matchMedia("(pointer: fine)");
   let paused = false;
   let onScreen = true;
-  let frame = 0;
-  let lastTime = 0;
+  let running = false;
   let elapsed = 0;
   let width = 0;
   let height = 0;
@@ -360,11 +359,9 @@ export function mountScene(
   let sampleFrames = 0;
   let slowWindows = 0;
   let fastWindows = 0;
-  let targetProgress = 0;
-  let progress = 0;
   let orbitPhase = 0;
-  const pointerTarget = new Vector2();
-  const pointer = new Vector2();
+  /** Smoothed state written by gsap: `progress` by a scrubbed ScrollTrigger, `x`/`y` by quickTo. */
+  const state = { progress: 0, x: 0, y: 0 };
   const applied = new Vector3(Number.NaN, 0, 0);
 
   /** World size of one CSS pixel at depth `z` (camera at rest). */
@@ -464,8 +461,9 @@ export function mountScene(
 
   /** Applies scroll and pointer state; camera and planets are written only when they change. */
   const place = () => {
-    const x = round(pointer.x * 0.55);
-    const y = round(-pointer.y * 0.35);
+    const progress = state.progress;
+    const x = round(state.x * 0.55);
+    const y = round(-state.y * 0.35);
     const z = round(BASE_Z - progress * DOLLY);
     if (x === applied.x && y === applied.y && z === applied.z) return;
     applied.set(x, y, z);
@@ -478,57 +476,51 @@ export function mountScene(
 
   const render = () => {
     starUniforms.time.value = elapsed;
-    orbitUniforms.phase.value = orbitPhase - (elapsed / ORBIT_SECONDS) * Math.PI * 2 - progress * 0.9;
+    orbitUniforms.phase.value = orbitPhase - (elapsed / ORBIT_SECONDS) * Math.PI * 2 - state.progress * 0.9;
     for (const planet of planets) planet.time.value = elapsed;
     place();
     renderer.render(scene, camera);
   };
 
-  const tick = (now: number) => {
-    const raw = lastTime ? (now - lastTime) / 1000 : 0;
-    const delta = Math.min(raw, 0.05);
-    lastTime = now;
-    elapsed += delta;
-    progress += (targetProgress - progress) * (1 - Math.exp(-delta * 8));
-    pointer.lerp(pointerTarget, 1 - Math.exp(-delta * 4));
+  /** Runs on gsap's ticker (one rAF for every gsap animation on the page); `deltaTime` in ms. */
+  const tick = (_time: number, deltaTime: number) => {
+    const raw = deltaTime / 1000;
+    elapsed += Math.min(raw, 0.05);
     render();
     if (raw > 0) measureQuality(Math.min(raw, 0.25));
-    frame = requestAnimationFrame(tick);
   };
 
   const sync = () => {
     const active = !paused && onScreen && !document.hidden;
-    if (active && !frame) frame = requestAnimationFrame(tick);
-    if (!active && frame) {
-      cancelAnimationFrame(frame);
-      frame = 0;
-      lastTime = 0;
+    if (active && !running) gsap.ticker.add(tick);
+    if (!active && running) {
+      gsap.ticker.remove(tick);
       sampleTime = 0;
       sampleFrames = 0;
     }
+    running = active;
   };
+
+  const toX = gsap.quickTo(state, "x", { duration: 0.9, ease: "power3.out" });
+  const toY = gsap.quickTo(state, "y", { duration: 0.9, ease: "power3.out" });
 
   const onPointer = (event: PointerEvent) => {
     if (event.pointerType !== "mouse" || !finePointer.matches) return;
     const box = host.getBoundingClientRect();
     if (event.clientY > box.bottom) return;
-    pointerTarget.set(
-      Math.max(-1, Math.min(1, ((event.clientX - box.left) / box.width) * 2 - 1)),
-      Math.max(-1, Math.min(1, ((event.clientY - box.top) / box.height) * 2 - 1)),
-    );
+    toX(Math.max(-1, Math.min(1, ((event.clientX - box.left) / box.width) * 2 - 1)));
+    toY(Math.max(-1, Math.min(1, ((event.clientY - box.top) / box.height) * 2 - 1)));
   };
-  const onLeave = () => pointerTarget.set(0, 0);
+  const onLeave = () => {
+    toX(0);
+    toY(0);
+  };
 
-  const trigger = ScrollTrigger.create({
-    trigger: host,
-    start: "top top",
-    end: "bottom top",
-    onUpdate: (self) => {
-      targetProgress = self.progress;
-    },
-    onRefresh: (self) => {
-      targetProgress = self.progress;
-    },
+  /** The single scroll authority: the hero's scroll-out, smoothed by a 0.8 s scrub. */
+  const scroll = gsap.to(state, {
+    progress: 1,
+    ease: "none",
+    scrollTrigger: { trigger: host, start: "top top", end: "bottom top", scrub: 0.8 },
   });
   const observer = new IntersectionObserver(([entry]) => {
     onScreen = entry?.isIntersecting ?? true;
@@ -545,7 +537,6 @@ export function mountScene(
   window.addEventListener("pointermove", onPointer, { passive: true });
   document.documentElement.addEventListener("pointerleave", onLeave);
 
-  progress = targetProgress;
   syncOrbitPhase();
   resize();
   render();
@@ -558,14 +549,16 @@ export function mountScene(
       if (paused) render();
     },
     dispose() {
-      cancelAnimationFrame(frame);
-      frame = 0;
+      gsap.ticker.remove(tick);
+      running = false;
       observer.disconnect();
       resizeObserver.disconnect();
       document.removeEventListener("visibilitychange", sync);
       window.removeEventListener("pointermove", onPointer);
       document.documentElement.removeEventListener("pointerleave", onLeave);
-      trigger.kill();
+      scroll.scrollTrigger?.kill();
+      scroll.kill();
+      gsap.killTweensOf(state);
       delete host.dataset.sceneVisible;
       delete host.dataset.sceneQuality;
       starGeometry.dispose();
