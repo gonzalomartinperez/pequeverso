@@ -32,7 +32,7 @@ test("complete internal navigation: no dead links", async ({ page, request }) =>
     "/manifest.webmanifest",
     "/build-info.json",
     "/favicon.ico",
-    "/icon.svg",
+    "/icon-192.png",
   ]) {
     const res = await request.get(path);
     if (res.status() !== 200) broken.push(`${path} → ${res.status()}`);

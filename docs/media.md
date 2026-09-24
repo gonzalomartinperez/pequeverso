@@ -20,7 +20,7 @@ external libraries (read-only, outside the repo)      tools/media/sources.json (
                        ┌──────────────┼──────────────────┐
                        ▼              ▼                  ▼
               public/media/**   public/favicon.ico …   media/manifest.json
-              (webp/avif/mp4)   icon.svg, webmanifest   (provenance + hashes)
+              (webp/avif/mp4)   icon-*.png, webmanifest (provenance + hashes)
                                                               │
                                               src/lib/media.ts (getImage / getVideo)
 ```
@@ -67,7 +67,7 @@ Library roots default to the local workstation layout and can be overridden:
 | `brand` | per item (96/192/512 isotipo, 320/640 logo) | 90 (alpha 100) | Transparency preserved. |
 | `poster` | 480 / 720 | 72 | Video posters, frame taken from the master at `posterAt` seconds. |
 | `og` | 1200×630 | PNG (palette) + WebP 90 | Composed with sharp: cream `#fffaf2`, centered logo, navy `#003068` band. Fixed file names (referenced by `src/lib/metadata.ts`). |
-| `icons` | 48 ico, 512 png, 192 svg, 180, 192, 512 | PNG, transparent, no padding | `favicon.png` (512, transparent) is the primary icon; `favicon.ico` wraps a 48 px PNG; `icon.svg` embeds the 192 px PNG (no vector master); `apple-touch-icon.png` sits on navy because iOS renders transparency as black. |
+| `icons` | ico 16/32/48, png 192/512, apple 180 | round logo trimmed edge to edge, transparent outside the circle | Browser icons are the full round logo rendered per size (no browser downscaling). No raster-in-SVG icon (it would win over the PNGs and blur on high-DPI) and no maskable icon (Android keeps the round shape). `apple-touch-icon.png` is the mark on navy because iOS fills transparency with black and applies its own rounded mask. |
 | `video` | short side 720 (720×1280 vertical) | H.264 High, yuv420p, 30 fps, crf 26 → 28 → 30 → 32 until ≤ 2.2 MB, `-maxrate 1500k -bufsize 3000k -g 60`, faststart, **audio stripped**, `maxSeconds` per item (default 15) | WebM (VP9, `-b:v 0 -crf 33 → 37 → 41 -row-mt 1 -deadline good`, same scale/fps/GOP) when `video.webm: true`; the first step whose file is not larger than the mp4 is kept, otherwise no WebM. Evaluated on the four `video.gf.*` clips and **disabled** (`webm: false`): VP9 saved only 3–14 % per clip for +5.1 MB of repository size. |
 
 AVIF renditions come from `roles.<role>.avif` (a list of widths: the middle and the largest WebP width)
@@ -221,7 +221,7 @@ const demo = getVideo("video.gf.mapa"); // { mp4, webm?, poster: { src, srcSet }
 | Topic | Status | Action |
 |---|---|---|
 | Demo clips `video.gf.*` | `rights.redistribution = pending-owner-confirmation` | Frames show a child's hand/forearm (and briefly hair) next to the adult's hands; no face. Owner must confirm consent for any minor shown and that the printed material in the clips is their own. Then set `rights` in `sources.json` and rebuild. |
-| Logo vector master | Only raster PNG exports exist (Canva, 2026-08-02) | `icon.svg` embeds a PNG. Ask the owner for the SVG/AI master to replace it. |
+| Logo vector master | Only raster PNG exports exist (Canva, 2026-08-02) | Icons are raster (round logo per size). An SVG/AI master would allow a true vector `icon.svg`. |
 | AI-generated labelling | Scenes and cards are AI-generated | Decide whether pages must label them ("imagen ilustrativa generada con IA"); the manifest already carries `provenance.origin = ai-generated` for the pages to use. |
 | `approvedAt` | Set to the coordinator brief date (2026-09-12) for images | Replace with the owner's sign-off date when it exists. |
 
