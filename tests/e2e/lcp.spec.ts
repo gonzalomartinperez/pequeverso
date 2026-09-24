@@ -61,7 +61,9 @@ for (const route of routes) {
     expect(own).toHaveLength(1);
     expect(own[0]?.srcset).toMatch(/-(hero|page-\d+)-w\d+-/);
     expect(own[0]?.priority).toBe("high");
-    expect(await hero.evaluate((img) => img.currentSrc)).toMatch(/-(hero|page-\d+)-w\d+-/);
+    expect(await hero.evaluate((img) => (img instanceof HTMLImageElement ? img.currentSrc : ""))).toMatch(
+      /-(hero|page-\d+)-w\d+-/,
+    );
     const allPreloads = await page
       .locator('link[rel="preload"]')
       .evaluateAll((links) =>

@@ -5,11 +5,11 @@ type Size = 48 | 56 | 72;
 
 type Props = {
   icon: IconName;
-  size?: Size;
-  tone?: "light" | "dark";
+  size?: Size | undefined;
+  tone?: "light" | "dark" | undefined;
   /** Step number shown in a small gold disc (decorative). */
-  number?: number;
-  className?: string;
+  number?: number | undefined;
+  className?: string | undefined;
 };
 
 const SIZE: Record<Size, string> = {

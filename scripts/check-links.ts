@@ -3,8 +3,8 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const root = resolve(process.cwd(), "out");
-const pages = [];
-const walk = (dir) => {
+const pages: string[] = [];
+const walk = (dir: string): void => {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) walk(full);
@@ -13,14 +13,14 @@ const walk = (dir) => {
 };
 walk(root);
 
-const resolvesToFile = (target) => {
+const resolvesToFile = (target: string): boolean => {
   const path = decodeURIComponent(target.split(/[?#]/)[0] ?? "");
   if (!path.startsWith("/")) return true;
   const candidates = [join(root, path), join(root, path, "index.html"), join(root, `${path}.html`)];
   return candidates.some((file) => existsSync(file) && statSync(file).isFile());
 };
 
-const broken = new Set();
+const broken = new Set<string>();
 for (const page of pages) {
   const html = readFileSync(page, "utf8");
   for (const match of html.matchAll(/(?:href|src)="(\/[^"]*)"/g)) {

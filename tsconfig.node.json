@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "jsx": "preserve",
+    "plugins": [],
+    "incremental": false
+  },
+  "include": ["scripts/**/*.ts", "server/**/*.ts", "tests/unit/**/*.ts", "config/next.ts"],
+  "exclude": ["node_modules"]
+}

@@ -41,7 +41,7 @@ throws in development and no-ops in production. Unit and E2E tests assert they n
 
 Same events, second channel: the `meta-capi` adapter posts every event the pixel received to
 the same-origin endpoint `POST /api/meta/events/` (trailing slash: the standalone target
-308-redirects the slash-less form), and `server/meta-capi.mjs` forwards the batch
+308-redirects the slash-less form), and `server/meta-capi.ts` forwards the batch
 to `https://graph.facebook.com/v26.0/<pixelId>/events` from the Node server. ADR:
 `docs/decisions/ADR-0005-conversions-api-relay.md`.
 
@@ -53,10 +53,10 @@ and `fbc` (cookie `_fbc`, or `fb.1.<now ms>.<fbclid>` derived from `?fbclid`), a
 `202` at once and calls Graph API in the background (3 s timeout, one retry on 429/5xx/network
 error, token in the `Authorization: Bearer` header, never logged).
 
-Server: `createMetaCapiRelay()` in `server/meta-capi.mjs` is a transport-agnostic core
+Server: `createMetaCapiRelay()` in `server/meta-capi.ts` is a transport-agnostic core
 (`process({ method, bodyText, contentType, origin, host, ip, userAgent }) → { status, headers,
 body? }` plus the background upstream sender). Two thin adapters call it: the Node `req/res`
-handler mounted by `scripts/serve-static.mjs` (accepts both `/api/meta/events/` and
+handler mounted by `scripts/serve-static.ts` (accepts both `/api/meta/events/` and
 `/api/meta/events`), and the standalone route handler
 `src/app/api/meta/events/route.standalone.ts` (Next's own server on Hostinger; env read at
 request time; IP from `cf-connecting-ip` → first `x-forwarded-for`).
@@ -123,13 +123,13 @@ plus the banner copy; the tests in `tests/e2e/tracking.spec.ts` encode the curre
 3. `send(event)` maps standard names to the vendor's standard events, passes `eventId` as the
    vendor's dedup id and returns `false` while the vendor global is not ready.
 4. Register the factory in `env.ts` (`enabledAdapters`), validate its variable in
-   `scripts/check-env.mjs`, document it here and in `/cookies/`, block its hosts in
+   `scripts/check-env.ts`, document it here and in `/cookies/`, block its hosts in
    `tests/e2e/fixtures.ts` and add a stub in `tests/e2e/tracking.spec.ts`. Two adapters may
    share a `label` when they are one tool for the visitor (the banner lists labels once).
 
 ## Environment and build gate
 
-`scripts/check-env.mjs` runs first in `npm run build` (`npm run check:env` standalone). It loads
+`scripts/check-env.ts` runs first in `npm run build` (`npm run check:env` standalone). It loads
 `.env*` with Next.js precedence, validates formats (pixel id 15–16 digits, checkout URLs on
 `https://pay.hotmart.com/`, `META_CAPI_ACCESS_TOKEN` ≥ 32 characters without whitespace when
 present), never prints values, and reports `tracking: meta=on|off capi=on|off`. Variables are
@@ -159,11 +159,11 @@ events remain complete.
 
 ## Tests
 
-- `tests/unit/tracking.test.mjs`: forbidden guard, UUID + dataLayer mirror, per-adapter queue and
+- `tests/unit/tracking.test.ts`: forbidden guard, UUID + dataLayer mirror, per-adapter queue and
   flush, drop on reject, consent v2 format and re-prompt, Meta adapter contract (revoke expires
   the cookies), relay adapter (batching, shared event ids, `_fbp`/`_fbc`/`fbclid`, nothing after
   Rechazar, `sendBeacon` on `pagehide`, wait for `_fbp`).
-- `tests/unit/meta-capi.test.mjs`: server handler against a real `http` server with a fake Graph
+- `tests/unit/meta-capi.test.ts`: server handler against a real `http` server with a fake Graph
   API — validation matrix, disabled → 204, payload shape and bearer header, IP/UA sourcing, retry
   policy and logging, rate limit.
 - `tests/e2e/tracking.spec.ts` (only with `E2E_EXPECT_CONSENT=1`): the pixel runs by default with

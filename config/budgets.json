@@ -1,5 +1,5 @@
 {
-  "description": "Transfer-size budgets (gzip bytes) per route, enforced by scripts/check-bundle-budget.mjs; `scene.js` bounds the deferred 3D closure (scripts/check-scene-budget.mjs) and is excluded from route js. Tighten after each optimization; never loosen without a decision record (ADR-0006 re-baselined html/css for the Tailwind + shadcn migration). Values are measured + 10 % (docs/performance.md).",
+  "description": "Transfer-size budgets (gzip bytes) per route, enforced by scripts/check-bundle-budget.ts; `scene.js` bounds the deferred 3D closure (scripts/check-scene-budget.ts) and is excluded from route js. Tighten after each optimization; never loosen without a decision record (ADR-0006 re-baselined html/css for the Tailwind + shadcn migration). Values are measured + 10 % (docs/performance.md).",
   "default": {
     "html": 17408,
     "js": 173568,

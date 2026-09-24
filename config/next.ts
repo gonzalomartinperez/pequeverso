@@ -1,0 +1,66 @@
+import bundleAnalyzer from "@next/bundle-analyzer";
+import { withCn } from "cn/next";
+import type { NextConfig } from "next";
+import { loadEdgeRules, toNextHeaders, toNextRedirects } from "../scripts/lib/edge-rules.ts";
+import { SceneBudgetPlugin } from "../scripts/scene-budget-plugin.ts";
+
+/**
+ * Next.js configuration, re-exported by the root `next.config.mjs` (the file name Hostinger's
+ * builder wraps; see docs/decisions/ADR-0007-typescript-everywhere.md). Node loads this module
+ * with native type stripping, so it and everything it imports must stay erasable TypeScript with
+ * explicit `.ts` relative imports.
+ *
+ * Build target selection:
+ *
+ * - Static export (default): `NEXT_OUTPUT` unset or "export". Served from public_html; redirects and
+ *   headers come from the generated .htaccess (scripts/gen-htaccess.ts).
+ * - Node server: `NEXT_OUTPUT=standalone`, or automatically when the build runs inside Hostinger's
+ *   Node.js Web App builder (its working directory lives under `/hbuilds/`). Hostinger wraps this
+ *   config and forces `output: 'standalone'` itself; here we make sure the same redirects/headers
+ *   from config/edge-rules.json are attached, since no .htaccess of ours is served in that mode.
+ *
+ * Builds use `next build --webpack` (package.json): Hostinger's builder has GLIBC 2.28, where the
+ * native SWC/Turbopack bindings cannot load and only the WASM fallback (webpack-compatible) works.
+ * See docs/architecture.md and docs/decisions/ADR-0001-hosting-target.md.
+ *
+ * `withCn` compiles the Tailwind class-merge tables used by `src/lib/utils.ts` from the sources
+ * before the compiler starts (dev, build and typegen alike); `SceneBudgetPlugin` records the
+ * chunk closure of the deferred 3D scene for `scripts/check-scene-budget.ts`.
+ */
+const onHostingerNodeApp = process.cwd().replace(/\\/g, "/").includes("/hbuilds/");
+const output = process.env.NEXT_OUTPUT === "standalone" || onHostingerNodeApp ? "standalone" : "export";
+const edgeRules = loadEdgeRules();
+
+const nextConfig: NextConfig = {
+  output,
+  // Route handlers live only in the standalone build: `*.standalone.ts` is a page extension there
+  // and plain `route.standalone.ts` files are ignored by the static export (a POST handler breaks
+  // `output: "export"`). See docs/decisions/ADR-0005-conversions-api-relay.md.
+  pageExtensions: output === "standalone" ? ["standalone.ts", "standalone.tsx", "tsx", "ts"] : ["tsx", "ts"],
+  trailingSlash: true,
+  poweredByHeader: false,
+  reactStrictMode: true,
+  images: {
+    // Images are optimized at build time by tools/media (WebP derivatives with
+    // content hashes); no runtime optimizer is needed on either target.
+    unoptimized: true,
+  },
+  generateBuildId: async () => process.env.GITHUB_SHA || null,
+  webpack(config: { plugins: unknown[] }, { dev, isServer }: { dev: boolean; isServer: boolean }) {
+    if (!dev && !isServer) config.plugins.push(new SceneBudgetPlugin());
+    return config;
+  },
+  ...(output === "standalone"
+    ? {
+        redirects: async () => toNextRedirects(edgeRules),
+        headers: async () => toNextHeaders(edgeRules),
+      }
+    : {}),
+};
+
+const withAnalyzer = bundleAnalyzer({ enabled: process.env.ANALYZE === "1", openAnalyzer: false });
+
+export default withCn(withAnalyzer(nextConfig), {
+  content: ["src/**/*.{ts,tsx}"],
+  out: "src/lib/cn-tables.js",
+});

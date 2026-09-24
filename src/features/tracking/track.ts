@@ -159,7 +159,7 @@ export function trackCheckoutIntent(params: {
   product: string;
   offer: string;
   position: string;
-  offerMode?: string;
+  offerMode?: string | undefined;
 }): string {
   return track("CheckoutIntent", {
     product: params.product,

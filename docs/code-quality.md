@@ -19,8 +19,8 @@ comments; no dead code (knip is a gate); business facts come from `config/` and 
 | Build | static export; generated golden files committed | PR, main | yes |
 | Media | manifest record per file, ≤ 5 MB/file, total budget, `--strict` rights gate on deploy | PR, main, deploy | yes |
 | Bundle | gzip per route vs `config/budgets.json` (html/js/css) | PR, main | yes |
-| Scene | `scripts/check-scene-budget.mjs`: the three + gsap closure is never initial and ≤ `scene.js` (250 KB) | PR, main | yes |
-| Rendered HTML | `scripts/check-rendered.mjs`: landmarks, single visible h1, `lang`, canonical, skip link, resolvable anchors, no placeholders or retired text | PR, main | yes |
+| Scene | `scripts/check-scene-budget.ts`: the three + gsap closure is never initial and ≤ `scene.js` (250 KB) | PR, main | yes |
+| Rendered HTML | `scripts/check-rendered.ts`: landmarks, single visible h1, `lang`, canonical, skip link, resolvable anchors, no placeholders or retired text | PR, main | yes |
 | Placeholders | report on PR; `--strict` on deploy | PR / deploy | deploy |
 | Dependencies | `npm audit --omit=dev --audit-level=high`; Dependabot weekly with cooldowns (npm, `tools/media`, actions incl. `.github/actions/*`) | PR, main | yes |
 | Workflows | `actionlint` (with shellcheck) + `zizmor` (`.github/zizmor.yml`) on every workflow and composite action | PR, main | yes |
@@ -63,7 +63,7 @@ Two scheduled workflows, both reporting in their job summary:
    `playwright.config.ts` and it joins the nightly matrix automatically.
 2. **Production daily (09:00 UTC, the live site)** — never builds. Reads the live sha from
    `build-info.json`, reuses `post-deploy-verify.yml` (smoke, headers, `PW_SET=prod`, informative
-   Lighthouse) and runs `scripts/check-live.mjs`: TLS certificate ≥ 14 days, header matrix (HSTS,
+   Lighthouse) and runs `scripts/check-live.ts`: TLS certificate ≥ 14 days, header matrix (HSTS,
    nosniff, referrer, frame, CSP, HTML `no-cache`, immutable `/_next/static`; `build-info.json`
    `no-store` as a warning), robots and sitemap, Hotmart checkout href on the landing, Conversions
    API relay probe (`POST /api/meta/events/` with `{"events":[]}`: 400 = enabled, 204 = disabled,

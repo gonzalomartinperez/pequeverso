@@ -1,15 +1,14 @@
-// @ts-check
 // Read-only smoke test against a running origin (staging or production). Exit 1 on
-// any mismatch. Usage: node scripts/smoke.mjs https://pequeverso.com [expected-sha]
+// any mismatch. Usage: node scripts/smoke.ts https://pequeverso.com [expected-sha]
 const base = (process.argv[2] || "http://localhost:3000").replace(/\/$/, "");
 const expectedSha = process.argv[3];
-const failures = [];
+const failures: string[] = [];
 
-async function head(path, init) {
+async function head(path: string, init?: RequestInit): Promise<Response> {
   const res = await fetch(`${base}${path}`, { redirect: "manual", ...init });
   return res;
 }
-function expect(cond, msg) {
+function expect(cond: boolean, msg: string): void {
   if (!cond) failures.push(msg);
 }
 
@@ -40,7 +39,7 @@ expect(missing.status === 404, `unknown route → ${missing.status}, expected 40
 const info = await fetch(`${base}/build-info.json`, { cache: "no-store" });
 expect(info.status === 200, `build-info.json → ${info.status}`);
 if (info.ok) {
-  const json = await info.json();
+  const json = (await info.json()) as { sha: string; ref: string; builtAt: string };
   console.log(`deployed sha ${json.sha} (${json.ref}, ${json.builtAt})`);
   if (expectedSha) expect(json.sha === expectedSha, `deployed sha ${json.sha} != expected ${expectedSha}`);
 }

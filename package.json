@@ -10,38 +10,39 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=22.12 <25",
+    "node": ">=22.18 <25",
     "npm": ">=10.9 <12"
   },
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/check-env.mjs && node scripts/build-info.mjs && next build --webpack && node scripts/gen-htaccess.mjs",
+    "build": "node scripts/check-env.ts && node scripts/build-info.ts && next build --webpack && node scripts/gen-htaccess.ts",
     "build:standalone": "cross-env NEXT_OUTPUT=standalone npm run build",
-    "start": "node scripts/start.mjs",
+    "start": "node scripts/start.ts",
     "typegen": "next typegen",
-    "typecheck": "next typegen && tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit && tsc -p tsconfig.node.json",
+    "typecheck:media": "tsc -p tools/media",
     "lint": "biome ci --error-on-warnings .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
-    "test": "node --env-file-if-exists=.env.example --test \"tests/unit/**/*.test.mjs\"",
+    "test": "node --env-file-if-exists=.env.example --test \"tests/unit/**/*.test.ts\"",
     "test:e2e": "cross-env PW_SET=pr playwright test",
     "test:e2e:nightly": "cross-env PW_SET=nightly playwright test",
     "check": "npm run lint && npm run typecheck && npm run test && npm run knip:production && npm run build && npm run check:media && npm run check:placeholders && npm run check:bundle && npm run check:scene && npm run check:rendered",
-    "check:env": "node scripts/check-env.mjs",
-    "check:media": "node scripts/check-media-budget.mjs",
-    "check:placeholders": "node scripts/check-placeholders.mjs",
-    "check:placeholders:strict": "node scripts/check-placeholders.mjs --strict",
+    "check:env": "node scripts/check-env.ts",
+    "check:media": "node scripts/check-media-budget.ts",
+    "check:placeholders": "node scripts/check-placeholders.ts",
+    "check:placeholders:strict": "node scripts/check-placeholders.ts --strict",
     "lhci": "lhci autorun",
-    "smoke": "node scripts/smoke.mjs",
-    "start:static": "node scripts/serve-static.mjs",
+    "smoke": "node scripts/smoke.ts",
+    "start:static": "node scripts/serve-static.ts",
     "test:e2e:visual": "cross-env PW_SET=visual playwright test",
     "test:e2e:prod": "cross-env PW_SET=prod playwright test",
     "knip": "knip --no-progress",
     "knip:production": "knip --no-progress --production",
-    "check:bundle": "node scripts/check-bundle-budget.mjs",
-    "check:scene": "node scripts/check-scene-budget.mjs",
+    "check:bundle": "node scripts/check-bundle-budget.ts",
+    "check:scene": "node scripts/check-scene-budget.ts",
     "analyze": "cross-env ANALYZE=1 next build --webpack",
-    "check:rendered": "node scripts/check-rendered.mjs"
+    "check:rendered": "node scripts/check-rendered.ts"
   },
   "dependencies": {
     "@base-ui/react": "1.8.0",
@@ -71,7 +72,7 @@
     "knip": "6.35.1",
     "postcss": "8.5.28",
     "tailwindcss": "4.3.3",
-    "typescript": "5.9.3"
+    "typescript": "7.0.2"
   },
   "type": "module"
 }

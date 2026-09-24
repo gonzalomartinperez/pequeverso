@@ -3,13 +3,13 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   /** Vertical rhythm as a spacing step (`--space-<gap>`). */
-  gap?: 2 | 3 | 4 | 5 | 6;
+  gap?: 2 | 3 | 4 | 5 | 6 | undefined;
   /** Optional measure, e.g. "62ch". */
-  maxWidth?: string;
-  align?: "start" | "center";
-  as?: "div" | "header" | "section" | "article";
-  id?: string;
-  className?: string;
+  maxWidth?: string | undefined;
+  align?: "start" | "center" | undefined;
+  as?: "div" | "header" | "section" | "article" | undefined;
+  id?: string | undefined;
+  className?: string | undefined;
   children: ReactNode;
 };
 

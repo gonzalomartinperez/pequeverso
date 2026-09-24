@@ -6,7 +6,7 @@ pequeverso.com is a small commercial site: a homepage (hub), the principal produ
 optional post-purchase offer page with a query-driven downsell mode, a thank-you page, legal and
 support pages, and a real 404. There is no database, CMS or authentication: payments, delivery
 and refunds run on Hotmart. The only server endpoint is the Meta Conversions API relay
-(`POST /api/meta/events/`): core in `server/meta-capi.mjs`, served by `scripts/serve-static.mjs`
+(`POST /api/meta/events/`): core in `server/meta-capi.ts`, served by `scripts/serve-static.ts`
 (export) and by a standalone-only route handler (Node target).
 
 ```
@@ -24,7 +24,7 @@ visitor ──► pequeverso.com (static HTML/CSS, small client islands)
 | Config | `NEXT_OUTPUT=export` (default) | `NEXT_OUTPUT=standalone` |
 | Serving | Hostinger website (LiteSpeed) serving `public_html`, pulled from the `deploy` branch by Hostinger Git | Hostinger Node.js Web App building `release`/`main` (forces `standalone`; auto-detected by `/hbuilds/`) |
 | Redirects/headers | `out/.htaccess` generated from `config/edge-rules.json` | `redirects()`/`headers()` from the same file |
-| Meta CAPI relay | `scripts/serve-static.mjs` mounts `server/meta-capi.mjs` (Node.js Web App only; the LiteSpeed mode has no relay) | `src/app/api/meta/events/route.standalone.ts`, compiled only when `output === "standalone"` (`pageExtensions` adds `standalone.ts`) |
+| Meta CAPI relay | `scripts/serve-static.ts` mounts `server/meta-capi.ts` (Node.js Web App only; the LiteSpeed mode has no relay) | `src/app/api/meta/events/route.standalone.ts`, compiled only when `output === "standalone"` (`pageExtensions` adds `standalone.ts`) |
 | Images | Build-time WebP derivatives (`tools/media`), `images.unoptimized` | same |
 | Status | Supported (Deploy workflow publishes `deploy`) | **Connected in hPanel by the owner** (Deploy workflow promotes `release`) |
 
@@ -52,8 +52,8 @@ src/motion/      motion.css, reveal/tilt/counter/flip/parallax/sticky components
                  scene/ (lazy three + gsap starfield, static SVG fallback, useSceneRuntime)
 src/lib/         media.ts (manifest access), metadata.ts, utils.ts (`cn` on compiled tables), cx.ts
 media/, public/  media manifest and build-time renditions (tools/media)
-server/          meta-capi.mjs (Conversions API relay core + Node adapter, types in meta-capi.d.mts); used by
-                 scripts/serve-static.mjs and src/app/api/meta/events/route.standalone.ts (alias @server/*)
+server/          meta-capi.ts (Conversions API relay core + Node adapter, erasable TypeScript run by Node); used by
+                 scripts/serve-static.ts and src/app/api/meta/events/route.standalone.ts (alias @server/*)
 ```
 
 ## Product registry
@@ -129,6 +129,6 @@ widget itself is identical in both modes: Hotmart decides the offer from the buy
 
 ## Deployment and verification
 
-`scripts/build-info.mjs` writes `public/build-info.json` (`sha`, `ref`, `builtAt`) served with
+`scripts/build-info.ts` writes `public/build-info.json` (`sha`, `ref`, `builtAt`) served with
 `Cache-Control: no-store`; the deploy workflow compares it with the commit it built and runs
-`scripts/smoke.mjs` before declaring success. See `docs/deployment.md`.
+`scripts/smoke.ts` before declaring success. See `docs/deployment.md`.

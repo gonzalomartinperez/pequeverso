@@ -7,11 +7,12 @@
     "src/components/blocks/*.tsx!",
     "src/motion/*.{ts,tsx}!",
     "src/motion/scene/*.{ts,tsx}!",
-    "scripts/*.mjs",
-    "scripts/lib/*.mjs",
-    "tests/unit/**/*.test.mjs",
+    "scripts/*.ts",
+    "scripts/lib/*.ts",
+    "tests/unit/**/*.test.ts",
     "tests/e2e/**/*.spec.ts",
-    "src/app/**/route.standalone.ts!"
+    "src/app/**/route.standalone.ts!",
+    "config/next.ts!"
   ],
   "project": [
     "src/**!",
@@ -19,7 +20,6 @@
     "content/**!",
     "scripts/**",
     "server/**",
-    "!server/*.d.mts",
     "tests/**"
   ],
   "ignoreExportsUsedInFile": true,

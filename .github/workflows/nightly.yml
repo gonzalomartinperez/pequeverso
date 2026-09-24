@@ -21,7 +21,7 @@ concurrency:
 
 env:
   NEXT_TELEMETRY_DISABLED: "1"
-  # Required build-time values (scripts/check-env.mjs) with a fake offer code; deliberately no
+  # Required build-time values (scripts/check-env.ts) with a fake offer code; deliberately no
   # NEXT_PUBLIC_META_PIXEL_ID so the clean-clone job proves the export has no banner and no cookies.
   NEXT_PUBLIC_SITE_URL: https://pequeverso.com
   NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO: https://pay.hotmart.com/TEST0000000?checkoutMode=10
@@ -178,9 +178,9 @@ jobs:
         run: npx lhci autorun --collect.numberOfRuns=5
       - name: Summary
         if: always()
-        run: node scripts/lhci-summary.mjs >> "$GITHUB_STEP_SUMMARY"
+        run: node scripts/lhci-summary.ts >> "$GITHUB_STEP_SUMMARY"
       - name: Link check
-        run: node scripts/check-links.mjs
+        run: node scripts/check-links.ts
       - name: Bundle analysis
         run: npm run analyze
       - name: Upload Lighthouse and bundle reports

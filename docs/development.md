@@ -13,7 +13,7 @@
 |---|---|
 | `npm run dev` | Next dev server (Turbopack) |
 | `npm run build` | `build-info.json` → `next build` (static export to `out/`) → `out/.htaccess` |
-| `npm start` | Serves `out/` with production-like semantics (`scripts/serve-static.mjs`), or the standalone server when `.next/standalone` exists; both serve `/api/meta/events/` (`META_CAPI_ACCESS_TOKEN=… npm start` to enable the relay locally) |
+| `npm start` | Serves `out/` with production-like semantics (`scripts/serve-static.ts`), or the standalone server when `.next/standalone` exists; both serve `/api/meta/events/` (`META_CAPI_ACCESS_TOKEN=… npm start` to enable the relay locally) |
 | `npm run lint` / `lint:fix` / `format` | Biome |
 | `npm run typecheck` | `next typegen` + `tsc --noEmit` |
 | `npm test` | Unit tests (`node --test`, TypeScript via Node type stripping) |
@@ -27,7 +27,7 @@
 ## Environment
 
 Copy `.env.example` to `.env.local` before the first build (`cp .env.example .env.local`).
-`NEXT_PUBLIC_*` values are inlined at build time; `scripts/check-env.mjs` refuses to build without
+`NEXT_PUBLIC_*` values are inlined at build time; `scripts/check-env.ts` refuses to build without
 `NEXT_PUBLIC_SITE_URL` and a checkout URL, and the repository carries no inline defaults for them.
 With the optional variables empty no pixel is injected and the Conversions API relay answers `204`.
 

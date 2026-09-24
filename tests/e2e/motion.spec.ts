@@ -31,8 +31,12 @@ test("no reveal element inside the first viewport is transparent right after loa
 test("fallback path marks only elements below the fold and reveals them on scroll", async ({ page }) => {
   await page.addInitScript(() => {
     const supports = CSS.supports.bind(CSS);
-    CSS.supports = ((...args: [string, string?]) =>
-      /animation-timeline/.test(args[0]) ? false : supports(...args)) as typeof CSS.supports;
+    CSS.supports = ((condition: string, value?: string) =>
+      /animation-timeline/.test(condition)
+        ? false
+        : value === undefined
+          ? supports(condition)
+          : supports(condition, value)) as typeof CSS.supports;
   });
   await page.goto("/");
   await page.waitForLoadState("networkidle");

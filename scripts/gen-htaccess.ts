@@ -1,10 +1,9 @@
-// @ts-check
 // Renders config/edge-rules.json to out/.htaccess (static target) and to
 // docs/generated/htaccess.txt (golden copy checked by tests/unit).
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadEdgeRules, toHtaccess } from "./lib/edge-rules.mjs";
+import { loadEdgeRules, toHtaccess } from "./lib/edge-rules.ts";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const rules = loadEdgeRules();

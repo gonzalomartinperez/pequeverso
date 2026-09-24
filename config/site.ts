@@ -1,6 +1,6 @@
 /**
  * Site-wide constants. Deployment-specific values (origin, checkout, pixel) come only from
- * NEXT_PUBLIC_* variables inlined at build time and validated by scripts/check-env.mjs — the
+ * NEXT_PUBLIC_* variables inlined at build time and validated by scripts/check-env.ts — the
  * repository ships no inline defaults for them. Everything else is a documented business fact
  * (see docs/content-model.md for sources and dates).
  */

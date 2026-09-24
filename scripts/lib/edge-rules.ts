@@ -1,4 +1,3 @@
-// @ts-check
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -6,22 +5,40 @@ import { fileURLToPath } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 export const EDGE_RULES_PATH = resolve(here, "../../config/edge-rules.json");
 
-/**
- * @typedef {{ id: string, source: string, destination?: string, permanent?: boolean, gone?: boolean, description?: string }} RedirectRule
- * @typedef {{ id: string, source: string, headers: Record<string, string> }} HeaderRule
- * @typedef {{ canonicalHost: string, hsts: { enabled: boolean, maxAge: number, includeSubDomains: boolean }, redirects: RedirectRule[], headers: HeaderRule[] }} EdgeRules
- */
+type RedirectRule = {
+  id: string;
+  source: string;
+  destination?: string;
+  permanent?: boolean;
+  gone?: boolean;
+  description?: string;
+};
+type HeaderRule = { id: string; source: string; headers: Record<string, string> };
 
-/** @returns {EdgeRules} */
-export function loadEdgeRules(path = EDGE_RULES_PATH) {
-  const rules = /** @type {EdgeRules} */ (JSON.parse(readFileSync(path, "utf8")));
+/** Shape of config/edge-rules.json. */
+export type EdgeRules = {
+  canonicalHost: string;
+  hsts: { enabled: boolean; maxAge: number; includeSubDomains: boolean };
+  redirects: RedirectRule[];
+  headers: HeaderRule[];
+};
+
+type NextRedirect = {
+  source: string;
+  destination: string;
+  permanent: boolean;
+  has?: Array<{ type: "host"; value: string }>;
+};
+type NextHeader = { source: string; headers: Array<{ key: string; value: string }> };
+
+export function loadEdgeRules(path: string = EDGE_RULES_PATH): EdgeRules {
+  const rules = JSON.parse(readFileSync(path, "utf8")) as EdgeRules;
   validateEdgeRules(rules);
   return rules;
 }
 
-/** @param {EdgeRules} rules */
-export function validateEdgeRules(rules) {
-  const ids = new Set();
+export function validateEdgeRules(rules: EdgeRules): void {
+  const ids = new Set<string>();
   for (const rule of [...rules.redirects, ...rules.headers]) {
     if (!rule.id || ids.has(rule.id)) throw new Error(`edge-rules: duplicate or missing id "${rule.id}"`);
     ids.add(rule.id);
@@ -36,17 +53,17 @@ export function validateEdgeRules(rules) {
   }
 }
 
-/** Next.js redirects() shape (standalone target). @param {EdgeRules} rules */
-export function toNextRedirects(rules) {
-  const list = rules.redirects
+/** Next.js redirects() shape (standalone target). */
+export function toNextRedirects(rules: EdgeRules): NextRedirect[] {
+  const list: NextRedirect[] = rules.redirects
     .filter((r) => !r.gone)
     .map((r) => ({
       source: r.source,
-      destination: /** @type {string} */ (r.destination),
+      destination: r.destination ?? "",
       permanent: r.permanent !== false,
     }));
   // www → apex on the Node target (the static target does it in .htaccess).
-  const host = [{ type: "host", value: `www.${rules.canonicalHost}` }];
+  const host: NextRedirect["has"] = [{ type: "host", value: `www.${rules.canonicalHost}` }];
   list.unshift(
     { source: "/", has: host, destination: `https://${rules.canonicalHost}`, permanent: true },
     { source: "/:path+", has: host, destination: `https://${rules.canonicalHost}/:path+/`, permanent: true },
@@ -54,9 +71,9 @@ export function toNextRedirects(rules) {
   return list;
 }
 
-/** Next.js headers() shape (standalone target). @param {EdgeRules} rules */
-export function toNextHeaders(rules) {
-  const list = rules.headers.map((h) => ({
+/** Next.js headers() shape (standalone target). */
+export function toNextHeaders(rules: EdgeRules): NextHeader[] {
+  const list: NextHeader[] = rules.headers.map((h) => ({
     source: h.source,
     headers: Object.entries(h.headers).map(([key, value]) => ({ key, value })),
   }));
@@ -69,17 +86,15 @@ export function toNextHeaders(rules) {
   return list;
 }
 
-/** @param {EdgeRules['hsts']} hsts */
-export function hstsValue(hsts) {
+export function hstsValue(hsts: EdgeRules["hsts"]): string {
   return `max-age=${hsts.maxAge}${hsts.includeSubDomains ? "; includeSubDomains" : ""}`;
 }
 
 /**
  * Convert a Next.js-style path pattern into an Apache regex fragment (per-directory
  * context: no leading slash). Supports literal paths and a trailing `:name*` segment.
- * @param {string} source
  */
-export function toApacheRegex(source) {
+export function toApacheRegex(source: string): string {
   const trimmed = source.replace(/^\//, "");
   const escaped = trimmed.replace(/[.+?^${}()|[\]\\]/g, (m) => `\\${m}`);
   if (/:[a-zA-Z0-9_]+\*$/.test(trimmed)) {
@@ -92,9 +107,8 @@ export function toApacheRegex(source) {
 
 /**
  * Convert a header-rule source into an Apache <If> expression on the request path.
- * @param {string} source
  */
-export function toApacheIfExpression(source) {
+export function toApacheIfExpression(source: string): string | null {
   if (source === "/:path*") return null; // applies to everything
   const regex = source
     .replace(/^\//, "")
@@ -103,10 +117,10 @@ export function toApacheIfExpression(source) {
   return `%{REQUEST_URI} =~ m#^/${regex}$#`;
 }
 
-/** Render the .htaccess for the static target. @param {EdgeRules} rules @param {{ buildId?: string }} [opts] */
-export function toHtaccess(rules, opts = {}) {
-  const lines = [];
-  lines.push("# Generated by scripts/gen-htaccess.mjs from config/edge-rules.json — do not edit by hand.");
+/** Render the .htaccess for the static target. */
+export function toHtaccess(rules: EdgeRules, opts: { buildId?: string } = {}): string {
+  const lines: string[] = [];
+  lines.push("# Generated by scripts/gen-htaccess.ts from config/edge-rules.json — do not edit by hand.");
   if (opts.buildId) lines.push(`# build ${opts.buildId}`);
   lines.push("");
   lines.push("Options -Indexes");
@@ -129,7 +143,7 @@ export function toHtaccess(rules, opts = {}) {
     if (r.gone) {
       lines.push(`RewriteRule ${toApacheRegex(r.source)} - [G,L]`);
     } else {
-      const dest = /** @type {string} */ (r.destination).replace(/:[a-zA-Z0-9_]+\*/g, "$1");
+      const dest = (r.destination ?? "").replace(/:[a-zA-Z0-9_]+\*/g, "$1");
       lines.push(`RewriteRule ${toApacheRegex(r.source)} ${dest} [R=${r.permanent === false ? 302 : 301},L]`);
     }
   }

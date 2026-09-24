@@ -12,7 +12,7 @@
  * 7. Motion       ../motion/motion.css (reveal, hero, flip, orbit, parallax, sticky stack)
  *
  * Breakpoints (min-width): sm 640 · md 768 · lg 1024 · xl 1280 (Tailwind defaults, also used as
- * container thresholds). Contrast pairs are asserted by tests/unit/design-tokens.test.mjs.
+ * container thresholds). Contrast pairs are asserted by tests/unit/design-system.test.ts.
  */
 @import "tailwindcss" source("../");
 @import "../motion/motion.css";

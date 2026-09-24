@@ -38,7 +38,7 @@ Spanish. Read this file first, then the doc that matches your task.
   focus, 24 px targets, reduced motion, captions/text alternatives), CLS ≤ 0.1, LCP ≤ 2.5 s (lab).
 - **Deployment values live only in environment variables.** The repository ships no inline
   origin, checkout URL, pixel id or token: `NEXT_PUBLIC_SITE_URL` and the checkout URL are
-  required at build time (`scripts/check-env.mjs`; copy `.env.example` to `.env.local` locally),
+  required at build time (`scripts/check-env.ts`; copy `.env.example` to `.env.local` locally),
   optional integrations are no-ops when their variable is empty. The Meta Pixel runs when its id is
   set and the cookie banner withdraws it.
 - **Placeholders `[[LIKE_THIS]]` are allowed in legal copy until the owner supplies the details**;
@@ -50,7 +50,7 @@ Spanish. Read this file first, then the doc that matches your task.
   `main` (protected ruleset; required check `ci`). Conventional Commits with a body that states what
   was verified and what was not.
 - Before opening a PR: `npm run check` and the relevant `npm run test:e2e` projects. Keep
-  `docs/generated/htaccess.txt` in sync (`node scripts/gen-htaccess.mjs`).
+  `docs/generated/htaccess.txt` in sync (`node scripts/gen-htaccess.ts`).
 - One owner per lockfile change; dependency updates are their own PR.
 - Releases are tags `vX.Y.Z` deployed manually through the `Deploy` workflow with environment
   approval; it publishes the export to the `deploy` branch (pulled by Hostinger Git) and verifies

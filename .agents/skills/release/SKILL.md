@@ -10,7 +10,7 @@ description: Cut a tagged release of pequeverso.com and run the gated deploy wit
 3. Run the **Deploy** workflow with the tag and target (`staging` first when available, then
    `production`). The `production` environment requires approval. The workflow publishes `out/` to
    the `deploy` branch, waits for Hostinger Git to pull it, verifies `build-info.json` matches the
-   commit and runs `scripts/smoke.mjs`.
+   commit and runs `scripts/smoke.ts`.
 4. After production: run the curl matrix in `docs/deployment.md`, check Search Console and Hotmart
    test purchase items in `docs/migration.md`.
 5. Rollback: re-run Deploy with the previous tag (or redeploy the previous `deploy` commit in hPanel → Git).

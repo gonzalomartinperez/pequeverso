@@ -58,11 +58,11 @@ jobs:
         id: revision
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: node scripts/wait-for-revision.mjs "$SITE_URL" "$EXPECTED_SHA" "$WAIT_SECONDS"
+        run: node scripts/wait-for-revision.ts "$SITE_URL" "$EXPECTED_SHA" "$WAIT_SECONDS"
       - name: Smoke
         env:
           LIVE_SHA: ${{ steps.revision.outputs.live_sha }}
-        run: node scripts/smoke.mjs "$SITE_URL" "$LIVE_SHA"
+        run: node scripts/smoke.ts "$SITE_URL" "$LIVE_SHA"
       - name: Headers
         run: |
           set -euo pipefail
@@ -84,4 +84,4 @@ jobs:
         continue-on-error: true
         run: |
           npx lhci collect --no-lighthouserc --url="$SITE_URL/" --url="$SITE_URL/grafismo-fonetico/" --numberOfRuns=1 --settings.preset=desktop --settings.formFactor=mobile --settings.screenEmulation.mobile=true --settings.screenEmulation.width=390 --settings.screenEmulation.height=844 --settings.screenEmulation.deviceScaleFactor=3 --settings.throttlingMethod=simulate
-          node scripts/lhci-summary.mjs >> "$GITHUB_STEP_SUMMARY"
+          node scripts/lhci-summary.ts >> "$GITHUB_STEP_SUMMARY"

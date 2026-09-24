@@ -3,12 +3,12 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   /** Columns at the widest container; narrower containers step down (container queries). */
-  cols?: 2 | 3 | 4;
+  cols?: 2 | 3 | 4 | undefined;
   /** Minimum column width (CSS length); when set, columns auto-fit instead of following `cols`. */
-  min?: string;
-  gap?: 3 | 4 | 5 | 6;
-  as?: "div" | "ul" | "ol";
-  className?: string;
+  min?: string | undefined;
+  gap?: 3 | 4 | 5 | 6 | undefined;
+  as?: "div" | "ul" | "ol" | undefined;
+  className?: string | undefined;
   children: ReactNode;
 };
 

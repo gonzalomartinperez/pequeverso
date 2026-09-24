@@ -40,7 +40,7 @@ except the polyfills chunk; `css` sums the linked stylesheets.
 | `/grafismo-fonetico/` | LCP | 941 ms | 659 ms |
 | `/grafismo-fonetico/` | CLS | 0 | 0 |
 
-Collected with the `lighthouserc.json` settings against `scripts/serve-static.mjs`. The LCP element
+Collected with the `lighthouserc.json` settings against `scripts/serve-static.ts`. The LCP element
 is the `h1` at 390 px on both routes; the hero `<img data-lcp>` becomes the LCP element on wider
 viewports, which `tests/e2e/lcp.spec.ts` accepts as the only alternative. Intermediate steps on
 `/`: font preload + Georgia/Arial metric fallbacks took LCP to 832 ms and CLS to 0; preloading the

@@ -1,6 +1,6 @@
 {
   "$schemaVersion": 1,
-  "$comment": "Declarative source list for tools/media/media-build.mjs. Paths are relative to the library root resolved from EXTERNAL_ASSETS_ROOT / EXTERNAL_OPS_ROOT / EXTERNAL_STUDIO_ROOT. Nothing referenced here is ever copied into the repository; only the derived outputs under public/ are.",
+  "$comment": "Declarative source list for tools/media/media-build.ts. Paths are relative to the library root resolved from EXTERNAL_ASSETS_ROOT / EXTERNAL_OPS_ROOT / EXTERNAL_STUDIO_ROOT. Nothing referenced here is ever copied into the repository; only the derived outputs under public/ are.",
   "libraries": {
     "ai-business-assets": {
       "env": "EXTERNAL_ASSETS_ROOT",

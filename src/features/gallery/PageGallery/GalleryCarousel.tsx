@@ -21,11 +21,11 @@ type Zoom = { src: string; srcSet: string; width: number; height: number; alt: s
 
 type Props = {
   label: string;
-  zoomHint?: string;
+  zoomHint?: string | undefined;
   /** Server-rendered `<GallerySlide>` elements, one per page. */
   children: ReactNode;
   /** Number of slides in `children`; defaults to the child count. */
-  count?: number;
+  count?: number | undefined;
 };
 
 const ZoomContext = createContext<(image: HTMLImageElement) => void>(() => undefined);

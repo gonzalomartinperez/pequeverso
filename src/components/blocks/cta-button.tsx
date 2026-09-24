@@ -6,15 +6,17 @@ import { cn } from "@/lib/utils";
 
 type Common = ButtonVariantProps & {
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
   /** Leading icon (lucide). */
-  icon?: LucideIcon;
+  icon?: LucideIcon | undefined;
   /** Trailing icon: "arrow" for navigation, "external" for links that leave the site, or a lucide icon. */
-  iconAfter?: "arrow" | "external" | LucideIcon;
+  iconAfter?: "arrow" | "external" | LucideIcon | undefined;
 };
-type LinkProps = Common & { href: string; external?: boolean } & Omit<
+// Next's `Link` types these handlers without `| undefined` (exactOptionalPropertyTypes), and a server
+// CTA never carries handlers anyway: interactive buttons use `Button` from ui.
+type LinkProps = Common & { href: string; external?: boolean | undefined } & Omit<
     AnchorHTMLAttributes<HTMLAnchorElement>,
-    "href" | "className"
+    "href" | "className" | "onClick" | "onMouseEnter" | "onTouchStart"
   >;
 type ButtonProps = Common & { href?: undefined } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className">;
 

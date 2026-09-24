@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { createServer } from "node:http";
+import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { test } from "node:test";
 import {
   createMetaCapiHandler,
@@ -9,7 +9,10 @@ import {
   META_CAPI_PATH,
   metaCapiOptionsFromEnv,
   pickClientIp,
-} from "../../server/meta-capi.mjs";
+  type RelayInput,
+  type RelayOptions,
+  type UpstreamResult,
+} from "../../server/meta-capi.ts";
 
 const SITE = "https://pequeverso.com";
 
@@ -18,7 +21,29 @@ const TOKEN = "EAAB".padEnd(64, "x");
 const NOW = 1_800_000_000_000;
 const UUID = "3f1c2a9e-5b7d-4c8e-9a1b-2c3d4e5f6a7b";
 
-function event(overrides = {}) {
+type GraphEvent = {
+  event_name: string;
+  event_time: number;
+  event_id: string;
+  event_source_url: string;
+  action_source: string;
+  user_data: Record<string, string>;
+  custom_data?: Record<string, string | number>;
+};
+type GraphCall = {
+  url: string;
+  init: RequestInit & { headers: Record<string, string> };
+  body: { data: GraphEvent[] };
+};
+
+/** `list[index]`, asserted to exist (noUncheckedIndexedAccess). */
+function at<T>(list: readonly T[], index: number): T {
+  const value = list[index];
+  assert.ok(value !== undefined, `missing item ${index}`);
+  return value;
+}
+
+function event(overrides: Record<string, unknown> = {}) {
   return {
     name: "ViewContent",
     eventId: UUID,
@@ -30,10 +55,10 @@ function event(overrides = {}) {
 }
 
 /** Fake Graph API: records requests, answers from a queue of statuses (default 200). */
-function fakeFetch(statuses = []) {
-  const calls = [];
-  const fetchImpl = async (url, init) => {
-    calls.push({ url: String(url), init, body: JSON.parse(init.body) });
+function fakeFetch(statuses: number[] = []) {
+  const calls: GraphCall[] = [];
+  const fetchImpl = async (url: string | URL | Request, init?: RequestInit): Promise<Response> => {
+    calls.push({ url: String(url), init: init as GraphCall["init"], body: JSON.parse(String(init?.body)) });
     const status = statuses.shift() ?? 200;
     return new Response(JSON.stringify(status >= 400 ? { error: { code: 190, fbtrace_id: "t1" } } : {}), {
       status,
@@ -43,22 +68,30 @@ function fakeFetch(statuses = []) {
   return { calls, fetchImpl };
 }
 
-async function withServer(handler, run) {
+async function withServer(
+  handler: (req: IncomingMessage, res: ServerResponse) => Promise<boolean>,
+  run: (base: string) => Promise<void>,
+): Promise<void> {
   const server = createServer(async (req, res) => {
     if (await handler(req, res)) return;
     res.writeHead(200, { "content-type": "text/plain" }).end("fallthrough");
   });
-  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
-  const { port } = server.address();
-  const base = `http://127.0.0.1:${port}`;
+  await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", () => resolve()));
+  const address = server.address();
+  assert.ok(address && typeof address === "object");
+  const base = `http://127.0.0.1:${address.port}`;
   try {
     await run(base);
   } finally {
-    await new Promise((resolve) => server.close(resolve));
+    await new Promise<void>((resolve) => server.close(() => resolve()));
   }
 }
 
-function post(base, body, { headers = {} } = {}) {
+function post(
+  base: string,
+  body: unknown,
+  { headers = {} }: { headers?: Record<string, string> } = {},
+): Promise<Response> {
   return fetch(`${base}${META_CAPI_PATH}`, {
     method: "POST",
     headers: { "content-type": "application/json", ...headers },
@@ -66,10 +99,10 @@ function post(base, body, { headers = {} } = {}) {
   });
 }
 
-function enabledHandler(extra = {}) {
+function enabledHandler(extra: { statuses?: number[]; options?: Partial<RelayOptions> } = {}) {
   const fake = fakeFetch(extra.statuses);
-  const logs = [];
-  const results = [];
+  const logs: string[] = [];
+  const results: UpstreamResult[] = [];
   const handler = createMetaCapiHandler({
     pixelId: PIXEL,
     accessToken: TOKEN,
@@ -202,7 +235,7 @@ test("valid batch: 202 at once, then Graph API payload with bearer token, ids, i
     await Promise.all(handler.pending);
   });
   assert.equal(calls.length, 1);
-  const [call] = calls;
+  const call = at(calls, 0);
   assert.equal(call.url, `https://graph.facebook.com/${GRAPH_API_VERSION}/${PIXEL}/events`);
   assert.equal(call.init.method, "POST");
   assert.equal(call.init.headers["Content-Type"], "application/json");
@@ -211,7 +244,7 @@ test("valid batch: 202 at once, then Graph API payload with bearer token, ids, i
   assert.equal("access_token" in call.body, false, "token travels in the header, never the body or url");
   assert.equal(call.url.includes(TOKEN), false);
   assert.equal(call.body.data.length, 3);
-  assert.deepEqual(call.body.data[0], {
+  assert.deepEqual(at(call.body.data, 0), {
     event_name: "ViewContent",
     event_time: Math.floor((NOW - 1000) / 1000),
     event_id: UUID,
@@ -225,11 +258,15 @@ test("valid batch: 202 at once, then Graph API payload with bearer token, ids, i
     },
     custom_data: { content_ids: "gf", value: 19.9, currency: "USD" },
   });
-  assert.equal(call.body.data[1].event_name, "CheckoutIntent");
-  assert.equal(call.body.data[1].event_time, Math.floor(NOW / 1000), "future time clamped to now");
-  assert.equal(call.body.data[2].event_time, Math.floor((NOW - 10 * 60 * 1000) / 1000), "old time clamped");
-  assert.equal("custom_data" in call.body.data[2], false);
-  assert.deepEqual(call.body.data[2].user_data, {
+  assert.equal(at(call.body.data, 1).event_name, "CheckoutIntent");
+  assert.equal(at(call.body.data, 1).event_time, Math.floor(NOW / 1000), "future time clamped to now");
+  assert.equal(
+    at(call.body.data, 2).event_time,
+    Math.floor((NOW - 10 * 60 * 1000) / 1000),
+    "old time clamped",
+  );
+  assert.equal("custom_data" in at(call.body.data, 2), false);
+  assert.deepEqual(at(call.body.data, 2).user_data, {
     client_ip_address: "203.0.113.7",
     client_user_agent: "Mozilla/5.0 (test)",
   });
@@ -251,8 +288,8 @@ test("client ip falls back to the first x-forwarded-for entry, then the socket; 
     assert.equal(viaSocket.status, 202);
     await Promise.all(handler.pending);
   });
-  assert.equal(calls[0].body.data[0].user_data.client_ip_address, "198.51.100.1");
-  assert.equal(calls[1].body.data[0].user_data.client_ip_address, "127.0.0.1");
+  assert.equal(at(at(calls, 0).body.data, 0).user_data.client_ip_address, "198.51.100.1");
+  assert.equal(at(at(calls, 1).body.data, 0).user_data.client_ip_address, "127.0.0.1");
 });
 
 test("retries once on 429/5xx and on network errors, never on other 4xx; failures are logged without the token", async () => {
@@ -292,8 +329,8 @@ test("retries once on 429/5xx and on network errors, never on other 4xx; failure
   assert.ok(fourHundred.logs.every((line) => !line.includes(TOKEN)));
 
   let attempts = 0;
-  const logs = [];
-  const results = [];
+  const logs: string[] = [];
+  const results: UpstreamResult[] = [];
   const flaky = createMetaCapiHandler({
     pixelId: PIXEL,
     accessToken: TOKEN,
@@ -348,7 +385,7 @@ test("options from the environment trim values and never invent a site url", () 
   );
 });
 
-function relayInput(overrides = {}) {
+function relayInput(overrides: Partial<RelayInput> = {}): RelayInput {
   return {
     method: "POST",
     bodyText: JSON.stringify({ events: [event()] }),
@@ -375,7 +412,7 @@ test("core: process() describes every response without a transport", async () =>
     status: 405,
     headers: { "Cache-Control": "no-store", Allow: "POST" },
   });
-  const cases = [
+  const cases: Array<[RelayInput, number, string]> = [
     [relayInput({ origin: "https://evil.example" }), 403, "origin"],
     [relayInput({ contentType: "text/plain" }), 415, "content-type"],
     [relayInput({ contentType: undefined }), 415, "content-type"],
@@ -393,7 +430,7 @@ test("core: process() describes every response without a transport", async () =>
     assert.equal(outcome.status, status, reason);
     assert.equal(outcome.headers["Cache-Control"], "no-store");
     assert.equal(outcome.headers["Content-Type"], "application/json; charset=utf-8");
-    assert.deepEqual(JSON.parse(outcome.body), { error: reason });
+    assert.deepEqual(JSON.parse(outcome.body ?? ""), { error: reason });
   }
   assert.equal(fake.calls.length, 0);
 
@@ -411,12 +448,16 @@ test("core: process() describes every response without a transport", async () =>
   await Promise.all(relay.pending);
   assert.equal(relay.pending.size, 0);
   assert.equal(fake.calls.length, 2);
-  assert.deepEqual(fake.calls[0].body.data[0].user_data, {
+  assert.deepEqual(at(at(fake.calls, 0).body.data, 0).user_data, {
     client_ip_address: "203.0.113.7",
     client_user_agent: "Mozilla/5.0 (core)",
   });
-  assert.deepEqual(fake.calls[1].body.data[0].user_data, {}, "no ip or agent when the transport has none");
-  assert.equal(fake.calls[0].init.headers.Authorization, `Bearer ${TOKEN}`);
+  assert.deepEqual(
+    at(at(fake.calls, 1).body.data, 0).user_data,
+    {},
+    "no ip or agent when the transport has none",
+  );
+  assert.equal(at(fake.calls, 0).init.headers.Authorization, `Bearer ${TOKEN}`);
 });
 
 test("core: disabled relay answers 204 for a POST before looking at the body, 405 otherwise", () => {

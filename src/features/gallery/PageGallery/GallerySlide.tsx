@@ -6,8 +6,8 @@ type Props = {
   /** Manifest image id, e.g. `gf.page.07`. */
   id: string;
   /** Visible caption; defaults to the alt text. */
-  caption?: string;
-  sizes?: string;
+  caption?: string | undefined;
+  sizes?: string | undefined;
 };
 
 /**
