@@ -9,9 +9,11 @@ on:
 
 permissions: {}
 
+# Never cancel: a cancelled run leaves a cancelled "Branch policy" check on the head commit, which
+# blocks the required-check gate (seen on Dependabot rebases, PR #29). The job takes ~3 s.
 concurrency:
-  group: branch-policy-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+  group: branch-policy-${{ github.event.pull_request.number }}-${{ github.run_id }}
+  cancel-in-progress: false
 
 jobs:
   branch-policy:
