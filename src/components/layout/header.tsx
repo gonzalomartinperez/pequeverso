@@ -1,7 +1,9 @@
+import { MenuIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { BrandLogo } from "@/components/blocks/brand-logo";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 
 export type NavItem = { href: string; label: string };
@@ -23,7 +25,7 @@ export function Header({ nav = [], cta, subtitle }: Props) {
   const items = nav.slice(0, 4);
   return (
     <header data-slot="header" className="sticky top-0 z-50 border-b border-border bg-surface-veil">
-      <div className="page-container flex min-h-(--header-height) items-center gap-4">
+      <div className="page-container flex min-h-(--header-height) items-center gap-2 sm:gap-4">
         <Link
           href="/"
           className="inline-flex items-center gap-3 text-navy no-underline"
@@ -31,7 +33,12 @@ export function Header({ nav = [], cta, subtitle }: Props) {
         >
           <BrandLogo priority wordmark="sm-up" />
           {subtitle ? (
-            <span className="hidden max-w-56 border-l border-border pl-3 text-tiny leading-tight font-bold text-subtle sm:inline">
+            <span
+              className={cn(
+                "hidden max-w-56 border-l border-border pl-3 text-tiny leading-tight font-bold text-subtle",
+                items.length > 0 ? "xl:inline" : "sm:inline",
+              )}
+            >
               {subtitle}
             </span>
           ) : null}
@@ -54,12 +61,20 @@ export function Header({ nav = [], cta, subtitle }: Props) {
         ) : null}
         <div
           className={cn(
-            "ml-auto flex items-center gap-2 [&>a]:max-sm:min-h-11 [&>a]:max-sm:px-4 [&>a]:max-sm:text-[0.95rem]",
+            "ml-auto flex min-w-0 items-center gap-2 [&>a]:max-sm:min-h-11 [&>a]:max-sm:px-4 [&>a]:max-sm:text-[0.95rem] [&>a_svg]:max-sm:hidden",
             items.length > 0 && "lg:ml-0",
           )}
         >
           {cta}
-          {items.length > 0 ? <MobileNav items={items} /> : null}
+          {items.length > 0 ? (
+            <MobileNav
+              items={items}
+              className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "lg:hidden")}
+            >
+              <MenuIcon aria-hidden="true" focusable="false" strokeWidth={2.4} />
+              <span className="sr-only">Abrir el menú</span>
+            </MobileNav>
+          ) : null}
         </div>
       </div>
     </header>

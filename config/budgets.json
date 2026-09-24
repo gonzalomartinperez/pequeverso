@@ -1,28 +1,32 @@
 {
-  "description": "Transfer-size budgets (gzip bytes) per route, enforced by scripts/check-bundle-budget.mjs. Tighten after each optimization; never loosen without a decision record. Values are measured + 10 % (docs/performance.md).",
+  "description": "Transfer-size budgets (gzip bytes) per route, enforced by scripts/check-bundle-budget.mjs; `scene.js` bounds the deferred 3D closure (scripts/check-scene-budget.mjs) and is excluded from route js. Tighten after each optimization; never loosen without a decision record (ADR-0006 re-baselined html/css for the Tailwind + shadcn migration). Values are measured + 10 % (docs/performance.md).",
   "default": {
     "html": 17408,
     "js": 173568,
-    "css": 15872
+    "css": 14336
   },
   "routes": {
     "/": {
-      "html": 22528,
-      "js": 160256
+      "html": 27648,
+      "js": 160256,
+      "css": 18432
     },
     "/grafismo-fonetico/": {
-      "html": 44032
+      "html": 51200,
+      "css": 18432
     },
     "/imprime-y-juega/": {
-      "html": 28160
+      "html": 35328,
+      "css": 18432
     },
     "/grafismo-fonetico/gracias/": {
       "js": 157696,
-      "html": 20480
+      "html": 25088
     },
     "/soporte/": {
-      "html": 11264,
-      "js": 156160
+      "html": 12800,
+      "js": 156160,
+      "css": 13824
     }
   },
   "scene": {

@@ -46,11 +46,15 @@ export function buildStarfield(count = STAR_COUNT, seed = STAR_SEED): Starfield 
 
 export type StaticLayer = { depth: number; tint: 0 | 1; path: string };
 
+/** Stars per tile of the static fallback and the tile edge in CSS pixels (same density at any width). */
+export const TILE_STARS = 36;
+export const TILE_SIZE = 320;
+
 /**
  * Groups the stars into `DEPTH_LAYERS` × 2 SVG paths (depth band × tint) of tiny squares in a
- * 1000-unit box, so the fallback costs a handful of elements instead of one per star.
+ * `TILE_SIZE` box, so the fallback costs a handful of elements instead of one per star.
  */
-export function buildStaticLayers(field = buildStarfield()): StaticLayer[] {
+export function buildStaticLayers(field = buildStarfield(TILE_STARS)): StaticLayer[] {
   const buckets = new Map<string, StaticLayer>();
   for (let index = 0; index < field.count; index += 1) {
     const z = field.positions[index * 3 + 2] ?? 0;

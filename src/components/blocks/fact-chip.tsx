@@ -10,7 +10,7 @@ export function FactChip({ icon, label, detail, tone = "light", className }: Pro
       data-slot="fact-chip"
       className={cn(
         "inline-flex min-h-11 items-center gap-2 rounded-md border border-border bg-card px-3 py-2 shadow-sm",
-        tone === "dark" && "on-navy border-white/20 bg-white/10 shadow-none",
+        tone === "dark" ? "on-navy border-white/20 bg-white/10 shadow-none" : "on-light",
         className,
       )}
     >

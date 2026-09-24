@@ -1,6 +1,7 @@
 .slot {
   --widget-min-h: 220px;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-3);
   padding: var(--space-4);
   border-radius: var(--pv-radius-lg);
@@ -28,6 +29,7 @@
 }
 
 .container {
+  min-width: 0;
   min-height: var(--widget-min-h);
   border-radius: var(--pv-radius-md);
 }
@@ -79,4 +81,17 @@
 .fallbackTitle {
   font-weight: 800;
   color: var(--pv-ink);
+}
+
+/*
+ * Hotmart's iframe carries an inline `min-width: 320px`. On phones narrower than the slot plus
+ * gutters, the widget bleeds to the viewport edges (exactly 320 px at a 320 px viewport) rather
+ * than clipping the decision buttons or scrolling the page sideways.
+ */
+@media (max-width: 399.98px) {
+  .container {
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    border-radius: 0;
+  }
 }

@@ -531,6 +531,28 @@
   color: var(--foreground);
 }
 
+/* Light surface inside a navy band (cards, price blocks, widget slot): restores the light roles. */
+@utility on-light {
+  --background: var(--pv-cream);
+  --foreground: var(--pv-ink);
+  --heading: var(--pv-ink);
+  --body: var(--pv-body);
+  --muted-foreground: var(--pv-muted);
+  --card: var(--pv-white);
+  --card-foreground: var(--pv-ink);
+  --accent: var(--pv-teal);
+  --accent-foreground: var(--pv-white);
+  --border: var(--pv-line);
+  --input: var(--pv-line-strong);
+  --ring: var(--pv-navy);
+  --link: var(--pv-teal-text);
+  --link-hover: var(--pv-navy);
+  --chip: var(--pv-mint);
+  --chip-foreground: var(--pv-navy);
+  --icon: var(--pv-teal);
+  color: var(--foreground);
+}
+
 /* Long-form legal prose (LegalLayout): measure, rhythm, lists and tables. */
 @utility prose {
   max-width: 65ch;

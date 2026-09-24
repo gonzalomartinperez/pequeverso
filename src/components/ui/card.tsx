@@ -9,9 +9,9 @@ import { cn } from "@/lib/utils";
 const cardVariants = cva("grid min-w-0 content-start gap-3 rounded-lg border bg-card text-card-foreground", {
   variants: {
     variant: {
-      default: "border-border shadow-sm",
-      emphasis: "border-2 border-navy shadow-md",
-      soft: "border-transparent bg-sky shadow-none",
+      default: "on-light border-border shadow-sm",
+      emphasis: "on-light border-2 border-navy shadow-md",
+      soft: "on-light border-transparent bg-sky shadow-none",
       navy: "on-navy border-on-navy-chip bg-navy-deep shadow-none",
     },
     pad: {

@@ -22,8 +22,8 @@ export const buttonVariants = cva(
         link: "min-h-0 rounded-sm px-0 text-link underline underline-offset-4 hover:text-link-hover",
       },
       size: {
-        default: "min-h-14 px-8 text-base",
-        sm: "min-h-11 px-4 text-base [&_svg:not([class*='size-'])]:size-[18px]",
+        default: "min-h-14 px-8 text-[1.0625rem]",
+        sm: "min-h-11 px-4 text-[1rem] [&_svg:not([class*='size-'])]:size-[18px]",
         lg: "min-h-16 px-10 text-lead",
         icon: "size-11 rounded-md p-0",
       },

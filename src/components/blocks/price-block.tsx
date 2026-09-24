@@ -39,7 +39,7 @@ export function PriceBlock({
       data-slot="price-block"
       className={cn(
         "grid gap-2 rounded-lg border border-border bg-card p-6 shadow-md",
-        dark && "on-navy border-white/16 bg-white/6 shadow-none",
+        dark ? "on-navy border-white/16 bg-white/6 shadow-none" : "on-light",
         className,
       )}
     >

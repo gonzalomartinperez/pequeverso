@@ -122,7 +122,12 @@ export function HotmartWidgetSlot({
   }, [timeoutMs]);
 
   return (
-    <section className={styles.slot} aria-labelledby="gfp-decision-title" id={DECISION_ANCHOR} tabIndex={-1}>
+    <section
+      className={`on-light ${styles.slot}`}
+      aria-labelledby="gfp-decision-title"
+      id={DECISION_ANCHOR}
+      tabIndex={-1}
+    >
       <div className={styles.heading}>{heading}</div>
       <div
         id={hotmart.salesFunnelContainerId}

@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useId, useState } from "react";
-import { buttonVariants } from "@/components/ui/button-variants";
 import type { TrackingAdapter } from "@/features/tracking/adapters/types";
 import {
   type ConsentCategory,
@@ -52,8 +51,6 @@ const INNER = "mx-auto grid w-full max-w-(--page-max) gap-3";
 const TITLE = "font-sans text-h3 font-extrabold text-heading";
 const TEXT = "max-w-[70ch] text-small";
 const ACTIONS = "flex flex-wrap gap-2";
-const PRIMARY = buttonVariants({ variant: "secondary", size: "sm" });
-const SECONDARY = buttonVariants({ variant: "ghost", size: "sm" });
 const CHECKBOX = "mt-0.5 size-5 shrink-0 accent-navy";
 
 type OptionsProps = {
@@ -93,6 +90,11 @@ function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
   );
 }
 
+type Props = {
+  /** Button classes computed on the server (`buttonVariants`), keeping variant tables out of the layout chunk. */
+  classes: { primary: string; secondary: string };
+};
+
 /**
  * Cookie banner with equal "Aceptar" / "Rechazar" actions plus "Configurar" for a per-category
  * choice. Measurement runs by default (`DEFAULT_CHOICE`); "Rechazar" withdraws it and the choice
@@ -100,7 +102,7 @@ function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
  * category; `CookieSettingsLink` reopens it (pv:consent:open). With no gated integration it
  * opens on request as a notice that only necessary cookies are used.
  */
-export function ConsentBanner() {
+export function ConsentBanner({ classes }: Props) {
   const [categories] = useState(() => gatedCategories(enabledAdapters()));
   const [open, setOpen] = useState(false);
   const [configuring, setConfiguring] = useState(false);
@@ -149,7 +151,7 @@ export function ConsentBanner() {
             <Link href="/cookies/">Más información</Link>
           </p>
           <div className={ACTIONS}>
-            <button type="button" className={PRIMARY} onClick={() => setOpen(false)}>
+            <button type="button" className={classes.primary} onClick={() => setOpen(false)}>
               Entendido
             </button>
           </div>
@@ -185,22 +187,26 @@ export function ConsentBanner() {
           />
         ) : null}
         <div className={ACTIONS}>
-          <button type="button" className={PRIMARY} onClick={() => writeConsent(choiceFor(categories, true))}>
+          <button
+            type="button"
+            className={classes.primary}
+            onClick={() => writeConsent(choiceFor(categories, true))}
+          >
             Aceptar
           </button>
           <button
             type="button"
-            className={PRIMARY}
+            className={classes.primary}
             onClick={() => writeConsent(choiceFor(categories, false))}
           >
             Rechazar
           </button>
           {configuring ? (
-            <button type="button" className={SECONDARY} onClick={() => writeConsent(selection)}>
+            <button type="button" className={classes.secondary} onClick={() => writeConsent(selection)}>
               Guardar selección
             </button>
           ) : (
-            <button type="button" className={SECONDARY} onClick={() => setConfiguring(true)}>
+            <button type="button" className={classes.secondary} onClick={() => setConfiguring(true)}>
               Configurar
             </button>
           )}

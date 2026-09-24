@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
  * `on-navy`), `gold`, `navy`, `outline`, `soft`. Shared by `Badge`, `Eyebrow` and client code.
  */
 export const badgeVariants = cva(
-  "inline-flex w-fit shrink-0 items-center justify-center gap-1 rounded-chip px-[0.7em] py-[0.3em] text-tiny font-extrabold tracking-[0.08em] uppercase whitespace-nowrap [&>svg]:pointer-events-none [&>svg]:size-3.5",
+  "inline-flex w-fit shrink-0 items-center justify-center gap-1 rounded-chip px-[0.7em] py-[0.3em] text-tiny font-extrabold max-w-full tracking-[0.08em] text-balance uppercase [&>svg]:pointer-events-none [&>svg]:size-3.5",
   {
     variants: {
       variant: {

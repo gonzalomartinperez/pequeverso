@@ -17,7 +17,7 @@ export function Notice({ tone = "info", title, children, role = "status", classN
     <div
       data-slot="notice"
       className={cn(
-        "grid gap-2 rounded-lg border border-border px-6 py-4 [&_p]:text-body",
+        "on-light grid gap-2 rounded-lg border border-border px-6 py-4 [&_p]:text-body",
         TONE[tone],
         className,
       )}

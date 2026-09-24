@@ -37,7 +37,7 @@ export function BrandLogo({ variant = "full", wordmark = "always", className, pr
         decoding="async"
         loading={priority ? "eager" : "lazy"}
         fetchPriority="low"
-        className="size-10 rounded-full"
+        className="size-10 rounded-full object-contain"
       />
       {variant === "full" ? (
         <span

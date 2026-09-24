@@ -31,7 +31,7 @@ export function Stack({
       id={id}
       data-slot="stack"
       className={cn(
-        "grid content-start justify-items-start",
+        "grid content-start justify-items-start [&>*]:max-w-full",
         GAP[gap],
         align === "center" && "mx-auto justify-items-center text-center",
         className,
