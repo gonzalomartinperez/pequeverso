@@ -3,6 +3,7 @@
 import { type RefObject, useCallback, useEffect, useRef, useState } from "react";
 import type { SceneOptions, SceneRuntime } from "./scene-runtime";
 
+/** `static`: the server-rendered layers are showing; `running`: the WebGL scene animates; `paused`: all motion stopped. */
 export type SceneMode = "static" | "running" | "paused";
 
 type Loader = () => Promise<{
@@ -11,84 +12,134 @@ type Loader = () => Promise<{
 
 const REDUCED = "(prefers-reduced-motion: reduce)";
 const SHORT = "(max-height: 649px)";
+const CANVAS_STYLE =
+  "position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity var(--duration-reveal) var(--pv-ease-out)";
 
 type ConnectionNavigator = Navigator & { connection?: { saveData?: boolean } };
 
 /**
- * Loads a scene runtime lazily (`await import()` inside an effect, never in the initial
- * bundle) and mounts it on `canvas` unless reduced motion, a short viewport, Save-Data or a
- * lost WebGL context says otherwise. Returns the current mode and a pause/resume toggle.
+ * Runs `callback` after the window `load` event (the LCP image has painted) once the main thread
+ * is idle, so compiling the scene never competes with the hero; returns a canceller.
+ */
+function whenIdle(callback: () => void): () => void {
+  let cancel: (() => void) | undefined;
+  const idle = () => {
+    if (typeof window.requestIdleCallback === "function") {
+      const id = window.requestIdleCallback(callback, { timeout: 2000 });
+      cancel = () => window.cancelIdleCallback(id);
+    } else {
+      const id = window.setTimeout(callback, 400);
+      cancel = () => window.clearTimeout(id);
+    }
+  };
+  if (document.readyState === "complete") {
+    idle();
+    return () => cancel?.();
+  }
+  window.addEventListener("load", idle, { once: true });
+  return () => {
+    window.removeEventListener("load", idle);
+    cancel?.();
+  };
+}
+
+/**
+ * Mounts a scene runtime lazily: after the page is idle it creates a canvas inside `layerRef`,
+ * `await import()`s the runtime (never part of the initial bundle) and mounts it, unless reduced
+ * motion, a short viewport or Save-Data says otherwise (then no canvas exists at all). A lost
+ * WebGL context falls back to the static layers until the context is restored. `controls` is true
+ * whenever motion may play, so the pause toggle (WCAG 2.2.2) also stops the CSS orbit fallback.
  */
 export function useSceneRuntime(
   hostRef: RefObject<HTMLElement | null>,
-  canvasRef: RefObject<HTMLCanvasElement | null>,
+  layerRef: RefObject<HTMLElement | null>,
   load: Loader,
   options?: SceneOptions,
-): { mode: SceneMode; toggle: () => void } {
+): { mode: SceneMode; live: boolean; controls: boolean; toggle: () => void } {
   const runtime = useRef<SceneRuntime | null>(null);
-  const paused = useRef(false);
+  const pausedRef = useRef(false);
   const latestOptions = useRef(options);
   latestOptions.current = options;
-  const [mode, setMode] = useState<SceneMode>("static");
+  const [paused, setPaused] = useState(false);
+  const [live, setLive] = useState(false);
+  const [controls, setControls] = useState(false);
 
   useEffect(() => {
     const host = hostRef.current;
-    const canvas = canvasRef.current;
-    if (!host || !canvas) return;
+    const layer = layerRef.current;
+    if (!host || !layer) return;
     const reduced = matchMedia(REDUCED);
     const short = matchMedia(SHORT);
-    let cancelled = false;
+    let canvas: HTMLCanvasElement | null = null;
+    let cancelIdle: (() => void) | null = null;
     let generation = 0;
-    const clear = () => {
+    const stop = () => {
       runtime.current?.dispose();
       runtime.current = null;
-      setMode("static");
-    };
-    const initialize = async () => {
-      const token = ++generation;
-      clear();
-      const saveData = (navigator as ConnectionNavigator).connection?.saveData === true;
-      if (reduced.matches || short.matches || saveData) return;
-      try {
-        const { mountScene } = await load();
-        if (cancelled || token !== generation) return;
-        runtime.current = mountScene(host, canvas, latestOptions.current);
-        runtime.current.sync(paused.current);
-        setMode(paused.current ? "paused" : "running");
-      } catch {
-        if (!cancelled) clear();
-      }
+      setLive(false);
     };
     const lost = (event: Event) => {
       event.preventDefault();
       generation += 1;
-      clear();
+      stop();
     };
-    const restart = () => {
-      void initialize();
+    const restored = () => mount(++generation);
+    const removeCanvas = () => {
+      canvas?.removeEventListener("webglcontextlost", lost);
+      canvas?.removeEventListener("webglcontextrestored", restored);
+      canvas?.remove();
+      canvas = null;
     };
-    canvas.addEventListener("webglcontextlost", lost);
-    canvas.addEventListener("webglcontextrestored", restart);
-    reduced.addEventListener("change", restart);
-    short.addEventListener("change", restart);
-    void initialize();
+    const mount = async (token: number) => {
+      try {
+        const { mountScene } = await load();
+        if (token !== generation || !canvas) return;
+        runtime.current = mountScene(host, canvas, latestOptions.current);
+        runtime.current.sync(pausedRef.current);
+        canvas.style.opacity = "1";
+        setLive(true);
+      } catch {
+        if (token === generation) stop();
+      }
+    };
+    const initialize = () => {
+      const token = ++generation;
+      cancelIdle?.();
+      stop();
+      removeCanvas();
+      setControls(!reduced.matches);
+      const saveData = (navigator as ConnectionNavigator).connection?.saveData === true;
+      if (reduced.matches || short.matches || saveData) return;
+      cancelIdle = whenIdle(() => {
+        if (token !== generation) return;
+        canvas = document.createElement("canvas");
+        canvas.style.cssText = CANVAS_STYLE;
+        canvas.addEventListener("webglcontextlost", lost);
+        canvas.addEventListener("webglcontextrestored", restored);
+        layer.append(canvas);
+        void mount(token);
+      });
+    };
+    reduced.addEventListener("change", initialize);
+    short.addEventListener("change", initialize);
+    initialize();
     return () => {
-      cancelled = true;
       generation += 1;
+      cancelIdle?.();
+      reduced.removeEventListener("change", initialize);
+      short.removeEventListener("change", initialize);
       runtime.current?.dispose();
       runtime.current = null;
-      canvas.removeEventListener("webglcontextlost", lost);
-      canvas.removeEventListener("webglcontextrestored", restart);
-      reduced.removeEventListener("change", restart);
-      short.removeEventListener("change", restart);
+      removeCanvas();
     };
-  }, [hostRef, canvasRef, load]);
+  }, [hostRef, layerRef, load]);
 
   const toggle = useCallback(() => {
-    paused.current = !paused.current;
-    setMode(paused.current ? "paused" : "running");
-    runtime.current?.sync(paused.current);
+    pausedRef.current = !pausedRef.current;
+    setPaused(pausedRef.current);
+    runtime.current?.sync(pausedRef.current);
   }, []);
 
-  return { mode, toggle };
+  const mode: SceneMode = paused ? "paused" : live ? "running" : "static";
+  return { mode, live, controls, toggle };
 }

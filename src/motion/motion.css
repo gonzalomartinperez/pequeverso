@@ -68,6 +68,19 @@
       animation: pv-orbit-travel var(--duration-orbit) linear infinite;
     }
 
+    /* Band orbits follow the scroll instead of a clock: motion stops when scrolling stops. */
+    @supports (animation-timeline: view()) {
+      .pv-orbit[data-motion="scroll"] {
+        view-timeline: --pv-orbit block;
+      }
+
+      .pv-orbit[data-motion="scroll"] .pv-orbit-traveller {
+        animation: pv-orbit-travel linear both;
+        animation-timeline: --pv-orbit;
+        animation-range: cover 0% cover 100%;
+      }
+    }
+
     /* Scroll-linked drift of ±--parallax-range on a view timeline. */
     @supports (animation-timeline: view()) {
       .pv-parallax-layer {
@@ -161,14 +174,13 @@
     }
   }
 
-  /* A paused 3D scene (SceneStage toggle) also pauses the hero's orbit. */
-  [data-scene-mode="paused"] .pv-orbit-traveller {
+  /* The SceneStage pause toggle (data-mode="paused") also pauses the CSS orbit fallback. */
+  [data-mode="paused"] .pv-orbit-traveller {
     animation-play-state: paused;
   }
 
-  /* While the WebGL starfield runs, the static SVG fallback fades out underneath it. */
-  [data-scene-mode="running"] .pv-scene-static,
-  [data-scene-mode="paused"] .pv-scene-static {
+  /* While the WebGL scene runs (data-live), the static layers fade out underneath it. */
+  [data-live] > * > .pv-scene-static {
     opacity: 0;
   }
 

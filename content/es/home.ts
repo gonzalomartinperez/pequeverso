@@ -33,6 +33,10 @@ export const homeCopy = {
     facts: ["9 PDF", "414 páginas", "Acceso digital"],
     priceKicker: "Kit completo · pago único",
     cta: "Ver Grafismo Fonético",
+    assurance: [
+      { icon: "shield", text: "Pago seguro a través de Hotmart" },
+      { icon: "refresh", text: `${guaranteeDays} días para pedir reembolso` },
+    ],
   },
   start: {
     kicker: "Empieza por aquí",

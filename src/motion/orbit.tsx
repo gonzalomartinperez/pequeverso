@@ -1,21 +1,28 @@
 import { useId } from "react";
 import { cx } from "@/lib/cx";
 
-type Props = { className?: string };
+type Props = {
+  /** `loop`: a 48 s clock (hero, paused by the scene toggle); `scroll`: the star follows the scroll. */
+  motion?: "loop" | "scroll" | undefined;
+  className?: string | undefined;
+};
 
 const STAR = "M0-9 L2.6-2.8 9.2-2.8 3.9 1.1 5.9 7.5 0 3.7 -5.9 7.5 -3.9 1.1 -9.2-2.8 -2.6-2.8 Z";
 
 /**
  * Decorative orbit: a dashed ellipse and the brand's gold star travelling along it on an
- * offset-path (`pv-orbit-traveller`, 48 s loop, paused under reduced motion or when the hero
- * scene is paused). The glow is a static radial gradient.
+ * offset-path (`pv-orbit-traveller`). The loop stops under reduced motion or when the scene is
+ * paused; the scroll variant only moves while the visitor scrolls. `data-scene-orbit` lets the
+ * WebGL runtime take over the same ellipse.
  */
-export function Orbit({ className }: Props) {
+export function Orbit({ motion = "loop", className }: Props) {
   const glowId = useId();
   return (
     <svg
       data-slot="orbit"
-      className={cx("block h-auto w-full overflow-visible", className)}
+      data-scene-orbit=""
+      data-motion={motion}
+      className={cx("pv-orbit block h-auto overflow-visible", className)}
       viewBox="0 0 400 400"
       aria-hidden="true"
       focusable="false"

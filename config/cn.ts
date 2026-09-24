@@ -7,7 +7,7 @@ export default {
   extend: {
     classGroups: {
       "font-size": [{ text: ["display", "h2", "h3", "lead", "base", "small", "tiny", "price"] }],
-      shadow: [{ shadow: ["cta"] }],
+      shadow: [{ shadow: ["cta", "cta-hover"] }],
       rounded: [{ rounded: ["chip", "pill"] }],
     },
   },

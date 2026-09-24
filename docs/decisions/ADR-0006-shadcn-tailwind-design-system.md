@@ -63,6 +63,17 @@ Measured on the static export against `origin/main` at the time (gzip):
   modules. Product pages still load their legacy modules (16.0 KB total) until they migrate; the
   follow-up PRs must lower their `css` budgets to the global size.
 
+### Addendum 2026-09-24 — home and landing redesign
+
+The home/landing redesign deleted their CSS Modules (gallery, video, age selector, hero scene,
+hero stack, core blocks, `page.module.css`). Their styles now live as utilities in the single
+global stylesheet, which grows from 12.1 to 14.2 KB gzip on every route, while `/` falls from
+16.0 to 14.2 KB and `/grafismo-fonetico/` from 16.0 to 15.0 KB (it still shares the route chunk
+with `OfferLanding.module.css`). Budgets follow the rule (measured + 10 %): `default.css`
+15 974 B (also `/` and `/soporte/`, whose lower override is removed), `/grafismo-fonetico/`
+16 896 B. JS: `/` 149.6 KB, landing 163.4 KB (below the previous 163.7 KB); scene closure 180.1 KB
+(budget 250 KB). HTML stays within the existing budgets (`/` 25.5 KB, landing 48.2 KB).
+
 ## Consequences
 
 - One file changes the brand; semantic roles make blocks adapt to their band without tone props.

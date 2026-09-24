@@ -88,7 +88,7 @@ Server components; props kept compatible with the previous PascalCase primitives
 | Block | Props |
 |---|---|
 | `Container` | `as?`, `className?` |
-| `Section` | `tone?: cream\|white\|mint\|sky\|lemon\|rose\|navy`, `id?`, `labelledBy?`, `label?`, `divider?: none\|wave-top\|wave-bottom\|overlap`, `dividerTone?`, `defer?`, `container?` (default true), `className?` — renders `data-slot="section"` + `data-tone` |
+| `Section` | `tone?: cream\|white\|mint\|sky\|lemon\|rose\|navy`, `id?`, `labelledBy?`, `label?`, `divider?: none\|wave-top\|wave-bottom\|overlap`, `dividerTone?`, `defer?`, `container?` (default true), `backdrop?` (decorative layer under the wave and content, e.g. `<Universe variant="band" />`), `className?` — renders `data-slot="section"` + `data-tone`; `wave-top` overlaps the previous band by 1 px so no seam shows |
 | `SectionHeading` | `id`, `kicker?`, `title`, `lead?`, `align?: start\|center`, `tone?` |
 | `Eyebrow` | `tone?`, `as?: p\|span` |
 | `Stack` | `gap?: 2–6`, `maxWidth?`, `align?`, `as?`, `id?` |
@@ -101,6 +101,7 @@ Server components; props kept compatible with the previous PascalCase primitives
 | `MediaFrame`, `MediaImage` | `ratio?`, `elevation?`, `tilt?`, `as?` / manifest `id`, `sizes`, `priority?`, `alt?` |
 | `PriceBlock` | `kicker`, `price`, `previous?`, `taxNote`, `currencyNote?` (default `localCurrencyNote`, globe icon), `cta`, `ctaNote?`, `tone?`, `id?` |
 | `Steps`, `FAQ`, `ResourceGrid`, `Notice` | `steps`, `tone?` / `items`, `openFirst?` (native `<details>`) / `resources`, `compact?`, `total?` / `tone?`, `title?`, `role?` |
+| `AssuranceList` | `items: { icon, text }[]`, `layout?: inline\|stack`, `tone?` — payment/access/guarantee facts next to a purchase action |
 | `CTAButton` | button-variant props + `href?`, `external?`, `icon?`, `iconAfter?: arrow\|external\|LucideIcon`; external → `target="_blank" rel="noopener"` + external icon |
 | `BrandLogo`, `SocialLinks`, `SkipLink`, `Topbar`, `Icon` | `variant?`, `wordmark?: always\|sm-up`, `priority?` / `tone?`, `size?` / — / `items?`, `tone?` / `name` |
 
@@ -113,10 +114,19 @@ staggered by `--i`; an element already in view is at 100 %, nothing flashes), `[
 **(2) React `<ViewTransition>`** (FlipPreview, HeroStack, AgeSelector); **(3) WAAPI** —
 `PageMotion` raises below-the-fold sections 8 px (240 ms, no fill mode, cancelled when reduced
 motion turns on). **3D** is limited to `src/motion/scene`: `SceneStage` keeps the server-rendered
-static layers (`StaticStarfield`: a seeded 320 px SVG pattern tile, planets, `Orbit`), lazily
-imports `scene-runtime.ts` (three + gsap ScrollTrigger) inside an effect, skips it under reduced
-motion, Save-Data or viewports under 650 px tall, pauses off-screen or in hidden tabs, drops DPR
-on slow frames, recovers from context loss and shows a pause button (WCAG 2.2.2).
+static layers (`StaticStarfield`: a seeded 320 px SVG pattern tile defined once by the hero and
+reused by bands, the planets marked `data-scene-planet`/`data-scene-depth`, the `Orbit` marked
+`data-scene-orbit`). After `load` + idle it creates a canvas and `await import()`s
+`scene-runtime.ts` (three + gsap ScrollTrigger), which rebuilds the same universe in WebGL at the
+positions the static layers occupy (seamless crossfade via `data-live`): a layered starfield with
+depth, lit planet impostors with the CSS gradient stops (`--pv-planet-*`), the gold star on its
+orbit with a trail. One scroll progress (ScrollTrigger) drives a dolly with frame-rate
+independent smoothing; fine pointers add camera parallax; camera and planets are written only
+when they change. Adaptive quality (DPR cap and star share) follows measured frame times; the
+loop pauses off-screen or in hidden tabs; a lost context falls back to the static layers until it
+is restored. No canvas exists under reduced motion, Save-Data or viewports under 650 px tall. The
+pause toggle (`data-mode="running|paused|static"`, WCAG 2.2.2) also stops the CSS orbit.
+Band orbits (`Orbit motion="scroll"`) follow a view timeline, so they only move while scrolling.
 
 Rules: transform/opacity only; layout reserved (aspect ratios, `Parallax` padding, `Counter`
 min-width); every animation behind `prefers-reduced-motion: no-preference` plus the global kill
@@ -130,8 +140,8 @@ blur or filter keyframes; no autoplaying video.
 | `PageMotion` | client (PageShell) | wraps main content |
 | `TiltCard`, `Counter`, `FlipPreview` | client | `max?`, `as?` / `value`, `format?` / `front`, `back`, `showLabel?`, `hideLabel?`, `ratio?` |
 | `Parallax`, `StickyStack`, `WaveDivider`, `Orbit` | server | `direction?` / `items` (≤ 6) / `fill`, `flip?` / `className?` |
-| `Universe` | server | `variant?: hero\|band` — sky + `SceneStage` |
-| `SceneStage`, `useSceneRuntime` | client | `children` (static layers), `pauseLabel?`, `playLabel?`, `options?: { seed, count, parallax }` |
+| `Universe` | server | `variant?: hero\|band` — hero: sky + planets + `SceneStage` (live); band: static stars + scroll-driven orbit |
+| `SceneStage`, `useSceneRuntime` | client | `children` (static layers), `pauseLabel?`, `playLabel?`, `options?: { seed, count, parallax }`; stage carries `data-mode` and `data-live` |
 | `StickyCTA` | client | `hideWhenVisible`, `label`, `note?`, `children` — below lg, hidden over dialogs |
 
 ## Responsive contract
@@ -169,15 +179,21 @@ Acceptance criterion for every block and page, 320 → 1920 px, enforced by
 - **A new primitive:** `npx shadcn@latest add <name>` (Base UI), then restyle with roles, add
   `data-slot`, keep targets ≥ 44 px, record it in `docs/assets/shadcn-ui.md`.
 
-## Page templates (migrating in follow-up PRs)
+## Page templates
 
-Home, landing and the gallery/video/age-selector islands still style their own
-geometry in CSS Modules (tokens via `var()`, never `@apply`) while rendering through the blocks
-above. The hero "la mesa bajo el pequeño universo" (`src/features/landing/core/HeroScene`,
-`HeroStack`, `AgeSelector`) and the landing order are described in `docs/specs/design-system.md`
-(migration plan) and remain as before: `#hero` (with `#comprar` and `#incluye`) → problema →
-`#metodo` → `#videos` → `#paginas` → `#oferta` → `#para-quien` → author's note → `#preguntas` →
-`#oferta-final` → `StickyCTA`.
+**Home and principal landing** (`src/app/page.tsx`, `CoreLanding`, `features/landing/core/*`,
+`AgeSelector`, gallery and video) are built only from primitives, blocks and utilities; no CSS
+Modules remain there. `HeroScene` places copy, the `HeroStack` of real worksheets, the sticky price
+aside and the desk on one container-query grid (below lg: copy → real pages → price → desk).
+Conversion rules applied: one dominant action per viewport (coral only for purchase; home links
+to the product are white/navy), hierarchy H1 → value → real pages → price → CTA, assurances
+(payment through Hotmart, access, `guaranteeDays`) next to every purchase CTA, objections
+(`#para-quien`, FAQ) right after the offer, the mobile sticky bar hidden over any CTA. The age
+selector keeps the `RadioGroup variant="chip"` look on native radios (Base UI's radio runtime
+cost ~20 KB gzip on the landing). Landing order: `#hero` (with `#comprar` and `#incluye`) →
+problema → `#metodo` → `#videos` → `#paginas` → `#oferta` (overlapping the gallery band) →
+`#para-quien` → author's note → `#preguntas` → `#oferta-final` → `StickyCTA`; bands are joined by
+waves and navy bands carry `Universe variant="band"`.
 
 **Offer (`/imprime-y-juega/`, upsell and `?downsell=1`), thanks, legal, soporte, 404** use only
 blocks, primitives and utilities (no CSS Modules). Offer order: `#hero` / `#hero-downsell`
@@ -187,3 +203,7 @@ carries `data-motion="none"`, so `PageMotion` never moves it) → complement →
 `#paginas` (upsell) → moments → `#preguntas` → `#cierre` → `StickyCTA` (hidden over the heroes,
 the decision, the close band and the footer). Legal pages: `LegalLayout` (68ch `prose`, carded
 sticky `toc` index, `Separator`), tables through `Table`, `dl` as ruled rows.
+
+**Class merging.** `cn` compiles its tables with `config/cn.ts`, which registers the
+theme's font sizes (`text-price`, `text-h3`, `text-small`…) and shadows; without it a text colour
+next to a custom size dropped the size.

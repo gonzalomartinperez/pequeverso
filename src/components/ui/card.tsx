@@ -17,7 +17,7 @@ const cardVariants = cva("grid min-w-0 content-start gap-3 rounded-lg border bg-
     pad: {
       none: "p-0",
       md: "p-6",
-      lg: "p-8",
+      lg: "p-6 sm:p-8",
     },
   },
   defaultVariants: { variant: "default", pad: "md" },

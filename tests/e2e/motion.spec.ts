@@ -134,3 +134,37 @@ test("sticky bar stays hidden while the gallery zoom dialog is open", async ({ p
   await expect.poll(offscreen, { timeout: 3_000 }).toBe(true);
   await page.keyboard.press("Escape");
 });
+
+test("hero scene: WebGL canvas mounts after load, is absent under reduced motion, and pauses", async ({
+  page,
+}) => {
+  await page.goto("/grafismo-fonetico/");
+  const stage = page.locator('#hero [data-slot="scene-stage"]');
+  const reduced = await page.evaluate(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  if (reduced) {
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(1_000);
+    await expect(stage.locator("canvas")).toHaveCount(0);
+    await expect(stage).toHaveAttribute("data-mode", "static");
+    await expect(stage.getByRole("button")).toHaveCount(0);
+    return;
+  }
+  const webgl = await page.evaluate(() => !!document.createElement("canvas").getContext("webgl2"));
+  test.skip(!webgl, "no WebGL in this browser; the static layers are the finished fallback");
+  await expect(stage.locator("canvas")).toHaveCount(1, { timeout: 10_000 });
+  await expect(stage).toHaveAttribute("data-mode", "running", { timeout: 10_000 });
+  expect(await stage.locator("canvas").evaluate((el) => el.closest("[aria-hidden='true']") !== null)).toBe(
+    true,
+  );
+  const pause = stage.getByRole("button", { name: "Pausar la animación" });
+  const box = await pause.boundingBox();
+  expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+  await pause.click();
+  await expect(stage).toHaveAttribute("data-mode", "paused");
+  await expect(stage.getByRole("button", { name: "Reanudar la animación" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await stage.getByRole("button", { name: "Reanudar la animación" }).click();
+  await expect(stage).toHaveAttribute("data-mode", "running");
+});
