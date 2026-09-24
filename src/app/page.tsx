@@ -74,8 +74,8 @@ const PREVIEW_PAGES = [
 ] as const;
 const PREVIEW_SIZES = "(min-width: 1024px) 380px, (min-width: 640px) 45vw, 90vw";
 /** Home links lead to the product page, not to payment: white/navy buttons, never the coral CTA. */
-const LINK_HERO = `${buttonVariants({ variant: "inverse", size: "lg" })} w-full cq-sm:w-auto`;
-const LINK_CARD = buttonVariants({ variant: "secondary", block: true });
+const LINK_HERO = `${buttonVariants({ variant: "inverse", size: "lg" })} w-full cq-sm:w-auto @max-[22rem]:px-6 @max-[22rem]:text-base`;
+const LINK_CARD = `${buttonVariants({ variant: "secondary", block: true })} @max-[24rem]:px-4`;
 const START_TITLE = "font-display text-h3 font-bold";
 
 function productLink(position: string, className: string, label: string, hash = "") {
@@ -121,7 +121,7 @@ export default function HomePage() {
         actions={productLink("hero", LINK_HERO, copy.hero.cta)}
         stack={<HeroStack pages={stackPages} featured={0} />}
         aside={
-          <Card variant="emphasis" pad="lg" as="article" className="gap-4 shadow-lg">
+          <Card variant="emphasis" pad="lg" as="article" className="cq gap-4 shadow-lg">
             <Eyebrow>{copy.product.kicker}</Eyebrow>
             <h2 className="text-h2">{copy.product.title}</h2>
             <p className="text-pretty">{copy.product.promise}</p>
@@ -145,7 +145,7 @@ export default function HomePage() {
               <Icon name="globe" size={16} className="mt-[0.2em] shrink-0 text-teal-text" />
               <span>{localCurrencyNote}</span>
             </p>
-            {productLink("hero-card", LINK_CARD, `${copy.product.cta} · ${price}`)}
+            {productLink("hero-card", LINK_CARD, copy.product.cta)}
             <AssuranceList items={copy.product.assurance} />
           </Card>
         }

@@ -123,12 +123,19 @@ test("short landscape phone: no fixed layer covers a checkout CTA", async ({ pag
   }
 });
 
-test("checkout CTA labels stay on one line from 320 px up", async ({ page }) => {
-  for (const width of [320, 390, 768, 1024]) {
+test("primary CTA labels (checkout and product links) stay on one line from 320 px up", async ({ page }) => {
+  for (const [route, width] of [320, 390, 768, 1024].flatMap((w) => [
+    ["/grafismo-fonetico/", w] as const,
+    ["/", w] as const,
+  ])) {
     await page.setViewportSize({ width, height: height(width) });
-    await page.goto("/grafismo-fonetico/", { waitUntil: "load" });
+    await page.goto(route, { waitUntil: "load" });
     const wrapped = await page.evaluate(() =>
-      [...document.querySelectorAll<HTMLAnchorElement>('main a[data-checkout]:not([data-position="sticky"])')]
+      [
+        ...document.querySelectorAll<HTMLAnchorElement>(
+          'main a[data-checkout]:not([data-position="sticky"]), main a[data-position^="hero"]',
+        ),
+      ]
         .flatMap((link) => [...link.querySelectorAll<HTMLSpanElement>("span")])
         .filter(
           (span) => span.offsetParent !== null && !span.querySelector("span") && span.textContent?.trim(),
@@ -136,7 +143,7 @@ test("checkout CTA labels stay on one line from 320 px up", async ({ page }) => 
         .filter((span) => span.getClientRects().length > 1)
         .map((span) => span.textContent?.trim()),
     );
-    expect(wrapped, `@${width}`).toEqual([]);
+    expect(wrapped, `${route} @${width}`).toEqual([]);
   }
 });
 
