@@ -1,5 +1,6 @@
 import { guaranteeDays, hotmart } from "@config/commerce";
 import { consumerAuthority, consumerLaw } from "@content/es/legal/argentina";
+import { consumerRights } from "@content/es/legal/consumer-rights";
 import { seller } from "@content/es/legal/seller";
 import { Mail, RotateCcw } from "lucide-react";
 import type { Metadata } from "next";
@@ -19,10 +20,11 @@ export const metadata: Metadata = buildMetadata({
 });
 
 const sections: readonly Section[] = [
-  { id: "derecho", title: "Tu derecho a revocar la compra" },
+  { id: "derecho", title: "Tu derecho a arrepentirte" },
   { id: "como", title: "Cómo pedirlo" },
   { id: "despues", title: "Qué ocurre después" },
   { id: "plazos", title: "Plazos" },
+  { id: "paises", title: "Si compras desde otro país" },
   { id: "reclamos", title: "Si no quedas conforme" },
 ];
 
@@ -31,7 +33,7 @@ const mailto = `mailto:${seller.supportEmail}?subject=${encodeURIComponent(mailS
 
 const deadlines = [
   {
-    step: "Revocación (Ley 24.240)",
+    step: "Revocación legal en Argentina, cuando corresponde",
     period: `${consumerLaw.revocationDays} días corridos desde la compra o desde que recibiste el acceso, lo que ocurra último.`,
   },
   {
@@ -68,22 +70,24 @@ export default function ArrepentimientoPage() {
 
       <SectionHeading sections={sections} id="derecho" />
       <p>
-        En las compras a distancia, como las que se hacen por internet, el consumidor puede revocar la
-        aceptación dentro de los <strong>{consumerLaw.revocationDays} días corridos</strong> contados desde la
-        celebración del contrato o desde la entrega del producto, lo último que ocurra, sin costo ni
-        responsabilidad alguna (art. 34 de la Ley 24.240 de Defensa del Consumidor y arts. 1110 y 1112 del
-        Código Civil y Comercial de la Nación). Este botón existe para que puedas ejercer ese derecho de forma
-        simple, conforme a la Resolución 424/2020 de la Secretaría de Comercio Interior.
+        <strong>La vía simple, para todos:</strong> cualquiera sea tu país, puedes pedir el reembolso dentro
+        de los <strong>{guaranteeDays} días</strong> de la compra, sin justificar el motivo, gracias a la
+        garantía de Hotmart. Si la ley de tu país te da un plazo mayor u otra protección, se aplica esa ley.
       </p>
       <p>
-        Además, todas las compras cuentan con la <strong>garantía de {guaranteeDays} días</strong> de Hotmart,
-        que permite pedir el reembolso sin justificar el motivo, cualquiera sea tu país. Si ambos plazos te
-        alcanzan, se aplica el que te resulte más favorable.
+        En la República Argentina, en las compras a distancia el consumidor puede revocar la aceptación dentro
+        de los <strong>{consumerLaw.revocationDays} días corridos</strong> contados desde la entrega del
+        producto o la celebración del contrato, lo último que ocurra, sin costo ni responsabilidad alguna
+        (art. 34 de la Ley 24.240 de Defensa del Consumidor y arts. 1110 a 1115 del Código Civil y Comercial
+        de la Nación). Este botón permite ejercer ese derecho sin registrarte ni hacer otro trámite
+        (Disposición 954/2025 de la Subsecretaría de Defensa del Consumidor y Lealtad Comercial).
       </p>
       <p>
-        El art. 1116 del Código Civil y Comercial prevé excepciones al derecho de revocación para ciertos
-        contenidos digitales que se descargan o utilizan de inmediato. Si tienes dudas sobre tu caso,
-        escríbenos igualmente: todos los pedidos se responden y se tramitan con el código indicado más abajo.
+        El art. 1116 del Código Civil y Comercial exceptúa de la revocación, salvo pacto en contrario, los
+        ficheros informáticos suministrados por vía electrónica que pueden descargarse de inmediato para su
+        uso permanente, como los PDF de Pequeverso. Por eso, la garantía de Hotmart es el acuerdo que te
+        permite arrepentirte de estos materiales. Si tienes dudas sobre tu caso, escríbenos igualmente: todo
+        pedido recibe respuesta y un código de identificación.
       </p>
 
       <SectionHeading sections={sections} id="como" />
@@ -145,6 +149,39 @@ export default function ArrepentimientoPage() {
             <TableRow key={row.step}>
               <TableHead scope="row">{row.step}</TableHead>
               <TableCell>{row.period}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      <SectionHeading sections={sections} id="paises" />
+      <p>
+        La garantía de {guaranteeDays} días y nuestro correo son la vía simple para todos. Si la ley de tu
+        país te otorga un plazo mayor u otra protección, se aplica esa ley. Esta referencia resume, por país,
+        el plazo legal para compras a distancia cuando pudimos verificarlo en una fuente oficial y la
+        autoridad de consumo ante la que puedes reclamar. Es orientativa y no reemplaza el texto de cada ley.
+      </p>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col">País</TableHead>
+            <TableHead scope="col">Plazo legal</TableHead>
+            <TableHead scope="col">Autoridad de consumo</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {consumerRights.map((entry) => (
+            <TableRow key={entry.country}>
+              <TableHead scope="row">{entry.country}</TableHead>
+              <TableCell>
+                <span className="block font-bold text-heading">
+                  {entry.period ?? "Consulta la ley local"}
+                </span>
+                <span className="block text-small">{entry.note}</span>
+              </TableCell>
+              <TableCell>
+                <a href={entry.url}>{entry.authority}</a>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

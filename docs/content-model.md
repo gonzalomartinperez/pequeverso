@@ -15,7 +15,9 @@ components — never retyped.
 | `content/es/products/imprime-y-juega/{copy,resources,faq}.ts` | upsell/downsell copy, the 9 resources, the 9 FAQ answers | published post-purchase copy, reviewed |
 | `content/es/home.ts` | homepage copy | new (grounded in brand foundations and the product brief) |
 | `content/es/gracias.ts` | thank-you guidance (shared by every core product's `/<slug>/gracias/`) | published thank-you page, condensed |
-| `content/es/legal/seller.ts` | seller identity and the single support/privacy mailbox — contains `[[PLACEHOLDERS]]` until supplied | **owner input required** (docs/legal-checklist.md) |
+| `content/es/legal/seller.ts` | seller identity (Gonzalo Martín Pérez, persona humana, CUIL, Bahía Blanca domicile, courts) and the single support/privacy/arrepentimiento mailbox | owner, 2026-09-24 (consented to publication) |
+| `content/es/legal/argentina.ts` | Argentine anchors: revocation period and 24 h code, consumer and data authorities, the AAIP notice (verbatim), the jurisdiction clause | Ley 24.240, CCyC, Disp. SSDCyLC 954/2025, Res. AAIP 14/2018 (sources in docs/legal-checklist.md) |
+| `content/es/legal/consumer-rights.ts` | "Si compras desde…" reference: per-country consumer authority, link, verified withdrawal period (or `null`), note and source | official sources read 2026-09-24 (docs/legal-checklist.md); unit-tested |
 
 ## Per-product folders
 

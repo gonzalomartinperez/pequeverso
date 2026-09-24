@@ -190,13 +190,11 @@ export default function ComprasPage() {
       <p>No. Son archivos PDF que descargas e imprimes en casa o en una papelería.</p>
       <h3>¿Y el derecho de arrepentimiento, desistimiento o retracto de mi país?</h3>
       <p>
-        Se respeta. En la República Argentina puedes revocar la compra dentro de los{" "}
-        {consumerLaw.revocationDays} días corridos desde el{" "}
-        <Link href="/arrepentimiento/">Botón de arrepentimiento</Link>. Si resides en otro país y tu ley
-        reconoce un plazo mayor que la garantía (por ejemplo, el desistimiento de 14 días en la Unión Europea,
-        con las reglas propias del contenido digital, o los 5 días hábiles de retracto en Colombia), se aplica
-        ese plazo. La solicitud se hace igual: en refund.hotmart.com o por correo. Detalle en los{" "}
-        <Link href="/terminos/">Términos de compra</Link>.
+        Se respeta. La garantía de {guaranteeDays} días vale para todos; si la ley de tu país te da un plazo
+        mayor u otra protección, se aplica esa ley. El{" "}
+        <Link href="/arrepentimiento/">Botón de arrepentimiento</Link> explica cómo pedirlo e incluye una{" "}
+        <Link href="/arrepentimiento/#paises">referencia por país</Link> con los plazos verificados y las
+        autoridades de consumo. La solicitud se hace siempre igual: en refund.hotmart.com o por correo.
       </p>
       <h3>¿Qué pasa si pido el reembolso fuera del plazo?</h3>
       <p>

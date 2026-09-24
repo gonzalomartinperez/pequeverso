@@ -24,7 +24,7 @@ const sections: readonly Section[] = [
   { id: "transferencias", title: "Transferencias internacionales" },
   { id: "conservacion", title: "Conservación" },
   { id: "derechos", title: "Derechos del titular de los datos" },
-  { id: "ue", title: "Usuarios en la Unión Europea" },
+  { id: "otros-paises", title: "Usuarios de otros países" },
   { id: "seguridad", title: "Seguridad" },
   { id: "menores", title: "Menores de edad" },
   { id: "cambios", title: "Modificaciones" },
@@ -107,6 +107,17 @@ const rights = [
   },
 ];
 
+/** Examples only: the rights apply when the buyer's own law applies; no threshold is claimed. */
+const foreignDataLaws = [
+  "Brasil: Lei Geral de Proteção de Dados (Lei 13.709/2018).",
+  "Chile: Ley 19.628 sobre protección de la vida privada.",
+  "Colombia: Ley Estatutaria 1581 de 2012.",
+  "España y la Unión Europea: Reglamento General de Protección de Datos (RGPD).",
+  "Estados Unidos: leyes estatales de privacidad, como la CCPA/CPRA para residentes de California.",
+  "México: Ley Federal de Protección de Datos Personales en Posesión de los Particulares.",
+  "Perú: Ley 29733 de Protección de Datos Personales.",
+];
+
 export default function PrivacidadPage() {
   return (
     <LegalLayout
@@ -140,7 +151,8 @@ export default function PrivacidadPage() {
         Argentina y su Decreto reglamentario 1558/2001. El órgano de control es la{" "}
         <a href={dataAuthority.url}>{dataAuthority.name}</a>. Los datos de Usuarios y Compradores de cualquier
         país se tratan conforme a esta ley; si resides en un país con su propia ley de protección de datos,
-        puedes ejercer además los derechos que esa ley te reconozca (ver el punto 9).
+        puedes ejercer además los derechos que esa ley te reconozca (ver{" "}
+        <a href="#otros-paises">Usuarios de otros países</a>).
       </p>
 
       <SectionHeading sections={sections} id="datos" />
@@ -262,19 +274,26 @@ export default function PrivacidadPage() {
       <Notice title="Órgano de control (Resolución AAIP 14/2018)">
         <p>{dataAuthority.notice}</p>
         <p>
-          Denuncias ante la AAIP: <a href={dataAuthority.complaintUrl}>argentina.gob.ar</a>
+          <a href={dataAuthority.complaintUrl}>Presentar una denuncia ante la AAIP</a>
         </p>
       </Notice>
 
-      <SectionHeading sections={sections} id="ue" />
+      <SectionHeading sections={sections} id="otros-paises" />
       <p>
-        El Titular está establecido en la República Argentina. Si visitas el Sitio o compras desde la Unión
-        Europea o el Espacio Económico Europeo, el Reglamento General de Protección de Datos (RGPD) puede
-        resultarte aplicable. En ese caso, además de los derechos anteriores, puedes solicitar la limitación
-        del tratamiento y la portabilidad de los datos que facilitaste, oponerte a la medición publicitaria y
-        presentar una reclamación ante la autoridad de protección de datos de tu país de residencia. Las
-        solicitudes se atienden por el mismo correo y, en general, en el plazo de un mes. La República
-        Argentina cuenta con una decisión de adecuación de la Comisión Europea.
+        El Titular está establecido en la República Argentina y trata los datos de Usuarios de cualquier país
+        conforme a la Ley 25.326. Si resides en un país con su propia ley de protección de datos, puedes
+        ejercer además los derechos que esa ley te reconozca, escribiendo al mismo correo. Por ejemplo:
+      </p>
+      <ul>
+        {foreignDataLaws.map((law) => (
+          <li key={law}>{law}</li>
+        ))}
+      </ul>
+      <p>
+        Si resides en la Unión Europea, además de los derechos indicados arriba puedes solicitar la limitación
+        del tratamiento y la portabilidad de los datos que facilitaste, y presentar una reclamación ante la
+        autoridad de protección de datos de tu país; las solicitudes se atienden, en general, en el plazo de
+        un mes. La Comisión Europea reconoce a la República Argentina un nivel de protección adecuado.
       </p>
 
       <SectionHeading sections={sections} id="seguridad" />

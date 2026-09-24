@@ -264,17 +264,18 @@ export default function TerminosPage() {
         de identificación de tu pedido.
       </p>
       <p>
-        El art. 1116 del Código Civil y Comercial prevé excepciones al derecho de revocación para ciertos
-        contenidos digitales que se descargan o utilizan de inmediato. La garantía descrita en el punto
-        anterior se aplica en todo caso.
+        El art. 1116 del Código Civil y Comercial exceptúa de la revocación, salvo pacto en contrario, los
+        ficheros informáticos suministrados por vía electrónica que pueden descargarse de inmediato para su
+        uso permanente, como estos materiales. La garantía descrita en el punto anterior es ese pacto: dentro
+        de su plazo puedes arrepentirte sin justificar el motivo, cualquiera sea tu país.
       </p>
       <p>
-        Si resides en otro país, se aplican además los derechos de tu legislación. Por ejemplo, en la Unión
-        Europea existe un derecho de desistimiento de 14 días con reglas propias para el contenido digital,
-        que puede perderse cuando la descarga comienza con tu consentimiento expreso; en Colombia, la Ley 1480
-        (art. 47) prevé un retracto de 5 días hábiles. Toda solicitud se gestiona por las mismas vías. Nada de
-        lo aquí escrito reduce los derechos que te reconozca la normativa de protección al consumidor de tu
-        país de residencia.
+        Si resides en otro país, conservas los derechos que te otorgan las normas imperativas de protección al
+        consumidor de tu país (art. 2655 del Código Civil y Comercial); cuando concedan un plazo de
+        arrepentimiento, retracto o desistimiento mayor u otra protección, se aplican. La{" "}
+        <Link href="/arrepentimiento/#paises">referencia por país</Link> resume los plazos verificados y las
+        autoridades de consumo. Toda solicitud se gestiona por las mismas vías: refund.hotmart.com o nuestro
+        correo.
       </p>
 
       <SectionHeading sections={sections} id="soporte" />
