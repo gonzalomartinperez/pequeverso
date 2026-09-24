@@ -481,15 +481,18 @@ function hexToRgb(hex: string): Rgb {
 }
 
 /**
- * Favicon set from the isotipo. `compose.mark` "isolated" (default) lifts the mark off its disc so
- * it fills the transparent canvas; "disc" keeps the source as is. The Apple touch icon is always
- * the mark inset on an opaque disc-colour square.
+ * Favicon set from the isotipo. Browser icons (`compose.mark`, default "disc") are the round logo
+ * trimmed to its edge on a transparent canvas; "isolated" lifts the bare mark off the disc
+ * instead. The Apple touch / maskable icon is always the bare mark inset on an opaque square of
+ * the disc colour (iOS draws no transparency).
  */
 async function buildFavicons(c: FaviconCompose, src: string): Promise<OutputRecord[]> {
   const background = hexToRgb(c.background);
-  const mark = c.mark === "disc" ? await sharp(src).png().toBuffer() : await isolateMark(src, background);
-  const fitted = (size: number, inset: number): Promise<Buffer> =>
-    sharp(mark)
+  const isolated = await isolateMark(src, background);
+  const disc = await sharp(src).trim({ threshold: 8 }).png().toBuffer();
+  const browserMark = c.mark === "isolated" ? isolated : disc;
+  const fitted = (input: Buffer, size: number, inset: number): Promise<Buffer> =>
+    sharp(input)
       .resize({
         width: Math.round(size * (1 - 2 * inset)),
         height: Math.round(size * (1 - 2 * inset)),
@@ -500,12 +503,12 @@ async function buildFavicons(c: FaviconCompose, src: string): Promise<OutputReco
       .toBuffer();
   const transparent = async (size: number): Promise<Buffer> =>
     sharp({ create: { width: size, height: size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
-      .composite([{ input: await fitted(size, c.inset ?? 0.02), gravity: "centre" }])
+      .composite([{ input: await fitted(browserMark, size, c.inset ?? 0), gravity: "centre" }])
       .png({ compressionLevel: 9 })
       .toBuffer();
   const onBackground = async (size: number): Promise<Buffer> =>
     sharp({ create: { width: size, height: size, channels: 3, background: c.background } })
-      .composite([{ input: await fitted(size, c.appleInset ?? 0.14), gravity: "centre" }])
+      .composite([{ input: await fitted(isolated, size, c.appleInset ?? 0.1), gravity: "centre" }])
       .png({ compressionLevel: 9 })
       .toBuffer();
 
