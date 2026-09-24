@@ -3,6 +3,7 @@ import { seller, sellerIdentityPending, sellerLawPending } from "@content/es/leg
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalLayout } from "@/components/layout/legal-layout";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { buildMetadata } from "@/lib/metadata";
 import { coreProducts, offerProducts } from "@/products";
 import type { CoreProduct, OfferProduct } from "@/products/schema";
@@ -102,23 +103,21 @@ export default function TerminosPage() {
       </dl>
 
       <h2 id="producto">Qué compras</h2>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Material</th>
-              <th scope="col">Contenido</th>
-              <th scope="col">Formato</th>
-              <th scope="col">Edad orientativa</th>
-            </tr>
-          </thead>
-          <tbody>
-            {lines.map(({ main, pack }) => (
-              <ProductRows key={main.slug} main={main} pack={pack} />
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col">Material</TableHead>
+            <TableHead scope="col">Contenido</TableHead>
+            <TableHead scope="col">Formato</TableHead>
+            <TableHead scope="col">Edad orientativa</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {lines.map(({ main, pack }) => (
+            <ProductRows key={main.slug} main={main} pack={pack} />
+          ))}
+        </TableBody>
+      </Table>
       <p>
         Son productos <strong>100% digitales</strong>: no se envía ningún artículo físico. Lo que describe
         cada página del sitio (archivos, páginas, recursos) es lo que recibes. Son materiales de práctica
@@ -126,26 +125,24 @@ export default function TerminosPage() {
       </p>
 
       <h2 id="precio">Precio, moneda e impuestos</h2>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Material</th>
-              <th scope="col">Precio de referencia</th>
-              <th scope="col">Cuándo se ofrece</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={`${row.name}-${row.when}`}>
-                <td>{row.name}</td>
-                <td>{row.price}</td>
-                <td>{row.when}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col">Material</TableHead>
+            <TableHead scope="col">Precio de referencia</TableHead>
+            <TableHead scope="col">Cuándo se ofrece</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow key={`${row.name}-${row.when}`}>
+              <TableCell>{row.name}</TableCell>
+              <TableCell>{row.price}</TableCell>
+              <TableCell>{row.when}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
       <p>{localCurrencyNote}</p>
       <ul>
         <li>
@@ -296,24 +293,24 @@ export default function TerminosPage() {
 function ProductRows({ main, pack }: ProductLine) {
   return (
     <>
-      <tr>
-        <th scope="row">{main.name}</th>
-        <td>
+      <TableRow>
+        <TableHead scope="row">{main.name}</TableHead>
+        <TableCell>
           {main.composition.pdfCount} archivos PDF, {main.composition.pageCount} páginas en total
-        </td>
-        <td>PDF en A4, para imprimir</td>
-        <td>{main.composition.ageRange}</td>
-      </tr>
+        </TableCell>
+        <TableCell>PDF en A4, para imprimir</TableCell>
+        <TableCell>{main.composition.ageRange}</TableCell>
+      </TableRow>
       {pack ? (
-        <tr>
-          <th scope="row">{pack.name} (opcional)</th>
-          <td>
+        <TableRow>
+          <TableHead scope="row">{pack.name} (opcional)</TableHead>
+          <TableCell>
             {pack.composition.pdfCount} archivos PDF, {pack.composition.pageCount} páginas
             {pack.composition.visibleResources ? `, ${pack.composition.visibleResources} recursos` : ""}
-          </td>
-          <td>PDF en A4, para imprimir</td>
-          <td>{pack.composition.ageRange}</td>
-        </tr>
+          </TableCell>
+          <TableCell>PDF en A4, para imprimir</TableCell>
+          <TableCell>{pack.composition.ageRange}</TableCell>
+        </TableRow>
       ) : null}
     </>
   );

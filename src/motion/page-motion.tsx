@@ -3,7 +3,8 @@
 import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect, useRef } from "react";
 
-const SECTION = '[data-slot="section"]';
+/** Sections that hold a `data-motion="none"` region (the Hotmart decision) never move. */
+const SECTION = '[data-slot="section"]:not(:has([data-motion="none"]))';
 const ENTRANCE_MS = 240;
 
 /**

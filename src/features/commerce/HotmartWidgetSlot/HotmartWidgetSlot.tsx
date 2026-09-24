@@ -4,7 +4,6 @@ import { hotmart } from "@config/commerce";
 import Script from "next/script";
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { buttonVariants } from "@/components/ui/button-variants";
-import styles from "./HotmartWidgetSlot.module.css";
 
 declare global {
   interface Window {
@@ -46,8 +45,11 @@ const mountedContainers = new WeakSet<Element>();
  * - Hotmart renders its own Sí/No decision and owns acceptance, rejection, progression and the
  *   purchase-session context; the site never links to an upsell/downsell checkout, never
  *   invents offer ids and never reports a purchase.
- * - The slot reserves height (no CLS), is a focus target for editorial CTAs, announces status,
- *   and shows a neutral fallback when the script fails or nothing renders in time. A direct
+ * - The slot reserves height (`--widget-min-h`: 220 px, 180 px from md; no CLS), is a focus
+ *   target for editorial CTAs, announces status and shows a neutral fallback when the script
+ *   fails or nothing renders in time. The loading state is a static tint (no motion next to
+ *   the decision); below 400 px the container bleeds to the viewport edges because Hotmart's
+ *   iframe carries an inline `min-width: 320px`. A direct
  *   visit without an active purchase session may show Hotmart's own "purchase in progress"
  *   message inside the container — that is expected and not an error.
  */
@@ -123,24 +125,24 @@ export function HotmartWidgetSlot({
 
   return (
     <section
-      className={`on-light ${styles.slot}`}
+      className="on-light grid scroll-mt-[calc(var(--header-height)+var(--space-4))] grid-cols-[minmax(0,1fr)] gap-3 rounded-lg border-2 border-teal bg-card p-4 text-card-foreground shadow-md [--widget-min-h:220px] md:p-6 md:[--widget-min-h:180px]"
       aria-labelledby="gfp-decision-title"
       id={DECISION_ANCHOR}
       tabIndex={-1}
     >
-      <div className={styles.heading}>{heading}</div>
+      <div className="grid gap-2 [&_h2]:text-[1.6rem] [&_p:last-child]:text-small">{heading}</div>
       <div
         id={hotmart.salesFunnelContainerId}
         ref={containerRef}
-        className={styles.container}
+        className="min-h-(--widget-min-h) min-w-0 rounded-md data-[status=loading]:bg-muted max-[399.98px]:mx-[calc(50%-50vw)] max-[399.98px]:w-screen max-[399.98px]:rounded-none"
         data-status={status}
       />
-      <p className={styles.status} role="status" aria-live="polite">
+      <p className="min-h-[1.4em] text-small text-subtle empty:hidden" role="status" aria-live="polite">
         {status === "loading" ? loadingText : null}
       </p>
       {status === "failed" ? (
-        <div className={styles.fallback} role="alert" data-testid="widget-fallback">
-          <p className={styles.fallbackTitle}>{fallbackTitle}</p>
+        <div className="grid gap-2 rounded-md bg-lemon p-4" role="alert" data-testid="widget-fallback">
+          <p className="font-extrabold text-ink">{fallbackTitle}</p>
           <p>{fallbackText}</p>
           <button
             type="button"
