@@ -98,7 +98,7 @@ test("page gallery: arrows, dots, keyboard and zoom dialog", async ({ page }) =>
   // Embla swallows clicks that land during the snap animation.
   await expect(gallery.locator("[data-state='settled']")).toHaveCount(1);
   await gallery.locator("button[aria-label^='Ampliar']").nth(4).click();
-  const dialog = page.getByRole("dialog");
+  const dialog = page.getByRole("dialog", { name: /Página real/ });
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(dialog).toHaveCount(0);
@@ -130,7 +130,7 @@ test("sticky bar stays hidden while the gallery zoom dialog is open", async ({ p
       return rect.height === 0 || rect.top >= window.innerHeight;
     });
   await page.locator("button[aria-label^='Ampliar']").first().click();
-  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(page.getByRole("dialog", { name: /Página real/ })).toBeVisible();
   await expect.poll(offscreen, { timeout: 3_000 }).toBe(true);
   await page.keyboard.press("Escape");
 });
@@ -178,7 +178,7 @@ test("gallery zoom dialog is centred in the viewport and traps focus", async ({ 
     await page.setViewportSize({ width, height });
     await page.goto("/grafismo-fonetico/#paginas");
     await page.locator("button[aria-label^='Ampliar']").first().click();
-    const dialog = page.getByRole("dialog");
+    const dialog = page.getByRole("dialog", { name: /Página real/ });
     await expect(dialog).toBeVisible();
     await expect
       .poll(() =>
