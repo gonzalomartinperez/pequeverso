@@ -13,6 +13,7 @@ import { Stack } from "@/components/blocks/stack";
 import { Topbar } from "@/components/blocks/topbar";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import { WithdrawalStrip } from "@/components/layout/withdrawal-strip";
 import { DecisionLink } from "@/features/commerce/DecisionLink/DecisionLink";
 import { HotmartWidgetSlot } from "@/features/commerce/HotmartWidgetSlot/HotmartWidgetSlot";
 import { OfferModeMirror } from "@/features/commerce/OfferModeMirror";
@@ -60,6 +61,7 @@ export function OfferLanding({ product }: Props) {
   const { copy, media, pricing } = product;
   return (
     <>
+      <WithdrawalStrip />
       <Topbar tone="mint">
         <span>{copy.topbar}</span>
       </Topbar>

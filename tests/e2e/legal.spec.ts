@@ -38,3 +38,23 @@ test("aviso legal publishes the seller identification", async ({ page }) => {
   }
   await expect(main).not.toContainText("pendiente de publicación");
 });
+
+for (const path of [
+  "/",
+  "/grafismo-fonetico/",
+  "/imprime-y-juega/",
+  "/grafismo-fonetico/gracias/",
+  "/terminos/",
+]) {
+  test(`${path}: the Botón de arrepentimiento is visible on the first screen`, async ({ page }) => {
+    await page.goto(path);
+    const link = page
+      .locator('[data-slot="withdrawal-strip"]')
+      .getByRole("link", { name: "Botón de arrepentimiento", exact: true });
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute("href", "/arrepentimiento/");
+    const box = await link.boundingBox();
+    const viewport = page.viewportSize();
+    expect(box && viewport && box.y + box.height <= viewport.height).toBe(true);
+  });
+}
