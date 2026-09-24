@@ -13,7 +13,9 @@ type Props = {
  * Decorative "pequeño universo" backdrop: a deep-navy sky, the seeded starfield, three soft
  * planets (teal, gold, turquoise; hero only) and the gold star on its orbit. The hero variant hands the same
  * layers to the lazy WebGL scene (`SceneStage`, `data-scene-*` hooks mark what it replaces);
- * bands stay server-rendered. Everything is aria-hidden; the only control is the pause toggle.
+ * bands stay server-rendered. The hero orbit appears only from xl, sized to stay right of a
+ * 44rem copy column, so decorative motion never crosses a heading. Everything is aria-hidden;
+ * the only control is the pause toggle.
  */
 export function Universe({ variant = "hero", className }: Props) {
   if (variant === "band") {
@@ -54,16 +56,16 @@ export function Universe({ variant = "hero", className }: Props) {
           data-scene-depth="-14"
           data-scene-lift="0.3"
           data-scene-bands="0"
-          className="planet-turquoise absolute top-[40%] right-[7%] size-[clamp(26px,3.2vw,48px)] rounded-full max-md:hidden"
+          className="planet-turquoise absolute top-[40%] right-[7%] size-[clamp(26px,3.2vw,48px)] rounded-full max-lg:hidden"
         />
         <div
           data-scene-planet="gold"
           data-scene-depth="2"
           data-scene-lift="2.4"
           data-scene-bands="0.03"
-          className="planet-gold absolute -bottom-[8%] left-[6%] size-[clamp(90px,12vw,160px)] rounded-full"
+          className="planet-gold absolute -bottom-[14%] -left-[3%] size-[clamp(80px,9vw,130px)] rounded-full"
         />
-        <Orbit className="absolute top-[6%] right-[4%] w-[clamp(280px,40vw,560px)] max-lg:hidden" />
+        <Orbit className="absolute top-[6%] right-[2%] w-[min(34vw,480px)] max-xl:hidden" />
       </SceneStage>
     </div>
   );
