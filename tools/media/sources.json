@@ -107,13 +107,13 @@
       "release": "n/a"
     },
     "owner-recorded-clips": {
-      "origin": "owner-recorded",
-      "tool": "Smartphone recording, 2x silent export (content-studio clip library 2026-08-16)",
+      "origin": "owner-illustrative",
+      "tool": "Owner's illustrative clips (smartphone recordings and AI-generated footage), 2x silent export (content-studio clip library 2026-08-16)",
       "date": "2026-08-16",
       "people": "owner",
       "minors": "none",
       "release": "n/a",
-      "notes": "Hands-only demonstrations of the printed material. Several frames also show a child's hand or forearm and, briefly, hair at the frame edge; no face is visible. The owner must confirm (a) that any child shown is their own and consents to publication and (b) that the printed material in the clips is their own before redistribution changes to public-repo-approved."
+      "notes": "Illustrative demonstrations of the printed material, some of them AI-generated. Owner statement 2026-09-24: the clips are illustrative footage whose rights belong to the owner, publication approved on the site and in the public repo. Some frames show a hand or forearm and, briefly, hair at the frame edge; no face is visible. Pages label each clip as 'Video ilustrativo.' (text.description)."
     }
   },
   "items": [
@@ -1098,15 +1098,15 @@
       },
       "provenance": "owner-recorded-clips",
       "rights": {
-        "redistribution": "pending-owner-confirmation",
-        "approvedAt": null
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-24T00:00:00.000Z"
       },
       "alt": {
         "es": "Portada del video: BO + TA: formar una palabra"
       },
       "text": {
         "title": "BO + TA: formar una palabra",
-        "description": "Una actividad visual para unir dos sílabas y reconocer la palabra BOTA."
+        "description": "Una actividad visual para unir dos sílabas y reconocer la palabra BOTA. Video ilustrativo."
       },
       "video": {
         "maxSeconds": 15,
@@ -1126,15 +1126,15 @@
       },
       "provenance": "owner-recorded-clips",
       "rights": {
-        "redistribution": "pending-owner-confirmation",
-        "approvedAt": null
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-24T00:00:00.000Z"
       },
       "alt": {
         "es": "Portada del video: MA + PA: unir para leer MAPA"
       },
       "text": {
         "title": "MA + PA: unir para leer MAPA",
-        "description": "Cada sílaba se relaciona con la palabra completa y una imagen reconocible."
+        "description": "Cada sílaba se relaciona con la palabra completa y una imagen reconocible. Video ilustrativo."
       },
       "video": {
         "maxSeconds": 15,
@@ -1154,15 +1154,15 @@
       },
       "provenance": "owner-recorded-clips",
       "rights": {
-        "redistribution": "pending-owner-confirmation",
-        "approvedAt": null
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-24T00:00:00.000Z"
       },
       "alt": {
         "es": "Portada del video: PA + LO + MA: avanzar paso a paso"
       },
       "text": {
         "title": "PA + LO + MA: avanzar paso a paso",
-        "description": "Una palabra más larga se recorre sílaba por sílaba hasta llegar a PALOMA."
+        "description": "Una palabra más larga se recorre sílaba por sílaba hasta llegar a PALOMA. Video ilustrativo."
       },
       "video": {
         "maxSeconds": 12,
@@ -1182,15 +1182,15 @@
       },
       "provenance": "owner-recorded-clips",
       "rights": {
-        "redistribution": "pending-owner-confirmation",
-        "approvedAt": null
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-24T00:00:00.000Z"
       },
       "alt": {
         "es": "Portada del video: MA + LE + TA: seguir la secuencia"
       },
       "text": {
         "title": "MA + LE + TA: seguir la secuencia",
-        "description": "Los apoyos visuales acompañan el recorrido hasta completar la palabra MALETA."
+        "description": "Los apoyos visuales acompañan el recorrido hasta completar la palabra MALETA. Video ilustrativo."
       },
       "video": {
         "maxSeconds": 12,
