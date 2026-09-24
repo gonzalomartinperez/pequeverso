@@ -32,7 +32,6 @@ import { isIP } from "node:net";
 export const META_CAPI_PATH = "/api/meta/events/";
 export const GRAPH_API_VERSION = "v26.0";
 export const MAX_BODY_BYTES = 16 * 1024;
-const DEFAULT_SITE_URL = "https://pequeverso.com";
 const MAX_EVENTS = 10;
 const MAX_STRING = 200;
 const MAX_URL = 2048;
@@ -193,9 +192,9 @@ export function pickClientIp(candidates) {
   return "";
 }
 
-/** @param {string | undefined} host @param {string} siteOrigin */
+/** @param {string | undefined} host @param {string | null} siteOrigin */
 function allowedOrigins(host, siteOrigin) {
-  const origins = new Set([siteOrigin]);
+  const origins = new Set(siteOrigin ? [siteOrigin] : []);
   if (typeof host === "string" && /^[a-z0-9.:[\]-]+$/i.test(host)) {
     origins.add(`https://${host}`);
     origins.add(`http://${host}`);
@@ -223,7 +222,7 @@ export function metaCapiOptionsFromEnv(env) {
   return {
     pixelId: (env.NEXT_PUBLIC_META_PIXEL_ID || "").trim(),
     accessToken: (env.META_CAPI_ACCESS_TOKEN || "").trim(),
-    siteUrl: (env.NEXT_PUBLIC_SITE_URL || "").trim() || DEFAULT_SITE_URL,
+    siteUrl: (env.NEXT_PUBLIC_SITE_URL || "").trim(),
   };
 }
 
@@ -240,7 +239,7 @@ export function createMetaCapiRelay(options) {
   const {
     pixelId,
     accessToken,
-    siteUrl = DEFAULT_SITE_URL,
+    siteUrl = "",
     fetchImpl = fetch,
     now = Date.now,
     log = (line) => console.error(line),
@@ -249,7 +248,7 @@ export function createMetaCapiRelay(options) {
     timeoutMs = 3000,
   } = options;
   const enabled = Boolean(pixelId) && Boolean(accessToken);
-  const siteOrigin = parseOrigin(siteUrl) ?? DEFAULT_SITE_URL;
+  const siteOrigin = parseOrigin(siteUrl);
   const endpoint = `https://graph.facebook.com/${GRAPH_API_VERSION}/${encodeURIComponent(pixelId)}/events`;
   const limiter = new RateLimiter(rateLimit, now);
   /** @type {Set<Promise<void>>} */

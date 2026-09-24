@@ -1,9 +1,10 @@
 /**
- * Site-wide constants. Values that differ per environment come from NEXT_PUBLIC_*
- * variables (inlined at build time); everything else is a documented business fact
+ * Site-wide constants. Deployment-specific values (origin, checkout, pixel) come only from
+ * NEXT_PUBLIC_* variables inlined at build time and validated by scripts/check-env.mjs — the
+ * repository ships no inline defaults for them. Everything else is a documented business fact
  * (see docs/content-model.md for sources and dates).
  */
-const rawSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://pequeverso.com").replace(/\/$/, "");
+const rawSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "");
 
 export const site = {
   name: "Pequeverso",

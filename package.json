@@ -23,7 +23,7 @@
     "lint": "biome ci --error-on-warnings .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
-    "test": "node --test \"tests/unit/**/*.test.mjs\"",
+    "test": "node --env-file-if-exists=.env.example --test \"tests/unit/**/*.test.mjs\"",
     "test:e2e": "cross-env PW_SET=pr playwright test",
     "test:e2e:nightly": "cross-env PW_SET=nightly playwright test",
     "check": "npm run lint && npm run typecheck && npm run test && npm run knip:production && npm run build && npm run check:media && npm run check:placeholders && npm run check:bundle && npm run check:rendered",

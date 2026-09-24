@@ -11,6 +11,8 @@ import {
   pickClientIp,
 } from "../../server/meta-capi.mjs";
 
+const SITE = "https://pequeverso.com";
+
 const PIXEL = "1234567890123456";
 const TOKEN = "EAAB".padEnd(64, "x");
 const NOW = 1_800_000_000_000;
@@ -71,6 +73,7 @@ function enabledHandler(extra = {}) {
   const handler = createMetaCapiHandler({
     pixelId: PIXEL,
     accessToken: TOKEN,
+    siteUrl: SITE,
     fetchImpl: fake.fetchImpl,
     now: () => NOW,
     log: (line) => logs.push(line),
@@ -111,7 +114,7 @@ test("disabled (no token or no pixel) answers 204 and never calls Meta", async (
     { pixelId: PIXEL, accessToken: "" },
   ]) {
     const fake = fakeFetch();
-    const handler = createMetaCapiHandler({ ...options, fetchImpl: fake.fetchImpl });
+    const handler = createMetaCapiHandler({ ...options, siteUrl: SITE, fetchImpl: fake.fetchImpl });
     await withServer(handler, async (base) => {
       const res = await post(base, { events: [event()] });
       assert.equal(res.status, 204);
@@ -294,6 +297,7 @@ test("retries once on 429/5xx and on network errors, never on other 4xx; failure
   const flaky = createMetaCapiHandler({
     pixelId: PIXEL,
     accessToken: TOKEN,
+    siteUrl: SITE,
     fetchImpl: async () => {
       attempts += 1;
       throw Object.assign(new Error("timeout"), { name: "TimeoutError" });
@@ -332,12 +336,8 @@ test("rate limit: a client ip gets 429 once its events per window are spent, ref
   assert.equal(calls.length, 5);
 });
 
-test("options from the environment trim values and default the site url", () => {
-  assert.deepEqual(metaCapiOptionsFromEnv({}), {
-    pixelId: "",
-    accessToken: "",
-    siteUrl: "https://pequeverso.com",
-  });
+test("options from the environment trim values and never invent a site url", () => {
+  assert.deepEqual(metaCapiOptionsFromEnv({}), { pixelId: "", accessToken: "", siteUrl: "" });
   assert.deepEqual(
     metaCapiOptionsFromEnv({
       NEXT_PUBLIC_META_PIXEL_ID: ` ${PIXEL} `,
@@ -366,6 +366,7 @@ test("core: process() describes every response without a transport", async () =>
   const relay = createMetaCapiRelay({
     pixelId: PIXEL,
     accessToken: TOKEN,
+    siteUrl: SITE,
     fetchImpl: fake.fetchImpl,
     now: () => NOW,
   });
