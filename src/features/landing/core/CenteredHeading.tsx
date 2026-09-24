@@ -1,5 +1,5 @@
-import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
-import { Stack } from "@/components/ui/Stack/Stack";
+import { Eyebrow } from "@/components/blocks/eyebrow";
+import { Stack } from "@/components/blocks/stack";
 import styles from "./CenteredHeading.module.css";
 
 type Props = {

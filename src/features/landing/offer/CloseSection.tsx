@@ -1,6 +1,6 @@
-import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
-import { Section } from "@/components/ui/Section/Section";
-import { Stack } from "@/components/ui/Stack/Stack";
+import { Eyebrow } from "@/components/blocks/eyebrow";
+import { Section } from "@/components/blocks/section";
+import { Stack } from "@/components/blocks/stack";
 import { DecisionLink } from "@/features/commerce/DecisionLink/DecisionLink";
 import type { OfferProduct } from "@/products/schema";
 

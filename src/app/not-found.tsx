@@ -1,11 +1,11 @@
 import { notFoundCopy as copy } from "@content/es/soporte";
 import type { Metadata } from "next";
-import { PageShell } from "@/components/layout/PageShell/PageShell";
-import { ChipRow } from "@/components/ui/ChipRow/ChipRow";
-import { CTAButton } from "@/components/ui/CTAButton/CTAButton";
-import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
-import { Section } from "@/components/ui/Section/Section";
-import { Stack } from "@/components/ui/Stack/Stack";
+import { ChipRow } from "@/components/blocks/chip-row";
+import { CTAButton } from "@/components/blocks/cta-button";
+import { Eyebrow } from "@/components/blocks/eyebrow";
+import { Section } from "@/components/blocks/section";
+import { Stack } from "@/components/blocks/stack";
+import { PageShell } from "@/components/layout/page-shell";
 import { coreProducts } from "@/products";
 
 export const metadata: Metadata = {
@@ -22,11 +22,11 @@ export default function NotFound() {
           <h1 id="not-found-title">{copy.title}</h1>
           <p className="lead">{copy.lead}</p>
           <ChipRow>
-            <CTAButton href="/" variant="secondary" iconAfter="arrow">
+            <CTAButton href="/" variant="outline" iconAfter="arrow">
               {copy.home}
             </CTAButton>
             {coreProducts().map((product) => (
-              <CTAButton key={product.slug} href={product.path} variant="secondary" iconAfter="arrow">
+              <CTAButton key={product.slug} href={product.path} variant="outline" iconAfter="arrow">
                 {copy.product} {product.name}
               </CTAButton>
             ))}

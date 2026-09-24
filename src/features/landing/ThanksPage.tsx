@@ -3,24 +3,24 @@ import { site } from "@config/site";
 import { graciasCopy as copy } from "@content/es/gracias";
 import { LogIn } from "lucide-react";
 import Link from "next/link";
-import { PageShell } from "@/components/layout/PageShell/PageShell";
-import { Card } from "@/components/ui/Card/Card";
-import { ChipRow } from "@/components/ui/ChipRow/ChipRow";
-import { CTAButton } from "@/components/ui/CTAButton/CTAButton";
-import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
-import { FactChip } from "@/components/ui/FactChip/FactChip";
-import { Grid } from "@/components/ui/Grid/Grid";
-import { IconCardList } from "@/components/ui/IconCardList/IconCardList";
-import { MediaFrame } from "@/components/ui/MediaFrame/MediaFrame";
-import { MediaImage } from "@/components/ui/MediaImage/MediaImage";
-import { Notice } from "@/components/ui/Notice/Notice";
-import { ResourceGrid } from "@/components/ui/ResourceGrid/ResourceGrid";
-import { Section } from "@/components/ui/Section/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading/SectionHeading";
-import { Split } from "@/components/ui/Split/Split";
-import { Stack } from "@/components/ui/Stack/Stack";
-import { Topbar } from "@/components/ui/Topbar/Topbar";
-import { Universe } from "@/motion/Universe";
+import { ChipRow } from "@/components/blocks/chip-row";
+import { CTAButton } from "@/components/blocks/cta-button";
+import { Eyebrow } from "@/components/blocks/eyebrow";
+import { FactChip } from "@/components/blocks/fact-chip";
+import { Grid } from "@/components/blocks/grid";
+import { IconCardList } from "@/components/blocks/icon-card-list";
+import { MediaFrame } from "@/components/blocks/media-frame";
+import { MediaImage } from "@/components/blocks/media-image";
+import { Notice } from "@/components/blocks/notice";
+import { ResourceGrid } from "@/components/blocks/resource-grid";
+import { Section } from "@/components/blocks/section";
+import { SectionHeading } from "@/components/blocks/section-heading";
+import { Split } from "@/components/blocks/split";
+import { Stack } from "@/components/blocks/stack";
+import { Topbar } from "@/components/blocks/topbar";
+import { PageShell } from "@/components/layout/page-shell";
+import { Card } from "@/components/ui/card";
+import { Universe } from "@/motion/universe";
 import type { CoreProduct } from "@/products/schema";
 import styles from "./ThanksPage.module.css";
 
@@ -33,7 +33,7 @@ type Props = { product: CoreProduct };
 export function ThanksPage({ product }: Props) {
   const firstPage = product.media.pageIds[0] ?? product.media.hero;
   const headerCta = (
-    <CTAButton href={hotmart.consumerArea} variant="primary" size="small" external icon={LogIn}>
+    <CTAButton href={hotmart.consumerArea} variant="primary" size="sm" external icon={LogIn}>
       Abrir Hotmart
     </CTAButton>
   );
@@ -68,7 +68,7 @@ export function ThanksPage({ product }: Props) {
         <SectionHeading id="acceso-title" kicker={copy.access.kicker} title={copy.access.title} />
         <IconCardList items={copy.access.steps} numbered />
         <p className={styles.after}>
-          <CTAButton href={hotmart.consumerArea} variant="secondary" external>
+          <CTAButton href={hotmart.consumerArea} variant="outline" external>
             {copy.access.cta}
           </CTAButton>
         </p>

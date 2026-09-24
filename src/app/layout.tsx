@@ -2,13 +2,11 @@ import { site } from "@config/site";
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { preload } from "react-dom";
-import { SkipLink } from "@/components/ui/SkipLink/SkipLink";
+import { SkipLink } from "@/components/blocks/skip-link";
 import { ConsentBanner } from "@/features/tracking/ConsentBanner";
 import { Analytics } from "@/features/tracking/TrackingScripts";
-import { RevealObserver } from "@/motion/RevealObserver";
-import "@/styles/tokens.css";
-import "@/styles/base.css";
-import "@/styles/utilities.css";
+import { RevealObserver } from "@/motion/reveal-observer";
+import "./globals.css";
 
 const fonts = ["/fonts/fraunces-latin-wght-7f9d191d.woff2", "/fonts/nunito-sans-latin-wght-29e38904.woff2"];
 

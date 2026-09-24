@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useId, useState } from "react";
+import { buttonVariants } from "@/components/ui/button-variants";
 import type { TrackingAdapter } from "@/features/tracking/adapters/types";
 import {
   type ConsentCategory,
@@ -11,7 +12,6 @@ import {
   writeConsent,
 } from "@/features/tracking/consent";
 import { enabledAdapters } from "@/features/tracking/env";
-import styles from "./ConsentBanner.module.css";
 
 type CategoryInfo = {
   id: ConsentCategory;
@@ -46,6 +46,16 @@ function joinSpanish(items: string[]): string {
   return `${items.slice(0, -1).join(", ")} y ${items[items.length - 1]}`;
 }
 
+const BANNER =
+  "fixed inset-x-0 bottom-0 z-90 border-t border-border bg-card px-(--gutter) pt-4 pb-[calc(var(--space-4)+env(safe-area-inset-bottom))] shadow-lg";
+const INNER = "mx-auto grid w-full max-w-(--page-max) gap-3";
+const TITLE = "font-sans text-h3 font-extrabold text-heading";
+const TEXT = "max-w-[70ch] text-small";
+const ACTIONS = "flex flex-wrap gap-2";
+const PRIMARY = buttonVariants({ variant: "secondary", size: "sm" });
+const SECONDARY = buttonVariants({ variant: "ghost", size: "sm" });
+const CHECKBOX = "mt-0.5 size-5 shrink-0 accent-navy";
+
 type OptionsProps = {
   categories: CategoryInfo[];
   selection: ConsentChoice;
@@ -55,22 +65,23 @@ type OptionsProps = {
 function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
   const prefix = useId();
   return (
-    <ul className={styles.details}>
-      <li className={styles.option}>
-        <input type="checkbox" id={`${prefix}-necessary`} checked disabled readOnly />
-        <label htmlFor={`${prefix}-necessary`}>
+    <ul className="grid gap-2 text-small text-body">
+      <li className="flex items-start gap-2">
+        <input type="checkbox" id={`${prefix}-necessary`} className={CHECKBOX} checked disabled readOnly />
+        <label htmlFor={`${prefix}-necessary`} className="min-h-6">
           <strong>Necesarias:</strong> recordar tu elección de cookies. Siempre activas.
         </label>
       </li>
       {categories.map((category) => (
-        <li key={category.id} className={styles.option}>
+        <li key={category.id} className="flex items-start gap-2">
           <input
             type="checkbox"
             id={`${prefix}-${category.id}`}
+            className={CHECKBOX}
             checked={selection[category.id]}
             onChange={(event) => onToggle(category.id, event.target.checked)}
           />
-          <label htmlFor={`${prefix}-${category.id}`}>
+          <label htmlFor={`${prefix}-${category.id}`} className="min-h-6">
             <strong>
               {category.title} ({category.tools.join(", ")}):
             </strong>{" "}
@@ -120,7 +131,7 @@ export function ConsentBanner() {
   if (categories.length === 0) {
     return (
       <section
-        className={styles.banner}
+        className={BANNER}
         role="dialog"
         aria-modal="false"
         aria-labelledby={headingId}
@@ -128,17 +139,17 @@ export function ConsentBanner() {
         data-testid="consent-banner"
         data-mode="notice"
       >
-        <div className={styles.inner}>
-          <h2 id={headingId} className={styles.title}>
+        <div className={INNER}>
+          <h2 id={headingId} className={TITLE}>
             Cookies
           </h2>
-          <p id={descId} className={styles.text}>
+          <p id={descId} className={TEXT}>
             Este sitio solo usa cookies propias necesarias para funcionar y no requieren tu permiso. No hay
             integraciones de medición ni de marketing activas, así que no hay nada que configurar.{" "}
             <Link href="/cookies/">Más información</Link>
           </p>
-          <div className={styles.actions}>
-            <button type="button" className={styles.primary} onClick={() => setOpen(false)}>
+          <div className={ACTIONS}>
+            <button type="button" className={PRIMARY} onClick={() => setOpen(false)}>
               Entendido
             </button>
           </div>
@@ -149,18 +160,18 @@ export function ConsentBanner() {
 
   return (
     <section
-      className={styles.banner}
+      className={BANNER}
       role="dialog"
       aria-modal="false"
       aria-labelledby={headingId}
       aria-describedby={descId}
       data-testid="consent-banner"
     >
-      <div className={styles.inner}>
-        <h2 id={headingId} className={styles.title}>
+      <div className={INNER}>
+        <h2 id={headingId} className={TITLE}>
           Cookies y medición
         </h2>
-        <p id={descId} className={styles.text}>
+        <p id={descId} className={TEXT}>
           Usamos cookies necesarias y {joinSpanish(categories.flatMap((category) => category.tools))} para{" "}
           {joinSpanish(categories.map((category) => category.purpose))}. Si rechazas, la medición se
           desactiva; puedes cambiar tu elección en el pie de página.{" "}
@@ -173,27 +184,23 @@ export function ConsentBanner() {
             onToggle={(id, value) => setSelection((current) => ({ ...current, [id]: value }))}
           />
         ) : null}
-        <div className={styles.actions}>
-          <button
-            type="button"
-            className={styles.primary}
-            onClick={() => writeConsent(choiceFor(categories, true))}
-          >
+        <div className={ACTIONS}>
+          <button type="button" className={PRIMARY} onClick={() => writeConsent(choiceFor(categories, true))}>
             Aceptar
           </button>
           <button
             type="button"
-            className={styles.primary}
+            className={PRIMARY}
             onClick={() => writeConsent(choiceFor(categories, false))}
           >
             Rechazar
           </button>
           {configuring ? (
-            <button type="button" className={styles.secondary} onClick={() => writeConsent(selection)}>
+            <button type="button" className={SECONDARY} onClick={() => writeConsent(selection)}>
               Guardar selección
             </button>
           ) : (
-            <button type="button" className={styles.secondary} onClick={() => setConfiguring(true)}>
+            <button type="button" className={SECONDARY} onClick={() => setConfiguring(true)}>
               Configurar
             </button>
           )}

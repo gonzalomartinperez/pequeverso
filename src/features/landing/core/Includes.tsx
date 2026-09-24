@@ -1,8 +1,8 @@
 import type { Resource } from "@content/es/products";
-import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
-import { ResourceGrid } from "@/components/ui/ResourceGrid/ResourceGrid";
-import { Stack } from "@/components/ui/Stack/Stack";
-import { Counter } from "@/motion/Counter";
+import { Eyebrow } from "@/components/blocks/eyebrow";
+import { ResourceGrid } from "@/components/blocks/resource-grid";
+import { Stack } from "@/components/blocks/stack";
+import { Counter } from "@/motion/counter";
 import styles from "./Includes.module.css";
 
 type Props = {

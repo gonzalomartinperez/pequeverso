@@ -9,10 +9,10 @@
   max-width: 60ch;
   padding: var(--space-5) var(--space-6);
   border-left: var(--space-1) solid var(--pv-gold);
-  border-radius: var(--radius);
+  border-radius: var(--pv-radius-md);
   background: var(--pv-cream);
-  font-family: var(--font-display);
-  font-size: var(--text-h3);
+  font-family: var(--pv-font-display);
+  font-size: var(--pv-text-h3);
   color: var(--pv-ink);
 }
 
@@ -25,7 +25,7 @@
 }
 
 .support {
-  font-size: var(--text-small);
+  font-size: var(--pv-text-small);
 }
 
 .final {
@@ -37,7 +37,7 @@
   position: absolute;
   right: 0;
   top: 0;
-  width: min(45%, calc(var(--container) / 2));
+  width: min(45%, calc(var(--page-max) / 2));
   translate: 30% -50%;
   pointer-events: none;
 }

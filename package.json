@@ -26,7 +26,7 @@
     "test": "node --env-file-if-exists=.env.example --test \"tests/unit/**/*.test.mjs\"",
     "test:e2e": "cross-env PW_SET=pr playwright test",
     "test:e2e:nightly": "cross-env PW_SET=nightly playwright test",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run knip:production && npm run build && npm run check:media && npm run check:placeholders && npm run check:bundle && npm run check:rendered",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run knip:production && npm run build && npm run check:media && npm run check:placeholders && npm run check:bundle && npm run check:scene && npm run check:rendered",
     "check:env": "node scripts/check-env.mjs",
     "check:media": "node scripts/check-media-budget.mjs",
     "check:placeholders": "node scripts/check-placeholders.mjs",
@@ -39,15 +39,21 @@
     "knip": "knip --no-progress",
     "knip:production": "knip --no-progress --production",
     "check:bundle": "node scripts/check-bundle-budget.mjs",
+    "check:scene": "node scripts/check-scene-budget.mjs",
     "analyze": "cross-env ANALYZE=1 next build --webpack",
     "check:rendered": "node scripts/check-rendered.mjs"
   },
   "dependencies": {
+    "@base-ui/react": "1.8.0",
+    "class-variance-authority": "0.7.1",
+    "cn": "0.3.0",
     "embla-carousel-react": "8.6.0",
+    "gsap": "3.15.0",
     "lucide-react": "1.45.0",
     "next": "16.3.5",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "three": "0.186.0",
     "zod": "4.6.5"
   },
   "devDependencies": {
@@ -56,11 +62,15 @@
     "@lhci/cli": "0.15.1",
     "@next/bundle-analyzer": "16.3.5",
     "@playwright/test": "1.63.0",
+    "@tailwindcss/postcss": "4.3.3",
     "@types/node": "24.13.4",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "@types/three": "0.186.0",
     "cross-env": "10.1.0",
     "knip": "6.35.1",
+    "postcss": "8.5.28",
+    "tailwindcss": "4.3.3",
     "typescript": "5.9.3"
   },
   "type": "module"

@@ -1,7 +1,7 @@
 import { seller } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LegalLayout } from "@/components/layout/LegalLayout/LegalLayout";
+import { LegalLayout } from "@/components/layout/legal-layout";
 import { CookieSettingsLink } from "@/features/tracking/CookieSettingsLink";
 import { buildMetadata } from "@/lib/metadata";
 

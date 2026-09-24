@@ -2,7 +2,7 @@ import { site } from "@config/site";
 import { seller, sellerField, sellerIdentityPending, sellerLawPending } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LegalLayout } from "@/components/layout/LegalLayout/LegalLayout";
+import { LegalLayout } from "@/components/layout/legal-layout";
 import { buildMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildMetadata({

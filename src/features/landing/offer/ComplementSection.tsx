@@ -1,9 +1,9 @@
-import { BulletList } from "@/components/ui/BulletList/BulletList";
-import { Card } from "@/components/ui/Card/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
-import { Grid } from "@/components/ui/Grid/Grid";
-import { Section } from "@/components/ui/Section/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading/SectionHeading";
+import { BulletList } from "@/components/blocks/bullet-list";
+import { Eyebrow } from "@/components/blocks/eyebrow";
+import { Grid } from "@/components/blocks/grid";
+import { Section } from "@/components/blocks/section";
+import { SectionHeading } from "@/components/blocks/section-heading";
+import { Card } from "@/components/ui/card";
 import type { OfferProduct } from "@/products/schema";
 
 type Props = { copy: OfferProduct["copy"]["complement"] };

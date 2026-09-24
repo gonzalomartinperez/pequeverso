@@ -1,21 +1,22 @@
 import { formatUsd, localCurrencyNoteShort } from "@config/commerce";
 import { site } from "@config/site";
-import { PageShell } from "@/components/layout/PageShell/PageShell";
-import { BulletList } from "@/components/ui/BulletList/BulletList";
-import { Card } from "@/components/ui/Card/Card";
-import { ChipRow } from "@/components/ui/ChipRow/ChipRow";
-import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
-import { FAQ } from "@/components/ui/FAQ/FAQ";
-import { FactChip } from "@/components/ui/FactChip/FactChip";
-import { IconCardList } from "@/components/ui/IconCardList/IconCardList";
-import { MediaFrame } from "@/components/ui/MediaFrame/MediaFrame";
-import { MediaImage } from "@/components/ui/MediaImage/MediaImage";
-import { PriceBlock } from "@/components/ui/PriceBlock/PriceBlock";
-import { Section } from "@/components/ui/Section/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading/SectionHeading";
-import { Split } from "@/components/ui/Split/Split";
-import { Stack } from "@/components/ui/Stack/Stack";
-import { Topbar } from "@/components/ui/Topbar/Topbar";
+import { BulletList } from "@/components/blocks/bullet-list";
+import { ChipRow } from "@/components/blocks/chip-row";
+import { Eyebrow } from "@/components/blocks/eyebrow";
+import { FactChip } from "@/components/blocks/fact-chip";
+import { FAQ } from "@/components/blocks/faq";
+import { IconCardList } from "@/components/blocks/icon-card-list";
+import { MediaFrame } from "@/components/blocks/media-frame";
+import { MediaImage } from "@/components/blocks/media-image";
+import { PriceBlock } from "@/components/blocks/price-block";
+import { Section } from "@/components/blocks/section";
+import { SectionHeading } from "@/components/blocks/section-heading";
+import { Split } from "@/components/blocks/split";
+import { Stack } from "@/components/blocks/stack";
+import { Topbar } from "@/components/blocks/topbar";
+import { PageShell } from "@/components/layout/page-shell";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { Card } from "@/components/ui/card";
 import { CheckoutLink, type CheckoutTarget } from "@/features/commerce/CheckoutLink/CheckoutLink";
 import { ViewContentOnMount } from "@/features/commerce/ViewContentOnMount/ViewContentOnMount";
 import { GallerySlide } from "@/features/gallery/PageGallery/GallerySlide";
@@ -32,9 +33,9 @@ import { Includes } from "@/features/landing/core/Includes";
 import { MethodSteps } from "@/features/landing/core/MethodSteps";
 import { OfferCard } from "@/features/landing/core/OfferCard";
 import { getImage, getVideo } from "@/lib/media";
-import { Orbit } from "@/motion/Orbit";
-import { Parallax } from "@/motion/Parallax";
-import { StickyCTA } from "@/motion/StickyCTA";
+import { Orbit } from "@/motion/orbit";
+import { Parallax } from "@/motion/parallax";
+import { StickyCTA } from "@/motion/sticky-cta";
 import { checkoutFallbackPath } from "@/products";
 import { breadcrumbJsonLd, productJsonLd } from "@/products/jsonld";
 import type { CoreProduct } from "@/products/schema";
@@ -103,7 +104,7 @@ export function CoreLanding({ product }: Props) {
     <CheckoutLink
       product={target}
       position="header"
-      className="button button--primary button--small"
+      className={buttonVariants({ size: "sm" })}
       title={localCurrencyNoteShort}
     >
       Comprar · {formatUsd(price)}
@@ -129,7 +130,7 @@ export function CoreLanding({ product }: Props) {
           title={copy.hero.title}
           lead={copy.hero.lead}
           actions={
-            <CheckoutLink product={target} position="hero" className="button button--primary">
+            <CheckoutLink product={target} position="hero" className={buttonVariants()}>
               {copy.hero.cta}
             </CheckoutLink>
           }
@@ -142,7 +143,7 @@ export function CoreLanding({ product }: Props) {
               price={price}
               taxNote={copy.hero.taxNote}
               cta={
-                <CheckoutLink product={target} position="hero-card" className="button button--primary">
+                <CheckoutLink product={target} position="hero-card" className={buttonVariants()}>
                   {copy.hero.cta}
                 </CheckoutLink>
               }
@@ -255,7 +256,7 @@ export function CoreLanding({ product }: Props) {
             taxNote: copy.hero.taxNote,
           }}
           cta={
-            <CheckoutLink product={target} position="oferta" className="button button--primary">
+            <CheckoutLink product={target} position="oferta" className={buttonVariants()}>
               {copy.midOffer.cta}
             </CheckoutLink>
           }
@@ -314,7 +315,7 @@ export function CoreLanding({ product }: Props) {
             taxNote={copy.hero.taxNote}
             tone="dark"
             cta={
-              <CheckoutLink product={target} position="final" className="button button--primary">
+              <CheckoutLink product={target} position="final" className={buttonVariants()}>
                 {copy.finalOffer.cta}
               </CheckoutLink>
             }
@@ -328,7 +329,7 @@ export function CoreLanding({ product }: Props) {
         label={`${copy.sticky.label} · ${formatUsd(price)}`}
         note={localCurrencyNoteShort}
       >
-        <CheckoutLink product={target} position="sticky" className="button button--primary">
+        <CheckoutLink product={target} position="sticky" className={buttonVariants()}>
           {copy.sticky.cta}
         </CheckoutLink>
       </StickyCTA>

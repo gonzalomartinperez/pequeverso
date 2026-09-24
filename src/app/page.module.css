@@ -3,22 +3,22 @@
 }
 
 .productTitle {
-  font-size: var(--text-h2);
+  font-size: var(--pv-text-h2);
 }
 
 .productPrice {
   display: grid;
   margin-top: var(--space-2);
-  font-family: var(--font-display);
+  font-family: var(--pv-font-display);
   font-weight: 700;
-  font-size: var(--text-price);
+  font-size: var(--pv-text-price);
   line-height: 1;
   color: var(--pv-coral);
 }
 
 .productPriceKicker {
-  font-family: var(--font-body);
-  font-size: var(--text-tiny);
+  font-family: var(--pv-font-sans);
+  font-size: var(--pv-text-tiny);
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -45,8 +45,8 @@
 }
 
 .startTitle {
-  font-family: var(--font-display);
-  font-size: var(--text-h3);
+  font-family: var(--pv-font-display);
+  font-size: var(--pv-text-h3);
   font-weight: 700;
 }
 
@@ -60,7 +60,7 @@
   position: absolute;
   right: 0;
   top: 0;
-  width: min(45%, calc(var(--container) / 2));
+  width: min(45%, calc(var(--page-max) / 2));
   translate: 30% -50%;
   pointer-events: none;
 }
@@ -102,5 +102,5 @@
 }
 
 .closingSocial p {
-  font-size: var(--text-small);
+  font-size: var(--pv-text-small);
 }

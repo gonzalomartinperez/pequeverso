@@ -1,16 +1,16 @@
 import { formatUsd } from "@config/commerce";
 import { Suspense } from "react";
-import { Footer } from "@/components/layout/Footer/Footer";
-import { Header } from "@/components/layout/Header/Header";
-import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
-import { FAQ } from "@/components/ui/FAQ/FAQ";
-import { IconCardList } from "@/components/ui/IconCardList/IconCardList";
-import { ResourceGrid } from "@/components/ui/ResourceGrid/ResourceGrid";
-import { Section } from "@/components/ui/Section/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading/SectionHeading";
-import { Split } from "@/components/ui/Split/Split";
-import { Stack } from "@/components/ui/Stack/Stack";
-import { Topbar } from "@/components/ui/Topbar/Topbar";
+import { Eyebrow } from "@/components/blocks/eyebrow";
+import { FAQ } from "@/components/blocks/faq";
+import { IconCardList } from "@/components/blocks/icon-card-list";
+import { ResourceGrid } from "@/components/blocks/resource-grid";
+import { Section } from "@/components/blocks/section";
+import { SectionHeading } from "@/components/blocks/section-heading";
+import { Split } from "@/components/blocks/split";
+import { Stack } from "@/components/blocks/stack";
+import { Topbar } from "@/components/blocks/topbar";
+import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
 import { DecisionLink } from "@/features/commerce/DecisionLink/DecisionLink";
 import { HotmartWidgetSlot } from "@/features/commerce/HotmartWidgetSlot/HotmartWidgetSlot";
 import { OfferModeMirror } from "@/features/commerce/OfferModeMirror";
@@ -18,7 +18,7 @@ import { OfferModeRoot } from "@/features/commerce/OfferModeRoot";
 import { GallerySlide } from "@/features/gallery/PageGallery/GallerySlide";
 import { PageGallery } from "@/features/gallery/PageGallery/PageGallery";
 import { getImage } from "@/lib/media";
-import { StickyCTA } from "@/motion/StickyCTA";
+import { StickyCTA } from "@/motion/sticky-cta";
 import type { OfferProduct } from "@/products/schema";
 import styles from "./OfferLanding.module.css";
 import { CloseSection } from "./offer/CloseSection";
@@ -57,7 +57,7 @@ export function OfferLanding({ product }: Props) {
         <span>{copy.topbar}</span>
       </Topbar>
       <Header
-        cta={<DecisionLink size="small">{copy.header.cta}</DecisionLink>}
+        cta={<DecisionLink size="sm">{copy.header.cta}</DecisionLink>}
         subtitle={copy.header.subtitle}
       />
       <OfferModeRoot>

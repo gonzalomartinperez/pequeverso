@@ -1,4 +1,4 @@
-import { Counter } from "@/motion/Counter";
+import { Counter } from "@/motion/counter";
 import styles from "./CounterChip.module.css";
 
 type Props = { value: number; unit: string };

@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
-import { BulletList } from "@/components/ui/BulletList/BulletList";
-import { Card } from "@/components/ui/Card/Card";
-import { Eyebrow } from "@/components/ui/Eyebrow/Eyebrow";
-import { PriceBlock } from "@/components/ui/PriceBlock/PriceBlock";
-import { Split } from "@/components/ui/Split/Split";
-import { Stack } from "@/components/ui/Stack/Stack";
+import { BulletList } from "@/components/blocks/bullet-list";
+import { Eyebrow } from "@/components/blocks/eyebrow";
+import { PriceBlock } from "@/components/blocks/price-block";
+import { Split } from "@/components/blocks/split";
+import { Stack } from "@/components/blocks/stack";
+import { Card } from "@/components/ui/card";
 import styles from "./OfferCard.module.css";
 
 type Props = {

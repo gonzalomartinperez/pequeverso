@@ -9,7 +9,7 @@
 
 .legend {
   padding: 0;
-  font-size: var(--text-small);
+  font-size: var(--pv-text-small);
   font-weight: 800;
   color: var(--pv-white);
 }
@@ -42,16 +42,16 @@
   min-width: var(--badge-sm);
   min-height: var(--badge-sm);
   padding-inline: var(--space-4);
-  border-radius: var(--radius-pill);
+  border-radius: var(--pv-radius-pill);
   border: 1px solid rgba(255, 255, 255, 0.28);
   background: var(--pv-on-navy-chip);
   color: var(--pv-white);
   font-weight: 800;
-  font-size: var(--text-body);
+  font-size: var(--pv-text-body);
   line-height: 1;
   transition:
-    background-color var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out);
+    background-color var(--duration-fast) var(--pv-ease-out),
+    color var(--duration-fast) var(--pv-ease-out);
 }
 
 .option:hover .chip {
@@ -69,9 +69,9 @@
 }
 
 .hint {
-  font-size: var(--text-small);
+  font-size: var(--pv-text-small);
   font-weight: 600;
   color: var(--pv-on-navy);
   max-width: 52ch;
-  min-height: calc(2 * var(--leading-body) * 1em);
+  min-height: calc(2 * var(--pv-leading-body) * 1em);
 }

@@ -5,7 +5,7 @@
 
 .viewport {
   overflow: hidden;
-  border-radius: var(--radius-lg);
+  border-radius: var(--pv-radius-lg);
   perspective: 1200px;
 }
 
@@ -26,7 +26,7 @@
   display: grid;
   gap: var(--space-2);
   transform: scale(0.92) translateZ(-40px);
-  transition: transform var(--duration) var(--ease-out);
+  transition: transform var(--duration) var(--pv-ease-out);
 }
 
 .active {
@@ -39,10 +39,10 @@
   width: 100%;
   padding: 0;
   border: 1px solid var(--pv-line);
-  border-radius: var(--radius-lg);
+  border-radius: var(--pv-radius-lg);
   background: var(--pv-white);
   overflow: hidden;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--pv-shadow-md);
   cursor: zoom-in;
 }
 
@@ -64,12 +64,12 @@
   place-items: center;
   background: var(--pv-navy);
   color: var(--pv-white);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--pv-shadow-sm);
 }
 
 .caption {
   text-align: center;
-  font-size: var(--text-small);
+  font-size: var(--pv-text-small);
   font-weight: 700;
   color: var(--pv-ink);
 }
@@ -77,7 +77,7 @@
 /* Inactive slides recede: only the image is dimmed so caption text keeps full contrast. */
 .slide .zoomButton {
   opacity: 0.6;
-  transition: opacity var(--duration) var(--ease-out);
+  transition: opacity var(--duration) var(--pv-ease-out);
 }
 
 .slide .caption {
@@ -148,7 +148,7 @@
   height: 10px;
   border-radius: 50%;
   background: var(--pv-line-strong);
-  transition: transform var(--duration-fast) var(--ease-out);
+  transition: transform var(--duration-fast) var(--pv-ease-out);
 }
 
 .dotActive::before {
@@ -158,18 +158,18 @@
 
 .hint {
   text-align: center;
-  font-size: var(--text-small);
+  font-size: var(--pv-text-small);
   color: var(--pv-muted);
 }
 
 .dialog {
   border: 0;
   padding: 0;
-  border-radius: var(--radius-lg);
+  border-radius: var(--pv-radius-lg);
   max-width: min(1000px, 92vw);
   max-height: 92vh;
   background: var(--pv-white);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--pv-shadow-lg);
 }
 
 .dialog::backdrop {
@@ -188,7 +188,7 @@
   width: auto;
   max-width: 100%;
   margin-inline: auto;
-  border-radius: var(--radius);
+  border-radius: var(--pv-radius-md);
 }
 
 .dialogCaption {
