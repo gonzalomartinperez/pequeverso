@@ -30,7 +30,7 @@ export const seller = {
   updatedAt: "24 de septiembre de 2026",
 } as const;
 
-/** Routes allowed to render `seller.legalEmail` (checked by tests/unit and scripts/check-rendered.ts). */
+/** Routes allowed to render `seller.legalEmail` (checked by tests/unit and scripts/check-rendered.ts). @internal */
 export const legalRoutes = [
   "/aviso-legal/",
   "/privacidad/",

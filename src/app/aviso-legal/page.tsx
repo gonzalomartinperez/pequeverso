@@ -1,4 +1,8 @@
-import { consumerAuthority, jurisdictionClause } from "@content/es/legal/argentina";
+import {
+  consumerAuthority,
+  jurisdictionClause,
+  provincialConsumerAuthority,
+} from "@content/es/legal/argentina";
 import { seller } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -150,8 +154,9 @@ export default function AvisoLegalPage() {
         Si compraste como consumidor, puedes revocar la compra a través del{" "}
         <Link href="/arrepentimiento/">Botón de arrepentimiento</Link>. Si tienes un reclamo que no se
         resolvió por correo, puedes presentarlo ante la autoridad de defensa del consumidor: en la República
-        Argentina, ante <a href={consumerAuthority.url}>{consumerAuthority.name}</a>. Si resides en otro país,
-        puedes acudir a la autoridad de consumo de tu país; la{" "}
+        Argentina, ante <a href={consumerAuthority.url}>{consumerAuthority.name}</a> o ante la{" "}
+        <a href={provincialConsumerAuthority.url}>{provincialConsumerAuthority.name}</a>. Si resides en otro
+        país, puedes acudir a la autoridad de consumo de tu país; la{" "}
         <Link href="/arrepentimiento/#paises">referencia por país</Link> reúne los enlaces oficiales.
       </p>
 

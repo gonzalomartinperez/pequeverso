@@ -107,8 +107,8 @@ export default function TerminosPage() {
           La plataforma que actúa como intermediaria y facilitadora de pago: muestra el precio en tu moneda,
           cobra, emite el comprobante, entrega el acceso digital y gestiona los reembolsos conforme a sus
           propios términos de compra. Para compradores fuera de Brasil y Estados Unidos, la entidad
-          contratante es {hotmartFacts.entity}. El Titular nunca ve tus datos de tarjeta ni
-          de otros medios de pago.
+          contratante es {hotmartFacts.entity}. El Titular nunca ve tus datos de tarjeta ni de otros medios de
+          pago.
         </dd>
         <dt>Sitio</dt>
         <dd>El sitio web pequeverso.com.</dd>

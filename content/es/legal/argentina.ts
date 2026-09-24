@@ -19,6 +19,12 @@ export const consumerAuthority = {
   url: "https://www.argentina.gob.ar/servicio/iniciar-un-reclamo-ante-defensa-del-consumidor",
 } as const;
 
+/** Consumer office of the provincia de Buenos Aires, where the Titular is domiciled. */
+export const provincialConsumerAuthority = {
+  name: "Dirección Provincial de Defensa de los Derechos de las y los Consumidores y Usuarios (provincia de Buenos Aires)",
+  url: "https://www.gba.gob.ar/defensaconsumidores",
+} as const;
+
 /** Personal-data control authority (Ley 25.326; Resolución AAIP 14/2018). */
 export const dataAuthority = {
   name: "Agencia de Acceso a la Información Pública (AAIP)",

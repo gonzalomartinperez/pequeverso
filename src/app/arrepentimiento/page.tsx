@@ -1,5 +1,5 @@
 import { guaranteeDays, hotmart } from "@config/commerce";
-import { consumerAuthority, consumerLaw } from "@content/es/legal/argentina";
+import { consumerAuthority, consumerLaw, provincialConsumerAuthority } from "@content/es/legal/argentina";
 import { consumerRights } from "@content/es/legal/consumer-rights";
 import { hotmartFacts } from "@content/es/legal/hotmart";
 import { seller } from "@content/es/legal/seller";
@@ -196,9 +196,10 @@ export default function ArrepentimientoPage() {
       <SectionHeading sections={sections} id="reclamos" />
       <p>
         Si tu pedido no se resolvió, puedes presentar un reclamo ante{" "}
-        <a href={consumerAuthority.url}>{consumerAuthority.name}</a> o, si resides en otro país, ante la
-        autoridad de consumo indicada en la tabla anterior. Las condiciones completas están en los{" "}
-        <Link href="/terminos/">Términos de compra</Link>.
+        <a href={consumerAuthority.url}>{consumerAuthority.name}</a>, ante la{" "}
+        <a href={provincialConsumerAuthority.url}>{provincialConsumerAuthority.name}</a> o, si resides en otro
+        país, ante la autoridad de consumo indicada en la tabla anterior. Las condiciones completas están en
+        los <Link href="/terminos/">Términos de compra</Link>.
       </p>
     </LegalLayout>
   );
