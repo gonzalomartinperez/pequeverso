@@ -60,11 +60,17 @@ export default function ArrepentimientoPage() {
       sections={sections}
     >
       <div className="mb-8 flex flex-wrap gap-3">
-        <CTAButton href={mailto} variant="secondary" size="sm" icon={Mail}>
-          Pedir el arrepentimiento por correo
+        <CTAButton href={mailto} variant="secondary" size="sm" icon={Mail} className="max-w-full">
+          Arrepentirme por correo
         </CTAButton>
-        <CTAButton href={hotmartFacts.urls.refundForm} variant="outline" size="sm" icon={RotateCcw}>
-          Pedirlo en refund.hotmart.com
+        <CTAButton
+          href={hotmartFacts.urls.refundForm}
+          variant="outline"
+          size="sm"
+          icon={RotateCcw}
+          className="max-w-full"
+        >
+          Pedirlo en Hotmart
         </CTAButton>
       </div>
 
