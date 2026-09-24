@@ -376,6 +376,11 @@
 
 /* 5. Base */
 @layer base {
+  /* Email addresses are one unbreakable word; let them wrap anywhere at narrow widths (320 px). */
+  a[href^="mailto:"] {
+    overflow-wrap: anywhere;
+  }
+
   *,
   ::before,
   ::after {
