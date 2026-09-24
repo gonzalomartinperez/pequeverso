@@ -1,6 +1,6 @@
 # Hotmart purchase funnel — migration to pequeverso.com
 
-Status as of 2026-09-13. The website side is implemented and verified; the Hotmart dashboard
+Status as of 2026-09-24. The website side is implemented and verified; the Hotmart dashboard
 still points at digitalproductsteam.com until the owner changes it (section 4). Nothing here
 charges a card, changes live Hotmart settings or switches domains.
 
@@ -36,24 +36,35 @@ Main landing: `CheckoutLink` forwards `utm_*`, `a`, `angle_key`, `ad_code`, `cou
 forwarded (a visitor-controlled `off` would select an arbitrary offer). One `CheckoutIntent` per
 click, only on click.
 
-## 3. Verified on the website (2026-09-12/13)
+## 3. Configuration and verification on the website (2026-09-24)
+
+**Configuration.** Only the principal checkout needs a value:
+`NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO` (legacy fallback `NEXT_PUBLIC_CHECKOUT_URL`), a
+`https://pay.hotmart.com/…` URL; the build refuses to run without it (`docs/deployment.md`). The
+upsell and downsell need **no** environment variable and no offer id on the site: the Sales Funnel
+widget renders whatever offers are configured for the funnel step in Hotmart, inside the single
+`#hotmart-sales-funnel` container. Prices shown on the page (US$14.99 / US$7.49) come from
+`src/products/imprime-y-juega.ts` and must match the Hotmart offers.
 
 | Behaviour | How verified |
 |---|---|
-| Exactly one `#hotmart-sales-funnel` and one widget script on upsell and downsell | Playwright `offer-mode.spec.ts`, `smoke.ts` against production |
-| Downsell variant applied before paint for `?downsell=1`, `?offer=downsell`, with UTMs | Playwright (attribute at DOMContentLoaded) |
+| Upsell by default; `?downsell=1`, `?offer=downsell` (also with extra parameters) set the downsell view before first paint; only the active decision heading is visible | Playwright `offer-mode.spec.ts` (attribute at DOMContentLoaded, both headings asserted) |
+| Exactly one `#hotmart-sales-funnel` and one widget script on upsell and downsell | Playwright `offer-mode.spec.ts`, `smoke` against production |
+| Simulated Hotmart library: `mount()` called once, slot `ready`, no fallback; back navigation leaves one container with one iframe | Playwright `widget.spec.ts` (stubbed script appending an iframe with Hotmart's inline `min-width: 320px`) |
+| Widget fits 320–1920 px (bleeds to the viewport edges below 400 px), no horizontal overflow, CLS ≤ 0.1 | Playwright `widget.spec.ts` (Chromium and WebKit) |
+| Script aborted / never renders → neutral fallback after 8 s; the empty container yields its reserved height to the notice | Playwright `widget.spec.ts` (Chromium and WebKit 390/1440) |
+| Editorial CTAs focus `#gfp-decision`; Hotmart's query is preserved untouched (only `#gfp-decision` is added); no `pay.hotmart.com` or checkout links on post-purchase pages | Playwright `offer-mode.spec.ts`, `widget.spec.ts` |
+| Sticky decision bar labels per mode; hidden over the heroes, the decision, the close band and the footer | Playwright `offer-mode.spec.ts` |
 | Canonical → base URL, `noindex` on upsell/downsell/thank-you | Playwright |
-| Editorial CTAs focus `#gfp-decision`; no `pay.hotmart.com` links on post-purchase pages | Playwright |
-| Widget script aborted / never renders → neutral fallback, no layout shift | Playwright (`widget.spec.ts`) |
-| Main CTAs → `<offer>?checkoutMode=10` with allowlisted params; `off`/`ref` dropped; one `CheckoutIntent` per click | Playwright (`commerce.spec.ts`) |
-| Thank-you: no `.pdf` links, no purchase markers, links to `consumer.hotmart.com` | Playwright |
-| Legacy paths on the new domain redirect with query intact (`/pequeverso/imprime-y-juega/?downsell=1` → `/imprime-y-juega/?downsell=1`) | curl on the standalone server |
-| Production: `?downsell=1` → 200, widget container present, `www`/slash canonicalization one hop | curl matrix, `docs/deployment.md` |
+| Main CTAs → `<offer>?checkoutMode=10` with allowlisted params; `off`/`ref` dropped; one `CheckoutIntent` per click | Playwright `commerce.spec.ts` |
+| Thank-you: no `.pdf` links, no purchase markers, links to `consumer.hotmart.com` | Playwright `widget.spec.ts` |
+| Legacy paths redirect with the query intact: `/pequeverso/imprime-y-juega/?downsell=1&…`, `/products/kit-imprime-y-juega/?offer=downsell`, `/pequeverso/grafismo-fonetico/gracias/`, `/products/grafismo-fonetico-gracias/`, `/pequeverso/grafismo-fonetico/`, `/products/grafismo-fonetico/` (308) | curl on the standalone server (2026-09-24) and `tests/unit/edge-rules.test.ts` |
 
 ## 4. Pending — Hotmart dashboard changes (owner, not yet done)
 
-Deploying the pages does **not** move the funnel. In the Hotmart producer area, for product
-the principal offer (Grafismo Fonético, code in hPanel's `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO`):
+Deploying the pages does **not** move the funnel. In the Hotmart producer area, for the
+principal product (Grafismo Fonético; its offer code is the one in the checkout URL set in
+`NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO`):
 
 | Setting | Current (documented) | Change to |
 |---|---|---|
