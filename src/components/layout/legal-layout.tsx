@@ -34,17 +34,12 @@ export function LegalLayout({ title, intro, updatedAt, sections = [], children }
                 En esta página
               </p>
               <ol
-                className="grid gap-x-6 gap-y-0.5 [counter-reset:toc] cq-sm:grid-cols-2 cq-lg:grid-cols-1"
+                className="toc grid gap-x-6 gap-y-0.5 cq-sm:grid-cols-2 cq-lg:grid-cols-1"
                 role="list"
               >
                 {sections.map((section) => (
-                  <li key={section.id} className="min-w-0 [counter-increment:toc]">
-                    <a
-                      href={`#${section.id}`}
-                      className="flex min-h-8 items-baseline gap-2 rounded-sm py-1 font-semibold text-body no-underline before:min-w-5 before:font-extrabold before:text-icon before:tabular-nums before:content-[counter(toc)'.'] hover:text-link-hover hover:underline"
-                    >
-                      {section.title}
-                    </a>
+                  <li key={section.id}>
+                    <a href={`#${section.id}`}>{section.title}</a>
                   </li>
                 ))}
               </ol>

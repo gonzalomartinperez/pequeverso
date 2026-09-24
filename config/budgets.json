@@ -17,14 +17,25 @@
     },
     "/imprime-y-juega/": {
       "html": 35328,
-      "css": 18432
+      "css": 17408
     },
     "/grafismo-fonetico/gracias/": {
       "js": 157696,
-      "html": 25088
+      "html": 25088,
+      "css": 13824
     },
     "/soporte/": {
       "html": 12800,
+      "js": 156160,
+      "css": 13824
+    },
+    "/terminos/": {
+      "html": 19456,
+      "js": 156160,
+      "css": 13824
+    },
+    "/privacidad/": {
+      "html": 18432,
       "js": 156160,
       "css": 13824
     }
