@@ -47,7 +47,8 @@ const mountedContainers = new WeakSet<Element>();
  *   invents offer ids and never reports a purchase.
  * - The slot reserves height (`--widget-min-h`: 220 px, 180 px from md; no CLS), is a focus
  *   target for editorial CTAs, announces status and shows a neutral fallback when the script
- *   fails or nothing renders in time. The loading state is a static tint (no motion next to
+ *   fails or nothing renders in time (the empty container then gives its reserved height to
+ *   the notice, so the page barely moves). The loading state is a static tint (no motion next to
  *   the decision); below 400 px the container bleeds to the viewport edges because Hotmart's
  *   iframe carries an inline `min-width: 320px`. A direct
  *   visit without an active purchase session may show Hotmart's own "purchase in progress"
@@ -134,7 +135,7 @@ export function HotmartWidgetSlot({
       <div
         id={hotmart.salesFunnelContainerId}
         ref={containerRef}
-        className="min-h-(--widget-min-h) min-w-0 rounded-md data-[status=loading]:bg-muted max-[399.98px]:mx-[calc(50%-50vw)] max-[399.98px]:w-screen max-[399.98px]:rounded-none"
+        className="min-h-(--widget-min-h) min-w-0 rounded-md data-[status=failed]:min-h-0 data-[status=loading]:bg-muted max-[399.98px]:mx-[calc(50%-50vw)] max-[399.98px]:w-screen max-[399.98px]:rounded-none"
         data-status={status}
       />
       <p className="min-h-[1.4em] text-small text-subtle empty:hidden" role="status" aria-live="polite">
