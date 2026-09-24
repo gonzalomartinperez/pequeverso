@@ -48,7 +48,7 @@ export function ZoomDialog({ open, zoom, title, onClose }: Props) {
                 <Dialog.Title
                   className={
                     title
-                      ? "pr-12 text-small font-extrabold tracking-[0.06em] text-teal-text uppercase"
+                      ? "pr-12 font-sans text-small font-extrabold tracking-[0.06em] text-teal-text uppercase"
                       : "sr-only"
                   }
                 >
