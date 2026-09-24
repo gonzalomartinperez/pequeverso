@@ -40,22 +40,52 @@ changes and the end-to-end purchase checklist live in `docs/hotmart-funnel.md`.
 4. **Meta**: domain verification for `pequeverso.com`; pixel traffic permissions.
 5. **Private ops repo**: `product.config.json` public URLs, `url-change-log.md`, media map.
 
-## Cutover sequence
+## Status (2026-09-24)
 
-| When | Action | Verify |
-|---|---|---|
-| T-14 d | Deploy to `staging.pequeverso.com` (noindex + basic auth). Run the full QA matrix (7 widths, keyboard, reduced motion, offer modes, widget). Reputation checks for pequeverso.com (Safe Browsing, Spamhaus DBL). Verify the GSC Domain property; review Security & Manual Actions. Trademark clearance search ("Pequeverso": INPI AR, EUIPO, USPTO, WIPO). | staging curl matrix in docs/deployment.md |
-| T-7 d | Supply legal placeholders; decide guarantee value; create the support mailbox; Meta domain verification; prepare the Hotmart URL list and the `.htaccess` block; write the curl matrix for the old domain (expect one hop after https, query intact). | `npm run check:placeholders:strict` passes |
-| T-0 (low traffic, ads paused) | Cloudflare **DNS-only** records → Hostinger; SSL issued; run Deploy → production with the release tag; submit the sitemap. Same hour on the old domain: insert the `.htaccess` block, disable the snippet's redirect action, purge LiteSpeed + CDN. Update Hotmart URLs; one live test purchase (checkout → upsell → downsell → gracias). | old-domain curl matrix; `scripts/smoke.ts`; Hotmart redirect URLs captured |
-| T+1 d | Submit `old-urls.xml` (the 7 old URLs) in the old GSC property; request indexing of `/` and `/grafismo-fonetico/`; update social bios and Metricool defaults; re-scrape OG in the Meta Sharing Debugger. | GSC shows the new URLs |
-| T+1…8 w | Weekly: GSC Pages on both properties, old-domain 404 log, Hotmart upsell/downsell conversion, Meta Events Manager (site events + Hotmart Purchase), uptime ping. T+28 d: CrUX / GSC Core Web Vitals (field data, not lab). | monitoring log in docs/verification |
-| T+30 d | Trash the old WordPress pages (they stay restorable for rollback until then). | — |
-| T+90 d | Decide WordPress retirement; keep an `.htaccess`-only docroot so redirects survive. | — |
+Done: `pequeverso.com` live on Hostinger (Node.js Web App builds `main`; Cloudflare proxy; SSL),
+every page on the design system, legal pages with the real seller data (no placeholders), Meta
+Pixel + Conversions API relay live (`NEXT_PUBLIC_META_PIXEL_ID`, `META_CAPI_ACCESS_TOKEN` in
+hPanel), checkout URL from `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO`, guarantee kept at 7
+days, support on `somospequeverso@gmail.com`, daily production checks (`production-daily.yml`).
+Pending: everything in the runbook below — the old domain and the Hotmart funnel still point at
+WordPress.
+
+## Cutover runbook (owner, ~1 hour, low-traffic window, ads paused)
+
+| # | Action | Where | Verify |
+|---|---|---|---|
+| 1 | Confirm the upsell (US$14,99) and downsell (US$7,49) offers exist and are active in the sales funnel; do not reuse legacy offer ids. | Hotmart → Herramientas → Funnel de ventas | both steps show an active offer |
+| 2 | Set the product's sales page URL to `https://pequeverso.com/grafismo-fonetico/`. | Hotmart → Productos → (producto) → página de ventas | Hotmart product page links to the new URL |
+| 3 | Set the funnel stage URLs: upsell `https://pequeverso.com/imprime-y-juega/`, downsell `https://pequeverso.com/imprime-y-juega/?downsell=1`. | Hotmart → Herramientas → Funnel de ventas | stage previews open the new pages |
+| 4 | Set the external thank-you URL (approved, awaiting payment, under analysis) to `https://pequeverso.com/grafismo-fonetico/gracias/`. | Hotmart → Productos → (producto) → página de agradecimiento / post-venta | — |
+| 5 | Pixel settings: keep Purchase (Web + API) and checkout visits on; turn **off** the Hotmart product-page visits event (the site emits ViewContent). | Hotmart → Herramientas → Píxel de seguimiento | — |
+| 6 | Same hour on the old domain: insert `docs/migration/old-domain.htaccess` at the top of the WordPress `.htaccess`, disable the PHP snippet's `/products/*` redirect, purge LiteSpeed + CDN. | hPanel → digitalproductsteam.com → File manager | old-domain curl matrix below: one 301 hop, query intact |
+| 7 | Test purchase (low value, refund inside the guarantee): landing with `?utm_source=e2e` → CTA → pay → upsell (decline) → downsell (decline or accept) → gracias. Record the exact URLs and query Hotmart used. | browser | checklist `docs/hotmart-funnel.md` §5; Events Manager shows PageView/ViewContent/CheckoutIntent (Browser + Server, deduplicated) and Hotmart's Purchase |
+| 8 | Request the refund of the test purchase. | refund.hotmart.com | refund confirmed by email |
+| 9 | Google Search Console: add the Domain property `pequeverso.com`, submit `https://pequeverso.com/sitemap.xml`, request indexing of `/` and `/grafismo-fonetico/`; in the old property submit the old URLs. | GSC | sitemap "Success" |
+| 10 | Meta: verify the domain `pequeverso.com` in Business Settings; re-scrape `/` and `/grafismo-fonetico/` in the Sharing Debugger. | Meta Business | domain "Verified" |
+| 11 | Update social bios and Metricool defaults to `https://pequeverso.com/grafismo-fonetico/?utm_source=<network>&utm_medium=social`; update Hotmart product descriptions/emails that mention the old URL. | Instagram, TikTok, Facebook, YouTube, Metricool, Hotmart | links open the new landing |
+| 12 | Start traffic (ads, posts). Watch the first day: `production-daily` issue stays closed, Events Manager, Hotmart sales and upsell/downsell take rate. | GitHub, Meta, Hotmart | — |
+
+Owner legal follow-ups (from `docs/legal-checklist.md`, not blocking the cutover): register the
+customer database with the AAIP; ask the accountant about the ARCA "Data Fiscal" QR; consider a
+15-day guarantee (above the 10-day Argentine revocation and Hotmart's EU minimum); answer every
+arrepentimiento email within 24 h with a reference; a lawyer's review of the legal pages.
+
+## After cutover
+
+| When | Action |
+|---|---|
+| T+1 d | GSC coverage for the new URLs; social bios checked; OG previews checked. |
+| T+1…8 w | Weekly: GSC (both properties), old-domain 404s, Hotmart funnel conversion, Events Manager match quality; `production-daily` runs every day. T+28 d: field Core Web Vitals (CrUX/GSC). |
+| T+30 d | Trash the old WordPress pages (restorable until then for rollback). |
+| T+90 d | Decide WordPress retirement; keep an `.htaccess`-only docroot so redirects survive ≥ 12 months. |
 
 ## Rollback
 
-Remove the `.htaccess` block, restore the four WordPress pages, restore Hotmart URLs, purge
-caches. The new domain can stay live meanwhile.
+Restore the four Hotmart URLs (steps 2–4) to the old WordPress pages, remove the `.htaccess`
+block, purge caches. `pequeverso.com` can stay live meanwhile; a bad site deploy is rolled back
+by reverting the commit on `main` (Hostinger redeploys it).
 
 ## Old domain and email
 
