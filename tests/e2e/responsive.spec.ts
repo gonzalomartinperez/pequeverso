@@ -90,6 +90,8 @@ for (const route of routes) {
 test("short landscape phone: no fixed layer covers a checkout CTA", async ({ page }) => {
   await page.setViewportSize({ width: 640, height: 360 });
   await page.goto("/grafismo-fonetico/");
+  const banner = page.getByTestId("consent-banner");
+  if (await banner.isVisible()) await banner.getByRole("button", { name: "Rechazar" }).click();
   const ctas = page.locator('main a[data-checkout]:not([data-position="sticky"])');
   const count = await ctas.count();
   expect(count).toBeGreaterThan(0);

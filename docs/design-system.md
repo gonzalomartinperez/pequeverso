@@ -1,159 +1,179 @@
 # Design system
 
 The visual idea is the brand's "pequeño universo": a deep-navy sky with a starfield, soft planets
-and an orbiting gold star (`Universe` component, pure CSS), warm cream pages, real worksheet
-renders shown with subtle 3D depth (tilt cards, receding carousel slides), and coral reserved for
-the single purchase action. Everything is driven by the tokens in `src/styles/tokens.css`.
+and an orbiting gold star, warm cream pages, real worksheet renders shown with subtle 3D depth,
+and coral reserved for the single purchase action. The system is **Tailwind CSS 4.3 + shadcn/ui
+on Base UI** (`base-vega`), with every value defined once in `src/app/globals.css`.
+Decision record: `docs/decisions/ADR-0006-shadcn-tailwind-design-system.md`; spec:
+`docs/specs/design-system.md`.
 
-## Colour
+## Where things live
 
-| Token | Value | Use | Contrast (checked 2026-09-12) |
+| Path | Contents |
+|---|---|
+| `src/app/globals.css` | fonts, tokens (`:root`), `@theme inline` bridge, `cq-*` variants, base layer, project utilities |
+| `src/motion/motion.css` | reveal, hero entrance, orbit, parallax, sticky stack, tilt, details, flip view transition |
+| `src/components/ui/` | shadcn primitives (Base UI) + `button-variants.ts`, `badge-variants.ts` |
+| `src/components/blocks/` | server blocks composed from primitives and tokens |
+| `src/components/layout/` | `page-shell`, `header` (+ `mobile-nav`, `mobile-nav-sheet`), `footer`, `legal-layout` |
+| `src/motion/` | motion components, `page-motion`, `scene/` (lazy three + gsap starfield) |
+| `src/lib/utils.ts` / `src/lib/cx.ts` | `cn` (merge on compiled tables) / `cx` (join, client islands) |
+
+## Tokens
+
+Raw brand values are OKLCH (`--pv-*`); semantic roles (shadcn names plus project roles) point at
+them; `@theme inline` exposes both as utilities. Contrast pairs are recomputed from the token
+source by `tests/unit/design-system.test.mjs`.
+
+| Token (utility) | Value (sRGB) | Use | Contrast |
 |---|---|---|---|
-| `--pv-navy` | `#003068` | brand, dark bands, header CTA text | white on navy 12.9:1 |
-| `--pv-navy-deep` | `#00234e` | footer, topbar | white 15.6:1 |
-| `--pv-teal` / `--pv-teal-text` | `#007d79` / `#005e5b` | icons, links; small labels | white on teal 5.0:1; teal-text on white 7.6:1 |
-| `--pv-coral` / `--pv-coral-hover` | `#c64035` / `#a83129` | **only** primary CTA and price | white 5.0:1 / 6.7:1 |
-| `--pv-gold` | `#ffd840` | star accents, chips, headings on navy | ink on gold 11.9:1 — never gold text on light |
-| `--pv-ink` / `--pv-body` / `--pv-muted` | `#0b1f3a` / `#425267` / `#5d6b80` | text | 15.9 / 7.7 / 5.2 on cream |
-| `--pv-cream` | `#fffaf2` | page background | — |
-| soft bands | mint `#e4f7f5`, sky `#e8f3ff`, lemon `#fff5bf`, rose `#fff0eb` | alternate at most one soft band between two neutral bands | — |
-| `--pv-hero-top` / `--pv-hero-bottom` | `#00234e` / `#003068` | hero and band gradients (`Universe`) | as navy-deep / navy |
-| `--pv-turquoise` | `#7fe3d9` | accent **on navy only** (icons, rules, orbit highlights) | 8.6:1 on navy; never on light |
-| `--pv-on-navy` / `--pv-on-navy-chip` | `rgba(255,255,255,.86)` / `rgba(255,255,255,.12)` | body text and chip fills on navy | 9.9:1 on navy |
-| focus | navy 3 px ring + 2 px white halo | every focusable element | visible on all backgrounds |
+| `--pv-navy` (`bg-navy`, `text-navy`) | `#003068` | brand, navy bands, `--secondary`, `--ring` | white 12.9:1 |
+| `--pv-navy-deep` (`bg-navy-deep`) | `#00234e` | footer, topbar, navy cards | white 15.6:1 |
+| `--pv-teal` / `--pv-teal-text` | `#007d79` / `#005e5b` | icons (`--icon`), links (`--link`), small labels | white/teal 5.0:1; teal-text/white 7.6:1 |
+| `--pv-coral` / `--pv-coral-hover` | `#c64035` / `#a83129` | **only** the purchase CTA (`--primary`) and price | white 5.0:1 / 6.7:1 |
+| `--pv-gold` | `#ffd840` | accents on navy, step numbers; never gold text on light | ink/gold 11.9:1; gold/navy 9.3:1 |
+| `--pv-turquoise` | `#7fe3d9` | accent on navy only (`--accent` inside `on-navy`) | 8.6:1 on navy |
+| `--pv-cream` / `--pv-white` | `#fffaf2` / `#fff` | `--background` / `--card` | — |
+| `--pv-ink` / `--pv-body` / `--pv-muted` (`text-ink`, `text-body`, `text-subtle`) | `#0b1f3a` / `#425267` / `#5d6b80` | headings, body, notes | 15.9 / 7.7 / 5.2 on cream |
+| soft bands (`bg-mint`, `bg-sky`, `bg-lemon`, `bg-rose`) | `#e4f7f5` `#e8f3ff` `#fff5bf` `#fff0eb` | at most one soft band between two neutral ones | — |
+| `--pv-line` / `--pv-line-strong` | navy 14 % / 28 % | `--border` / `--input` | UI 3:1 via 2 px borders where it matters |
+| focus | `outline: 3px var(--ring)` + 2 px offset | navy on light, gold inside `on-navy` | visible on every band |
 
-Retired from the WordPress landings: `#df5a4f` (3.7:1), `#00a9a4` text (2.9:1), gold focus ring
-(1.3:1), the purple downsell theme, Baloo 2, Roboto.
+Semantic roles: `--background`, `--foreground`, `--card`, `--popover`, `--primary`(+`-foreground`,
+`-hover`), `--secondary`(+…), `--muted`, `--muted-foreground`, `--accent`, `--border`, `--input`,
+`--ring`, `--heading`, `--body`, `--link`, `--link-hover`, `--chip`, `--chip-foreground`,
+`--icon`, `--surface-veil`. **`on-navy`** re-scopes them for navy surfaces (white headings, 86 %
+white body, gold chips/icons/focus) and **`on-light`** restores them for light surfaces inside a
+navy band. `Section tone="navy"`, `Card variant="navy"` and the footer apply `on-navy`; light
+cards, price blocks, notices and fact chips apply `on-light`.
 
-## Type
+**Type.** Fraunces 700 (`font-display`: h1, h2, price) and Nunito Sans 500–800 (`font-sans`),
+self-hosted with metric-matched fallbacks (`docs/performance.md`). Fluid sizes: `text-display`
+34→60, `text-h2` 30→42, `text-h3` 20→22, `text-lead` 17→19, `text-base` 16→17, `text-small` 14,
+`text-tiny` 13, `text-price` 38→44. Base styles set h1–h4, p, strong and links from the roles.
 
-Fraunces (variable, 700) for display/H1/H2/price; Nunito Sans (variable, 500–800) for everything
-else. Fluid scale via `clamp()`: H1 34→60, H2 30→42, lead 17→19, body 16→17, price 38→44.
-Weights are capped at 800. Fonts are self-hosted (`public/fonts`, OFL) with hand-written `@font-face` rules, preloaded from the
-root layout and metric-matched fallbacks (`docs/performance.md`).
+**Spacing.** 4-pt: Tailwind's `--spacing` (0.25rem) gives `p-4 = 1rem`; the `--space-1…9`
+aliases remain for CSS Modules. `section-pad` 56→96 px, `page-container` 1200 px with a
+20–24 px fluid gutter. **Radius:** `rounded-sm` 4, `rounded-chip` 6, `rounded-md` 8 (buttons,
+media), `rounded-lg` 12 (cards), `rounded-xl` 16, `rounded-pill` (primary CTA, chips).
+**Elevation:** `shadow-sm|md|lg` (navy-tinted), `shadow-cta` (coral glow); no backdrop blur.
 
-## Spacing, radius, elevation, breakpoints
-
-- 4-pt scale (`--space-1` … `--space-9`); section padding 56→96 px; container 1200 px with a
-  20–24 px gutter; mobile gutter never below 20 px.
-- Radius: 6 (chips), 8 (buttons, cards, media), 12 (large cards), pill only for chips.
-- Elevation: three navy-tinted shadows plus a coral CTA glow. No backdrop blur.
-- Breakpoints (min-width): **sm 640 · md 768 · lg 1024 · xl 1280**, declared once in the header of
-  `tokens.css` and exported from `src/lib/breakpoints.ts` (`breakpoints`, `below()`). Primitives use
-  the same numbers in **container queries**; pages never write `@media`.
-- Layout tokens: `--section-overlap` (4 rem), `--section-intrinsic` (640 px, `contain-intrinsic-size`
-  for deferred sections), `--wave-height` (`clamp(2rem, 6vw, 4.5rem)`), `--badge-sm/md/lg` (48/56/72).
-
-## Motion tokens and policy
-
-| Token | Value | Used by |
-|---|---|---|
-| `--duration-fast` / `--duration` | 150 / 220 ms | hover, tilt, sticky bar |
-| `--duration-reveal` | 480 ms | reveal fallback transition, flip (half each way) |
-| `--duration-hero` | 600 ms | hero entrance (upper bound) |
-| `--duration-orbit` | 48 s | `Orbit` loop |
-| `--ease-out` / `--ease-emphasis` | `cubic-bezier(.2,.7,.2,1)` / `cubic-bezier(.2,.8,.2,1)` | micro / reveal and hero |
-| `--stagger` | 60 ms | sibling delay, multiplied by `--i` |
-| `--reveal-y` | 16 px | reveal and hero travel |
-| `--parallax-range` | 20 px | `Parallax` travel (±) |
-| `--tilt-max` / `--tilt-perspective` | 6deg / 900 px | `TiltCard`, `FlipPreview` |
-
-Policy:
-
-- **Transform and opacity only**, with layout reserved (aspect ratios, `Parallax` padding, `Counter`
-  `min-width` in `ch`). Never `will-change`, blur or drop-shadow keyframes.
-- **Scroll-driven first.** `[data-reveal]` runs on a CSS view timeline (`entry 0%–35%`, staggered by
-  `--i`), so an element already in view at load is at 100 % and never flashes. `RevealObserver` is
-  only a fallback (`!CSS.supports("animation-timeline: view()")`): it marks elements *below the
-  fold* with `data-reveal-state="pending"` and reveals them once. Nothing is hidden without JS.
-- **Hero entrance** (`hero.css`): `[data-hero-enter]` rises ≤ 600 ms; `h1`/`title` and `media` never
-  animate opacity (LCP paints at once). Do not combine with `data-reveal`.
-- **Gates.** CSS: `prefers-reduced-motion: no-preference` around every animation, plus the global
-  kill switch in `base.css`. JS: `useMotionOK()` (`useSyncExternalStore` over reduced motion,
-  `(pointer: fine)` and `navigator.connection.saveData`) gates `TiltCard`, `Counter`, `FlipPreview`.
-  `Orbit` pauses under reduced motion.
-- **Budget** (gzip, measured 2026-09-13): `src/motion` client JS 2.1 KB for TiltCard + Counter +
-  FlipPreview + StickyCTA + `useMotionOK` (target ≤ 3 KB; RevealObserver adds ~0.4 KB to the layout
-  chunk). The Motion library was evaluated (10.7 KB sync + 15.1 KB lazy at its floor) and dropped
-  once the hero choreography fit in `hero.css` and React `ViewTransition`; every effect is CSS
-  scroll-driven or transform/opacity, and JS only observes.
-- No autoplaying video. Route budgets stay enforced by `npm run check:bundle`.
-
-### Motion components (`src/motion`)
-
-| Component | Kind | API |
-|---|---|---|
-| `reveal.css`, `hero.css`, `flip.css` | global CSS (imported by `base.css`) | `[data-reveal]` + `--i`; `[data-hero-enter]` / `="title"` / `="media"` + `--i`; view-transition class `pv-flip` |
-| `RevealObserver` | client, root layout | no props; fallback only |
-| `useMotionOK()` | hook | `{ ok, reducedMotion, finePointer, saveData }` |
-| `TiltCard` | client | `children`, `className?`, `max?` (deg, defaults to `--tilt-max`), `as?: div\|article\|figure` |
-| `Parallax` | server | `children`, `direction?: up\|down`, `className?` |
-| `StickyStack` | server | `items: ReactNode[]` (≤ 6), `className?` — sticky cards; the previous card scales to .94 on the next card's view timeline (`timeline-scope`) |
-| `Counter` | client | `value: number`, `format?: (n) => string`, `className?` — SSR renders the final value |
-| `FlipPreview` | client | `front`, `back`, `showLabel?`, `hideLabel?`, `ratio?: 4/3\|3/4\|16/9`, `className?` — `<button aria-expanded>`, React `ViewTransition` |
-| `WaveDivider` | server | `fill: WaveFill` (token name), `flip?`, `className?` |
-| `Orbit` | server | `className?` — dashed ellipse + gold star on `offset-path` |
-| `Universe` | server | `variant?: hero\|band`, `className?` — paint-contained backdrop that renders `Orbit` |
-| `StickyCTA` | client | `hideWhenVisible: string[]`, `label`, `note?` (tiny second line, the short currency note), `children` — mobile only (`below("lg")`), hidden while any `dialog[open]` |
+**Motion tokens.** `--duration-fast` 150 ms, `--duration` 220 ms, `--duration-reveal` 480 ms,
+`--duration-hero` 600 ms, `--duration-orbit` 48 s, `ease-out` / `ease-emphasis`, `--stagger`
+60 ms (× `--i`), `--reveal-y` 16 px, `--parallax-range` 20 px, `--tilt-max` 6°,
+`--tilt-perspective` 900 px. **Layout:** `--header-height`, `--sticky-bar-height`,
+`--section-overlap`, `--section-intrinsic`, `--wave-height`, `--badge-sm|md|lg`.
 
 ## Primitives (`src/components/ui`)
 
-Server components, one folder each (`<Name>.tsx` + `<Name>.module.css`). Tones: `light|dark` for
-text on navy; `SectionTone = cream|white|mint|sky|lemon|rose|navy`.
+shadcn/ui components on Base UI, restyled with tokens; every root has `data-slot`. Base UI
+composes custom elements with `render` (no `asChild`); for links styled as buttons use
+`buttonVariants()` on `<a>`/`<Link>` (or `CTAButton`).
 
-| Primitive | Props |
+| Primitive | API |
 |---|---|
-| `Section` | `tone?`, `id?`, `labelledBy?`, `label?`, `divider?: none\|wave-top\|wave-bottom\|overlap`, `dividerTone?: WaveFill` (neighbour band, default cream), `defer?` (`content-visibility: auto`; not with overlap), `container?` (default true), `className?`, `children` |
-| `Card` | `variant?: default\|emphasis\|soft\|navy`, `pad?: md\|lg`, `as?: div\|article\|li\|section\|figure`, `id?`, `reveal?`, `stagger?` (`--i`), `className?`, `children` |
-| `IconBadge` | `icon: IconName`, `size?: 48\|56\|72`, `tone?`, `number?`, `className?` |
-| `Grid` | `cols?: 2\|3\|4`, `min?` (auto-fit column width), `gap?: 3\|4\|5\|6`, `as?: div\|ul\|ol` (lists get `role="list"`), `className?`, `children` — container queries at sm/md/lg |
-| `Split` | `ratio?: 1/1\|1.1/0.9\|0.9/1.1\|1.2/0.8\|0.8/1.2`, `align?: start\|center\|stretch`, `stickyAside?`, `mediaFirstOnTablet?`, `className?`, `children: [copy, media]` — two columns from md (container), media first between sm and md |
-| `Stack` | `gap?: 2\|3\|4\|5\|6`, `maxWidth?`, `align?: start\|center`, `as?`, `id?`, `className?`, `children` |
-| `BulletList` | `items: string[]`, `icon?: IconName` (sparkles), `tone?`, `className?` |
-| `ChipRow` | `align?: start\|center`, `className?`, `children` |
-| `Eyebrow` | `tone?`, `as?: p\|span`, `className?`, `children` — replaces the global `.kicker` |
-| `MediaFrame` | `ratio?: 4/3\|3/4\|16/9`, `elevation?: none\|sm\|md\|lg`, `tilt?`, `as?: div\|figure`, `className?`, `children` (img/picture/MediaImage) |
-| `IconCardList` | `items: {icon,title,text}[]`, `cols?`, `numbered?` (`<ol>` + numbers), `tone?`, `className?` |
-| `DecisionLink` (`src/features/commerce`) | `variant?`, `size?`, `block?`, `className?`, `children` — `<a href="#gfp-decision" data-decision-link>` with the `.button` classes |
+| `button` / `buttonVariants` | `variant: primary` (coral pill, CTA only) `\| secondary` (navy) `\| outline \| inverse \| ghost \| link`; `size: default` (56 px) `\| sm` (44 px) `\| lg \| icon` (44 px); `block`. Icons: `data-icon="inline-start\|inline-end"` |
+| `badge` / `badgeVariants` | `variant: chip` (mint; gold inside `on-navy`) `\| gold \| navy \| outline \| soft`; `render` |
+| `card` | `Card variant: default \| emphasis \| soft \| navy`, `pad: none \| md \| lg`, `as`, `reveal`, `stagger`; `CardHeader`, `CardTitle as`, `CardDescription`, `CardContent`, `CardFooter` |
+| `dialog`, `sheet` | Base UI dialog; `DialogContent`/`SheetContent side` with `closeLabel` (Spanish), transitions on `data-starting-style`/`data-ending-style` |
+| `accordion` | Base UI accordion (interactive use); FAQ content uses the zero-JS `FAQ` block |
+| `tabs`, `radio-group` | chip look; `RadioGroupItem variant: dot \| chip` |
+| `tooltip` | supplementary only, never the only label |
+| `separator`, `skeleton`, `table` | `Table` scrolls horizontally inside its own container |
 
-`.container`, `.section`, `.section--*` and `.kicker` in `base.css` are legacy aliases kept until every
-page renders `Section`/`Eyebrow`; remove them with the last page migration.
+## Blocks (`src/components/blocks`)
 
-## Components
+Server components; props kept compatible with the previous PascalCase primitives.
 
-| Component | Kind | Notes |
+| Block | Props |
+|---|---|
+| `Container` | `as?`, `className?` |
+| `Section` | `tone?: cream\|white\|mint\|sky\|lemon\|rose\|navy`, `id?`, `labelledBy?`, `label?`, `divider?: none\|wave-top\|wave-bottom\|overlap`, `dividerTone?`, `defer?`, `container?` (default true), `className?` — renders `data-slot="section"` + `data-tone` |
+| `SectionHeading` | `id`, `kicker?`, `title`, `lead?`, `align?: start\|center`, `tone?` |
+| `Eyebrow` | `tone?`, `as?: p\|span` |
+| `Stack` | `gap?: 2–6`, `maxWidth?`, `align?`, `as?`, `id?` |
+| `Grid` | `cols?: 2\|3\|4` (container queries), `min?` (auto-fit), `gap?: 3–6`, `as?: div\|ul\|ol` |
+| `Split` | `ratio?`, `align?`, `stickyAside?`, `mediaFirstOnTablet?`, `children: [copy, media]` |
+| `BulletList` | `items`, `icon?`, `as?: ul\|ol`, `tone?` |
+| `ChipRow`, `FactChip` | `align?` / `icon?`, `label`, `detail?`, `tone?` |
+| `IconBadge`, `IconCardList` | `icon`, `size?: 48\|56\|72`, `tone?`, `number?` / `items`, `cols?`, `numbered?`, `tone?` |
+| `MediaFrame`, `MediaImage` | `ratio?`, `elevation?`, `tilt?`, `as?` / manifest `id`, `sizes`, `priority?`, `alt?` |
+| `PriceBlock` | `kicker`, `price`, `previous?`, `taxNote`, `currencyNote?` (default `localCurrencyNote`, globe icon), `cta`, `ctaNote?`, `tone?`, `id?` |
+| `Steps`, `FAQ`, `ResourceGrid`, `Notice` | `steps`, `tone?` / `items`, `openFirst?` (native `<details>`) / `resources`, `compact?`, `total?` / `tone?`, `title?`, `role?` |
+| `CTAButton` | button-variant props + `href?`, `external?`, `icon?`, `iconAfter?: arrow\|external\|LucideIcon`; external → `target="_blank" rel="noopener"` + external icon |
+| `BrandLogo`, `SocialLinks`, `SkipLink`, `Topbar`, `Icon` | `variant?`, `wordmark?: always\|sm-up`, `priority?` / `tone?`, `size?` / — / `items?`, `tone?` / `name` |
+
+## Motion
+
+Layers, in order of preference: **(1) CSS** — `[data-reveal]` on a view timeline (`entry` range,
+staggered by `--i`; an element already in view is at 100 %, nothing flashes), `[data-hero-enter]`
+(h1 and media never animate opacity, so LCP paints at once), Base UI transitions on
+`data-starting-style`/`data-ending-style`, native `<details>` height via `interpolate-size`;
+**(2) React `<ViewTransition>`** (FlipPreview, HeroStack, AgeSelector); **(3) WAAPI** —
+`PageMotion` raises below-the-fold sections 8 px (240 ms, no fill mode, cancelled when reduced
+motion turns on). **3D** is limited to `src/motion/scene`: `SceneStage` keeps the server-rendered
+static layers (`StaticStarfield`: a seeded 320 px SVG pattern tile, planets, `Orbit`), lazily
+imports `scene-runtime.ts` (three + gsap ScrollTrigger) inside an effect, skips it under reduced
+motion, Save-Data or viewports under 650 px tall, pauses off-screen or in hidden tabs, drops DPR
+on slow frames, recovers from context loss and shows a pause button (WCAG 2.2.2).
+
+Rules: transform/opacity only; layout reserved (aspect ratios, `Parallax` padding, `Counter`
+min-width); every animation behind `prefers-reduced-motion: no-preference` plus the global kill
+switch; scroll-driven rules behind `@supports (animation-timeline: view())`; no `will-change`,
+blur or filter keyframes; no autoplaying video.
+
+| Motion component | Kind | API |
 |---|---|---|
-| `PageShell`, `Header`, `Footer`, `Topbar`, `SkipLink` | server | complete navigation on every page; ≤ 4 header anchors, one CTA with a verb |
-| `Universe` | server (CSS) | decorative starfield backdrop with `Orbit` |
-| `SectionHeading`, `FactChip`, `Steps`, `Notice`, `LegalLayout`, `Icon` | server | lucide icons through a small map |
-| `MediaImage` | server | manifest-backed `<img srcset>` with explicit size, priority for LCP |
-| `ResourceGrid` | server + `TiltCard` | real covers, names, page counts |
-| `PageGallery` | client (Embla) | drag, arrows, dots, keyboard, counter, `<dialog>` zoom |
-| `VideoBlock` | client | click-to-play with controls, one active player, text alternative |
-| `PriceBlock` | server | price, tax note, local-currency note (globe icon; defaults to `localCurrencyNote`), CTA slot, guarantee; anchors only when real |
-| `CheckoutLink`, `ProductInterestLink`, `ViewContentOnMount` | client | commerce islands (params + events) |
-| `HotmartWidgetSlot` | client | single widget container, reserved height, focus target, fallback |
-| `OfferModeRoot` / `OfferModeMirror` | server / client | pre-paint `data-offer`, post-hydration mirror |
-| `StickyCTA` | client | mobile bar hidden over hero, final offer, footer and open dialogs |
-| `ConsentBanner`, `Analytics`, `RevealObserver` | client | mounted once in the root layout |
+| `useMotionOK()` | hook | `{ ok, reducedMotion, finePointer, saveData }` |
+| `RevealObserver` | client (layout) | fallback for browsers without view timelines |
+| `PageMotion` | client (PageShell) | wraps main content |
+| `TiltCard`, `Counter`, `FlipPreview` | client | `max?`, `as?` / `value`, `format?` / `front`, `back`, `showLabel?`, `hideLabel?`, `ratio?` |
+| `Parallax`, `StickyStack`, `WaveDivider`, `Orbit` | server | `direction?` / `items` (≤ 6) / `fill`, `flip?` / `className?` |
+| `Universe` | server | `variant?: hero\|band` — sky + `SceneStage` |
+| `SceneStage`, `useSceneRuntime` | client | `children` (static layers), `pauseLabel?`, `playLabel?`, `options?: { seed, count, parallax }` |
+| `StickyCTA` | client | `hideWhenVisible`, `label`, `note?`, `children` — below lg, hidden over dialogs |
 
-## Hero scene and page sections
+## Responsive contract
 
-The landing and the home share the hero "la mesa bajo el pequeño universo" (`src/features/landing/core`):
+Acceptance criterion for every block and page, 320 → 1920 px, enforced by
+`tests/e2e/responsive.spec.ts` (PR set; Chromium and WebKit nightly) and the overflow check in
+`smoke.spec.ts` at every nightly width:
 
-| Component | Kind | Notes |
-|---|---|---|
-| `HeroScene` | server | `id`, `titleId`, `eyebrow`, `title`, `lead`, `children` (copy extras), `actions`, `trust`, `stack`, `aside`, `desk`. A navy sky (`Universe` + `WaveDivider`) over a cream desk; the section is its own query container (sm 640 · lg 1024 · xl 1280), every item is placed explicitly on the grid. ≥ lg: 1.05/0.95 columns, the stack hangs over the wave by `--section-overlap`, the aside is `position: sticky` beside the desk row. sm–lg: copy → stack → aside → desk. < sm: sky covers copy + aside, stack (240 px, side pages peeking) → desk. Entrance uses `hero.css` (`--i` 0–5; the h1 lifts without opacity, the stack is `data-hero-enter="media"`). |
-| `HeroStack` | client | `pages: {id, node}[]` (server-rendered `MediaImage`, the featured one `priority`), `featured`. Three worksheets fanned with `perspective` + `preserve-3d` (rotateY −14°/0/+12°, translateZ) under an `Orbit`; slots (`data-slot="front|left|right"`) follow the `AgeProvider` selection through React `ViewTransition` (`"none"` under reduced motion). |
-| `AgeProvider`, `AgeSelector` (`src/features/landing/AgeSelector`) | client | `fieldset` of radios (3–4 · 5 · 6–7) styled as chips; `select` runs in `startTransition`; the "por dónde empezar" line is `aria-live="polite"`. Title, price and URL never change. |
-| `Includes`, `MethodSteps`, `OfferCard`, `AudienceCards`, `CreatorNote`, `CenteredHeading` | server | Section bodies composed from primitives: `Counter` facts + `ResourceGrid` (two columns from 30rem of the desk column), `Steps` from md and `StickyStack` of navy cards below, `Card emphasis` + `Split` + `PriceBlock`, two `BulletList` cards, the author's note (only when `copy.creator.enabled`), and a centred `Stack` heading. |
+- Content-driven layout: blocks read their container (`cq` + `cq-sm|md|lg|xl`, same thresholds
+  as sm 640 · md 768 · lg 1024 · xl 1280); pages never write media queries. Type and section
+  spacing are fluid (`clamp()`).
+- No fixed widths wider than the column; grid children are `min-w-0`; `Stack` caps children at
+  100 %; labels wrap (badges have no `nowrap`); images and media keep `max-width: 100%` and their
+  natural aspect (`object-fit` only inside `MediaFrame`); tables scroll inside `Table` / `.table-wrap`.
+- Targets ≥ 44 px for controls (24 px minimum for inline links); the header CTA is inside the
+  first viewport at ≤ 768 px; at < 640 px the header drops the wordmark and decorative CTA icons.
+- Fixed layers never cover the CTA: the sticky bar hides over the hero CTA, price card, offer,
+  final offer, footer and open dialogs; the consent banner is capped at 60 dvh; checked at 640×360.
+- Third-party embeds: the Hotmart iframe (inline `min-width: 320px`) bleeds to the viewport edges
+  below 400 px instead of overflowing.
 
-Landing order (`CoreLanding`): `#hero` (with `#comprar` price card and the `#incluye` desk) → Problema → `#metodo` (navy, wave-top) → `#videos` → `#paginas` (sky, overlap) → `#oferta` → `#para-quien` → author's note → `#preguntas` (mint) → `#oferta-final` (navy) → `StickyCTA` (mobile; hidden while the hero CTA, `#comprar`, `#oferta`, `#oferta-final`, the footer or a dialog is visible). Checkout positions: `header`, `hero`, `hero-card`, `oferta`, `final`, `sticky`. Home: hero (the only CTA lives in the product card) with the `#empieza` desk → `#paginas` (three `FlipPreview` cards) → `#metodo` (navy, wave-top) → `#valores` → closing band. Below-the-fold sections render with `Section defer`; the hero and the sticky-bar sentinels never do.
+## How to change…
 
-## Responsive rules
+- **Brand colour:** edit the `--pv-*` value in `globals.css` (OKLCH); run `npm test` — the
+  contrast test fails if a documented pair drops below its ratio.
+- **CTA colour:** change `--primary`/`--primary-hover` (and `--pv-shadow-cta`); nothing else uses coral.
+- **Font:** replace the `@font-face` block and the preload list in `src/app/layout.tsx`, then
+  `--pv-font-display`/`--pv-font-sans`; re-measure the fallback metrics (`docs/performance.md`).
+- **Radius:** edit `--pv-radius-*` (cards use `rounded-lg`, buttons `rounded-md`, CTA `rounded-pill`).
+- **Section band:** add `--pv-<band>` + `--color-<band>` in `@theme inline`, a `tone` entry in
+  `sectionVariants` and the `WaveFill` union.
+- **Spacing:** section rhythm `--section-pad`, gutter `--gutter`, column `--page-max`; component
+  spacing uses the Tailwind scale.
+- **Animation duration/easing:** `--duration*`, `--pv-ease-*`, `--stagger`, `--reveal-y`.
+- **A new primitive:** `npx shadcn@latest add <name>` (Base UI), then restyle with roles, add
+  `data-slot`, keep targets ≥ 44 px, record it in `docs/assets/shadcn-ui.md`.
 
-1440/1280: two-column heroes, 3–4-up grids. 1024: two columns, 3-up grids. 768: single column,
-2-up grids, visual above copy on the landing (`Split mediaFirstOnTablet`). 430/390/360: single
-column, copy → price → CTA → visual, sticky bar on, 1-up cards; 360 shows the isotipo only in the
-header. Reflow is checked at 320 in the nightly matrix; no page may scroll horizontally. Pages get
-this from `Grid`/`Split` container queries; they do not write media queries.
+## Page templates (migrating in follow-up PRs)
+
+Home, landing, offer, thanks and the gallery/video/age-selector islands still style their own
+geometry in CSS Modules (tokens via `var()`, never `@apply`) while rendering through the blocks
+above. The hero "la mesa bajo el pequeño universo" (`src/features/landing/core/HeroScene`,
+`HeroStack`, `AgeSelector`) and the landing order are described in `docs/specs/design-system.md`
+(migration plan) and remain as before: `#hero` (with `#comprar` and `#incluye`) → problema →
+`#metodo` → `#videos` → `#paginas` → `#oferta` → `#para-quien` → author's note → `#preguntas` →
+`#oferta-final` → `StickyCTA`.

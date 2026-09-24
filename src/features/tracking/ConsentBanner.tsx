@@ -46,7 +46,7 @@ function joinSpanish(items: string[]): string {
 }
 
 const BANNER =
-  "fixed inset-x-0 bottom-0 z-90 border-t border-border bg-card px-(--gutter) pt-4 pb-[calc(var(--space-4)+env(safe-area-inset-bottom))] shadow-lg";
+  "fixed inset-x-0 bottom-0 z-90 max-h-[60dvh] overflow-y-auto overscroll-contain border-t border-border bg-card px-(--gutter) pt-4 pb-[calc(var(--space-4)+env(safe-area-inset-bottom))] shadow-lg";
 const INNER = "mx-auto grid w-full max-w-(--page-max) gap-3";
 const TITLE = "font-sans text-h3 font-extrabold text-heading";
 const TEXT = "max-w-[70ch] text-small";
