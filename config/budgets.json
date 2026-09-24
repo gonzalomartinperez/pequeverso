@@ -7,11 +7,11 @@
   },
   "routes": {
     "/": {
-      "html": 27648,
+      "html": 30550,
       "js": 160256
     },
     "/grafismo-fonetico/": {
-      "html": 51200
+      "html": 56337
     },
     "/imprime-y-juega/": {
       "html": 35328
@@ -21,15 +21,19 @@
       "html": 25088
     },
     "/soporte/": {
-      "html": 12800,
+      "html": 14200,
       "js": 156160
     },
     "/terminos/": {
-      "html": 19456,
+      "html": 23554,
       "js": 156160
     },
     "/privacidad/": {
-      "html": 18432,
+      "html": 22991,
+      "js": 156160
+    },
+    "/arrepentimiento/": {
+      "html": 26122,
       "js": 156160
     }
   },

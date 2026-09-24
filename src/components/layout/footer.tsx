@@ -1,4 +1,5 @@
 import { site } from "@config/site";
+import { seller, sellerIdentity } from "@content/es/legal/seller";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { BrandLogo } from "@/components/blocks/brand-logo";
@@ -22,6 +23,8 @@ const helpLinks = [
 ];
 
 const legalLinks = [
+  // Disposición SSDCyLC 954/2025 art. 1: exact label, no registration; first-screen placement is owner/landing work.
+  { href: "/arrepentimiento/", label: "Botón de arrepentimiento" },
   { href: "/aviso-legal/", label: "Aviso legal" },
   { href: "/privacidad/", label: "Privacidad" },
   { href: "/cookies/", label: "Cookies" },
@@ -88,6 +91,10 @@ export function Footer() {
         </p>
         <p>
           © {new Date().getFullYear()} {site.name}. Pagos, entrega y reembolsos gestionados por Hotmart.
+        </p>
+        {/* Seller identification in plain view before the purchase (Res. SCI 270/2020, GMC 37/19). */}
+        <p>
+          Titular: {sellerIdentity}, {seller.address}.
         </p>
       </div>
     </footer>

@@ -24,6 +24,8 @@ const routes = [
   "/soporte/",
   "/privacidad/",
   "/terminos/",
+  "/aviso-legal/",
+  "/arrepentimiento/",
   "/esta-no-existe/",
 ];
 const HEADER_CTA =
