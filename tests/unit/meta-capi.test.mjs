@@ -3,9 +3,12 @@ import { createServer } from "node:http";
 import { test } from "node:test";
 import {
   createMetaCapiHandler,
+  createMetaCapiRelay,
   GRAPH_API_VERSION,
+  MAX_BODY_BYTES,
   META_CAPI_PATH,
   metaCapiOptionsFromEnv,
+  pickClientIp,
 } from "../../server/meta-capi.mjs";
 
 const PIXEL = "1234567890123456";
@@ -77,17 +80,29 @@ function enabledHandler(extra = {}) {
   return { handler, calls: fake.calls, logs, results };
 }
 
-test("other paths return false so the caller continues; only POST on the relay path", async () => {
+test("other paths return false so the caller continues; only POST on the relay path (with or without slash)", async () => {
   const { handler, calls } = enabledHandler();
+  assert.equal(META_CAPI_PATH, "/api/meta/events/");
   await withServer(handler, async (base) => {
-    const other = await fetch(`${base}/grafismo-fonetico/`);
-    assert.equal(await other.text(), "fallthrough");
-    const get = await fetch(`${base}${META_CAPI_PATH}`);
-    assert.equal(get.status, 405);
-    assert.equal(get.headers.get("allow"), "POST");
-    assert.equal(get.headers.get("cache-control"), "no-store");
+    for (const path of ["/grafismo-fonetico/", "/api/meta/events/x", "/api/meta/"]) {
+      const other = await fetch(`${base}${path}`);
+      assert.equal(await other.text(), "fallthrough", path);
+    }
+    for (const path of [META_CAPI_PATH, "/api/meta/events", "/api/meta/events?x=1"]) {
+      const get = await fetch(`${base}${path}`);
+      assert.equal(get.status, 405, path);
+      assert.equal(get.headers.get("allow"), "POST");
+      assert.equal(get.headers.get("cache-control"), "no-store");
+    }
+    const slashless = await fetch(`${base}/api/meta/events`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ events: [event()] }),
+    });
+    assert.equal(slashless.status, 202);
+    await Promise.all(handler.pending);
   });
-  assert.equal(calls.length, 0);
+  assert.equal(calls.length, 1);
 });
 
 test("disabled (no token or no pixel) answers 204 and never calls Meta", async () => {
@@ -331,4 +346,95 @@ test("options from the environment trim values and default the site url", () => 
     }),
     { pixelId: PIXEL, accessToken: TOKEN, siteUrl: "http://localhost:3100" },
   );
+});
+
+function relayInput(overrides = {}) {
+  return {
+    method: "POST",
+    bodyText: JSON.stringify({ events: [event()] }),
+    contentType: "application/json",
+    origin: "https://pequeverso.com",
+    host: "pequeverso.com",
+    ip: "203.0.113.7",
+    userAgent: "Mozilla/5.0 (core)",
+    ...overrides,
+  };
+}
+
+test("core: process() describes every response without a transport", async () => {
+  const fake = fakeFetch();
+  const relay = createMetaCapiRelay({
+    pixelId: PIXEL,
+    accessToken: TOKEN,
+    fetchImpl: fake.fetchImpl,
+    now: () => NOW,
+  });
+  assert.equal(relay.enabled, true);
+  assert.deepEqual(relay.process(relayInput({ method: "GET" })), {
+    status: 405,
+    headers: { "Cache-Control": "no-store", Allow: "POST" },
+  });
+  const cases = [
+    [relayInput({ origin: "https://evil.example" }), 403, "origin"],
+    [relayInput({ contentType: "text/plain" }), 415, "content-type"],
+    [relayInput({ contentType: undefined }), 415, "content-type"],
+    [relayInput({ bodyText: "x".repeat(MAX_BODY_BYTES + 1) }), 413, "size"],
+    [relayInput({ bodyText: "{" }), 400, "json"],
+    [relayInput({ bodyText: JSON.stringify({ events: [event({ name: "Purchase" })] }) }), 400, "name"],
+    [
+      relayInput({ bodyText: JSON.stringify({ events: [event({ sourceUrl: "https://other.example/" })] }) }),
+      400,
+      "sourceUrl",
+    ],
+  ];
+  for (const [input, status, reason] of cases) {
+    const outcome = relay.process(input);
+    assert.equal(outcome.status, status, reason);
+    assert.equal(outcome.headers["Cache-Control"], "no-store");
+    assert.equal(outcome.headers["Content-Type"], "application/json; charset=utf-8");
+    assert.deepEqual(JSON.parse(outcome.body), { error: reason });
+  }
+  assert.equal(fake.calls.length, 0);
+
+  const hostOnly = relay.process(
+    relayInput({
+      origin: "http://localhost:3281",
+      host: "localhost:3281",
+      bodyText: JSON.stringify({ events: [event({ sourceUrl: "http://localhost:3281/" })] }),
+    }),
+  );
+  assert.deepEqual(hostOnly, { status: 202, headers: { "Cache-Control": "no-store" } });
+  const noOrigin = relay.process(relayInput({ origin: undefined, ip: undefined, userAgent: undefined }));
+  assert.equal(noOrigin.status, 202);
+  assert.equal(relay.pending.size, 2);
+  await Promise.all(relay.pending);
+  assert.equal(relay.pending.size, 0);
+  assert.equal(fake.calls.length, 2);
+  assert.deepEqual(fake.calls[0].body.data[0].user_data, {
+    client_ip_address: "203.0.113.7",
+    client_user_agent: "Mozilla/5.0 (core)",
+  });
+  assert.deepEqual(fake.calls[1].body.data[0].user_data, {}, "no ip or agent when the transport has none");
+  assert.equal(fake.calls[0].init.headers.Authorization, `Bearer ${TOKEN}`);
+});
+
+test("core: disabled relay answers 204 for a POST before looking at the body, 405 otherwise", () => {
+  const fake = fakeFetch();
+  const relay = createMetaCapiRelay({ pixelId: PIXEL, accessToken: "", fetchImpl: fake.fetchImpl });
+  assert.equal(relay.enabled, false);
+  assert.deepEqual(relay.process(relayInput({ bodyText: "", contentType: undefined })), {
+    status: 204,
+    headers: { "Cache-Control": "no-store" },
+  });
+  assert.equal(relay.process(relayInput({ origin: "https://evil.example" })).status, 403);
+  assert.equal(relay.process(relayInput({ method: "PUT" })).status, 405);
+  assert.equal(fake.calls.length, 0);
+});
+
+test("pickClientIp takes the first valid address, splitting x-forwarded-for lists", () => {
+  assert.equal(pickClientIp(["203.0.113.7", "198.51.100.1, 10.0.0.1"]), "203.0.113.7");
+  assert.equal(pickClientIp([undefined, "198.51.100.1, 10.0.0.1", "127.0.0.1"]), "198.51.100.1");
+  assert.equal(pickClientIp([null, "not-an-ip", "::ffff:192.0.2.9"]), "192.0.2.9");
+  assert.equal(pickClientIp(["", "2001:db8::1"]), "2001:db8::1");
+  assert.equal(pickClientIp([]), "");
 });

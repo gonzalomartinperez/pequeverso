@@ -6,11 +6,18 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
 
 ### Added
 - Meta Conversions API relay: the browser posts every pixel event (same UUID id) to the
-  same-origin `POST /api/meta/events`, served by `server/meta-capi.mjs` in both Node targets
-  (static server and a front server for the standalone build) and forwarded to Graph API with
+  same-origin `POST /api/meta/events/`, served by `server/meta-capi.mjs` in both Node targets
+  (static server and a standalone-only route handler) and forwarded to Graph API with
   `client_ip_address`, `client_user_agent`, `fbp`, `fbc`. One server-only variable,
   `META_CAPI_ACCESS_TOKEN`; empty = 204, Meta never called. Rejecting stops both channels and
   expires `_fbp`/`_fbc`. ADR-0005.
+
+### Fixed
+- Conversions API relay on the Hostinger Node app: Next's standalone server is started by the
+  host preset, so the relay is now a standalone-only route handler
+  (`src/app/api/meta/events/route.standalone.ts`, gated by `pageExtensions`) over a
+  transport-agnostic core in `server/meta-capi.mjs`. Canonical path `/api/meta/events/` (the
+  slash-less form got Next's 308 then a 404). The front proxy `server/front.mjs` was removed.
 
 ### Changed
 - Tracking policy: the Meta Pixel runs by default when `NEXT_PUBLIC_META_PIXEL_ID` is set and
