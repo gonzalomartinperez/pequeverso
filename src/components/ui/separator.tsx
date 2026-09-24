@@ -1,23 +1,21 @@
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
-type SeparatorProps = ComponentProps<"div"> & { orientation?: "horizontal" | "vertical" | undefined };
+type SeparatorProps = ComponentProps<"hr"> & { orientation?: "horizontal" | "vertical" | undefined };
 
 /**
- * Hairline rule between content groups. A server component with the markup Base UI's Separator
- * renders (`role="separator"`, `aria-orientation`), so pages that only need a rule ship no
- * client JavaScript for it.
+ * Hairline rule between content groups: a server-rendered `<hr>` (implicit `separator` role,
+ * `aria-orientation` when vertical), so pages that only need a rule ship no client JavaScript.
  */
 function Separator({ className, orientation = "horizontal", ...props }: SeparatorProps) {
   return (
-    <div
-      role="separator"
-      aria-orientation={orientation}
+    <hr
+      aria-orientation={orientation === "vertical" ? "vertical" : undefined}
       data-slot="separator"
       data-orientation={orientation}
       className={cn(
-        "shrink-0 bg-border",
-        orientation === "horizontal" ? "h-px w-full" : "w-px self-stretch",
+        "shrink-0 border-0 bg-border",
+        orientation === "horizontal" ? "h-px w-full" : "h-auto w-px self-stretch",
         className,
       )}
       {...props}

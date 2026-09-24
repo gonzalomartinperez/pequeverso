@@ -33,10 +33,7 @@ export function LegalLayout({ title, intro, updatedAt, sections = [], children }
               <p className="mb-3 text-tiny font-extrabold tracking-[0.08em] text-teal-text uppercase">
                 En esta página
               </p>
-              <ol
-                className="toc grid gap-x-6 gap-y-0.5 cq-sm:grid-cols-2 cq-lg:grid-cols-1"
-                role="list"
-              >
+              <ol className="toc grid gap-x-6 gap-y-0.5 cq-sm:grid-cols-2 cq-lg:grid-cols-1" role="list">
                 {sections.map((section) => (
                   <li key={section.id}>
                     <a href={`#${section.id}`}>{section.title}</a>
