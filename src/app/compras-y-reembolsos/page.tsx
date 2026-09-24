@@ -1,8 +1,9 @@
 import { guaranteeDays, hotmart, localCurrencyNote } from "@config/commerce";
+import { consumerLaw } from "@content/es/legal/argentina";
 import { seller } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LegalLayout } from "@/components/layout/legal-layout";
+import { LegalLayout, type Section, SectionHeading } from "@/components/layout/legal-layout";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { buildMetadata } from "@/lib/metadata";
 import { offerProducts } from "@/products";
@@ -15,12 +16,13 @@ export const metadata: Metadata = buildMetadata({
   noindex: true,
 });
 
-const sections = [
+const sections: readonly Section[] = [
   { id: "compra", title: "Cómo se compra" },
   { id: "pago", title: "Moneda, impuestos y comprobante" },
   { id: "acceso", title: "Cómo acceder" },
   { id: "ofertas", title: "Ofertas opcionales" },
   { id: "reembolso", title: "Cómo pedir un reembolso" },
+  { id: "arrepentimiento", title: "Botón de arrepentimiento" },
   { id: "plazos", title: "Plazos" },
   { id: "preguntas", title: "Preguntas frecuentes" },
 ];
@@ -29,6 +31,10 @@ const deadlines = [
   {
     step: "Garantía",
     period: `${guaranteeDays} días desde la compra para pedir el reembolso, sin justificar el motivo. En la Unión Europea aplica el plazo mínimo que exige la normativa de consumo si es mayor; lo verás en la página de pago.`,
+  },
+  {
+    step: "Arrepentimiento",
+    period: `${consumerLaw.revocationDays} días corridos desde la compra o la entrega del acceso, lo último que ocurra (Ley 24.240, art. 34). Te enviamos un código de identificación del pedido dentro de las ${consumerLaw.revocationCodeHours} horas.`,
   },
   {
     step: "Respuesta a la solicitud",
@@ -53,7 +59,7 @@ export default function ComprasPage() {
       updatedAt={seller.updatedAt}
       sections={sections}
     >
-      <h2 id="compra">Cómo se compra</h2>
+      <SectionHeading sections={sections} id="compra" />
       <ol>
         <li>
           Pulsa el botón de compra en la página del producto. Se abre la página de pago segura de Hotmart en
@@ -70,7 +76,7 @@ export default function ComprasPage() {
         </li>
       </ol>
 
-      <h2 id="pago">Moneda, impuestos y comprobante</h2>
+      <SectionHeading sections={sections} id="pago" />
       <p>{localCurrencyNote}</p>
       <dl>
         <dt>Moneda</dt>
@@ -95,7 +101,7 @@ export default function ComprasPage() {
         <dd>Hotmart emite el comprobante de la compra y lo envía al correo que indicaste al pagar.</dd>
       </dl>
 
-      <h2 id="acceso">Cómo acceder</h2>
+      <SectionHeading sections={sections} id="acceso" />
       <ol>
         <li>Busca el correo de Hotmart (revisa también Spam y Promociones).</li>
         <li>
@@ -115,7 +121,7 @@ export default function ComprasPage() {
         realiza Hotmart desde su centro de ayuda.
       </p>
 
-      <h2 id="ofertas">Ofertas opcionales</h2>
+      <SectionHeading sections={sections} id="ofertas" />
       <p>
         Después de la compra principal, Hotmart puede mostrarte una oferta opcional
         {offerNames ? ` (${offerNames})` : ""} con botones Sí / No dentro de nuestra página. No es
@@ -123,7 +129,7 @@ export default function ComprasPage() {
         con su propio comprobante, y la misma garantía y el mismo proceso de reembolso.
       </p>
 
-      <h2 id="reembolso">Cómo pedir un reembolso</h2>
+      <SectionHeading sections={sections} id="reembolso" />
       <ol>
         <li>
           Entra en <a href={hotmart.refunds}>refund.hotmart.com</a>.
@@ -142,7 +148,16 @@ export default function ComprasPage() {
         Hotmart. Tras el reembolso, Hotmart retira el acceso a los archivos.
       </p>
 
-      <h2 id="plazos">Plazos</h2>
+      <SectionHeading sections={sections} id="arrepentimiento" />
+      <p>
+        Si compraste como consumidor, puedes revocar la compra dentro de los {consumerLaw.revocationDays} días
+        corridos, sin registrarte ni explicar el motivo, desde el{" "}
+        <Link href="/arrepentimiento/">Botón de arrepentimiento</Link>. Dentro de las{" "}
+        {consumerLaw.revocationCodeHours} horas te enviamos por correo un código de identificación del pedido,
+        y el reembolso lo ejecuta Hotmart por el mismo medio de pago.
+      </p>
+
+      <SectionHeading sections={sections} id="plazos" />
       <Table>
         <TableHeader>
           <TableRow>
@@ -160,7 +175,7 @@ export default function ComprasPage() {
         </TableBody>
       </Table>
 
-      <h2 id="preguntas">Preguntas frecuentes</h2>
+      <SectionHeading sections={sections} id="preguntas" />
       <h3>¿Por qué el importe que pagué no coincide exactamente con el precio en dólares?</h3>
       <p>
         Porque Hotmart convierte el precio a tu moneda con su tipo de cambio del momento y añade los impuestos
@@ -173,12 +188,14 @@ export default function ComprasPage() {
       </p>
       <h3>¿Recibo algo físico?</h3>
       <p>No. Son archivos PDF que descargas e imprimes en casa o en una papelería.</p>
-      <h3>¿Y el derecho de desistimiento, retracto o arrepentimiento de mi país?</h3>
+      <h3>¿Y el derecho de arrepentimiento, desistimiento o retracto de mi país?</h3>
       <p>
-        Se respeta. Cuando la ley de tu país reconoce un plazo mayor que nuestra garantía (por ejemplo, el
-        desistimiento de 14 días en la Unión Europea con las reglas propias del contenido digital, los 10 días
-        corridos de Argentina o los 5 días hábiles de Colombia), se aplica ese plazo. La solicitud se hace
-        igual: en refund.hotmart.com o por correo. Detalle en los{" "}
+        Se respeta. En la República Argentina puedes revocar la compra dentro de los{" "}
+        {consumerLaw.revocationDays} días corridos desde el{" "}
+        <Link href="/arrepentimiento/">Botón de arrepentimiento</Link>. Si resides en otro país y tu ley
+        reconoce un plazo mayor que la garantía (por ejemplo, el desistimiento de 14 días en la Unión Europea,
+        con las reglas propias del contenido digital, o los 5 días hábiles de retracto en Colombia), se aplica
+        ese plazo. La solicitud se hace igual: en refund.hotmart.com o por correo. Detalle en los{" "}
         <Link href="/terminos/">Términos de compra</Link>.
       </p>
       <h3>¿Qué pasa si pido el reembolso fuera del plazo?</h3>
@@ -189,7 +206,7 @@ export default function ComprasPage() {
       <h3>¿Dónde están las condiciones completas?</h3>
       <p>
         En los <Link href="/terminos/">Términos de compra</Link> (licencia de uso, garantía, derecho de
-        desistimiento) y en la política de privacidad y de cookies enlazadas desde el pie de página.
+        arrepentimiento) y en la política de privacidad y de cookies enlazadas desde el pie de página.
       </p>
     </LegalLayout>
   );

@@ -3,8 +3,14 @@ import type { ReactNode } from "react";
 import { PageShell } from "@/components/layout/page-shell";
 import { Separator } from "@/components/ui/separator";
 
-type Section = { id: string; title: string };
-type Props = { title: string; intro?: string; updatedAt: string; sections?: Section[]; children: ReactNode };
+export type Section = { id: string; title: string };
+type Props = {
+  title: string;
+  intro?: string;
+  updatedAt: string;
+  sections?: readonly Section[];
+  children: ReactNode;
+};
 
 /**
  * Layout for legal pages: heading, updated date, a sticky index (lg container and up; two
@@ -46,5 +52,20 @@ export function LegalLayout({ title, intro, updatedAt, sections = [], children }
         </div>
       </div>
     </PageShell>
+  );
+}
+
+/**
+ * Numbered section heading of a legal page: "3. Datos que se tratan". The number and title come
+ * from the same `sections` list that feeds the index, so both always agree.
+ */
+export function SectionHeading({ sections, id }: { sections: readonly Section[]; id: string }) {
+  const index = sections.findIndex((section) => section.id === id);
+  const section = sections[index];
+  if (!section) throw new Error(`SectionHeading: unknown section "${id}"`);
+  return (
+    <h2 id={id}>
+      {index + 1}. {section.title}
+    </h2>
   );
 }

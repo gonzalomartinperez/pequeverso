@@ -1,7 +1,7 @@
 import { seller } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LegalLayout } from "@/components/layout/legal-layout";
+import { LegalLayout, type Section, SectionHeading } from "@/components/layout/legal-layout";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CookieSettingsLink } from "@/features/tracking/CookieSettingsLink";
 import { buildMetadata } from "@/lib/metadata";
@@ -13,13 +13,13 @@ export const metadata: Metadata = buildMetadata({
   noindex: true,
 });
 
-const sections = [
-  { id: "que-son", title: "Qué son" },
-  { id: "cuales", title: "Cuáles usamos" },
-  { id: "banner", title: "Cómo funciona el banner" },
+const sections: readonly Section[] = [
+  { id: "que-son", title: "Qué son las cookies" },
+  { id: "cuales", title: "Cookies que usa el Sitio" },
+  { id: "banner", title: "Funcionamiento del banner" },
   { id: "elegir", title: "Cómo cambiar tu elección" },
   { id: "hotmart", title: "Cookies de Hotmart" },
-  { id: "cambios", title: "Cambios" },
+  { id: "cambios", title: "Modificaciones" },
 ];
 
 const cookies = [
@@ -51,18 +51,23 @@ export default function CookiesPage() {
   return (
     <LegalLayout
       title="Política de cookies"
-      intro="Usamos una cookie necesaria y, para medir nuestras campañas, el píxel de Meta. Puedes rechazarlo en el banner o desde el pie de página; recordamos tu elección durante seis meses."
+      intro="El Sitio usa una cookie necesaria y, para medir sus campañas, el píxel de Meta. Puedes rechazarlo en el banner o desde el pie de página; tu elección se recuerda durante seis meses."
       updatedAt={seller.updatedAt}
       sections={sections}
     >
-      <h2 id="que-son">Qué son</h2>
       <p>
-        Las cookies son pequeños archivos que el navegador guarda cuando visitas un sitio. Permiten recordar
-        una elección o reconocer un dispositivo. Por “cookies” también nos referimos a tecnologías
-        equivalentes, como el almacenamiento local del navegador y los píxeles de medición.
+        Esta política complementa la <Link href="/privacidad/">Política de privacidad</Link> de pequeverso.com
+        (el “Sitio”), cuyo titular es {seller.legalName} (el “Titular”).
       </p>
 
-      <h2 id="cuales">Cuáles usamos</h2>
+      <SectionHeading sections={sections} id="que-son" />
+      <p>
+        Las cookies son pequeños archivos que el navegador guarda cuando visitas un sitio web. Permiten
+        recordar una elección o reconocer un dispositivo. En esta política, “cookies” incluye también
+        tecnologías equivalentes, como el almacenamiento local del navegador y los píxeles de medición.
+      </p>
+
+      <SectionHeading sections={sections} id="cuales" />
       <Table>
         <TableHeader>
           <TableRow>
@@ -88,15 +93,15 @@ export default function CookiesPage() {
         </TableBody>
       </Table>
       <p>
-        No usamos cookies de analítica con identificadores personales. Si en algún momento añadimos una
-        herramienta de estadísticas agregadas sin cookies, la indicaremos aquí y en la{" "}
-        <Link href="/privacidad/">política de privacidad</Link>.
+        El Sitio no usa cookies de analítica con identificadores personales. Si en algún momento se incorpora
+        una herramienta de estadísticas agregadas sin cookies, se indicará aquí y en la{" "}
+        <Link href="/privacidad/">Política de privacidad</Link>.
       </p>
 
-      <h2 id="banner">Cómo funciona el banner</h2>
+      <SectionHeading sections={sections} id="banner" />
       <p>
-        El píxel de Meta se activa desde la primera página que visitas para medir nuestras campañas; el banner
-        es el control para retirarlo. Ofrece tres opciones en igualdad de condiciones:
+        El píxel de Meta se activa desde la primera página que visitas para medir las campañas del Titular; el
+        banner es el control para retirarlo. Ofrece tres opciones en igualdad de condiciones:
       </p>
       <dl>
         <dt>Aceptar</dt>
@@ -110,29 +115,29 @@ export default function CookiesPage() {
         <dd>Permite decidir categoría por categoría y guardar la selección.</dd>
       </dl>
       <p>
-        Si el píxel no está configurado en este sitio, el banner no aparece y el enlace del pie de página
+        Si el píxel no está configurado en el Sitio, el banner no aparece y el enlace del pie de página
         muestra un aviso de cookies necesarias.
       </p>
 
-      <h2 id="elegir">Cómo cambiar tu elección</h2>
+      <SectionHeading sections={sections} id="elegir" />
       <p>
-        Rechazar no limita el uso del sitio ni la compra. Puedes cambiar tu decisión cuando quieras:{" "}
-        <CookieSettingsLink />. También puedes borrar las cookies y los datos de este sitio desde la
-        configuración de tu navegador; en ese caso el banner vuelve a mostrarse en tu siguiente visita.
+        Rechazar no limita el uso del Sitio ni la compra. Puedes cambiar tu decisión cuando quieras:{" "}
+        <CookieSettingsLink />. También puedes borrar las cookies y los datos del Sitio desde la configuración
+        de tu navegador; en ese caso, el banner vuelve a mostrarse en tu siguiente visita.
       </p>
 
-      <h2 id="hotmart">Cookies de Hotmart</h2>
+      <SectionHeading sections={sections} id="hotmart" />
       <p>
         La página de pago y el área de compras funcionan en dominios de Hotmart (pay.hotmart.com,
-        consumer.hotmart.com), igual que el widget de ofertas que Hotmart muestra dentro de este sitio después
-        de una compra. Esas cookies se rigen por la política de cookies de Hotmart, que puedes consultar en su
+        consumer.hotmart.com), igual que el widget de ofertas que Hotmart muestra dentro del Sitio después de
+        una compra. Esas cookies se rigen por la política de cookies de Hotmart, que puedes consultar en su
         propia página.
       </p>
 
-      <h2 id="cambios">Cambios</h2>
+      <SectionHeading sections={sections} id="cambios" />
       <p>
-        Si incorporamos una nueva herramienta que use cookies, actualizaremos esta tabla y la fecha del inicio
-        de la página, y el banner volverá a pedirte una decisión.
+        Si se incorpora una nueva herramienta que use cookies, el Titular actualizará esta tabla y la fecha
+        indicada al inicio de la página, y el banner volverá a pedirte una decisión.
       </p>
     </LegalLayout>
   );

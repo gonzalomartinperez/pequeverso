@@ -1,8 +1,9 @@
 import { formatUsd, guaranteeDays, hotmart, localCurrencyNote } from "@config/commerce";
-import { seller, sellerIdentityPending, sellerLawPending } from "@content/es/legal/seller";
+import { consumerAuthority, consumerLaw, jurisdictionClause } from "@content/es/legal/argentina";
+import { seller, sellerIdentity } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LegalLayout } from "@/components/layout/legal-layout";
+import { LegalLayout, type Section, SectionHeading } from "@/components/layout/legal-layout";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { buildMetadata } from "@/lib/metadata";
 import { coreProducts, offerProducts } from "@/products";
@@ -12,22 +13,23 @@ export const metadata: Metadata = buildMetadata({
   path: "/terminos/",
   title: "Términos de compra",
   description:
-    "Condiciones de compra de los materiales digitales de Pequeverso a través de Hotmart: precio en moneda local, entrega, licencia de uso, garantía y desistimiento.",
+    "Condiciones de compra de los materiales digitales de Pequeverso a través de Hotmart: precio en moneda local, entrega, licencia de uso, garantía, arrepentimiento y jurisdicción.",
   noindex: true,
 });
 
-const sections = [
-  { id: "partes", title: "Quién vende y quién cobra" },
-  { id: "producto", title: "Qué compras" },
+const sections: readonly Section[] = [
+  { id: "definiciones", title: "Partes y definiciones" },
+  { id: "aceptacion", title: "Aceptación" },
+  { id: "producto", title: "Objeto de la compra" },
   { id: "precio", title: "Precio, moneda e impuestos" },
   { id: "entrega", title: "Entrega y acceso" },
   { id: "ofertas", title: "Ofertas después de la compra" },
   { id: "licencia", title: "Licencia de uso" },
   { id: "garantia", title: "Garantía de reembolso" },
-  { id: "desistimiento", title: "Derecho de desistimiento" },
-  { id: "soporte", title: "Soporte" },
-  { id: "cambios", title: "Cambios en estos términos" },
-  { id: "ley", title: "Legislación aplicable" },
+  { id: "arrepentimiento", title: "Derecho de arrepentimiento" },
+  { id: "soporte", title: "Soporte y reclamos" },
+  { id: "cambios", title: "Modificaciones" },
+  { id: "ley", title: "Ley aplicable y jurisdicción" },
 ];
 
 type ProductLine = { main: CoreProduct; pack: OfferProduct | undefined };
@@ -83,31 +85,43 @@ export default function TerminosPage() {
   return (
     <LegalLayout
       title="Términos de compra"
-      intro="Condiciones que aplican a la compra de los materiales digitales de Pequeverso a través de Hotmart. Al pulsar el botón de compra y confirmar el pago en Hotmart, aceptas estos términos y los de Hotmart."
+      intro="Condiciones que rigen la compra de los materiales digitales de Pequeverso a través de Hotmart."
       updatedAt={seller.updatedAt}
       sections={sections}
     >
-      <h2 id="partes">Quién vende y quién cobra</h2>
+      <SectionHeading sections={sections} id="definiciones" />
       <dl>
-        <dt>Vendedor</dt>
+        <dt>Titular</dt>
         <dd>
-          {sellerIdentityPending
-            ? `El titular de la marca ${seller.brand} (razón social pendiente de publicación)`
-            : `${seller.legalName}, titular de la marca ${seller.brand}`}
-          . Crea y publica los materiales y atiende el soporte por correo. Datos completos en el{" "}
-          <Link href="/aviso-legal/">Aviso legal</Link>.
+          {sellerIdentity}, con domicilio en {seller.address}, titular de la marca {seller.brand} y vendedor
+          de los materiales. Crea y publica los materiales y atiende el soporte por correo. Datos completos en
+          el <Link href="/aviso-legal/">Aviso legal</Link>.
         </dd>
-        <dt>Plataforma de pago y entrega</dt>
+        <dt>Comprador</dt>
+        <dd>La persona que adquiere un material a través de Hotmart; en estos términos, “tú”.</dd>
+        <dt>Hotmart</dt>
         <dd>
-          <strong>Hotmart</strong> actúa como intermediaria y facilitadora de pago: muestra el precio en tu
-          moneda, cobra, emite el comprobante, entrega el acceso digital y gestiona los reembolsos conforme a
-          sus propios términos de compra, que aceptas en su página de pago. Para compradores fuera de Brasil y
-          Estados Unidos la entidad contratante es Hotmart B.V. (Ámsterdam, Países Bajos). {seller.brand}{" "}
-          nunca ve tus datos de tarjeta ni de otros medios de pago.
+          La plataforma que actúa como intermediaria y facilitadora de pago: muestra el precio en tu moneda,
+          cobra, emite el comprobante, entrega el acceso digital y gestiona los reembolsos conforme a sus
+          propios términos de compra. Para compradores fuera de Brasil y Estados Unidos, la entidad
+          contratante es Hotmart B.V. (Ámsterdam, Países Bajos). El Titular nunca ve tus datos de tarjeta ni
+          de otros medios de pago.
         </dd>
+        <dt>Sitio</dt>
+        <dd>El sitio web pequeverso.com.</dd>
+        <dt>Material</dt>
+        <dd>Cada producto digital descrito en el Sitio, que se entrega como archivos PDF.</dd>
       </dl>
 
-      <h2 id="producto">Qué compras</h2>
+      <SectionHeading sections={sections} id="aceptacion" />
+      <p>
+        Al pulsar el botón de compra y confirmar el pago en Hotmart, aceptas estos términos y los de Hotmart.
+        Puedes consultarlos, guardarlos o imprimirlos en cualquier momento desde esta página. En caso de duda
+        sobre su alcance, prevalece la interpretación más favorable al consumidor (art. 3 de la Ley 24.240 de
+        Defensa del Consumidor y art. 1095 del Código Civil y Comercial de la Nación).
+      </p>
+
+      <SectionHeading sections={sections} id="producto" />
       <Table>
         <TableHeader>
           <TableRow>
@@ -125,11 +139,12 @@ export default function TerminosPage() {
       </Table>
       <p>
         Son productos <strong>100% digitales</strong>: no se envía ningún artículo físico. Lo que describe
-        cada página del sitio (archivos, páginas, recursos) es lo que recibes. Son materiales de práctica
+        cada página del Sitio (archivos, páginas, recursos) es lo que recibes. Los videos de demostración son
+        ilustrativos y, en ocasiones, están generados con inteligencia artificial. Son materiales de práctica
         complementaria: no se prometen resultados de aprendizaje ni plazos.
       </p>
 
-      <h2 id="precio">Precio, moneda e impuestos</h2>
+      <SectionHeading sections={sections} id="precio" />
       <Table>
         <TableHeader>
           <TableRow>
@@ -151,10 +166,10 @@ export default function TerminosPage() {
       <p>{localCurrencyNote}</p>
       <ul>
         <li>
-          <strong>Moneda local.</strong> Hotmart muestra el precio en tu moneda local; la conversión se
-          realiza automáticamente dentro de la plataforma con el tipo de cambio del momento, así que el
-          importe en moneda local puede variar ligeramente de un día a otro. Tu banco puede aplicar su propio
-          tipo de cambio o una comisión si trata la operación como compra internacional.
+          <strong>Moneda local.</strong> Hotmart muestra el precio en tu moneda local y realiza la conversión
+          automáticamente con el tipo de cambio del momento, por lo que el importe en moneda local puede
+          variar ligeramente de un día a otro. Tu banco puede aplicar su propio tipo de cambio o una comisión
+          si trata la operación como compra internacional.
         </li>
         <li>
           <strong>Impuestos.</strong> Algunos países aplican impuestos a las compras internacionales (IVA, VAT
@@ -162,16 +177,17 @@ export default function TerminosPage() {
         </li>
         <li>
           <strong>Medios de pago.</strong> Dependen del país: tarjeta, PayPal, Google Pay o Apple Pay y medios
-          locales como Pix, OXXO o Baloto, según Hotmart los ofrezca. El cargo aparecerá a nombre de Hotmart
-          en el extracto de tu tarjeta o cuenta.
+          locales, según Hotmart los ofrezca. El cargo aparece a nombre de Hotmart en el resumen de tu tarjeta
+          o cuenta.
         </li>
         <li>
-          <strong>Total final.</strong> El importe que ves en la página de pago de Hotmart antes de confirmar
-          es el total que se cobra y prevalece sobre cualquier cifra de este sitio.
+          <strong>Precio final.</strong> El importe total que ves en la página de pago de Hotmart antes de
+          confirmar es el que se cobra y prevalece sobre cualquier cifra de referencia del Sitio. Es un pago
+          único: no hay cargos posteriores ni suscripciones.
         </li>
       </ul>
 
-      <h2 id="entrega">Entrega y acceso</h2>
+      <SectionHeading sections={sections} id="entrega" />
       <ol>
         <li>
           Tras la aprobación del pago, Hotmart envía el acceso al correo electrónico usado en la compra.
@@ -181,8 +197,8 @@ export default function TerminosPage() {
           mismo correo, cuantas veces necesites.
         </li>
         <li>
-          Con medios de pago no inmediatos (por ejemplo, boleto, transferencia o efectivo), el acceso se
-          libera cuando el pago se confirma; Hotmart avisa por correo.
+          Con medios de pago no inmediatos (por ejemplo, transferencia o efectivo), el acceso se libera cuando
+          el pago se confirma; Hotmart avisa por correo.
         </li>
       </ol>
       <p>
@@ -190,18 +206,19 @@ export default function TerminosPage() {
         <Link href="/compras-y-reembolsos/">Compras y reembolsos</Link> o escríbenos.
       </p>
 
-      <h2 id="ofertas">Ofertas después de la compra</h2>
+      <SectionHeading sections={sections} id="ofertas" />
       <p>
-        Tras confirmar la compra principal, Hotmart puede mostrarte dentro de nuestra página una oferta
-        opcional con botones Sí / No gestionados por Hotmart. Aceptarla genera una compra separada, con su
-        propio comprobante, la misma garantía y las mismas condiciones. Declinarla no modifica tu compra
-        principal.
+        Tras confirmar la compra principal, Hotmart puede mostrarte dentro del Sitio una oferta opcional con
+        botones Sí / No gestionados por Hotmart. Aceptarla genera una compra separada, con su propio
+        comprobante y las mismas condiciones, incluidos la garantía y el derecho de arrepentimiento.
+        Declinarla no modifica tu compra principal.
       </p>
 
-      <h2 id="licencia">Licencia de uso</h2>
+      <SectionHeading sections={sections} id="licencia" />
       <p>
-        La compra concede una licencia <strong>personal, familiar e intransferible</strong> sobre los
-        archivos. Los materiales siguen siendo propiedad de su titular.
+        La compra concede una licencia <strong>personal, familiar, no exclusiva e intransferible</strong>{" "}
+        sobre los archivos. Los materiales siguen siendo propiedad del Titular y están protegidos por la Ley
+        11.723 de Propiedad Intelectual.
       </p>
       <h3>Puedes</h3>
       <ul>
@@ -220,15 +237,15 @@ export default function TerminosPage() {
         <a href={`mailto:${seller.supportEmail}`}>{seller.supportEmail}</a> antes de usar el material.
       </p>
 
-      <h2 id="garantia">Garantía de reembolso</h2>
+      <SectionHeading sections={sections} id="garantia" />
       <p>
         Dispones de <strong>{guaranteeDays} días</strong> desde la compra para solicitar el reembolso a través
-        de Hotmart, sin necesidad de justificar el motivo. La solicitud se hace en{" "}
+        de Hotmart, sin necesidad de justificar el motivo, cualquiera sea tu país. La solicitud se hace en{" "}
         <a href={hotmart.refunds}>refund.hotmart.com</a> con el correo de la compra y el número de transacción
-        (empieza con HP), o escribiéndonos y la gestionamos contigo. Hotmart nos da cinco días para responder
-        a la solicitud; si no respondemos, el reembolso se aprueba automáticamente. El importe vuelve siempre
-        por el mismo medio de pago, en los plazos de Hotmart (hasta 30 días en cuenta bancaria y hasta 90 días
-        en tarjeta, según el emisor).
+        (empieza con HP), o escribiéndonos para gestionarla contigo. Hotmart da al Titular cinco días para
+        responder la solicitud; si no responde, el reembolso se aprueba automáticamente. El importe vuelve por
+        el mismo medio de pago, en los plazos de Hotmart (hasta 30 días en cuenta bancaria y hasta 90 días en
+        tarjeta, según el emisor).
       </p>
       <p>
         Si resides en la Unión Europea, Hotmart aplica el plazo mínimo que exige la normativa de consumo para
@@ -236,61 +253,56 @@ export default function TerminosPage() {
         a paso en <Link href="/compras-y-reembolsos/">Compras y reembolsos</Link>.
       </p>
 
-      <h2 id="desistimiento">Derecho de desistimiento</h2>
+      <SectionHeading sections={sections} id="arrepentimiento" />
       <p>
-        Si compras como consumidor en España o en otro país de la Unión Europea, tienes el derecho legal de
-        desistimiento de 14 días para compras a distancia. En el caso de contenido digital que no se entrega
-        en soporte físico, la ley prevé que ese derecho pueda no aplicarse una vez que la entrega ha comenzado
-        con tu consentimiento expreso y tu conocimiento de esa consecuencia (art. 103 m del texto refundido de
-        la Ley General para la Defensa de los Consumidores y Usuarios, RDL 1/2007). Ese consentimiento se
-        recoge, cuando procede, en la página de pago de Hotmart; nosotros no lo excluimos por nuestra cuenta.
+        Si compras como consumidor, puedes revocar la compra dentro de los{" "}
+        <strong>{consumerLaw.revocationDays} días corridos</strong> contados desde la celebración del contrato
+        o desde la entrega del acceso, lo último que ocurra, sin costo ni responsabilidad alguna (art. 34 de
+        la Ley 24.240 y arts. 1110 a 1113 del Código Civil y Comercial). Puedes hacerlo desde el{" "}
+        <Link href="/arrepentimiento/">Botón de arrepentimiento</Link>, por correo o en refund.hotmart.com,
+        sin registrarte; dentro de las {consumerLaw.revocationCodeHours} horas recibirás por correo un código
+        de identificación de tu pedido.
       </p>
       <p>
-        En América Latina aplican los plazos de tu país. Por ejemplo, en Argentina la Ley 24.240 (art. 34)
-        reconoce 10 días corridos para revocar una compra a distancia; en Colombia la Ley 1480 (art. 47) prevé
-        un retracto de 5 días hábiles; en México la Ley Federal de Protección al Consumidor exige información
-        clara antes de la compra y canales de reclamación. Cuando la ley de tu país reconozca un plazo mayor
-        que nuestra garantía, se aplica ese plazo.
+        El art. 1116 del Código Civil y Comercial prevé excepciones al derecho de revocación para ciertos
+        contenidos digitales que se descargan o utilizan de inmediato. La garantía descrita en el punto
+        anterior se aplica en todo caso.
       </p>
       <p>
-        En cualquier caso, la garantía de {guaranteeDays} días descrita arriba se aplica con independencia de
-        esos derechos, y toda solicitud (desistimiento, retracto, arrepentimiento o garantía) se gestiona en{" "}
-        <a href={hotmart.refunds}>refund.hotmart.com</a> o escribiéndonos a{" "}
-        <a href={`mailto:${seller.supportEmail}`}>{seller.supportEmail}</a>. Nada de lo aquí escrito reduce
-        los derechos que te reconozca la normativa de protección al consumidor de tu país de residencia.
+        Si resides en otro país, se aplican además los derechos de tu legislación. Por ejemplo, en la Unión
+        Europea existe un derecho de desistimiento de 14 días con reglas propias para el contenido digital,
+        que puede perderse cuando la descarga comienza con tu consentimiento expreso; en Colombia, la Ley 1480
+        (art. 47) prevé un retracto de 5 días hábiles. Toda solicitud se gestiona por las mismas vías. Nada de
+        lo aquí escrito reduce los derechos que te reconozca la normativa de protección al consumidor de tu
+        país de residencia.
       </p>
 
-      <h2 id="soporte">Soporte</h2>
+      <SectionHeading sections={sections} id="soporte" />
       <p>
         Para dudas de acceso, uso del material o reembolsos, escribe a{" "}
-        <a href={`mailto:${seller.supportEmail}`}>{seller.supportEmail}</a>. Respondemos normalmente en{" "}
-        {seller.responseTime}. No podemos ver ni modificar datos de pago ni cambiar el correo de una compra:
+        <a href={`mailto:${seller.supportEmail}`}>{seller.supportEmail}</a>. El Titular responde normalmente
+        en {seller.responseTime}. No puede ver ni modificar datos de pago ni cambiar el correo de una compra:
         esas gestiones las realiza Hotmart desde su centro de ayuda. Más rutas en{" "}
         <Link href="/soporte/">Soporte y contacto</Link>.
       </p>
-
-      <h2 id="cambios">Cambios en estos términos</h2>
       <p>
-        Podemos actualizar estos términos, por ejemplo si cambia un producto o un proceso de Hotmart. A cada
-        compra se le aplican los términos publicados en el momento de comprar; la fecha del inicio de la
-        página indica la versión vigente.
+        Si tu reclamo no se resuelve, puedes presentarlo ante la{" "}
+        <a href={consumerAuthority.national.url}>{consumerAuthority.national.name}</a>, ante la{" "}
+        <a href={consumerAuthority.province.url}>{consumerAuthority.province.name}</a> o ante la autoridad de
+        consumo de tu país.
       </p>
 
-      <h2 id="ley">Legislación aplicable</h2>
-      {sellerLawPending ? (
-        <p>
-          Estos términos se rigen por la legislación del país de establecimiento del vendedor, que se
-          publicará en esta página y en el <Link href="/aviso-legal/">Aviso legal</Link> en cuanto se complete
-          la verificación de sus datos. Si compras como consumidor, conservas en todo caso los derechos que te
-          reconoce la normativa de protección al consumidor de tu país de residencia.
-        </p>
-      ) : (
-        <p>
-          Estos términos se rigen por la legislación de {seller.country}. Para cualquier controversia, y salvo
-          que la normativa de protección al consumidor de tu país de residencia establezca otra cosa, serán
-          competentes los tribunales de {seller.jurisdiction}.
-        </p>
-      )}
+      <SectionHeading sections={sections} id="cambios" />
+      <p>
+        El Titular puede actualizar estos términos, por ejemplo si cambia un producto o un proceso de Hotmart.
+        A cada compra se le aplican los términos publicados en el momento de comprar; la fecha indicada al
+        inicio de la página identifica la versión vigente.
+      </p>
+
+      <SectionHeading sections={sections} id="ley" />
+      {jurisdictionClause("Estos términos y las compras realizadas a través del Sitio").map((paragraph) => (
+        <p key={paragraph}>{paragraph}</p>
+      ))}
     </LegalLayout>
   );
 }
