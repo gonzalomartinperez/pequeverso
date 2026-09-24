@@ -94,7 +94,7 @@ followed by a refund inside the guarantee) — **only with the owner's explicit 
    deduplicated, when `META_CAPI_ACCESS_TOKEN` is set), `InitiateCheckout` and `Purchase` from
    Hotmart only; no duplicated `Purchase`.
 10. Refund the test purchases via `refund.hotmart.com` if real money was used.
-11. Measure the rendered widget height in each mode at ≤ 768 px and ≥ 768 px and replace the estimated `--widget-min-h` (220 px / 180 px, set without a purchase session) in `src/features/commerce/HotmartWidgetSlot/HotmartWidgetSlot.module.css` with the measured values.
+11. Measure the rendered widget height in each mode at ≤ 768 px and ≥ 768 px and replace the estimated `--widget-min-h` (220 px / 180 px from md, set without a purchase session; utilities on the slot in `src/features/commerce/HotmartWidgetSlot/HotmartWidgetSlot.tsx`) with the measured values.
 
 Record results in `docs/verification/` (date, URLs Hotmart used, screenshots of the widget in
 each mode, transaction ids masked).
