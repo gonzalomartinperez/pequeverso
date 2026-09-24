@@ -21,6 +21,7 @@ build:standalone` is the Node parity build you can run locally).
 | `post-deploy-verify.yml` | push to `main`, manual (`sha`), called by Deploy | waits until `build-info.json` reports the commit, smoke, headers, `PW_SET=prod`, informative Lighthouse; job summary with revision and timings | `contents: read` |
 | `nightly.yml` | 04:17 UTC, manual (`update_snapshots`) | Chromium + WebKit × 7 widths, visual baselines, clean-clone invariant, full knip, Lighthouse ×5, links, bundle analysis | `contents: read` |
 | `deploy.yml` | manual, `production`/`staging` environment approval | gated release below, then `post-deploy-verify` | `contents: write` on the release job only |
+| `production-daily.yml` | 09:00 UTC, manual | live-site checks without building: reuses `post-deploy-verify` with the live sha, plus TLS, header matrix, relay probe, checkout link, sitemap/robots, internal links; opens/closes one `production` issue | `contents: read`; `issues: write` on the report job only |
 | `branch-policy.yml` | `pull_request_target` | branch name and PR title policy from `main`; no checkout, `permissions: {}` | none |
 
 `.github/actions/setup` is the shared composite (Node from `.nvmrc`, npm cache, `npm ci`,
@@ -34,7 +35,7 @@ Build-time business values (required by `scripts/check-env.mjs`, no inline defau
 | `ci.yml` | `https://pequeverso.com` | fake offer `https://pay.hotmart.com/TEST0000000?checkoutMode=10` (tests assert only the origin and `checkoutMode=10`) | fake id + `E2E_EXPECT_CONSENT=1` |
 | `nightly.yml` | same | same fake offer | none on purpose (clean-clone job: no banner, no cookies) |
 | `deploy.yml` | `vars.NEXT_PUBLIC_SITE_URL`, else `https://pequeverso.com` | `vars.NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO`, else `vars.NEXT_PUBLIC_CHECKOUT_URL`; `staging` may fall back to the fake offer, `production` fails the build without a real one | `vars.NEXT_PUBLIC_META_PIXEL_ID` |
-| `post-deploy-verify.yml` | does not build | — | — |
+| `post-deploy-verify.yml`, `production-daily.yml` | do not build | — | — |
 
 The `hostinger` job is the CI stand-in for the host's builder (`rockylinux:8`, glibc 2.28, Node from
 `.nvmrc`, `next build --webpack` with the WASM SWC bindings, `NEXT_OUTPUT=standalone`, `npm start`

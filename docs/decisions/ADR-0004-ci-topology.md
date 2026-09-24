@@ -152,6 +152,61 @@ separate named steps so the failing gate is visible in the job list and each one
 | zizmor findings (pedantic) | 24 | 0 (2 justified inline ignores) |
 | Informative Lighthouse in post-deploy verify | failed silently on every run (`out/` missing) | audits the live origin |
 
+### Daily cadence (2026-09-23)
+
+- `nightly.yml` stays code-level on the export (unchanged scope; the parity lane is not repeated
+  because it already gates every PR and push). `tests/e2e/responsive.spec.ts` (design-system
+  branch) had not landed; adding `responsive` to `specs.functional` puts it in the nightly matrix.
+- New `production-daily.yml` for the live origin, measured at 1:29 wall (run 35944174387, target
+  < 5 min): `revision` (curl `build-info.json`, 3 s) → `verify` = `post-deploy-verify.yml` via
+  `workflow_call` with the live sha and a new `wait_seconds: 60` input (no duplicated smoke /
+  headers / `PW_SET=prod` / Lighthouse), in parallel with `live` = `scripts/check-live.mjs` (TLS,
+  header matrix, robots/sitemap, checkout href, relay probe, internal-link crawl; 10 s, sparse
+  checkout, no `npm ci`) → `report` with `issues: write` scoped to that job, using `gh issue`
+  and `GITHUB_TOKEN`: one issue titled "Production daily check failing", label `production`,
+  commented on while failing, closed by the next green run. A new workflow cannot be dispatched
+  until it exists on the default branch, so it was exercised from the branch with a temporary
+  push trigger (removed in the following commit).
+- First run found a real defect: the Conversions API relay (#28) answers 404 in production on
+  `/api/meta/events/` (308 without the slash); the `PW_SET=prod` relay spec fails the same way and
+  so did the post-deploy verification of 20c825a (run 35536194841). Issue #30 was opened by the
+  workflow. The live check also warns that `build-info.json` is served without `Cache-Control:
+  no-store` in Node mode.
+
+### Sources
+
+- GitHub Docs — Secure use reference / security hardening (least-privilege `GITHUB_TOKEN`,
+  pinning to full SHAs, script injection via `env`):
+  https://docs.github.com/en/actions/reference/security/secure-use
+- GitHub Docs — `permissions`, `concurrency`, `timeout-minutes`, `strategy.fail-fast` (workflow
+  syntax): https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+- GitHub Docs — Reusing workflows (permissions can only be kept or reduced through `workflow_call`):
+  https://docs.github.com/en/actions/using-workflows/reusing-workflows
+- GitHub Docs — Dependency caching (cache scope: a branch reads its own and the default branch's
+  caches, which is why nightly on `main` warms the PR browser cache):
+  https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching
+- GitHub Changelog 2026-07-30 — self-repository `$/` references:
+  https://github.blog/changelog/2026-07-30-reference-same-repository-actions-with-self-repository-syntax/
+- GitHub Changelog 2025-08-15 — SHA-pinning policy for actions:
+  https://github.blog/changelog/2025-08-15-github-actions-policy-now-supports-blocking-and-sha-pinning-actions/
+- actionlint checks: https://github.com/rhysd/actionlint/blob/main/docs/checks.md ·
+  raven-actions/actionlint: https://github.com/raven-actions/actionlint
+- zizmor audits and configuration: https://docs.zizmor.sh/audits/ ·
+  https://docs.zizmor.sh/configuration/ · zizmor-action: https://github.com/zizmorcore/zizmor-action
+- OpenSSF Scorecard checks (Token-Permissions, Pinned-Dependencies, Dangerous-Workflow, SAST):
+  https://github.com/ossf/scorecard/blob/main/docs/checks.md
+- WordPress security team, "Hardening GitHub Actions workflows" (2026-07, actionlint + zizmor in CI):
+  https://make.wordpress.org/security/2026/07/13/hardening-github-actions-workflows-across-the-wordpress-organisation/
+- Playwright — Continuous Integration (cache browsers by version, `install-deps` for system
+  libraries, `workers`/`retries` on CI): https://playwright.dev/docs/ci
+- Lighthouse CI configuration (`collect`, `--no-lighthouserc`, `startServerCommand`):
+  https://github.com/GoogleChrome/lighthouse-ci/blob/main/docs/configuration.md
+- Next.js — CI build caching of `.next/cache`:
+  https://nextjs.org/docs/app/guides/ci-build-caching
+- Owner's portfolio CI (`career/software-projects/portfolio/.github/workflows/ci.yml`): the
+  `rockylinux:8` GLIBC 2.28 lane with the WASM SWC assertion, the whole-tree `git diff --exit-code`
+  step, `persist-credentials: false`, and a single aggregate required check.
+
 Evaluated and rejected:
 
 - **`$/` self-repository references** (GitHub, July 2026): actionlint 1.7.12 rejects the syntax, so

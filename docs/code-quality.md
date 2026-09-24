@@ -44,9 +44,31 @@ restore (caches created on a PR branch are invisible to other branches).
 | `ci.yml` (pull request) | PR, `workflow_dispatch` | workflows 0:17 · build 0:50 · hostinger 1:50 · e2e 3:25 · lighthouse 2:20 · ci | 5:05 (run 35535556322) | ≈ 9 |
 | `ci.yml` (push to main) | push | workflows · build · hostinger · ci (e2e/lighthouse skipped) | ≈ 2:00 | ≈ 3 |
 | `post-deploy-verify.yml` | push to main, `workflow_dispatch` (`sha`), called by Deploy | verify: wait for Hostinger (≈ 1–3 min after a push), smoke, headers, `PW_SET=prod`, Lighthouse | 1:10 once live (run 35536094502) | ≈ 2 |
-| `nightly.yml` | 04:17 UTC, `workflow_dispatch` | build 0:51 · chromium 6:22 · webkit 9:13 · visual 1:03 · clean-clone 0:51 · quality 5:13 | 10:14 (run 35535185028) | ≈ 24 |
+| `nightly.yml` | 04:17 UTC, `workflow_dispatch` (`update_snapshots`) | build 0:49 · chromium 6:13 · webkit 11:04 · visual 1:57 · clean-clone 0:49 · quality 5:00 | 10:14–12:01 (runs 35535185028, 35944132257) | ≈ 26 |
+| `production-daily.yml` | 09:00 UTC (06:00 Buenos Aires), `workflow_dispatch` | revision 0:03 · verify (reused post-deploy-verify) 1:10 · live checks 0:14 · report 0:07 | 1:29 (run 35944174387) | ≈ 2 |
 | `deploy.yml` | manual, environment approval | release ≈ 2:00 + verify | ≈ 5:00 | ≈ 5 |
 | `branch-policy.yml` | `pull_request_target` (no checkout, no permissions) | 1 shell step | ≈ 0:10 | < 0.5 |
+
+## Daily cadence
+
+Two scheduled workflows, both reporting in their job summary:
+
+1. **Nightly (04:17 UTC, code on `main`)** — the export at seven widths on Chromium and WebKit
+   (functional set), visual baselines, the clean-clone invariant (no pixel id → no banner, no
+   cookies), full knip, Lighthouse ×5, internal link check of `out/`, bundle analysis. The Hostinger
+   parity lane is not repeated here: it already gates every PR and every push to `main`. When
+   `tests/e2e/responsive.spec.ts` lands, add `responsive` to `specs.functional` in
+   `playwright.config.ts` and it joins the nightly matrix automatically.
+2. **Production daily (09:00 UTC, the live site)** — never builds. Reads the live sha from
+   `build-info.json`, reuses `post-deploy-verify.yml` (smoke, headers, `PW_SET=prod`, informative
+   Lighthouse) and runs `scripts/check-live.mjs`: TLS certificate ≥ 14 days, header matrix (HSTS,
+   nosniff, referrer, frame, CSP, HTML `no-cache`, immutable `/_next/static`; `build-info.json`
+   `no-store` as a warning), robots and sitemap, Hotmart checkout href on the landing, Conversions
+   API relay probe (`POST /api/meta/events/` with `{"events":[]}`: 400 = enabled, 204 = disabled,
+   308/404 = relay not deployed → fail), and every internal `href`/`src` on the sitemap pages
+   (Cloudflare `/cdn-cgi/` excluded). On failure one issue labelled `production` is opened (or
+   commented on); the next green run closes it. Run it any time with
+   `gh workflow run production-daily.yml`.
 
 Concurrency: a newer commit on the same pull request cancels the older CI run; pushes to `main`,
 nightly and deploy runs are never cancelled. Artifact retention: PR export 3 days, Playwright
