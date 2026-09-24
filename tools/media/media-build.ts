@@ -23,7 +23,6 @@ import { fileURLToPath } from "node:url";
 import ffmpegPath from "ffmpeg-static";
 import ffprobeStatic from "ffprobe-static";
 import sharp, { type Sharp } from "sharp";
-import { optimize as svgoOptimize } from "svgo";
 
 // --- Shapes of tools/media/sources.json and media/manifest.json -----------------------------
 type Rgb = { r: number; g: number; b: number };
@@ -426,22 +425,25 @@ async function buildOgCard(item: SourceItem, c: OgCompose, src: string): Promise
   ];
 }
 
-// ICO container wrapping a single PNG image (supported by every current browser).
-function icoFromPng(pngBuffer: Buffer, size: number): Buffer {
+/** ICO container with one PNG image per size (16/32/48): each size is rendered, not scaled by the browser. */
+function icoFromPngs(images: { size: number; png: Buffer }[]): Buffer {
   const header = Buffer.alloc(6);
-  header.writeUInt16LE(0, 0); // reserved
-  header.writeUInt16LE(1, 2); // type: icon
-  header.writeUInt16LE(1, 4); // image count
-  const entry = Buffer.alloc(16);
-  entry.writeUInt8(size >= 256 ? 0 : size, 0);
-  entry.writeUInt8(size >= 256 ? 0 : size, 1);
-  entry.writeUInt8(0, 2); // palette
-  entry.writeUInt8(0, 3); // reserved
-  entry.writeUInt16LE(1, 4); // planes
-  entry.writeUInt16LE(32, 6); // bpp
-  entry.writeUInt32LE(pngBuffer.length, 8);
-  entry.writeUInt32LE(6 + 16, 12);
-  return Buffer.concat([header, entry, pngBuffer]);
+  header.writeUInt16LE(0, 0);
+  header.writeUInt16LE(1, 2);
+  header.writeUInt16LE(images.length, 4);
+  let offset = 6 + 16 * images.length;
+  const entries = images.map(({ size, png }) => {
+    const entry = Buffer.alloc(16);
+    entry.writeUInt8(size >= 256 ? 0 : size, 0);
+    entry.writeUInt8(size >= 256 ? 0 : size, 1);
+    entry.writeUInt16LE(1, 4);
+    entry.writeUInt16LE(32, 6);
+    entry.writeUInt32LE(png.length, 8);
+    entry.writeUInt32LE(offset, 12);
+    offset += png.length;
+    return entry;
+  });
+  return Buffer.concat([header, ...entries, ...images.map(({ png }) => png)]);
 }
 
 /**
@@ -483,8 +485,9 @@ function hexToRgb(hex: string): Rgb {
 /**
  * Favicon set from the isotipo. Browser icons (`compose.mark`, default "disc") are the round logo
  * trimmed to its edge on a transparent canvas; "isolated" lifts the bare mark off the disc
- * instead. The Apple touch / maskable icon is always the bare mark inset on an opaque square of
- * the disc colour (iOS draws no transparency).
+ * instead; no maskable icon is declared, so Android keeps the round transparent shape. The Apple
+ * touch icon is the bare mark inset on an opaque square of the disc colour (iOS fills transparency
+ * with black and applies its own rounded mask).
  */
 async function buildFavicons(c: FaviconCompose, src: string): Promise<OutputRecord[]> {
   const background = hexToRgb(c.background);
@@ -523,15 +526,12 @@ async function buildFavicons(c: FaviconCompose, src: string): Promise<OutputReco
     writeFileSync(abs, buffer);
     files.push(await outputRecord(abs, { ...dims, format, quality: null }));
   };
-  await write("favicon.ico", icoFromPng(await transparent(48), 48), { width: 48, height: 48 }, "ico");
+  const ico = await Promise.all([16, 32, 48].map(async (size) => ({ size, png: await transparent(size) })));
+  await write("favicon.ico", icoFromPngs(ico), { width: 48, height: 48 }, "ico");
   await write("favicon.png", await transparent(512), { width: 512, height: 512 }, "png");
   await write("apple-touch-icon.png", await onBackground(180), { width: 180, height: 180 }, "png");
   await write("icon-192.png", await transparent(192), { width: 192, height: 192 }, "png");
   await write("icon-512.png", await transparent(512), { width: 512, height: 512 }, "png");
-  const png192 = await transparent(192);
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 192 192" width="192" height="192"><title>Pequeverso</title><image width="192" height="192" href="data:image/png;base64,${png192.toString("base64")}"/></svg>`;
-  const optimized = svgoOptimize(svg, { multipass: true, plugins: ["preset-default"] }).data;
-  await write("icon.svg", Buffer.from(`${optimized}\n`), { width: 96, height: 96 }, "svg");
   const webmanifest = {
     name: "Pequeverso",
     short_name: "Pequeverso",
@@ -543,7 +543,6 @@ async function buildFavicons(c: FaviconCompose, src: string): Promise<OutputReco
     icons: [
       { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
       { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
-      { src: "/apple-touch-icon.png", sizes: "180x180", type: "image/png", purpose: "maskable" },
     ],
   };
   writeFileSync(join(publicDir, "manifest.webmanifest"), `${JSON.stringify(webmanifest, null, 2)}\n`);

@@ -1,6 +1,6 @@
 {
   "$schemaVersion": 1,
-  "generatedAt": "2026-09-24T14:39:28.819Z",
+  "generatedAt": "2026-09-24T14:51:20.992Z",
   "generator": "tools/media/media-build.ts v1 (sharp 0.35.4, libvips 8.18.6)",
   "extras": [
     "public/manifest.webmanifest"
@@ -201,8 +201,8 @@
       "outputs": [
         {
           "file": "public/favicon.ico",
-          "bytes": 3887,
-          "sha256": "70f235bf0a3de7504e225246f551b83ca0206d304a40fa020567d2dad0889082",
+          "bytes": 7139,
+          "sha256": "19e22b7bdf3aa72572086e4a970128fa23b37a19717f4ede8ed14cd92e8cc520",
           "width": 48,
           "height": 48,
           "format": "ico",
@@ -242,15 +242,6 @@
           "width": 512,
           "height": 512,
           "format": "png",
-          "quality": null
-        },
-        {
-          "file": "public/icon.svg",
-          "bytes": 42618,
-          "sha256": "981f0b281312e2439d136b7635eaff73e612d7d2a4b63105cc36111526d84873",
-          "width": 96,
-          "height": 96,
-          "format": "svg",
           "quality": null
         }
       ]

@@ -26,9 +26,9 @@ export const metadata: Metadata = {
   applicationName: site.name,
   icons: {
     icon: [
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
       { url: "/favicon.png", type: "image/png", sizes: "512x512" },
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", sizes: "48x48" },
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
