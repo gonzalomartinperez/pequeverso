@@ -1,6 +1,8 @@
-import { formatUsd } from "@config/commerce";
+import { formatUsd, guaranteeDays } from "@config/commerce";
 import { Suspense } from "react";
+import { ChipRow } from "@/components/blocks/chip-row";
 import { Eyebrow } from "@/components/blocks/eyebrow";
+import { FactChip } from "@/components/blocks/fact-chip";
 import { FAQ } from "@/components/blocks/faq";
 import { IconCardList } from "@/components/blocks/icon-card-list";
 import { ResourceGrid } from "@/components/blocks/resource-grid";
@@ -18,9 +20,9 @@ import { OfferModeRoot } from "@/features/commerce/OfferModeRoot";
 import { GallerySlide } from "@/features/gallery/PageGallery/GallerySlide";
 import { PageGallery } from "@/features/gallery/PageGallery/PageGallery";
 import { getImage } from "@/lib/media";
+import { PageMotion } from "@/motion/page-motion";
 import { StickyCTA } from "@/motion/sticky-cta";
 import type { OfferProduct } from "@/products/schema";
-import styles from "./OfferLanding.module.css";
 import { CloseSection } from "./offer/CloseSection";
 import { ComplementSection } from "./offer/ComplementSection";
 import { DownsellHero } from "./offer/DownsellHero";
@@ -28,7 +30,7 @@ import { type CounterFact, UpsellHero } from "./offer/UpsellHero";
 
 type Props = { product: OfferProduct };
 
-const STICKY_HIDE_OVER = ["#gfp-decision", "#cierre", "footer"];
+const STICKY_HIDE_OVER = ["#hero", "#hero-downsell", "#gfp-decision", "#cierre", "footer"];
 
 function counterFacts({ composition, copy, resources }: OfferProduct): CounterFact[] {
   const units = copy.counters;
@@ -38,6 +40,11 @@ function counterFacts({ composition, copy, resources }: OfferProduct): CounterFa
     { value: composition.pageCount, unit: units.pages },
     { value: composition.visibleResources ?? resources.length, unit: units.resources },
   ];
+}
+
+/** The topbar's reassurance phrases ("purchase confirmed", "optional"), repeated under the decision. */
+function reassurance(topbar: string): string[] {
+  return topbar.split(" · ");
 }
 
 function pageCaption(id: string): string {
@@ -64,72 +71,80 @@ export function OfferLanding({ product }: Props) {
         <Suspense fallback={null}>
           <OfferModeMirror product={product.slug} prices={pricing} />
         </Suspense>
-        <UpsellHero product={product} counters={counterFacts(product)} />
-        <DownsellHero product={product} />
-        <Section tone="navy" label="Decisión de la oferta" className={styles.decision}>
-          <div className={styles.slot}>
-            <HotmartWidgetSlot
-              heading={
-                <>
-                  <Stack gap={2} className="only-upsell">
-                    <Eyebrow as="span">{copy.decision.upsell.kicker}</Eyebrow>
-                    <h2 id="gfp-decision-title">{copy.decision.upsell.title}</h2>
-                    <p>{copy.decision.upsell.text}</p>
-                  </Stack>
-                  <Stack gap={2} className="only-downsell">
-                    <Eyebrow as="span">{copy.decision.downsell.kicker}</Eyebrow>
-                    <h2 id="gfp-decision-title-downsell">{copy.decision.downsell.title}</h2>
-                    <p>{copy.decision.downsell.text}</p>
-                  </Stack>
-                </>
-              }
-              loadingText={copy.widget.loading}
-              fallbackTitle={copy.widget.fallbackTitle}
-              fallbackText={copy.widget.fallbackText}
-              reloadLabel={copy.widget.reload}
+        <PageMotion>
+          <UpsellHero product={product} counters={counterFacts(product)} />
+          <DownsellHero product={product} />
+          <Section tone="navy" label="Decisión de la oferta" className="sky-band">
+            <div className="mx-auto grid max-w-180 gap-6" data-motion="none">
+              <HotmartWidgetSlot
+                heading={
+                  <>
+                    <Stack gap={2} className="only-upsell">
+                      <Eyebrow as="span">{copy.decision.upsell.kicker}</Eyebrow>
+                      <h2 id="gfp-decision-title">{copy.decision.upsell.title}</h2>
+                      <p>{copy.decision.upsell.text}</p>
+                    </Stack>
+                    <Stack gap={2} className="only-downsell">
+                      <Eyebrow as="span">{copy.decision.downsell.kicker}</Eyebrow>
+                      <h2 id="gfp-decision-title-downsell">{copy.decision.downsell.title}</h2>
+                      <p>{copy.decision.downsell.text}</p>
+                    </Stack>
+                  </>
+                }
+                loadingText={copy.widget.loading}
+                fallbackTitle={copy.widget.fallbackTitle}
+                fallbackText={copy.widget.fallbackText}
+                reloadLabel={copy.widget.reload}
+              />
+              <ChipRow align="center">
+                {reassurance(copy.topbar).map((label) => (
+                  <FactChip key={label} icon="shield" label={label} tone="dark" />
+                ))}
+                <FactChip icon="refresh" label={`${guaranteeDays} días de garantía en Hotmart`} tone="dark" />
+              </ChipRow>
+            </div>
+          </Section>
+          <ComplementSection copy={copy.complement} />
+
+          <Section tone="mint" id="incluye" labelledBy="incluye-title" defer>
+            <SectionHeading
+              id="incluye-title"
+              kicker={copy.included.kicker}
+              title={copy.included.title}
+              lead={copy.included.lead}
             />
-          </div>
-        </Section>
-        <ComplementSection copy={copy.complement} />
+            <ResourceGrid resources={product.resources} total={copy.included.total} />
+          </Section>
 
-        <Section tone="mint" id="incluye" labelledBy="incluye-title" defer>
-          <SectionHeading
-            id="incluye-title"
-            kicker={copy.included.kicker}
-            title={copy.included.title}
-            lead={copy.included.lead}
-          />
-          <ResourceGrid resources={product.resources} total={copy.included.total} />
-        </Section>
+          <Section tone="cream" id="paginas" labelledBy="paginas-title" className="only-upsell" defer>
+            <SectionHeading
+              id="paginas-title"
+              kicker={copy.pages.kicker}
+              title={copy.pages.title}
+              lead={copy.pages.lead}
+              align="center"
+            />
+            <PageGallery label={copy.pages.galleryLabel} count={media.pageIds.length}>
+              {media.pageIds.map((id) => (
+                <GallerySlide key={id} id={id} caption={pageCaption(id)} />
+              ))}
+            </PageGallery>
+          </Section>
 
-        <Section tone="cream" id="paginas" labelledBy="paginas-title" className="only-upsell" defer>
-          <SectionHeading
-            id="paginas-title"
-            kicker={copy.pages.kicker}
-            title={copy.pages.title}
-            lead={copy.pages.lead}
-            align="center"
-          />
-          <PageGallery label={copy.pages.galleryLabel} count={media.pageIds.length}>
-            {media.pageIds.map((id) => (
-              <GallerySlide key={id} id={id} caption={pageCaption(id)} />
-            ))}
-          </PageGallery>
-        </Section>
+          <Section tone="white" labelledBy="momentos-title" defer>
+            <SectionHeading id="momentos-title" kicker={copy.moments.kicker} title={copy.moments.title} />
+            <IconCardList items={copy.moments.items} cols={4} />
+          </Section>
 
-        <Section tone="white" labelledBy="momentos-title" defer>
-          <SectionHeading id="momentos-title" kicker={copy.moments.kicker} title={copy.moments.title} />
-          <IconCardList items={copy.moments.items} cols={4} />
-        </Section>
+          <Section tone="cream" id="preguntas" labelledBy="faq-title" defer>
+            <Split ratio="0.8/1.2">
+              <SectionHeading id="faq-title" kicker={copy.faq.kicker} title={copy.faq.title} />
+              <FAQ items={copy.faq.items} />
+            </Split>
+          </Section>
 
-        <Section tone="cream" id="preguntas" labelledBy="faq-title" defer>
-          <Split ratio="0.8/1.2">
-            <SectionHeading id="faq-title" kicker={copy.faq.kicker} title={copy.faq.title} />
-            <FAQ items={copy.faq.items} />
-          </Split>
-        </Section>
-
-        <CloseSection copy={copy.close} />
+          <CloseSection copy={copy.close} />
+        </PageMotion>
 
         <StickyCTA hideWhenVisible={STICKY_HIDE_OVER} label={product.shortName}>
           <DecisionLink>

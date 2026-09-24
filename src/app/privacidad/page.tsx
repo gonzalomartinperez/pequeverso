@@ -2,6 +2,7 @@ import { seller, sellerField, sellerIdentityPending } from "@content/es/legal/se
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalLayout } from "@/components/layout/legal-layout";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { buildMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildMetadata({
@@ -151,24 +152,22 @@ export default function PrivacidadPage() {
       </dl>
 
       <h2 id="finalidades">Finalidades y base legal</h2>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Finalidad</th>
-              <th scope="col">Base legal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {purposes.map((row) => (
-              <tr key={row.purpose}>
-                <td>{row.purpose}</td>
-                <td>{row.basis}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col">Finalidad</TableHead>
+            <TableHead scope="col">Base legal</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {purposes.map((row) => (
+            <TableRow key={row.purpose}>
+              <TableCell>{row.purpose}</TableCell>
+              <TableCell>{row.basis}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
       <p>
         No tomamos decisiones automatizadas con efectos jurídicos sobre ti ni elaboramos perfiles a partir de
         los datos de soporte o de compra.
@@ -207,24 +206,22 @@ export default function PrivacidadPage() {
       </p>
 
       <h2 id="conservacion">Conservación</h2>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Datos</th>
-              <th scope="col">Plazo</th>
-            </tr>
-          </thead>
-          <tbody>
-            {retention.map((row) => (
-              <tr key={row.data}>
-                <td>{row.data}</td>
-                <td>{row.period}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col">Datos</TableHead>
+            <TableHead scope="col">Plazo</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {retention.map((row) => (
+            <TableRow key={row.data}>
+              <TableCell>{row.data}</TableCell>
+              <TableCell>{row.period}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
       <h2 id="derechos">Tus derechos</h2>
       <p>

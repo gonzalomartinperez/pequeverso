@@ -1,6 +1,7 @@
 import { ChipRow } from "@/components/blocks/chip-row";
 import { Eyebrow } from "@/components/blocks/eyebrow";
 import { FactChip } from "@/components/blocks/fact-chip";
+import { Icon } from "@/components/blocks/icon";
 import { MediaFrame } from "@/components/blocks/media-frame";
 import { MediaImage } from "@/components/blocks/media-image";
 import { PriceBlock } from "@/components/blocks/price-block";
@@ -15,18 +16,29 @@ export type CounterFact = { value: number; unit: string };
 
 type Props = { product: OfferProduct; counters: readonly CounterFact[] };
 
-/** Upsell view of the offer hero: eyebrow, title, counters, price block and the product image. */
+/**
+ * Upsell view of the offer hero: the "purchase confirmed, this is optional" reassurance first,
+ * then title, counters, price block and the real product image.
+ */
 export function UpsellHero({ product, counters }: Props) {
   const { copy, media, pricing } = product;
   return (
-    <Section tone="cream" id="hero" labelledBy="hero-title-upsell" className="only-upsell">
-      <Split ratio="1.1/0.9" mediaFirstOnTablet>
-        <Stack gap={4}>
-          <Eyebrow>{copy.upsell.kicker}</Eyebrow>
+    <Section
+      tone="cream"
+      id="hero"
+      labelledBy="hero-title-upsell"
+      className="only-upsell bg-[linear-gradient(to_bottom,var(--pv-cream)_55%,var(--pv-mint))]"
+    >
+      <Split ratio="1.1/0.9" align="center" mediaFirstOnTablet>
+        <Stack gap={5}>
+          <Eyebrow>
+            <Icon name="check" />
+            {copy.upsell.kicker}
+          </Eyebrow>
           <h1 id="hero-title-upsell" data-hero-enter="title">
             {copy.upsell.title}
           </h1>
-          <p className="lead">{copy.upsell.lead}</p>
+          <p className="lead max-w-[58ch]">{copy.upsell.lead}</p>
           <ChipRow>
             {counters.map((fact) => (
               <CounterChip key={fact.unit} value={fact.value} unit={fact.unit} />
@@ -41,6 +53,7 @@ export function UpsellHero({ product, counters }: Props) {
             taxNote={copy.taxNote}
             cta={<DecisionLink>{copy.header.cta}</DecisionLink>}
             ctaNote={copy.upsell.decisionHint}
+            className="w-full max-w-md"
           />
         </Stack>
         <div data-hero-enter="media">

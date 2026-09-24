@@ -2,6 +2,7 @@ import { seller } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalLayout } from "@/components/layout/legal-layout";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CookieSettingsLink } from "@/features/tracking/CookieSettingsLink";
 import { buildMetadata } from "@/lib/metadata";
 
@@ -62,32 +63,30 @@ export default function CookiesPage() {
       </p>
 
       <h2 id="cuales">Cuáles usamos</h2>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Nombre</th>
-              <th scope="col">Titular</th>
-              <th scope="col">Finalidad</th>
-              <th scope="col">Duración</th>
-              <th scope="col">Tipo</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cookies.map((cookie) => (
-              <tr key={cookie.name}>
-                <th scope="row">
-                  <code>{cookie.name}</code>
-                </th>
-                <td>{cookie.owner}</td>
-                <td>{cookie.purpose}</td>
-                <td>{cookie.duration}</td>
-                <td>{cookie.type}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col">Nombre</TableHead>
+            <TableHead scope="col">Titular</TableHead>
+            <TableHead scope="col">Finalidad</TableHead>
+            <TableHead scope="col">Duración</TableHead>
+            <TableHead scope="col">Tipo</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {cookies.map((cookie) => (
+            <TableRow key={cookie.name}>
+              <TableHead scope="row">
+                <code>{cookie.name}</code>
+              </TableHead>
+              <TableCell>{cookie.owner}</TableCell>
+              <TableCell>{cookie.purpose}</TableCell>
+              <TableCell>{cookie.duration}</TableCell>
+              <TableCell>{cookie.type}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
       <p>
         No usamos cookies de analítica con identificadores personales. Si en algún momento añadimos una
         herramienta de estadísticas agregadas sin cookies, la indicaremos aquí y en la{" "}

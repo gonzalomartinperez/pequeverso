@@ -15,7 +15,12 @@ export const graciasCopy = {
     lead: "Hotmart envía el acceso al correo que usaste al comprar. Entra con ese mismo correo, descarga los PDF y elige la primera hoja.",
     cta: "Entrar a Hotmart y ver mis archivos",
     note: "Usa el mismo correo de la compra. Si no ves el mensaje, revisa Spam y Promociones.",
-    facts: ["9 PDF", "414 páginas", "Acceso por Hotmart", "Soporte por correo"],
+    facts: [
+      "Grafismo Fonético + 8 bonos incluidos",
+      "9 PDF · 414 páginas",
+      "Acceso por Hotmart",
+      "Soporte por correo",
+    ],
   },
   access: {
     kicker: "Acceso en tres pasos",

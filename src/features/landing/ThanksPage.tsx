@@ -8,10 +8,12 @@ import { CTAButton } from "@/components/blocks/cta-button";
 import { Eyebrow } from "@/components/blocks/eyebrow";
 import { FactChip } from "@/components/blocks/fact-chip";
 import { Grid } from "@/components/blocks/grid";
+import { Icon } from "@/components/blocks/icon";
 import { IconCardList } from "@/components/blocks/icon-card-list";
 import { MediaFrame } from "@/components/blocks/media-frame";
 import { MediaImage } from "@/components/blocks/media-image";
 import { Notice } from "@/components/blocks/notice";
+import { NumberedList } from "@/components/blocks/numbered-list";
 import { ResourceGrid } from "@/components/blocks/resource-grid";
 import { Section } from "@/components/blocks/section";
 import { SectionHeading } from "@/components/blocks/section-heading";
@@ -22,7 +24,6 @@ import { PageShell } from "@/components/layout/page-shell";
 import { Card } from "@/components/ui/card";
 import { Universe } from "@/motion/universe";
 import type { CoreProduct } from "@/products/schema";
-import styles from "./ThanksPage.module.css";
 
 type Props = { product: CoreProduct };
 
@@ -44,10 +45,13 @@ export function ThanksPage({ product }: Props) {
       cta={headerCta}
       subtitle="Acceso a tu compra"
     >
-      <Section tone="navy" labelledBy="hero-title">
+      <Section tone="navy" labelledBy="hero-title" className="overflow-hidden">
         <Universe variant="hero" />
-        <Stack gap={4} maxWidth="44rem" className={styles.hero}>
-          <Eyebrow tone="dark">{copy.hero.kicker}</Eyebrow>
+        <Stack gap={5} maxWidth="44rem" className="relative">
+          <Eyebrow tone="dark">
+            <Icon name="check" />
+            {copy.hero.kicker}
+          </Eyebrow>
           <h1 id="hero-title" data-hero-enter="title">
             {copy.hero.title}
           </h1>
@@ -57,17 +61,20 @@ export function ThanksPage({ product }: Props) {
               <FactChip key={fact} label={fact} tone="dark" />
             ))}
           </ChipRow>
-          <CTAButton href={hotmart.consumerArea} variant="primary" external icon={LogIn}>
+          <CTAButton href={hotmart.consumerArea} variant="primary" external icon={LogIn} className="mt-2">
             {copy.hero.cta}
           </CTAButton>
-          <p>{copy.hero.note}</p>
+          <p className="flex items-start gap-2 text-small">
+            <Icon name="mail" size={18} className="mt-[0.15em] shrink-0 text-icon" />
+            <span>{copy.hero.note}</span>
+          </p>
         </Stack>
       </Section>
 
       <Section tone="cream" labelledBy="acceso-title">
         <SectionHeading id="acceso-title" kicker={copy.access.kicker} title={copy.access.title} />
         <IconCardList items={copy.access.steps} numbered />
-        <p className={styles.after}>
+        <p className="mt-8 flex justify-center">
           <CTAButton href={hotmart.consumerArea} variant="outline" external>
             {copy.access.cta}
           </CTAButton>
@@ -82,12 +89,8 @@ export function ThanksPage({ product }: Props) {
               kicker={copy.firstPractice.kicker}
               title={copy.firstPractice.title}
             />
-            <Card pad="lg" reveal>
-              <ol className={styles.practice}>
-                {copy.firstPractice.steps.map((step) => (
-                  <li key={step}>{step}</li>
-                ))}
-              </ol>
+            <Card pad="lg">
+              <NumberedList items={copy.firstPractice.steps} />
             </Card>
           </div>
           <Stack gap={4}>
@@ -109,7 +112,7 @@ export function ThanksPage({ product }: Props) {
       <Section tone="mint" labelledBy="ayuda-title" defer>
         <SectionHeading id="ayuda-title" kicker={copy.help.kicker} title={copy.help.title} />
         <IconCardList items={copy.help.items} cols={2} />
-        <p className={`${styles.after} ${styles.contact}`}>
+        <p className="mt-8 max-w-[70ch]">
           {copy.help.contact} <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a> · Reembolsos:{" "}
           <a href={hotmart.refunds}>refund.hotmart.com</a> ({guaranteeDays} días).
         </p>

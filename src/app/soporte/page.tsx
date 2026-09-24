@@ -32,7 +32,14 @@ export default function SoportePage() {
         </Stack>
         <Grid cols={3} as="ul">
           {copy.routes.map((route, index) => (
-            <Card key={route.title} as="li" pad="lg" reveal stagger={index}>
+            <Card
+              key={route.title}
+              as="li"
+              pad="lg"
+              reveal
+              stagger={index}
+              className="grid-rows-[auto_auto_1fr_auto]"
+            >
               <IconBadge icon={route.icon} />
               <CardTitle as="h2">{route.title}</CardTitle>
               <p>{route.text}</p>
@@ -42,23 +49,25 @@ export default function SoportePage() {
             </Card>
           ))}
         </Grid>
-        <Card variant="soft" className="mt-12 max-w-[70ch]">
-          <CardTitle as="h2">{copy.include.title}</CardTitle>
-          <BulletList items={copy.include.items} icon="mail" />
-          <p>{copy.include.note}</p>
-          <p>
-            {copy.include.hotmartLabel} <a href={hotmart.consumerArea}>{copy.include.hotmartLink}</a>
-          </p>
-        </Card>
-        <Card variant="soft" className="mt-6 max-w-[70ch]">
-          <CardTitle as="h2">{copy.limits.title}</CardTitle>
-          <BulletList items={copy.limits.items} icon="shield" />
-          <p>{copy.limits.note}</p>
-          <p>
-            {copy.contact.label} <a href={`mailto:${seller.supportEmail}`}>{seller.supportEmail}</a> ·{" "}
-            {copy.contact.moreLabel} <Link href="/compras-y-reembolsos/">{copy.contact.moreLink}</Link>.
-          </p>
-        </Card>
+        <Grid cols={2} className="mt-12">
+          <Card variant="soft" pad="lg">
+            <CardTitle as="h2">{copy.include.title}</CardTitle>
+            <BulletList items={copy.include.items} icon="mail" />
+            <p>{copy.include.note}</p>
+            <p>
+              {copy.include.hotmartLabel} <a href={hotmart.consumerArea}>{copy.include.hotmartLink}</a>
+            </p>
+          </Card>
+          <Card variant="soft" pad="lg">
+            <CardTitle as="h2">{copy.limits.title}</CardTitle>
+            <BulletList items={copy.limits.items} icon="shield" />
+            <p>{copy.limits.note}</p>
+            <p>
+              {copy.contact.label} <a href={`mailto:${seller.supportEmail}`}>{seller.supportEmail}</a> ·{" "}
+              {copy.contact.moreLabel} <Link href="/compras-y-reembolsos/">{copy.contact.moreLink}</Link>.
+            </p>
+          </Card>
+        </Grid>
       </Section>
     </PageShell>
   );

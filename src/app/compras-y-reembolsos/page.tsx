@@ -3,6 +3,7 @@ import { seller } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalLayout } from "@/components/layout/legal-layout";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { buildMetadata } from "@/lib/metadata";
 import { offerProducts } from "@/products";
 
@@ -142,24 +143,22 @@ export default function ComprasPage() {
       </p>
 
       <h2 id="plazos">Plazos</h2>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Paso</th>
-              <th scope="col">Plazo</th>
-            </tr>
-          </thead>
-          <tbody>
-            {deadlines.map((row) => (
-              <tr key={row.step}>
-                <th scope="row">{row.step}</th>
-                <td>{row.period}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col">Paso</TableHead>
+            <TableHead scope="col">Plazo</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {deadlines.map((row) => (
+            <TableRow key={row.step}>
+              <TableHead scope="row">{row.step}</TableHead>
+              <TableCell>{row.period}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
       <h2 id="preguntas">Preguntas frecuentes</h2>
       <h3>¿Por qué el importe que pagué no coincide exactamente con el precio en dólares?</h3>

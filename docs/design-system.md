@@ -79,7 +79,7 @@ composes custom elements with `render` (no `asChild`); for links styled as butto
 | `accordion` | Base UI accordion (interactive use); FAQ content uses the zero-JS `FAQ` block |
 | `tabs`, `radio-group` | chip look; `RadioGroupItem variant: dot \| chip` |
 | `tooltip` | supplementary only, never the only label |
-| `separator`, `skeleton`, `table` | `Table` scrolls horizontally inside its own container |
+| `separator`, `skeleton`, `table` | `Separator` is a server component (no client JS); `Table` scrolls horizontally inside its own container and, inside `prose`, is framed, tightened and hyphenated on narrow containers |
 
 ## Blocks (`src/components/blocks`)
 
@@ -96,6 +96,7 @@ Server components; props kept compatible with the previous PascalCase primitives
 | `Split` | `ratio?`, `align?`, `stickyAside?`, `mediaFirstOnTablet?`, `children: [copy, media]` |
 | `BulletList` | `items`, `icon?`, `as?: ul\|ol`, `tone?` |
 | `ChipRow`, `FactChip` | `align?` / `icon?`, `label`, `detail?`, `tone?` |
+| `NumberedList` | `items`, `tone?` — short ordered instructions with gold number discs |
 | `IconBadge`, `IconCardList` | `icon`, `size?: 48\|56\|72`, `tone?`, `number?` / `items`, `cols?`, `numbered?`, `tone?` |
 | `MediaFrame`, `MediaImage` | `ratio?`, `elevation?`, `tilt?`, `as?` / manifest `id`, `sizes`, `priority?`, `alt?` |
 | `PriceBlock` | `kicker`, `price`, `previous?`, `taxNote`, `currencyNote?` (default `localCurrencyNote`, globe icon), `cta`, `ctaNote?`, `tone?`, `id?` |
@@ -144,7 +145,7 @@ Acceptance criterion for every block and page, 320 → 1920 px, enforced by
   spacing are fluid (`clamp()`).
 - No fixed widths wider than the column; grid children are `min-w-0`; `Stack` caps children at
   100 %; labels wrap (badges have no `nowrap`); images and media keep `max-width: 100%` and their
-  natural aspect (`object-fit` only inside `MediaFrame`); tables scroll inside `Table` / `.table-wrap`.
+  natural aspect (`object-fit` only inside `MediaFrame`); tables use `Table` (legal tables fit from 320 px).
 - Targets ≥ 44 px for controls (24 px minimum for inline links); the header CTA is inside the
   first viewport at ≤ 768 px; at < 640 px the header drops the wordmark and decorative CTA icons.
 - Fixed layers never cover the CTA: the sticky bar hides over the hero CTA, price card, offer,
@@ -170,10 +171,19 @@ Acceptance criterion for every block and page, 320 → 1920 px, enforced by
 
 ## Page templates (migrating in follow-up PRs)
 
-Home, landing, offer, thanks and the gallery/video/age-selector islands still style their own
+Home, landing and the gallery/video/age-selector islands still style their own
 geometry in CSS Modules (tokens via `var()`, never `@apply`) while rendering through the blocks
 above. The hero "la mesa bajo el pequeño universo" (`src/features/landing/core/HeroScene`,
 `HeroStack`, `AgeSelector`) and the landing order are described in `docs/specs/design-system.md`
 (migration plan) and remain as before: `#hero` (with `#comprar` and `#incluye`) → problema →
 `#metodo` → `#videos` → `#paginas` → `#oferta` → `#para-quien` → author's note → `#preguntas` →
 `#oferta-final` → `StickyCTA`.
+
+**Offer (`/imprime-y-juega/`, upsell and `?downsell=1`), thanks, legal, soporte, 404** use only
+blocks, primitives and utilities (no CSS Modules). Offer order: `#hero` / `#hero-downsell`
+(reassurance eyebrow, counters, `PriceBlock`, real image / objection cards) → decision band
+(static sky, one `#hotmart-sales-funnel` inside `#gfp-decision`, reassurance chips; its region
+carries `data-motion="none"`, so `PageMotion` never moves it) → complement → `#incluye` →
+`#paginas` (upsell) → moments → `#preguntas` → `#cierre` → `StickyCTA` (hidden over the heroes,
+the decision, the close band and the footer). Legal pages: `LegalLayout` (68ch `prose`, carded
+sticky `toc` index, `Separator`), tables through `Table`, `dl` as ruled rows.

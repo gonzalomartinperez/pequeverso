@@ -63,4 +63,5 @@ const withAnalyzer = bundleAnalyzer({ enabled: process.env.ANALYZE === "1", open
 export default withCn(withAnalyzer(nextConfig), {
   content: ["src/**/*.{ts,tsx}"],
   out: "src/lib/cn-tables.js",
+  config: "config/cn.ts",
 });

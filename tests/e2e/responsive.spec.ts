@@ -71,6 +71,7 @@ async function layoutFaults(page: Page) {
 
 for (const route of routes) {
   test(`responsive contract: ${route}`, async ({ page }) => {
+    test.setTimeout(90_000); // six widths of the heaviest landing under a parallel run
     for (const width of widths) {
       await page.setViewportSize({ width, height: height(width) });
       await page.goto(route, { waitUntil: "load" });
@@ -98,6 +99,8 @@ test("short landscape phone: no fixed layer covers a checkout CTA", async ({ pag
   await page.setViewportSize({ width: 640, height: 360 });
   await page.goto("/grafismo-fonetico/");
   const banner = page.getByTestId("consent-banner");
+  // The banner mounts after hydration: wait for it when the build expects it, or the check races.
+  if (process.env.E2E_EXPECT_CONSENT) await expect(banner).toBeVisible();
   if (await banner.isVisible()) await banner.getByRole("button", { name: "Rechazar" }).click();
   const ctas = page.locator('main a[data-checkout]:not([data-position="sticky"])');
   const count = await ctas.count();

@@ -12,7 +12,8 @@
     "tests/unit/**/*.test.ts",
     "tests/e2e/**/*.spec.ts",
     "src/app/**/route.standalone.ts!",
-    "config/next.ts!"
+    "config/next.ts!",
+    "config/cn.ts!"
   ],
   "project": ["src/**!", "config/**!", "content/**!", "scripts/**", "server/**", "tests/**"],
   "ignoreExportsUsedInFile": true,

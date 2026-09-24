@@ -9,6 +9,8 @@ const routes = [
   "/grafismo-fonetico/gracias/",
   "/soporte/",
   "/privacidad/",
+  "/terminos/",
+  "/cookies/",
   "/esta-no-existe/",
 ];
 
