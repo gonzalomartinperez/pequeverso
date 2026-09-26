@@ -1522,6 +1522,24 @@
         "widths": [640, 1024],
         "avif": [1024]
       }
+    },
+    {
+      "id": "gf.life.imprimir",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S03-imprimir-en-casa-marca.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Madre imprimiendo hojas en casa mientras su hija mira emocionada"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
     }
   ]
 }
