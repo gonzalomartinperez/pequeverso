@@ -17,6 +17,10 @@ type Props = {
   className?: string | undefined;
 };
 
+/** One lap of items; under reduced motion it wraps and centres instead of sliding. */
+const LIST =
+  "flex shrink-0 items-center gap-[var(--marquee-gap,1rem)] motion-reduce:shrink motion-reduce:flex-wrap motion-reduce:justify-center";
+
 /**
  * Infinite horizontal strip (fact chips, the wall of real pages). CSS-only loop that pauses on
  * hover, on focus and with its toggle; under reduced motion it becomes one static wrapped row.
@@ -42,13 +46,13 @@ export function Marquee({
       style={style}
     >
       <div className="pv-marquee-track">
-        <ul className="flex shrink-0 items-center gap-[var(--marquee-gap,1rem)]" aria-label={label}>
+        <ul className={LIST} aria-label={label}>
           {items.map((item, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: static decorative list, never reordered
             <li key={index}>{item}</li>
           ))}
         </ul>
-        <ul className="flex shrink-0 items-center gap-[var(--marquee-gap,1rem)]" aria-hidden="true">
+        <ul className={`${LIST} motion-reduce:hidden`} aria-hidden="true">
           {items.map((item, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: duplicate lap of the list above
             <li key={index}>{item}</li>
