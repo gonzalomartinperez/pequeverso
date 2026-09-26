@@ -46,7 +46,7 @@ type Props = {
 const ZOOM =
   "group/zoom relative block w-full cursor-zoom-in overflow-hidden rounded-lg border border-white bg-[linear-gradient(160deg,var(--pv-white),var(--pv-celeste))] p-0 [&_img]:aspect-[4/3] [&_img]:w-full [&_img]:object-contain [&_img]:transition-transform [&_img]:duration-500 [&_img]:ease-out motion-safe:hover:[&_img]:scale-[1.025]";
 const ARROW =
-  "pointer-events-auto grid size-11 cursor-pointer place-items-center rounded-full bg-white/95 text-navy shadow-md transition duration-(--duration-fast) ease-out hover:scale-105 hover:bg-white active:scale-95 sm:size-12";
+  "pointer-events-auto grid size-11 cursor-pointer place-items-center rounded-full bg-white/95 text-navy shadow-md transition duration-(--duration-fast) ease-out hover:scale-105 hover:bg-white active:scale-95 sm:size-12 disabled:cursor-default disabled:opacity-35 disabled:hover:scale-100";
 const THUMB =
   "relative shrink-0 cursor-pointer snap-center overflow-hidden rounded-md border-2 border-transparent bg-white p-0 opacity-65 shadow-sm transition duration-(--duration) ease-out hover:opacity-100 aria-selected:border-navy aria-selected:opacity-100 motion-safe:aria-selected:-translate-y-0.5 [&_img]:block [&_img]:aspect-[4/3] [&_img]:w-16 [&_img]:object-cover cq-sm:[&_img]:w-20";
 const DOT =
@@ -97,7 +97,9 @@ function zoomFrom(image: HTMLImageElement): Zoom {
  */
 export function GalleryCarousel({ label, zoomHint, children, count, itemLabel, zoomTitle, meta }: Props) {
   const [emblaRef, embla] = useEmblaCarousel({
-    loop: true,
+    // No loop: the looper re-translates slides on every frame, and WebKit never reports the zoom
+    // button as stable under it; a product gallery reads better with a clear first and last page.
+    loop: false,
     align: "center",
     skipSnaps: false,
     dragFree: false,
@@ -208,6 +210,7 @@ export function GalleryCarousel({ label, zoomHint, children, count, itemLabel, z
               type="button"
               className={ARROW}
               onClick={() => embla?.scrollPrev()}
+              disabled={selected === 0}
               aria-label="Página anterior"
             >
               <ChevronLeft size={22} strokeWidth={2.6} />
@@ -216,6 +219,7 @@ export function GalleryCarousel({ label, zoomHint, children, count, itemLabel, z
               type="button"
               className={ARROW}
               onClick={() => embla?.scrollNext()}
+              disabled={selected === slides.length - 1}
               aria-label="Página siguiente"
             >
               <ChevronRight size={22} strokeWidth={2.6} />
