@@ -71,7 +71,8 @@ export function VideoBlock({
                 <figcaption className="grid gap-1 pr-1 text-small text-body cq-sm:px-1.5 cq-sm:pb-1.5">
                   <strong className="font-display text-lg leading-tight text-ink">{item.title}</strong>
                   <span>{item.description}</span>
-                  {illustrativeLabel ? (
+                  {illustrativeLabel &&
+                  !item.description.toLowerCase().includes(illustrativeLabel.toLowerCase()) ? (
                     <span className="text-tiny font-bold text-subtle cq-sm:sr-only">{illustrativeLabel}</span>
                   ) : null}
                 </figcaption>

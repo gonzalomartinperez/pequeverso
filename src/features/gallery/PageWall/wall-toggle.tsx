@@ -1,13 +1,34 @@
 "use client";
 
 import { PauseIcon, PlayIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /** Pause/resume control of the enclosing `PageWall` (WCAG 2.2.2); hidden under reduced motion. */
 export function WallToggle() {
   const [paused, setPaused] = useState(false);
+  const ref = useRef<HTMLButtonElement>(null);
+
+  // Pages slide in from off-screen, where native lazy loading never starts them: once the wall
+  // nears the viewport, promote every page on it to eager so none enters the view blank.
+  useEffect(() => {
+    const wall = ref.current?.closest<HTMLElement>("[data-slot='page-wall']");
+    if (!wall) return undefined;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        for (const img of wall.querySelectorAll<HTMLImageElement>("img[loading='lazy']"))
+          img.loading = "eager";
+        observer.disconnect();
+      },
+      { rootMargin: "600px 0px" },
+    );
+    observer.observe(wall);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <button
+      ref={ref}
       type="button"
       data-slot="page-wall-toggle"
       aria-pressed={paused}
