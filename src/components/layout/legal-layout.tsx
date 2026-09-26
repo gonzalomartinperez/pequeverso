@@ -16,7 +16,7 @@ const TOC_LABEL = "Contenido de esta página";
 const TOC_HEADING = "text-tiny font-extrabold tracking-[0.12em] text-teal-text uppercase";
 /** Index rows: pill hover on the `toc` counter list (numbers come from the utility). */
 const TOC_LIST =
-  "toc grid gap-y-0.5 [&_a]:rounded-md [&_a]:px-2 [&_a]:transition-colors [&_a]:duration-(--duration-fast) [&_a:hover]:bg-white [&_a:hover]:text-navy";
+  "toc grid gap-y-0.5 [&_a]:rounded-md [&_a]:px-2 [&_a:hover]:bg-white [&_a:hover]:text-navy";
 
 function TocList({ sections, className }: { sections: readonly Section[]; className?: string }) {
   return (

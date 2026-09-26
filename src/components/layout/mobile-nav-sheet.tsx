@@ -23,7 +23,7 @@ type Props = {
 
 /** Staggered entrance: each row waits `--i` steps after the panel starts sliding in. */
 const ROW =
-  "motion-safe:transition-[opacity,translate] motion-safe:duration-500 motion-safe:ease-emphasis motion-safe:[transition-delay:calc(80ms+var(--i)*45ms)] group-data-[starting-style]/sheet:translate-x-6 group-data-[starting-style]/sheet:opacity-0 group-data-[ending-style]/sheet:opacity-0 group-data-[ending-style]/sheet:[transition-delay:0ms]";
+  "motion-safe:transition motion-safe:duration-500 motion-safe:ease-emphasis motion-safe:[transition-delay:calc(80ms+var(--i)*45ms)] group-data-[starting-style]/sheet:translate-x-6 group-data-[starting-style]/sheet:opacity-0 group-data-[ending-style]/sheet:opacity-0 group-data-[ending-style]/sheet:[transition-delay:0ms]";
 
 /**
  * Full-height glass panel with the page anchors in large display type, the header CTA and a
@@ -37,7 +37,7 @@ export function MobileNavSheet({ items, cta, open, onOpenChange }: Props) {
         side="right"
         closeLabel="Cerrar el menú"
         aria-label="Menú de secciones"
-        className="group/sheet on-light gap-0 overflow-y-auto overscroll-contain border-white/80 data-[side=right]:glass data-[side=right]:w-full data-[side=right]:sm:max-w-md data-[side=right]:sm:rounded-l-2xl data-[side=right]:sm:shadow-float motion-safe:duration-500 motion-safe:ease-emphasis data-[side=right]:data-ending-style:translate-x-full data-[side=right]:data-starting-style:translate-x-full [&>[data-slot=sheet-close]]:top-3 [&>[data-slot=sheet-close]]:right-3 [&>[data-slot=sheet-close]]:size-11 [&>[data-slot=sheet-close]]:rounded-full [&>[data-slot=sheet-close]]:border-navy/14 [&>[data-slot=sheet-close]]:bg-white/80"
+        className="group/sheet on-light gap-0 overflow-y-auto overscroll-contain border-white/80 data-[side=right]:bg-cream data-[side=right]:w-full data-[side=right]:sm:max-w-md data-[side=right]:sm:rounded-l-2xl data-[side=right]:sm:shadow-float motion-safe:duration-500 motion-safe:ease-emphasis data-[side=right]:data-ending-style:translate-x-full data-[side=right]:data-starting-style:translate-x-full [&>[data-slot=sheet-close]]:top-3 [&>[data-slot=sheet-close]]:right-3 [&>[data-slot=sheet-close]]:size-11 [&>[data-slot=sheet-close]]:rounded-full [&>[data-slot=sheet-close]]:border-navy/14 [&>[data-slot=sheet-close]]:bg-white/80"
       >
         {/* Soft aurora glows behind the content (decorative). */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-1 overflow-hidden">
@@ -79,7 +79,7 @@ export function MobileNavSheet({ items, cta, open, onOpenChange }: Props) {
                   <span className="min-w-0 flex-1">{item.label}</span>
                   <span
                     aria-hidden="true"
-                    className="grid size-10 shrink-0 place-items-center rounded-full border border-navy/12 bg-white/70 text-navy transition-[background-color,color,rotate] duration-(--duration) ease-out group-hover/link:bg-navy group-hover/link:text-white motion-safe:group-hover/link:rotate-45"
+                    className="grid size-10 shrink-0 place-items-center rounded-full border border-navy/12 bg-white/70 text-navy transition duration-(--duration) ease-out group-hover/link:bg-navy group-hover/link:text-white motion-safe:group-hover/link:rotate-45"
                   >
                     <ArrowUpRightIcon className="size-5" focusable="false" />
                   </span>

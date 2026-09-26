@@ -86,7 +86,7 @@ export function StickyCTA({ hideWhenVisible, label, note, thumb, children }: Pro
       inert={!visible}
       className={cx(
         // Floating glass pill, centred and capped on tablets; the safe area lifts it on notched phones.
-        "glass fixed inset-x-3 bottom-[calc(var(--space-3)+env(safe-area-inset-bottom))] z-60 mx-auto hidden max-w-xl items-center gap-2.5 rounded-pill py-2 pr-2 pl-2 shadow-float ring-1 ring-navy/10 transition-[translate,opacity,visibility] duration-(--duration) ease-emphasis max-lg:flex",
+        "glass fixed inset-x-3 bottom-[calc(var(--space-3)+env(safe-area-inset-bottom))] z-60 mx-auto hidden max-w-xl items-center gap-2.5 rounded-pill py-2 pr-2 pl-2 shadow-float ring-1 ring-navy/10 transition-all duration-(--duration) ease-emphasis max-lg:flex",
         "[body:has(dialog[open],[role=dialog][data-open])_&]:invisible [body:has(dialog[open],[role=dialog][data-open])_&]:translate-y-[calc(100%+2rem)] [body:has(dialog[open],[role=dialog][data-open])_&]:opacity-0",
         // Hidden means off-screen *and* invisible, so full-page captures never show it over content.
         visible ? "visible translate-y-0 opacity-100" : "invisible translate-y-[calc(100%+2rem)] opacity-0",

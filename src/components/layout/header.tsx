@@ -23,7 +23,7 @@ type Props = {
  * no class table.
  */
 const MENU_TRIGGER =
-  "inline-grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border border-navy/14 bg-white/80 text-navy transition-[background-color,border-color,scale] duration-(--duration-fast) ease-out hover:border-navy/30 hover:bg-white motion-safe:active:scale-95 lg:hidden [&_svg]:size-5";
+  "inline-grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border border-navy/14 bg-white/80 text-navy transition duration-(--duration-fast) ease-out hover:border-navy/30 hover:bg-white motion-safe:active:scale-95 lg:hidden [&_svg]:size-5";
 
 /**
  * Sticky site header: a floating glass pill (brand, inline anchors from lg, the single CTA and
@@ -47,7 +47,7 @@ export function Header({ nav = [], cta, subtitle, overlay = false }: Props) {
       <div
         data-slot="header-pill"
         className={cn(
-          "on-light pv-header-pill glass pointer-events-auto relative mx-auto mt-2.5 flex h-15 w-[min(calc(var(--page-max)+1.5rem),100%-1rem)] items-center gap-2 rounded-full py-2 pr-2 pl-2 shadow-md ring-1 ring-navy/8 transition-[height,margin,background-color] duration-(--duration) ease-out sm:w-[min(calc(var(--page-max)+1.5rem),100%-1.5rem)] sm:gap-3 sm:pl-3",
+          "on-light pv-header-pill glass pointer-events-auto relative mx-auto mt-2.5 flex h-15 w-[min(calc(var(--page-max)+1.5rem),100%-1rem)] items-center gap-2 rounded-full py-2 pr-2 pl-2 shadow-md ring-1 ring-navy/8 transition-all duration-(--duration) ease-out sm:w-[min(calc(var(--page-max)+1.5rem),100%-1.5rem)] sm:gap-3 sm:pl-3",
           // Condensed once the header is stuck (Chromium scroll-state queries; elsewhere it stays roomy).
           "[@container_scroll-state(stuck:top)]:mt-2 [@container_scroll-state(stuck:top)]:h-14 [@container_scroll-state(stuck:top)]:bg-white/86",
         )}
