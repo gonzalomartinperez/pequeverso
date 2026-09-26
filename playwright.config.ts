@@ -24,7 +24,7 @@ const desktopChrome = devices["Desktop Chrome"];
 const desktopSafari = devices["Desktop Safari"];
 const specs = {
   functional:
-    /(smoke|a11y|offer-mode|widget|commerce|consent|legal|motion|navigation|tracking|lcp|responsive)\.spec\.ts/,
+    /(playground|smoke|a11y|offer-mode|widget|commerce|consent|legal|motion|navigation|tracking|lcp|responsive)\.spec\.ts/,
   visual: /visual\.spec\.ts/,
   prod: /smoke\.spec\.ts/,
 };
@@ -45,7 +45,7 @@ const projectSets = {
     {
       name: "reduced-motion",
       use: { ...desktopChrome, viewport: viewport(1280), reducedMotion: "reduce" as const },
-      testMatch: /(motion|a11y|smoke)\.spec\.ts/,
+      testMatch: /(playground|motion|a11y|smoke)\.spec\.ts/,
     },
   ],
   nightly: [
