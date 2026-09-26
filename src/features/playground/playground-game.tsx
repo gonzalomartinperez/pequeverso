@@ -187,7 +187,7 @@ export function PlaygroundGame({ words, pages, title, hint, doneLabel }: Props) 
                 // biome-ignore lint/suspicious/noArrayIndexKey: one pill per syllable, fixed order
                 key={`${syllable}-${index}`}
                 className={cx(
-                  "h-1.5 rounded-full transition-[width,background-color] duration-(--duration) ease-out",
+                  "h-1.5 rounded-full transition-all duration-(--duration) ease-out",
                   index < placed ? "w-6 bg-teal" : "w-3 bg-navy/15",
                 )}
               />
@@ -296,7 +296,7 @@ export function PlaygroundGame({ words, pages, title, hint, doneLabel }: Props) 
                   type="button"
                   aria-pressed={index === current}
                   className={cx(
-                    "min-h-11 cursor-pointer rounded-pill border-2 px-4 text-small font-extrabold tracking-[0.06em] uppercase transition-[background-color,color,border-color,translate] duration-(--duration-fast) ease-out",
+                    "min-h-11 cursor-pointer rounded-pill border-2 px-4 text-small font-extrabold tracking-[0.06em] uppercase transition duration-(--duration-fast) ease-out",
                     index === current
                       ? "border-navy bg-navy text-white shadow-md"
                       : "border-navy/15 bg-white/70 text-navy hover:border-navy/40 hover:bg-white motion-safe:hover:-translate-y-0.5",
@@ -346,10 +346,7 @@ export function PlaygroundGame({ words, pages, title, hint, doneLabel }: Props) 
               {page}
             </div>
           ))}
-          <div
-            className={cx(styles.veil, "absolute inset-0 bg-white/45 backdrop-blur-[2px]")}
-            aria-hidden="true"
-          />
+          <div className={cx(styles.veil, "absolute inset-0 bg-white/55")} aria-hidden="true" />
         </div>
         <span
           className={cx(

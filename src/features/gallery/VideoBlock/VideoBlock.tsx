@@ -32,7 +32,7 @@ export function VideoBlock({
         <ul className="grid grid-cols-1 gap-4 cq-sm:grid-cols-2 cq-sm:gap-5 cq-lg:grid-cols-4" role="list">
           {items.map((item, index) => (
             <li key={item.id} className="min-w-0" data-reveal="" style={{ "--i": index } as CSSProperties}>
-              <figure className="group/video grid h-full grid-cols-[40%_1fr] items-center gap-4 rounded-xl bg-white/75 p-2.5 shadow-float ring-1 ring-white transition-[translate,box-shadow] duration-(--duration) ease-out cq-sm:grid-cols-1 cq-sm:items-start cq-sm:gap-3 cq-sm:p-3 motion-safe:hover:-translate-y-1">
+              <figure className="group/video grid h-full grid-cols-[40%_1fr] items-center gap-4 rounded-xl bg-white/75 p-2.5 shadow-float border border-white transition duration-(--duration) ease-out cq-sm:grid-cols-1 cq-sm:items-start cq-sm:gap-3 cq-sm:p-3 motion-safe:hover:-translate-y-1">
                 <div
                   className="relative isolate overflow-hidden rounded-lg bg-navy-deep [&_img]:block [&_img]:size-full [&_img]:object-cover [&_video]:block [&_video]:size-full [&_video]:object-cover"
                   style={{ aspectRatio: `${item.width} / ${item.height}` }}

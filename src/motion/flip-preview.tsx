@@ -113,7 +113,7 @@ export function FlipPreview({
       <div
         ref={wrapper}
         className={cx(
-          "group/flip relative isolate w-full rounded-lg perspective-[1200px] transition-[translate] duration-(--duration-reveal) ease-emphasis [--flip-shadow:1] after:absolute after:inset-0 after:-z-1 after:rounded-[inherit] after:opacity-(--flip-shadow) after:shadow-float motion-safe:hover:-translate-y-1.5",
+          "group/flip relative isolate w-full rounded-lg perspective-[1200px] transition duration-(--duration-reveal) ease-emphasis [--flip-shadow:1] after:absolute after:inset-0 after:-z-1 after:rounded-[inherit] after:opacity-(--flip-shadow) after:shadow-float motion-safe:hover:-translate-y-1.5",
           RATIO[ratio],
         )}
       >
@@ -132,13 +132,13 @@ export function FlipPreview({
         </div>
         {/* Sheen that sweeps across the paper on hover (fine pointers, motion allowed). */}
         <span
-          className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit] after:absolute after:inset-y-0 after:-left-1/2 after:w-1/2 after:-skew-x-12 after:bg-[linear-gradient(90deg,transparent,oklch(1_0_0/45%),transparent)] after:opacity-0 after:transition-[translate,opacity] after:duration-700 after:ease-out motion-safe:group-hover/flip:after:translate-x-[300%] motion-safe:group-hover/flip:after:opacity-100"
+          className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit] after:absolute after:inset-y-0 after:-left-1/2 after:w-1/2 after:bg-[linear-gradient(100deg,transparent,oklch(1_0_0/45%),transparent)] after:opacity-0 after:transition after:duration-700 after:ease-out motion-safe:group-hover/flip:after:translate-x-[300%] motion-safe:group-hover/flip:after:opacity-100"
           aria-hidden="true"
         />
       </div>
       <button
         type="button"
-        className="glass inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-pill px-4 text-small font-extrabold text-navy shadow-sm transition-[background-color,scale] duration-(--duration-fast) ease-out hover:bg-white active:scale-97"
+        className="glass inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-pill px-4 text-small font-extrabold text-navy shadow-sm transition duration-(--duration-fast) ease-out hover:bg-white active:scale-97"
         aria-expanded={flipped}
         aria-controls={id}
         onClick={() => void toggle()}

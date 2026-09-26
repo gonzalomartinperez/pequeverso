@@ -46,11 +46,11 @@ type Props = {
 const ZOOM =
   "group/zoom relative block w-full cursor-zoom-in overflow-hidden rounded-lg border border-white bg-[linear-gradient(160deg,var(--pv-white),var(--pv-celeste))] p-0 [&_img]:aspect-[4/3] [&_img]:w-full [&_img]:object-contain [&_img]:transition-transform [&_img]:duration-500 [&_img]:ease-out motion-safe:hover:[&_img]:scale-[1.025]";
 const ARROW =
-  "pointer-events-auto grid size-11 cursor-pointer place-items-center rounded-full bg-white/95 text-navy shadow-[0_8px_24px_-6px_oklch(0.3175_0.1094_256.25/40%)] ring-1 ring-navy/10 transition-[scale,background-color] duration-(--duration-fast) ease-out hover:scale-105 hover:bg-white active:scale-95 sm:size-12";
+  "pointer-events-auto grid size-11 cursor-pointer place-items-center rounded-full bg-white/95 text-navy shadow-md transition duration-(--duration-fast) ease-out hover:scale-105 hover:bg-white active:scale-95 sm:size-12";
 const THUMB =
-  "relative shrink-0 cursor-pointer snap-center overflow-hidden rounded-md border-2 border-transparent bg-white p-0 opacity-65 shadow-sm transition-[opacity,border-color,translate] duration-(--duration) ease-out hover:opacity-100 aria-selected:border-navy aria-selected:opacity-100 motion-safe:aria-selected:-translate-y-0.5 [&_img]:block [&_img]:aspect-[4/3] [&_img]:w-16 [&_img]:object-cover cq-sm:[&_img]:w-20";
+  "relative shrink-0 cursor-pointer snap-center overflow-hidden rounded-md border-2 border-transparent bg-white p-0 opacity-65 shadow-sm transition duration-(--duration) ease-out hover:opacity-100 aria-selected:border-navy aria-selected:opacity-100 motion-safe:aria-selected:-translate-y-0.5 [&_img]:block [&_img]:aspect-[4/3] [&_img]:w-16 [&_img]:object-cover cq-sm:[&_img]:w-20";
 const DOT =
-  "grid h-11 w-6 cursor-pointer place-items-center p-0 before:h-2 before:w-2 before:rounded-full before:bg-line-strong before:transition-[width,background-color] before:duration-(--duration) aria-selected:before:w-5 aria-selected:before:bg-navy";
+  "grid h-11 w-6 cursor-pointer place-items-center p-0 before:h-2 before:w-2 before:rounded-full before:bg-line-strong before:transition-all before:duration-(--duration) aria-selected:before:w-5 aria-selected:before:bg-navy";
 
 const preloadZoom = () => void loadZoom();
 
@@ -70,7 +70,7 @@ export function GalleryZoomButton({ label, children }: { label: string; children
     <button type="button" className={ZOOM} onClick={onClick} onPointerEnter={preloadZoom} aria-label={label}>
       {children}
       <span
-        className="absolute right-3 bottom-3 grid size-10 place-items-center rounded-full bg-white/95 text-navy shadow-[0_8px_24px_-6px_oklch(0.3175_0.1094_256.25/40%)] ring-1 ring-navy/10 transition-transform duration-(--duration-fast) ease-out group-hover/zoom:scale-110"
+        className="absolute right-3 bottom-3 grid size-10 place-items-center rounded-full bg-white/95 text-navy shadow-md transition-transform duration-(--duration-fast) ease-out group-hover/zoom:scale-110"
         aria-hidden="true"
       >
         <Maximize2 size={17} strokeWidth={2.4} />
@@ -169,7 +169,7 @@ export function GalleryCarousel({ label, zoomHint, children, count, itemLabel, z
         aria-roledescription="carrusel"
         aria-label={label}
       >
-        <div className="relative rounded-xl bg-white/70 p-2 shadow-float ring-1 ring-white sm:p-3">
+        <div className="relative rounded-xl bg-white/70 p-2 shadow-float border border-white sm:p-3">
           {/* biome-ignore lint/a11y/noStaticElementInteractions: keyboard navigation for the carousel viewport (roving focus lives on the controls) */}
           <div
             className="overflow-hidden rounded-lg"
@@ -192,7 +192,7 @@ export function GalleryCarousel({ label, zoomHint, children, count, itemLabel, z
             </ul>
           </div>
           <p
-            className="pointer-events-none absolute top-5 left-5 rounded-pill bg-navy/88 px-3 py-1.5 text-tiny font-extrabold text-white tabular-nums shadow-md backdrop-blur-md sm:top-6 sm:left-6 sm:text-small"
+            className="pointer-events-none absolute top-5 left-5 rounded-pill bg-navy/88 px-3 py-1.5 text-tiny font-extrabold text-white tabular-nums shadow-md sm:top-6 sm:left-6 sm:text-small"
             aria-live="polite"
           >
             {position(selected)}

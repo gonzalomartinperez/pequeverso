@@ -96,7 +96,7 @@ export function VideoPlayer({ id, mp4, webm, width, height, title, children }: P
         aria-hidden="true"
       />
       <span
-        className="absolute inset-0 m-auto grid size-12 place-items-center rounded-full bg-gold text-navy-deep shadow-[0_0_0_6px_oklch(1_0_0/35%),0_12px_28px_-6px_oklch(0.2_0.08_256/60%)] transition-[scale,box-shadow] duration-(--duration) ease-out cq-sm:size-16 motion-safe:group-hover/play:scale-110 group-hover/play:shadow-[0_0_0_10px_oklch(1_0_0/30%),0_16px_32px_-6px_oklch(0.2_0.08_256/60%)]"
+        className="absolute inset-0 m-auto grid size-12 place-items-center rounded-full bg-gold text-navy-deep border-4 border-white/60 shadow-lg transition duration-(--duration) ease-out cq-sm:size-16 motion-safe:group-hover/play:scale-110"
         aria-hidden="true"
       >
         <Play className="ml-0.5 size-5 cq-sm:size-7" fill="currentColor" />

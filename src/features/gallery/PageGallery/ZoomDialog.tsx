@@ -55,12 +55,12 @@ export function ZoomDialog({ open, zoom, title, onClose }: Props) {
       }}
     >
       <Dialog.Portal>
-        <Dialog.Backdrop className="fixed inset-0 z-70 bg-navy-deep/75 backdrop-blur-sm transition-opacity duration-(--duration) ease-out data-ending-style:opacity-0 data-starting-style:opacity-0" />
+        <Dialog.Backdrop className="fixed inset-0 z-70 bg-navy-deep/80 transition-opacity duration-(--duration) ease-out data-ending-style:opacity-0 data-starting-style:opacity-0" />
         <Dialog.Viewport className="fixed inset-0 z-70 grid place-items-center pt-[max(1rem,env(safe-area-inset-top))] pr-[max(1rem,env(safe-area-inset-right))] pb-[max(1rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))]">
           <Dialog.Popup
             data-slot="gallery-zoom"
             onKeyDown={trapTab}
-            className="relative grid max-h-full w-fit max-w-[min(1040px,100%)] gap-3 overflow-auto rounded-xl bg-[linear-gradient(160deg,var(--pv-white),var(--pv-celeste))] p-3 shadow-[0_40px_120px_-20px_oklch(0.15_0.08_256/70%)] outline-none ring-1 ring-white/80 transition-[opacity,scale,translate] duration-(--duration-reveal) ease-emphasis data-ending-style:translate-y-2 data-ending-style:scale-96 data-ending-style:opacity-0 data-starting-style:translate-y-2 data-starting-style:scale-96 data-starting-style:opacity-0 sm:p-5"
+            className="relative grid max-h-full w-fit max-w-[min(1040px,100%)] gap-3 overflow-auto rounded-xl bg-[linear-gradient(160deg,var(--pv-white),var(--pv-celeste))] p-3 shadow-lg outline-none border border-white/80 transition duration-(--duration-reveal) ease-emphasis data-ending-style:translate-y-2 data-ending-style:scale-96 data-ending-style:opacity-0 data-starting-style:translate-y-2 data-starting-style:scale-96 data-starting-style:opacity-0 sm:p-5"
           >
             {zoom ? (
               <>
@@ -87,7 +87,7 @@ export function ZoomDialog({ open, zoom, title, onClose }: Props) {
                 </Dialog.Description>
               </>
             ) : null}
-            <Dialog.Close className="glass absolute top-3 right-3 grid size-11 cursor-pointer place-items-center rounded-full text-navy shadow-md transition-[scale,background-color] duration-(--duration-fast) ease-out hover:bg-white active:scale-95 sm:top-4 sm:right-4">
+            <Dialog.Close className="glass absolute top-3 right-3 grid size-11 cursor-pointer place-items-center rounded-full text-navy shadow-md transition duration-(--duration-fast) ease-out hover:bg-white active:scale-95 sm:top-4 sm:right-4">
               <XIcon aria-hidden="true" focusable="false" />
               <span className="sr-only">Cerrar</span>
             </Dialog.Close>
