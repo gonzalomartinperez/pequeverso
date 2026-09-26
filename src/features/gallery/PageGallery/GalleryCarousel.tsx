@@ -14,7 +14,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -55,31 +54,20 @@ const DOT =
 
 const preloadZoom = () => void loadZoom();
 
-type ZoomApi = { open: (image: HTMLImageElement) => void; snap: () => void };
-const ZoomContext = createContext<ZoomApi>({ open: () => undefined, snap: () => undefined });
+const ZoomContext = createContext<(image: HTMLImageElement) => void>(() => undefined);
 
 /**
  * Zoom trigger wrapping a slide `<img>`; opens the gallery dialog with that element's
  * current rendition, srcset, alt and caption. Rendered by `GallerySlide` on the server.
  */
 export function GalleryZoomButton({ label, children }: { label: string; children: ReactNode }) {
-  const { open, snap } = useContext(ZoomContext);
+  const open = useContext(ZoomContext);
   const onClick = (event: MouseEvent<HTMLButtonElement>) => {
     const image = event.currentTarget.querySelector("img");
     if (image) open(image);
   };
   return (
-    <button
-      type="button"
-      className={ZOOM}
-      onClick={onClick}
-      // A press while the snap still eases out (Safari eases longer) would stop the slide and
-      // re-snap it on release, moving it from under the pointer so the click misses the button.
-      // Land the slide first; Embla's own mousedown/touchstart handlers run after pointerdown.
-      onPointerDown={snap}
-      onPointerEnter={preloadZoom}
-      aria-label={label}
-    >
+    <button type="button" className={ZOOM} onClick={onClick} onPointerEnter={preloadZoom} aria-label={label}>
       {children}
       <span
         className="absolute right-3 bottom-3 grid size-10 place-items-center rounded-full bg-white/95 text-navy shadow-md transition-transform duration-(--duration-fast) ease-out group-hover/zoom:scale-110"
@@ -119,14 +107,10 @@ export function GalleryCarousel({ label, zoomHint, children, count, itemLabel, z
   const [zoom, setZoom] = useState<Zoom | null>(null);
   const [zoomOpen, setZoomOpen] = useState(false);
   const strip = useRef<HTMLDivElement>(null);
-  const snap = useCallback(() => {
-    embla?.scrollTo(embla.selectedScrollSnap(), true);
-  }, [embla]);
   const open = useCallback((image: HTMLImageElement) => {
     setZoom(zoomFrom(image));
     setZoomOpen(true);
   }, []);
-  const zoomApi = useMemo(() => ({ open, snap }), [open, snap]);
   const slides = Children.toArray(children).map((node, index) => ({
     key: String((isValidElement(node) && node.key) || index),
     node,
@@ -145,7 +129,7 @@ export function GalleryCarousel({ label, zoomHint, children, count, itemLabel, z
     const onScroll = () => setSettled(false);
     const onSettle = () => setSettled(true);
     // A new selection starts a snap animation: mark it in motion at once, not on the first scroll
-    // frame, so nothing sees "settled" while the slide still travels.
+    // frame, so nothing sees "settled" while the slide still travels (Safari eases longer).
     const onPick = () => {
       onSelect();
       setSettled(false);
@@ -184,7 +168,7 @@ export function GalleryCarousel({ label, zoomHint, children, count, itemLabel, z
   };
 
   return (
-    <ZoomContext.Provider value={zoomApi}>
+    <ZoomContext.Provider value={open}>
       <section
         data-slot="page-gallery"
         className="cq mx-auto grid w-full max-w-[52rem] gap-4"
