@@ -1,6 +1,6 @@
 {
   "$schemaVersion": 1,
-  "generatedAt": "2026-09-26T03:18:17.152Z",
+  "generatedAt": "2026-09-26T03:29:23.373Z",
   "generator": "tools/media/media-build.ts v1 (sharp 0.35.4, libvips 8.18.6)",
   "extras": [
     "public/manifest.webmanifest"
@@ -3411,10 +3411,6 @@
       "alt": {
         "es": "Página real 1: Diseña tu pizza (Kit Tardes Tranquilas)"
       },
-      "text": {
-        "title": "Diseña tu pizza",
-        "description": "Kit Tardes Tranquilas"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-01-w640-e3b0924d.webp",
@@ -3434,7 +3430,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Diseña tu pizza",
+        "description": "Kit Tardes Tranquilas"
+      }
     },
     {
       "id": "pack.page.02",
@@ -3466,10 +3466,6 @@
       "alt": {
         "es": "Página real 2: Títeres de dedo (Kit Tardes Tranquilas)"
       },
-      "text": {
-        "title": "Títeres de dedo",
-        "description": "Kit Tardes Tranquilas"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-02-w640-9036a3c0.webp",
@@ -3489,7 +3485,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Títeres de dedo",
+        "description": "Kit Tardes Tranquilas"
+      }
     },
     {
       "id": "pack.page.03",
@@ -3521,10 +3521,6 @@
       "alt": {
         "es": "Página real 3: Diferencias en la feria (Mira, Busca y Colorea)"
       },
-      "text": {
-        "title": "Diferencias en la feria",
-        "description": "Mira, Busca y Colorea"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-03-w640-ab0ee1e0.webp",
@@ -3544,7 +3540,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Diferencias en la feria",
+        "description": "Mira, Busca y Colorea"
+      }
     },
     {
       "id": "pack.page.04",
@@ -3576,10 +3576,6 @@
       "alt": {
         "es": "Página real 4: La gran búsqueda (Mira, Busca y Colorea)"
       },
-      "text": {
-        "title": "La gran búsqueda",
-        "description": "Mira, Busca y Colorea"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-04-w640-2473dbb5.webp",
@@ -3599,7 +3595,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "La gran búsqueda",
+        "description": "Mira, Busca y Colorea"
+      }
     },
     {
       "id": "pack.page.05",
@@ -3631,10 +3631,6 @@
       "alt": {
         "es": "Página real 5: Mi gato mira la luna (Letras en Juego)"
       },
-      "text": {
-        "title": "Mi gato mira la luna",
-        "description": "Letras en Juego"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-05-w640-c34ed6fe.webp",
@@ -3654,7 +3650,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Mi gato mira la luna",
+        "description": "Letras en Juego"
+      }
     },
     {
       "id": "pack.page.06",
@@ -3686,10 +3686,6 @@
       "alt": {
         "es": "Página real 6: Mi primera palabra (Letras en Juego)"
       },
-      "text": {
-        "title": "Mi primera palabra",
-        "description": "Letras en Juego"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-06-w640-845c1f63.webp",
@@ -3709,7 +3705,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Mi primera palabra",
+        "description": "Letras en Juego"
+      }
     },
     {
       "id": "pack.page.07",
@@ -3741,10 +3741,6 @@
       "alt": {
         "es": "Página real 7: Busca cinco cosas (Aventuras para Llevar)"
       },
-      "text": {
-        "title": "Busca cinco cosas",
-        "description": "Aventuras para Llevar"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-07-w640-8c89b17d.webp",
@@ -3764,7 +3760,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Busca cinco cosas",
+        "description": "Aventuras para Llevar"
+      }
     },
     {
       "id": "pack.page.08",
@@ -3796,10 +3796,6 @@
       "alt": {
         "es": "Página real 8: Mapa de recuerdos (Aventuras para Llevar)"
       },
-      "text": {
-        "title": "Mapa de recuerdos",
-        "description": "Aventuras para Llevar"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-08-w640-1889f039.webp",
@@ -3819,7 +3815,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Mapa de recuerdos",
+        "description": "Aventuras para Llevar"
+      }
     },
     {
       "id": "pack.page.09",
@@ -3851,10 +3851,6 @@
       "alt": {
         "es": "Página real 9: Encuentra cinco diferencias (30 Días para Jugar Juntos)"
       },
-      "text": {
-        "title": "Encuentra cinco diferencias",
-        "description": "30 Días para Jugar Juntos"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-09-w640-d36ebaa9.webp",
@@ -3874,7 +3870,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Encuentra cinco diferencias",
+        "description": "30 Días para Jugar Juntos"
+      }
     },
     {
       "id": "pack.page.10",
@@ -3906,10 +3906,6 @@
       "alt": {
         "es": "Página real 10: La máquina increíble (30 Días para Jugar Juntos)"
       },
-      "text": {
-        "title": "La máquina increíble",
-        "description": "30 Días para Jugar Juntos"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-10-w640-380ce6d2.webp",
@@ -3929,7 +3925,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "La máquina increíble",
+        "description": "30 Días para Jugar Juntos"
+      }
     },
     {
       "id": "pack.page.11",
@@ -3961,10 +3961,6 @@
       "alt": {
         "es": "Página real 11: Dibuja tu risa (Valores que Crecen en Casa)"
       },
-      "text": {
-        "title": "Dibuja tu risa",
-        "description": "Valores que Crecen en Casa"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-11-w640-c4f03088.webp",
@@ -3984,7 +3980,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Dibuja tu risa",
+        "description": "Valores que Crecen en Casa"
+      }
     },
     {
       "id": "pack.page.12",
@@ -4016,10 +4016,6 @@
       "alt": {
         "es": "Página real 12: Nuestro árbol de valores (Valores que Crecen en Casa)"
       },
-      "text": {
-        "title": "Nuestro árbol de valores",
-        "description": "Valores que Crecen en Casa"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-12-w640-bd970161.webp",
@@ -4039,7 +4035,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Nuestro árbol de valores",
+        "description": "Valores que Crecen en Casa"
+      }
     },
     {
       "id": "pack.hero",
@@ -4141,10 +4141,6 @@
       "alt": {
         "es": "Portada del video: BO + TA: formar una palabra"
       },
-      "text": {
-        "title": "BO + TA: formar una palabra",
-        "description": "Una actividad visual para unir dos sílabas y reconocer la palabra BOTA. Video ilustrativo."
-      },
       "outputs": [
         {
           "file": "public/media/video/video-gf-bota-crf26-eb7eef6a.mp4",
@@ -4174,6 +4170,10 @@
           "quality": 72
         }
       ],
+      "text": {
+        "title": "BO + TA: formar una palabra",
+        "description": "Una actividad visual para unir dos sílabas y reconocer la palabra BOTA. Video ilustrativo."
+      },
       "video": {
         "codec": "h264",
         "profile": "high",
@@ -4224,10 +4224,6 @@
       "alt": {
         "es": "Portada del video: MA + PA: unir para leer MAPA"
       },
-      "text": {
-        "title": "MA + PA: unir para leer MAPA",
-        "description": "Cada sílaba se relaciona con la palabra completa y una imagen reconocible. Video ilustrativo."
-      },
       "outputs": [
         {
           "file": "public/media/video/video-gf-mapa-crf26-55ee6950.mp4",
@@ -4257,6 +4253,10 @@
           "quality": 72
         }
       ],
+      "text": {
+        "title": "MA + PA: unir para leer MAPA",
+        "description": "Cada sílaba se relaciona con la palabra completa y una imagen reconocible. Video ilustrativo."
+      },
       "video": {
         "codec": "h264",
         "profile": "high",
@@ -4307,10 +4307,6 @@
       "alt": {
         "es": "Portada del video: PA + LO + MA: avanzar paso a paso"
       },
-      "text": {
-        "title": "PA + LO + MA: avanzar paso a paso",
-        "description": "Una palabra más larga se recorre sílaba por sílaba hasta llegar a PALOMA. Video ilustrativo."
-      },
       "outputs": [
         {
           "file": "public/media/video/video-gf-paloma-crf28-5e4574fd.mp4",
@@ -4340,6 +4336,10 @@
           "quality": 72
         }
       ],
+      "text": {
+        "title": "PA + LO + MA: avanzar paso a paso",
+        "description": "Una palabra más larga se recorre sílaba por sílaba hasta llegar a PALOMA. Video ilustrativo."
+      },
       "video": {
         "codec": "h264",
         "profile": "high",
@@ -4390,10 +4390,6 @@
       "alt": {
         "es": "Portada del video: MA + LE + TA: seguir la secuencia"
       },
-      "text": {
-        "title": "MA + LE + TA: seguir la secuencia",
-        "description": "Los apoyos visuales acompañan el recorrido hasta completar la palabra MALETA. Video ilustrativo."
-      },
       "outputs": [
         {
           "file": "public/media/video/video-gf-maleta-crf30-f0ce2b76.mp4",
@@ -4423,6 +4419,10 @@
           "quality": 72
         }
       ],
+      "text": {
+        "title": "MA + LE + TA: seguir la secuencia",
+        "description": "Los apoyos visuales acompañan el recorrido hasta completar la palabra MALETA. Video ilustrativo."
+      },
       "video": {
         "codec": "h264",
         "profile": "high",
@@ -4474,40 +4474,31 @@
       },
       "outputs": [
         {
-          "file": "public/media/gf/gf-cutout-hero-w480-a3858b52.webp",
-          "bytes": 82604,
-          "sha256": "3ba17b921ace4bbd7d5d88dd1a6f303809a290021a845caea32aa89d1d84726d",
+          "file": "public/media/gf/gf-cutout-hero-w480-dc3f175d.webp",
+          "bytes": 57216,
+          "sha256": "86ff6ee1b1ae86e63db8a1f0daccfccb906f6a9b17001063b8d4fe4a1253da00",
           "width": 480,
           "height": 720,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-hero-w768-56132311.webp",
-          "bytes": 194634,
-          "sha256": "7af5e6194baf18a18d9a3584b2fabee4d1a066cd70e3dfb7f4ddcbdccf47c31f",
+          "file": "public/media/gf/gf-cutout-hero-w768-99b76ec7.webp",
+          "bytes": 127078,
+          "sha256": "1b3dd8d3d5102eadbc0451947ad80d5b4a62c336d9ce6660ae8d437329701678",
           "width": 768,
           "height": 1152,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-hero-w1024-8e9d7f25.webp",
-          "bytes": 244370,
-          "sha256": "3bfabc9a81203562a1ae516ff3961a38c3edd981b3c6ca239cdda55927f56ec9",
+          "file": "public/media/gf/gf-cutout-hero-w1024-a03771e6.webp",
+          "bytes": 230896,
+          "sha256": "018b7a06d198a6aaf06e97cb7e5a59cf67f387e1797235afd479d6aa207493a9",
           "width": 1024,
           "height": 1536,
           "format": "webp",
-          "quality": 80
-        },
-        {
-          "file": "public/media/gf/gf-cutout-hero-w768-7f544bbf.avif",
-          "bytes": 80141,
-          "sha256": "b4e0f89c72d0a11c2be635dfcf25e5590cd4b0d4b19ad8e527126834a348d579",
-          "width": 768,
-          "height": 1152,
-          "format": "avif",
-          "quality": 55
+          "quality": 72
         },
         {
           "file": "public/media/gf/gf-cutout-hero-w1024-64b2f0c7.avif",
@@ -4552,40 +4543,31 @@
       },
       "outputs": [
         {
-          "file": "public/media/gf/gf-cutout-hero-alt-w480-7195541f.webp",
-          "bytes": 67514,
-          "sha256": "725a8a840ae461bab8578df3d4243501428a4a18c7b3dc6bfa012c81e29dd530",
+          "file": "public/media/gf/gf-cutout-hero-alt-w480-9bc8c2c1.webp",
+          "bytes": 47942,
+          "sha256": "a7e6d097decd58b7e86c7df42fe210f6c468b4fa923b412ccb29202ff7d742f4",
           "width": 480,
           "height": 720,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-hero-alt-w768-dd062004.webp",
-          "bytes": 153360,
-          "sha256": "7ad3dcf822b32333b4fbb0d1a318ff4cddec2b18411217c58c8b8af58ff7d14c",
+          "file": "public/media/gf/gf-cutout-hero-alt-w768-3c33fcf6.webp",
+          "bytes": 107210,
+          "sha256": "c24d5638500a9dd34bfd2cef7471f937ce9e605e963b3d9851018e0be5e5a6a5",
           "width": 768,
           "height": 1152,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-hero-alt-w1024-25536620.webp",
-          "bytes": 200612,
-          "sha256": "89d2972c737cf5a06e62c86ab0f8ba8e2ad551c755e987b7e297f04be2fd1c48",
+          "file": "public/media/gf/gf-cutout-hero-alt-w1024-75532691.webp",
+          "bytes": 174402,
+          "sha256": "4baceefea18b9031aebeef49c425e6d7f88e0b5ecf1f498b0647c83ef79bfb6b",
           "width": 1024,
           "height": 1536,
           "format": "webp",
-          "quality": 80
-        },
-        {
-          "file": "public/media/gf/gf-cutout-hero-alt-w768-8186ca06.avif",
-          "bytes": 73027,
-          "sha256": "117f43ddf8cbc6065b3ae9efc0df34429de939d3447795e5d7a226beb893b914",
-          "width": 768,
-          "height": 1152,
-          "format": "avif",
-          "quality": 55
+          "quality": 72
         },
         {
           "file": "public/media/gf/gf-cutout-hero-alt-w1024-e56e7051.avif",
@@ -4630,40 +4612,31 @@
       },
       "outputs": [
         {
-          "file": "public/media/gf/gf-cutout-stack-w480-a64a696a.webp",
-          "bytes": 42922,
-          "sha256": "72b627a91cd3efcd78a766be9e0a02f94a16729fe773a177e65ed731baafdb51",
+          "file": "public/media/gf/gf-cutout-stack-w480-c2da903a.webp",
+          "bytes": 39430,
+          "sha256": "7e9760b3fd731cea9bd2b96c461dd31aca289ac0ff7564a508ca099a13f87cc5",
           "width": 480,
           "height": 320,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-stack-w768-1cc13206.webp",
-          "bytes": 86168,
-          "sha256": "776ccebf49e793de0d2763992c8e1ce5ac00161b2b213323f77b0cb98cb3e13e",
+          "file": "public/media/gf/gf-cutout-stack-w768-88b2ef63.webp",
+          "bytes": 77468,
+          "sha256": "7767e0315df66964fb802436699c755932902959408b87dc7db67b8419476107",
           "width": 768,
           "height": 512,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-stack-w1024-1a352db1.webp",
-          "bytes": 132172,
-          "sha256": "3c1a2e4758bdfef4528b0f5c8db2ed4c68db2bcbdc57daa9f8bc5d5d90adc398",
+          "file": "public/media/gf/gf-cutout-stack-w1024-e05ba8f4.webp",
+          "bytes": 118568,
+          "sha256": "964e89525c039ab022d5568e0ca67fd5b0036d57b390065f87b1fd522cd60e29",
           "width": 1024,
           "height": 683,
           "format": "webp",
-          "quality": 80
-        },
-        {
-          "file": "public/media/gf/gf-cutout-stack-w768-2762ca47.avif",
-          "bytes": 47876,
-          "sha256": "5f61b7e46b7f8161dfec07be4ebc4919a265e4f5fb3b8415b5c4c1f030cbe7ff",
-          "width": 768,
-          "height": 512,
-          "format": "avif",
-          "quality": 55
+          "quality": 72
         },
         {
           "file": "public/media/gf/gf-cutout-stack-w1024-bc97673e.avif",
@@ -4708,40 +4681,31 @@
       },
       "outputs": [
         {
-          "file": "public/media/gf/gf-cutout-kit-w480-a12fb7dc.webp",
-          "bytes": 57736,
-          "sha256": "5f1ff1039ce4e6bf1d2384c271bf1d3be6a89d590f1442b0ed5e48a02cacebde",
+          "file": "public/media/gf/gf-cutout-kit-w480-ac632557.webp",
+          "bytes": 47514,
+          "sha256": "b77fad54b74dc823eaa61bfb4e7d0aa3a69bb49f1f4d1db230345ffff6ae874f",
           "width": 480,
           "height": 320,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-kit-w768-50e372a2.webp",
-          "bytes": 117038,
-          "sha256": "400183d385d30cfdd7c2d5cf53db23582e21df917c96023397aa15fa5b1aa4da",
+          "file": "public/media/gf/gf-cutout-kit-w768-eaf7ea44.webp",
+          "bytes": 97902,
+          "sha256": "33e184cd9b058ac842ee6431856c69360ecae5d59aee1e443c4227b6d75db342",
           "width": 768,
           "height": 512,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-kit-w1024-48247c8b.webp",
-          "bytes": 182796,
-          "sha256": "8d1f97b806a414142b23a290c01df471a48b31d2e0149358b47ebfaee35ec439",
+          "file": "public/media/gf/gf-cutout-kit-w1024-7cb91507.webp",
+          "bytes": 151252,
+          "sha256": "4ca3dbdc371602191eeb357332a1402ed3375610172e137b1dc3af61b963e3b0",
           "width": 1024,
           "height": 683,
           "format": "webp",
-          "quality": 80
-        },
-        {
-          "file": "public/media/gf/gf-cutout-kit-w768-b5c3a70b.avif",
-          "bytes": 57849,
-          "sha256": "acc7095fbe6ddb97c6795140d2d81603a8864a663771354f9477e42c674d01a9",
-          "width": 768,
-          "height": 512,
-          "format": "avif",
-          "quality": 55
+          "quality": 72
         },
         {
           "file": "public/media/gf/gf-cutout-kit-w1024-089606a5.avif",
@@ -4786,40 +4750,31 @@
       },
       "outputs": [
         {
-          "file": "public/media/gf/gf-cutout-tablet-w480-a68cb794.webp",
-          "bytes": 50134,
-          "sha256": "f9dcb07ca45433b257cfd7e3dca89466bc0f71b84980ee516e3b87608d1abf52",
+          "file": "public/media/gf/gf-cutout-tablet-w480-084c0238.webp",
+          "bytes": 46136,
+          "sha256": "891e01284988e40aaaa460dd75a4f07227d88800790cc9deacf97e586f4e84bb",
           "width": 480,
           "height": 320,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-tablet-w768-72a11177.webp",
-          "bytes": 97702,
-          "sha256": "7c755a395b475e5e6d2f05ed2674b56a2907ab61e158bdfcc09a80b86adb8239",
+          "file": "public/media/gf/gf-cutout-tablet-w768-0c6f8a91.webp",
+          "bytes": 89078,
+          "sha256": "e64ec9651b2522ffe084d644eb9dcdeac58cf92f543fbb4648c294ab05429527",
           "width": 768,
           "height": 512,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-tablet-w1024-49bca843.webp",
-          "bytes": 147346,
-          "sha256": "28ec8a291efd387ddf13ec2d6e3fa9f5e0a55ac777fa3b4adfe04d64546df2db",
+          "file": "public/media/gf/gf-cutout-tablet-w1024-aeab4d8c.webp",
+          "bytes": 133142,
+          "sha256": "ce118d46117ae2c250de7412584f62e8b2e482c5a29015219b887ca560b90066",
           "width": 1024,
           "height": 683,
           "format": "webp",
-          "quality": 80
-        },
-        {
-          "file": "public/media/gf/gf-cutout-tablet-w768-22c2587e.avif",
-          "bytes": 53153,
-          "sha256": "ff8d7319be98015844129c12ea057d63929ab6cf38bfd20508d132f2acd97eff",
-          "width": 768,
-          "height": 512,
-          "format": "avif",
-          "quality": 55
+          "quality": 72
         },
         {
           "file": "public/media/gf/gf-cutout-tablet-w1024-76236cb8.avif",
@@ -4864,40 +4819,31 @@
       },
       "outputs": [
         {
-          "file": "public/media/gf/gf-cutout-trazo-w480-1158933f.webp",
-          "bytes": 45198,
-          "sha256": "c2be93f7c4a70b47baac1d2ea4be7d790d3b018d725f2b8fbe7473ed61e42fda",
+          "file": "public/media/gf/gf-cutout-trazo-w480-52f7b565.webp",
+          "bytes": 34146,
+          "sha256": "0ff7b4ebc384b3721bcada838dc149ac6f0558515bc600aeac6c276dc374b549",
           "width": 480,
           "height": 480,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-trazo-w768-74b7e9e0.webp",
-          "bytes": 96500,
-          "sha256": "4431416e03d0de8a671283db3936f1faa7b072b6d8ec7f8de16fff53bbbffb02",
+          "file": "public/media/gf/gf-cutout-trazo-w768-7450ea7d.webp",
+          "bytes": 72048,
+          "sha256": "8550d9a4c5d64091a52350d89085e9707859862b5311497e3cf4dddb39219266",
           "width": 768,
           "height": 768,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-trazo-w1024-092dd207.webp",
-          "bytes": 155684,
-          "sha256": "1c2b4e073a95fe00f7c97e2718e85c64df940d31c8bdb8c815918a7dd9837784",
+          "file": "public/media/gf/gf-cutout-trazo-w1024-10c02ffc.webp",
+          "bytes": 114408,
+          "sha256": "d06ba1cf30b04023434d1d84cb3afa0b78e0d3ec9ef7b8b87e3a545f837052a3",
           "width": 1024,
           "height": 1024,
           "format": "webp",
-          "quality": 80
-        },
-        {
-          "file": "public/media/gf/gf-cutout-trazo-w768-428b87ea.avif",
-          "bytes": 46010,
-          "sha256": "a6a579b62afafaf2b3dc7dd6ee72f223d8dcfa55fa7337460f30dffeb5aa179b",
-          "width": 768,
-          "height": 768,
-          "format": "avif",
-          "quality": 55
+          "quality": 72
         },
         {
           "file": "public/media/gf/gf-cutout-trazo-w1024-0e574aae.avif",
@@ -4942,40 +4888,31 @@
       },
       "outputs": [
         {
-          "file": "public/media/gf/gf-cutout-tarjetas-w480-dfdaaafa.webp",
-          "bytes": 67742,
-          "sha256": "215d821b2958b9ea5016a5e58ea658df2f06d8b0da40f0b2bdf4007ae425b29c",
+          "file": "public/media/gf/gf-cutout-tarjetas-w480-260fda83.webp",
+          "bytes": 47772,
+          "sha256": "63da43e3890b80718e3d43e972f6824dc7c5a91acd882b26187b1a6cf8f388cf",
           "width": 480,
           "height": 720,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-tarjetas-w768-57b870a4.webp",
-          "bytes": 150802,
-          "sha256": "7f8240b8e7d4b0bca917fa78431ab0fe608b01b6c2afdb61bf4fd26e085d095d",
+          "file": "public/media/gf/gf-cutout-tarjetas-w768-397e68c5.webp",
+          "bytes": 104182,
+          "sha256": "1ebdd1960f53bd5d315d25c764cc28aa212c394dd1ebe595134452e98b4ca988",
           "width": 768,
           "height": 1152,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-tarjetas-w1024-25988990.webp",
-          "bytes": 202878,
-          "sha256": "7a1472ff858dc5aa5940bb577d5428e7770a448ac493c8303b0da95ed5577922",
+          "file": "public/media/gf/gf-cutout-tarjetas-w1024-2dd2eac8.webp",
+          "bytes": 181712,
+          "sha256": "0479943b9c48100ffba232aabce7ad35a571d094065a67f853803a088f6068f3",
           "width": 1024,
           "height": 1536,
           "format": "webp",
-          "quality": 80
-        },
-        {
-          "file": "public/media/gf/gf-cutout-tarjetas-w768-baf07ec0.avif",
-          "bytes": 71425,
-          "sha256": "dffc832b3b7820b5175d3435e14b1eaccef8e3b66c01f23bdb30b1b963187bf3",
-          "width": 768,
-          "height": 1152,
-          "format": "avif",
-          "quality": 55
+          "quality": 72
         },
         {
           "file": "public/media/gf/gf-cutout-tarjetas-w1024-6cdf59fc.avif",
@@ -5020,40 +4957,31 @@
       },
       "outputs": [
         {
-          "file": "public/media/gf/gf-cutout-senala-w480-06ce9b7d.webp",
-          "bytes": 55528,
-          "sha256": "914315da4046fc15e3de59aa5d85c1b3fc5e194b1ce723bdfc85c61556824ac8",
+          "file": "public/media/gf/gf-cutout-senala-w480-ae273a50.webp",
+          "bytes": 44034,
+          "sha256": "fc2f9147a0cd5dc7efb59eccdd308929e49aba641a779261c0e66710fa678ea8",
           "width": 480,
           "height": 720,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-senala-w768-9f6879d0.webp",
-          "bytes": 123914,
-          "sha256": "ff4ee53cd22125504a6d9d776240f5576229909fbb7e3107516b950842ac8581",
+          "file": "public/media/gf/gf-cutout-senala-w768-5e1ff9f5.webp",
+          "bytes": 96330,
+          "sha256": "3bc2021e80015bb53881fdb87bc76cd011ba4890e413ea82296d8f21ae4466d8",
           "width": 768,
           "height": 1152,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-senala-w1024-1689d15b.webp",
-          "bytes": 185312,
-          "sha256": "106715e64f683919df2c06f98bfd6b6aefe2ade7d23090bc01aaa00bbf63ea3c",
+          "file": "public/media/gf/gf-cutout-senala-w1024-b1482cf0.webp",
+          "bytes": 145798,
+          "sha256": "0564d373a6850ee6e8f592db517e3db8870577fbee3870a01336ec88dd04a98f",
           "width": 1024,
           "height": 1536,
           "format": "webp",
-          "quality": 80
-        },
-        {
-          "file": "public/media/gf/gf-cutout-senala-w768-63bd34d4.avif",
-          "bytes": 61952,
-          "sha256": "54c18679c10d4f9e44f6968e461e85f2e3ff8a1ddcae529ecaae2941033af14c",
-          "width": 768,
-          "height": 1152,
-          "format": "avif",
-          "quality": 55
+          "quality": 72
         },
         {
           "file": "public/media/gf/gf-cutout-senala-w1024-b5b0f9bc.avif",
@@ -5098,40 +5026,31 @@
       },
       "outputs": [
         {
-          "file": "public/media/gf/gf-cutout-celebra-w480-20fa1cdf.webp",
-          "bytes": 51638,
-          "sha256": "dee3710464dd10515adc69e1a5c394b60a3ab1daa3894bfc6f3a8445cbd79960",
+          "file": "public/media/gf/gf-cutout-celebra-w480-d5c09fea.webp",
+          "bytes": 42210,
+          "sha256": "ea4934e1a05ce8f66b472ecf45d1758c3c25122fb32e84236c26b7baaf3ec18e",
           "width": 480,
           "height": 720,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-celebra-w768-1bec6d48.webp",
-          "bytes": 109820,
-          "sha256": "cc75b4c03fa0654821650d391308bb7a6a8e0abdfdee262562f83c7834d88e1e",
+          "file": "public/media/gf/gf-cutout-celebra-w768-26d1f974.webp",
+          "bytes": 88140,
+          "sha256": "44ea580a6d2649c1cd5f9245b1ce771fb3d429638c1f8f63928ee41f8f8c8a9d",
           "width": 768,
           "height": 1152,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-celebra-w1024-d83f39fb.webp",
-          "bytes": 149072,
-          "sha256": "db464af374d0bb1b5fa4774c558498a9cc045967a802ab266d0908e8c0898cbf",
+          "file": "public/media/gf/gf-cutout-celebra-w1024-ad9049e5.webp",
+          "bytes": 116278,
+          "sha256": "704dbc7d4309ddcb9fa80641e7512f07bc355fbe50f286bd2437c587cf948ed3",
           "width": 1024,
           "height": 1536,
           "format": "webp",
-          "quality": 80
-        },
-        {
-          "file": "public/media/gf/gf-cutout-celebra-w768-2fe77418.avif",
-          "bytes": 54559,
-          "sha256": "1787eeacc60af2d2ef2d5286fd45939e670a0f3477e610730699b9a6fc27a25f",
-          "width": 768,
-          "height": 1152,
-          "format": "avif",
-          "quality": 55
+          "quality": 72
         },
         {
           "file": "public/media/gf/gf-cutout-celebra-w1024-541bbbc1.avif",
@@ -5176,40 +5095,31 @@
       },
       "outputs": [
         {
-          "file": "public/media/gf/gf-cutout-elementos-w480-f3b38f64.webp",
-          "bytes": 58572,
-          "sha256": "1cdea18cc371e44e48b64fbaa6599250db59ad309aecebf7a4def2a2a4fc0dd0",
+          "file": "public/media/gf/gf-cutout-elementos-w480-221ba402.webp",
+          "bytes": 49216,
+          "sha256": "850a905693db4d5c25fce94e5f269e5c171a16a5795399569df0cb412a1bc230",
           "width": 480,
           "height": 320,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-elementos-w768-a8f9ae54.webp",
-          "bytes": 111018,
-          "sha256": "05ad694a504fed866f39b82f4fd81a8d670bdce9cfb5b7c38ede527ea3eeba5f",
+          "file": "public/media/gf/gf-cutout-elementos-w768-45b6b55f.webp",
+          "bytes": 92186,
+          "sha256": "11f3461e2909f8bb2aa6f8008728478690b2b4d48804d2c19842f515f025d921",
           "width": 768,
           "height": 512,
           "format": "webp",
-          "quality": 80
+          "quality": 72
         },
         {
-          "file": "public/media/gf/gf-cutout-elementos-w1024-27e30b9d.webp",
-          "bytes": 168566,
-          "sha256": "be0d1e4d247b2c7a77b2abdcc22546da568a965cd7ed11d1857233cbc617562b",
+          "file": "public/media/gf/gf-cutout-elementos-w1024-733b2061.webp",
+          "bytes": 136018,
+          "sha256": "6b517a575158028c0cc5dc8efcdd620e21cc044553e0fc1733d446c08f761f6c",
           "width": 1024,
           "height": 683,
           "format": "webp",
-          "quality": 80
-        },
-        {
-          "file": "public/media/gf/gf-cutout-elementos-w768-ec069b21.avif",
-          "bytes": 51694,
-          "sha256": "a6ff0524455c6638c5b54b8d25665e3d7ff2a7b2ac2248772ac59fa3ae68d09a",
-          "width": 768,
-          "height": 512,
-          "format": "avif",
-          "quality": 55
+          "quality": 72
         },
         {
           "file": "public/media/gf/gf-cutout-elementos-w1024-dd95f0dc.avif",
@@ -5217,6 +5127,606 @@
           "sha256": "90ee42146542418894d3335240cf1b22d9afc890fb9c7b8bf9240e921cf69f36",
           "width": 1024,
           "height": 683,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.trazo",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S01-mama-hija-trazo-mesa.png",
+        "sha256": "ef63bf0e9660e232337a01ed8f0091ce7f9f82591f6e04fa11c28812e511b0b5",
+        "bytes": 1938843,
+        "width": 1672,
+        "height": 941
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre e hija practicando el trazo de una hoja en la mesa del comedor"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-trazo-w640-b0f6c0af.webp",
+          "bytes": 27910,
+          "sha256": "21d18c4eaa455119f5c475dd7677e14ed02cef014f3721efeaa2ccca01707ba9",
+          "width": 640,
+          "height": 360,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-trazo-w1024-dd205188.webp",
+          "bytes": 53142,
+          "sha256": "fce2106b3e77d68266e425ef1fa2b75237d1cc2c9671efc7035ec954428f6f37",
+          "width": 1024,
+          "height": 576,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-trazo-w1024-a4e5315f.avif",
+          "bytes": 35114,
+          "sha256": "3b90044db79b75ba28ad4680f9a245343780df07ac827d30b490f6c982b40b3c",
+          "width": 1024,
+          "height": 576,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.papa",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S02-papa-hijo-silabas.png",
+        "sha256": "5e85d603df226cd24d2f140237bf8d380947c1da89e462e9b52e4147f9c1848f",
+        "bytes": 1996407,
+        "width": 1672,
+        "height": 941
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Padre e hijo formando sílabas con tarjetas sobre la mesa"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-papa-w640-5779a1aa.webp",
+          "bytes": 31532,
+          "sha256": "69f572e740a524f44de5a76e14ca1528517359daea68f1f9abe1abc0ef4332bd",
+          "width": 640,
+          "height": 360,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-papa-w1024-b30e2f20.webp",
+          "bytes": 57516,
+          "sha256": "d20f3e5f9744bf7e4ebc0b7c830b2493211cead161714eae54ab3c2751adf7c5",
+          "width": 1024,
+          "height": 576,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-papa-w1024-612a4f21.avif",
+          "bytes": 37006,
+          "sha256": "f5466ea13810457115730f03027b4f825c569f53754dc7c0d105679313dff103",
+          "width": 1024,
+          "height": 576,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.imprimir",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S03-imprimir-en-casa-marca.png",
+        "sha256": "9259de3ec03ed359a399b0be0210b1b077fa032717181d885bb869b8ea99de9d",
+        "bytes": 2034924,
+        "width": 1672,
+        "height": 941
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre imprimiendo hojas en casa mientras su hija mira emocionada"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-imprimir-w640-c353c1bb.webp",
+          "bytes": 36320,
+          "sha256": "cb5be1ffa78a26291ec5e76ebad3f9c32f5ac834290b3ca4b683d10081918a9c",
+          "width": 640,
+          "height": 360,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-imprimir-w1024-bab39d38.webp",
+          "bytes": 68860,
+          "sha256": "b1724cb6d658a2d02d1830b00ebdb7540a1338978577035faba4a486e82d7f53",
+          "width": 1024,
+          "height": 576,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-imprimir-w1024-9a43a81d.avif",
+          "bytes": 43967,
+          "sha256": "c921e3a237e114d0d247601cd3f3a19786db72bb503ff655795b1f445bb722e9",
+          "width": 1024,
+          "height": 576,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.kit",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S04-kit-en-uso-mesa.png",
+        "sha256": "dab988c67566759877f70122caa90ee59ec4432cc7710a4a9ea84772297f8f76",
+        "bytes": 2381291,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre e hija usando el kit Grafismo Fonético con tarjetas de sílabas"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-kit-w640-f6b4cd73.webp",
+          "bytes": 64000,
+          "sha256": "25630a22121df44b84b434a5532c50373e62669441b693768ca7c4da592404f8",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-kit-w1024-f0e598bd.webp",
+          "bytes": 123446,
+          "sha256": "d77e792811b9876b9ab7a319781bd67369c0c3dd27e2bebf4460c3d9680e49e5",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-kit-w1024-06d96abf.avif",
+          "bytes": 77077,
+          "sha256": "e66729bb835b2ab92fc00b175fb597b6a401c9ee7f7fdacfe9e718f088f8a644",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.reto",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S05-nina-reto-lectura.png",
+        "sha256": "368fcd786b6cc976265a82c5a8e17767bf78159da6464f379a1bcf6f22512a06",
+        "bytes": 2237722,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Niña mostrando orgullosa su hoja del reto de lectura junto a su madre"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-reto-w640-ea2136a6.webp",
+          "bytes": 54792,
+          "sha256": "c9ff7c57c0c482549f9d68bb31217dc0d7b677cab73ad5ed33df914301a6ae69",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-reto-w1024-3e547d5e.webp",
+          "bytes": 107378,
+          "sha256": "5cf7bdaaa296edbb7f0821f80e64da76d133df40cd2a4a2b46dadc61a7873a80",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-reto-w1024-70c85ffd.avif",
+          "bytes": 67768,
+          "sha256": "a330507f3d2031a819cef917c5ea04429e64f18728a33328a0d84261c7fbe26a",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.tarjetas",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S06-tarjetas-alfombra.png",
+        "sha256": "c3395037ed2bafacfb08333a33b927556cabbfd8d3871bfe2593c4ac15f91872",
+        "bytes": 2557028,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre e hija jugando con tarjetas de sílabas sobre la alfombra"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-tarjetas-w640-dbaab972.webp",
+          "bytes": 65154,
+          "sha256": "7be038dfea301212de94840ae74cc665238650cf8f057c15fa5d8486f44e1727",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-tarjetas-w1024-5a8559a5.webp",
+          "bytes": 131802,
+          "sha256": "712c8c977833245d803805e6997a3de9cb7d8ed52c8a625da79980d171a91a44",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-tarjetas-w1024-fb7f2892.avif",
+          "bytes": 81440,
+          "sha256": "3f17da4ccbc558f82c66ac73a42e108a06d6e07b65ce80a1477f507558a40bee",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.imprimir-kit",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S07-imprimir-kit.png",
+        "sha256": "ccd5860aba4d5b556d89ac2b8ad7dcbced07cc8b6486e347c07d1bf4b7d127bd",
+        "bytes": 2375295,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre sacando de la impresora una hoja del kit mientras su hija sonríe"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-imprimir-kit-w640-65d4048f.webp",
+          "bytes": 63144,
+          "sha256": "0e6c39bbc7c6ebe6392c31b94c6da7726e3ffece26b09d7db6311ba25f539757",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-imprimir-kit-w1024-a91ca40d.webp",
+          "bytes": 125324,
+          "sha256": "6badd76c63f753b6f78bab853a9728c8c685cc4274395d41ece22b42579c76af",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-imprimir-kit-w1024-c9df26ef.avif",
+          "bytes": 77222,
+          "sha256": "a72d79ada70caca21554f72faa6dc97d859c092f9f9e484c70089d98464afb50",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.flatlay",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S08-flatlay-kit-en-uso.png",
+        "sha256": "1576c34edd2adf3a0357b42af4b8893bdf116f6c21f40c49b1fa950ab2c2d7f0",
+        "bytes": 2504831,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Vista desde arriba del kit en uso: cuaderno, tarjetas y tableta"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-flatlay-w640-1824a04f.webp",
+          "bytes": 68380,
+          "sha256": "a77a516fdfd8df72fa57f58bf18ec9cb5d340842651d266ac7ead1a73a560898",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-flatlay-w1024-84c898f9.webp",
+          "bytes": 137878,
+          "sha256": "0cf0eb5780acfb7373de954e2eea3ccc2826a4c441146399eba8d8b8451b01fa",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-flatlay-w1024-596d585c.avif",
+          "bytes": 83457,
+          "sha256": "8ecb9a9468195f27ee92e004d5e96d2674f04cf49adfdcf36717479c7dc55dd4",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.noche",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S09-rutina-noche.png",
+        "sha256": "458969e775bf563ba8cedbcb55c7f0b94c83f1f980c67cbbf3016e3009c94c7b",
+        "bytes": 2225572,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre e hija repasando palabras del kit en una rutina de la tarde"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-noche-w640-eff311e2.webp",
+          "bytes": 53332,
+          "sha256": "249e7a70435813028a9cb54eb55be20b1dbb6f61eaae68d69eec93861d87e604",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-noche-w1024-91d770a4.webp",
+          "bytes": 105476,
+          "sha256": "b7a98bfd73fda51170cefb7e5d210e30678b38fa797bf10d72a7ef459c309c7d",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-noche-w1024-28741b21.avif",
+          "bytes": 65244,
+          "sha256": "b6413dbdfd617c2e2d348c120071cbcaffdc997ea31b2fab65e1d13e45f59e40",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.logro",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S10-lo-logre.png",
+        "sha256": "ba9009a401a29d63988267e6dafcf8c1ba07b530d8411fccb35b36edca93f188",
+        "bytes": 2036250,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Niña sonriente mostrando su hoja terminada junto a su madre"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-logro-w640-e599f7a9.webp",
+          "bytes": 40274,
+          "sha256": "9a467c9a3451b1a3a9be3775666e0f4d4bad9efe6c0b540b1b3a27c1a98fc0ed",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-logro-w1024-3f862700.webp",
+          "bytes": 75034,
+          "sha256": "b13702967614b984f83ba7651cb852ca601db5f2995606326e3c45e65a7a7c6a",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-logro-w1024-5f29e8b3.avif",
+          "bytes": 50676,
+          "sha256": "d5f9deae54bfe49f463212dabb4422d073fa218d781c00cfb6b912ce016bf7b0",
+          "width": 1024,
+          "height": 768,
           "format": "avif",
           "quality": 55
         }
