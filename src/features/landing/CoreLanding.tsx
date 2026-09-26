@@ -781,6 +781,7 @@ export function CoreLanding({ product }: Props) {
         hideWhenVisible={['a[data-position="hero"]', "#comprar", "#oferta", "#oferta-final", "footer"]}
         label={`${copy.sticky.label} · ${formatUsd(price)}`}
         note={localCurrencyNoteShort}
+        thumb={<MediaImage id={media.cards[0] ?? media.hero} sizes="44px" alt="" />}
       >
         <CheckoutLink product={target} position="sticky" className={CTA}>
           {copy.sticky.cta}
