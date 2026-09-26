@@ -20,9 +20,9 @@ export const grafismoCopy = {
     { href: "#preguntas", label: "Preguntas" },
   ],
   hero: {
-    kicker: "Kit imprimible · 3 a 7 años · 9 PDF",
-    title: "De las letras a las primeras palabras, un paso por día.",
-    lead: "Grafismo Fonético reúne 9 PDF y 414 páginas con sílabas grandes, imágenes reconocibles y palabras para trazar. Eliges una hoja, la imprimes y practican 10 minutos: mira, di, traza y une.",
+    kicker: "Pequeverso · Kit imprimible",
+    title: "Kit Grafismo Fonético",
+    lead: "Eliges una hoja, la imprimes y practican 10 minutos juntos: mira, di, traza y une. Sílabas grandes, imágenes reconocibles y palabras para trazar, ordenadas de lo simple a lo compuesto.",
     facts: [
       { icon: "files", label: "9 PDF", detail: "414 páginas en total" },
       { icon: "printer", label: "Imprimible", detail: "En casa o en una papelería" },
@@ -46,6 +46,72 @@ export const grafismoCopy = {
     assurance: { payment: "Pago único", access: "Acceso digital inmediato", guarantee },
     priceKicker: "Kit completo",
     taxNote: "+ impuestos aplicables según el país",
+    secondary: { label: "Ver las páginas reales", href: "#paginas" },
+    pdp: {
+      breadcrumb: { home: "Inicio", label: "Grafismo Fonético" },
+      tagline: "De las letras a las primeras palabras, un paso por día.",
+      taglineAccent: "primeras palabras",
+      badges: [
+        { icon: "files", text: "PDF", fact: "pdf" },
+        { icon: "book", text: "páginas", fact: "pages" },
+        { icon: "child", text: "", fact: "ages" },
+        { icon: "download", text: "Descarga inmediata" },
+      ],
+      priceTag: "Pago único",
+      galleryLabel: "Imágenes del kit",
+      galleryItem: "Ver imagen",
+      slides: [
+        "El kit con hojas reales para cada edad",
+        "Práctica en casa con el kit (imagen ilustrativa)",
+        "El kit completo con sus bonos",
+        "Página real: GATO",
+        "Portada y páginas en abanico",
+        "Descargas e imprimes en casa (imagen ilustrativa)",
+        "Página real: LUNA",
+        "El PDF en la tableta, listo para imprimir",
+      ],
+      featuredLabel: "Hoja para {age} años",
+      details: {
+        includes: "Qué incluye",
+        usage: {
+          title: "Cómo se usa",
+          text: "Eliges una hoja por día y la practican unos 10 minutos: mira la sílaba y su imagen, di el sonido en voz alta, traza la palabra punteada y une las sílabas. La guía incluida te ayuda a elegir por dónde empezar.",
+        },
+        format: {
+          title: "Formato e impresión",
+          text: "Archivos PDF en tamaño A4 para imprimir en casa, en una papelería o en un centro de impresión, las veces que quieras. No es un producto físico: recibes el acceso por correo tras la aprobación del pago.",
+        },
+        guarantee: {
+          title: "Garantía",
+          text: `Tienes ${guaranteeDays} días desde la compra para pedir el reembolso a través de Hotmart, según las condiciones informadas en la página de pago.`,
+        },
+      },
+    },
+  },
+  illustrativeImage: "Imagen ilustrativa.",
+  facts: {
+    label: "Datos del kit",
+    items: [
+      { icon: "files", text: "PDF imprimibles", fact: "pdf" },
+      { icon: "book", text: "páginas en A4", fact: "pages" },
+      { icon: "clock", text: "10 minutos por día" },
+      { icon: "child", text: "", fact: "ages" },
+      { icon: "printer", text: "Imprime las veces que quieras" },
+      { icon: "sparkles", text: "Mira · Di · Traza · Une" },
+      { icon: "download", text: "Acceso digital inmediato" },
+    ],
+  },
+  playground: {
+    kicker: "Pruébalo aquí",
+    title: "Toca las sílabas en orden y forma la palabra.",
+    hint: "Así funciona cada página del kit: primero la sílaba, después la palabra.",
+    doneLabel: "¡Palabra completa!",
+    words: [
+      { syllables: ["GA", "TO"], word: "gato", page: 18 },
+      { syllables: ["MA", "PA"], word: "mapa", page: 1 },
+      { syllables: ["LU", "NA"], word: "luna", page: 7 },
+      { syllables: ["PE", "RRO"], word: "perro", page: 19 },
+    ],
   },
   trust: [
     { icon: "shield", text: "Pago seguro a través de Hotmart" },
@@ -56,6 +122,7 @@ export const grafismoCopy = {
   problem: {
     kicker: "Para adultos que acompañan",
     title: "Acompañar sus primeros pasos hacia la lectura no debería obligarte a improvisar cada día.",
+    titleAccent: "improvisar",
     paragraphs: [
       "Muchas familias quieren practicar en casa, pero no saben por dónde empezar, cuánto tiempo dedicar ni qué hoja elegir. Terminan buscando fichas sueltas que no siguen ningún orden.",
       "Grafismo Fonético organiza la práctica: cada página muestra una sílaba grande, una imagen reconocible y una palabra para trazar. Tú eliges una hoja; el material hace el resto.",
@@ -65,10 +132,12 @@ export const grafismoCopy = {
       "Una guía breve para saber qué hoja usar hoy y cómo acompañar sin presionar.",
       "Formatos variados (tarjetas, juegos, pósteres, reto de 21 días) para que no se vuelva rutina.",
     ],
+    note: { title: "10 minutos", text: "alcanzan para sostener el hábito" },
   },
   method: {
     kicker: "Cómo funciona",
     title: "Del sonido a la palabra, en cuatro gestos.",
+    titleAccent: "cuatro gestos",
     lead: "Cada página sigue la misma secuencia para que el niño la reconozca y la haga suya.",
     steps: [
       { icon: "eye", title: "Mira", text: "Observa la sílaba grande y la imagen que la acompaña." },
@@ -80,15 +149,18 @@ export const grafismoCopy = {
   pages: {
     kicker: "Páginas reales del kit",
     title: "Así se ven las hojas que vas a imprimir.",
+    titleAccent: "vas a imprimir",
     lead: "Veinte páginas reales del PDF principal. Sin maquetas: lo que ves es lo que descargas.",
     zoomHint: "Toca una página para verla en grande.",
     galleryLabel: "Páginas reales del kit",
     itemLabel: "Página real",
     zoomTitle: "Página real del kit",
+    wallLabel: "Muestra de páginas reales del kit",
   },
   included: {
-    kicker: "Qué recibes",
+    kicker: "Todo lo que incluye",
     title: "El material principal y sus bonos, todo en el mismo kit.",
+    titleAccent: "sus bonos",
     lead: "Grafismo Fonético Paso a Paso es el material principal. Los bonos varían el formato de la práctica: guía, tarjetas, reto, animales, juegos, sonidos del hogar, pósteres y páginas sobre el nombre y la familia. Vienen incluidos: no se pagan aparte.",
     total: "9 PDF · 414 páginas en A4 · Acceso digital",
     units: { pdf: "PDF", pages: "páginas" },
@@ -98,6 +170,14 @@ export const grafismoCopy = {
       included: "incluido",
       bonuses: "bonos incluidos",
       allIncluded: "Todo incluido en un único pago de",
+    },
+    tiles: {
+      kitTitle: "Todo en una sola descarga",
+      kitText:
+        "El material principal y los bonos llegan juntos. Imprimes lo que necesites, cuando lo necesites.",
+      priceKicker: "Todo incluido",
+      priceNote: "un único pago",
+      priceLink: "Ver la oferta",
     },
   },
   midOffer: {
@@ -117,6 +197,7 @@ export const grafismoCopy = {
   videos: {
     kicker: "Videos ilustrativos",
     title: "Así se ve la práctica en casa.",
+    titleAccent: "en casa",
     lead: "Cuatro videos breves ilustran cómo se acompaña una hoja: mira, di, traza y une. No son grabaciones del producto; las páginas reales del kit están en la sección siguiente. Pulsa para reproducir.",
     illustrative: "Video ilustrativo",
   },
@@ -133,6 +214,7 @@ export const grafismoCopy = {
   benefits: {
     kicker: "Qué cambia en casa",
     title: "Menos búsqueda, más práctica.",
+    titleAccent: "más práctica",
     items: [
       {
         icon: "clock",
@@ -160,6 +242,7 @@ export const grafismoCopy = {
   audience: {
     kicker: "Para quién es",
     title: "Antes de comprar, revisa si encaja con tu casa.",
+    titleAccent: "encaja con tu casa",
     yes: {
       title: "Es para ti si…",
       items: [
@@ -187,12 +270,15 @@ export const grafismoCopy = {
   faq: {
     kicker: "Preguntas frecuentes",
     title: "Menos dudas antes de comenzar.",
+    titleAccent: "antes de comenzar",
     items: grafismoFaq,
     supportNote: "¿Otra duda? Escríbenos y te respondemos con calma.",
   },
   finalOffer: {
     kicker: "Listo para imprimir",
     title: "Empieza hoy con una sola hoja.",
+    titleAccent: "una sola hoja",
+    priceNote: "pago único",
     checks: [
       "9 PDF · 414 páginas en A4",
       "Guía para saber qué hoja usar cada día",

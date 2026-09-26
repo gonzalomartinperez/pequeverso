@@ -3,8 +3,18 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { WaveDivider, type WaveFill } from "@/motion/wave-divider";
 
-export type SectionTone = "cream" | "white" | "mint" | "sky" | "lemon" | "rose" | "navy";
-export type SectionDivider = "none" | "wave-top" | "wave-bottom" | "overlap";
+export type SectionTone =
+  | "cream"
+  | "white"
+  | "mint"
+  | "sky"
+  | "lemon"
+  | "rose"
+  | "navy"
+  | "aurora-cream"
+  | "aurora-sky"
+  | "aurora-blue";
+export type SectionDivider = "none" | "wave-top" | "wave-bottom" | "overlap" | "arc";
 
 const sectionVariants = cva("relative section-pad", {
   variants: {
@@ -16,12 +26,17 @@ const sectionVariants = cva("relative section-pad", {
       lemon: "bg-lemon",
       rose: "bg-rose",
       navy: "on-navy bg-navy",
+      "aurora-cream": "aurora-cream",
+      "aurora-sky": "aurora-sky",
+      "aurora-blue": "aurora-blue",
     },
     divider: {
       none: "",
       "wave-top": "-mt-px pt-[calc(var(--section-pad)+var(--wave-height))]",
       "wave-bottom": "pb-[calc(var(--section-pad)+var(--wave-height))]",
       overlap: "flow-root pt-0",
+      /* Rounded top edge that overlaps the previous band (navy bands between light ones). */
+      arc: "arc-top relative z-1 -mt-(--section-overlap) overflow-clip",
     },
   },
   defaultVariants: { tone: "cream", divider: "none" },

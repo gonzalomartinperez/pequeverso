@@ -1,6 +1,8 @@
 import { expect, test } from "./fixtures";
 
 const routes = ["/", "/grafismo-fonetico/"];
+/** File name of a hero-class rendition (product hero, cutout hero, or a real page). */
+const HERO_RENDITION = /-(hero|hero-alt|cutout-[a-z-]+|page-\d+)-w\d+-/;
 
 /** Largest Contentful Paint element as reported by the browser after the page settles. */
 async function lcpElement(page: import("@playwright/test").Page) {
@@ -59,10 +61,10 @@ for (const route of routes) {
     // Link prefetches may add another route's hero preload; exactly one must match this page's hero.
     const own = preloads.filter((link) => candidates.includes(link.srcset));
     expect(own).toHaveLength(1);
-    expect(own[0]?.srcset).toMatch(/-(hero|page-\d+)-w\d+-/);
+    expect(own[0]?.srcset).toMatch(HERO_RENDITION);
     expect(own[0]?.priority).toBe("high");
     expect(await hero.evaluate((img) => (img instanceof HTMLImageElement ? img.currentSrc : ""))).toMatch(
-      /-(hero|page-\d+)-w\d+-/,
+      HERO_RENDITION,
     );
     const allPreloads = await page
       .locator('link[rel="preload"]')

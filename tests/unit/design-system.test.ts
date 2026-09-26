@@ -112,6 +112,18 @@ test("documented WCAG 2.2 AA contrast pairs hold for the OKLCH tokens", () => {
     ["turquoise", "navy", 8.5],
     ["gold", "navy", 9],
     ["navy", "mint", 11],
+    // Tone chips (badge-variants, Eyebrow accent) and store badges: text on their pale tint.
+    ["teal-text", "mint", 6.5],
+    ["coral-hover", "rose", 5.5],
+    ["ink", "lemon", 14],
+    ["navy", "sky", 11],
+    // Card `gradient`, MediaFrame and ResourceGrid grounds end on celeste: body and muted text stay AA.
+    ["body", "celeste", 6.5],
+    ["muted", "celeste", 4.5],
+    ["ink", "celeste", 13],
+    // Coral text (PriceBlock, PriceTag) on the light surfaces it sits on.
+    ["coral", "white", 4.5],
+    ["coral", "cream", 4.5],
   ];
   for (const [fg, bg, min] of pairs) {
     const ratio = contrast(fg, bg);

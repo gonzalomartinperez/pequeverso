@@ -128,6 +128,58 @@
       }
     }
 
+    /* Float: decorative pages and syllable tiles bob like planets; --float-delay sets the phase. */
+    .pv-float {
+      animation: pv-float var(--duration-float) ease-in-out infinite;
+      animation-delay: var(--float-delay, 0s);
+    }
+
+    /* Marquee: the track holds the list twice and slides half its width, forever. */
+    .pv-marquee-track {
+      animation: pv-marquee var(--marquee-duration, var(--duration-marquee)) linear infinite;
+    }
+
+    .pv-marquee[data-direction="reverse"] .pv-marquee-track {
+      animation-direction: reverse;
+    }
+
+    .pv-marquee:hover .pv-marquee-track,
+    .pv-marquee:focus-within .pv-marquee-track,
+    .pv-marquee[data-paused] .pv-marquee-track {
+      animation-play-state: paused;
+    }
+
+    /* The offer card's ring turns slowly. */
+    .pv-glow-spin {
+      animation: pv-glow-spin 9s linear infinite;
+    }
+
+    /* Shine sweep across the purchase CTA on hover. */
+    @media (hover: hover) and (pointer: fine) {
+      .pv-shine:hover::after {
+        translate: 120% 0;
+        transition: translate 700ms var(--pv-ease-out);
+      }
+    }
+
+    /* Header condenses and a progress bar fills with the page scroll. */
+    @supports (animation-timeline: scroll()) {
+      .pv-scroll-progress {
+        animation: pv-grow-x linear both;
+        animation-timeline: scroll(root block);
+      }
+
+      .pv-header-pill {
+        animation: pv-header-condense linear both;
+        animation-timeline: scroll(root block);
+        animation-range: 0 96px;
+      }
+
+      [data-reveal="blur"] {
+        animation-name: pv-reveal-blur;
+      }
+    }
+
     /* Pointer tilt glare (TiltCard sets --glare-x/--glare-y from the pointer). */
     @media (hover: hover) and (pointer: fine) {
       .pv-tilt:hover::after {
@@ -136,9 +188,64 @@
     }
   }
 
+  .pv-marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+
+  .pv-marquee-track {
+    display: flex;
+    width: max-content;
+    gap: var(--marquee-gap, var(--space-4));
+  }
+
+  .pv-marquee-track > * {
+    flex: none;
+  }
+
+  .pv-scroll-progress {
+    transform-origin: left center;
+    transform: scaleX(0);
+  }
+
+  .pv-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .pv-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(100deg, transparent 20%, oklch(1 0 0 / 28%) 45%, transparent 70%);
+    translate: -120% 0;
+    pointer-events: none;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .pv-orbit-traveller {
       animation-play-state: paused;
+    }
+
+    /* Static marquee: one copy, wrapped and centred. */
+    .pv-marquee {
+      mask-image: none;
+    }
+
+    .pv-marquee-track {
+      width: auto;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .pv-marquee-track > [aria-hidden="true"] {
+      display: none;
+    }
+
+    .pv-scroll-progress {
+      display: none;
     }
 
     .pv-tilt {
@@ -215,6 +322,60 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--duration) var(--pv-ease-out);
+  }
+}
+
+@property --glow-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 200deg;
+}
+
+@keyframes pv-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 calc(-1 * var(--float-range, 12px));
+  }
+}
+
+@keyframes pv-marquee {
+  to {
+    transform: translateX(calc(-50% - var(--marquee-gap, var(--space-4)) / 2));
+  }
+}
+
+@keyframes pv-glow-spin {
+  to {
+    --glow-angle: 560deg;
+  }
+}
+
+@keyframes pv-grow-x {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes pv-header-condense {
+  to {
+    box-shadow: var(--pv-shadow-float);
+    border-color: oklch(1 0 0 / 100%);
+  }
+}
+
+@keyframes pv-reveal-blur {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(calc(var(--reveal-y) * 1.5)) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+    transform: none;
   }
 }
 

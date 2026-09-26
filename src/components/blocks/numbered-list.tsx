@@ -20,7 +20,7 @@ export function NumberedList({ items, tone = "light", className }: Props) {
         >
           <span
             aria-hidden="true"
-            className="grid size-9 place-items-center rounded-full bg-gold font-display text-lg leading-none font-bold text-ink"
+            className="grid size-9 place-items-center rounded-full bg-linear-145 from-gold to-lemon font-display text-lg leading-none font-bold text-ink shadow-sm inset-ring inset-ring-white/60"
           >
             {index + 1}
           </span>

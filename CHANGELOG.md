@@ -5,6 +5,21 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
 ## [Unreleased]
 
 ### Changed
+- Whole-site redesign "universo evolucionado" (docs/specs/redesign-universo.md): aurora gradient
+  surfaces (cream, sky and blue to white), glass, larger type and radii, float/marquee/shine/
+  scroll-progress motion. The Grafismo Fonético landing is a product page (gallery + buy box,
+  age as a variant, trust row, detail accordions, bento of the kit and its bonuses); the home is a
+  storefront hub; post-purchase, thanks, support, legal and 404 pages rebuilt on the same system.
+  Floating glass header with scroll progress, full-height mobile menu, floating mobile buy bar with
+  product thumbnail, navy nebula footer.
+
+### Added
+- Interactive "Une las sílabas" playground, drifting wall of real pages, product-style page gallery.
+- Ten transparent cutouts (`gf.cutout.*`) and ten lifestyle scenes (`gf.life.*`), AI-generated
+  and labelled "Imagen ilustrativa." where people are the subject.
+- Store blocks: ProductBadge, PriceTag, TrustRow; Card glass/elevated/gradient; FAQ lines variant.
+
+### Changed
 - Legal pages re-anchored to the Argentine seller (Gonzalo Martín Pérez, CUIL, Bahía Blanca):
   privacy under Ley 25.326 with the AAIP notice (Res. AAIP 14/2018), consumer terms under Ley
   24.240 and the CCyC, a consumer-protective jurisdiction clause (CCyC 1109, 2654, 2655), numbered

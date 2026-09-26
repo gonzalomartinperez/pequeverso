@@ -46,11 +46,11 @@ function joinSpanish(items: string[]): string {
 }
 
 const BANNER =
-  "fixed inset-x-0 bottom-0 z-90 max-h-[60dvh] overflow-y-auto overscroll-contain border-t border-border bg-card px-(--gutter) pt-4 pb-[calc(var(--space-4)+env(safe-area-inset-bottom))] shadow-lg";
-const INNER = "mx-auto grid w-full max-w-(--page-max) gap-3";
+  "fixed inset-x-3 bottom-[calc(var(--space-3)+env(safe-area-inset-bottom))] z-90 border border-white bg-card mx-auto max-h-[60dvh] max-w-3xl overflow-y-auto overscroll-contain rounded-xl p-5 shadow-float ring-1 ring-navy/10 sm:p-6";
+const INNER = "on-light grid w-full gap-3";
 const TITLE = "font-sans text-h3 font-extrabold text-heading";
 const TEXT = "max-w-[70ch] text-small";
-const ACTIONS = "flex flex-wrap gap-2";
+const ACTIONS = "flex flex-wrap gap-2 pt-1 [&>button]:rounded-pill";
 const CHECKBOX = "mt-0.5 size-5 shrink-0 accent-navy";
 
 type OptionsProps = {
