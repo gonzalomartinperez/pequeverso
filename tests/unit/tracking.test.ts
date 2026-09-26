@@ -177,6 +177,12 @@ test("meta adapter inits active, revokes on rejection (expiring _fbp/_fbc) and p
   const [bootstrap, loader] = adapter.scripts();
   assert.ok(bootstrap?.inline && loader);
   assert.ok(bootstrap.inline.includes("fbq('init',\"1234567890123456\")"));
+  // Automatic events (no event id, never deduplicated) are switched off before init.
+  assert.ok(
+    bootstrap.inline.indexOf("fbq('set','autoConfig',false,\"1234567890123456\")") <
+      bootstrap.inline.indexOf("fbq('init'"),
+  );
+  assert.ok(bootstrap.inline.includes("autoConfig',false"));
   assert.equal(bootstrap.inline.includes("revoke"), false);
   assert.equal(loader.src, "https://connect.facebook.net/en_US/fbevents.js");
 
