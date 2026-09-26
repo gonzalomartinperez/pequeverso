@@ -96,7 +96,10 @@ test("the pixel runs by default: init, PageView and ViewContent with event ids, 
   await expect.poll(async () => (await trackedNames(page)).length).toBeGreaterThanOrEqual(2);
 
   const calls = (await fbqCalls(page)) ?? [];
-  expect(calls[0]).toEqual(["init", PIXEL_ID]);
+  // Meta's automatic events are switched off before init (no event id, never deduplicated).
+  const init = calls.findIndex((call) => call[0] === "init");
+  expect(calls[init]).toEqual(["init", PIXEL_ID]);
+  expect(calls.findIndex((call) => call[0] === "set" && call[1] === "autoConfig")).toBeLessThan(init);
   expect(calls).not.toContainEqual(["consent", "revoke"]);
   const tracked = calls.filter((call) => call[0] === "track");
   expect(tracked.map((call) => call[1])).toEqual(expect.arrayContaining(["PageView", "ViewContent"]));

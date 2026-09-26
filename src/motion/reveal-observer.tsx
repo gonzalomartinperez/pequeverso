@@ -3,34 +3,41 @@
 import { useEffect } from "react";
 
 const SCROLL_DRIVEN = "animation-timeline: view()";
+const ANIMATED = "[data-reveal], .pv-parallax-layer";
+
+/** Runs `callback` once the main thread is idle; returns a canceller. */
+function whenIdle(callback: () => void): () => void {
+  if (typeof window.requestIdleCallback === "function") {
+    const id = window.requestIdleCallback(callback, { timeout: 1500 });
+    return () => window.cancelIdleCallback(id);
+  }
+  const id = window.setTimeout(callback, 200);
+  return () => window.clearTimeout(id);
+}
 
 /**
- * Fallback for browsers without view timelines: marks only [data-reveal] elements below the
- * fold as pending and reveals them once with IntersectionObserver. No-op when the CSS
- * scroll-driven path applies or under reduced motion.
+ * Fallback for browsers without view timelines (e.g. Firefox): after idle it lazily imports
+ * `fallback-motion` (gsap + ScrollTrigger, never in the initial bundle) to reveal below-the-fold
+ * [data-reveal] elements and drive the parallax layers. No-op when the CSS scroll-driven path
+ * applies, under reduced motion, or on pages with nothing to animate.
  */
 export function RevealObserver() {
   useEffect(() => {
     if (CSS.supports(SCROLL_DRIVEN)) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (!("IntersectionObserver" in window)) return;
-    const fold = window.innerHeight;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          entry.target.setAttribute("data-reveal-state", "visible");
-          observer.unobserve(entry.target);
-        }
-      },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
-    );
-    for (const el of document.querySelectorAll("[data-reveal]:not([data-reveal-state])")) {
-      if (el.getBoundingClientRect().top < fold) continue;
-      el.setAttribute("data-reveal-state", "pending");
-      observer.observe(el);
-    }
-    return () => observer.disconnect();
+    if (!document.querySelector(ANIMATED)) return;
+    let dispose: (() => void) | undefined;
+    let cancelled = false;
+    const cancelIdle = whenIdle(() => {
+      void import("./fallback-motion").then(({ mountFallbackMotion }) => {
+        if (!cancelled) dispose = mountFallbackMotion();
+      });
+    });
+    return () => {
+      cancelled = true;
+      cancelIdle();
+      dispose?.();
+    };
   }, []);
   return null;
 }

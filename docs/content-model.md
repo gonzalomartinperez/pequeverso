@@ -15,7 +15,9 @@ components — never retyped.
 | `content/es/products/imprime-y-juega/{copy,resources,faq}.ts` | upsell/downsell copy, the 9 resources, the 9 FAQ answers | published post-purchase copy, reviewed |
 | `content/es/home.ts` | homepage copy | new (grounded in brand foundations and the product brief) |
 | `content/es/gracias.ts` | thank-you guidance (shared by every core product's `/<slug>/gracias/`) | published thank-you page, condensed |
-| `content/es/legal/seller.ts` | seller identity and the single support/privacy mailbox — contains `[[PLACEHOLDERS]]` until supplied | **owner input required** (docs/legal-checklist.md) |
+| `content/es/legal/seller.ts` | seller identity (Gonzalo Martín Pérez, persona humana, CUIL, Bahía Blanca domicile, courts) and the single support/privacy/arrepentimiento mailbox | owner, 2026-09-24 (consented to publication) |
+| `content/es/legal/argentina.ts` | Argentine anchors: revocation period and 24 h code, consumer and data authorities, the AAIP notice (verbatim), the jurisdiction clause | Ley 24.240, CCyC, Disp. SSDCyLC 954/2025, Res. AAIP 14/2018 (sources in docs/legal-checklist.md) |
+| `content/es/legal/consumer-rights.ts` | "Si compras desde…" reference: per-country consumer authority, link, verified withdrawal period (or `null`), note and source | official sources read 2026-09-24 (docs/legal-checklist.md); unit-tested |
 
 ## Per-product folders
 
@@ -49,6 +51,17 @@ sitemap, footer, 404 and terms derive from the registry.
   appears in customer copy (CI content invariant in `tests/unit`).
 - Localization: one neutral-LATAM version (`lang="es"`). Voseo (AR) and peninsular (ES) variants
   from the WordPress era are not shipped in v1; they can return as build-time locale files.
+
+## Offer framing (home and principal landing)
+
+What a visitor buys is the principal product: **the main PDF plus its bonuses, all included in
+the single price** (owner decision, 2026-09-24). Pages build "Material principal + N bonos
+incluidos", the per-card badges ("Bono 1 · incluido"…) and "Todo incluido en un único pago de
+US$…" from the registry (`resources`, first entry = main PDF) and `formatUsd`, with labels from
+`included.bundle` / `product.bundle`; copy never hardcodes the counts. Paid extras (the
+post-purchase pack, checkout order bumps) never appear before purchase: no pack name and no
+"opcional" offer wording on home or the principal landing (unit invariant plus an e2e check on
+the rendered HTML). The pack belongs to the Hotmart funnel after payment only.
 
 ## Adding or changing copy
 

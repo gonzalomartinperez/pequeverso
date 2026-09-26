@@ -4,30 +4,44 @@ import { cn } from "@/lib/utils";
 
 /**
  * Surface with border, radius and elevation. `emphasis` frames the offer, `soft` is a sky
- * panel, `navy` flips the whole content to the on-navy palette.
+ * panel, `navy` flips the whole content to the on-navy palette. Redesign surfaces:
+ * `glass` (frosted white over aurora/photos), `glass-dark` (frosted on navy), `elevated`
+ * (white, floating shadow) and `gradient` (white → celeste paper). `lift` raises the card on
+ * hover (motion-safe). Each variant owns its background, so `glass` utilities never fight `bg-card`.
  */
-const cardVariants = cva("grid min-w-0 content-start gap-3 rounded-lg border bg-card text-card-foreground", {
+const cardVariants = cva("grid min-w-0 content-start gap-3 border text-card-foreground", {
   variants: {
     variant: {
-      default: "on-light border-border shadow-sm",
-      emphasis: "on-light border-2 border-navy shadow-md",
-      soft: "on-light border-transparent bg-sky shadow-none",
-      navy: "on-navy border-on-navy-chip bg-navy-deep shadow-none",
+      default: "on-light rounded-lg border-border bg-card shadow-sm",
+      emphasis: "on-light rounded-xl border-2 border-navy bg-card shadow-md",
+      soft: "on-light rounded-lg border-transparent bg-sky shadow-none",
+      navy: "on-navy rounded-lg border-on-navy-chip bg-navy-deep shadow-none",
+      glass: "on-light glass rounded-xl shadow-float",
+      "glass-dark": "on-navy glass-dark rounded-xl shadow-none",
+      elevated: "on-light rounded-xl border-white bg-card shadow-float",
+      gradient:
+        "on-light rounded-xl border-white bg-card bg-linear-160 from-white from-35% to-celeste shadow-md",
     },
     pad: {
       none: "p-0",
+      sm: "p-4",
       md: "p-6",
-      lg: "p-8",
+      lg: "p-6 sm:p-8",
+      xl: "p-6 sm:p-10",
+    },
+    lift: {
+      true: "transition-[translate,box-shadow] duration-(--duration) ease-out hover:shadow-float motion-safe:hover:-translate-y-1",
+      false: "",
     },
   },
-  defaultVariants: { variant: "default", pad: "md" },
+  defaultVariants: { variant: "default", pad: "md", lift: false },
 });
 
 type CardProps = HTMLAttributes<HTMLElement> &
   VariantProps<typeof cardVariants> & {
     as?: "div" | "article" | "li" | "section" | "figure";
-    /** Reveal on scroll (`data-reveal`). */
-    reveal?: boolean;
+    /** Reveal on scroll (`data-reveal`); `"blur"` uses the blur-in variant. */
+    reveal?: boolean | "blur";
     /** Stagger index (`--i`) for grouped reveals. */
     stagger?: number;
   };
@@ -36,6 +50,7 @@ function Card({
   className,
   variant,
   pad,
+  lift,
   as: Tag = "div",
   reveal = false,
   stagger,
@@ -47,8 +62,8 @@ function Card({
     <Tag
       data-slot="card"
       data-variant={variant ?? "default"}
-      data-reveal={reveal ? "" : undefined}
-      className={cn(cardVariants({ variant, pad }), className)}
+      data-reveal={reveal === "blur" ? "blur" : reveal ? "" : undefined}
+      className={cn(cardVariants({ variant, pad, lift }), className)}
       style={vars}
       {...props}
     />

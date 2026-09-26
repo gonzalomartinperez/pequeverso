@@ -23,9 +23,19 @@ type Anchor = { href: string; label: string };
 type IconFact = { icon: IconName; label: string; detail: string };
 type IconStep = { icon: IconName; title: string; text: string };
 type IconPoint = { icon: IconName; text: string };
-type Section = { kicker: string; title: string; lead?: string };
+type Section = {
+  kicker: string;
+  title: string;
+  lead?: string;
+  /** Phrase of `title` rendered with the gradient accent (must occur verbatim in `title`). */
+  titleAccent?: string;
+};
 type AgeOption = { id: string; label: string; hint: string };
 type AudienceCard = { title: string; items: readonly string[] };
+/** A fact chip of the landing marquee; `fact` prefixes the count from the registry (pdf, pages) or the age range. */
+type MarqueeFact = { icon: IconName; text: string; fact?: "pdf" | "pages" | "ages" };
+/** A word of the syllable playground; `page` is the number of the real worksheet (`gf.page.NN`). */
+type PlaygroundWord = { syllables: readonly string[]; word: string; page: number };
 
 /** Copy of a principal landing (checkout CTA). */
 export type CoreLandingCopy = {
@@ -46,12 +56,72 @@ export type CoreLandingCopy = {
     ages?: { legend: string; defaultId: string; items: readonly AgeOption[] };
     /** Parts of the hero trust line; price and guarantee days come from config. */
     assurance?: { payment: string; access: string; guarantee: string };
+    /** Phrase of `title` rendered with the gradient accent. */
+    titleAccent?: string;
+    /** Secondary (non-purchase) link beside the CTA, e.g. to the real pages. */
+    secondary?: { label: string; href: string };
+    /** Product-page (PDP) hero: breadcrumb, promise line under the H1, badges, gallery and detail accordions. */
+    pdp?: {
+      breadcrumb: { home: string; label: string };
+      /** Promise line under the product name (display type). */
+      tagline: string;
+      taglineAccent?: string;
+      /** Fact badges under the tagline; `fact` prefixes the registry count or the age range. */
+      badges: readonly MarqueeFact[];
+      /** Short label beside the price (e.g. "Pago único"). */
+      priceTag: string;
+      galleryLabel: string;
+      /** Accessible name pattern of a gallery thumbnail ("Ver imagen"). */
+      galleryItem: string;
+      /** Labels of the gallery slides, in order (the first is the family composition). */
+      slides: readonly string[];
+      /** Chip over the featured worksheet; `{age}` is replaced by the selected age label. */
+      featuredLabel: string;
+      /** Detail accordions of the buy box (the "includes" one lists the registry resources). */
+      details: {
+        includes: string;
+        usage: { title: string; text: string };
+        format: { title: string; text: string };
+        guarantee: { title: string; text: string };
+      };
+    };
+  };
+  /** Discreet caption under AI-generated lifestyle photos where people using the kit take the stage. */
+  illustrativeImage?: string;
+  /** Fact marquee under the hero. */
+  facts?: { label: string; items: readonly MarqueeFact[] };
+  /** Interactive "une las sílabas" demo inside the method band. */
+  playground?: {
+    kicker: string;
+    title: string;
+    hint: string;
+    doneLabel: string;
+    words: readonly PlaygroundWord[];
   };
   trust: readonly IconPoint[];
-  problem: Section & { paragraphs: readonly string[]; bullets: readonly string[] };
+  problem: Section & {
+    paragraphs: readonly string[];
+    bullets: readonly string[];
+    /** Floating glass note beside the problem visual. */
+    note?: { title: string; text: string };
+  };
   method: Section & { steps: readonly IconStep[] };
-  pages: Section & { zoomHint: string; galleryLabel: string };
-  included: Section & { total: string; units?: { pdf: string; pages: string } };
+  pages: Section & {
+    zoomHint: string;
+    galleryLabel: string;
+    itemLabel?: string;
+    zoomTitle?: string;
+    /** Accessible name of the drifting wall of pages. */
+    wallLabel?: string;
+  };
+  included: Section & {
+    total: string;
+    units?: { pdf: string; pages: string };
+    /** Labels of the bundle: the main PDF plus its bonuses, all in the single price (counts from the registry). */
+    bundle?: { main: string; bonus: string; included: string; bonuses: string; allIncluded: string };
+    /** Bento tiles: the whole-kit tile and the all-included price tile. */
+    tiles?: { kitTitle: string; kitText: string; priceKicker: string; priceNote: string; priceLink: string };
+  };
   midOffer: { title: string; text: string; cta: string };
   /** Offer card details (kicker, checks); title, text and CTA come from `midOffer`. */
   offer?: { kicker: string; checks: readonly string[] };
@@ -65,11 +135,21 @@ export type CoreLandingCopy = {
     paragraphs: readonly string[];
     signature: string;
   };
-  videos: Section;
+  videos: Section & { illustrative?: string };
   credibility: { kicker: string; title: string; text: string; points: readonly string[] };
   benefits: Section & { items: readonly IconStep[]; callout: string };
   faq: Section & { items: readonly FaqItem[]; supportNote: string };
-  finalOffer: { kicker: string; title: string; checks: readonly string[]; cta: string; note: string };
+  finalOffer: {
+    kicker: string;
+    title: string;
+    checks: readonly string[];
+    cta: string;
+    note: string;
+    /** Phrase of `title` rendered with the gradient accent. */
+    titleAccent?: string;
+    /** Line beside the CTA after the price (e.g. "pago único"). */
+    priceNote?: string;
+  };
   sticky: { label: string; cta: string };
 };
 

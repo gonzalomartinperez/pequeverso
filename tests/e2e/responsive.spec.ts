@@ -24,6 +24,8 @@ const routes = [
   "/soporte/",
   "/privacidad/",
   "/terminos/",
+  "/aviso-legal/",
+  "/arrepentimiento/",
   "/esta-no-existe/",
 ];
 const HEADER_CTA =
@@ -71,6 +73,7 @@ async function layoutFaults(page: Page) {
 
 for (const route of routes) {
   test(`responsive contract: ${route}`, async ({ page }) => {
+    test.setTimeout(90_000); // six widths of the heaviest landing under a parallel run
     for (const width of widths) {
       await page.setViewportSize({ width, height: height(width) });
       await page.goto(route, { waitUntil: "load" });
@@ -98,6 +101,8 @@ test("short landscape phone: no fixed layer covers a checkout CTA", async ({ pag
   await page.setViewportSize({ width: 640, height: 360 });
   await page.goto("/grafismo-fonetico/");
   const banner = page.getByTestId("consent-banner");
+  // The banner mounts after hydration: wait for it when the build expects it, or the check races.
+  if (process.env.E2E_EXPECT_CONSENT) await expect(banner).toBeVisible();
   if (await banner.isVisible()) await banner.getByRole("button", { name: "Rechazar" }).click();
   const ctas = page.locator('main a[data-checkout]:not([data-position="sticky"])');
   const count = await ctas.count();
@@ -118,4 +123,40 @@ test("short landscape phone: no fixed layer covers a checkout CTA", async ({ pag
       )
       .toBe(true);
   }
+});
+
+test("primary CTA labels (checkout and product links) stay on one line from 320 px up", async ({ page }) => {
+  for (const [route, width] of [320, 390, 768, 1024].flatMap((w) => [
+    ["/grafismo-fonetico/", w] as const,
+    ["/", w] as const,
+  ])) {
+    await page.setViewportSize({ width, height: height(width) });
+    await page.goto(route, { waitUntil: "load" });
+    const wrapped = await page.evaluate(() =>
+      [
+        ...document.querySelectorAll<HTMLAnchorElement>(
+          'main a[data-checkout]:not([data-position="sticky"]), main a[data-position^="hero"]',
+        ),
+      ]
+        .flatMap((link) => [...link.querySelectorAll<HTMLSpanElement>("span")])
+        .filter(
+          (span) => span.offsetParent !== null && !span.querySelector("span") && span.textContent?.trim(),
+        )
+        .filter((span) => span.getClientRects().length > 1)
+        .map((span) => span.textContent?.trim()),
+    );
+    expect(wrapped, `${route} @${width}`).toEqual([]);
+  }
+});
+
+test("mobile sticky bar is invisible, not just off-screen, while the hero CTA is in view", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/grafismo-fonetico/", { waitUntil: "load" });
+  const bar = page.getByTestId("sticky-cta");
+  await expect(bar).toHaveCSS("visibility", "hidden");
+  await page.locator("#metodo").scrollIntoViewIfNeeded();
+  await expect(bar).toHaveAttribute("data-visible", "");
+  await expect(bar).toHaveCSS("visibility", "visible");
 });

@@ -180,3 +180,20 @@ export function getVideo(id: MediaId): VideoAsset {
     redistribution: item.rights.redistribution,
   };
 }
+
+const publicFiles = new Map(
+  (manifest.items as ManifestItem[]).flatMap((item) =>
+    item.outputs.map((output) => [output.file.replace(/^public/, ""), output.sha256] as const),
+  ),
+);
+
+/**
+ * URL of a file in public/ recorded by the media manifest, with a content-hash query
+ * (`/favicon.png?v=1a2b3c4d`) so browsers and the CDN pick up a changed file at once.
+ * Throws for a path the manifest does not know.
+ */
+export function versionedPublicUrl(path: string): string {
+  const sha = publicFiles.get(path);
+  if (!sha) throw new Error(`versionedPublicUrl: ${path} is not in media/manifest.json`);
+  return `${path}?v=${sha.slice(0, 8)}`;
+}

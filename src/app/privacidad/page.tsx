@@ -1,51 +1,52 @@
-import { seller, sellerField, sellerIdentityPending } from "@content/es/legal/seller";
+import { dataAuthority } from "@content/es/legal/argentina";
+import { seller, sellerIdentity } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LegalLayout } from "@/components/layout/legal-layout";
+import { Notice } from "@/components/blocks/notice";
+import { LegalLayout, type Section, SectionHeading } from "@/components/layout/legal-layout";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { buildMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = buildMetadata({
   path: "/privacidad/",
   title: "Política de privacidad",
   description:
-    "Qué datos tratamos en pequeverso.com, con qué finalidad y base legal, con quién se comparten, cuánto se conservan y cómo ejercer tus derechos.",
+    "Qué datos personales se tratan en pequeverso.com, con qué finalidad, con quién se comparten, cuánto se conservan y cómo ejercer tus derechos según la Ley 25.326.",
   noindex: true,
 });
 
-const sections = [
-  { id: "responsable", title: "Responsable" },
-  { id: "datos", title: "Qué datos tratamos" },
-  { id: "finalidades", title: "Finalidades y base legal" },
-  { id: "destinatarios", title: "Con quién se comparten" },
+const sections: readonly Section[] = [
+  { id: "responsable", title: "Responsable del tratamiento" },
+  { id: "marco", title: "Marco normativo" },
+  { id: "datos", title: "Datos que se tratan" },
+  { id: "finalidades", title: "Finalidades y fundamento" },
+  { id: "destinatarios", title: "Destinatarios" },
   { id: "transferencias", title: "Transferencias internacionales" },
   { id: "conservacion", title: "Conservación" },
-  { id: "derechos", title: "Tus derechos" },
-  { id: "menores", title: "Menores" },
-  { id: "cambios", title: "Cambios en esta política" },
+  { id: "derechos", title: "Derechos del titular de los datos" },
+  { id: "otros-paises", title: "Usuarios de otros países" },
+  { id: "seguridad", title: "Seguridad" },
+  { id: "menores", title: "Menores de edad" },
+  { id: "cambios", title: "Modificaciones" },
 ];
 
 const purposes = [
   {
-    purpose: "Medir nuestras campañas y el interés en el producto (Meta Pixel)",
+    purpose: "Medir las campañas publicitarias y el interés en los productos (Meta Pixel)",
     basis:
-      "Interés legítimo en medir la publicidad, con oposición inmediata: “Rechazar” en el banner o “Configurar cookies” en el pie de página",
+      "Información previa en el banner y oposición en cualquier momento: “Rechazar” en el banner o “Configurar cookies” en el pie de página",
   },
   {
-    purpose: "Estadísticas agregadas de uso del sitio, sin cookies ni identificación de personas",
-    basis:
-      "Interés legítimo en mejorar el sitio (solo si la herramienta está activa; ver la política de cookies)",
+    purpose: "Atender consultas, soporte posventa, reembolsos y pedidos de arrepentimiento",
+    basis: "Relación contractual con el Comprador y tu propia solicitud (art. 5, inc. 2 d, Ley 25.326)",
   },
   {
-    purpose: "Atender consultas, soporte posventa y solicitudes de reembolso",
-    basis: "Ejecución del contrato de compra y atención de tu solicitud",
+    purpose: "Atender solicitudes de acceso, rectificación, actualización o supresión",
+    basis: "Cumplimiento de una obligación legal (arts. 14 a 16, Ley 25.326)",
   },
   {
-    purpose: "Atender solicitudes de derechos sobre tus datos",
-    basis: "Cumplimiento de una obligación legal",
-  },
-  {
-    purpose: "Seguridad del sitio y registros técnicos del alojamiento",
-    basis: "Interés legítimo en la seguridad y continuidad del servicio",
+    purpose: "Seguridad del Sitio y registros técnicos del alojamiento",
+    basis: "Necesidad técnica de prestar el servicio de forma segura",
   },
 ];
 
@@ -53,8 +54,9 @@ const retention = [
   { data: "Tu elección de cookies (pv_consent)", period: "6 meses, o hasta que la cambies" },
   { data: "Cookies de Meta (_fbp, _fbc)", period: "Hasta 90 días desde la última visita, según Meta" },
   {
-    data: "Correos de soporte",
-    period: "Mientras dure la consulta y, después, el plazo que exijan las obligaciones legales aplicables",
+    data: "Correos de soporte y pedidos de arrepentimiento",
+    period:
+      "Mientras dure la consulta y, después, el plazo necesario para atender reclamos o cumplir obligaciones legales",
   },
   {
     data: "Datos de compra y facturación",
@@ -63,85 +65,122 @@ const retention = [
   { data: "Registros técnicos del alojamiento", period: "Plazos técnicos breves definidos por el proveedor" },
 ];
 
-const rights = [
-  { name: "Acceso", text: "saber si tratamos datos tuyos y obtener una copia." },
-  { name: "Rectificación", text: "corregir datos inexactos o incompletos." },
-  { name: "Supresión", text: "pedir que borremos tus datos cuando ya no sean necesarios." },
+const recipients = [
   {
-    name: "Oposición",
-    text: "oponerte a un tratamiento basado en interés legítimo, como la medición de campañas.",
+    name: "Hotmart",
+    text: "Hotmart B.V. (Ámsterdam, Países Bajos) para compradores fuera de Brasil y Estados Unidos, y sus entidades de pago según el país: procesan la compra, la conversión de moneda, los impuestos, la entrega y los reembolsos como responsables independientes.",
   },
-  { name: "Limitación", text: "pedir que restrinjamos el tratamiento mientras se resuelve una solicitud." },
-  { name: "Portabilidad", text: "recibir los datos que nos diste en un formato de uso común." },
+  {
+    name: "Meta Platforms Ireland Ltd.",
+    text: "Medición de campañas mediante el píxel de Meta, salvo que te opongas.",
+  },
+  {
+    name: "Hostinger International Ltd.",
+    text: "Alojamiento del Sitio y registros técnicos, por cuenta del Titular.",
+  },
+  {
+    name: "Cloudflare, Inc.",
+    text: "Gestión del dominio y DNS; cuando actúa como proxy, distribución del Sitio (CDN) y registros técnicos, por cuenta del Titular.",
+  },
+  {
+    name: "Proveedor de correo electrónico (Google)",
+    text: "Gestión del buzón con el que se atienden las consultas, por cuenta del Titular.",
+  },
+];
+
+const rights = [
+  {
+    name: "Acceso",
+    text: "saber si se tratan datos tuyos y obtener la información. Es gratuito a intervalos no inferiores a seis meses y se responde dentro de los 10 días corridos (art. 14, Ley 25.326).",
+  },
+  {
+    name: "Rectificación y actualización",
+    text: "corregir datos inexactos, incompletos o desactualizados, dentro de los 5 días hábiles (art. 16).",
+  },
+  {
+    name: "Supresión",
+    text: "pedir que se eliminen tus datos cuando no exista una obligación legal o contractual de conservarlos, dentro de los 5 días hábiles (art. 16).",
+  },
+  {
+    name: "Oposición a la medición publicitaria",
+    text: "retirar la medición de Meta en cualquier momento desde el banner o el pie de página, sin necesidad de escribir.",
+  },
+];
+
+/** Examples only: the rights apply when the buyer's own law applies; no threshold is claimed. */
+const foreignDataLaws = [
+  "Brasil: Lei Geral de Proteção de Dados (Lei 13.709/2018).",
+  "Chile: Ley 19.628 sobre protección de la vida privada.",
+  "Colombia: Ley Estatutaria 1581 de 2012.",
+  "España y la Unión Europea: Reglamento General de Protección de Datos (RGPD).",
+  "Estados Unidos: leyes estatales de privacidad, como la CCPA/CPRA para residentes de California.",
+  "México: Ley Federal de Protección de Datos Personales en Posesión de los Particulares.",
+  "Perú: Ley 29733 de Protección de Datos Personales.",
 ];
 
 export default function PrivacidadPage() {
   return (
     <LegalLayout
       title="Política de privacidad"
-      intro="Este sitio trata muy pocos datos. Aquí explicamos cuáles, por qué, con quién se comparten y cómo ejercer tus derechos."
+      intro="El Sitio trata muy pocos datos personales. Esta política explica cuáles, para qué, con quién se comparten y cómo ejercer tus derechos."
       updatedAt={seller.updatedAt}
       sections={sections}
     >
-      <h2 id="responsable">Responsable del tratamiento</h2>
+      <SectionHeading sections={sections} id="responsable" />
       <dl>
         <dt>Responsable</dt>
         <dd>
-          {sellerIdentityPending
-            ? `El titular de la marca ${seller.brand} (razón social pendiente de publicación)`
-            : `${seller.legalName}, titular de la marca ${seller.brand}`}
+          {sellerIdentity}, titular de la marca {seller.brand} (el “Titular”)
         </dd>
-        <dt>Identificación fiscal</dt>
-        <dd>{sellerField(seller.taxId)}</dd>
         <dt>Domicilio</dt>
-        <dd>{sellerField(seller.address)}</dd>
+        <dd>{seller.address}</dd>
         <dt>Contacto</dt>
         <dd>
-          <a href={`mailto:${seller.privacyEmail}`}>{seller.privacyEmail}</a>
+          <a href={`mailto:${seller.privacyEmail}`}>{seller.privacyEmail}</a> (principal)
+        </dd>
+        <dt>{seller.legalEmailLabel}</dt>
+        <dd>
+          <a href={`mailto:${seller.legalEmail}`}>{seller.legalEmail}</a>
         </dd>
       </dl>
-      {sellerIdentityPending ? (
-        <p>
-          Los datos identificativos marcados como pendientes se publicarán aquí y en el{" "}
-          <Link href="/aviso-legal/">Aviso legal</Link> en cuanto se complete su verificación.
-        </p>
-      ) : null}
-      <p>
-        No hemos designado un delegado de protección de datos porque no es obligatorio en nuestro caso; las
-        solicitudes se atienden desde el correo indicado.
-      </p>
       <p>
         Hotmart actúa como <strong>responsable independiente</strong> de los datos que recoge en su página de
         pago y en su área de compras (identidad, facturación, medio de pago), conforme a su propia política de
         privacidad, que aceptas al comprar.
       </p>
 
-      <h2 id="datos">Qué datos tratamos</h2>
+      <SectionHeading sections={sections} id="marco" />
+      <p>
+        El tratamiento se rige por la Ley 25.326 de Protección de los Datos Personales de la República
+        Argentina y su Decreto reglamentario 1558/2001. El órgano de control es la{" "}
+        <a href={dataAuthority.url}>{dataAuthority.name}</a>. Los datos de Usuarios y Compradores de cualquier
+        país se tratan conforme a esta ley; si resides en un país con su propia ley de protección de datos,
+        puedes ejercer además los derechos que esa ley te reconozca (ver{" "}
+        <a href="#otros-paises">Usuarios de otros países</a>).
+      </p>
+
+      <SectionHeading sections={sections} id="datos" />
       <dl>
         <dt>Navegación</dt>
         <dd>
-          Salvo que rechaces las cookies de marketing, Meta recibe identificadores de navegación (cookies{" "}
-          <code>_fbp</code> y <code>_fbc</code>, dirección IP, agente de usuario) y eventos de este sitio:
-          página vista, interés en el producto y clic hacia la página de pago, tanto desde tu navegador como,
-          para que la medición sea fiable, a través de nuestro servidor (API de conversiones de Meta) con los
-          mismos datos. Si las rechazas, la medición se desactiva por ambas vías y no se carga ningún script
-          de Meta en tus próximas visitas. No enviamos a Meta tu nombre, tu correo ni datos de compra.
-        </dd>
-        <dt>Medición sin cookies</dt>
-        <dd>
-          Podemos usar una herramienta de analítica agregada que no instala cookies ni identifica personas. Si
-          está activa, aparece en la <Link href="/cookies/">política de cookies</Link>.
+          Salvo que te opongas, Meta recibe identificadores de navegación (cookies <code>_fbp</code> y{" "}
+          <code>_fbc</code>, dirección IP, agente de usuario) y eventos del Sitio: página vista, interés en el
+          producto y clic hacia la página de pago, tanto desde tu navegador como, para que la medición sea
+          fiable, a través del servidor del Sitio (API de conversiones de Meta) con los mismos datos. Si te
+          opones, la medición se desactiva por ambas vías y no se carga ningún script de Meta en tus próximas
+          visitas. No se envían a Meta tu nombre, tu correo ni datos de compra. Detalle en la{" "}
+          <Link href="/cookies/">Política de cookies</Link>.
         </dd>
         <dt>Compra</dt>
         <dd>
-          El pago y la entrega se realizan en Hotmart. Nosotros nunca vemos datos de tarjetas ni de otros
-          medios de pago. Hotmart nos facilita tu nombre, tu correo electrónico y los datos de la transacción
-          (producto, fecha, código, estado) para poder darte soporte y atender reembolsos.
+          El pago y la entrega se realizan en Hotmart. El Titular nunca ve datos de tarjetas ni de otros
+          medios de pago. Hotmart le facilita tu nombre, tu correo electrónico y los datos de la transacción
+          (producto, fecha, código, estado) para darte soporte y atender reembolsos.
         </dd>
-        <dt>Soporte</dt>
+        <dt>Soporte y arrepentimiento</dt>
         <dd>
-          Si nos escribes, tratamos tu correo electrónico y el contenido del mensaje (incluido, si lo indicas,
-          el código de transacción de Hotmart) para responderte.
+          Si escribes, se tratan tu correo electrónico y el contenido del mensaje (incluido, si lo indicas, el
+          código de transacción de Hotmart) para responderte.
         </dd>
         <dt>Registros técnicos</dt>
         <dd>
@@ -149,135 +188,146 @@ export default function PrivacidadPage() {
           solicitada para garantizar la seguridad del servicio.
         </dd>
       </dl>
-
-      <h2 id="finalidades">Finalidades y base legal</h2>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Finalidad</th>
-              <th scope="col">Base legal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {purposes.map((row) => (
-              <tr key={row.purpose}>
-                <td>{row.purpose}</td>
-                <td>{row.basis}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
       <p>
-        No tomamos decisiones automatizadas con efectos jurídicos sobre ti ni elaboramos perfiles a partir de
-        los datos de soporte o de compra.
+        No se tratan datos sensibles. Facilitar los datos de contacto es voluntario, pero sin ellos no es
+        posible responder a tu consulta.
       </p>
 
-      <h2 id="destinatarios">Con quién se comparten</h2>
+      <SectionHeading sections={sections} id="finalidades" />
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col">Finalidad</TableHead>
+            <TableHead scope="col">Fundamento</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {purposes.map((row) => (
+            <TableRow key={row.purpose}>
+              <TableCell>{row.purpose}</TableCell>
+              <TableCell>{row.basis}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <p>
+        No se toman decisiones automatizadas con efectos jurídicos sobre ti ni se elaboran perfiles a partir
+        de los datos de soporte o de compra. Los datos no se usan para finalidades distintas de las indicadas.
+      </p>
+
+      <SectionHeading sections={sections} id="destinatarios" />
       <dl>
-        <dt>Hotmart</dt>
-        <dd>
-          Hotmart B.V. (Ámsterdam, Países Bajos) para compradores fuera de Brasil y Estados Unidos, y sus
-          entidades de pago según el país: procesan la compra, la conversión de moneda, los impuestos, la
-          entrega y los reembolsos como responsables independientes.
-        </dd>
-        <dt>Meta Platforms Ireland Ltd.</dt>
-        <dd>Medición de campañas mediante el píxel de Meta, salvo que la rechaces.</dd>
-        <dt>Hostinger International Ltd.</dt>
-        <dd>Alojamiento del sitio y registros técnicos, como encargado del tratamiento.</dd>
-        <dt>Cloudflare, Inc.</dt>
-        <dd>
-          Gestión del dominio y DNS; cuando actúa como proxy, distribución del sitio (CDN) y registros
-          técnicos, como encargado del tratamiento.
-        </dd>
-        <dt>Proveedor de correo electrónico</dt>
-        <dd>Gestión del buzón con el que atendemos las consultas, como encargado del tratamiento.</dd>
+        {recipients.map((recipient) => (
+          <DefinitionRow key={recipient.name} term={recipient.name} text={recipient.text} />
+        ))}
       </dl>
       <p>
-        No vendemos ni cedemos tus datos a otros terceros. Solo los comunicaríamos a autoridades cuando una
-        obligación legal lo exija.
+        El Titular no vende ni cede tus datos a otros terceros. Solo los comunicaría a una autoridad cuando
+        una obligación legal lo exija.
       </p>
 
-      <h2 id="transferencias">Transferencias internacionales</h2>
+      <SectionHeading sections={sections} id="transferencias" />
       <p>
-        Algunos de estos proveedores tratan datos fuera de tu país (por ejemplo, en la Unión Europea o en
-        Estados Unidos). Cuando eso ocurre, se apoyan en mecanismos reconocidos, como cláusulas contractuales
-        tipo o marcos de adecuación aplicables. Puedes pedirnos más detalle por correo.
+        Los proveedores indicados tratan datos fuera de la República Argentina. Las transferencias a Hotmart
+        B.V. (Países Bajos) y a Meta Platforms Ireland se dirigen a países que la AAIP considera con nivel de
+        protección adecuado (Disposición DNPDP 60/2016, modificada por la Resolución AAIP 34/2019). Otros
+        proveedores, como Hostinger, Cloudflare, Google o las empresas de Meta en los Estados Unidos, pueden
+        tratar datos en países que no figuran en esa lista; en esos casos, la transferencia se apoya en las
+        cláusulas contractuales de protección de datos que esos proveedores ofrecen, conforme al art. 12 de la
+        Ley 25.326 y a las cláusulas modelo aprobadas por la AAIP. Puedes pedir más detalle por correo.
       </p>
 
-      <h2 id="conservacion">Conservación</h2>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Datos</th>
-              <th scope="col">Plazo</th>
-            </tr>
-          </thead>
-          <tbody>
-            {retention.map((row) => (
-              <tr key={row.data}>
-                <td>{row.data}</td>
-                <td>{row.period}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <SectionHeading sections={sections} id="conservacion" />
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col">Datos</TableHead>
+            <TableHead scope="col">Plazo</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {retention.map((row) => (
+            <TableRow key={row.data}>
+              <TableCell>{row.data}</TableCell>
+              <TableCell>{row.period}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
-      <h2 id="derechos">Tus derechos</h2>
-      <p>
-        Según la normativa que te aplique (el RGPD en la Unión Europea o las leyes de protección de datos de
-        tu país en América Latina), puedes ejercer estos derechos:
-      </p>
+      <SectionHeading sections={sections} id="derechos" />
+      <p>Como titular de tus datos personales, puedes ejercer estos derechos sin costo:</p>
       <dl>
         {rights.map((right) => (
-          <RightItem key={right.name} {...right} />
+          <DefinitionRow key={right.name} term={right.name} text={right.text} />
         ))}
       </dl>
       <h3>Cómo ejercerlos</h3>
       <ol>
         <li>
           Escribe a <a href={`mailto:${seller.privacyEmail}`}>{seller.privacyEmail}</a> indicando qué derecho
-          quieres ejercer y el correo con el que nos contactaste o compraste.
+          quieres ejercer y el correo con el que escribiste o compraste.
         </li>
-        <li>Si es necesario, te pediremos un dato adicional para confirmar tu identidad.</li>
-        <li>Respondemos en el plazo legal (en general, un mes) y sin coste.</li>
+        <li>Si es necesario, se te pedirá un dato adicional para confirmar tu identidad.</li>
+        <li>La respuesta llega por correo dentro de los plazos legales indicados arriba.</li>
       </ol>
       <p>
-        Para retirar la medición de Meta no hace falta escribirnos: usa “Rechazar” en el banner o el enlace
-        “Configurar cookies” del pie de página. Los datos que Hotmart trata como responsable (compra,
-        facturación, reembolsos) se solicitan directamente a Hotmart desde su centro de ayuda; si nos
-        escribes, te indicamos cómo.
+        Los datos que Hotmart trata como responsable (compra, facturación, reembolsos) se solicitan
+        directamente a Hotmart desde su centro de ayuda; si escribes al Titular, te indicará cómo hacerlo.
       </p>
+      <Notice title="Órgano de control (Resolución AAIP 14/2018)">
+        <p>{dataAuthority.notice}</p>
+        <p>
+          <a href={dataAuthority.complaintUrl}>Presentar una denuncia ante la AAIP</a>
+        </p>
+      </Notice>
+
+      <SectionHeading sections={sections} id="otros-paises" />
       <p>
-        Si consideras que no hemos atendido tu solicitud, puedes reclamar ante la autoridad de protección de
-        datos de tu país (por ejemplo, la AEPD en España o la AAIP en Argentina).
+        El Titular está establecido en la República Argentina y trata los datos de Usuarios de cualquier país
+        conforme a la Ley 25.326. Si resides en un país con su propia ley de protección de datos, puedes
+        ejercer además los derechos que esa ley te reconozca, escribiendo al mismo correo. Por ejemplo:
+      </p>
+      <ul>
+        {foreignDataLaws.map((law) => (
+          <li key={law}>{law}</li>
+        ))}
+      </ul>
+      <p>
+        Si resides en la Unión Europea, además de los derechos indicados arriba puedes solicitar la limitación
+        del tratamiento y la portabilidad de los datos que facilitaste, y presentar una reclamación ante la
+        autoridad de protección de datos de tu país; las solicitudes se atienden, en general, en el plazo de
+        un mes. La Comisión Europea reconoce a la República Argentina un nivel de protección adecuado.
       </p>
 
-      <h2 id="menores">Menores</h2>
+      <SectionHeading sections={sections} id="seguridad" />
       <p>
-        Este sitio se dirige a madres, padres, cuidadores y docentes adultos que compran material para niños a
-        su cargo. No pedimos ni tratamos datos de los niños que usan el material, no dirigimos publicidad a
-        menores y no recopilamos datos de menores de forma consciente. Si crees que un menor nos ha enviado
-        datos, escríbenos y los eliminaremos.
+        El Sitio se sirve siempre por HTTPS, no almacena contraseñas ni datos de pago y limita los datos que
+        trata a los descritos en esta política.
       </p>
 
-      <h2 id="cambios">Cambios en esta política</h2>
+      <SectionHeading sections={sections} id="menores" />
       <p>
-        Si incorporamos una nueva herramienta o cambiamos un proveedor, actualizaremos esta página y la fecha
-        que aparece al inicio. Si el cambio afecta a las cookies, el banner vuelve a mostrarse para que
+        El Sitio se dirige a madres, padres, cuidadores y docentes adultos que compran material para niños a
+        su cargo. No se piden ni se tratan datos de los niños que usan el material, no se dirige publicidad a
+        menores y no se recopilan datos de menores de forma consciente. Si crees que un menor envió datos,
+        escribe al correo indicado y se eliminarán.
+      </p>
+
+      <SectionHeading sections={sections} id="cambios" />
+      <p>
+        Si se incorpora una nueva herramienta o cambia un proveedor, el Titular actualizará esta página y la
+        fecha indicada al inicio. Si el cambio afecta a las cookies, el banner vuelve a mostrarse para que
         decidas de nuevo.
       </p>
     </LegalLayout>
   );
 }
 
-function RightItem({ name, text }: { name: string; text: string }) {
+function DefinitionRow({ term, text }: { term: string; text: string }) {
   return (
     <>
-      <dt>{name}</dt>
+      <dt>{term}</dt>
       <dd>{text}</dd>
     </>
   );

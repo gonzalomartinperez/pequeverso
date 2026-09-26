@@ -29,5 +29,8 @@ for (const { name, path } of pages) {
 test("footer matches its baseline", async ({ page }) => {
   await page.goto("/", { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
-  await expect(page.getByRole("contentinfo")).toHaveScreenshot("footer.png");
+  // The floating header is sticky: wherever the capture scrolls it, it overlaps the footer.
+  await expect(page.getByRole("contentinfo")).toHaveScreenshot("footer.png", {
+    mask: [page.getByRole("banner")],
+  });
 });

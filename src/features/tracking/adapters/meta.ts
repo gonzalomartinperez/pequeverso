@@ -27,10 +27,15 @@ function advancedMatching(): Record<string, string> | undefined {
   return undefined;
 }
 
+/**
+ * `autoConfig` off before init: Meta's automatic events (SubscribedButtonClick, microdata) fire
+ * without an event id, so they never deduplicate with the relay and blur the site's own events.
+ */
 function initCall(pixelId: string): string {
   const matching = advancedMatching();
   const payload = matching ? `,${JSON.stringify(matching)}` : "";
-  return `fbq('init',${JSON.stringify(pixelId)}${payload});`;
+  const id = JSON.stringify(pixelId);
+  return `fbq('set','autoConfig',false,${id});fbq('init',${id}${payload});`;
 }
 
 function bootstrap(pixelId: string): string {

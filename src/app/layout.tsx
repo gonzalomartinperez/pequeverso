@@ -6,6 +6,7 @@ import { SkipLink } from "@/components/blocks/skip-link";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { ConsentBanner } from "@/features/tracking/ConsentBanner";
 import { Analytics } from "@/features/tracking/TrackingScripts";
+import { versionedPublicUrl } from "@/lib/media";
 import { RevealObserver } from "@/motion/reveal-observer";
 import "./globals.css";
 
@@ -26,13 +27,13 @@ export const metadata: Metadata = {
   applicationName: site.name,
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
-      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
-      { url: "/favicon.png", type: "image/png", sizes: "512x512" },
+      { url: versionedPublicUrl("/favicon.ico"), sizes: "16x16 32x32 48x48" },
+      { url: versionedPublicUrl("/icon-192.png"), type: "image/png", sizes: "192x192" },
+      { url: versionedPublicUrl("/favicon.png"), type: "image/png", sizes: "512x512" },
     ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    apple: [{ url: versionedPublicUrl("/apple-touch-icon.png"), sizes: "180x180" }],
   },
-  manifest: "/manifest.webmanifest",
+  manifest: `/manifest.webmanifest?v=${versionedPublicUrl("/icon-512.png").split("?v=")[1]}`,
 };
 
 export const viewport: Viewport = {

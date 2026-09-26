@@ -63,6 +63,48 @@ Measured on the static export against `origin/main` at the time (gzip):
   modules. Product pages still load their legacy modules (16.0 KB total) until they migrate; the
   follow-up PRs must lower their `css` budgets to the global size.
 
+### Addendum 2026-09-24 — home and landing redesign
+
+The home/landing redesign deleted their CSS Modules (gallery, video, age selector, hero scene,
+hero stack, core blocks, `page.module.css`); with the offer/legal redesign (#45) no route loads a
+module any more, so every route serves only the global stylesheet: 15.3 KB gzip (12.1 KB at the
+foundation; the utilities replace ~4 KB of per-route modules). `/` falls from 16.0 to 15.3 KB and
+`/grafismo-fonetico/` from 16.0 to 15.3 KB. Following the rule (measured + 10 %), one `css`
+budget of 17 238 B now applies to every route (`default.css`; the per-route css overrides are
+removed). JS: `/` 150.0 → 150.2 KB, landing 163.7 → 163.3 KB; scene closure 181.1 KB (budget
+250 KB, gsap core ≈ 19.5 KB + ScrollTrigger ≈ 17 KB inside, never initial). HTML stays within
+the existing budgets (`/` 26.8 KB, landing 49.3 KB).
+
+### Addendum 2026-09-24 — Argentine legal re-anchoring
+
+The footer now carries the seller identification (Res. SCI 270/2020) and the "Botón de
+arrepentimiento" link (Disp. SSDCyLC 954/2025) on every page, and the legal pages were rewritten
+with numbered sections and Argentine sources. Measured html (gzip level 9) and new budgets at
+measured + 10 %: `/` 27 773 B → 30 550 B, `/grafismo-fonetico/` 51 215 B → 56 337 B, `/terminos/`
+21 413 B → 23 554 B, `/privacidad/` 20 901 B → 22 991 B, and the new `/arrepentimiento/` 23 747 B
+(per-country table) → 26 122 B. JS and CSS unchanged.
+
+**Addendum — "Universo evolucionado" shared vocabulary (blocks).** The redesign's shared block
+vocabulary (pill buttons with gradient/shine/arrow motion, tone chips with a dot, `glass`,
+`glass-dark`, `elevated`, `gradient` cards with hover lift, gradient icon tiles, round markers,
+store badges, `TrustRow`, `PriceTag`, `lines` FAQ) adds Tailwind gradient, inset-ring and
+transition utilities to the single site stylesheet. Colours stay tokens; navy adaptation reads
+the semantic roles instead of extra selectors to keep the sheet small. Measured (gzip level 9)
+and new budgets at measured + 10 %: css (default) 16 737 B → 19 818 B → 21 800 B;
+`/imprime-y-juega/` html 35 475 B → 39 023 B; `/soporte/` html 14 392 B → 15 831 B. JS unchanged.
+The page redesigns may re-baseline again when they land.
+
+**Addendum 2026-09-26 — "Universo evolucionado" redesign (docs/specs/redesign-universo.md).**
+Every page was redesigned (product-page landing, storefront hub, post-purchase, shell, legal)
+with aurora gradients, glass surfaces, bento grids, the syllable playground and the page wall.
+Measured gzip: shared CSS 16.7 → 33.2 KB (≈800 arbitrary gradient/shadow utilities, one
+stylesheet for the whole site); HTML `/` 30 → 52 KB, `/grafismo-fonetico/` 55 → 79 KB (product
+gallery, bento and playground markup), other routes +2–6 KB; route JS +1.3 KB on the landing and
+offer (playground and wall islands). Budgets re-baselined at measured + 10 %: default CSS
+37 397 B; per-route HTML/JS in `config/budgets.json`. Media stays within 25 MB (22.2 MB).
+Follow-up: move the repeated gradient/shadow recipes from arbitrary classes to named utilities
+in `globals.css` and tighten the CSS budget again.
+
 ## Consequences
 
 - One file changes the brand; semantic roles make blocks adapt to their band without tone props.

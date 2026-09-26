@@ -3,25 +3,40 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { WaveDivider, type WaveFill } from "@/motion/wave-divider";
 
-export type SectionTone = "cream" | "white" | "mint" | "sky" | "lemon" | "rose" | "navy";
-export type SectionDivider = "none" | "wave-top" | "wave-bottom" | "overlap";
+export type SectionTone =
+  | "cream"
+  | "white"
+  | "mint"
+  | "sky"
+  | "lemon"
+  | "rose"
+  | "navy"
+  | "aurora-cream"
+  | "aurora-sky"
+  | "aurora-blue";
+export type SectionDivider = "none" | "wave-top" | "wave-bottom" | "overlap" | "arc";
 
 const sectionVariants = cva("relative section-pad", {
   variants: {
     tone: {
       cream: "bg-cream",
       white: "bg-white",
-      mint: "bg-mint",
+      mint: "bg-mint [--chip:var(--pv-white)]",
       sky: "bg-sky",
       lemon: "bg-lemon",
       rose: "bg-rose",
       navy: "on-navy bg-navy",
+      "aurora-cream": "aurora-cream",
+      "aurora-sky": "aurora-sky",
+      "aurora-blue": "aurora-blue",
     },
     divider: {
       none: "",
-      "wave-top": "pt-[calc(var(--section-pad)+var(--wave-height))]",
+      "wave-top": "-mt-px pt-[calc(var(--section-pad)+var(--wave-height))]",
       "wave-bottom": "pb-[calc(var(--section-pad)+var(--wave-height))]",
       overlap: "flow-root pt-0",
+      /* Rounded top edge that overlaps the previous band (navy bands between light ones). */
+      arc: "arc-top relative z-1 -mt-(--section-overlap) overflow-clip",
     },
   },
   defaultVariants: { tone: "cream", divider: "none" },
@@ -42,6 +57,8 @@ type Props = {
   defer?: boolean | undefined;
   /** Wrap children in the centred container (default true). */
   container?: boolean | undefined;
+  /** Decorative layer painted under the wave and the content (e.g. `<Universe variant="band" />`). */
+  backdrop?: ReactNode | undefined;
   className?: string | undefined;
   children: ReactNode;
 };
@@ -60,6 +77,7 @@ export function Section({
   dividerTone = "cream",
   defer = false,
   container = true,
+  backdrop,
   className,
   children,
 }: Props) {
@@ -76,12 +94,17 @@ export function Section({
       aria-labelledby={labelledBy}
       aria-label={label}
     >
+      {backdrop}
       {divider === "wave-top" ? (
         <WaveDivider fill={dividerTone} flip className="absolute inset-x-0 top-0" />
       ) : null}
       {container ? (
         <div
-          className={cn("page-container", divider === "overlap" && "relative z-1 -mt-(--section-overlap)")}
+          className={cn(
+            "page-container",
+            backdrop && "relative",
+            divider === "overlap" && "relative z-1 -mt-(--section-overlap)",
+          )}
         >
           {children}
         </div>
@@ -89,7 +112,7 @@ export function Section({
         children
       )}
       {divider === "wave-bottom" ? (
-        <WaveDivider fill={dividerTone} className="absolute inset-x-0 bottom-0" />
+        <WaveDivider fill={dividerTone} className="absolute inset-x-0 -bottom-px" />
       ) : null}
     </section>
   );

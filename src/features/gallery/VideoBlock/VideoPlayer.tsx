@@ -11,7 +11,6 @@ import {
   useRef,
   useState,
 } from "react";
-import styles from "./VideoBlock.module.css";
 
 type Group = {
   active: string | null;
@@ -85,10 +84,22 @@ export function VideoPlayer({ id, mp4, webm, width, height, title, children }: P
     );
   }
   return (
-    <button type="button" className={styles.playButton} onClick={onPlay} aria-label={`Reproducir: ${title}`}>
+    <button
+      type="button"
+      className="group/play relative block size-full cursor-pointer border-0 bg-transparent p-0"
+      onClick={onPlay}
+      aria-label={`Reproducir: ${title}`}
+    >
       {children}
-      <span className={styles.playIcon} aria-hidden="true">
-        <Play size={28} fill="currentColor" />
+      <span
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,oklch(0.2_0.08_256/45%))] transition-opacity duration-(--duration) ease-out group-hover/play:opacity-60"
+        aria-hidden="true"
+      />
+      <span
+        className="absolute inset-0 m-auto grid size-12 place-items-center rounded-full bg-gold text-navy-deep border-4 border-white/60 shadow-lg transition duration-(--duration) ease-out cq-sm:size-16 motion-safe:group-hover/play:scale-110"
+        aria-hidden="true"
+      >
+        <Play className="ml-0.5 size-5 cq-sm:size-7" fill="currentColor" />
       </span>
     </button>
   );

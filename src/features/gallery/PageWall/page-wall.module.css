@@ -1,0 +1,104 @@
+/*
+ * PageWall: rows of real pages drifting in opposite directions on a slight diagonal. CSS loop
+ * (transform), paused on hover and on focus, stopped by the wall's toggle and while the wall is
+ * mostly off-screen; static under reduced motion (one lap, centred, clipped by the wall).
+ */
+.wall {
+  overflow: clip;
+  overflow-clip-margin: 0px;
+}
+
+.tilt {
+  rotate: -3deg;
+  margin-inline: -6%;
+}
+
+.row {
+  display: flex;
+  overflow: hidden;
+  padding-block: 18px 30px;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.track {
+  display: flex;
+  flex: none;
+  width: max-content;
+  gap: var(--wall-gap);
+}
+
+.lap {
+  display: flex;
+  flex: none;
+  gap: var(--wall-gap);
+}
+
+.card {
+  flex: none;
+  height: var(--wall-height);
+  translate: 0 0;
+  rotate: var(--card-rotate, 0deg);
+}
+
+.card img {
+  display: block;
+  height: 100%;
+  width: auto;
+  /* WebKit sizes the width from the attribute ratio, which differs slightly per rendition:
+     never distort a real page. */
+  object-fit: contain;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .track {
+    animation: wall-drift var(--wall-duration) linear infinite;
+  }
+
+  .row[data-direction="reverse"] .track {
+    animation-direction: reverse;
+  }
+
+  .wall:hover .track,
+  .wall:focus-within .track {
+    animation-play-state: paused;
+  }
+
+  /* Idle (paused by its toggle, or mostly off-screen): the drift is removed, not just paused, and
+     the track holds the position `WallToggle` froze inline. A paused animation still keeps the
+     track animated, and without GPU compositing (WebKit on Linux) every frame then repaints all
+     the shadowed pages: the whole page drops to about one frame per second. */
+  .wall[data-idle] .track {
+    animation: none;
+  }
+
+  .card {
+    transition:
+      translate var(--duration) var(--pv-ease-out),
+      rotate var(--duration) var(--pv-ease-out),
+      box-shadow var(--duration) var(--pv-ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .card:hover {
+      translate: 0 -6px;
+      rotate: 0deg;
+      box-shadow: var(--pv-shadow-lg);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row {
+    justify-content: center;
+  }
+
+  .lap[aria-hidden="true"] {
+    display: none;
+  }
+}
+
+@keyframes wall-drift {
+  to {
+    transform: translateX(calc(-50% - var(--wall-gap) / 2));
+  }
+}

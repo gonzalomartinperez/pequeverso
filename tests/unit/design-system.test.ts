@@ -112,9 +112,34 @@ test("documented WCAG 2.2 AA contrast pairs hold for the OKLCH tokens", () => {
     ["turquoise", "navy", 8.5],
     ["gold", "navy", 9],
     ["navy", "mint", 11],
+    // Tone chips (badge-variants, Eyebrow accent) and store badges: text on their pale tint.
+    ["teal-text", "mint", 6.5],
+    ["coral-hover", "rose", 5.5],
+    ["ink", "lemon", 14],
+    ["navy", "sky", 11],
+    // Card `gradient`, MediaFrame and ResourceGrid grounds end on celeste: body and muted text stay AA.
+    ["body", "celeste", 6.5],
+    ["muted", "celeste", 4.5],
+    ["ink", "celeste", 13],
+    // Coral text (PriceBlock, PriceTag) on the light surfaces it sits on.
+    ["coral", "white", 4.5],
+    ["coral", "cream", 4.5],
   ];
   for (const [fg, bg, min] of pairs) {
     const ratio = contrast(fg, bg);
     assert.ok(ratio >= min, `${fg} on ${bg} is ${ratio.toFixed(2)}:1, expected ≥ ${min}`);
   }
+});
+
+test("cn keeps the project's font sizes and shadows next to colours (config/cn.ts)", async () => {
+  const { createCn } = await import("cn/engine");
+  const { default: tables } = await import("../../src/lib/cn-tables.js");
+  const cn = createCn(tables);
+  assert.equal(
+    cn("font-display text-price font-bold", "text-coral"),
+    "font-display text-price font-bold text-coral",
+  );
+  assert.equal(cn("text-h3 text-heading"), "text-h3 text-heading");
+  assert.equal(cn("text-small", "text-tiny"), "text-tiny");
+  assert.equal(cn("shadow-cta", "shadow-cta-hover"), "shadow-cta-hover");
 });

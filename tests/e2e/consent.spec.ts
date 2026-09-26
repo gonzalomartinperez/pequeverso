@@ -25,6 +25,7 @@ test("footer cookie control exists and legal links are complete", async ({ page 
     "/cookies/",
     "/terminos/",
     "/compras-y-reembolsos/",
+    "/arrepentimiento/",
     "/soporte/",
   ]) {
     await expect(page.locator(`footer a[href="${href}"]`)).toHaveCount(1);

@@ -5,6 +5,34 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
 ## [Unreleased]
 
 ### Changed
+- Whole-site redesign "universo evolucionado" (docs/specs/redesign-universo.md): aurora gradient
+  surfaces (cream, sky and blue to white), glass, larger type and radii, float/marquee/shine/
+  scroll-progress motion. The Grafismo Fonético landing is a product page (gallery + buy box,
+  age as a variant, trust row, detail accordions, bento of the kit and its bonuses); the home is a
+  storefront hub; post-purchase, thanks, support, legal and 404 pages rebuilt on the same system.
+  Floating glass header with scroll progress, full-height mobile menu, floating mobile buy bar with
+  product thumbnail, navy nebula footer.
+
+### Added
+- Interactive "Une las sílabas" playground, drifting wall of real pages, product-style page gallery.
+- Ten transparent cutouts (`gf.cutout.*`) and ten lifestyle scenes (`gf.life.*`), AI-generated
+  and labelled "Imagen ilustrativa." where people are the subject.
+- Store blocks: ProductBadge, PriceTag, TrustRow; Card glass/elevated/gradient; FAQ lines variant.
+
+### Changed
+- Legal pages re-anchored to the Argentine seller (Gonzalo Martín Pérez, CUIL, Bahía Blanca):
+  privacy under Ley 25.326 with the AAIP notice (Res. AAIP 14/2018), consumer terms under Ley
+  24.240 and the CCyC, a consumer-protective jurisdiction clause (CCyC 1109, 2654, 2655), numbered
+  sections and consistent defined terms; Spanish-only anchors (LSSI, AEPD, RDL 1/2007) removed.
+  Seller identification in the footer. No placeholders remain (docs/legal-checklist.md).
+- Demo videos approved as owner illustrative footage (some AI-generated), captioned "Video ilustrativo.".
+
+### Added
+- `/arrepentimiento/` and the footer link "Botón de arrepentimiento" (Disp. SSDCyLC 954/2025):
+  email or refund.hotmart.com, no registration, request code within 24 h, plus a per-country
+  consumer-rights reference (`content/es/legal/consumer-rights.ts`, unit-tested).
+
+### Changed
 - Design system rebuilt on Tailwind CSS 4.3 + shadcn/ui (Base UI, `base-vega`): one token file
   (`src/app/globals.css`, OKLCH), shadcn primitives in `src/components/ui`, server blocks in
   `src/components/blocks`, kebab-case layout with a Base UI sheet for mobile navigation,

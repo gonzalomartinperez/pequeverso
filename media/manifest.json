@@ -1,6 +1,6 @@
 {
   "$schemaVersion": 1,
-  "generatedAt": "2026-09-24T14:51:20.992Z",
+  "generatedAt": "2026-09-26T03:52:47.424Z",
   "generator": "tools/media/media-build.ts v1 (sharp 0.35.4, libvips 8.18.6)",
   "extras": [
     "public/manifest.webmanifest"
@@ -3411,10 +3411,6 @@
       "alt": {
         "es": "Página real 1: Diseña tu pizza (Kit Tardes Tranquilas)"
       },
-      "text": {
-        "title": "Diseña tu pizza",
-        "description": "Kit Tardes Tranquilas"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-01-w640-e3b0924d.webp",
@@ -3434,7 +3430,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Diseña tu pizza",
+        "description": "Kit Tardes Tranquilas"
+      }
     },
     {
       "id": "pack.page.02",
@@ -3466,10 +3466,6 @@
       "alt": {
         "es": "Página real 2: Títeres de dedo (Kit Tardes Tranquilas)"
       },
-      "text": {
-        "title": "Títeres de dedo",
-        "description": "Kit Tardes Tranquilas"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-02-w640-9036a3c0.webp",
@@ -3489,7 +3485,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Títeres de dedo",
+        "description": "Kit Tardes Tranquilas"
+      }
     },
     {
       "id": "pack.page.03",
@@ -3521,10 +3521,6 @@
       "alt": {
         "es": "Página real 3: Diferencias en la feria (Mira, Busca y Colorea)"
       },
-      "text": {
-        "title": "Diferencias en la feria",
-        "description": "Mira, Busca y Colorea"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-03-w640-ab0ee1e0.webp",
@@ -3544,7 +3540,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Diferencias en la feria",
+        "description": "Mira, Busca y Colorea"
+      }
     },
     {
       "id": "pack.page.04",
@@ -3576,10 +3576,6 @@
       "alt": {
         "es": "Página real 4: La gran búsqueda (Mira, Busca y Colorea)"
       },
-      "text": {
-        "title": "La gran búsqueda",
-        "description": "Mira, Busca y Colorea"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-04-w640-2473dbb5.webp",
@@ -3599,7 +3595,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "La gran búsqueda",
+        "description": "Mira, Busca y Colorea"
+      }
     },
     {
       "id": "pack.page.05",
@@ -3631,10 +3631,6 @@
       "alt": {
         "es": "Página real 5: Mi gato mira la luna (Letras en Juego)"
       },
-      "text": {
-        "title": "Mi gato mira la luna",
-        "description": "Letras en Juego"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-05-w640-c34ed6fe.webp",
@@ -3654,7 +3650,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Mi gato mira la luna",
+        "description": "Letras en Juego"
+      }
     },
     {
       "id": "pack.page.06",
@@ -3686,10 +3686,6 @@
       "alt": {
         "es": "Página real 6: Mi primera palabra (Letras en Juego)"
       },
-      "text": {
-        "title": "Mi primera palabra",
-        "description": "Letras en Juego"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-06-w640-845c1f63.webp",
@@ -3709,7 +3705,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Mi primera palabra",
+        "description": "Letras en Juego"
+      }
     },
     {
       "id": "pack.page.07",
@@ -3741,10 +3741,6 @@
       "alt": {
         "es": "Página real 7: Busca cinco cosas (Aventuras para Llevar)"
       },
-      "text": {
-        "title": "Busca cinco cosas",
-        "description": "Aventuras para Llevar"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-07-w640-8c89b17d.webp",
@@ -3764,7 +3760,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Busca cinco cosas",
+        "description": "Aventuras para Llevar"
+      }
     },
     {
       "id": "pack.page.08",
@@ -3796,10 +3796,6 @@
       "alt": {
         "es": "Página real 8: Mapa de recuerdos (Aventuras para Llevar)"
       },
-      "text": {
-        "title": "Mapa de recuerdos",
-        "description": "Aventuras para Llevar"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-08-w640-1889f039.webp",
@@ -3819,7 +3815,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Mapa de recuerdos",
+        "description": "Aventuras para Llevar"
+      }
     },
     {
       "id": "pack.page.09",
@@ -3851,10 +3851,6 @@
       "alt": {
         "es": "Página real 9: Encuentra cinco diferencias (30 Días para Jugar Juntos)"
       },
-      "text": {
-        "title": "Encuentra cinco diferencias",
-        "description": "30 Días para Jugar Juntos"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-09-w640-d36ebaa9.webp",
@@ -3874,7 +3870,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Encuentra cinco diferencias",
+        "description": "30 Días para Jugar Juntos"
+      }
     },
     {
       "id": "pack.page.10",
@@ -3906,10 +3906,6 @@
       "alt": {
         "es": "Página real 10: La máquina increíble (30 Días para Jugar Juntos)"
       },
-      "text": {
-        "title": "La máquina increíble",
-        "description": "30 Días para Jugar Juntos"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-10-w640-380ce6d2.webp",
@@ -3929,7 +3925,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "La máquina increíble",
+        "description": "30 Días para Jugar Juntos"
+      }
     },
     {
       "id": "pack.page.11",
@@ -3961,10 +3961,6 @@
       "alt": {
         "es": "Página real 11: Dibuja tu risa (Valores que Crecen en Casa)"
       },
-      "text": {
-        "title": "Dibuja tu risa",
-        "description": "Valores que Crecen en Casa"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-11-w640-c4f03088.webp",
@@ -3984,7 +3980,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Dibuja tu risa",
+        "description": "Valores que Crecen en Casa"
+      }
     },
     {
       "id": "pack.page.12",
@@ -4016,10 +4016,6 @@
       "alt": {
         "es": "Página real 12: Nuestro árbol de valores (Valores que Crecen en Casa)"
       },
-      "text": {
-        "title": "Nuestro árbol de valores",
-        "description": "Valores que Crecen en Casa"
-      },
       "outputs": [
         {
           "file": "public/media/pack-pages/pack-page-12-w640-bd970161.webp",
@@ -4039,7 +4035,11 @@
           "format": "webp",
           "quality": 80
         }
-      ]
+      ],
+      "text": {
+        "title": "Nuestro árbol de valores",
+        "description": "Valores que Crecen en Casa"
+      }
     },
     {
       "id": "pack.hero",
@@ -4124,26 +4124,22 @@
         "height": 1920
       },
       "provenance": {
-        "origin": "owner-recorded",
-        "tool": "Smartphone recording, 2x silent export (content-studio clip library 2026-08-16)",
+        "origin": "owner-illustrative",
+        "tool": "Owner's illustrative clips (smartphone recordings and AI-generated footage), 2x silent export (content-studio clip library 2026-08-16)",
         "date": "2026-08-16",
         "people": "owner",
         "minors": "none",
         "release": "n/a",
-        "notes": "Hands-only demonstrations of the printed material. Several frames also show a child's hand or forearm and, briefly, hair at the frame edge; no face is visible. The owner must confirm (a) that any child shown is their own and consents to publication and (b) that the printed material in the clips is their own before redistribution changes to public-repo-approved."
+        "notes": "Illustrative demonstrations of the printed material, some of them AI-generated. Owner statement 2026-09-24: the clips are illustrative footage whose rights belong to the owner, publication approved on the site and in the public repo. Some frames show a hand or forearm and, briefly, hair at the frame edge; no face is visible. Pages label each clip as 'Video ilustrativo.' (text.description)."
       },
       "rights": {
         "owner": "Pequeverso / Digital Products Team",
         "license": "proprietary-all-rights-reserved",
-        "redistribution": "pending-owner-confirmation",
-        "approvedAt": null
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-24T00:00:00.000Z"
       },
       "alt": {
         "es": "Portada del video: BO + TA: formar una palabra"
-      },
-      "text": {
-        "title": "BO + TA: formar una palabra",
-        "description": "Una actividad visual para unir dos sílabas y reconocer la palabra BOTA."
       },
       "outputs": [
         {
@@ -4174,6 +4170,10 @@
           "quality": 72
         }
       ],
+      "text": {
+        "title": "BO + TA: formar una palabra",
+        "description": "Una actividad visual para unir dos sílabas y reconocer la palabra BOTA. Video ilustrativo."
+      },
       "video": {
         "codec": "h264",
         "profile": "high",
@@ -4207,26 +4207,22 @@
         "height": 1920
       },
       "provenance": {
-        "origin": "owner-recorded",
-        "tool": "Smartphone recording, 2x silent export (content-studio clip library 2026-08-16)",
+        "origin": "owner-illustrative",
+        "tool": "Owner's illustrative clips (smartphone recordings and AI-generated footage), 2x silent export (content-studio clip library 2026-08-16)",
         "date": "2026-08-16",
         "people": "owner",
         "minors": "none",
         "release": "n/a",
-        "notes": "Hands-only demonstrations of the printed material. Several frames also show a child's hand or forearm and, briefly, hair at the frame edge; no face is visible. The owner must confirm (a) that any child shown is their own and consents to publication and (b) that the printed material in the clips is their own before redistribution changes to public-repo-approved."
+        "notes": "Illustrative demonstrations of the printed material, some of them AI-generated. Owner statement 2026-09-24: the clips are illustrative footage whose rights belong to the owner, publication approved on the site and in the public repo. Some frames show a hand or forearm and, briefly, hair at the frame edge; no face is visible. Pages label each clip as 'Video ilustrativo.' (text.description)."
       },
       "rights": {
         "owner": "Pequeverso / Digital Products Team",
         "license": "proprietary-all-rights-reserved",
-        "redistribution": "pending-owner-confirmation",
-        "approvedAt": null
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-24T00:00:00.000Z"
       },
       "alt": {
         "es": "Portada del video: MA + PA: unir para leer MAPA"
-      },
-      "text": {
-        "title": "MA + PA: unir para leer MAPA",
-        "description": "Cada sílaba se relaciona con la palabra completa y una imagen reconocible."
       },
       "outputs": [
         {
@@ -4257,6 +4253,10 @@
           "quality": 72
         }
       ],
+      "text": {
+        "title": "MA + PA: unir para leer MAPA",
+        "description": "Cada sílaba se relaciona con la palabra completa y una imagen reconocible. Video ilustrativo."
+      },
       "video": {
         "codec": "h264",
         "profile": "high",
@@ -4290,26 +4290,22 @@
         "height": 1920
       },
       "provenance": {
-        "origin": "owner-recorded",
-        "tool": "Smartphone recording, 2x silent export (content-studio clip library 2026-08-16)",
+        "origin": "owner-illustrative",
+        "tool": "Owner's illustrative clips (smartphone recordings and AI-generated footage), 2x silent export (content-studio clip library 2026-08-16)",
         "date": "2026-08-16",
         "people": "owner",
         "minors": "none",
         "release": "n/a",
-        "notes": "Hands-only demonstrations of the printed material. Several frames also show a child's hand or forearm and, briefly, hair at the frame edge; no face is visible. The owner must confirm (a) that any child shown is their own and consents to publication and (b) that the printed material in the clips is their own before redistribution changes to public-repo-approved."
+        "notes": "Illustrative demonstrations of the printed material, some of them AI-generated. Owner statement 2026-09-24: the clips are illustrative footage whose rights belong to the owner, publication approved on the site and in the public repo. Some frames show a hand or forearm and, briefly, hair at the frame edge; no face is visible. Pages label each clip as 'Video ilustrativo.' (text.description)."
       },
       "rights": {
         "owner": "Pequeverso / Digital Products Team",
         "license": "proprietary-all-rights-reserved",
-        "redistribution": "pending-owner-confirmation",
-        "approvedAt": null
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-24T00:00:00.000Z"
       },
       "alt": {
         "es": "Portada del video: PA + LO + MA: avanzar paso a paso"
-      },
-      "text": {
-        "title": "PA + LO + MA: avanzar paso a paso",
-        "description": "Una palabra más larga se recorre sílaba por sílaba hasta llegar a PALOMA."
       },
       "outputs": [
         {
@@ -4340,6 +4336,10 @@
           "quality": 72
         }
       ],
+      "text": {
+        "title": "PA + LO + MA: avanzar paso a paso",
+        "description": "Una palabra más larga se recorre sílaba por sílaba hasta llegar a PALOMA. Video ilustrativo."
+      },
       "video": {
         "codec": "h264",
         "profile": "high",
@@ -4373,26 +4373,22 @@
         "height": 1920
       },
       "provenance": {
-        "origin": "owner-recorded",
-        "tool": "Smartphone recording, 2x silent export (content-studio clip library 2026-08-16)",
+        "origin": "owner-illustrative",
+        "tool": "Owner's illustrative clips (smartphone recordings and AI-generated footage), 2x silent export (content-studio clip library 2026-08-16)",
         "date": "2026-08-16",
         "people": "owner",
         "minors": "none",
         "release": "n/a",
-        "notes": "Hands-only demonstrations of the printed material. Several frames also show a child's hand or forearm and, briefly, hair at the frame edge; no face is visible. The owner must confirm (a) that any child shown is their own and consents to publication and (b) that the printed material in the clips is their own before redistribution changes to public-repo-approved."
+        "notes": "Illustrative demonstrations of the printed material, some of them AI-generated. Owner statement 2026-09-24: the clips are illustrative footage whose rights belong to the owner, publication approved on the site and in the public repo. Some frames show a hand or forearm and, briefly, hair at the frame edge; no face is visible. Pages label each clip as 'Video ilustrativo.' (text.description)."
       },
       "rights": {
         "owner": "Pequeverso / Digital Products Team",
         "license": "proprietary-all-rights-reserved",
-        "redistribution": "pending-owner-confirmation",
-        "approvedAt": null
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-24T00:00:00.000Z"
       },
       "alt": {
         "es": "Portada del video: MA + LE + TA: seguir la secuencia"
-      },
-      "text": {
-        "title": "MA + LE + TA: seguir la secuencia",
-        "description": "Los apoyos visuales acompañan el recorrido hasta completar la palabra MALETA."
       },
       "outputs": [
         {
@@ -4423,6 +4419,10 @@
           "quality": 72
         }
       ],
+      "text": {
+        "title": "MA + LE + TA: seguir la secuencia",
+        "description": "Los apoyos visuales acompañan el recorrido hasta completar la palabra MALETA. Video ilustrativo."
+      },
       "video": {
         "codec": "h264",
         "profile": "high",
@@ -4441,6 +4441,1296 @@
         "posterAt": 1,
         "webm": false
       }
+    },
+    {
+      "id": "gf.cutout.hero",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T01-hero-mama-hija-kit.png",
+        "sha256": "8a07f1234b8eb29c4bd202291d1c22cb7483218f7c2ab84dc7493b13afd9cda3",
+        "bytes": 2793625,
+        "width": 1024,
+        "height": 1536
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre e hija sonrientes sosteniendo el kit impreso Grafismo Fonético Paso a Paso"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-hero-w480-dc3f175d.webp",
+          "bytes": 57216,
+          "sha256": "86ff6ee1b1ae86e63db8a1f0daccfccb906f6a9b17001063b8d4fe4a1253da00",
+          "width": 480,
+          "height": 720,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-hero-w768-99b76ec7.webp",
+          "bytes": 127078,
+          "sha256": "1b3dd8d3d5102eadbc0451947ad80d5b4a62c336d9ce6660ae8d437329701678",
+          "width": 768,
+          "height": 1152,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-hero-w1024-a03771e6.webp",
+          "bytes": 230896,
+          "sha256": "018b7a06d198a6aaf06e97cb7e5a59cf67f387e1797235afd479d6aa207493a9",
+          "width": 1024,
+          "height": 1536,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-hero-w1024-64b2f0c7.avif",
+          "bytes": 121340,
+          "sha256": "8d847fdfaa2fb89e7032bf4c0286296a847494a329f68ce86e3de9b41b6e7b39",
+          "width": 1024,
+          "height": 1536,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.hero-alt",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T02-hero-mama-hijo-hoja.png",
+        "sha256": "8d9bce0d99a2b0f62ea71196ddcdd1acbd04c0c5932051509eaf15eade5d11d8",
+        "bytes": 2542481,
+        "width": 1024,
+        "height": 1536
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Niño mostrando orgulloso una hoja del kit con la palabra GATO junto a su madre"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-hero-alt-w480-9bc8c2c1.webp",
+          "bytes": 47942,
+          "sha256": "a7e6d097decd58b7e86c7df42fe210f6c468b4fa923b412ccb29202ff7d742f4",
+          "width": 480,
+          "height": 720,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-hero-alt-w768-3c33fcf6.webp",
+          "bytes": 107210,
+          "sha256": "c24d5638500a9dd34bfd2cef7471f937ce9e605e963b3d9851018e0be5e5a6a5",
+          "width": 768,
+          "height": 1152,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-hero-alt-w1024-75532691.webp",
+          "bytes": 174402,
+          "sha256": "4baceefea18b9031aebeef49c425e6d7f88e0b5ecf1f498b0647c83ef79bfb6b",
+          "width": 1024,
+          "height": 1536,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-hero-alt-w1024-e56e7051.avif",
+          "bytes": 104427,
+          "sha256": "11a75d9f0d2eda16a917ecfa1a9c73eb2c36eb5c7fd502f6a01d6c1697f992a4",
+          "width": 1024,
+          "height": 1536,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.stack",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T03-stack-paginas-3d.png",
+        "sha256": "10bf520bf142c7deb6473e38abecdfb7a91929e207553c6f3ca91b2231fb7404",
+        "bytes": 2060675,
+        "width": 1536,
+        "height": 1024
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del kit y páginas reales impresas desplegadas en abanico con lápices de colores"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-stack-w480-c2da903a.webp",
+          "bytes": 39430,
+          "sha256": "7e9760b3fd731cea9bd2b96c461dd31aca289ac0ff7564a508ca099a13f87cc5",
+          "width": 480,
+          "height": 320,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-stack-w768-88b2ef63.webp",
+          "bytes": 77468,
+          "sha256": "7767e0315df66964fb802436699c755932902959408b87dc7db67b8419476107",
+          "width": 768,
+          "height": 512,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-stack-w1024-e05ba8f4.webp",
+          "bytes": 118568,
+          "sha256": "964e89525c039ab022d5568e0ca67fd5b0036d57b390065f87b1fd522cd60e29",
+          "width": 1024,
+          "height": 683,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-stack-w1024-bc97673e.avif",
+          "bytes": 70621,
+          "sha256": "88cdf9f9da07e90195f48afa6279bae8cf02b9546ad8601af229e0cf59801876",
+          "width": 1024,
+          "height": 683,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.kit",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T04-kit-completo-bonos.png",
+        "sha256": "92ee39b7c5f8aad528635332653dd3ab3bf991d63694def75798f7b2b6bc630d",
+        "bytes": 2457413,
+        "width": 1536,
+        "height": 1024
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "El cuadernillo principal rodeado de las portadas de los bonos y tarjetas de sílabas"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-kit-w480-ac632557.webp",
+          "bytes": 47514,
+          "sha256": "b77fad54b74dc823eaa61bfb4e7d0aa3a69bb49f1f4d1db230345ffff6ae874f",
+          "width": 480,
+          "height": 320,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-kit-w768-eaf7ea44.webp",
+          "bytes": 97902,
+          "sha256": "33e184cd9b058ac842ee6431856c69360ecae5d59aee1e443c4227b6d75db342",
+          "width": 768,
+          "height": 512,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-kit-w1024-7cb91507.webp",
+          "bytes": 151252,
+          "sha256": "4ca3dbdc371602191eeb357332a1402ed3375610172e137b1dc3af61b963e3b0",
+          "width": 1024,
+          "height": 683,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-kit-w1024-089606a5.avif",
+          "bytes": 89452,
+          "sha256": "dbf01b301b7078a63e743fc8dc17a1232e5f73260328032170d1370ed0396899",
+          "width": 1024,
+          "height": 683,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.tablet",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T05-tablet-y-hojas.png",
+        "sha256": "b12f439e328b25f625f9545b811a7c8b544be8230c3bbf792d73ea4e2a432600",
+        "bytes": 2179291,
+        "width": 1536,
+        "height": 1024
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Tableta con la portada del PDF y hojas del kit listas para imprimir"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-tablet-w480-084c0238.webp",
+          "bytes": 46136,
+          "sha256": "891e01284988e40aaaa460dd75a4f07227d88800790cc9deacf97e586f4e84bb",
+          "width": 480,
+          "height": 320,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-tablet-w768-0c6f8a91.webp",
+          "bytes": 89078,
+          "sha256": "e64ec9651b2522ffe084d644eb9dcdeac58cf92f543fbb4648c294ab05429527",
+          "width": 768,
+          "height": 512,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-tablet-w1024-aeab4d8c.webp",
+          "bytes": 133142,
+          "sha256": "ce118d46117ae2c250de7412584f62e8b2e482c5a29015219b887ca560b90066",
+          "width": 1024,
+          "height": 683,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-tablet-w1024-76236cb8.avif",
+          "bytes": 77582,
+          "sha256": "59d907533530ade4ae0e552d539f36b22e806159ea717a40f4294485b632e7be",
+          "width": 1024,
+          "height": 683,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.trazo",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T06-nina-trazando.png",
+        "sha256": "7e0b3cba5112e5bb0e73c62732a25c5be648df703e22cca9b1d051e213d16a1c",
+        "bytes": 1858746,
+        "width": 1254,
+        "height": 1254
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Niña sentada en el piso trazando la palabra elefante en una hoja del kit"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-trazo-w480-52f7b565.webp",
+          "bytes": 34146,
+          "sha256": "0ff7b4ebc384b3721bcada838dc149ac6f0558515bc600aeac6c276dc374b549",
+          "width": 480,
+          "height": 480,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-trazo-w768-7450ea7d.webp",
+          "bytes": 72048,
+          "sha256": "8550d9a4c5d64091a52350d89085e9707859862b5311497e3cf4dddb39219266",
+          "width": 768,
+          "height": 768,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-trazo-w1024-10c02ffc.webp",
+          "bytes": 114408,
+          "sha256": "d06ba1cf30b04023434d1d84cb3afa0b78e0d3ec9ef7b8b87e3a545f837052a3",
+          "width": 1024,
+          "height": 1024,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-trazo-w1024-0e574aae.avif",
+          "bytes": 73726,
+          "sha256": "2e8242d77f52f810d626f0f00b3d420108e91449e61eab657b0ece3a3df309f4",
+          "width": 1024,
+          "height": 1024,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.tarjetas",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T07-papa-hijo-tarjetas.png",
+        "sha256": "84721146f376202efb01194ecbf70ca196a7c30a96d7b1e640fc7634179364c8",
+        "bytes": 2649044,
+        "width": 1024,
+        "height": 1536
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Padre e hijo mostrando las tarjetas GA, TO y la palabra gato"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-tarjetas-w480-260fda83.webp",
+          "bytes": 47772,
+          "sha256": "63da43e3890b80718e3d43e972f6824dc7c5a91acd882b26187b1a6cf8f388cf",
+          "width": 480,
+          "height": 720,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-tarjetas-w768-397e68c5.webp",
+          "bytes": 104182,
+          "sha256": "1ebdd1960f53bd5d315d25c764cc28aa212c394dd1ebe595134452e98b4ca988",
+          "width": 768,
+          "height": 1152,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-tarjetas-w1024-2dd2eac8.webp",
+          "bytes": 181712,
+          "sha256": "0479943b9c48100ffba232aabce7ad35a571d094065a67f853803a088f6068f3",
+          "width": 1024,
+          "height": 1536,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-tarjetas-w1024-6cdf59fc.avif",
+          "bytes": 110011,
+          "sha256": "527018ccb9a72f84550221c4907b6f1a2ddb401a892ae22cec9274b0d7892195",
+          "width": 1024,
+          "height": 1536,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.senala",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T08-mama-senalando.png",
+        "sha256": "5876dd3117f58614ea22e795a7854efe0a3c8f293996948d84918ce1f1aa4618",
+        "bytes": 2398908,
+        "width": 1024,
+        "height": 1536
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre sonriente señalando mientras sostiene el kit impreso"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-senala-w480-ae273a50.webp",
+          "bytes": 44034,
+          "sha256": "fc2f9147a0cd5dc7efb59eccdd308929e49aba641a779261c0e66710fa678ea8",
+          "width": 480,
+          "height": 720,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-senala-w768-5e1ff9f5.webp",
+          "bytes": 96330,
+          "sha256": "3bc2021e80015bb53881fdb87bc76cd011ba4890e413ea82296d8f21ae4466d8",
+          "width": 768,
+          "height": 1152,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-senala-w1024-b1482cf0.webp",
+          "bytes": 145798,
+          "sha256": "0564d373a6850ee6e8f592db517e3db8870577fbee3870a01336ec88dd04a98f",
+          "width": 1024,
+          "height": 1536,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-senala-w1024-b5b0f9bc.avif",
+          "bytes": 89836,
+          "sha256": "4e3538760ebec09aac9beafeda058bb3a965ae3bb3f329c841cffde12e30d5fd",
+          "width": 1024,
+          "height": 1536,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.celebra",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T09-nino-celebra-logro.png",
+        "sha256": "0941f32c0d9923ad53a06f7b5b71b159e2e022d8fc113562d6fd94192a66af25",
+        "bytes": 2005477,
+        "width": 1024,
+        "height": 1536
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Niño saltando de alegría con una hoja del kit completada"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-celebra-w480-d5c09fea.webp",
+          "bytes": 42210,
+          "sha256": "ea4934e1a05ce8f66b472ecf45d1758c3c25122fb32e84236c26b7baaf3ec18e",
+          "width": 480,
+          "height": 720,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-celebra-w768-26d1f974.webp",
+          "bytes": 88140,
+          "sha256": "44ea580a6d2649c1cd5f9245b1ce771fb3d429638c1f8f63928ee41f8f8c8a9d",
+          "width": 768,
+          "height": 1152,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-celebra-w1024-ad9049e5.webp",
+          "bytes": 116278,
+          "sha256": "704dbc7d4309ddcb9fa80641e7512f07bc355fbe50f286bd2437c587cf948ed3",
+          "width": 1024,
+          "height": 1536,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-celebra-w1024-541bbbc1.avif",
+          "bytes": 67467,
+          "sha256": "4ac4215a37cfad34e8bd9a36c804527b0e053f537c24b9cb0b763d8194245ebf",
+          "width": 1024,
+          "height": 1536,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.elementos",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T10-elementos-flotantes.png",
+        "sha256": "b7de1baff3d513a854529df2768f8789a74f935702d5d740a1a06d9a0f1254c9",
+        "bytes": 2242171,
+        "width": 1536,
+        "height": 1024
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Tarjetas de sílabas, lápices, tijera y estrellas de papel"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-elementos-w480-221ba402.webp",
+          "bytes": 49216,
+          "sha256": "850a905693db4d5c25fce94e5f269e5c171a16a5795399569df0cb412a1bc230",
+          "width": 480,
+          "height": 320,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-elementos-w768-45b6b55f.webp",
+          "bytes": 92186,
+          "sha256": "11f3461e2909f8bb2aa6f8008728478690b2b4d48804d2c19842f515f025d921",
+          "width": 768,
+          "height": 512,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-elementos-w1024-733b2061.webp",
+          "bytes": 136018,
+          "sha256": "6b517a575158028c0cc5dc8efcdd620e21cc044553e0fc1733d446c08f761f6c",
+          "width": 1024,
+          "height": 683,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/gf/gf-cutout-elementos-w1024-dd95f0dc.avif",
+          "bytes": 71095,
+          "sha256": "90ee42146542418894d3335240cf1b22d9afc890fb9c7b8bf9240e921cf69f36",
+          "width": 1024,
+          "height": 683,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.trazo",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S01-mama-hija-trazo-mesa.png",
+        "sha256": "ef63bf0e9660e232337a01ed8f0091ce7f9f82591f6e04fa11c28812e511b0b5",
+        "bytes": 1938843,
+        "width": 1672,
+        "height": 941
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre e hija practicando el trazo de una hoja en la mesa del comedor"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-trazo-w640-b0f6c0af.webp",
+          "bytes": 27910,
+          "sha256": "21d18c4eaa455119f5c475dd7677e14ed02cef014f3721efeaa2ccca01707ba9",
+          "width": 640,
+          "height": 360,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-trazo-w1024-dd205188.webp",
+          "bytes": 53142,
+          "sha256": "fce2106b3e77d68266e425ef1fa2b75237d1cc2c9671efc7035ec954428f6f37",
+          "width": 1024,
+          "height": 576,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-trazo-w1024-a4e5315f.avif",
+          "bytes": 35114,
+          "sha256": "3b90044db79b75ba28ad4680f9a245343780df07ac827d30b490f6c982b40b3c",
+          "width": 1024,
+          "height": 576,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.papa",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S02-papa-hijo-silabas.png",
+        "sha256": "5e85d603df226cd24d2f140237bf8d380947c1da89e462e9b52e4147f9c1848f",
+        "bytes": 1996407,
+        "width": 1672,
+        "height": 941
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Padre e hijo formando sílabas con tarjetas sobre la mesa"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-papa-w640-5779a1aa.webp",
+          "bytes": 31532,
+          "sha256": "69f572e740a524f44de5a76e14ca1528517359daea68f1f9abe1abc0ef4332bd",
+          "width": 640,
+          "height": 360,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-papa-w1024-b30e2f20.webp",
+          "bytes": 57516,
+          "sha256": "d20f3e5f9744bf7e4ebc0b7c830b2493211cead161714eae54ab3c2751adf7c5",
+          "width": 1024,
+          "height": 576,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-papa-w1024-612a4f21.avif",
+          "bytes": 37006,
+          "sha256": "f5466ea13810457115730f03027b4f825c569f53754dc7c0d105679313dff103",
+          "width": 1024,
+          "height": 576,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.kit",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S04-kit-en-uso-mesa-edit.png",
+        "sha256": "915990bf87f0c7eda78d3d648c8c7f591aa228785103fa4bd4e8311f734d9847",
+        "bytes": 2375564,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre e hija usando el kit Grafismo Fonético con tarjetas de sílabas"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-kit-w640-8ea27715.webp",
+          "bytes": 63294,
+          "sha256": "0d764ec6abed7e32e00aa1dbfbe322361c9efdcfd15b1e0fa669515e206c8ec7",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-kit-w1024-18669495.webp",
+          "bytes": 122718,
+          "sha256": "61d7fa06d8a5bd3185b8f3c8f5c1d5965baec0fa19bfbc4752cd6e5ccd707a29",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-kit-w1024-41099d3d.avif",
+          "bytes": 76348,
+          "sha256": "7ffbd1d9e83e06725e14613c4bcf4f35811ba77637a0ea2242c126d26dae993b",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.reto",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S05-nina-reto-lectura-edit.png",
+        "sha256": "b5e0b93395d38ce4a8444746a37dbc47c13f0a812ea9e2316c0909486261dbf0",
+        "bytes": 1968377,
+        "width": 1250,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Niña mostrando orgullosa su hoja del reto de lectura junto a su madre"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-reto-w640-bc7665d4.webp",
+          "bytes": 59980,
+          "sha256": "dcccc1989177f58fc627ab2bf0ca0113c46cd9ebf9e5c7bef31c8bab516cc89c",
+          "width": 640,
+          "height": 556,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-reto-w1024-40f999ec.webp",
+          "bytes": 116210,
+          "sha256": "e6ff21d3e0ccb8dcd8e9b42cf760c932c9da6fe08f4b252a86bbe0eb88afe6c2",
+          "width": 1024,
+          "height": 890,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-reto-w1024-7cf43ea9.avif",
+          "bytes": 73824,
+          "sha256": "bd92e7b2dd92f3b16c2bb6d577f28db057f9d07ae261d1cff355332e10130bd2",
+          "width": 1024,
+          "height": 890,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.tarjetas",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S06-tarjetas-alfombra-edit.png",
+        "sha256": "794c04de2b19d113be989c19a943194372c337c87280e52970cf9ad6946f4cbc",
+        "bytes": 2287806,
+        "width": 1448,
+        "height": 951
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre e hija jugando con tarjetas de sílabas sobre la alfombra"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-tarjetas-w640-69d6a7b1.webp",
+          "bytes": 59698,
+          "sha256": "9461163661fd062cdf8d0e23f1f67555c54d3d2e75688953342866d8b805ad1c",
+          "width": 640,
+          "height": 420,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-tarjetas-w1024-cbe74d73.webp",
+          "bytes": 122082,
+          "sha256": "f5778fb1b47846f96c0bdc434813ebc1eef27416fa6c9b4166b41b264dd8673f",
+          "width": 1024,
+          "height": 673,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-tarjetas-w1024-8dee1c3d.avif",
+          "bytes": 75168,
+          "sha256": "eeef509e2073a1293dbc0c63595ba94d4d553448a84c8cdc63f8bc04c7841148",
+          "width": 1024,
+          "height": 673,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.imprimir-kit",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S07-imprimir-kit.png",
+        "sha256": "ccd5860aba4d5b556d89ac2b8ad7dcbced07cc8b6486e347c07d1bf4b7d127bd",
+        "bytes": 2375295,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre sacando de la impresora una hoja del kit mientras su hija sonríe"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-imprimir-kit-w640-65d4048f.webp",
+          "bytes": 63144,
+          "sha256": "0e6c39bbc7c6ebe6392c31b94c6da7726e3ffece26b09d7db6311ba25f539757",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-imprimir-kit-w1024-a91ca40d.webp",
+          "bytes": 125324,
+          "sha256": "6badd76c63f753b6f78bab853a9728c8c685cc4274395d41ece22b42579c76af",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-imprimir-kit-w1024-c9df26ef.avif",
+          "bytes": 77222,
+          "sha256": "a72d79ada70caca21554f72faa6dc97d859c092f9f9e484c70089d98464afb50",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.flatlay",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S08-flatlay-kit-en-uso-edit.png",
+        "sha256": "4b3656440209c63d348e24b7fcc471c119968aee47ac774628dac9b68be00ac8",
+        "bytes": 2000283,
+        "width": 1448,
+        "height": 871
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Vista desde arriba del kit en uso: cuaderno, tarjetas y tableta"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-flatlay-w640-df23bc36.webp",
+          "bytes": 53740,
+          "sha256": "9c82c62e76cb69e0dae62f6e8b4a5c4075d84a4e75829fc5b8e6328a3e69ebb0",
+          "width": 640,
+          "height": 385,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-flatlay-w1024-bb889a4c.webp",
+          "bytes": 109222,
+          "sha256": "8954b456da159c8dc60ec0beafa1d865cae2dba2482a13734de0eedcf16b3aaf",
+          "width": 1024,
+          "height": 616,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-flatlay-w1024-a9993795.avif",
+          "bytes": 67063,
+          "sha256": "e37e63fd82caa60763fea9ca112d173790a937d61e724638f426838a4d374b66",
+          "width": 1024,
+          "height": 616,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.noche",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S09-rutina-noche.png",
+        "sha256": "458969e775bf563ba8cedbcb55c7f0b94c83f1f980c67cbbf3016e3009c94c7b",
+        "bytes": 2225572,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre e hija repasando palabras del kit en una rutina de la tarde"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-noche-w640-eff311e2.webp",
+          "bytes": 53332,
+          "sha256": "249e7a70435813028a9cb54eb55be20b1dbb6f61eaae68d69eec93861d87e604",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-noche-w1024-91d770a4.webp",
+          "bytes": 105476,
+          "sha256": "b7a98bfd73fda51170cefb7e5d210e30678b38fa797bf10d72a7ef459c309c7d",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-noche-w1024-28741b21.avif",
+          "bytes": 65244,
+          "sha256": "b6413dbdfd617c2e2d348c120071cbcaffdc997ea31b2fab65e1d13e45f59e40",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.logro",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S10-lo-logre.png",
+        "sha256": "ba9009a401a29d63988267e6dafcf8c1ba07b530d8411fccb35b36edca93f188",
+        "bytes": 2036250,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Niña sonriente mostrando su hoja terminada junto a su madre"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-logro-w640-e599f7a9.webp",
+          "bytes": 40274,
+          "sha256": "9a467c9a3451b1a3a9be3775666e0f4d4bad9efe6c0b540b1b3a27c1a98fc0ed",
+          "width": 640,
+          "height": 480,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-logro-w1024-3f862700.webp",
+          "bytes": 75034,
+          "sha256": "b13702967614b984f83ba7651cb852ca601db5f2995606326e3c45e65a7a7c6a",
+          "width": 1024,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-logro-w1024-5f29e8b3.avif",
+          "bytes": 50676,
+          "sha256": "d5f9deae54bfe49f463212dabb4422d073fa218d781c00cfb6b912ce016bf7b0",
+          "width": 1024,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.life.imprimir",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S03-imprimir-en-casa-marca.png",
+        "sha256": "9259de3ec03ed359a399b0be0210b1b077fa032717181d885bb869b8ea99de9d",
+        "bytes": 2034924,
+        "width": 1672,
+        "height": 941
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre imprimiendo hojas en casa mientras su hija mira emocionada"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-life-imprimir-w640-c353c1bb.webp",
+          "bytes": 36320,
+          "sha256": "cb5be1ffa78a26291ec5e76ebad3f9c32f5ac834290b3ca4b683d10081918a9c",
+          "width": 640,
+          "height": 360,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-imprimir-w1024-bab39d38.webp",
+          "bytes": 68860,
+          "sha256": "b1724cb6d658a2d02d1830b00ebdb7540a1338978577035faba4a486e82d7f53",
+          "width": 1024,
+          "height": 576,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/gf/gf-life-imprimir-w1024-9a43a81d.avif",
+          "bytes": 43967,
+          "sha256": "c921e3a237e114d0d247601cd3f3a19786db72bb503ff655795b1f445bb722e9",
+          "width": 1024,
+          "height": 576,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
     }
   ]
 }

@@ -74,7 +74,7 @@ use `var(--token)` (never `@apply`).
 
 ## Migration plan for the follow-up PRs
 
-1. **Home + landing (3D hero).** Replace `HeroScene.module.css`/`HeroStack.module.css` with
+1. **Home + landing (3D hero)** — done on `feat/pages-landing`. Replace `HeroScene.module.css`/`HeroStack.module.css` with
    blocks + utilities; build the "pequeño universo" hero on `SceneStage` (extend
    `scene-runtime.ts`: planets, orbiting gold star, scroll parallax; keep the static fallback
    in sync; stay within `scene.js`). Delete `page.module.css`, `CoreLanding.module.css`, the

@@ -178,13 +178,16 @@ const demo = getVideo("video.gf.mapa"); // { mp4, webm?, poster: { src, srcSet }
 | `gf.scene.{mesa,trazo,carpeta,mecanismo,flatlay,stack,entrega,cierre}` | `scene` | WebP 480/768/1024 + AVIF 768/1024 | `MediaImage` | AI-generated. |
 | `gf.page.01…20`, `pack.page.01…12` | `page` | WebP 640/1100 (portrait 640/1055) | `MediaImage` / gallery | Line art, WebP only. |
 | `gf.card.01…09`, `pack.card.01…09` | `card` | WebP 360/520/720 + AVIF 520/720 | `MediaImage` | |
-| `video.gf.{bota,mapa,paloma,maleta}` | `video` | mp4 (H.264) + webm (VP9) 720×1280, posters WebP 480/720 | `getVideo` → `VideoBlock` | `rights.redistribution = pending-owner-confirmation`. |
+| `video.gf.{bota,mapa,paloma,maleta}` | `video` | mp4 (H.264) + webm (VP9) 720×1280, posters WebP 480/720 | `getVideo` → `VideoBlock` | Owner illustrative footage, some AI-generated; approved 2026-09-24. Each `text.description` ends with "Video ilustrativo." (the visible caption). |
 
 ## Rights and provenance rules
 
 - Every item states `provenance.origin`, the tool, the date, and whether people/minors appear.
   Lifestyle scenes are **AI-generated (ChatGPT image generation, June 2026)** with synthetic people;
   worksheet pages are owner renders of the product PDFs; the brand raster is owner-designed (Canva).
+  The four demo videos (`owner-recorded-clips` profile, origin `owner-illustrative`) are illustrative
+  clips, sometimes AI-generated, whose rights the owner confirmed on 2026-09-24; pages label each one
+  "Video ilustrativo." and `/aviso-legal/` and `/terminos/` say demo videos are illustrative.
 - `rights.redistribution` must be `public-repo-approved` before an item may be referenced by a page
   that ships. `pending-owner-confirmation` items are built and committed so the pages can be wired,
   but the deploy gate (coordinator) refuses to release while any *referenced* item is pending.

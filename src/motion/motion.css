@@ -19,8 +19,8 @@
   /*
    * Reveal on scroll for [data-reveal]. Scroll-driven where supported: an element already in
    * view at load sits at progress 100%, so nothing flashes. Stagger siblings with `--i`.
-   * Without view timelines, RevealObserver marks only below-the-fold elements with
-   * data-reveal-state and reveals them once. Content is always visible without JS.
+   * Without view timelines, RevealObserver (gsap ScrollTrigger, lazy) marks only below-the-fold
+   * elements with data-reveal-state and reveals them once. Content is always visible without JS.
    */
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
@@ -30,13 +30,6 @@
         animation-range-start: entry calc(var(--i, 0) * 6%);
         animation-range-end: entry calc(35% + var(--i, 0) * 6%);
       }
-    }
-
-    [data-reveal-state] {
-      transition:
-        opacity var(--duration-reveal) var(--pv-ease-emphasis),
-        transform var(--duration-reveal) var(--pv-ease-emphasis);
-      transition-delay: calc(var(--i, 0) * var(--stagger));
     }
 
     [data-reveal-state="pending"] {
@@ -66,6 +59,19 @@
     /* Orbit: the gold star travels the dashed ellipse on an offset-path (48 s loop). */
     .pv-orbit-traveller {
       animation: pv-orbit-travel var(--duration-orbit) linear infinite;
+    }
+
+    /* Band orbits follow the scroll instead of a clock: motion stops when scrolling stops. */
+    @supports (animation-timeline: view()) {
+      .pv-orbit[data-motion="scroll"] {
+        view-timeline: --pv-orbit block;
+      }
+
+      .pv-orbit[data-motion="scroll"] .pv-orbit-traveller {
+        animation: pv-orbit-travel linear both;
+        animation-timeline: --pv-orbit;
+        animation-range: cover 0% cover 100%;
+      }
     }
 
     /* Scroll-linked drift of ±--parallax-range on a view timeline. */
@@ -122,6 +128,58 @@
       }
     }
 
+    /* Float: decorative pages and syllable tiles bob like planets; --float-delay sets the phase. */
+    .pv-float {
+      animation: pv-float var(--duration-float) ease-in-out infinite;
+      animation-delay: var(--float-delay, 0s);
+    }
+
+    /* Marquee: the track holds the list twice and slides half its width, forever. */
+    .pv-marquee-track {
+      animation: pv-marquee var(--marquee-duration, var(--duration-marquee)) linear infinite;
+    }
+
+    .pv-marquee[data-direction="reverse"] .pv-marquee-track {
+      animation-direction: reverse;
+    }
+
+    .pv-marquee:hover .pv-marquee-track,
+    .pv-marquee:focus-within .pv-marquee-track,
+    .pv-marquee[data-paused] .pv-marquee-track {
+      animation-play-state: paused;
+    }
+
+    /* The offer card's ring turns slowly. */
+    .pv-glow-spin {
+      animation: pv-glow-spin 9s linear infinite;
+    }
+
+    /* Shine sweep across the purchase CTA on hover. */
+    @media (hover: hover) and (pointer: fine) {
+      .pv-shine:hover::after {
+        translate: 120% 0;
+        transition: translate 700ms var(--pv-ease-out);
+      }
+    }
+
+    /* Header condenses and a progress bar fills with the page scroll. */
+    @supports (animation-timeline: scroll()) {
+      .pv-scroll-progress {
+        animation: pv-grow-x linear both;
+        animation-timeline: scroll(root block);
+      }
+
+      .pv-header-pill {
+        animation: pv-header-condense linear both;
+        animation-timeline: scroll(root block);
+        animation-range: 0 96px;
+      }
+
+      [data-reveal="blur"] {
+        animation-name: pv-reveal-blur;
+      }
+    }
+
     /* Pointer tilt glare (TiltCard sets --glare-x/--glare-y from the pointer). */
     @media (hover: hover) and (pointer: fine) {
       .pv-tilt:hover::after {
@@ -130,9 +188,64 @@
     }
   }
 
+  .pv-marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+
+  .pv-marquee-track {
+    display: flex;
+    width: max-content;
+    gap: var(--marquee-gap, var(--space-4));
+  }
+
+  .pv-marquee-track > * {
+    flex: none;
+  }
+
+  .pv-scroll-progress {
+    transform-origin: left center;
+    transform: scaleX(0);
+  }
+
+  .pv-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .pv-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(100deg, transparent 20%, oklch(1 0 0 / 28%) 45%, transparent 70%);
+    translate: -120% 0;
+    pointer-events: none;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .pv-orbit-traveller {
       animation-play-state: paused;
+    }
+
+    /* Static marquee: one copy, wrapped and centred. */
+    .pv-marquee {
+      mask-image: none;
+    }
+
+    .pv-marquee-track {
+      width: auto;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .pv-marquee-track > [aria-hidden="true"] {
+      display: none;
+    }
+
+    .pv-scroll-progress {
+      display: none;
     }
 
     .pv-tilt {
@@ -161,15 +274,19 @@
     }
   }
 
-  /* A paused 3D scene (SceneStage toggle) also pauses the hero's orbit. */
-  [data-scene-mode="paused"] .pv-orbit-traveller {
+  /* The SceneStage pause toggle (data-mode="paused") also pauses the CSS orbit fallback. */
+  [data-mode="paused"] .pv-orbit-traveller {
     animation-play-state: paused;
   }
 
-  /* While the WebGL starfield runs, the static SVG fallback fades out underneath it. */
-  [data-scene-mode="running"] .pv-scene-static,
-  [data-scene-mode="paused"] .pv-scene-static {
+  /* While the WebGL scene runs (data-live), the static layers fade out underneath it and their
+     CSS orbit stops (WebKit keeps repainting an offset-path loop even at opacity 0). */
+  [data-live] > * > .pv-scene-static {
     opacity: 0;
+  }
+
+  [data-live] .pv-orbit-traveller {
+    animation: none;
   }
 
   .pv-stack {
@@ -206,23 +323,59 @@
     pointer-events: none;
     transition: opacity var(--duration) var(--pv-ease-out);
   }
+}
 
-  /*
-   * View-transition faces for FlipPreview (class "pv-flip"): the old snapshot turns away and the
-   * new one turns in, half a reveal each, inside a perspective. Global because view-transition
-   * pseudo-elements live on the document root.
-   */
-  ::view-transition-image-pair(.pv-flip) {
-    perspective: var(--tilt-perspective);
+@property --glow-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 200deg;
+}
+
+@keyframes pv-float {
+  0%,
+  100% {
+    translate: 0 0;
   }
-
-  ::view-transition-old(.pv-flip) {
-    animation: pv-flip-out calc(var(--duration-reveal) / 2) var(--pv-ease-out) both;
+  50% {
+    translate: 0 calc(-1 * var(--float-range, 12px));
   }
+}
 
-  ::view-transition-new(.pv-flip) {
-    animation: pv-flip-in calc(var(--duration-reveal) / 2) calc(var(--duration-reveal) / 2) var(--pv-ease-out)
-      both;
+@keyframes pv-marquee {
+  to {
+    transform: translateX(calc(-50% - var(--marquee-gap, var(--space-4)) / 2));
+  }
+}
+
+@keyframes pv-glow-spin {
+  to {
+    --glow-angle: 560deg;
+  }
+}
+
+@keyframes pv-grow-x {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes pv-header-condense {
+  to {
+    box-shadow: var(--pv-shadow-float);
+    border-color: oklch(1 0 0 / 100%);
+  }
+}
+
+@keyframes pv-reveal-blur {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(calc(var(--reveal-y) * 1.5)) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+    transform: none;
   }
 }
 
@@ -293,20 +446,5 @@
 @keyframes pv-recede {
   to {
     transform: scale(0.94);
-  }
-}
-
-@keyframes pv-flip-out {
-  to {
-    transform: rotateY(-90deg);
-  }
-}
-
-@keyframes pv-flip-in {
-  from {
-    transform: rotateY(90deg);
-  }
-  to {
-    transform: none;
   }
 }

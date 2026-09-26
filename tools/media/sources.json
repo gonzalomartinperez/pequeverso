@@ -48,6 +48,12 @@
     "poster": {
       "widths": [480, 720],
       "quality": 72
+    },
+    "cutout": {
+      "widths": [480, 768, 1024],
+      "quality": 72,
+      "alphaQuality": 80,
+      "avif": [1024]
     }
   },
   "rights": {
@@ -107,13 +113,29 @@
       "release": "n/a"
     },
     "owner-recorded-clips": {
-      "origin": "owner-recorded",
-      "tool": "Smartphone recording, 2x silent export (content-studio clip library 2026-08-16)",
+      "origin": "owner-illustrative",
+      "tool": "Owner's illustrative clips (smartphone recordings and AI-generated footage), 2x silent export (content-studio clip library 2026-08-16)",
       "date": "2026-08-16",
       "people": "owner",
       "minors": "none",
       "release": "n/a",
-      "notes": "Hands-only demonstrations of the printed material. Several frames also show a child's hand or forearm and, briefly, hair at the frame edge; no face is visible. The owner must confirm (a) that any child shown is their own and consents to publication and (b) that the printed material in the clips is their own before redistribution changes to public-repo-approved."
+      "notes": "Illustrative demonstrations of the printed material, some of them AI-generated. Owner statement 2026-09-24: the clips are illustrative footage whose rights belong to the owner, publication approved on the site and in the public repo. Some frames show a hand or forearm and, briefly, hair at the frame edge; no face is visible. Pages label each clip as 'Video ilustrativo.' (text.description)."
+    },
+    "imagegen-cutouts-2026-09": {
+      "origin": "ai-generated",
+      "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+      "date": "2026-09-26",
+      "people": "synthetic",
+      "minors": "synthetic",
+      "release": "n/a"
+    },
+    "imagegen-scenes-2026-09": {
+      "origin": "ai-generated",
+      "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
+      "date": "2026-09-26",
+      "people": "synthetic",
+      "minors": "synthetic",
+      "release": "n/a"
     }
   },
   "items": [
@@ -1098,15 +1120,15 @@
       },
       "provenance": "owner-recorded-clips",
       "rights": {
-        "redistribution": "pending-owner-confirmation",
-        "approvedAt": null
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-24T00:00:00.000Z"
       },
       "alt": {
         "es": "Portada del video: BO + TA: formar una palabra"
       },
       "text": {
         "title": "BO + TA: formar una palabra",
-        "description": "Una actividad visual para unir dos sílabas y reconocer la palabra BOTA."
+        "description": "Una actividad visual para unir dos sílabas y reconocer la palabra BOTA. Video ilustrativo."
       },
       "video": {
         "maxSeconds": 15,
@@ -1126,15 +1148,15 @@
       },
       "provenance": "owner-recorded-clips",
       "rights": {
-        "redistribution": "pending-owner-confirmation",
-        "approvedAt": null
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-24T00:00:00.000Z"
       },
       "alt": {
         "es": "Portada del video: MA + PA: unir para leer MAPA"
       },
       "text": {
         "title": "MA + PA: unir para leer MAPA",
-        "description": "Cada sílaba se relaciona con la palabra completa y una imagen reconocible."
+        "description": "Cada sílaba se relaciona con la palabra completa y una imagen reconocible. Video ilustrativo."
       },
       "video": {
         "maxSeconds": 15,
@@ -1154,15 +1176,15 @@
       },
       "provenance": "owner-recorded-clips",
       "rights": {
-        "redistribution": "pending-owner-confirmation",
-        "approvedAt": null
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-24T00:00:00.000Z"
       },
       "alt": {
         "es": "Portada del video: PA + LO + MA: avanzar paso a paso"
       },
       "text": {
         "title": "PA + LO + MA: avanzar paso a paso",
-        "description": "Una palabra más larga se recorre sílaba por sílaba hasta llegar a PALOMA."
+        "description": "Una palabra más larga se recorre sílaba por sílaba hasta llegar a PALOMA. Video ilustrativo."
       },
       "video": {
         "maxSeconds": 12,
@@ -1182,21 +1204,341 @@
       },
       "provenance": "owner-recorded-clips",
       "rights": {
-        "redistribution": "pending-owner-confirmation",
-        "approvedAt": null
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-24T00:00:00.000Z"
       },
       "alt": {
         "es": "Portada del video: MA + LE + TA: seguir la secuencia"
       },
       "text": {
         "title": "MA + LE + TA: seguir la secuencia",
-        "description": "Los apoyos visuales acompañan el recorrido hasta completar la palabra MALETA."
+        "description": "Los apoyos visuales acompañan el recorrido hasta completar la palabra MALETA. Video ilustrativo."
       },
       "video": {
         "maxSeconds": 12,
         "posterAt": 1,
         "posterWidths": [480, 720],
         "webm": false
+      }
+    },
+    {
+      "id": "gf.cutout.hero",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T01-hero-mama-hija-kit.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Madre e hija sonrientes sosteniendo el kit impreso Grafismo Fonético Paso a Paso"
+      }
+    },
+    {
+      "id": "gf.cutout.hero-alt",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T02-hero-mama-hijo-hoja.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Niño mostrando orgulloso una hoja del kit con la palabra GATO junto a su madre"
+      }
+    },
+    {
+      "id": "gf.cutout.stack",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T03-stack-paginas-3d.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Portada del kit y páginas reales impresas desplegadas en abanico con lápices de colores"
+      }
+    },
+    {
+      "id": "gf.cutout.kit",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T04-kit-completo-bonos.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "El cuadernillo principal rodeado de las portadas de los bonos y tarjetas de sílabas"
+      }
+    },
+    {
+      "id": "gf.cutout.tablet",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T05-tablet-y-hojas.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Tableta con la portada del PDF y hojas del kit listas para imprimir"
+      }
+    },
+    {
+      "id": "gf.cutout.trazo",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T06-nina-trazando.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Niña sentada en el piso trazando la palabra elefante en una hoja del kit"
+      }
+    },
+    {
+      "id": "gf.cutout.tarjetas",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T07-papa-hijo-tarjetas.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Padre e hijo mostrando las tarjetas GA, TO y la palabra gato"
+      }
+    },
+    {
+      "id": "gf.cutout.senala",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T08-mama-senalando.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Madre sonriente señalando mientras sostiene el kit impreso"
+      }
+    },
+    {
+      "id": "gf.cutout.celebra",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T09-nino-celebra-logro.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Niño saltando de alegría con una hoja del kit completada"
+      }
+    },
+    {
+      "id": "gf.cutout.elementos",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T10-elementos-flotantes.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Tarjetas de sílabas, lápices, tijera y estrellas de papel"
+      }
+    },
+    {
+      "id": "gf.life.trazo",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S01-mama-hija-trazo-mesa.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Madre e hija practicando el trazo de una hoja en la mesa del comedor"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.papa",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S02-papa-hijo-silabas.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Padre e hijo formando sílabas con tarjetas sobre la mesa"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.kit",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S04-kit-en-uso-mesa-edit.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Madre e hija usando el kit Grafismo Fonético con tarjetas de sílabas"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.reto",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S05-nina-reto-lectura-edit.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Niña mostrando orgullosa su hoja del reto de lectura junto a su madre"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.tarjetas",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S06-tarjetas-alfombra-edit.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Madre e hija jugando con tarjetas de sílabas sobre la alfombra"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.imprimir-kit",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S07-imprimir-kit.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Madre sacando de la impresora una hoja del kit mientras su hija sonríe"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.flatlay",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S08-flatlay-kit-en-uso-edit.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Vista desde arriba del kit en uso: cuaderno, tarjetas y tableta"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.noche",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S09-rutina-noche.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Madre e hija repasando palabras del kit en una rutina de la tarde"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.logro",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S10-lo-logre.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Niña sonriente mostrando su hoja terminada junto a su madre"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.imprimir",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S03-imprimir-en-casa-marca.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Madre imprimiendo hojas en casa mientras su hija mira emocionada"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
       }
     }
   ]

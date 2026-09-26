@@ -1,32 +1,18 @@
-import { formatUsd, localCurrencyNote, localCurrencyNoteShort } from "@config/commerce";
 import { site } from "@config/site";
 import { homeCopy as copy } from "@content/es/home";
 import type { Metadata } from "next";
-import { BulletList } from "@/components/blocks/bullet-list";
-import { ChipRow } from "@/components/blocks/chip-row";
-import { Eyebrow } from "@/components/blocks/eyebrow";
-import { FactChip } from "@/components/blocks/fact-chip";
-import { Grid } from "@/components/blocks/grid";
-import { Icon } from "@/components/blocks/icon";
-import { IconCardList } from "@/components/blocks/icon-card-list";
-import { MediaImage } from "@/components/blocks/media-image";
-import { Section } from "@/components/blocks/section";
-import { SectionHeading } from "@/components/blocks/section-heading";
-import { SocialLinks } from "@/components/blocks/social-links";
-import { Stack } from "@/components/blocks/stack";
-import { Steps } from "@/components/blocks/steps";
 import { PageShell } from "@/components/layout/page-shell";
-import { buttonVariants } from "@/components/ui/button-variants";
-import { Card } from "@/components/ui/card";
-import { ProductInterestLink } from "@/features/commerce/ProductInterestLink/ProductInterestLink";
-import { CenteredHeading } from "@/features/landing/core/CenteredHeading";
-import { HeroScene } from "@/features/landing/core/HeroScene";
-import { HeroStack } from "@/features/landing/core/HeroStack";
+import { BenefitsStrip } from "@/features/home/benefits-strip";
+import { ClosingBand } from "@/features/home/closing-band";
+import { CollectionBento } from "@/features/home/collection-bento";
+import { FeaturedProduct } from "@/features/home/featured-product";
+import { HomeHero } from "@/features/home/home-hero";
+import { LINK_HEADER, ProductLink } from "@/features/home/home-ui";
+import { LifestyleBand } from "@/features/home/lifestyle-band";
+import { MethodBand } from "@/features/home/method-band";
+import { PagesShowcase } from "@/features/home/pages-showcase";
+import { ValuesBento } from "@/features/home/values-bento";
 import { buildMetadata } from "@/lib/metadata";
-import { FlipPreview } from "@/motion/flip-preview";
-import { Orbit } from "@/motion/orbit";
-import { featuredProduct } from "@/products";
-import styles from "./page.module.css";
 
 export const metadata: Metadata = buildMetadata({
   path: "/",
@@ -57,192 +43,38 @@ const organizationJsonLd = {
   ],
 };
 
-const product = featuredProduct();
-const price = formatUsd(product.pricing.list);
-const pageAt = (index: number): string => product.media.pageIds[index] ?? product.media.hero;
-
-/** Hero stack: the kit itself in front, two real pages fanned behind it. */
-const HERO_STACK = [product.media.hero, pageAt(1), pageAt(4)] as const;
-const HERO_STACK_SIZES =
-  "(min-width: 1280px) 480px, (min-width: 1024px) 400px, (min-width: 640px) 360px, 240px";
-/** Real pages of the flip cards: front and back of each. */
-const PREVIEW_PAGES = [
-  [pageAt(0), pageAt(1)],
-  [pageAt(6), pageAt(7)],
-  [pageAt(12), pageAt(13)],
-] as const;
-const PREVIEW_SIZES = "(min-width: 1024px) 380px, (min-width: 640px) 45vw, 90vw";
-
-function productLink(position: string, className: string, label: string, hash = "") {
-  return (
-    <ProductInterestLink
-      href={`${product.path}${hash}`}
-      product={product.slug}
-      position={position}
-      className={className}
-    >
-      {label}
-    </ProductInterestLink>
-  );
-}
-
+/**
+ * Hub, laid out as a storefront under the "pequeño universo": the light-sky hero with the family
+ * on a navy planet, the featured product card, purchase benefits, the collection inside the kit,
+ * a lifestyle banner, real pages, how it works (with the syllable playground), what to expect and
+ * the navy close. Every product link is a navy/white `ProductInterestLink` (never the coral CTA):
+ * positions header, hero, hero-card, start, preview, closing.
+ */
 export default function HomePage() {
-  const stackPages = HERO_STACK.map((id, index) => ({
-    id,
-    node: <MediaImage id={id} sizes={HERO_STACK_SIZES} priority={index === 0} />,
-  }));
-
   return (
-    <PageShell nav={copy.nav} cta={productLink("header", buttonVariants({ size: "sm" }), copy.hero.cta)}>
+    <PageShell
+      overlay
+      nav={copy.nav}
+      cta={
+        <ProductLink position="header" className={LINK_HEADER}>
+          {copy.hero.cta}
+        </ProductLink>
+      }
+    >
       <script
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD built from config
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
-
-      <HeroScene
-        id="hero"
-        titleId="hero-title"
-        eyebrow={copy.hero.kicker}
-        title={copy.hero.title}
-        lead={copy.hero.lead}
-        stack={<HeroStack pages={stackPages} featured={0} />}
-        aside={
-          <Card variant="emphasis" pad="lg" as="article" className={styles.productCard}>
-            <Eyebrow>{copy.product.kicker}</Eyebrow>
-            <h2 className={styles.productTitle}>{copy.product.title}</h2>
-            <p>{copy.product.promise}</p>
-            <ChipRow>
-              {copy.product.facts.map((fact) => (
-                <Eyebrow key={fact} as="span">
-                  {fact}
-                </Eyebrow>
-              ))}
-            </ChipRow>
-            <p className={styles.productPrice}>
-              <span className={styles.productPriceKicker}>{copy.product.priceKicker}</span>
-              <span>{price}</span>
-            </p>
-            <p className={styles.productCurrency}>
-              <Icon name="globe" size={16} />
-              <span>{localCurrencyNote}</span>
-            </p>
-            {productLink("hero", buttonVariants({ block: true }), `${copy.product.cta} · ${price}`)}
-          </Card>
-        }
-        desk={
-          <section id="empieza" className={styles.start} aria-labelledby="empieza-title">
-            <SectionHeading
-              id="empieza-title"
-              kicker={copy.start.kicker}
-              title={copy.start.title}
-              lead={copy.start.lead}
-            />
-            <Stack gap={5}>
-              <Card variant="emphasis" pad="lg" as="article" reveal>
-                <Eyebrow>{copy.start.principal.label}</Eyebrow>
-                <h3 className={styles.startTitle}>{copy.start.principal.title}</h3>
-                <p>{copy.start.principal.text}</p>
-                <BulletList items={copy.start.principal.points} icon="link" />
-                <div>
-                  {productLink(
-                    "start",
-                    buttonVariants({ variant: "outline", size: "sm" }),
-                    copy.start.principal.cta,
-                  )}
-                </div>
-              </Card>
-              <Card variant="soft" pad="lg" as="article" reveal>
-                <Eyebrow>{copy.start.complement.label}</Eyebrow>
-                <h3 className={styles.startTitle}>{copy.start.complement.title}</h3>
-                <p>{copy.start.complement.text}</p>
-                <BulletList items={copy.start.complement.points} icon="link" />
-              </Card>
-            </Stack>
-          </section>
-        }
-      >
-        <ChipRow>
-          {copy.hero.chips.map((chip) => (
-            <FactChip key={chip.label} icon={chip.icon} label={chip.label} tone="dark" />
-          ))}
-        </ChipRow>
-      </HeroScene>
-
-      <Section tone="sky" id="paginas" labelledBy="preview-title" defer>
-        <CenteredHeading
-          id="preview-title"
-          kicker={copy.preview.kicker}
-          title={copy.preview.title}
-          lead={copy.preview.lead}
-        />
-        <Grid cols={3} as="ul">
-          {PREVIEW_PAGES.map(([front, back]) => (
-            <li key={front}>
-              <FlipPreview
-                front={<MediaImage id={front} sizes={PREVIEW_SIZES} />}
-                back={<MediaImage id={back} sizes={PREVIEW_SIZES} />}
-                showLabel={copy.preview.flip.show}
-                hideLabel={copy.preview.flip.hide}
-              />
-            </li>
-          ))}
-        </Grid>
-        <p className={styles.previewCta}>
-          {productLink("preview", buttonVariants({ variant: "outline" }), copy.preview.cta, "#paginas")}
-        </p>
-      </Section>
-
-      <Section
-        tone="navy"
-        id="metodo"
-        labelledBy="metodo-title"
-        divider="wave-top"
-        dividerTone="sky"
-        className={styles.band}
-        defer
-      >
-        <div className={styles.bandOrbit} aria-hidden="true">
-          <Orbit />
-        </div>
-        <div className={styles.bandInner}>
-          <CenteredHeading
-            id="metodo-title"
-            kicker={copy.method.kicker}
-            title={copy.method.title}
-            lead={copy.method.lead}
-            tone="dark"
-          />
-          <Steps steps={copy.method.steps} tone="dark" />
-        </div>
-      </Section>
-
-      <Section id="valores" labelledBy="valores-title" defer>
-        <SectionHeading id="valores-title" kicker={copy.values.kicker} title={copy.values.title} />
-        <IconCardList items={copy.values.items} cols={3} />
-      </Section>
-
-      <Section tone="navy" labelledBy="cierre-title" className={styles.band} defer>
-        <div className={styles.bandOrbit} aria-hidden="true">
-          <Orbit />
-        </div>
-        <Stack gap={4} maxWidth="60ch" className={styles.bandInner}>
-          <Eyebrow tone="dark">{copy.closing.kicker}</Eyebrow>
-          <h2 id="cierre-title">{copy.closing.title}</h2>
-          <p className="lead">{copy.closing.text}</p>
-          <div className={styles.closingActions}>
-            {productLink("closing", buttonVariants(), copy.closing.cta)}
-            <span className={styles.closingPrice}>
-              {price} · {copy.closing.priceSuffix}
-              <span className={styles.closingCurrency}>{localCurrencyNoteShort}</span>
-            </span>
-          </div>
-          <div className={styles.closingSocial}>
-            <p>{copy.closing.social}</p>
-            <SocialLinks tone="dark" />
-          </div>
-        </Stack>
-      </Section>
+      <HomeHero />
+      <FeaturedProduct />
+      <BenefitsStrip />
+      <CollectionBento />
+      <LifestyleBand />
+      <PagesShowcase />
+      <MethodBand />
+      <ValuesBento />
+      <ClosingBand />
     </PageShell>
   );
 }

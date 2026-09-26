@@ -532,6 +532,10 @@ async function buildFavicons(c: FaviconCompose, src: string): Promise<OutputReco
   await write("apple-touch-icon.png", await onBackground(180), { width: 180, height: 180 }, "png");
   await write("icon-192.png", await transparent(192), { width: 192, height: 192 }, "png");
   await write("icon-512.png", await transparent(512), { width: 512, height: 512 }, "png");
+  const versioned = (path: string): string => {
+    const record = files.find((file) => file.file === `public${path}`);
+    return record ? `${path}?v=${record.sha256.slice(0, 8)}` : path;
+  };
   const webmanifest = {
     name: "Pequeverso",
     short_name: "Pequeverso",
@@ -541,8 +545,8 @@ async function buildFavicons(c: FaviconCompose, src: string): Promise<OutputReco
     background_color: c.background,
     theme_color: "#003068",
     icons: [
-      { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
-      { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: versioned("/icon-192.png"), sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: versioned("/icon-512.png"), sizes: "512x512", type: "image/png", purpose: "any" },
     ],
   };
   writeFileSync(join(publicDir, "manifest.webmanifest"), `${JSON.stringify(webmanifest, null, 2)}\n`);
