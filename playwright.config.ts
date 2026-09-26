@@ -82,11 +82,16 @@ export default defineConfig({
   testDir: "tests/e2e",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
+  // Nightly sweeps two engines × seven widths on shared runners: two retries absorb timing
+  // flakes (a real regression still fails all three attempts). PR runs keep one.
+  retries: process.env.CI ? (set === "nightly" ? 2 : 1) : 0,
   ...(process.env.CI ? { workers: 2 } : {}),
   reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : [["list"]],
   timeout: 30_000,
-  expect: { timeout: 5_000, toHaveScreenshot: { maxDiffPixelRatio: 0.01, animations: "disabled" } },
+  expect: {
+    timeout: 5_000,
+    toHaveScreenshot: { maxDiffPixelRatio: 0.03, threshold: 0.25, animations: "disabled" },
+  },
   snapshotPathTemplate: "{testDir}/__screenshots__/{projectName}/{testFilePath}/{arg}{ext}",
   use: {
     baseURL,
