@@ -1,7 +1,7 @@
 "use client";
 
+import { RotateCw } from "lucide-react";
 import { type ReactNode, useEffect, useId, useRef, useState } from "react";
-import { buttonVariants } from "@/components/ui/button-variants";
 import { cx } from "@/lib/cx";
 import { loadGsap } from "./gsap-loader";
 
@@ -19,7 +19,7 @@ type Props = {
 const RATIO = { "4/3": "aspect-[4/3]", "3/4": "aspect-[3/4]", "16/9": "aspect-video" } as const;
 /** Both faces hide their back side (prefixed for Safari); the back one is pre-rotated 180°. */
 const FACE =
-  "absolute inset-0 overflow-hidden rounded-[inherit] bg-card backface-hidden [-webkit-backface-visibility:hidden] [&_img]:size-full [&_img]:object-cover";
+  "absolute inset-0 overflow-hidden rounded-[inherit] border-[5px] border-white bg-card backface-hidden [-webkit-backface-visibility:hidden] [&_img]:size-full [&_img]:object-cover";
 const LIFT_SECONDS = 0.14;
 const FLIP_SECONDS = 0.6;
 const SETTLE_SECONDS = 0.2;
@@ -113,7 +113,7 @@ export function FlipPreview({
       <div
         ref={wrapper}
         className={cx(
-          "relative isolate w-full rounded-lg perspective-[1200px] [--flip-shadow:1] after:absolute after:inset-0 after:-z-1 after:rounded-[inherit] after:opacity-(--flip-shadow) after:shadow-md",
+          "group/flip relative isolate w-full rounded-lg perspective-[1200px] transition duration-(--duration-reveal) ease-emphasis [--flip-shadow:1] after:absolute after:inset-0 after:-z-1 after:rounded-[inherit] after:opacity-(--flip-shadow) after:shadow-float motion-safe:hover:-translate-y-1.5",
           RATIO[ratio],
         )}
       >
@@ -130,14 +130,26 @@ export function FlipPreview({
             {back}
           </div>
         </div>
+        {/* Sheen that sweeps across the paper on hover (fine pointers, motion allowed). */}
+        <span
+          className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit] after:absolute after:inset-y-0 after:-left-1/2 after:w-1/2 after:bg-[linear-gradient(100deg,transparent,oklch(1_0_0/45%),transparent)] after:opacity-0 after:transition after:duration-700 after:ease-out motion-safe:group-hover/flip:after:translate-x-[300%] motion-safe:group-hover/flip:after:opacity-100"
+          aria-hidden="true"
+        />
       </div>
       <button
         type="button"
-        className={buttonVariants({ variant: "ghost", size: "sm" })}
+        className="glass inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-pill px-4 text-small font-extrabold text-navy shadow-sm transition duration-(--duration-fast) ease-out hover:bg-white active:scale-97"
         aria-expanded={flipped}
         aria-controls={id}
         onClick={() => void toggle()}
       >
+        <RotateCw
+          className={cx(
+            "size-4 text-teal transition-transform duration-(--duration-reveal) ease-emphasis",
+            flipped && "rotate-180",
+          )}
+          aria-hidden="true"
+        />
         {flipped ? hideLabel : showLabel}
       </button>
     </div>

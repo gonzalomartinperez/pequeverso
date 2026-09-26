@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
+import { PlaygroundGame } from "./playground-game";
 
 export type PlaygroundWord = {
   /** Syllables in reading order, upper case (e.g. ["GA", "TO"]). */
@@ -22,20 +24,28 @@ type Props = {
 };
 
 /**
- * Interactive "Une las sílabas" demo. STUB with the final public API: renders the first word
- * statically. The interactive implementation is owned by the playground module.
+ * Interactive "Une las sílabas" demo on its own light surface (cream → celeste), so it reads the
+ * same inside a navy band or on paper. The server renders the frame and each word's real page;
+ * the client island (`PlaygroundGame`) receives the pages already rendered, plus plain strings.
  */
-export function SyllablePlayground({ words, title, hint, className }: Props) {
-  const first = words[0];
-  if (!first) return null;
+export function SyllablePlayground({ words, title, hint, doneLabel, className }: Props) {
+  if (!words.length) return null;
   return (
-    <div data-slot="syllable-playground" className={className}>
-      <h3>{title}</h3>
-      <p>{hint}</p>
-      <p>
-        {first.syllables.join(" + ")} = {first.word}
-      </p>
-      {first.page}
+    <div
+      data-slot="syllable-playground"
+      className={cn(
+        "cq on-light relative isolate overflow-hidden rounded-xl border border-white/70 p-5 text-ink shadow-lg sm:rounded-2xl sm:p-8 lg:p-12",
+        "bg-[radial-gradient(60%_55%_at_100%_0%,oklch(0.8521_0.0956_187.2/30%),transparent_70%),radial-gradient(50%_50%_at_0%_100%,oklch(0.965_0.0699_98.77/55%),transparent_70%),linear-gradient(135deg,var(--pv-cream)_0%,var(--pv-white)_45%,var(--pv-celeste)_100%)]",
+        className,
+      )}
+    >
+      <PlaygroundGame
+        words={words.map(({ syllables, word }) => ({ syllables: [...syllables], word }))}
+        pages={words.map((item) => item.page)}
+        title={title}
+        hint={hint}
+        doneLabel={doneLabel}
+      />
     </div>
   );
 }
