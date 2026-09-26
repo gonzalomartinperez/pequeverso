@@ -22,6 +22,8 @@ for (const { name, path } of pages) {
     await expect(page).toHaveScreenshot(`${name}.png`, {
       fullPage: true,
       mask: [page.locator(MASKED)],
+      // The redesigned landing is ~15 000 px tall at 1440: a full-page capture needs more than 5 s.
+      timeout: 20_000,
     });
   });
 }
