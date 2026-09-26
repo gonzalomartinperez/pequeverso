@@ -32,6 +32,10 @@ updates:
       interval: monthly
     cooldown:
       default-days: 7
+    ignore:
+      # Types follow the Node LTS in .nvmrc (Hostinger builds on it); Current lines are skipped.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     # `/` covers .github/workflows; the glob covers composite actions under .github/actions.
     directories: ["/", "/.github/actions/*"]
