@@ -37,7 +37,7 @@ Status: ✅ done · ⚠️ done with a caveat · ❌ gap (owner action) · — n
 
 | Requirement | Source | Where on the site | Status |
 |---|---|---|---|
-| Seller name, tax id (CUIL), physical and electronic address, "en ubicación de fácil visualización y previo a la formalización del contrato" | Res. SCI 270/2020 (GMC 37/19) art. 2; Ley 24.240 art. 4; CCyC art. 1100 | Footer (every page), `/aviso-legal/` §1, `/terminos/` §1, `/privacidad/` §1 | ✅ |
+| Seller name, tax id (CUIL), physical and electronic address, "en ubicación de fácil visualización y previo a la formalización del contrato" | Res. SCI 270/2020 (GMC 37/19) art. 2; Ley 24.240 art. 4; CCyC art. 1100 | `/aviso-legal/` §1, `/terminos/` §1, `/privacidad/` §1, each linked from the footer of every page | ⚠️ Owner decision 2026-09-26 (on his accountant's advice): the full identification left the footer; it stays on the legal pages, one click away on every page. Art. 2 asks for "fácil visualización" before contracting, so a stricter reading would want it back in the footer. |
 | Essential characteristics, total price with taxes, terms, guarantee conditions | Res. SCI 270/2020 art. 2 VII–XI | Product pages (registry), `/terminos/` §3–§8, Hotmart checkout (final total) | ✅ |
 | Terms easy to access, readable and storable | Res. SCI 270/2020 art. 3 | `/terminos/` linked from the footer; §2 says they can be saved or printed | ✅ |
 | Error correction and express confirmation before paying | Res. SCI 270/2020 art. 5 | Hotmart checkout | ✅ (Hotmart) |

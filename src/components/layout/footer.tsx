@@ -1,5 +1,4 @@
 import { site } from "@config/site";
-import { seller, sellerIdentity } from "@content/es/legal/seller";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { BrandLogo } from "@/components/blocks/brand-logo";
@@ -86,7 +85,7 @@ function LinkColumn({ label, items, children }: Column) {
 /**
  * The closing universe of every page: a navy nebula with a soft arc top that overlaps the last
  * band, a still starfield, brand + social profiles, the product/help/legal columns, the
- * disclaimer and the seller identification, and a giant outlined "pequeverso" wordmark
+ * disclaimer, and a giant outlined "pequeverso" wordmark
  * (decorative) sinking into the bottom edge.
  */
 export function Footer() {
@@ -138,10 +137,6 @@ export function Footer() {
         </p>
         <p>
           © {new Date().getFullYear()} {site.name}. Pagos, entrega y reembolsos gestionados por Hotmart.
-        </p>
-        {/* Seller identification in plain view before the purchase (Res. SCI 270/2020, GMC 37/19). */}
-        <p>
-          Titular: {sellerIdentity}, {seller.address}.
         </p>
       </div>
 

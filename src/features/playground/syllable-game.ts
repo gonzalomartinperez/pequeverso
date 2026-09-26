@@ -26,19 +26,23 @@ function random(seed: number): () => number {
   };
 }
 
+/** Seed salt chosen so the landing's two-syllable words split between in-order and reversed. */
+const SHUFFLE_SALT = ":1";
+
 /**
- * Display order of the tiles: a deterministic shuffle of `0…count-1` seeded by `key`, never the
- * reading order itself when there are two or more tiles (otherwise the game would be solved).
+ * Display order of the tiles: a deterministic shuffle of `0…count-1` seeded by `key`. Two-syllable
+ * words may come out in reading order or reversed (a fixed reversal would be its own pattern);
+ * three or more syllables never show the solved order.
  */
 export function tileOrder(count: number, key: string): number[] {
   const order = Array.from({ length: count }, (_, index) => index);
   if (count < 2) return order;
-  const next = random(hash(key));
+  const next = random(hash(`${key}${SHUFFLE_SALT}`));
   for (let index = count - 1; index > 0; index -= 1) {
     const swap = Math.floor(next() * (index + 1));
     [order[index], order[swap]] = [order[swap] as number, order[index] as number];
   }
-  if (order.every((value, index) => value === index)) order.push(order.shift() as number);
+  if (count > 2 && order.every((value, index) => value === index)) order.push(order.shift() as number);
   return order;
 }
 

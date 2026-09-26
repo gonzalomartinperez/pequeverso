@@ -35,7 +35,7 @@ test.describe("syllable playground", () => {
     await expect(game.locator("[data-done]").first()).toBeVisible();
     await expect(game.getByText(`${count} de ${count}`)).toHaveCount(1);
     for (const tile of await tiles.all()) await expect(tile).toHaveAttribute("aria-disabled", "true");
-    // The tiles keep their order on screen: the first tile shown is never the first syllable.
+    // The first word has three syllables, so the tiles never start solved.
     expect(await tiles.first().getAttribute("data-index")).not.toBe("0");
   });
 

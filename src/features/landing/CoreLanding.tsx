@@ -460,7 +460,7 @@ export function CoreLanding({ product }: Props) {
               <MediaImage id={VISUAL.life.proud} sizes="(min-width: 1024px) 250px, 40vw" alt="" />
             </div>
             {copy.problem.note ? (
-              <div className="glass absolute top-6 -left-2 flex items-center gap-3 rounded-xl p-3 pr-5 shadow-float cq-sm:-left-6">
+              <div className="glass absolute -right-1 bottom-[calc(3.5rem+15%)] flex max-w-[60%] items-center gap-3 rounded-xl p-3 pr-5 shadow-float cq-sm:-right-6 cq-sm:max-w-none">
                 <span className="grid size-11 place-items-center rounded-lg bg-lemon text-navy">
                   <Icon name="clock" size={22} strokeWidth={2.4} />
                 </span>

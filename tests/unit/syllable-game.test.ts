@@ -2,12 +2,11 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { press, slotTexts, tileOrder } from "../../src/features/playground/syllable-game.ts";
 
-test("tile order is a deterministic permutation that never matches the reading order", () => {
+test("tile order is a deterministic permutation; three or more syllables never show the solved order", () => {
   for (const [count, key] of [
-    [2, "gato"],
     [3, "tomate"],
+    [3, "abeja"],
     [4, "camaleón"],
-    [2, "mapa"],
     [5, "x"],
   ] as const) {
     const order = tileOrder(count, key);
@@ -23,6 +22,9 @@ test("tile order is a deterministic permutation that never matches the reading o
     assert.deepEqual(tileOrder(count, key), order, "same key, same order (SSR = client)");
   }
   assert.deepEqual(tileOrder(1, "sol"), [0]);
+  // Two syllables: some words in reading order, some reversed, so neither is a pattern to learn.
+  const pairs = ["gato", "mapa", "luna", "perro"].map((word) => tileOrder(2, word).join(""));
+  assert.ok(pairs.includes("01") && pairs.includes("10"), pairs.join(" "));
   assert.deepEqual(tileOrder(0, ""), []);
 });
 
