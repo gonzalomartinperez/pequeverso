@@ -1,6 +1,6 @@
 {
   "$schemaVersion": 1,
-  "generatedAt": "2026-09-26T03:29:23.373Z",
+  "generatedAt": "2026-09-26T03:35:30.179Z",
   "generator": "tools/media/media-build.ts v1 (sharp 0.35.4, libvips 8.18.6)",
   "extras": [
     "public/manifest.webmanifest"
@@ -5147,7 +5147,7 @@
       },
       "provenance": {
         "origin": "ai-generated",
-        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
         "date": "2026-09-26",
         "people": "synthetic",
         "minors": "synthetic",
@@ -5207,7 +5207,7 @@
       },
       "provenance": {
         "origin": "ai-generated",
-        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
         "date": "2026-09-26",
         "people": "synthetic",
         "minors": "synthetic",
@@ -5253,81 +5253,21 @@
       ]
     },
     {
-      "id": "gf.life.imprimir",
-      "role": "scene",
-      "page": "grafismo-fonetico",
-      "kind": "image",
-      "source": {
-        "library": "ai-business-assets",
-        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S03-imprimir-en-casa-marca.png",
-        "sha256": "9259de3ec03ed359a399b0be0210b1b077fa032717181d885bb869b8ea99de9d",
-        "bytes": 2034924,
-        "width": 1672,
-        "height": 941
-      },
-      "provenance": {
-        "origin": "ai-generated",
-        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
-        "date": "2026-09-26",
-        "people": "synthetic",
-        "minors": "synthetic",
-        "release": "n/a"
-      },
-      "rights": {
-        "owner": "Pequeverso / Digital Products Team",
-        "license": "proprietary-all-rights-reserved",
-        "redistribution": "public-repo-approved",
-        "approvedAt": "2026-09-12T00:00:00.000Z"
-      },
-      "alt": {
-        "es": "Madre imprimiendo hojas en casa mientras su hija mira emocionada"
-      },
-      "outputs": [
-        {
-          "file": "public/media/gf/gf-life-imprimir-w640-c353c1bb.webp",
-          "bytes": 36320,
-          "sha256": "cb5be1ffa78a26291ec5e76ebad3f9c32f5ac834290b3ca4b683d10081918a9c",
-          "width": 640,
-          "height": 360,
-          "format": "webp",
-          "quality": 78
-        },
-        {
-          "file": "public/media/gf/gf-life-imprimir-w1024-bab39d38.webp",
-          "bytes": 68860,
-          "sha256": "b1724cb6d658a2d02d1830b00ebdb7540a1338978577035faba4a486e82d7f53",
-          "width": 1024,
-          "height": 576,
-          "format": "webp",
-          "quality": 78
-        },
-        {
-          "file": "public/media/gf/gf-life-imprimir-w1024-9a43a81d.avif",
-          "bytes": 43967,
-          "sha256": "c921e3a237e114d0d247601cd3f3a19786db72bb503ff655795b1f445bb722e9",
-          "width": 1024,
-          "height": 576,
-          "format": "avif",
-          "quality": 55
-        }
-      ]
-    },
-    {
       "id": "gf.life.kit",
       "role": "scene",
       "page": "grafismo-fonetico",
       "kind": "image",
       "source": {
         "library": "ai-business-assets",
-        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S04-kit-en-uso-mesa.png",
-        "sha256": "dab988c67566759877f70122caa90ee59ec4432cc7710a4a9ea84772297f8f76",
-        "bytes": 2381291,
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S04-kit-en-uso-mesa-edit.png",
+        "sha256": "915990bf87f0c7eda78d3d648c8c7f591aa228785103fa4bd4e8311f734d9847",
+        "bytes": 2375564,
         "width": 1448,
         "height": 1086
       },
       "provenance": {
         "origin": "ai-generated",
-        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
         "date": "2026-09-26",
         "people": "synthetic",
         "minors": "synthetic",
@@ -5344,27 +5284,27 @@
       },
       "outputs": [
         {
-          "file": "public/media/gf/gf-life-kit-w640-f6b4cd73.webp",
-          "bytes": 64000,
-          "sha256": "25630a22121df44b84b434a5532c50373e62669441b693768ca7c4da592404f8",
+          "file": "public/media/gf/gf-life-kit-w640-8ea27715.webp",
+          "bytes": 63294,
+          "sha256": "0d764ec6abed7e32e00aa1dbfbe322361c9efdcfd15b1e0fa669515e206c8ec7",
           "width": 640,
           "height": 480,
           "format": "webp",
           "quality": 78
         },
         {
-          "file": "public/media/gf/gf-life-kit-w1024-f0e598bd.webp",
-          "bytes": 123446,
-          "sha256": "d77e792811b9876b9ab7a319781bd67369c0c3dd27e2bebf4460c3d9680e49e5",
+          "file": "public/media/gf/gf-life-kit-w1024-18669495.webp",
+          "bytes": 122718,
+          "sha256": "61d7fa06d8a5bd3185b8f3c8f5c1d5965baec0fa19bfbc4752cd6e5ccd707a29",
           "width": 1024,
           "height": 768,
           "format": "webp",
           "quality": 78
         },
         {
-          "file": "public/media/gf/gf-life-kit-w1024-06d96abf.avif",
-          "bytes": 77077,
-          "sha256": "e66729bb835b2ab92fc00b175fb597b6a401c9ee7f7fdacfe9e718f088f8a644",
+          "file": "public/media/gf/gf-life-kit-w1024-41099d3d.avif",
+          "bytes": 76348,
+          "sha256": "7ffbd1d9e83e06725e14613c4bcf4f35811ba77637a0ea2242c126d26dae993b",
           "width": 1024,
           "height": 768,
           "format": "avif",
@@ -5379,15 +5319,15 @@
       "kind": "image",
       "source": {
         "library": "ai-business-assets",
-        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S05-nina-reto-lectura.png",
-        "sha256": "368fcd786b6cc976265a82c5a8e17767bf78159da6464f379a1bcf6f22512a06",
-        "bytes": 2237722,
-        "width": 1448,
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S05-nina-reto-lectura-edit.png",
+        "sha256": "b5e0b93395d38ce4a8444746a37dbc47c13f0a812ea9e2316c0909486261dbf0",
+        "bytes": 1968377,
+        "width": 1250,
         "height": 1086
       },
       "provenance": {
         "origin": "ai-generated",
-        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
         "date": "2026-09-26",
         "people": "synthetic",
         "minors": "synthetic",
@@ -5404,29 +5344,29 @@
       },
       "outputs": [
         {
-          "file": "public/media/gf/gf-life-reto-w640-ea2136a6.webp",
-          "bytes": 54792,
-          "sha256": "c9ff7c57c0c482549f9d68bb31217dc0d7b677cab73ad5ed33df914301a6ae69",
+          "file": "public/media/gf/gf-life-reto-w640-bc7665d4.webp",
+          "bytes": 59980,
+          "sha256": "dcccc1989177f58fc627ab2bf0ca0113c46cd9ebf9e5c7bef31c8bab516cc89c",
           "width": 640,
-          "height": 480,
+          "height": 556,
           "format": "webp",
           "quality": 78
         },
         {
-          "file": "public/media/gf/gf-life-reto-w1024-3e547d5e.webp",
-          "bytes": 107378,
-          "sha256": "5cf7bdaaa296edbb7f0821f80e64da76d133df40cd2a4a2b46dadc61a7873a80",
+          "file": "public/media/gf/gf-life-reto-w1024-40f999ec.webp",
+          "bytes": 116210,
+          "sha256": "e6ff21d3e0ccb8dcd8e9b42cf760c932c9da6fe08f4b252a86bbe0eb88afe6c2",
           "width": 1024,
-          "height": 768,
+          "height": 890,
           "format": "webp",
           "quality": 78
         },
         {
-          "file": "public/media/gf/gf-life-reto-w1024-70c85ffd.avif",
-          "bytes": 67768,
-          "sha256": "a330507f3d2031a819cef917c5ea04429e64f18728a33328a0d84261c7fbe26a",
+          "file": "public/media/gf/gf-life-reto-w1024-7cf43ea9.avif",
+          "bytes": 73824,
+          "sha256": "bd92e7b2dd92f3b16c2bb6d577f28db057f9d07ae261d1cff355332e10130bd2",
           "width": 1024,
-          "height": 768,
+          "height": 890,
           "format": "avif",
           "quality": 55
         }
@@ -5439,15 +5379,15 @@
       "kind": "image",
       "source": {
         "library": "ai-business-assets",
-        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S06-tarjetas-alfombra.png",
-        "sha256": "c3395037ed2bafacfb08333a33b927556cabbfd8d3871bfe2593c4ac15f91872",
-        "bytes": 2557028,
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S06-tarjetas-alfombra-edit.png",
+        "sha256": "794c04de2b19d113be989c19a943194372c337c87280e52970cf9ad6946f4cbc",
+        "bytes": 2287806,
         "width": 1448,
-        "height": 1086
+        "height": 951
       },
       "provenance": {
         "origin": "ai-generated",
-        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
         "date": "2026-09-26",
         "people": "synthetic",
         "minors": "synthetic",
@@ -5464,29 +5404,29 @@
       },
       "outputs": [
         {
-          "file": "public/media/gf/gf-life-tarjetas-w640-dbaab972.webp",
-          "bytes": 65154,
-          "sha256": "7be038dfea301212de94840ae74cc665238650cf8f057c15fa5d8486f44e1727",
+          "file": "public/media/gf/gf-life-tarjetas-w640-69d6a7b1.webp",
+          "bytes": 59698,
+          "sha256": "9461163661fd062cdf8d0e23f1f67555c54d3d2e75688953342866d8b805ad1c",
           "width": 640,
-          "height": 480,
+          "height": 420,
           "format": "webp",
           "quality": 78
         },
         {
-          "file": "public/media/gf/gf-life-tarjetas-w1024-5a8559a5.webp",
-          "bytes": 131802,
-          "sha256": "712c8c977833245d803805e6997a3de9cb7d8ed52c8a625da79980d171a91a44",
+          "file": "public/media/gf/gf-life-tarjetas-w1024-cbe74d73.webp",
+          "bytes": 122082,
+          "sha256": "f5778fb1b47846f96c0bdc434813ebc1eef27416fa6c9b4166b41b264dd8673f",
           "width": 1024,
-          "height": 768,
+          "height": 673,
           "format": "webp",
           "quality": 78
         },
         {
-          "file": "public/media/gf/gf-life-tarjetas-w1024-fb7f2892.avif",
-          "bytes": 81440,
-          "sha256": "3f17da4ccbc558f82c66ac73a42e108a06d6e07b65ce80a1477f507558a40bee",
+          "file": "public/media/gf/gf-life-tarjetas-w1024-8dee1c3d.avif",
+          "bytes": 75168,
+          "sha256": "eeef509e2073a1293dbc0c63595ba94d4d553448a84c8cdc63f8bc04c7841148",
           "width": 1024,
-          "height": 768,
+          "height": 673,
           "format": "avif",
           "quality": 55
         }
@@ -5507,7 +5447,7 @@
       },
       "provenance": {
         "origin": "ai-generated",
-        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
         "date": "2026-09-26",
         "people": "synthetic",
         "minors": "synthetic",
@@ -5559,15 +5499,15 @@
       "kind": "image",
       "source": {
         "library": "ai-business-assets",
-        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S08-flatlay-kit-en-uso.png",
-        "sha256": "1576c34edd2adf3a0357b42af4b8893bdf116f6c21f40c49b1fa950ab2c2d7f0",
-        "bytes": 2504831,
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S08-flatlay-kit-en-uso-edit.png",
+        "sha256": "4b3656440209c63d348e24b7fcc471c119968aee47ac774628dac9b68be00ac8",
+        "bytes": 2000283,
         "width": 1448,
-        "height": 1086
+        "height": 871
       },
       "provenance": {
         "origin": "ai-generated",
-        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
         "date": "2026-09-26",
         "people": "synthetic",
         "minors": "synthetic",
@@ -5584,29 +5524,29 @@
       },
       "outputs": [
         {
-          "file": "public/media/gf/gf-life-flatlay-w640-1824a04f.webp",
-          "bytes": 68380,
-          "sha256": "a77a516fdfd8df72fa57f58bf18ec9cb5d340842651d266ac7ead1a73a560898",
+          "file": "public/media/gf/gf-life-flatlay-w640-df23bc36.webp",
+          "bytes": 53740,
+          "sha256": "9c82c62e76cb69e0dae62f6e8b4a5c4075d84a4e75829fc5b8e6328a3e69ebb0",
           "width": 640,
-          "height": 480,
+          "height": 385,
           "format": "webp",
           "quality": 78
         },
         {
-          "file": "public/media/gf/gf-life-flatlay-w1024-84c898f9.webp",
-          "bytes": 137878,
-          "sha256": "0cf0eb5780acfb7373de954e2eea3ccc2826a4c441146399eba8d8b8451b01fa",
+          "file": "public/media/gf/gf-life-flatlay-w1024-bb889a4c.webp",
+          "bytes": 109222,
+          "sha256": "8954b456da159c8dc60ec0beafa1d865cae2dba2482a13734de0eedcf16b3aaf",
           "width": 1024,
-          "height": 768,
+          "height": 616,
           "format": "webp",
           "quality": 78
         },
         {
-          "file": "public/media/gf/gf-life-flatlay-w1024-596d585c.avif",
-          "bytes": 83457,
-          "sha256": "8ecb9a9468195f27ee92e004d5e96d2674f04cf49adfdcf36717479c7dc55dd4",
+          "file": "public/media/gf/gf-life-flatlay-w1024-a9993795.avif",
+          "bytes": 67063,
+          "sha256": "e37e63fd82caa60763fea9ca112d173790a937d61e724638f426838a4d374b66",
           "width": 1024,
-          "height": 768,
+          "height": 616,
           "format": "avif",
           "quality": 55
         }
@@ -5627,7 +5567,7 @@
       },
       "provenance": {
         "origin": "ai-generated",
-        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
         "date": "2026-09-26",
         "people": "synthetic",
         "minors": "synthetic",
@@ -5687,7 +5627,7 @@
       },
       "provenance": {
         "origin": "ai-generated",
-        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20)",
+        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
         "date": "2026-09-26",
         "people": "synthetic",
         "minors": "synthetic",
