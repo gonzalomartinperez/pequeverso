@@ -3,7 +3,7 @@
   "default": {
     "html": 17408,
     "js": 173568,
-    "css": 17238
+    "css": 21800
   },
   "routes": {
     "/": {
@@ -14,14 +14,14 @@
       "html": 56337
     },
     "/imprime-y-juega/": {
-      "html": 35328
+      "html": 39023
     },
     "/grafismo-fonetico/gracias/": {
       "js": 157696,
       "html": 25088
     },
     "/soporte/": {
-      "html": 14200,
+      "html": 15831,
       "js": 156160
     },
     "/terminos/": {

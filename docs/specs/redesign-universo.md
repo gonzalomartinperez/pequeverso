@@ -79,6 +79,16 @@ Radius: md 12, lg 20, xl 28, 2xl 36. Shadows are layered and navy-tinted
 | `Reveal` (kept) | `data-reveal` with blur-in variant `data-reveal="blur"` | view timeline | visible |
 | Existing 3D scene | stays in the hero only (budgeted) | three + gsap lazy | static layers |
 
+### Shared vocabulary (blocks and primitives)
+
+Every page draws from one set (APIs in `docs/design-system.md`; existing props unchanged, new
+ones optional): pill buttons (coral gradient + shine + sliding arrow for purchase only; navy,
+outline, ghost and inverse adapt to navy bands; `xl` 60 px full-width store button), pill
+eyebrows with a colour dot by tone, cards `glass | glass-dark | elevated | gradient` with hover
+lift, gradient icon tiles (`IconBadge`) and round markers (`IconDot`) for lists, assurances and
+fact chips, FAQ as separate rounded cards or store `lines`, resource tiles that lift and zoom,
+and the store set for the product page: `ProductBadge`, `PriceTag`, `TrustRow`.
+
 ## 5. Shell components
 
 - **Header → floating glass pill.** Detached from the edges (12 px top, page-container width),

@@ -1,21 +1,23 @@
-import { Icon, type IconName } from "@/components/blocks/icon";
+import type { IconName } from "@/components/blocks/icon";
+import { IconDot } from "@/components/blocks/icon-dot";
 import { cn } from "@/lib/utils";
 
 type Props = { icon?: IconName; label: string; detail?: string; tone?: "light" | "dark"; className?: string };
 
-/** Small factual chip (icon, bold label, optional detail) for hero and offer rows. */
+/** Small factual pill (icon disc, bold label, optional detail) on glass for hero and offer rows. */
 export function FactChip({ icon, label, detail, tone = "light", className }: Props) {
   return (
     <div
       data-slot="fact-chip"
       className={cn(
-        "inline-flex min-h-11 items-center gap-2 rounded-md border border-border bg-card px-3 py-2 shadow-sm",
-        tone === "dark" ? "on-navy border-white/20 bg-white/10 shadow-none" : "on-light",
+        "inline-flex min-h-11 max-w-full items-center gap-2.5 rounded-pill py-1.5 pr-4",
+        icon ? "pl-1.5" : "pl-4",
+        tone === "dark" ? "on-navy glass-dark" : "on-light glass shadow-sm",
         className,
       )}
     >
-      {icon ? <Icon name={icon} size={20} strokeWidth={2.2} className="shrink-0 text-icon" /> : null}
-      <span className="grid leading-tight">
+      {icon ? <IconDot icon={icon} size="lg" /> : null}
+      <span className="grid min-w-0 leading-tight">
         <strong className="text-[0.95rem]">{label}</strong>
         {detail ? <span className="text-tiny text-muted-foreground">{detail}</span> : null}
       </span>

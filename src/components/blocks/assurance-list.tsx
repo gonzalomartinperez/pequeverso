@@ -1,4 +1,5 @@
-import { Icon, type IconName } from "@/components/blocks/icon";
+import type { IconName } from "@/components/blocks/icon";
+import { IconDot } from "@/components/blocks/icon-dot";
 import { cn } from "@/lib/utils";
 
 type Item = { icon: IconName; text: string };
@@ -11,14 +12,14 @@ type Props = {
   className?: string | undefined;
 };
 
-/** Reassurance next to a purchase action: payment, access and guarantee facts with icons. */
+/** Reassurance next to a purchase action: payment, access and guarantee facts on round markers. */
 export function AssuranceList({ items, layout = "inline", tone = "light", className }: Props) {
   return (
     <ul
       data-slot="assurance-list"
       className={cn(
         "text-small font-bold text-body",
-        layout === "inline" ? "flex flex-wrap gap-x-5 gap-y-2" : "grid gap-2",
+        layout === "inline" ? "flex flex-wrap gap-x-5 gap-y-2.5" : "grid gap-2.5",
         tone === "dark" && "on-navy",
         className,
       )}
@@ -26,8 +27,8 @@ export function AssuranceList({ items, layout = "inline", tone = "light", classN
     >
       {items.map((item) => (
         <li key={item.text} className="flex items-start gap-2">
-          <Icon name={item.icon} size={18} strokeWidth={2.2} className="mt-[0.1em] shrink-0 text-icon" />
-          <span>{item.text}</span>
+          <IconDot icon={item.icon} size="sm" />
+          <span className="pt-[0.1em]">{item.text}</span>
         </li>
       ))}
     </ul>
