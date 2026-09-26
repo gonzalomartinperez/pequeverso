@@ -20,7 +20,7 @@ export function PlaygroundCard({ kicker, children, image }: Props) {
       data-slot="playground-card"
       className={
         image
-          ? "grid gap-6 @min-[60rem]:grid-cols-[minmax(0,1fr)_minmax(0,0.42fr)] @min-[60rem]:items-stretch"
+          ? "grid gap-6 @min-[60rem]:grid-cols-[minmax(0,1fr)_minmax(0,0.42fr)] @min-[60rem]:items-end"
           : "grid gap-6"
       }
     >
@@ -31,7 +31,7 @@ export function PlaygroundCard({ kicker, children, image }: Props) {
       {image ? (
         <div
           aria-hidden="true"
-          className="glass-dark relative hidden min-h-96 overflow-hidden rounded-2xl @min-[60rem]:block"
+          className="glass-dark relative hidden aspect-[4/5] self-end overflow-hidden rounded-2xl @min-[60rem]:block"
           data-reveal=""
         >
           <div className="absolute inset-0 bg-[radial-gradient(70%_55%_at_50%_35%,oklch(0.5324_0.0917_190.84/55%),transparent_72%)]" />

@@ -57,7 +57,10 @@ export function FinalOffer({
           </p>
         </div>
       </div>
-      <div aria-hidden="true" className="cq relative mx-auto aspect-square w-full max-w-md">
+      <div
+        aria-hidden="true"
+        className="cq relative mx-auto aspect-square w-full max-w-[20rem] cq-lg:max-w-md"
+      >
         <div
           className="absolute inset-[8%] rounded-full"
           style={{

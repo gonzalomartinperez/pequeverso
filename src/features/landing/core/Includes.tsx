@@ -95,7 +95,7 @@ export function Includes({
               <p className="text-pretty">{main.description}</p>
               <p className="font-extrabold text-turquoise">{main.pagesLabel}</p>
             </div>
-            <div className="relative mt-6 -mr-10 -mb-12 w-[88%] justify-self-end overflow-hidden rounded-xl border-4 border-white/90 shadow-2xl rotate-[-4deg] cq-lg:w-[78%] [&_img]:h-auto [&_img]:w-full [&_picture]:contents">
+            <div className="relative mt-6 -mr-10 -mb-12 w-[88%] justify-self-end overflow-hidden rounded-xl border-4 border-white/90 shadow-2xl rotate-[-4deg] cq-lg:w-[78%] [&_img]:aspect-[4/3] [&_img]:h-auto [&_img]:w-full [&_img]:object-cover [&_picture]:contents">
               <MediaImage id={main.card} sizes="(min-width: 1024px) 460px, 80vw" />
             </div>
           </li>

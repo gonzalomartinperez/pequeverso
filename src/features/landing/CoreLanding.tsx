@@ -103,6 +103,8 @@ const LABEL = {
   card: ["@max-[26rem]:hidden", "hidden @max-[26rem]:inline"],
   /** Full-width CTAs of the buy box and the closing band: short under 22rem. */
   wide: ["@max-[19rem]:hidden", "hidden @max-[19rem]:inline"],
+  /** The closing band's CTA (the band is the container): short under 22rem. */
+  band: ["@max-[22rem]:hidden", "hidden @max-[22rem]:inline"],
 } as const;
 
 /** CTA label that never wraps at ≥ 320 px. */
@@ -138,7 +140,7 @@ function CutoutSlide({ id }: { id: string }) {
 function PageSlide({ id }: { id: string }) {
   return (
     <div className={`${SLIDE} p-[9%]`}>
-      <div className="-rotate-2 rounded-lg bg-white p-2 shadow-float [&_img]:h-auto [&_img]:w-full [&_img]:rounded-md [&_picture]:contents">
+      <div className="-rotate-2 rounded-lg bg-white p-2 shadow-float [&_img]:h-auto [&_img]:w-full [&_img]:rounded-md [&_img]:object-contain [&_picture]:contents">
         <MediaImage id={id} sizes={GALLERY_SIZES} />
       </div>
     </div>
@@ -428,7 +430,7 @@ export function CoreLanding({ product }: Props) {
         <div className="relative grid items-center gap-12 cq-lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] cq-lg:gap-16">
           <div className="grid content-center justify-items-start gap-5" data-reveal="blur">
             <Eyebrow>{copy.problem.kicker}</Eyebrow>
-            <h2 id="problema-title">
+            <h2 id="problema-title" className="text-[clamp(2rem,1.5rem+1.6vw,2.875rem)]">
               <Accent text={copy.problem.title} accent={copy.problem.titleAccent} />
             </h2>
             {copy.problem.paragraphs.map((paragraph) => (
@@ -483,11 +485,11 @@ export function CoreLanding({ product }: Props) {
               <Accent text={copy.benefits.title} accent={copy.benefits.titleAccent} />
             </h3>
           </div>
-          <ul className="grid grid-cols-1 gap-4 cq-sm:grid-cols-2 cq-lg:grid-cols-4" role="list">
+          <ul className="grid grid-cols-2 gap-3 cq-sm:gap-4 cq-lg:grid-cols-4" role="list">
             {copy.benefits.items.map((item, index) => (
               <li
                 key={item.title}
-                className="grid content-start gap-3 rounded-xl border border-white bg-white/85 p-6 shadow-float"
+                className="grid content-start gap-2 rounded-xl border border-white bg-white/85 p-4 shadow-float cq-sm:gap-3 cq-sm:p-6"
                 data-reveal=""
                 style={{ "--i": index } as CSSProperties}
               >
@@ -503,8 +505,8 @@ export function CoreLanding({ product }: Props) {
                 >
                   <Icon name={item.icon} size={24} strokeWidth={2.2} />
                 </span>
-                <h4 className="text-h3 font-extrabold text-ink">{item.title}</h4>
-                <p className="text-pretty text-body">{item.text}</p>
+                <h4 className="text-base font-extrabold text-ink cq-sm:text-h3">{item.title}</h4>
+                <p className="text-small text-pretty text-body cq-sm:text-base">{item.text}</p>
               </li>
             ))}
           </ul>
@@ -766,7 +768,7 @@ export function CoreLanding({ product }: Props) {
           image={VISUAL.closing}
           cta={
             <CheckoutLink product={target} position="final" className={CTA_FINAL}>
-              {ctaLabel(copy.finalOffer.cta, copy.sticky.cta, "wide")}
+              {ctaLabel(copy.finalOffer.cta, copy.sticky.cta, "band")}
             </CheckoutLink>
           }
           priceLine={[formatUsd(price), copy.finalOffer.priceNote].filter(Boolean).join(" · ")}

@@ -44,7 +44,7 @@ export function OfferCard({
     <div className={cn("cq relative mx-auto grid max-w-6xl gap-6", className)}>
       <div
         data-slot="offer-card"
-        className="border-glow pv-glow-spin relative grid gap-8 rounded-2xl p-5 shadow-float cq-sm:p-8 @min-[64rem]:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] cq-lg:gap-10 cq-lg:p-12 @min-[68rem]:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)_14rem]"
+        className="border-glow pv-glow-spin relative grid gap-8 rounded-2xl p-5 shadow-float cq-sm:p-8 @min-[64rem]:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] cq-lg:gap-10 cq-lg:p-12 @min-[68rem]:grid-cols-[minmax(0,1fr)_22rem_12rem]"
         data-reveal=""
       >
         <div className="grid content-center gap-4">
@@ -68,13 +68,13 @@ export function OfferCard({
           </ul>
         </div>
 
-        <div className="on-navy relative isolate grid content-center gap-2 overflow-hidden rounded-xl bg-linear-170 from-navy to-navy-deep p-6 shadow-lg cq-sm:p-8">
+        <div className="on-navy cq relative isolate grid content-center self-center gap-2 overflow-hidden rounded-xl bg-linear-170 from-navy to-navy-deep p-6 shadow-lg cq-sm:p-8">
           <div
             aria-hidden="true"
             className="planet-gold absolute -top-16 -right-16 -z-1 size-44 rounded-full opacity-90"
           />
           <p className="text-tiny font-extrabold tracking-[0.1em] text-gold uppercase">{price.kicker}</p>
-          <p className="font-display text-[clamp(3rem,2.4rem+2vw,4rem)] leading-none font-bold text-white tabular-nums">
+          <p className="font-display text-[clamp(2.75rem,2.3rem+1.6vw,3.5rem)] leading-none font-bold text-white tabular-nums">
             <span className="sr-only">Precio: </span>
             {formatUsd(price.value)}
           </p>
@@ -93,7 +93,7 @@ export function OfferCard({
         {pointer ? (
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -right-6 bottom-0 hidden w-72 @min-[68rem]:block [&_img]:h-auto [&_img]:w-full [&_picture]:contents"
+            className="pointer-events-none absolute -right-6 bottom-0 hidden w-64 @min-[68rem]:block [&_img]:h-auto [&_img]:w-full [&_picture]:contents"
           >
             <MediaImage id={pointer} sizes="288px" alt="" />
           </div>

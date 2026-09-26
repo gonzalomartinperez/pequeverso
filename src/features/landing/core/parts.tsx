@@ -67,9 +67,9 @@ type SyllableProps = {
 };
 
 const TILE_SIZE = {
-  sm: "size-[clamp(2.75rem,8cqw,3.75rem)] rounded-[0.9rem] text-[clamp(1.1rem,3.6cqw,1.6rem)]",
-  md: "size-[clamp(3.25rem,11cqw,5rem)] rounded-[1.1rem] text-[clamp(1.35rem,4.6cqw,2.1rem)]",
-  lg: "size-[clamp(3.75rem,14cqw,6rem)] rounded-[1.25rem] text-[clamp(1.6rem,5.6cqw,2.6rem)]",
+  sm: "h-[clamp(2.75rem,8cqw,3.75rem)] min-w-[clamp(2.75rem,8cqw,3.75rem)] rounded-[0.9rem] px-[0.35em] text-[clamp(1.1rem,3.6cqw,1.6rem)]",
+  md: "h-[clamp(3.25rem,11cqw,5rem)] min-w-[clamp(3.25rem,11cqw,5rem)] rounded-[1.1rem] px-[0.35em] text-[clamp(1.35rem,4.6cqw,2.1rem)]",
+  lg: "h-[clamp(3.75rem,14cqw,6rem)] min-w-[clamp(3.75rem,14cqw,6rem)] rounded-[1.25rem] px-[0.35em] text-[clamp(1.6rem,5.6cqw,2.6rem)]",
 } as const;
 
 /** Decorative floating syllable tile (the kit's cards): a rounded square with a display syllable. */
