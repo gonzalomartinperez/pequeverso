@@ -48,6 +48,12 @@
     "poster": {
       "widths": [480, 720],
       "quality": 72
+    },
+    "cutout": {
+      "widths": [480, 768, 1024],
+      "quality": 80,
+      "alphaQuality": 90,
+      "avif": [768, 1024]
     }
   },
   "rights": {
@@ -114,6 +120,14 @@
       "minors": "none",
       "release": "n/a",
       "notes": "Illustrative demonstrations of the printed material, some of them AI-generated. Owner statement 2026-09-24: the clips are illustrative footage whose rights belong to the owner, publication approved on the site and in the public repo. Some frames show a hand or forearm and, briefly, hair at the frame edge; no face is visible. Pages label each clip as 'Video ilustrativo.' (text.description)."
+    },
+    "imagegen-cutouts-2026-09": {
+      "origin": "ai-generated",
+      "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+      "date": "2026-09-26",
+      "people": "synthetic",
+      "minors": "synthetic",
+      "release": "n/a"
     }
   },
   "items": [
@@ -1197,6 +1211,146 @@
         "posterAt": 1,
         "posterWidths": [480, 720],
         "webm": false
+      }
+    },
+    {
+      "id": "gf.cutout.hero",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T01-hero-mama-hija-kit.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Madre e hija sonrientes sosteniendo el kit impreso Grafismo Fonético Paso a Paso"
+      }
+    },
+    {
+      "id": "gf.cutout.hero-alt",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T02-hero-mama-hijo-hoja.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Niño mostrando orgulloso una hoja del kit con la palabra GATO junto a su madre"
+      }
+    },
+    {
+      "id": "gf.cutout.stack",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T03-stack-paginas-3d.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Portada del kit y páginas reales impresas desplegadas en abanico con lápices de colores"
+      }
+    },
+    {
+      "id": "gf.cutout.kit",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T04-kit-completo-bonos.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "El cuadernillo principal rodeado de las portadas de los bonos y tarjetas de sílabas"
+      }
+    },
+    {
+      "id": "gf.cutout.tablet",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T05-tablet-y-hojas.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Tableta con la portada del PDF y hojas del kit listas para imprimir"
+      }
+    },
+    {
+      "id": "gf.cutout.trazo",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T06-nina-trazando.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Niña sentada en el piso trazando la palabra elefante en una hoja del kit"
+      }
+    },
+    {
+      "id": "gf.cutout.tarjetas",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T07-papa-hijo-tarjetas.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Padre e hijo mostrando las tarjetas GA, TO y la palabra gato"
+      }
+    },
+    {
+      "id": "gf.cutout.senala",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T08-mama-senalando.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Madre sonriente señalando mientras sostiene el kit impreso"
+      }
+    },
+    {
+      "id": "gf.cutout.celebra",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T09-nino-celebra-logro.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Niño saltando de alegría con una hoja del kit completada"
+      }
+    },
+    {
+      "id": "gf.cutout.elementos",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T10-elementos-flotantes.png"
+      },
+      "provenance": "imagegen-cutouts-2026-09",
+      "alt": {
+        "es": "Tarjetas de sílabas, lápices, tijera y estrellas de papel"
       }
     }
   ]

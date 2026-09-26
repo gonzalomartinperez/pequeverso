@@ -123,6 +123,11 @@
   --pv-lemon: oklch(0.965 0.0699 98.77); /* #fff5bf */
   --pv-rose: oklch(0.9656 0.0176 39.4); /* #fff0eb */
 
+  /* Gradient stops for the light "aurora" surfaces (never text colours) */
+  --pv-celeste: oklch(0.9425 0.0305 244.5); /* #dcefff */
+  --pv-blue-soft: oklch(0.9013 0.0458 264.2); /* #cfe0ff */
+  --pv-peach: oklch(0.9483 0.0301 55.6); /* #ffe9dc */
+
   /* Semantic surface and text roles (shadcn/ui names). The `on-navy` utility re-scopes them. */
   --background: var(--pv-cream);
   --foreground: var(--pv-ink);
@@ -156,16 +161,17 @@
   /* Type: Fraunces for display, Nunito Sans for everything else; fluid sizes via clamp() */
   --pv-font-display: "Fraunces", "Fraunces Fallback", Georgia, "Times New Roman", serif;
   --pv-font-sans: "Nunito Sans", "Nunito Sans Fallback", system-ui, "Segoe UI", Roboto, sans-serif;
-  --pv-text-display: clamp(2.125rem, 1.4rem + 2.6vw, 3.75rem); /* 34 → 60 */
-  --pv-text-h2: clamp(1.875rem, 1.45rem + 1.4vw, 2.625rem); /* 30 → 42 */
+  --pv-text-display: clamp(2.375rem, 1.5rem + 3.4vw, 4.5rem); /* 38 → 72 */
+  --pv-text-h2: clamp(2rem, 1.45rem + 2vw, 3.25rem); /* 32 → 52 */
   --pv-text-h3: clamp(1.25rem, 1.2rem + 0.2vw, 1.375rem); /* 20 → 22 */
   --pv-text-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem); /* 17 → 19 */
   --pv-text-body: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem); /* 16 → 17 */
   --pv-text-small: 0.875rem;
   --pv-text-tiny: 0.8125rem;
   --pv-text-price: clamp(2.375rem, 2rem + 1.2vw, 2.75rem); /* 38 → 44 */
-  --pv-leading-display: 1.06;
-  --pv-leading-heading: 1.12;
+  --pv-leading-display: 1.02;
+  --pv-leading-heading: 1.08;
+  --pv-tracking-display: -0.022em;
   --pv-leading-body: 1.6;
 
   /* Spacing (4-pt; Tailwind's `--spacing` of 0.25rem gives the same steps: p-4 = --space-4) */
@@ -186,9 +192,10 @@
   --radius: 0.5rem; /* shadcn base; the scale below is explicit */
   --pv-radius-sm: 4px;
   --pv-radius-chip: 6px;
-  --pv-radius-md: 8px; /* buttons, media, small cards */
-  --pv-radius-lg: 12px; /* large cards, dialogs */
-  --pv-radius-xl: 16px;
+  --pv-radius-md: 12px; /* buttons, media, small cards */
+  --pv-radius-lg: 20px; /* large cards, dialogs */
+  --pv-radius-xl: 28px;
+  --pv-radius-2xl: 36px; /* hero cards, bento tiles */
   --pv-radius-pill: 999px; /* primary CTA and chips */
 
   /* Elevation (navy-tinted) and the coral CTA glow */
@@ -197,6 +204,10 @@
   --pv-shadow-lg: 0 24px 56px oklch(0.3175 0.1094 256.25 / 16%);
   --pv-shadow-cta: 0 10px 24px oklch(0.5623 0.1722 28.49 / 24%);
   --pv-shadow-cta-hover: 0 16px 32px oklch(0.5623 0.1722 28.49 / 32%);
+  --pv-shadow-float:
+    0 1px 2px oklch(0.3175 0.1094 256.25 / 6%), 0 8px 20px -6px oklch(0.3175 0.1094 256.25 / 10%),
+    0 32px 64px -16px oklch(0.3175 0.1094 256.25 / 18%);
+  --pv-shadow-glow: 0 0 0 1px oklch(1 0 0 / 60%), 0 24px 80px -20px oklch(0.5324 0.0917 190.84 / 40%);
 
   /* Motion */
   --pv-ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -206,6 +217,8 @@
   --duration-reveal: 480ms;
   --duration-hero: 600ms;
   --duration-orbit: 48s;
+  --duration-float: 7s;
+  --duration-marquee: 40s;
   --stagger: 60ms;
   --reveal-y: 16px;
   --parallax-range: 20px;
@@ -213,7 +226,7 @@
   --tilt-perspective: 900px;
 
   /* Layout */
-  --header-height: 4.25rem;
+  --header-height: 5rem; /* floating pill (3.75rem) + its 0.625rem top/bottom offset */
   --sticky-bar-height: 4.5rem;
   --section-overlap: var(--space-8);
   --section-intrinsic: 640px; /* contain-intrinsic-size for deferred sections */
@@ -279,6 +292,9 @@
   --color-sky: var(--pv-sky);
   --color-lemon: var(--pv-lemon);
   --color-rose: var(--pv-rose);
+  --color-celeste: var(--pv-celeste);
+  --color-blue-soft: var(--pv-blue-soft);
+  --color-peach: var(--pv-peach);
 
   --font-sans: var(--pv-font-sans);
   --font-display: var(--pv-font-display);
@@ -309,6 +325,7 @@
   --radius-md: var(--pv-radius-md);
   --radius-lg: var(--pv-radius-lg);
   --radius-xl: var(--pv-radius-xl);
+  --radius-2xl: var(--pv-radius-2xl);
   --radius-pill: var(--pv-radius-pill);
 
   --shadow-sm: var(--pv-shadow-sm);
@@ -316,6 +333,8 @@
   --shadow-lg: var(--pv-shadow-lg);
   --shadow-cta: var(--pv-shadow-cta);
   --shadow-cta-hover: var(--pv-shadow-cta-hover);
+  --shadow-float: var(--pv-shadow-float);
+  --shadow-glow: var(--pv-shadow-glow);
 
   --ease-out: var(--pv-ease-out);
   --ease-emphasis: var(--pv-ease-emphasis);
@@ -414,7 +433,6 @@
   h2 {
     font-family: var(--pv-font-display);
     font-weight: 700;
-    letter-spacing: 0;
     text-wrap: balance;
     color: var(--heading);
   }
@@ -422,11 +440,13 @@
   h1 {
     font-size: var(--pv-text-display);
     line-height: var(--pv-leading-display);
+    letter-spacing: var(--pv-tracking-display);
   }
 
   h2 {
     font-size: var(--pv-text-h2);
     line-height: var(--pv-leading-heading);
+    letter-spacing: calc(var(--pv-tracking-display) * 0.7);
   }
 
   h3,
@@ -781,4 +801,96 @@
   box-shadow:
     inset -6px -8px 16px oklch(0 0 0 / 25%),
     0 10px 30px oklch(0.8521 0.0956 187.2 / 30%);
+}
+
+/* "Aurora" light surfaces: layered radial glows over a vertical paper gradient. They are the
+   reading grounds of the redesign (docs/specs/redesign-universo.md); text on them keeps the
+   cream contrast pairs because every stop is at least as light as cream. */
+@utility aurora-cream {
+  background:
+    radial-gradient(45% 55% at 100% 10%, oklch(0.9483 0.0301 55.6 / 95%), transparent 70%),
+    radial-gradient(40% 45% at 0% 100%, oklch(0.965 0.0699 98.77 / 70%), transparent 70%),
+    linear-gradient(180deg, var(--pv-cream) 0%, var(--pv-white) 100%);
+}
+
+@utility aurora-sky {
+  background:
+    radial-gradient(50% 45% at 92% 8%, oklch(0.8521 0.0956 187.2 / 32%), transparent 70%),
+    radial-gradient(45% 45% at 0% 65%, oklch(0.9013 0.0458 264.2 / 70%), transparent 70%),
+    linear-gradient(180deg, var(--pv-white) 0%, var(--pv-celeste) 100%);
+}
+
+@utility aurora-blue {
+  background:
+    radial-gradient(55% 60% at 50% 45%, oklch(0.9013 0.0458 264.2 / 85%), transparent 72%),
+    linear-gradient(180deg, var(--pv-white) 0%, var(--pv-sky) 60%, var(--pv-cream) 100%);
+}
+
+/* Hero variant of the universe with a turquoise nebula, a warm glow and a deeper top. */
+@utility sky-nebula {
+  background:
+    radial-gradient(55% 60% at 80% 28%, oklch(0.5324 0.0917 190.84 / 45%), transparent 62%),
+    radial-gradient(38% 40% at 8% 88%, oklch(0.8521 0.0956 187.2 / 16%), transparent 70%),
+    radial-gradient(28% 30% at 55% 4%, oklch(0.8908 0.1645 93.89 / 10%), transparent 70%),
+    linear-gradient(165deg, oklch(0.215 0.075 256) 0%, var(--pv-navy-deep) 45%, var(--pv-navy) 100%);
+}
+
+/* Frosted surface over gradients and photos; solid fallback where backdrop-filter is missing. */
+@utility glass {
+  background: oklch(1 0 0 / 94%);
+  border: 1px solid oklch(1 0 0 / 90%);
+  @supports (backdrop-filter: blur(1px)) {
+    background: oklch(1 0 0 / 72%);
+    backdrop-filter: blur(16px) saturate(1.4);
+  }
+}
+
+/* Frosted surface on navy. */
+@utility glass-dark {
+  background: oklch(1 0 0 / 8%);
+  border: 1px solid oklch(1 0 0 / 16%);
+  @supports (backdrop-filter: blur(1px)) {
+    backdrop-filter: blur(14px);
+  }
+}
+
+/* Accent phrase inside a heading: navy → teal on light, turquoise → gold inside on-navy. */
+@utility text-gradient {
+  background-image: linear-gradient(90deg, var(--pv-navy), var(--pv-teal));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+@utility text-gradient-sky {
+  background-image: linear-gradient(90deg, var(--pv-turquoise), var(--pv-gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* Gradient ring (gold → turquoise → coral) drawn in the padding box: the offer card only. */
+@utility border-glow {
+  --glow-angle: 200deg;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(var(--card), var(--card)) padding-box,
+    conic-gradient(
+      from var(--glow-angle),
+      var(--pv-gold),
+      var(--pv-turquoise),
+      var(--pv-coral),
+      var(--pv-gold)
+    )
+    border-box;
+}
+
+/* Paper edge where a navy band meets a light one: a wide soft arc instead of a wave. */
+@utility arc-top {
+  border-top-left-radius: clamp(2rem, 5vw, 4rem);
+  border-top-right-radius: clamp(2rem, 5vw, 4rem);
 }

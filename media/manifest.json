@@ -1,6 +1,6 @@
 {
   "$schemaVersion": 1,
-  "generatedAt": "2026-09-24T15:22:34.171Z",
+  "generatedAt": "2026-09-26T03:18:17.152Z",
   "generator": "tools/media/media-build.ts v1 (sharp 0.35.4, libvips 8.18.6)",
   "extras": [
     "public/manifest.webmanifest"
@@ -4441,6 +4441,786 @@
         "posterAt": 1,
         "webm": false
       }
+    },
+    {
+      "id": "gf.cutout.hero",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T01-hero-mama-hija-kit.png",
+        "sha256": "8a07f1234b8eb29c4bd202291d1c22cb7483218f7c2ab84dc7493b13afd9cda3",
+        "bytes": 2793625,
+        "width": 1024,
+        "height": 1536
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre e hija sonrientes sosteniendo el kit impreso Grafismo Fonético Paso a Paso"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-hero-w480-a3858b52.webp",
+          "bytes": 82604,
+          "sha256": "3ba17b921ace4bbd7d5d88dd1a6f303809a290021a845caea32aa89d1d84726d",
+          "width": 480,
+          "height": 720,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-hero-w768-56132311.webp",
+          "bytes": 194634,
+          "sha256": "7af5e6194baf18a18d9a3584b2fabee4d1a066cd70e3dfb7f4ddcbdccf47c31f",
+          "width": 768,
+          "height": 1152,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-hero-w1024-8e9d7f25.webp",
+          "bytes": 244370,
+          "sha256": "3bfabc9a81203562a1ae516ff3961a38c3edd981b3c6ca239cdda55927f56ec9",
+          "width": 1024,
+          "height": 1536,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-hero-w768-7f544bbf.avif",
+          "bytes": 80141,
+          "sha256": "b4e0f89c72d0a11c2be635dfcf25e5590cd4b0d4b19ad8e527126834a348d579",
+          "width": 768,
+          "height": 1152,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-cutout-hero-w1024-64b2f0c7.avif",
+          "bytes": 121340,
+          "sha256": "8d847fdfaa2fb89e7032bf4c0286296a847494a329f68ce86e3de9b41b6e7b39",
+          "width": 1024,
+          "height": 1536,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.hero-alt",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T02-hero-mama-hijo-hoja.png",
+        "sha256": "8d9bce0d99a2b0f62ea71196ddcdd1acbd04c0c5932051509eaf15eade5d11d8",
+        "bytes": 2542481,
+        "width": 1024,
+        "height": 1536
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Niño mostrando orgulloso una hoja del kit con la palabra GATO junto a su madre"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-hero-alt-w480-7195541f.webp",
+          "bytes": 67514,
+          "sha256": "725a8a840ae461bab8578df3d4243501428a4a18c7b3dc6bfa012c81e29dd530",
+          "width": 480,
+          "height": 720,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-hero-alt-w768-dd062004.webp",
+          "bytes": 153360,
+          "sha256": "7ad3dcf822b32333b4fbb0d1a318ff4cddec2b18411217c58c8b8af58ff7d14c",
+          "width": 768,
+          "height": 1152,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-hero-alt-w1024-25536620.webp",
+          "bytes": 200612,
+          "sha256": "89d2972c737cf5a06e62c86ab0f8ba8e2ad551c755e987b7e297f04be2fd1c48",
+          "width": 1024,
+          "height": 1536,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-hero-alt-w768-8186ca06.avif",
+          "bytes": 73027,
+          "sha256": "117f43ddf8cbc6065b3ae9efc0df34429de939d3447795e5d7a226beb893b914",
+          "width": 768,
+          "height": 1152,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-cutout-hero-alt-w1024-e56e7051.avif",
+          "bytes": 104427,
+          "sha256": "11a75d9f0d2eda16a917ecfa1a9c73eb2c36eb5c7fd502f6a01d6c1697f992a4",
+          "width": 1024,
+          "height": 1536,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.stack",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T03-stack-paginas-3d.png",
+        "sha256": "10bf520bf142c7deb6473e38abecdfb7a91929e207553c6f3ca91b2231fb7404",
+        "bytes": 2060675,
+        "width": 1536,
+        "height": 1024
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Portada del kit y páginas reales impresas desplegadas en abanico con lápices de colores"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-stack-w480-a64a696a.webp",
+          "bytes": 42922,
+          "sha256": "72b627a91cd3efcd78a766be9e0a02f94a16729fe773a177e65ed731baafdb51",
+          "width": 480,
+          "height": 320,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-stack-w768-1cc13206.webp",
+          "bytes": 86168,
+          "sha256": "776ccebf49e793de0d2763992c8e1ce5ac00161b2b213323f77b0cb98cb3e13e",
+          "width": 768,
+          "height": 512,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-stack-w1024-1a352db1.webp",
+          "bytes": 132172,
+          "sha256": "3c1a2e4758bdfef4528b0f5c8db2ed4c68db2bcbdc57daa9f8bc5d5d90adc398",
+          "width": 1024,
+          "height": 683,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-stack-w768-2762ca47.avif",
+          "bytes": 47876,
+          "sha256": "5f61b7e46b7f8161dfec07be4ebc4919a265e4f5fb3b8415b5c4c1f030cbe7ff",
+          "width": 768,
+          "height": 512,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-cutout-stack-w1024-bc97673e.avif",
+          "bytes": 70621,
+          "sha256": "88cdf9f9da07e90195f48afa6279bae8cf02b9546ad8601af229e0cf59801876",
+          "width": 1024,
+          "height": 683,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.kit",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T04-kit-completo-bonos.png",
+        "sha256": "92ee39b7c5f8aad528635332653dd3ab3bf991d63694def75798f7b2b6bc630d",
+        "bytes": 2457413,
+        "width": 1536,
+        "height": 1024
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "El cuadernillo principal rodeado de las portadas de los bonos y tarjetas de sílabas"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-kit-w480-a12fb7dc.webp",
+          "bytes": 57736,
+          "sha256": "5f1ff1039ce4e6bf1d2384c271bf1d3be6a89d590f1442b0ed5e48a02cacebde",
+          "width": 480,
+          "height": 320,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-kit-w768-50e372a2.webp",
+          "bytes": 117038,
+          "sha256": "400183d385d30cfdd7c2d5cf53db23582e21df917c96023397aa15fa5b1aa4da",
+          "width": 768,
+          "height": 512,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-kit-w1024-48247c8b.webp",
+          "bytes": 182796,
+          "sha256": "8d1f97b806a414142b23a290c01df471a48b31d2e0149358b47ebfaee35ec439",
+          "width": 1024,
+          "height": 683,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-kit-w768-b5c3a70b.avif",
+          "bytes": 57849,
+          "sha256": "acc7095fbe6ddb97c6795140d2d81603a8864a663771354f9477e42c674d01a9",
+          "width": 768,
+          "height": 512,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-cutout-kit-w1024-089606a5.avif",
+          "bytes": 89452,
+          "sha256": "dbf01b301b7078a63e743fc8dc17a1232e5f73260328032170d1370ed0396899",
+          "width": 1024,
+          "height": 683,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.tablet",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T05-tablet-y-hojas.png",
+        "sha256": "b12f439e328b25f625f9545b811a7c8b544be8230c3bbf792d73ea4e2a432600",
+        "bytes": 2179291,
+        "width": 1536,
+        "height": 1024
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Tableta con la portada del PDF y hojas del kit listas para imprimir"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-tablet-w480-a68cb794.webp",
+          "bytes": 50134,
+          "sha256": "f9dcb07ca45433b257cfd7e3dca89466bc0f71b84980ee516e3b87608d1abf52",
+          "width": 480,
+          "height": 320,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-tablet-w768-72a11177.webp",
+          "bytes": 97702,
+          "sha256": "7c755a395b475e5e6d2f05ed2674b56a2907ab61e158bdfcc09a80b86adb8239",
+          "width": 768,
+          "height": 512,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-tablet-w1024-49bca843.webp",
+          "bytes": 147346,
+          "sha256": "28ec8a291efd387ddf13ec2d6e3fa9f5e0a55ac777fa3b4adfe04d64546df2db",
+          "width": 1024,
+          "height": 683,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-tablet-w768-22c2587e.avif",
+          "bytes": 53153,
+          "sha256": "ff8d7319be98015844129c12ea057d63929ab6cf38bfd20508d132f2acd97eff",
+          "width": 768,
+          "height": 512,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-cutout-tablet-w1024-76236cb8.avif",
+          "bytes": 77582,
+          "sha256": "59d907533530ade4ae0e552d539f36b22e806159ea717a40f4294485b632e7be",
+          "width": 1024,
+          "height": 683,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.trazo",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T06-nina-trazando.png",
+        "sha256": "7e0b3cba5112e5bb0e73c62732a25c5be648df703e22cca9b1d051e213d16a1c",
+        "bytes": 1858746,
+        "width": 1254,
+        "height": 1254
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Niña sentada en el piso trazando la palabra elefante en una hoja del kit"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-trazo-w480-1158933f.webp",
+          "bytes": 45198,
+          "sha256": "c2be93f7c4a70b47baac1d2ea4be7d790d3b018d725f2b8fbe7473ed61e42fda",
+          "width": 480,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-trazo-w768-74b7e9e0.webp",
+          "bytes": 96500,
+          "sha256": "4431416e03d0de8a671283db3936f1faa7b072b6d8ec7f8de16fff53bbbffb02",
+          "width": 768,
+          "height": 768,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-trazo-w1024-092dd207.webp",
+          "bytes": 155684,
+          "sha256": "1c2b4e073a95fe00f7c97e2718e85c64df940d31c8bdb8c815918a7dd9837784",
+          "width": 1024,
+          "height": 1024,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-trazo-w768-428b87ea.avif",
+          "bytes": 46010,
+          "sha256": "a6a579b62afafaf2b3dc7dd6ee72f223d8dcfa55fa7337460f30dffeb5aa179b",
+          "width": 768,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-cutout-trazo-w1024-0e574aae.avif",
+          "bytes": 73726,
+          "sha256": "2e8242d77f52f810d626f0f00b3d420108e91449e61eab657b0ece3a3df309f4",
+          "width": 1024,
+          "height": 1024,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.tarjetas",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T07-papa-hijo-tarjetas.png",
+        "sha256": "84721146f376202efb01194ecbf70ca196a7c30a96d7b1e640fc7634179364c8",
+        "bytes": 2649044,
+        "width": 1024,
+        "height": 1536
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Padre e hijo mostrando las tarjetas GA, TO y la palabra gato"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-tarjetas-w480-dfdaaafa.webp",
+          "bytes": 67742,
+          "sha256": "215d821b2958b9ea5016a5e58ea658df2f06d8b0da40f0b2bdf4007ae425b29c",
+          "width": 480,
+          "height": 720,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-tarjetas-w768-57b870a4.webp",
+          "bytes": 150802,
+          "sha256": "7f8240b8e7d4b0bca917fa78431ab0fe608b01b6c2afdb61bf4fd26e085d095d",
+          "width": 768,
+          "height": 1152,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-tarjetas-w1024-25988990.webp",
+          "bytes": 202878,
+          "sha256": "7a1472ff858dc5aa5940bb577d5428e7770a448ac493c8303b0da95ed5577922",
+          "width": 1024,
+          "height": 1536,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-tarjetas-w768-baf07ec0.avif",
+          "bytes": 71425,
+          "sha256": "dffc832b3b7820b5175d3435e14b1eaccef8e3b66c01f23bdb30b1b963187bf3",
+          "width": 768,
+          "height": 1152,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-cutout-tarjetas-w1024-6cdf59fc.avif",
+          "bytes": 110011,
+          "sha256": "527018ccb9a72f84550221c4907b6f1a2ddb401a892ae22cec9274b0d7892195",
+          "width": 1024,
+          "height": 1536,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.senala",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T08-mama-senalando.png",
+        "sha256": "5876dd3117f58614ea22e795a7854efe0a3c8f293996948d84918ce1f1aa4618",
+        "bytes": 2398908,
+        "width": 1024,
+        "height": 1536
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Madre sonriente señalando mientras sostiene el kit impreso"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-senala-w480-06ce9b7d.webp",
+          "bytes": 55528,
+          "sha256": "914315da4046fc15e3de59aa5d85c1b3fc5e194b1ce723bdfc85c61556824ac8",
+          "width": 480,
+          "height": 720,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-senala-w768-9f6879d0.webp",
+          "bytes": 123914,
+          "sha256": "ff4ee53cd22125504a6d9d776240f5576229909fbb7e3107516b950842ac8581",
+          "width": 768,
+          "height": 1152,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-senala-w1024-1689d15b.webp",
+          "bytes": 185312,
+          "sha256": "106715e64f683919df2c06f98bfd6b6aefe2ade7d23090bc01aaa00bbf63ea3c",
+          "width": 1024,
+          "height": 1536,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-senala-w768-63bd34d4.avif",
+          "bytes": 61952,
+          "sha256": "54c18679c10d4f9e44f6968e461e85f2e3ff8a1ddcae529ecaae2941033af14c",
+          "width": 768,
+          "height": 1152,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-cutout-senala-w1024-b5b0f9bc.avif",
+          "bytes": 89836,
+          "sha256": "4e3538760ebec09aac9beafeda058bb3a965ae3bb3f329c841cffde12e30d5fd",
+          "width": 1024,
+          "height": 1536,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.celebra",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T09-nino-celebra-logro.png",
+        "sha256": "0941f32c0d9923ad53a06f7b5b71b159e2e022d8fc113562d6fd94192a66af25",
+        "bytes": 2005477,
+        "width": 1024,
+        "height": 1536
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Niño saltando de alegría con una hoja del kit completada"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-celebra-w480-20fa1cdf.webp",
+          "bytes": 51638,
+          "sha256": "dee3710464dd10515adc69e1a5c394b60a3ab1daa3894bfc6f3a8445cbd79960",
+          "width": 480,
+          "height": 720,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-celebra-w768-1bec6d48.webp",
+          "bytes": 109820,
+          "sha256": "cc75b4c03fa0654821650d391308bb7a6a8e0abdfdee262562f83c7834d88e1e",
+          "width": 768,
+          "height": 1152,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-celebra-w1024-d83f39fb.webp",
+          "bytes": 149072,
+          "sha256": "db464af374d0bb1b5fa4774c558498a9cc045967a802ab266d0908e8c0898cbf",
+          "width": 1024,
+          "height": 1536,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-celebra-w768-2fe77418.avif",
+          "bytes": 54559,
+          "sha256": "1787eeacc60af2d2ef2d5286fd45939e670a0f3477e610730699b9a6fc27a25f",
+          "width": 768,
+          "height": 1152,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-cutout-celebra-w1024-541bbbc1.avif",
+          "bytes": 67467,
+          "sha256": "4ac4215a37cfad34e8bd9a36c804527b0e053f537c24b9cb0b763d8194245ebf",
+          "width": 1024,
+          "height": 1536,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.cutout.elementos",
+      "role": "cutout",
+      "page": "grafismo-fonetico",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-cutouts-2026-09/T10-elementos-flotantes.png",
+        "sha256": "b7de1baff3d513a854529df2768f8789a74f935702d5d740a1a06d9a0f1254c9",
+        "bytes": 2242171,
+        "width": 1536,
+        "height": 1024
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+        "date": "2026-09-26",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Tarjetas de sílabas, lápices, tijera y estrellas de papel"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-cutout-elementos-w480-f3b38f64.webp",
+          "bytes": 58572,
+          "sha256": "1cdea18cc371e44e48b64fbaa6599250db59ad309aecebf7a4def2a2a4fc0dd0",
+          "width": 480,
+          "height": 320,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-elementos-w768-a8f9ae54.webp",
+          "bytes": 111018,
+          "sha256": "05ad694a504fed866f39b82f4fd81a8d670bdce9cfb5b7c38ede527ea3eeba5f",
+          "width": 768,
+          "height": 512,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-elementos-w1024-27e30b9d.webp",
+          "bytes": 168566,
+          "sha256": "be0d1e4d247b2c7a77b2abdcc22546da568a965cd7ed11d1857233cbc617562b",
+          "width": 1024,
+          "height": 683,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/gf/gf-cutout-elementos-w768-ec069b21.avif",
+          "bytes": 51694,
+          "sha256": "a6ff0524455c6638c5b54b8d25665e3d7ff2a7b2ac2248772ac59fa3ae68d09a",
+          "width": 768,
+          "height": 512,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-cutout-elementos-w1024-dd95f0dc.avif",
+          "bytes": 71095,
+          "sha256": "90ee42146542418894d3335240cf1b22d9afc890fb9c7b8bf9240e921cf69f36",
+          "width": 1024,
+          "height": 683,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
     }
   ]
 }
