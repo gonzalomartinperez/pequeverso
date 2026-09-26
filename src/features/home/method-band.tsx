@@ -66,10 +66,9 @@ export function MethodBand() {
                     </span>
                     <span
                       aria-hidden="true"
-                      className="font-display text-[1.75rem] font-bold text-white/25 tabular-nums"
-                    >
-                      0{index + 1}
-                    </span>
+                      data-n={`0${index + 1}`}
+                      className="font-display text-[1.75rem] font-bold text-white/25 tabular-nums before:content-[attr(data-n)]"
+                    />
                   </span>
                   <span className="font-display text-[1.4rem] leading-tight font-bold text-white cq-sm:text-[1.6rem]">
                     {step.title}

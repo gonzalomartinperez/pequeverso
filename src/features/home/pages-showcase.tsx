@@ -1,5 +1,4 @@
 import { homeCopy as copy } from "@content/es/home";
-import type { CSSProperties } from "react";
 import { MediaImage } from "@/components/blocks/media-image";
 import { PageWall } from "@/features/gallery/PageWall/page-wall";
 import { FlipPreview } from "@/motion/flip-preview";
@@ -47,12 +46,13 @@ export function PagesShowcase() {
             />
           </Float>
         </div>
-        <ul className="-mx-(--gutter) flex snap-x snap-mandatory scroll-px-(--gutter) gap-4 overflow-x-auto px-(--gutter) pt-2 pb-4 cq-md:mx-0 cq-md:grid cq-md:grid-cols-3 cq-md:gap-6 cq-md:overflow-visible cq-md:p-0">
-          {PREVIEW_PAGES.map(([front, back], index) => (
+        <ul
+          data-reveal=""
+          className="-mx-(--gutter) flex snap-x snap-mandatory scroll-px-(--gutter) gap-4 overflow-x-auto px-(--gutter) pt-2 pb-4 cq-md:mx-0 cq-md:grid cq-md:grid-cols-3 cq-md:gap-6 cq-md:overflow-visible cq-md:p-0"
+        >
+          {PREVIEW_PAGES.map(([front, back]) => (
             <li
               key={front}
-              data-reveal=""
-              style={{ "--i": index } as CSSProperties}
               className="w-[82%] shrink-0 snap-start rounded-xl bg-white p-2 pb-3 shadow-float ring-1 ring-line cq-md:w-auto"
             >
               <FlipPreview

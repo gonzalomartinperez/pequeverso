@@ -59,10 +59,9 @@ export function ValuesBento() {
               <p className="max-w-[42ch] text-pretty">{item.text}</p>
               <span
                 aria-hidden="true"
-                className="absolute -top-3 right-5 font-display text-[5.5rem] leading-none font-bold text-navy/5"
-              >
-                0{index + 1}
-              </span>
+                data-n={`0${index + 1}`}
+                className="absolute -top-3 right-5 font-display text-[5.5rem] leading-none font-bold text-navy/5 before:content-[attr(data-n)]"
+              />
             </li>
           ))}
           <li

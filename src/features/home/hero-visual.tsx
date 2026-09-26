@@ -57,7 +57,7 @@ export function HeroVisual() {
           rotate={7}
           className="absolute top-[4%] right-[-2%] w-[30%] cq-xl:right-[-6%]"
         >
-          <div className="overflow-hidden rounded-md border-4 border-white bg-white shadow-float">
+          <div className="overflow-hidden rounded-md border-4 border-white bg-white shadow-float [&_img]:h-auto [&_img]:w-full">
             <MediaImage id={pageAt(6)} sizes="(min-width: 1024px) 180px, 30vw" />
           </div>
         </Float>
