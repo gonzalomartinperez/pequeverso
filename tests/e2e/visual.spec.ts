@@ -29,8 +29,9 @@ for (const { name, path } of pages) {
 test("footer matches its baseline", async ({ page }) => {
   await page.goto("/", { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
-  // The floating header is sticky: wherever the capture scrolls it, it overlaps the footer.
+  // The floating header and the mobile buy bar are fixed/sticky: wherever the capture scrolls,
+  // they overlap the footer. Hide them for this element capture (a mask would move with them).
   await expect(page.getByRole("contentinfo")).toHaveScreenshot("footer.png", {
-    mask: [page.getByRole("banner")],
+    style: '[data-slot="header"], [data-slot="sticky-cta"] { visibility: hidden !important; }',
   });
 });
