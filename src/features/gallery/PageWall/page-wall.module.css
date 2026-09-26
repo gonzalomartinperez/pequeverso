@@ -1,7 +1,7 @@
 /*
- * PageWall: rows of real pages drifting in opposite directions on a slight diagonal. CSS-only
- * loop (transform), paused on hover, on focus and by the wall's toggle; static under reduced
- * motion (one lap, centred, clipped by the wall).
+ * PageWall: rows of real pages drifting in opposite directions on a slight diagonal. CSS loop
+ * (transform), paused on hover and on focus, stopped by the wall's toggle and while the wall is
+ * mostly off-screen; static under reduced motion (one lap, centred, clipped by the wall).
  */
 .wall {
   overflow: clip;
@@ -59,9 +59,16 @@
   }
 
   .wall:hover .track,
-  .wall:focus-within .track,
-  .wall[data-paused] .track {
+  .wall:focus-within .track {
     animation-play-state: paused;
+  }
+
+  /* Idle (paused by its toggle, or mostly off-screen): the drift is removed, not just paused, and
+     the track holds the position `WallToggle` froze inline. A paused animation still keeps the
+     track animated, and without GPU compositing (WebKit on Linux) every frame then repaints all
+     the shadowed pages: the whole page drops to about one frame per second. */
+  .wall[data-idle] .track {
+    animation: none;
   }
 
   .card {

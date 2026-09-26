@@ -412,8 +412,12 @@
     font-family: var(--pv-font-sans);
   }
 
+  /* Smooth only for in-page jumps the visitor starts (the clicked link holds focus). A URL that
+     arrives with a fragment (`/grafismo-fonetico/#paginas`) lands on the section at once instead
+     of animating through the whole page, which is slow to watch and, while it lasts, moves every
+     control under the pointer. */
   @media (prefers-reduced-motion: no-preference) {
-    html {
+    html:focus-within {
       scroll-behavior: smooth;
     }
   }

@@ -49,8 +49,8 @@ function Lap({ ids, hidden }: { ids: readonly string[]; hidden?: boolean }) {
 
 /**
  * Decorative wall of real pages: one or two rows drifting in opposite directions on a -3° diagonal
- * (CSS transform loop, lazy images, pauses on hover/focus and with its toggle, static under reduced
- * motion). The pages are named once in a visually hidden list; the moving copies are `aria-hidden`.
+ * (CSS transform loop, lazy images, pauses on hover/focus, stops with its toggle and while mostly
+ * off-screen, static under reduced motion). The pages are named once in a visually hidden list; the moving copies are `aria-hidden`.
  * The wall clips itself, so it never widens the page.
  */
 export function PageWall({ ids, label, rows = 2, className }: Props) {
@@ -83,7 +83,7 @@ export function PageWall({ ids, label, rows = 2, className }: Props) {
               }
               aria-hidden="true"
             >
-              <div className={styles.track}>
+              <div className={styles.track} data-slot="page-wall-track">
                 <Lap ids={cards} />
                 <Lap ids={cards} hidden />
               </div>
