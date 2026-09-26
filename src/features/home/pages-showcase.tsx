@@ -26,7 +26,7 @@ export function PagesShowcase() {
     <section
       id="paginas"
       aria-labelledby="preview-title"
-      className="cq defer-render relative scroll-mt-(--header-height) overflow-x-clip bg-[radial-gradient(40%_30%_at_100%_18%,oklch(0.8521_0.0956_187.2/30%),transparent_70%),linear-gradient(180deg,var(--pv-cream)_0%,var(--pv-celeste)_30%,var(--pv-white)_70%,var(--pv-cream)_100%)] section-pad"
+      className="cq relative scroll-mt-(--header-height) overflow-x-clip bg-[radial-gradient(40%_30%_at_100%_18%,oklch(0.8521_0.0956_187.2/30%),transparent_70%),linear-gradient(180deg,var(--pv-cream)_0%,var(--pv-celeste)_30%,var(--pv-white)_70%,var(--pv-cream)_100%)] section-pad"
     >
       <div className="page-container">
         <div className="mb-10 grid items-center gap-6 cq-lg:mb-14 cq-lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
@@ -42,7 +42,7 @@ export function PagesShowcase() {
               id="gf.cutout.stack"
               sizes="(min-width: 1024px) 520px, 92vw"
               alt=""
-              className="h-auto w-full drop-shadow-[0_28px_36px_oklch(0.3175_0.1094_256.25/25%)]"
+              className="h-auto w-full object-contain drop-shadow-[0_28px_36px_oklch(0.3175_0.1094_256.25/25%)]"
             />
           </Float>
         </div>

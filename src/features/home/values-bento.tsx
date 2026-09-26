@@ -26,7 +26,7 @@ export function ValuesBento() {
     <section
       id="valores"
       aria-labelledby="valores-title"
-      className="cq defer-render relative scroll-mt-(--header-height) bg-[radial-gradient(45%_60%_at_100%_40%,oklch(0.9013_0.0458_264.2/70%),transparent_70%),radial-gradient(40%_50%_at_0%_90%,oklch(0.9483_0.0301_55.6/80%),transparent_70%),var(--pv-cream)] pt-8 pb-[calc(var(--section-pad)+var(--section-overlap))]"
+      className="cq relative scroll-mt-(--header-height) bg-[radial-gradient(45%_60%_at_100%_40%,oklch(0.9013_0.0458_264.2/70%),transparent_70%),radial-gradient(40%_50%_at_0%_90%,oklch(0.9483_0.0301_55.6/80%),transparent_70%),var(--pv-cream)] pt-8 pb-[calc(var(--section-pad)+var(--section-overlap))]"
     >
       <div className="page-container">
         <div

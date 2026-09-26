@@ -24,7 +24,6 @@ export function CollectionBento() {
     <Section
       id="incluye"
       labelledBy="incluye-title"
-      defer
       className="cq bg-[radial-gradient(40%_35%_at_95%_20%,oklch(0.8521_0.0956_187.2/28%),transparent_70%),radial-gradient(45%_40%_at_0%_70%,oklch(0.9013_0.0458_264.2/60%),transparent_70%),linear-gradient(180deg,var(--pv-cream)_0%,var(--pv-celeste)_40%,var(--pv-celeste)_65%,var(--pv-cream)_100%)]"
     >
       <div className="mb-10 grid gap-3 cq-lg:grid-cols-[minmax(0,1fr)_auto] cq-lg:items-end">

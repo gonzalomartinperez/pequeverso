@@ -57,7 +57,7 @@ export function HeroVisual() {
           rotate={7}
           className="absolute top-[4%] right-[-2%] w-[30%] cq-xl:right-[-6%]"
         >
-          <div className="overflow-hidden rounded-md border-4 border-white bg-white shadow-float [&_img]:h-auto [&_img]:w-full">
+          <div className="overflow-hidden rounded-md border-4 border-white bg-white shadow-float [&_img]:h-auto [&_img]:w-full [&_img]:object-contain">
             <MediaImage id={pageAt(6)} sizes="(min-width: 1024px) 180px, 30vw" />
           </div>
         </Float>
@@ -92,7 +92,7 @@ function ProductTag() {
       <Float delay={4} range={8}>
         <div className="glass grid gap-3 rounded-xl p-4 shadow-float">
           <div className="flex items-center gap-3">
-            <div className="w-18 shrink-0 overflow-hidden rounded-md shadow-sm ring-1 ring-line [&_img]:h-auto [&_img]:w-full">
+            <div className="w-18 shrink-0 overflow-hidden rounded-md shadow-sm ring-1 ring-line [&_img]:h-auto [&_img]:w-full [&_img]:object-contain">
               <MediaImage id={product.media.cards[0] ?? product.media.hero} sizes="72px" alt="" />
             </div>
             <div className="grid min-w-0 gap-0.5">

@@ -30,7 +30,7 @@ export function MethodBand() {
     <section
       id="metodo"
       aria-labelledby="metodo-title"
-      className="cq defer-render relative scroll-mt-(--header-height) bg-cream px-3 pt-24 pb-(--section-pad) cq-sm:px-5 cq-lg:pt-32"
+      className="cq relative scroll-mt-(--header-height) bg-cream px-3 pt-24 pb-(--section-pad) cq-sm:px-5 cq-lg:pt-32"
     >
       <div className="on-navy relative mx-auto max-w-[88rem] rounded-2xl cq-lg:rounded-[3rem]">
         {/* Backdrop, clipped to the rounded card (the cut-out below is not). */}
@@ -90,7 +90,7 @@ export function MethodBand() {
               {copy.illustrative}
             </p>
           </div>
-          <div className="glass-dark rounded-xl p-4 cq-sm:p-6 cq-lg:col-span-2 cq-lg:p-8" data-reveal="">
+          <div className="cq-lg:col-span-2" data-reveal="">
             <SyllablePlayground
               words={words}
               title={m.playground.title}
