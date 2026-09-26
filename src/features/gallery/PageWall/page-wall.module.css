@@ -44,6 +44,9 @@
   display: block;
   height: 100%;
   width: auto;
+  /* WebKit sizes the width from the attribute ratio, which differs slightly per rendition:
+     never distort a real page. */
+  object-fit: contain;
 }
 
 @media (prefers-reduced-motion: no-preference) {

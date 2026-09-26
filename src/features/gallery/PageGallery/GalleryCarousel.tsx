@@ -128,13 +128,19 @@ export function GalleryCarousel({ label, zoomHint, children, count, itemLabel, z
     if (!embla) return;
     const onScroll = () => setSettled(false);
     const onSettle = () => setSettled(true);
+    // A new selection starts a snap animation: mark it in motion at once, not on the first scroll
+    // frame, so nothing sees "settled" while the slide still travels (Safari eases longer).
+    const onPick = () => {
+      onSelect();
+      setSettled(false);
+    };
     onSelect();
-    embla.on("select", onSelect);
+    embla.on("select", onPick);
     embla.on("reInit", onSelect);
     embla.on("scroll", onScroll);
     embla.on("settle", onSettle);
     return () => {
-      embla.off("select", onSelect);
+      embla.off("select", onPick);
       embla.off("reInit", onSelect);
       embla.off("scroll", onScroll);
       embla.off("settle", onSettle);

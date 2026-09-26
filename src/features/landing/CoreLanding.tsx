@@ -425,7 +425,7 @@ export function CoreLanding({ product }: Props) {
         />
       </Section>
 
-      <Section tone="aurora-cream" labelledBy="problema-title" defer className="cq overflow-x-clip">
+      <Section tone="aurora-cream" labelledBy="problema-title" className="cq overflow-x-clip">
         <Blend from="var(--pv-celeste)" />
         <div className="relative grid items-center gap-12 cq-lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] cq-lg:gap-16">
           <div className="grid content-center justify-items-start gap-5" data-reveal="blur">
@@ -539,7 +539,6 @@ export function CoreLanding({ product }: Props) {
         backdrop={<Universe variant="band" />}
         container={false}
         className="cq pb-[calc(var(--section-pad)+clamp(2.5rem,7vw,6.5rem))]"
-        defer
       >
         <div className="page-container relative grid gap-12">
           <SectionHeading
@@ -637,7 +636,7 @@ export function CoreLanding({ product }: Props) {
         </div>
       </Section>
 
-      <Section tone="aurora-cream" id="videos" labelledBy="videos-title" className="cq" defer>
+      <Section tone="aurora-cream" id="videos" labelledBy="videos-title" className="cq">
         <Blend from="var(--pv-celeste)" />
         <div className="relative">
           <SectionHeading
@@ -693,7 +692,7 @@ export function CoreLanding({ product }: Props) {
       </Section>
 
       {copy.audience ? (
-        <Section tone="aurora-cream" id="para-quien" labelledBy="audience-title" className="cq" defer>
+        <Section tone="aurora-cream" id="para-quien" labelledBy="audience-title" className="cq">
           <SectionHeading
             id="audience-title"
             kicker={copy.audience.kicker}
@@ -717,7 +716,7 @@ export function CoreLanding({ product }: Props) {
       ) : null}
 
       {copy.creator?.enabled ? (
-        <Section tone="lemon" labelledBy="creator-title" defer>
+        <Section tone="lemon" labelledBy="creator-title">
           <CreatorNote
             titleId="creator-title"
             kicker={copy.creator.kicker}
@@ -728,7 +727,7 @@ export function CoreLanding({ product }: Props) {
         </Section>
       ) : null}
 
-      <Section tone="aurora-sky" id="preguntas" labelledBy="faq-title" className="cq" defer>
+      <Section tone="aurora-sky" id="preguntas" labelledBy="faq-title" className="cq">
         <div className="grid gap-10 cq-lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] cq-lg:gap-16">
           <div className="grid content-start gap-5 cq-lg:sticky cq-lg:top-[calc(var(--header-height)+1.5rem)]">
             <SectionHeading
@@ -757,7 +756,6 @@ export function CoreLanding({ product }: Props) {
         divider="arc"
         backdrop={<Universe variant="band" />}
         className="cq scroll-mt-(--header-height) [&>[data-slot=universe]]:sky-nebula"
-        defer
       >
         <FinalOffer
           titleId="final-title"
