@@ -71,7 +71,7 @@ export function OfferCard({
         <div className="on-navy cq relative isolate grid content-center self-center gap-2 overflow-hidden rounded-xl bg-linear-170 from-navy to-navy-deep p-6 shadow-lg cq-sm:p-8">
           <div
             aria-hidden="true"
-            className="planet-gold absolute -top-16 -right-16 -z-1 size-44 rounded-full opacity-90"
+            className="planet-gold absolute -top-20 -right-20 -z-1 size-36 rounded-full opacity-80"
           />
           <p className="text-tiny font-extrabold tracking-[0.1em] text-gold uppercase">{price.kicker}</p>
           <p className="font-display text-[clamp(2.75rem,2.3rem+1.6vw,3.5rem)] leading-none font-bold text-white tabular-nums">

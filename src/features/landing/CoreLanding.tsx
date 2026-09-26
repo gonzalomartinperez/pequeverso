@@ -71,10 +71,10 @@ const VISUAL = {
 const GALLERY_PAGES = [18, 7] as const;
 const GALLERY_SIZES = "(min-width: 1024px) 620px, 92vw";
 const THUMB_SIZES = "96px";
-const CTA_BUY = `${buttonVariants({ size: "lg" })} pv-shine w-full px-6 @max-[26rem]:text-[1.0625rem] @max-[22rem]:px-4 @max-[22rem]:[&_svg[data-icon=inline-start]]:hidden`;
+const CTA_BUY = `${buttonVariants({ size: "xl" })} w-full @max-[26rem]:text-[1.0625rem] @max-[22rem]:px-4 @max-[22rem]:[&_svg[data-icon=inline-start]]:hidden`;
 /** Price-card CTA: tighter padding and no leading icon when the card (its container) is narrow. */
-const CTA = `${buttonVariants()} pv-shine @max-[24rem]:px-4 @max-[24rem]:[&_svg[data-icon=inline-start]]:hidden`;
-const CTA_FINAL = `${buttonVariants({ size: "lg" })} pv-shine w-full cq-sm:w-auto`;
+const CTA = `${buttonVariants()} @max-[24rem]:px-4 @max-[24rem]:[&_svg[data-icon=inline-start]]:hidden`;
+const CTA_FINAL = `${buttonVariants({ size: "lg" })} w-full cq-sm:w-auto`;
 
 function checkoutTarget(product: CoreProduct): CheckoutTarget {
   return {
@@ -194,7 +194,7 @@ export function CoreLanding({ product }: Props) {
     <CheckoutLink
       product={target}
       position="header"
-      className={`${buttonVariants({ size: "sm" })} pv-shine`}
+      className={buttonVariants({ size: "sm" })}
       title={localCurrencyNoteShort}
     >
       Comprar · {formatUsd(price)}
@@ -746,7 +746,7 @@ export function CoreLanding({ product }: Props) {
               </p>
             </div>
           </div>
-          <FAQ items={copy.faq.items} />
+          <FAQ items={copy.faq.items} surface="glass" />
         </div>
       </Section>
 
