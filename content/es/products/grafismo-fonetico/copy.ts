@@ -107,7 +107,9 @@ export const grafismoCopy = {
     hint: "Así funciona cada página del kit: primero la sílaba, después la palabra.",
     doneLabel: "¡Palabra completa!",
     words: [
+      { syllables: ["TO", "MA", "TE"], word: "tomate", page: 8 },
       { syllables: ["GA", "TO"], word: "gato", page: 18 },
+      { syllables: ["A", "BE", "JA"], word: "abeja", page: 14 },
       { syllables: ["MA", "PA"], word: "mapa", page: 1 },
       { syllables: ["LU", "NA"], word: "luna", page: 7 },
       { syllables: ["PE", "RRO"], word: "perro", page: 19 },
