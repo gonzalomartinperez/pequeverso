@@ -218,7 +218,7 @@ Acceptance criterion for every block and page, 320 → 1920 px, enforced by
 
 **Home and principal landing** (`src/app/page.tsx`, `CoreLanding`, `features/landing/core/*`,
 `AgeSelector`, gallery and video) are built only from primitives, blocks and utilities; no CSS
-Modules remain there. `HeroScene` places copy, the `HeroStack` of real worksheets, the sticky price
+Modules remain there. `ProductHero` places copy, the `HeroStack` of real worksheets, the sticky price
 aside and the desk on one container-query grid (below lg: copy → real pages → price → desk).
 Conversion rules applied: one dominant action per viewport (coral only for purchase; home links
 to the product are white/navy), hierarchy H1 → value → real pages → price → CTA, assurances

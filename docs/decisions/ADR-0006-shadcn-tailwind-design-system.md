@@ -94,6 +94,17 @@ and new budgets at measured + 10 %: css (default) 16 737 B → 19 818 B → 21 8
 `/imprime-y-juega/` html 35 475 B → 39 023 B; `/soporte/` html 14 392 B → 15 831 B. JS unchanged.
 The page redesigns may re-baseline again when they land.
 
+**Addendum 2026-09-26 — "Universo evolucionado" redesign (docs/specs/redesign-universo.md).**
+Every page was redesigned (product-page landing, storefront hub, post-purchase, shell, legal)
+with aurora gradients, glass surfaces, bento grids, the syllable playground and the page wall.
+Measured gzip: shared CSS 16.7 → 33.2 KB (≈800 arbitrary gradient/shadow utilities, one
+stylesheet for the whole site); HTML `/` 30 → 52 KB, `/grafismo-fonetico/` 55 → 79 KB (product
+gallery, bento and playground markup), other routes +2–6 KB; route JS +1.3 KB on the landing and
+offer (playground and wall islands). Budgets re-baselined at measured + 10 %: default CSS
+37 397 B; per-route HTML/JS in `config/budgets.json`. Media stays within 25 MB (22.2 MB).
+Follow-up: move the repeated gradient/shadow recipes from arbitrary classes to named utilities
+in `globals.css` and tighten the CSS budget again.
+
 ## Consequences
 
 - One file changes the brand; semantic roles make blocks adapt to their band without tone props.

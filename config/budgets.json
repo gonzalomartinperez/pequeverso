@@ -3,37 +3,39 @@
   "default": {
     "html": 17408,
     "js": 173568,
-    "css": 21800
+    "css": 37397
   },
   "routes": {
     "/": {
-      "html": 30550,
+      "html": 59024,
       "js": 160256
     },
     "/grafismo-fonetico/": {
-      "html": 56337
+      "html": 88761,
+      "js": 192389
     },
     "/imprime-y-juega/": {
-      "html": 39023
+      "html": 50238,
+      "js": 192389
     },
     "/grafismo-fonetico/gracias/": {
       "js": 157696,
-      "html": 25088
+      "html": 32666
     },
     "/soporte/": {
-      "html": 15831,
+      "html": 24218,
       "js": 156160
     },
     "/terminos/": {
-      "html": 23554,
+      "html": 29738,
       "js": 156160
     },
     "/privacidad/": {
-      "html": 22991,
+      "html": 29287,
       "js": 156160
     },
     "/arrepentimiento/": {
-      "html": 26122,
+      "html": 30526,
       "js": 156160
     }
   },
