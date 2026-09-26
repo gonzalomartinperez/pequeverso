@@ -13,6 +13,8 @@ type Props = {
   className: string;
   /** Server-rendered icon and visually hidden label. */
   children: ReactNode;
+  /** The header CTA, repeated at the foot of the sheet. */
+  cta?: ReactNode | undefined;
 };
 
 /**
@@ -20,7 +22,7 @@ type Props = {
  * (hover, focus, touch) or first open, so the shared header adds no dialog code to the initial
  * bundle of every page.
  */
-export function MobileNav({ items, className, children }: Props) {
+export function MobileNav({ items, className, children, cta }: Props) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const show = () => {
@@ -44,7 +46,7 @@ export function MobileNav({ items, className, children }: Props) {
       </button>
       {mounted ? (
         <Suspense fallback={null}>
-          <NavSheet items={items} open={open} onOpenChange={setOpen} />
+          <NavSheet items={items} cta={cta} open={open} onOpenChange={setOpen} />
         </Suspense>
       ) : null}
     </>
