@@ -84,6 +84,16 @@ measured + 10 %: `/` 27 773 B → 30 550 B, `/grafismo-fonetico/` 51 215 B → 5
 21 413 B → 23 554 B, `/privacidad/` 20 901 B → 22 991 B, and the new `/arrepentimiento/` 23 747 B
 (per-country table) → 26 122 B. JS and CSS unchanged.
 
+**Addendum — "Universo evolucionado" shared vocabulary (blocks).** The redesign's shared block
+vocabulary (pill buttons with gradient/shine/arrow motion, tone chips with a dot, `glass`,
+`glass-dark`, `elevated`, `gradient` cards with hover lift, gradient icon tiles, round markers,
+store badges, `TrustRow`, `PriceTag`, `lines` FAQ) adds Tailwind gradient, inset-ring and
+transition utilities to the single site stylesheet. Colours stay tokens; navy adaptation reads
+the semantic roles instead of extra selectors to keep the sheet small. Measured (gzip level 9)
+and new budgets at measured + 10 %: css (default) 16 737 B → 19 818 B → 21 800 B;
+`/imprime-y-juega/` html 35 475 B → 39 023 B; `/soporte/` html 14 392 B → 15 831 B. JS unchanged.
+The page redesigns may re-baseline again when they land.
+
 ## Consequences
 
 - One file changes the brand; semantic roles make blocks adapt to their band without tone props.
