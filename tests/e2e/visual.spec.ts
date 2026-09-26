@@ -31,7 +31,8 @@ test("footer matches its baseline", async ({ page }) => {
   await page.evaluate(() => document.fonts.ready);
   // The floating header and the mobile buy bar are fixed/sticky: wherever the capture scrolls,
   // they overlap the footer. Hide them for this element capture (a mask would move with them).
-  await expect(page.getByRole("contentinfo")).toHaveScreenshot("footer.png", {
-    style: '[data-slot="header"], [data-slot="sticky-cta"] { visibility: hidden !important; }',
+  await page.addStyleTag({
+    content: '[data-slot="header"], [data-slot="sticky-cta"] { visibility: hidden !important; }',
   });
+  await expect(page.getByRole("contentinfo")).toHaveScreenshot("footer.png");
 });
