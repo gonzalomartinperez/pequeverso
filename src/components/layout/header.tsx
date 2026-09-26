@@ -15,16 +15,25 @@ type Props = {
   cta?: ReactNode | undefined;
   /** Small subtitle under the brand on product pages. */
   subtitle?: string | undefined;
+  /** Float over the first band instead of taking its own row (see PageShell `overlay`). */
+  overlay?: boolean | undefined;
 };
 
 /**
  * Sticky site header: brand (wordmark from sm), inline anchors from lg, the single CTA, and a
  * sheet with the same anchors below lg. The CTA is the last tab stop of the header.
  */
-export function Header({ nav = [], cta, subtitle }: Props) {
+export function Header({ nav = [], cta, subtitle, overlay = false }: Props) {
   const items = nav.slice(0, 4);
   return (
-    <header data-slot="header" className="sticky top-0 z-50 border-b border-border bg-surface-veil">
+    <header
+      data-slot="header"
+      data-overlay={overlay ? "" : undefined}
+      className={cn(
+        "sticky top-0 z-50 border-b border-border bg-surface-veil",
+        overlay && "-mb-(--header-height)",
+      )}
+    >
       <div className="page-container flex min-h-(--header-height) items-center gap-2 sm:gap-4">
         <Link
           href="/"
