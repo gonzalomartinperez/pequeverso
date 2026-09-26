@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, ViewTransition } from "react";
+import { useId, useState, ViewTransition } from "react";
 import { cx } from "@/lib/cx";
 import { useMotionOK } from "@/motion/use-motion-ok";
 import { useAge } from "./AgeContext";
@@ -36,7 +36,11 @@ export function AgeSelector({ legend, options, initial, tone = "light", classNam
   const { selected, select } = useAge();
   const { ok } = useMotionOK();
   const name = useId();
-  const current = selected ?? initial;
+  // The radios follow a synchronous copy of the choice: the shared selection updates inside a
+  // transition (for the worksheet's view transition), and React would otherwise restore the old
+  // controlled value right after the click, leaving the pill unchecked in WebKit.
+  const [picked, setPicked] = useState(selected ?? initial);
+  const current = picked;
   const hint = options[current]?.hint ?? "";
 
   return (
@@ -50,7 +54,10 @@ export function AgeSelector({ legend, options, initial, tone = "light", classNam
               name={name}
               value={option.id}
               checked={current === index}
-              onChange={() => select(index)}
+              onChange={() => {
+                setPicked(index);
+                select(index);
+              }}
               className="peer absolute inset-0 m-0 size-full cursor-pointer opacity-0"
             />
             <span className={CHIP[tone]}>{option.label}</span>
