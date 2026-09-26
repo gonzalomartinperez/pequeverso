@@ -126,7 +126,8 @@ test("age selector swaps the featured worksheet and keeps a single h1", async ({
   const option = page.getByRole("radio", { name: "6–7" });
   await option.click();
   await expect(option).toBeChecked();
-  await expect(featured).not.toHaveAttribute("alt", before ?? "");
+  // The swap runs inside a view transition; headless WebKit (no GPU) paints it slowly.
+  await expect(featured).not.toHaveAttribute("alt", before ?? "", { timeout: 15_000 });
   await expect(page.locator("h1:visible")).toHaveCount(1);
   await expect(heading).toHaveText(title ?? "");
   await expect(page.locator("#comprar")).toHaveCount(1);
