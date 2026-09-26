@@ -1,0 +1,256 @@
+/*
+ * "Une las sílabas" (SyllablePlayground): paper tiles, the dotted word that traces itself and the
+ * real page that turns in. Transform/opacity/stroke only; every animation sits behind
+ * `prefers-reduced-motion: no-preference` (plus the global kill switch), so reduced motion swaps
+ * states instantly. Layout and colours live in Tailwind classes on the markup.
+ */
+
+/* Paper tile with a coloured edge underneath (pressed = the edge shrinks). */
+.tile {
+  --tile-bg: var(--pv-white);
+  --tile-edge: var(--pv-blue-soft);
+  --tile-lift: 6px;
+  background: var(--tile-bg);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 70%),
+    0 var(--tile-lift) 0 var(--tile-edge),
+    0 calc(var(--tile-lift) + 10px) 22px -8px oklch(0.3175 0.1094 256.25 / 32%);
+  translate: 0 0;
+}
+
+.tile[data-tone="gold"] {
+  --tile-bg: var(--pv-gold);
+  --tile-edge: oklch(0.78 0.15 88);
+}
+
+.tile[data-tone="turquoise"] {
+  --tile-bg: var(--pv-turquoise);
+  --tile-edge: oklch(0.72 0.1 187);
+}
+
+.tile[data-tone="peach"] {
+  --tile-bg: var(--pv-peach);
+  --tile-edge: oklch(0.84 0.06 50);
+}
+
+.tile[data-tone="celeste"] {
+  --tile-bg: var(--pv-celeste);
+  --tile-edge: var(--pv-blue-soft);
+}
+
+.tile:active:not([aria-disabled="true"]) {
+  --tile-lift: 2px;
+  translate: 0 4px;
+}
+
+.tile[aria-disabled="true"] {
+  --tile-lift: 0px;
+  translate: 0 6px;
+  opacity: 0.42;
+  cursor: default;
+}
+
+/* Dotted trace letters (the worksheet's "punteada") under the ink that draws itself. */
+.guide {
+  fill: none;
+  stroke: var(--pv-line-strong);
+  stroke-width: 2.5;
+  stroke-dasharray: 0.5 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ink {
+  fill: var(--pv-navy);
+  fill-opacity: 0;
+  stroke: var(--pv-navy);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+}
+
+.slot[data-filled] .ink {
+  fill-opacity: 1;
+  stroke-dashoffset: 0;
+}
+
+.slot[data-filled] .guide {
+  opacity: 0;
+}
+
+.baseline {
+  background-image: linear-gradient(90deg, var(--pv-teal) 50%, transparent 50%);
+  background-size: 10px 3px;
+  opacity: 0.45;
+}
+
+.slot[data-filled] .baseline {
+  background-image: linear-gradient(90deg, var(--pv-teal), var(--pv-teal));
+  opacity: 1;
+}
+
+.whole {
+  opacity: 0;
+  scale: 0.92;
+}
+
+.board[data-done] .slots {
+  opacity: 0;
+}
+
+.board[data-done] .whole {
+  opacity: 1;
+  scale: 1;
+}
+
+/* Star burst around the finished word: each star flies along --dx/--dy. */
+.star {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.page[data-done] .veil {
+  opacity: 0;
+}
+
+.badge {
+  opacity: 0;
+  scale: 0.6;
+}
+
+.page[data-done] .badge {
+  opacity: 1;
+  scale: 1;
+}
+
+.card {
+  rotate: 1deg;
+  scale: 0.97;
+}
+
+.page[data-done] .card {
+  rotate: 3deg;
+  scale: 1;
+}
+
+.done {
+  opacity: 0;
+  translate: 0 6px;
+}
+
+.board[data-done] + .done,
+.done[data-show] {
+  opacity: 1;
+  translate: 0 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tile {
+    transition:
+      translate 120ms var(--pv-ease-out),
+      box-shadow 120ms var(--pv-ease-out),
+      opacity var(--duration) var(--pv-ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .tile:hover:not([aria-disabled="true"]) {
+      --tile-lift: 8px;
+      translate: 0 -2px;
+    }
+  }
+
+  .ink {
+    transition:
+      stroke-dashoffset 700ms cubic-bezier(0.45, 0, 0.2, 1),
+      fill-opacity 320ms var(--pv-ease-out) 420ms;
+  }
+
+  .guide,
+  .baseline {
+    transition: opacity var(--duration-reveal) var(--pv-ease-out);
+  }
+
+  .slots {
+    transition: opacity 240ms var(--pv-ease-out) 760ms;
+  }
+
+  .whole {
+    transition:
+      opacity 280ms var(--pv-ease-out) 760ms,
+      scale 560ms cubic-bezier(0.3, 1.5, 0.5, 1) 760ms;
+  }
+
+  .star {
+    animation: star-burst 900ms cubic-bezier(0.2, 0.8, 0.3, 1) calc(820ms + var(--i) * 30ms) both;
+  }
+
+  .veil {
+    transition: opacity 500ms var(--pv-ease-out) 200ms;
+  }
+
+  .card {
+    animation: page-enter 640ms var(--pv-ease-emphasis) both;
+    transition:
+      rotate 700ms var(--pv-ease-emphasis) 250ms,
+      scale 700ms var(--pv-ease-emphasis) 250ms;
+  }
+
+  .page[data-done] .card {
+    animation: page-turn 900ms var(--pv-ease-emphasis) 250ms both;
+  }
+
+  .badge {
+    transition:
+      opacity var(--duration) var(--pv-ease-out) 700ms,
+      scale 420ms cubic-bezier(0.3, 1.6, 0.5, 1) 700ms;
+  }
+
+  .done {
+    transition:
+      opacity var(--duration-reveal) var(--pv-ease-out) 600ms,
+      translate var(--duration-reveal) var(--pv-ease-out) 600ms;
+  }
+}
+
+@keyframes star-burst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2) rotate(0deg);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(160deg);
+  }
+}
+
+/* A new word's page arrives turning in from the side. */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: perspective(1200px) translateY(16px) rotateY(-28deg);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(1200px) rotateY(0deg);
+  }
+}
+
+/* The finished word's page makes one soft turn toward the reader. */
+@keyframes page-turn {
+  0% {
+    transform: perspective(1200px) rotateY(0deg);
+  }
+  45% {
+    transform: perspective(1200px) rotateY(-14deg) translateY(-8px);
+  }
+  100% {
+    transform: perspective(1200px) rotateY(0deg);
+  }
+}

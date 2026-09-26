@@ -11,14 +11,15 @@ type Props = {
   className?: string | undefined;
 };
 
-const DURATION_MS = 900;
+const DURATION_MS = 1200;
 
+/** Exponential ease-out: most of the count happens early, the last digits settle gently. */
 function easeOut(t: number): number {
-  return 1 - (1 - t) ** 3;
+  return t >= 1 ? 1 : 1 - 2 ** (-10 * t);
 }
 
 /**
- * Number that counts from 0 to `value` over 900 ms when it enters the viewport. The server
+ * Number that counts from 0 to `value` over 1.2 s (exponential ease-out) when it enters the viewport. The server
  * renders the final value in tabular figures with reserved width; reduced motion skips the count.
  */
 export function Counter({ value, format = String, className }: Props) {

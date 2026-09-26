@@ -3,8 +3,6 @@
 import { Dialog } from "@base-ui/react/dialog";
 import { XIcon } from "lucide-react";
 import type { KeyboardEvent } from "react";
-import { buttonVariants } from "@/components/ui/button-variants";
-import { cx } from "@/lib/cx";
 
 export type Zoom = {
   src: string;
@@ -57,26 +55,26 @@ export function ZoomDialog({ open, zoom, title, onClose }: Props) {
       }}
     >
       <Dialog.Portal>
-        <Dialog.Backdrop className="fixed inset-0 z-70 bg-navy-deep/72 transition-opacity duration-(--duration) ease-out data-ending-style:opacity-0 data-starting-style:opacity-0" />
+        <Dialog.Backdrop className="fixed inset-0 z-70 bg-navy-deep/80 transition-opacity duration-(--duration) ease-out data-ending-style:opacity-0 data-starting-style:opacity-0" />
         <Dialog.Viewport className="fixed inset-0 z-70 grid place-items-center pt-[max(1rem,env(safe-area-inset-top))] pr-[max(1rem,env(safe-area-inset-right))] pb-[max(1rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))]">
           <Dialog.Popup
             data-slot="gallery-zoom"
             onKeyDown={trapTab}
-            className="relative grid max-h-full w-fit max-w-[min(1000px,100%)] gap-3 overflow-auto rounded-lg bg-white p-4 shadow-lg outline-none transition-[opacity,scale] duration-(--duration) ease-out data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0 sm:p-6"
+            className="relative grid max-h-full w-fit max-w-[min(1040px,100%)] gap-3 overflow-auto rounded-xl bg-[linear-gradient(160deg,var(--pv-white),var(--pv-celeste))] p-3 shadow-lg outline-none border border-white/80 transition duration-(--duration-reveal) ease-emphasis data-ending-style:translate-y-2 data-ending-style:scale-96 data-ending-style:opacity-0 data-starting-style:translate-y-2 data-starting-style:scale-96 data-starting-style:opacity-0 sm:p-5"
           >
             {zoom ? (
               <>
                 <Dialog.Title
                   className={
                     title
-                      ? "pr-12 font-sans text-small font-extrabold tracking-[0.06em] text-teal-text uppercase"
+                      ? "flex min-h-11 items-center gap-2 pr-14 pl-1 font-sans text-small font-extrabold tracking-[0.08em] text-teal-text uppercase before:size-2 before:rounded-full before:bg-teal"
                       : "sr-only"
                   }
                 >
                   {title ?? zoom.alt}
                 </Dialog.Title>
                 <img
-                  className="mx-auto max-h-[calc(100dvh-9rem)] w-auto max-w-full rounded-md object-contain"
+                  className="mx-auto max-h-[calc(100dvh-10rem)] w-auto max-w-full rounded-lg bg-white object-contain shadow-md"
                   src={zoom.src}
                   srcSet={zoom.srcSet}
                   sizes="90vw"
@@ -84,17 +82,12 @@ export function ZoomDialog({ open, zoom, title, onClose }: Props) {
                   height={zoom.height}
                   alt={zoom.alt}
                 />
-                <Dialog.Description className="text-center font-bold text-ink">
+                <Dialog.Description className="px-2 pb-1 text-center text-small font-bold text-ink text-balance sm:text-base">
                   {zoom.caption}
                 </Dialog.Description>
               </>
             ) : null}
-            <Dialog.Close
-              className={cx(
-                buttonVariants({ variant: "secondary", size: "icon" }),
-                "absolute top-3 right-3 rounded-full",
-              )}
-            >
+            <Dialog.Close className="glass absolute top-3 right-3 grid size-11 cursor-pointer place-items-center rounded-full text-navy shadow-md transition duration-(--duration-fast) ease-out hover:bg-white active:scale-95 sm:top-4 sm:right-4">
               <XIcon aria-hidden="true" focusable="false" />
               <span className="sr-only">Cerrar</span>
             </Dialog.Close>

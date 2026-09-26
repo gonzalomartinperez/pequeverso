@@ -51,9 +51,9 @@
     },
     "cutout": {
       "widths": [480, 768, 1024],
-      "quality": 80,
-      "alphaQuality": 90,
-      "avif": [768, 1024]
+      "quality": 72,
+      "alphaQuality": 80,
+      "avif": [1024]
     }
   },
   "rights": {
@@ -124,6 +124,14 @@
     "imagegen-cutouts-2026-09": {
       "origin": "ai-generated",
       "tool": "ChatGPT image generation, transparent PNG (landing redesign 2026-09-26; prompt pequeverso-prompt-chatgpt.txt)",
+      "date": "2026-09-26",
+      "people": "synthetic",
+      "minors": "synthetic",
+      "release": "n/a"
+    },
+    "imagegen-scenes-2026-09": {
+      "origin": "ai-generated",
+      "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
       "date": "2026-09-26",
       "people": "synthetic",
       "minors": "synthetic",
@@ -1351,6 +1359,186 @@
       "provenance": "imagegen-cutouts-2026-09",
       "alt": {
         "es": "Tarjetas de sílabas, lápices, tijera y estrellas de papel"
+      }
+    },
+    {
+      "id": "gf.life.trazo",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S01-mama-hija-trazo-mesa.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Madre e hija practicando el trazo de una hoja en la mesa del comedor"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.papa",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S02-papa-hijo-silabas.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Padre e hijo formando sílabas con tarjetas sobre la mesa"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.kit",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S04-kit-en-uso-mesa-edit.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Madre e hija usando el kit Grafismo Fonético con tarjetas de sílabas"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.reto",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S05-nina-reto-lectura-edit.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Niña mostrando orgullosa su hoja del reto de lectura junto a su madre"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.tarjetas",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S06-tarjetas-alfombra-edit.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Madre e hija jugando con tarjetas de sílabas sobre la alfombra"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.imprimir-kit",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S07-imprimir-kit.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Madre sacando de la impresora una hoja del kit mientras su hija sonríe"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.flatlay",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S08-flatlay-kit-en-uso-edit.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Vista desde arriba del kit en uso: cuaderno, tarjetas y tableta"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.noche",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S09-rutina-noche.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Madre e hija repasando palabras del kit en una rutina de la tarde"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.logro",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S10-lo-logre.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Niña sonriente mostrando su hoja terminada junto a su madre"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
+      }
+    },
+    {
+      "id": "gf.life.imprimir",
+      "role": "scene",
+      "page": "grafismo-fonetico",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S03-imprimir-en-casa-marca.png"
+      },
+      "provenance": "imagegen-scenes-2026-09",
+      "alt": {
+        "es": "Madre imprimiendo hojas en casa mientras su hija mira emocionada"
+      },
+      "outputs": {
+        "widths": [640, 1024],
+        "avif": [1024]
       }
     }
   ]
