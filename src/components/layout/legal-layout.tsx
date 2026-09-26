@@ -15,8 +15,7 @@ type Props = {
 const TOC_LABEL = "Contenido de esta página";
 const TOC_HEADING = "text-tiny font-extrabold tracking-[0.12em] text-teal-text uppercase";
 /** Index rows: pill hover on the `toc` counter list (numbers come from the utility). */
-const TOC_LIST =
-  "toc grid gap-y-0.5 [&_a]:rounded-md [&_a]:px-2 [&_a:hover]:bg-white [&_a:hover]:text-navy";
+const TOC_LIST = "toc grid gap-y-0.5 [&_a]:rounded-md [&_a]:px-2 [&_a:hover]:bg-white [&_a:hover]:text-navy";
 
 function TocList({ sections, className }: { sections: readonly Section[]; className?: string }) {
   return (
@@ -54,8 +53,8 @@ export function LegalLayout({ title, intro, updatedAt, sections = [], children }
             <div className="absolute top-[calc(18%+3.5rem)] right-[calc(-6rem+3.5rem)] size-[19rem] rounded-full border border-dashed border-teal/20 max-sm:hidden" />
             <div className="planet-gold absolute top-[calc(18%+12.5rem)] right-[19.5rem] size-4 rounded-full max-sm:hidden" />
           </div>
-          <div className="page-container relative grid gap-5">
-            <h1 className="max-w-[18ch] text-balance">{title}</h1>
+          <div className="page-container relative grid gap-5 [&>*]:min-w-0">
+            <h1 className="max-w-[18ch] text-balance hyphens-auto">{title}</h1>
             {intro ? <p className="lead max-w-[60ch] text-pretty">{intro}</p> : null}
             <p className="glass inline-flex items-center gap-2 justify-self-start rounded-pill px-4 py-2 text-tiny font-bold text-body shadow-sm sm:text-small">
               <CalendarDays aria-hidden="true" focusable="false" className="size-4 text-icon" />
