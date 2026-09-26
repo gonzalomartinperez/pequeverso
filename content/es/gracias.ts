@@ -15,6 +15,8 @@ export const graciasCopy = {
     lead: "Hotmart envía el acceso al correo que usaste al comprar. Entra con ese mismo correo, descarga los PDF y elige la primera hoja.",
     cta: "Entrar a Hotmart y ver mis archivos",
     note: "Usa el mismo correo de la compra. Si no ves el mensaje, revisa Spam y Promociones.",
+    visualLabel: "Tus compras en Hotmart",
+    visualHint: "Mis compras · 9 PDF",
     facts: [
       "Grafismo Fonético + 8 bonos incluidos",
       "9 PDF · 414 páginas",
@@ -23,8 +25,8 @@ export const graciasCopy = {
     ],
   },
   access: {
-    kicker: "Acceso en tres pasos",
-    title: "Encuentra tu kit.",
+    kicker: "Próximos pasos",
+    title: "Del correo a la primera hoja, en cuatro pasos.",
     steps: [
       {
         icon: "mail",
@@ -33,13 +35,18 @@ export const graciasCopy = {
       },
       {
         icon: "login",
-        title: "Entra a consumer.hotmart.com",
-        text: "Inicia sesión con el mismo correo de la compra y abre “Mis compras”.",
+        title: "Entra a Hotmart",
+        text: "Inicia sesión en consumer.hotmart.com con el mismo correo de la compra y abre “Mis compras”.",
       },
       {
         icon: "download",
         title: "Descarga los PDF",
         text: "Guarda los nueve archivos en tu computadora o teléfono. Puedes volver a descargarlos cuando quieras.",
+      },
+      {
+        icon: "printer",
+        title: "Imprime la primera hoja",
+        text: "Elige una página con una palabra que el niño reconozca e imprime solo esa. Con eso ya pueden empezar.",
       },
     ],
     cta: "Ir a mis compras",
@@ -53,6 +60,7 @@ export const graciasCopy = {
       "Imprime solo esa hoja. Practica los cuatro gestos: mira, di, traza, une.",
       "Guarda la hoja en una carpeta. Mañana, otra página. Sin prisa.",
     ],
+    imageNote: "Imagen ilustrativa.",
     printNote:
       "Tú eliges cuánto imprimir: una hoja, una semana o una carpeta completa. Los archivos no caducan.",
   },
@@ -87,6 +95,7 @@ export const graciasCopy = {
     ],
     contact:
       "Para cualquier otra duda, escríbenos. Respondemos con calma, normalmente en menos de 48 horas hábiles.",
+    supportLink: "Ver soporte y contacto",
   },
   noPurchase: {
     title: "¿Llegaste aquí sin comprar?",
