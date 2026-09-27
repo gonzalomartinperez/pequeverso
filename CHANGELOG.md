@@ -5,6 +5,11 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
 ## [Unreleased]
 
 ### Changed
+- Branch flow: `develop` is the integration branch (default, nightly target); features squash into it,
+  releases merge `develop` → `main` with a merge commit (main deploys), hotfixes go to `main` and are
+  merged back. Both branches are protected rulesets (`ci` + `Branch policy`).
+
+### Changed
 - Whole-site redesign "universo evolucionado" (docs/specs/redesign-universo.md): aurora gradient
   surfaces (cream, sky and blue to white), glass, larger type and radii, float/marquee/shine/
   scroll-progress motion. The Grafismo Fonético landing is a product page (gallery + buy box,
