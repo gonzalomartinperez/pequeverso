@@ -50,9 +50,13 @@ Spanish. Read this file first, then the doc that matches your task.
 
 ## Workflow
 
-- Branches: `type/kebab-case` (`feat|fix|chore|docs|refactor|perf|test|ci|build|revert`) → PR into
-  `main` (protected ruleset; required check `ci`). Conventional Commits with a body that states what
-  was verified and what was not.
+- Branches: `develop` is the integration branch (default); `main` is production (Hostinger builds
+  it on every merge). Work on `type/kebab-case` (`feat|fix|chore|docs|refactor|perf|test|ci|build|revert`)
+  → squash PR into `develop`. A release is a PR `develop` → `main` merged with a **merge commit**
+  (keeps the shared history, so the next release merges cleanly). Hotfix: `fix/…` → PR into `main`,
+  then a PR `main` → `develop` (merge commit). Both branches are protected rulesets (required
+  checks `ci` + `Branch policy`). Conventional Commits with a body that states what was verified
+  and what was not.
 - Before opening a PR: `npm run check` and the relevant `npm run test:e2e` projects. Keep
   `docs/generated/htaccess.txt` in sync (`node scripts/gen-htaccess.ts`).
 - One owner per lockfile change; dependency updates are their own PR.

@@ -1,6 +1,7 @@
 name: Branch policy
 
-# Validates branch naming and PR title for pull requests into main. pull_request_target is used on
+# Validates branch naming and PR title for pull requests into develop (features) and main (releases
+# from develop, hotfixes). pull_request_target is used on
 # purpose so the policy comes from main and cannot be edited away by the PR itself; the job has no
 # permissions, checks out nothing and runs nothing from the head, so no untrusted code executes.
 on:
@@ -32,10 +33,20 @@ jobs:
         run: |
           set -euo pipefail
           echo "PR: $HEAD_REPO:$HEAD_REF -> $BASE_REPO:$BASE_REF"
-          if [ "$BASE_REF" != "main" ]; then
-            echo "::error::Pull requests must target main"; exit 1
+          case "$BASE_REF" in
+            develop | main) ;;
+            *) echo "::error::Pull requests must target develop (features) or main (releases, hotfixes)"; exit 1 ;;
+          esac
+          # Release (develop -> main) and back-merge (main -> develop) PRs come from the long-lived branches.
+          flow=""
+          if [ "$HEAD_REPO" = "$BASE_REPO" ]; then
+            case "$HEAD_REF>$BASE_REF" in
+              "develop>main" | "main>develop") flow="yes" ;;
+            esac
           fi
-          if [ "$HEAD_REPO" = "$BASE_REPO" ] && ! printf '%s' "$HEAD_REF" | grep -Eq '^(feat|fix|chore|docs|refactor|perf|test|ci|build|revert|release|dependabot)/[a-z0-9]+([._/-][a-z0-9]+)*$'; then
+          if [ -n "$flow" ]; then
+            echo "Release/back-merge PR: $HEAD_REF -> $BASE_REF"
+          elif [ "$HEAD_REPO" = "$BASE_REPO" ] && ! printf '%s' "$HEAD_REF" | grep -Eq '^(feat|fix|chore|docs|refactor|perf|test|ci|build|revert|release|dependabot)/[a-z0-9]+([._/-][a-z0-9]+)*$'; then
             echo "::error::Branch name must match type/kebab-case (feat|fix|chore|docs|refactor|perf|test|ci|build|revert|release)"; exit 1
           fi
           if ! printf '%s' "$PR_TITLE" | grep -Eq '^(feat|fix|chore|docs|refactor|perf|test|ci|build|revert)(\([a-z0-9-]+\))?!?: .+'; then

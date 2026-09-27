@@ -17,12 +17,12 @@ build:standalone` is the Node parity build you can run locally).
 
 | Workflow | When | What | Permissions |
 |---|---|---|---|
-| `ci.yml` | pull request, push to `main`, manual | `workflows` (actionlint + zizmor), `build` (lint, types, unit, knip, export, budgets, audit), `hostinger` (GLIBC 2.28 container, WASM SWC, standalone build + smoke) in parallel → `e2e` + `lighthouse` (not on push) → `ci` (required check) | `contents: read` |
+| `ci.yml` | pull request, push to `main` or `develop`, manual | `workflows` (actionlint + zizmor), `build` (lint, types, unit, knip, export, budgets, audit), `hostinger` (GLIBC 2.28 container, WASM SWC, standalone build + smoke) in parallel → `e2e` + `lighthouse` (not on push) → `ci` (required check) | `contents: read` |
 | `post-deploy-verify.yml` | push to `main`, manual (`sha`), called by Deploy | waits until `build-info.json` reports the commit, smoke, headers, `PW_SET=prod`, informative Lighthouse; job summary with revision and timings | `contents: read` |
 | `nightly.yml` | 04:17 UTC, manual (`update_snapshots`) | Chromium + WebKit × 7 widths, visual baselines, clean-clone invariant, full knip, Lighthouse ×5, links, bundle analysis | `contents: read` |
 | `deploy.yml` | manual, `production`/`staging` environment approval | gated release below, then `post-deploy-verify` | `contents: write` on the release job only |
 | `production-daily.yml` | 09:00 UTC, manual | live-site checks without building: reuses `post-deploy-verify` with the live sha, plus TLS, header matrix, relay probe, checkout link, sitemap/robots, internal links; opens/closes one `production` issue | `contents: read`; `issues: write` on the report job only |
-| `branch-policy.yml` | `pull_request_target` | branch name and PR title policy from `main`; no checkout, `permissions: {}` | none |
+| `branch-policy.yml` | `pull_request_target` | base `develop` (features) or `main` (releases from `develop`, hotfixes), branch name and PR title policy from the base branch; no checkout, `permissions: {}` | none |
 
 `.github/actions/setup` is the shared composite (Node from `.nvmrc`, npm cache, `npm ci`,
 optional cached Playwright browser). `deploy.yml` keeps its setup inline because it checks out the
@@ -43,8 +43,11 @@ smoke-tested). A green `ci` therefore means both targets build and the Node one 
 
 Owner toggles that are repository settings, not workflows: CodeQL default setup (Settings →
 Code security; JavaScript/TypeScript, free for public repositories), Dependabot alerts, and the
-`ci` required check on the `main` ruleset. A merge queue is not used: one maintainer, PRs must
-already be up to date with `main`.
+`ci` required check on the `main` ruleset. A merge queue is not used: one maintainer. Branch flow:
+features squash into `develop` (the default branch; nightly runs there); a release is a PR
+`develop` → `main` merged with a merge commit, which deploys (Hostinger builds `main`) and runs
+`post-deploy-verify`; hotfixes go to `main` and are merged back into `develop`. PRs into `main`
+must be up to date with it.
 
 ## Deploy workflow (`.github/workflows/deploy.yml`)
 
