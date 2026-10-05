@@ -18,6 +18,7 @@ Spanish. Read this file first, then the doc that matches your task.
 | Release or deploy | `docs/deployment.md` |
 | URL changes, redirects, cutover | `docs/migration.md` |
 | Hotmart funnel (checkout, widget, dashboard changes, E2E checklist) | `docs/hotmart-funnel.md` |
+| Native shopping assistant (disabled by default) | `docs/assistant.md`, ADR-0008 |
 | Skills | `.agents/skills/*/SKILL.md` (canonical); `.claude/skills` are thin adapters |
 
 ## Non-negotiables
@@ -45,6 +46,11 @@ Spanish. Read this file first, then the doc that matches your task.
   `exactOptionalPropertyTypes`, `erasableSyntaxOnly`); scripts, server code and unit tests run as
   `node file.ts` (erasable syntax, `.ts` import extensions, `import type`). The only JavaScript is
   the one-line `next.config.mjs` re-export of `config/next.ts` (ADR-0007).
+- **The native assistant stays disabled.** `NEXT_PUBLIC_ASSISTANT_ENABLED` is unset/`false` in every
+  publishable build; enabling it needs the owner's explicit authorization and a rebuild. Enabled
+  builds (`npm run test:e2e:assistant`, `out-assistant-fixture/`) are verification artifacts only;
+  `npm run check:assistant-disabled` must pass on anything that ships. The assistant is advisory:
+  no checkout, payment, cart or tracking features (`docs/assistant.md`).
 - **Placeholders `[[LIKE_THIS]]` are allowed in legal copy until the owner supplies the details**;
   the deploy workflow refuses to ship them.
 
