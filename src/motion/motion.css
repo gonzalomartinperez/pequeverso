@@ -448,3 +448,14 @@
     transform: scale(0.94);
   }
 }
+
+/*
+ * Scoped motion hold (src/motion/motion-hold.ts): while a surface covers the page (the assistant's
+ * expanded or phone panel), decorative motion under the page landmarks pauses. The assistant lives
+ * outside these landmarks, so its own feedback keeps running. Nothing changes the visitor's choice.
+ */
+:root[data-motion-hold] :is(header, main, footer) *,
+:root[data-motion-hold] :is(header, main, footer) *::before,
+:root[data-motion-hold] :is(header, main, footer) *::after {
+  animation-play-state: paused;
+}

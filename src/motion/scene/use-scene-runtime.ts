@@ -1,6 +1,7 @@
 "use client";
 
 import { type RefObject, useCallback, useEffect, useRef, useState } from "react";
+import { isPageMotionHeld, subscribePageMotionHold } from "../motion-hold";
 import type { SceneOptions, SceneRuntime } from "./scene-runtime";
 
 /** `static`: the server-rendered layers are showing; `running`: the WebGL scene animates; `paused`: all motion stopped. */
@@ -95,7 +96,7 @@ export function useSceneRuntime(
         const { mountScene } = await load();
         if (token !== generation || !canvas) return;
         runtime.current = mountScene(host, canvas, latestOptions.current);
-        runtime.current.sync(pausedRef.current);
+        runtime.current.sync(pausedRef.current || isPageMotionHeld());
         canvas.style.opacity = "1";
         setLive(true);
       } catch {
@@ -110,21 +111,41 @@ export function useSceneRuntime(
       setControls(!reduced.matches);
       const saveData = (navigator as ConnectionNavigator).connection?.saveData === true;
       if (reduced.matches || short.matches || saveData) return;
-      cancelIdle = whenIdle(() => {
+      const create = () => {
         if (token !== generation) return;
+        // A covering surface holds page motion: a cold WebGL start waits until it is released.
+        if (isPageMotionHeld()) {
+          const unsubscribe = subscribePageMotionHold(() => {
+            if (isPageMotionHeld()) return;
+            unsubscribe();
+            create();
+          });
+          const previous = cancelIdle;
+          cancelIdle = () => {
+            unsubscribe();
+            previous?.();
+          };
+          return;
+        }
         canvas = document.createElement("canvas");
         canvas.style.cssText = CANVAS_STYLE;
         canvas.addEventListener("webglcontextlost", lost);
         canvas.addEventListener("webglcontextrestored", restored);
         layer.append(canvas);
         void mount(token);
-      });
+      };
+      cancelIdle = whenIdle(create);
     };
+    // A hold pauses the running scene; releasing it restores the visitor's own choice.
+    const unsubscribeHold = subscribePageMotionHold(() => {
+      runtime.current?.sync(pausedRef.current || isPageMotionHeld());
+    });
     reduced.addEventListener("change", initialize);
     short.addEventListener("change", initialize);
     initialize();
     return () => {
       generation += 1;
+      unsubscribeHold();
       cancelIdle?.();
       reduced.removeEventListener("change", initialize);
       short.removeEventListener("change", initialize);
@@ -137,7 +158,7 @@ export function useSceneRuntime(
   const toggle = useCallback(() => {
     pausedRef.current = !pausedRef.current;
     setPaused(pausedRef.current);
-    runtime.current?.sync(pausedRef.current);
+    runtime.current?.sync(pausedRef.current || isPageMotionHeld());
   }, []);
 
   const mode: SceneMode = paused ? "paused" : live ? "running" : "static";
