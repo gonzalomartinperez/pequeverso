@@ -27,10 +27,13 @@ comments; no dead code (knip is a gate); business facts come from `config/` and 
 | Scene | `scripts/check-scene-budget.ts`: the three + gsap closure is never initial and ≤ `scene.js` (250 KB) | PR, main | yes |
 | Rendered HTML | `scripts/check-rendered.ts`: landmarks, single visible h1, `lang`, canonical, skip link, resolvable anchors, no placeholders or retired text | PR, main | yes |
 | Placeholders | report on PR; `--strict` on deploy | PR / deploy | deploy |
-| Dependencies | `npm audit --omit=dev --audit-level=high`; Dependabot weekly with cooldowns — one grouped npm PR for all minor/patch bumps (single lockfile change, no rebase ping-pong under the strict up-to-date rule), `tools/media` monthly, actions incl. `.github/actions/*`; `dependabot-automerge.yml` approves minor/patch PRs and enables auto-merge, so they merge by themselves once `ci` and `Branch policy` pass (majors wait for a human); Hostinger then deploys and post-deploy-verify checks production | PR, main | yes |
+| Dependencies | `npm audit --omit=dev --audit-level=high`; Dependabot weekly with cooldowns — grouped npm minor/patch PRs (`frameworks` and `npm-minor-patch`), `tools/media` monthly, actions incl. `.github/actions/*`; `dependabot-automerge.yml` is fail-closed: it never approves, and enables native auto-merge (squash, pinned to the evaluated head) only for Dependabot npm patch/minor updates of the root package into `develop` outside the `frameworks` group (next, react, typescript, tailwind, Base UI, zod, Playwright), with every commit from Dependabot and `ci` + `Branch policy` still required on develop; everything else (frameworks, majors, Actions, `tools/media`, security updates) waits for a human, and nothing reaches `main` or production without a release PR and the manual Deploy | PR, main | yes |
 | Workflows | `actionlint` (with shellcheck) + `zizmor` (`.github/zizmor.yml`) on every workflow and composite action | PR, main | yes |
+| Secrets | gitleaks v8.30.1 (digest-pinned) over the full git history via `.github/scripts/secret-scan.sh`; redacted output; fails on findings, shallow checkouts or zero commits scanned; narrow manifest-digest exception in `.github/gitleaks.toml` | PR, main | yes |
+| Assistant (disabled) | `check:assistant-disabled` after the export build in CI and Deploy (runs once the script exists); CI and Deploy force `NEXT_PUBLIC_ASSISTANT_ENABLED=false` | PR, main, deploy | yes |
+| Assistant (enabled, fixture) | `test:e2e:assistant` against the pinned public API revision in fixture mode (no key, no paid calls); reports uploaded as `UNPUBLISHABLE-assistant-enabled-reports`, the enabled build is never uploaded | PR | yes |
 | Hostinger parity | `rockylinux:8` (GLIBC 2.28) container: WASM SWC fallback asserted, `build:standalone`, smoke against `npm start` | PR, main | yes |
-| E2E | Playwright `PW_SET=pr`: chromium 390/768/1440 + reduced motion (smoke, axe WCAG 2.2 AA, offer modes, widget lifecycle, commerce, consent, motion, navigation, responsive contract 320–1920 in the 1440 project) | PR | yes |
+| E2E | Playwright `PW_SET=pr` in two shards: chromium 390/768/1440 + reduced motion (smoke, axe WCAG 2.2 AA, offer modes, widget lifecycle, commerce, consent, motion, navigation, responsive contract 320–1920 in the 1440 project) | PR | yes |
 | Lighthouse | LHCI on the export, 2 runs, mobile emulation; a11y ≥ 0.95 and CLS ≤ 0.1 are errors; report kept as artifact and job summary | PR | a11y/CLS |
 | Production | `post-deploy-verify`: revision match, smoke, headers, `PW_SET=prod`, informative Lighthouse | main push, deploy | yes |
 | Nightly | 7 widths × Chromium/WebKit, visual snapshots (`tests/e2e/visual.spec.ts`, Linux baselines under `tests/e2e/__screenshots__`, regenerate with the `update_snapshots` input), clean-clone invariant, knip, LHCI ×5, link check, bundle analysis | nightly | report |
@@ -40,7 +43,7 @@ Console / CrUX after launch.
 
 ## Workflows and cost
 
-Measured on `ubuntu-24.04` runners (September 2026, run ids in the commit bodies). Every job
+Measured on `ubuntu-24.04` runners (September–October 2026, run ids in the table and commit bodies). Every job
 declares `timeout-minutes`, per-job `permissions` (workflow default `permissions: {}`) and shares
 `.github/actions/setup` (Node from `.nvmrc` + npm cache + `npm ci` + optional Playwright browser
 cached per version). Nightly runs on `main` and therefore warms the browser caches pull requests
@@ -48,7 +51,7 @@ restore (caches created on a PR branch are invisible to other branches).
 
 | Workflow | Trigger | Jobs | Wall time | Billed minutes |
 |---|---|---|---|---|
-| `ci.yml` (pull request) | PR, `workflow_dispatch` | workflows 0:17 · build 0:50 · hostinger 1:50 · e2e 3:25 · lighthouse 2:20 · ci | 5:05 (run 35535556322) | ≈ 9 |
+| `ci.yml` (pull request) | PR, `workflow_dispatch` | workflows 0:11 · secrets 0:11 · build 1:06 · hostinger 1:51 · e2e 2 shards 4:45 / 4:01 · assistant (inert until its scripts exist) 0:08 · lighthouse 2:53 · ci | 6:05 (run 37255756490; the same develop with one E2E job took 8:08, run 37255161595) | ≈ 15 |
 | `ci.yml` (push to main) | push | workflows · build · hostinger · ci (e2e/lighthouse skipped) | ≈ 2:00 | ≈ 3 |
 | `post-deploy-verify.yml` | push to main, `workflow_dispatch` (`sha`), called by Deploy | verify: wait for Hostinger (≈ 1–3 min after a push), smoke, headers, `PW_SET=prod`, Lighthouse | 1:10 once live (run 35536094502) | ≈ 2 |
 | `nightly.yml` | 04:17 UTC, `workflow_dispatch` (`update_snapshots`) | build 0:49 · chromium 6:13 · webkit 11:04 · visual 1:57 · clean-clone 0:49 · quality 5:00 | 10:14–12:01 (runs 35535185028, 35944132257) | ≈ 26 |
