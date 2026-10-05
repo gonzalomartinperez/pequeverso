@@ -1,19 +1,51 @@
 version: 2
 updates:
+  # Version updates target develop (the default and integration branch); security updates are
+  # raised by GitHub against the default branch and are never auto-merged.
   - package-ecosystem: npm
     directory: /
+    target-branch: develop
     schedule:
       interval: weekly
       day: monday
-    # One grouped PR per week for every minor/patch bump: a single lockfile change, so merging it
-    # never leaves a second Dependabot PR conflicting or behind the strict up-to-date rule.
-    open-pull-requests-limit: 2
+    # Two grouped minor/patch PRs per week: `frameworks` (always human review, see
+    # dependabot-automerge.yml REVIEW_REQUIRED; keep both lists in sync) and `npm-minor-patch`
+    # (everything else, eligible for the fail-closed auto-merge into develop). Majors come alone.
+    open-pull-requests-limit: 4
     cooldown:
       default-days: 7
       semver-major-days: 21
     groups:
+      frameworks:
+        patterns:
+          - next
+          - "@next/bundle-analyzer"
+          - react
+          - react-dom
+          - "@types/react"
+          - "@types/react-dom"
+          - typescript
+          - tailwindcss
+          - "@tailwindcss/postcss"
+          - "@base-ui/react"
+          - zod
+          - "@playwright/test"
+        update-types: [minor, patch]
       npm-minor-patch:
         patterns: ["*"]
+        exclude-patterns:
+          - next
+          - "@next/bundle-analyzer"
+          - react
+          - react-dom
+          - "@types/react"
+          - "@types/react-dom"
+          - typescript
+          - tailwindcss
+          - "@tailwindcss/postcss"
+          - "@base-ui/react"
+          - zod
+          - "@playwright/test"
         update-types: [minor, patch]
     ignore:
       - dependency-name: "@types/node"
@@ -28,6 +60,7 @@ updates:
         update-types: ["version-update:semver-major"]
   - package-ecosystem: npm
     directory: /tools/media
+    target-branch: develop
     schedule:
       interval: monthly
     cooldown:
@@ -39,6 +72,7 @@ updates:
   - package-ecosystem: github-actions
     # `/` covers .github/workflows; the glob covers composite actions under .github/actions.
     directories: ["/", "/.github/actions/*"]
+    target-branch: develop
     schedule:
       interval: weekly
       day: monday

@@ -1,8 +1,16 @@
 name: Dependabot auto-merge
 
-# Approves Dependabot's minor/patch PRs and enables GitHub auto-merge: the PR merges (squash) only
-# once the required checks (`ci`, `Branch policy`) pass and the branch is up to date; Hostinger then
-# deploys main and post-deploy-verify checks production. Majors are left for a human.
+# Conservative, fail-closed policy. Enables GitHub's native auto-merge (squash, pinned to the
+# evaluated head commit) only when EVERY condition below is verified; otherwise it turns auto-merge
+# off and leaves the PR for a human. It never approves (no bot review stands in for a person),
+# never merges directly, and never targets `main`: the `ci` and `Branch policy` required checks of
+# the `develop` ruleset stay the authority. Production deploys are separate and manual.
+#
+# Eligible: a Dependabot npm version update of the root package into `develop`, patch or minor,
+# whose every changed dependency is outside REVIEW_REQUIRED (frameworks, compilers, runtime
+# validation, the test runner), with every commit authored by Dependabot, and with the develop
+# ruleset verified to require `ci` and `Branch policy`. Bypass actors are checked by the owner (none on 2026-10-05; the token cannot read them). GitHub Actions,
+# Docker, tools/media and security updates always get human review.
 on:
   pull_request:
     types: [opened, reopened, synchronize]
@@ -13,27 +21,96 @@ concurrency:
   group: dependabot-automerge-${{ github.event.pull_request.number }}
   cancel-in-progress: false
 
+env:
+  # Keep in sync with the `frameworks` group in .github/dependabot.yml.
+  REVIEW_REQUIRED: >-
+    next @next/bundle-analyzer react react-dom @types/react @types/react-dom typescript
+    tailwindcss @tailwindcss/postcss @base-ui/react zod @playwright/test
+
 jobs:
   automerge:
-    name: Enable auto-merge
+    name: Evaluate auto-merge
+    # Routing only; identity is re-verified below.
     if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'gonzalomartinperez/pequeverso'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
-      contents: write
+      contents: write # required by GitHub to enable auto-merge
       pull-requests: write
     steps:
       - name: Read update metadata
         id: meta
         uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
-      - name: Approve and enable auto-merge (minor and patch only)
-        if: steps.meta.outputs.update-type != 'version-update:semver-major'
+      - name: Decide (fail closed)
+        id: decide
         env:
           GH_TOKEN: ${{ github.token }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          ACTOR: ${{ github.actor }}
+          AUTHOR_ID: ${{ github.event.pull_request.user.id }}
+          AUTHOR_TYPE: ${{ github.event.pull_request.user.type }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          ECOSYSTEM: ${{ steps.meta.outputs.package-ecosystem }}
+          DIRECTORY: ${{ steps.meta.outputs.directory }}
           UPDATE_TYPE: ${{ steps.meta.outputs.update-type }}
+          DEPENDENCIES: ${{ steps.meta.outputs.dependency-names }}
+          GHSA: ${{ steps.meta.outputs.ghsa-id }}
         run: |
           set -euo pipefail
-          gh pr review "$PR_URL" --approve --body "Auto-approved ${UPDATE_TYPE:-grouped update}: merges only after the required checks pass."
-          gh pr merge "$PR_URL" --auto --squash
-          echo "Auto-merge enabled for $PR_URL (${UPDATE_TYPE:-grouped})" >> "$GITHUB_STEP_SUMMARY"
+          reasons=()
+          [ "$ACTOR" = "dependabot[bot]" ] || reasons+=("triggered by $ACTOR, not Dependabot")
+          [ "$AUTHOR_ID" = "49699333" ] && [ "$AUTHOR_TYPE" = "Bot" ] || reasons+=("author is not the Dependabot app")
+          [ "$HEAD_REPO" = "$REPO" ] || reasons+=("head is not in this repository")
+          [ "$BASE_REF" = "develop" ] || reasons+=("base is $BASE_REF, not develop")
+          case "$HEAD_REF" in dependabot/npm_and_yarn/*) ;; *) reasons+=("not an npm update branch") ;; esac
+          [ "$ECOSYSTEM" = "npm_and_yarn" ] || reasons+=("ecosystem ${ECOSYSTEM:-unknown}")
+          [ "$DIRECTORY" = "/" ] || reasons+=("directory ${DIRECTORY:-unknown}")
+          [ -z "$GHSA" ] || reasons+=("security update")
+          case "$UPDATE_TYPE" in
+            version-update:semver-patch | version-update:semver-minor) ;;
+            *) reasons+=("update type ${UPDATE_TYPE:-unknown}") ;;
+          esac
+          [ -n "$DEPENDENCIES" ] || reasons+=("no dependency names")
+          IFS=', ' read -r -a deps <<< "$DEPENDENCIES"
+          for dep in "${deps[@]}"; do
+            [ -z "$dep" ] && continue
+            for blocked in $REVIEW_REQUIRED; do
+              [ "$dep" = "$blocked" ] && reasons+=("$dep needs human review")
+            done
+          done
+          # Every commit on the PR must come from Dependabot (a human push makes it a human PR).
+          others="$(gh api "repos/$REPO/pulls/$PR/commits" --paginate --jq '.[] | select(.author.login != "dependabot[bot]" or .committer.login != "web-flow" and .committer.login != "dependabot[bot]") | .sha')" || others="unknown"
+          [ -z "$others" ] || reasons+=("commits not authored by Dependabot")
+          # The develop ruleset must still require both checks.
+          rules="$(gh api "repos/$REPO/rules/branches/develop" 2>/dev/null)" || rules=""
+          checks="$(jq -r '[.[] | select(.type == "required_status_checks") | .parameters.required_status_checks[].context] | sort | join(",")' <<< "${rules:-[]}")"
+          case ",$checks," in *",Branch policy,"*) ;; *) reasons+=("develop does not require Branch policy") ;; esac
+          case ",$checks," in *",ci,"*) ;; *) reasons+=("develop does not require ci") ;; esac
+          if [ "${#reasons[@]}" -eq 0 ]; then
+            echo "eligible=true" >> "$GITHUB_OUTPUT"
+            echo "Eligible: $UPDATE_TYPE of ${DEPENDENCIES}." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "eligible=false" >> "$GITHUB_OUTPUT"
+            { echo "Manual review:"; printf -- '- %s\n' "${reasons[@]}"; } >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Enable auto-merge for the evaluated head
+        if: steps.decide.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: gh pr merge "$PR" --repo "$REPO" --auto --squash --match-head-commit "$HEAD_SHA"
+      - name: Keep auto-merge off
+        if: steps.decide.outputs.eligible != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          if gh pr view "$PR" --repo "$REPO" --json autoMergeRequest --jq '.autoMergeRequest != null' | grep -q true; then
+            gh pr merge "$PR" --repo "$REPO" --disable-auto
+          fi
