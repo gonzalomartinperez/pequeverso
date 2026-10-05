@@ -43,7 +43,7 @@ Console / CrUX after launch.
 
 ## Workflows and cost
 
-Measured on `ubuntu-24.04` runners (September 2026, run ids in the commit bodies). Every job
+Measured on `ubuntu-24.04` runners (September–October 2026, run ids in the table and commit bodies). Every job
 declares `timeout-minutes`, per-job `permissions` (workflow default `permissions: {}`) and shares
 `.github/actions/setup` (Node from `.nvmrc` + npm cache + `npm ci` + optional Playwright browser
 cached per version). Nightly runs on `main` and therefore warms the browser caches pull requests
@@ -51,7 +51,7 @@ restore (caches created on a PR branch are invisible to other branches).
 
 | Workflow | Trigger | Jobs | Wall time | Billed minutes |
 |---|---|---|---|---|
-| `ci.yml` (pull request) | PR, `workflow_dispatch` | workflows 0:17 · build 0:50 · hostinger 1:50 · e2e 3:25 · lighthouse 2:20 · ci | 5:05 (run 35535556322) | ≈ 9 |
+| `ci.yml` (pull request) | PR, `workflow_dispatch` | workflows 0:11 · secrets 0:11 · build 1:06 · hostinger 1:51 · e2e 2 shards 4:45 / 4:01 · assistant (inert until its scripts exist) 0:08 · lighthouse 2:53 · ci | 6:05 (run 37255756490; the same develop with one E2E job took 8:08, run 37255161595) | ≈ 15 |
 | `ci.yml` (push to main) | push | workflows · build · hostinger · ci (e2e/lighthouse skipped) | ≈ 2:00 | ≈ 3 |
 | `post-deploy-verify.yml` | push to main, `workflow_dispatch` (`sha`), called by Deploy | verify: wait for Hostinger (≈ 1–3 min after a push), smoke, headers, `PW_SET=prod`, Lighthouse | 1:10 once live (run 35536094502) | ≈ 2 |
 | `nightly.yml` | 04:17 UTC, `workflow_dispatch` (`update_snapshots`) | build 0:49 · chromium 6:13 · webkit 11:04 · visual 1:57 · clean-clone 0:49 · quality 5:00 | 10:14–12:01 (runs 35535185028, 35944132257) | ≈ 26 |
