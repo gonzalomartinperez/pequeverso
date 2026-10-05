@@ -16,7 +16,8 @@
       "!**/docs/generated",
       "!**/playwright-report",
       "!**/test-results",
-      "!**/media/manifest.json"
+      "!**/media/manifest.json",
+      "!**/contracts/assistant-api"
     ]
   },
   "formatter": {

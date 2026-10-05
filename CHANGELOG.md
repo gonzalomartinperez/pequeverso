@@ -4,6 +4,13 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
 
 ## [Unreleased]
 
+### Added
+- Native shopping assistant (`src/features/assistant/`, docs/assistant.md, ADR-0008), **disabled by
+  default and compiled out** of publishable builds (`NEXT_PUBLIC_ASSISTANT_ENABLED`, guarded by
+  `npm run check:assistant-disabled`). Talks to `pequeverso-assistant-api` on its own HTTPS origin;
+  verified only against the fixture API (`npm run test:e2e:assistant`). Activation is not authorized.
+- Scoped page-motion hold (`src/motion/motion-hold.ts`) used by covering surfaces.
+
 ### Changed
 - Branch flow: `develop` is the integration branch (default, nightly target); features squash into it,
   releases merge `develop` → `main` with a merge commit (main deploys), hotfixes go to `main` and are

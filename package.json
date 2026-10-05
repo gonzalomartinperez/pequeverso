@@ -15,7 +15,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/check-env.ts && node scripts/build-info.ts && next build --webpack && node scripts/gen-htaccess.ts",
+    "build": "node scripts/check-env.ts && node scripts/build-info.ts && next build --webpack && node scripts/gen-htaccess.ts && node scripts/check-assistant-disabled.ts --allow-enabled",
     "build:standalone": "cross-env NEXT_OUTPUT=standalone npm run build",
     "start": "node scripts/start.ts",
     "typegen": "next typegen",
@@ -42,7 +42,11 @@
     "check:bundle": "node scripts/check-bundle-budget.ts",
     "check:scene": "node scripts/check-scene-budget.ts",
     "analyze": "cross-env ANALYZE=1 next build --webpack",
-    "check:rendered": "node scripts/check-rendered.ts"
+    "check:rendered": "node scripts/check-rendered.ts",
+    "check:assistant-disabled": "node scripts/check-assistant-disabled.ts",
+    "build:assistant-fixture": "node scripts/build-assistant-fixture.ts",
+    "test:e2e:assistant": "node scripts/build-assistant-fixture.ts && playwright test -c playwright.assistant.config.ts",
+    "check:assistant-absent-build": "node scripts/check-assistant-absent-build.ts"
   },
   "dependencies": {
     "@base-ui/react": "1.8.0",

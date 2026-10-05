@@ -4,12 +4,15 @@
 // Conversions API relay (server/meta-capi.ts, POST /api/meta/events/) before static
 // resolution. Used by Playwright, Lighthouse CI and `npm start`.
 import { createReadStream, existsSync, readFileSync, statSync } from "node:fs";
-import { createServer, type OutgoingHttpHeaders, type ServerResponse } from "node:http";
+import { createServer, type IncomingMessage, type OutgoingHttpHeaders, type ServerResponse } from "node:http";
+import { createServer as createTlsServer } from "node:https";
 import { extname, join, normalize, resolve } from "node:path";
 import { brotliCompressSync, constants, gzipSync } from "node:zlib";
 import { createMetaCapiHandler, metaCapiOptionsFromEnv } from "../server/meta-capi.ts";
 
-const root = resolve(process.cwd(), "out");
+// SERVE_DIR serves another export (the unpublishable assistant verification build).
+const serveDir = process.env.SERVE_DIR || "out";
+const root = resolve(process.cwd(), serveDir);
 const port = Number(process.env.PORT || 3000);
 const metaCapiOptions = metaCapiOptionsFromEnv(process.env);
 const metaCapi = createMetaCapiHandler(metaCapiOptions);
@@ -33,7 +36,7 @@ const types: Record<string, string> = {
 };
 
 if (!existsSync(root)) {
-  console.error("serve-static: out/ not found. Run `npm run build` first.");
+  console.error(`serve-static: ${serveDir}/ not found. Run \`npm run build\` first.`);
   process.exit(1);
 }
 
@@ -85,7 +88,7 @@ function applyCache(headers: OutgoingHttpHeaders, file: string, ext: string): vo
   }
 }
 
-createServer(async (req, res) => {
+async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
   if (await metaCapi(req, res)) return;
   const url = new URL(req.url || "/", `http://localhost:${port}`);
   const pathname = decodeURIComponent(url.pathname);
@@ -113,8 +116,18 @@ createServer(async (req, res) => {
   const notFound = join(root, "404.html");
   if (existsSync(notFound)) send(res, notFound, 404, accept);
   else res.writeHead(404, { "Content-Type": "text/plain" }).end("Not found");
-}).listen(port, () => {
-  console.log(`serve-static: http://localhost:${port} (out/)`);
+}
+
+// Test-only HTTPS (assistant loopback suite): a throwaway self-signed certificate from
+// scripts/build-assistant-fixture.ts. Production hosting never runs this server with TLS.
+const tlsCert = process.env.SERVE_TLS_CERT;
+const tlsKey = process.env.SERVE_TLS_KEY;
+const server =
+  tlsCert && tlsKey
+    ? createTlsServer({ cert: readFileSync(tlsCert), key: readFileSync(tlsKey) }, handle)
+    : createServer(handle);
+server.listen(port, () => {
+  console.log(`serve-static: ${tlsCert ? "https" : "http"}://localhost:${port} (${serveDir}/)`);
   console.log(
     `meta-capi: ${metaCapiOptions.pixelId && metaCapiOptions.accessToken ? "enabled" : "disabled"}`,
   );
