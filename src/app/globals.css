@@ -185,7 +185,8 @@
   --space-8: 4rem;
   --space-9: 6rem;
   --section-pad: clamp(3.5rem, 2.5rem + 3vw, 6rem);
-  --gutter: clamp(1.25rem, 4vw, 1.5rem);
+  /* The floor is capped at 6.25vw (20 px at 320 px) so enlarged text does not double the gutter on phones. */
+  --gutter: clamp(min(1.25rem, 6.25vw), 4vw, 1.5rem);
   --page-max: 1200px;
 
   /* Radius */
@@ -362,6 +363,14 @@
 }
 
 /* 4. Container-query breakpoints: primitives adapt to their container, never to the viewport */
+/* Two-up phone grids: a phone column from 320 px (280 px inside the gutters) is wider than 16rem,
+   but with text at 200 % the rem doubles and it falls under, so those grids reflow to one column
+   (WCAG 1.4.10). */
+@custom-variant cq-xs {
+  @container (width >= 16rem) {
+    @slot;
+  }
+}
 @custom-variant cq-sm {
   @container (width >= 40rem) {
     @slot;
@@ -398,6 +407,28 @@
   /* Email addresses are one unbreakable word; let them wrap anywhere at narrow widths (320 px). */
   a[href^="mailto:"] {
     overflow-wrap: anywhere;
+  }
+
+  /* Reflow at 200 % text (WCAG 1.4.4/1.4.10): a word wider than its line breaks instead of
+     pushing the page sideways. Body text only breaks a word that cannot fit (`break-word` keeps
+     min-content sizes); display headings may also shrink their box (`anywhere`), so a grid
+     or flex parent never grows past the column to hold one long word. */
+  body {
+    overflow-wrap: break-word;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    overflow-wrap: anywhere;
+  }
+
+  /* Grid items may shrink below their widest word or control (`min-width: 0`), so an implicit
+     column stays as wide as its container and enlarged text wraps inside it instead of being
+     clipped by an `overflow: clip` band. Columns that already fit are unchanged. */
+  :where(.grid, .inline-grid) > * {
+    min-width: 0;
   }
 
   *,
@@ -682,6 +713,7 @@
 
   & dl {
     display: grid;
+    grid-auto-columns: minmax(0, auto);
     margin-bottom: var(--space-5);
   }
 

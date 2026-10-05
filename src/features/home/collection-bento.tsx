@@ -42,12 +42,12 @@ export function CollectionBento() {
           {copy.featured.units.pages}
         </p>
       </div>
-      <ul className="grid grid-cols-2 gap-3 cq-sm:gap-4 cq-lg:grid-cols-4 cq-lg:gap-5">
+      <ul className="grid grid-cols-1 gap-3 cq-xs:grid-cols-2 cq-sm:gap-4 cq-lg:grid-cols-4 cq-lg:gap-5">
         {main ? (
           <li
             className={cn(
               TILE,
-              "col-span-2 gap-5 bg-linear-160 from-white to-sky p-4 cq-lg:row-span-2 cq-lg:p-6",
+              "gap-5 bg-linear-160 cq-xs:col-span-2 from-white to-sky p-4 cq-lg:row-span-2 cq-lg:p-6",
             )}
             data-reveal=""
           >

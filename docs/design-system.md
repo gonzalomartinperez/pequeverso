@@ -186,7 +186,7 @@ Acceptance criterion for every block and page, 320 → 1920 px, enforced by
 `smoke.spec.ts` at every nightly width:
 
 - Content-driven layout: blocks read their container (`cq` + `cq-sm|md|lg|xl`, same thresholds
-  as sm 640 · md 768 · lg 1024 · xl 1280); pages never write media queries. Type and section
+  as sm 640 · md 768 · lg 1024 · xl 1280; `cq-xs` 16rem only gates phone two-up grids); pages never write media queries. Type and section
   spacing are fluid (`clamp()`).
 - No fixed widths wider than the column; grid children are `min-w-0`; `Stack` caps children at
   100 %; labels wrap (badges have no `nowrap`); images and media keep `max-width: 100%` and their
@@ -197,6 +197,16 @@ Acceptance criterion for every block and page, 320 → 1920 px, enforced by
   final offer, footer and open dialogs; the consent banner is capped at 60 dvh; checked at 640×360.
 - Third-party embeds: the Hotmart iframe (inline `min-width: 320px`) bleeds to the viewport edges
   below 400 px instead of overflowing.
+- Text enlarged to 200 % (WCAG 1.4.4 / 1.4.10) reflows at 320 and 390 px with no horizontal
+  scroll and nothing pushed off-screen, enforced by `tests/e2e/text-zoom.spec.ts` (every route,
+  390 project). The spec doubles the root font size (`html { font-size: 200% }`), which is what the
+  browser's font-size setting does to this rem-based system. The rules that keep it true:
+  single-column card stacks use `grid-cols-1` (a `minmax(0, 1fr)` track) rather than an implicit
+  `auto` column that grows to the widest word; two-up phone grids are `grid-cols-1
+  cq-xs:grid-cols-2` (`cq-xs` = container ≥ 16rem, true on every phone at normal size, false at
+  200 %); h1–h4 use `overflow-wrap: anywhere` and body text `break-word`; buttons are capped at
+  `max-w-full` and wrap; the header pill and the sticky bar wrap to a second row instead of
+  overflowing; the gutter floor is `min(1.25rem, 6.25vw)` so it does not double on phones.
 
 ## How to change…
 

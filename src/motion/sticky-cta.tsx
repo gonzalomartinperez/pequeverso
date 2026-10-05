@@ -86,7 +86,8 @@ export function StickyCTA({ hideWhenVisible, label, note, thumb, children }: Pro
       inert={!visible}
       className={cx(
         // Floating glass pill, centred and capped on tablets; the safe area lifts it on notched phones.
-        "glass fixed inset-x-3 bottom-[calc(var(--space-3)+env(safe-area-inset-bottom))] z-60 mx-auto hidden max-w-xl items-center gap-2.5 rounded-pill py-2 pr-2 pl-2 shadow-float ring-1 ring-navy/10 transition-all duration-(--duration) ease-emphasis max-lg:flex",
+        // With enlarged text the action wraps under the name instead of running off-screen.
+        "glass fixed inset-x-3 bottom-[calc(var(--space-3)+env(safe-area-inset-bottom))] z-60 mx-auto hidden max-w-xl flex-wrap items-center gap-2.5 rounded-[2rem] py-2 pr-2 pl-2 shadow-float ring-1 ring-navy/10 transition-all duration-(--duration) ease-emphasis max-lg:flex",
         "[body:has(dialog[open],[role=dialog][data-open])_&]:invisible [body:has(dialog[open],[role=dialog][data-open])_&]:translate-y-[calc(100%+2rem)] [body:has(dialog[open],[role=dialog][data-open])_&]:opacity-0",
         // Hidden means off-screen *and* invisible, so full-page captures never show it over content.
         visible ? "visible translate-y-0 opacity-100" : "invisible translate-y-[calc(100%+2rem)] opacity-0",
@@ -98,7 +99,7 @@ export function StickyCTA({ hideWhenVisible, label, note, thumb, children }: Pro
       >
         {thumb ?? <BrandTile />}
       </div>
-      <div className="on-light mr-auto grid min-w-0 gap-0.5">
+      <div className="on-light grid min-w-0 grow basis-0 gap-0.5">
         <span className="truncate text-small leading-tight font-extrabold text-heading">
           {name}
           {price ? <span className="sr-only"> · </span> : null}
@@ -112,7 +113,7 @@ export function StickyCTA({ hideWhenVisible, label, note, thumb, children }: Pro
           <span className="truncate text-tiny leading-tight text-subtle">{note}</span>
         ) : null}
       </div>
-      <div className="shrink-0 [&>*]:min-h-12 [&>*]:rounded-pill [&>*]:px-5 [&>*]:whitespace-nowrap max-[25rem]:[&>*]:px-4 max-[25rem]:[&_svg]:hidden">
+      <div className="ml-auto max-w-full shrink-0 [&>*]:min-h-12 [&>*]:rounded-pill [&>*]:px-5 max-[25rem]:[&>*]:px-4 max-[25rem]:[&_svg]:hidden">
         {children}
       </div>
     </div>

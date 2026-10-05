@@ -15,7 +15,7 @@ import { cva, type VariantProps } from "class-variance-authority";
  * paint with the surface roles (`--heading`, `--foreground`), so they turn white inside `on-navy`.
  */
 export const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 border-2 text-center font-sans font-extrabold leading-tight no-underline transition-[background,border-color,color,translate,box-shadow] duration-(--duration) ease-out disabled:pointer-events-none disabled:opacity-50 motion-safe:active:translate-y-px [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5 *:data-[icon=inline-end]:transition-transform *:data-[icon=inline-end]:duration-(--duration) motion-safe:hover:*:data-[icon=inline-end]:translate-x-1 motion-safe:focus-visible:*:data-[icon=inline-end]:translate-x-1",
+  "inline-flex max-w-full shrink-0 items-center justify-center gap-2 border-2 text-center font-sans font-extrabold leading-tight no-underline transition-[background,border-color,color,translate,box-shadow] duration-(--duration) ease-out disabled:pointer-events-none disabled:opacity-50 motion-safe:active:translate-y-px [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5 *:data-[icon=inline-end]:transition-transform *:data-[icon=inline-end]:duration-(--duration) motion-safe:hover:*:data-[icon=inline-end]:translate-x-1 motion-safe:focus-visible:*:data-[icon=inline-end]:translate-x-1",
   {
     variants: {
       variant: {

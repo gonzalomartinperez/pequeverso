@@ -16,7 +16,7 @@ const ICON_TILES = [
 export function BenefitsStrip() {
   return (
     <section aria-label={copy.benefits.label} className="cq relative bg-cream pb-(--section-pad)">
-      <ul className="page-container grid grid-cols-2 gap-3 cq-lg:grid-cols-4 cq-lg:gap-0 cq-lg:rounded-xl cq-lg:bg-white cq-lg:p-2 cq-lg:shadow-float cq-lg:ring-1 cq-lg:ring-line">
+      <ul className="page-container grid grid-cols-1 gap-3 cq-xs:grid-cols-2 cq-lg:grid-cols-4 cq-lg:gap-0 cq-lg:rounded-xl cq-lg:bg-white cq-lg:p-2 cq-lg:shadow-float cq-lg:ring-1 cq-lg:ring-line">
         {copy.benefits.items.map((item, index) => (
           <li
             key={item.title}

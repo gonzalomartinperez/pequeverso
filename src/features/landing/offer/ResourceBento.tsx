@@ -23,8 +23,8 @@ export function ResourceBento({ resources, total }: Props) {
   const embedded = rest.filter((resource) => resource.embedded);
   const packs = rest.filter((resource) => !resource.embedded);
   return (
-    <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5" role="list">
-      <li data-reveal="" className="grid sm:col-span-2 lg:row-span-2">
+    <ol className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5" role="list">
+      <li data-reveal="" className="grid grid-cols-1 sm:col-span-2 lg:row-span-2">
         <article className="on-navy relative grid content-start gap-5 overflow-hidden rounded-2xl bg-[linear-gradient(160deg,var(--pv-navy),var(--pv-navy-deep))] p-5 shadow-float sm:p-7">
           <div
             aria-hidden="true"
@@ -74,7 +74,7 @@ export function ResourceBento({ resources, total }: Props) {
           key={resource.id}
           data-reveal=""
           style={{ "--i": index % 3 } as CSSProperties}
-          className="grid min-w-0"
+          className="grid min-w-0 grid-cols-1"
         >
           <TiltCard
             as="article"

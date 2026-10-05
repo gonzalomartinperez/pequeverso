@@ -59,8 +59,8 @@ export function ThanksPage({ product }: Props) {
         aria-labelledby="hero-title"
         className="aurora-sky relative overflow-clip pt-[calc(var(--header-height)+clamp(2rem,1rem+3vw,4rem))] pb-(--section-pad)"
       >
-        <div className="page-container relative grid items-center gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-          <div className="grid gap-5">
+        <div className="page-container relative grid grid-cols-1 items-center gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+          <div className="grid grid-cols-1 gap-5">
             <p className="inline-flex w-fit max-w-full items-center gap-2 rounded-pill border border-teal/25 bg-white/80 py-1.5 pr-4 pl-1.5 text-small font-extrabold text-navy shadow-sm">
               <CircleCheck
                 aria-hidden="true"
@@ -144,13 +144,13 @@ export function ThanksPage({ product }: Props) {
       >
         <div className="page-container">
           <SectionHeading id="acceso-title" kicker={copy.access.kicker} title={copy.access.title} />
-          <ol className="relative grid gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-5 lg:before:absolute lg:before:top-8 lg:before:right-[12%] lg:before:left-[12%] lg:before:h-0.5 lg:before:bg-[linear-gradient(90deg,var(--pv-turquoise),var(--pv-gold),var(--pv-turquoise))] lg:before:content-['']">
+          <ol className="relative grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-5 lg:before:absolute lg:before:top-8 lg:before:right-[12%] lg:before:left-[12%] lg:before:h-0.5 lg:before:bg-[linear-gradient(90deg,var(--pv-turquoise),var(--pv-gold),var(--pv-turquoise))] lg:before:content-['']">
             {copy.access.steps.map((step, index) => (
               <li
                 key={step.title}
                 data-reveal=""
                 style={{ "--i": index } as CSSProperties}
-                className="relative grid content-start justify-items-start gap-3 lg:justify-items-center lg:text-center"
+                className="relative grid grid-cols-1 content-start justify-items-start gap-3 lg:justify-items-center lg:text-center"
               >
                 <span className="relative z-1 grid size-16 place-items-center rounded-full bg-navy text-gold shadow-float ring-6 ring-white">
                   <Icon name={step.icon} size={26} strokeWidth={2.2} />
@@ -158,7 +158,7 @@ export function ThanksPage({ product }: Props) {
                     {index + 1}
                   </span>
                 </span>
-                <div className="on-light glass grid w-full gap-2 rounded-xl p-5 shadow-[0_18px_40px_-24px_oklch(0.3175_0.1094_256.25/0.4)]">
+                <div className="on-light glass grid w-full grid-cols-1 gap-2 rounded-xl p-5 shadow-[0_18px_40px_-24px_oklch(0.3175_0.1094_256.25/0.4)]">
                   <h3 className="font-display text-[1.3rem] leading-tight font-bold">{step.title}</h3>
                   <p className="text-small">{step.text}</p>
                 </div>
@@ -180,7 +180,7 @@ export function ThanksPage({ product }: Props) {
         aria-labelledby="practica-title"
         className="aurora-blue defer-render relative section-pad"
       >
-        <div className="page-container grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
+        <div className="page-container grid grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
           <figure className="relative mx-auto w-full max-w-[36rem] pb-10 lg:order-2">
             <div className="overflow-hidden rounded-2xl border-[6px] border-white shadow-float [&_img]:block [&_img]:h-auto [&_img]:w-full [&_img]:object-cover">
               <MediaImage id={PRINT_PHOTO} sizes="(min-width: 1024px) 560px, 92vw" />
@@ -194,7 +194,7 @@ export function ThanksPage({ product }: Props) {
               {copy.firstPractice.imageNote}
             </figcaption>
           </figure>
-          <div className="grid content-start gap-6 lg:order-1">
+          <div className="grid grid-cols-1 content-start gap-6 lg:order-1">
             <div className="grid gap-4">
               <Kicker>{copy.firstPractice.kicker}</Kicker>
               <h2 id="practica-title">
@@ -241,7 +241,7 @@ export function ThanksPage({ product }: Props) {
       >
         <div className="page-container">
           <SectionHeading id="ayuda-title" kicker={copy.help.kicker} title={copy.help.title} />
-          <ul className="grid gap-4 md:grid-cols-2">
+          <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {copy.help.items.map((item, index) => (
               <li
                 key={item.title}
@@ -252,14 +252,14 @@ export function ThanksPage({ product }: Props) {
                 <span className="grid size-12 place-items-center rounded-lg bg-mint text-navy">
                   <Icon name={item.icon} size={22} strokeWidth={2.2} />
                 </span>
-                <div className="grid gap-1">
+                <div className="grid grid-cols-1 gap-1">
                   <h3 className="text-[1.1rem] font-extrabold">{item.title}</h3>
                   <p className="text-small">{item.text}</p>
                 </div>
               </li>
             ))}
           </ul>
-          <div className="mx-auto mt-10 grid max-w-[60rem] gap-4 rounded-2xl bg-navy p-6 text-center sm:p-8 on-navy">
+          <div className="mx-auto mt-10 grid max-w-[60rem] grid-cols-1 gap-4 rounded-2xl bg-navy p-6 text-center sm:p-8 on-navy">
             <p className="text-on-navy">
               {copy.help.contact} <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a> ·
               Reembolsos: <a href={hotmart.refunds}>refund.hotmart.com</a> ({guaranteeDays} días).
@@ -284,7 +284,7 @@ export function ThanksPage({ product }: Props) {
         aria-label="Notas finales"
         className="aurora-sky defer-render relative section-pad"
       >
-        <div className="page-container grid gap-4 md:grid-cols-2">
+        <div className="page-container grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="on-light glass grid content-start gap-2 rounded-xl p-6 shadow-sm">
             <h2 className="text-[1.3rem] leading-tight">{copy.packNote.title}</h2>
             <p>{copy.packNote.text}</p>

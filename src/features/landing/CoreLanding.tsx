@@ -485,7 +485,7 @@ export function CoreLanding({ product }: Props) {
               <Accent text={copy.benefits.title} accent={copy.benefits.titleAccent} />
             </h3>
           </div>
-          <ul className="grid grid-cols-2 gap-3 cq-sm:gap-4 cq-lg:grid-cols-4" role="list">
+          <ul className="grid grid-cols-1 gap-3 cq-xs:grid-cols-2 cq-sm:gap-4 cq-lg:grid-cols-4" role="list">
             {copy.benefits.items.map((item, index) => (
               <li
                 key={item.title}
@@ -728,8 +728,8 @@ export function CoreLanding({ product }: Props) {
       ) : null}
 
       <Section tone="aurora-sky" id="preguntas" labelledBy="faq-title" className="cq">
-        <div className="grid gap-10 cq-lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] cq-lg:gap-16">
-          <div className="grid content-start gap-5 cq-lg:sticky cq-lg:top-[calc(var(--header-height)+1.5rem)]">
+        <div className="grid grid-cols-1 gap-10 cq-lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] cq-lg:gap-16">
+          <div className="grid grid-cols-1 content-start gap-5 cq-lg:sticky cq-lg:top-[calc(var(--header-height)+1.5rem)]">
             <SectionHeading
               id="faq-title"
               kicker={copy.faq.kicker}
@@ -740,7 +740,7 @@ export function CoreLanding({ product }: Props) {
               <span className="grid size-10 shrink-0 place-items-center rounded-full bg-mint text-teal">
                 <Icon name="mail" size={20} strokeWidth={2.2} />
               </span>
-              <p className="text-small text-pretty">
+              <p className="min-w-0 text-small text-pretty">
                 {copy.faq.supportNote} <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>
               </p>
             </div>

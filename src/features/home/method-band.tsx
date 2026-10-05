@@ -49,7 +49,7 @@ export function MethodBand() {
               {m.title}
             </h2>
             <p className="lead max-w-[46ch] text-pretty">{m.lead}</p>
-            <ol className="mt-4 grid w-full grid-cols-2 gap-3">
+            <ol className="mt-4 grid w-full grid-cols-1 gap-3 cq-xs:grid-cols-2">
               {m.steps.map((step, index) => (
                 <li
                   key={step.title}
