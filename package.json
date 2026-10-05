@@ -46,7 +46,8 @@
     "check:assistant-disabled": "node scripts/check-assistant-disabled.ts",
     "build:assistant-fixture": "node scripts/build-assistant-fixture.ts",
     "test:e2e:assistant": "node scripts/build-assistant-fixture.ts && playwright test -c playwright.assistant.config.ts",
-    "check:assistant-absent-build": "node scripts/check-assistant-absent-build.ts"
+    "check:assistant-absent-build": "node scripts/check-assistant-absent-build.ts",
+    "check:skills": "node scripts/check-skills.ts"
   },
   "dependencies": {
     "@base-ui/react": "1.8.0",

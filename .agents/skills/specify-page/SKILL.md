@@ -1,6 +1,6 @@
 ---
 name: specify-page
-description: Write a short spec before building or redesigning a page or section of pequeverso.com.
+description: Write a short spec before building or redesigning a page or section of pequeverso.com. Not for implementing the page (use implement-page) or changing commerce facts.
 ---
 
 # Specify a page or section
@@ -13,3 +13,7 @@ description: Write a short spec before building or redesigning a page or section
 4. Define acceptance: responsive widths (1440/1280/1024/768/430/390/360), keyboard path, contrast,
    reduced motion, CLS, media loading, and which Playwright spec covers each behaviour.
 5. Call out anything that needs an owner decision (price, guarantee, claims, rights) instead of guessing.
+
+## Limits
+
+- A spec only: no code, no commerce or legal facts that are not in `config/` or `content/`.

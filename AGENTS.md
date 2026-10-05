@@ -19,7 +19,7 @@ Spanish. Read this file first, then the doc that matches your task.
 | URL changes, redirects, cutover | `docs/migration.md` |
 | Hotmart funnel (checkout, widget, dashboard changes, E2E checklist) | `docs/hotmart-funnel.md` |
 | Native shopping assistant (disabled by default) | `docs/assistant.md`, ADR-0008 |
-| Skills | `.agents/skills/*/SKILL.md` (canonical); `.claude/skills` are thin adapters |
+| Code style, setup, skills validation | `CONTRIBUTING.md` (Google TS style adaptations); skills: `.agents/skills/*/SKILL.md` (canonical), `.claude/skills` thin adapters, `npm run check:skills` |
 
 ## Non-negotiables
 
