@@ -6,6 +6,7 @@ import { buttonVariants } from "@/components/ui/button-variants";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cx } from "@/lib/cx";
 import { cn } from "@/lib/utils";
+import { externalUrl, storefrontPath } from "../domain/links";
 import { usePresentation } from "./context";
 
 /** Suggestion chips (starters, follow-ups): mint tint, teal text, 44 px targets; never coral. */
@@ -19,7 +20,7 @@ export const labelClass =
 const TONES = {
   info: "border-line bg-sky text-body",
   notice: "border-line bg-mint text-body",
-  danger: "border-coral/40 bg-rose text-body",
+  danger: "border-destructive/50 bg-card text-body [&>svg]:text-destructive!",
 } as const;
 
 export function Callout({
@@ -89,15 +90,18 @@ export function SafeLink({
   children: ReactNode;
 }) {
   const { policy, onNavigate, t } = usePresentation();
-  const url = new URL(href);
-  if (url.origin === policy.storefrontOrigin)
+  const path = storefrontPath(href, policy);
+  if (path)
     return (
-      <Link href={`${url.pathname}${url.search}${url.hash}`} className={className} onClick={onNavigate}>
+      <Link href={path} className={className} onClick={onNavigate}>
         {children}
       </Link>
     );
+  const external = externalUrl(href, policy);
+  // Re-validated here so a caller can never render an unchecked URL; invalid links render nothing.
+  if (!external || new URL(external).origin === policy.storefrontOrigin) return null;
   return (
-    <a href={url.href} target="_blank" rel="noopener noreferrer" className={className}>
+    <a href={external} target="_blank" rel="noopener noreferrer" className={className}>
       {children}
       <ExternalLink aria-hidden="true" className="size-4 shrink-0" />
       <span className="sr-only">{t.opensInNewTab}</span>

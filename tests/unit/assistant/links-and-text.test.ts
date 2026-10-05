@@ -122,3 +122,33 @@ describe("rich text", () => {
     assert.ok(performance.now() - started < 500);
   });
 });
+
+describe("storefront URLs cannot become protocol-relative links", async () => {
+  const { externalUrl, storefrontPath, storefrontUrl } = await import(
+    "../../../src/features/assistant/domain/links.ts"
+  );
+  const policy = { storefrontOrigin: "https://pequeverso.com", linkHosts: ["consumer.hotmart.com"] };
+
+  it("rejects double-slash paths, backslashes and control characters", () => {
+    for (const value of [
+      "https://pequeverso.com//evil.com/x",
+      "https://pequeverso.com/\\evil.com",
+      "https://pequeverso.com/\\\\evil.com/x",
+      "https://pequeverso.com/ok\n/x",
+      "https://pequeverso.com/ok\t",
+    ]) {
+      assert.equal(storefrontUrl(value, policy), null, JSON.stringify(value));
+      assert.equal(storefrontPath(value, policy), null, JSON.stringify(value));
+      assert.equal(externalUrl(value, policy), null, JSON.stringify(value));
+    }
+  });
+
+  it("keeps encoded slashes inert and returns single-slash paths", () => {
+    assert.equal(storefrontPath("https://pequeverso.com/%2F%2Fevil.com", policy), "/%2F%2Fevil.com");
+    assert.equal(
+      storefrontPath("https://pequeverso.com/grafismo-fonetico/?a=1#comprar", policy),
+      "/grafismo-fonetico/?a=1#comprar",
+    );
+    for (const path of ["/grafismo-fonetico/", "/%2F%2Fevil.com"]) assert.ok(/^\/(?!\/)/.test(path));
+  });
+});

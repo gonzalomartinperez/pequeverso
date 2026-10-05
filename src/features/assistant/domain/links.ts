@@ -13,8 +13,19 @@ export type LinkPolicy = {
   linkHosts: readonly string[];
 };
 
+/** Backslash or a C0/DEL control character: the URL parser would silently normalize them away. */
+function hasUnsafeCharacters(value: string): boolean {
+  for (let index = 0; index < value.length; index++) {
+    const code = value.charCodeAt(index);
+    if (code === 0x5c || code <= 0x1f || code === 0x7f) return true;
+  }
+  return false;
+}
+
 function parse(value: string): URL | null {
-  if (typeof value !== "string" || value.length > 2048) return null;
+  // Backslashes and control characters can turn a path into a protocol-relative reference
+  // ("/\\evil.com" becomes "//evil.com"); refuse them outright.
+  if (typeof value !== "string" || value.length > 2048 || hasUnsafeCharacters(value)) return null;
   try {
     const url = new URL(value);
     if (url.username || url.password) return null;
@@ -27,14 +38,27 @@ function parse(value: string): URL | null {
 /** A URL on the exact storefront origin (the only destination for product and purchase actions). */
 export function storefrontUrl(value: string, policy: LinkPolicy): string | null {
   const url = parse(value);
-  return url && url.origin === policy.storefrontOrigin ? url.href : null;
+  if (!url || url.origin !== policy.storefrontOrigin) return null;
+  // A path starting with "//" would become a protocol-relative link once used as a same-tab href.
+  return url.pathname.startsWith("//") ? null : url.href;
+}
+
+/**
+ * The same-tab href for a storefront URL that already passed `storefrontUrl`: an absolute path
+ * that always starts with exactly one slash. Returns null for anything else.
+ */
+export function storefrontPath(value: string, policy: LinkPolicy): string | null {
+  const safe = storefrontUrl(value, policy);
+  if (!safe) return null;
+  const url = new URL(safe);
+  return `${url.pathname}${url.search}${url.hash}`;
 }
 
 /** A link the visitor may open in a new tab: the storefront, or https on an allowlisted host. */
 export function externalUrl(value: string, policy: LinkPolicy): string | null {
   const url = parse(value);
   if (!url) return null;
-  if (url.origin === policy.storefrontOrigin) return url.href;
+  if (url.origin === policy.storefrontOrigin) return storefrontUrl(value, policy);
   return url.protocol === "https:" && policy.linkHosts.includes(url.hostname) ? url.href : null;
 }
 
