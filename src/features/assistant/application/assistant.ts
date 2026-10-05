@@ -63,7 +63,7 @@ export function createAssistant(transport: AssistantTransport, runtime: Runtime,
     if (opening) return opening;
     const signal = lifetime.signal;
     dispatch({ type: "session.opening" });
-    opening = transport
+    const request: Promise<void> = transport
       .openSession(signal, options.locale)
       .then((snapshot) => {
         if (signal.aborted) return;
@@ -80,8 +80,10 @@ export function createAssistant(transport: AssistantTransport, runtime: Runtime,
         if (!signal.aborted) dispatch({ type: "session.failed", code: codeOf(error) });
       })
       .finally(() => {
-        opening = null;
+        // Only clear our own request: after dispose()/start() a newer open may be in flight.
+        if (opening === request) opening = null;
       });
+    opening = request;
     return opening;
   }
 

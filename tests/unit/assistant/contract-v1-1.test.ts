@@ -5,6 +5,7 @@ import { describe, it } from "node:test";
 import { createHttpTransport } from "../../../src/features/assistant/adapters/http.ts";
 import { parseMessage, parseSession } from "../../../src/features/assistant/adapters/validate.ts";
 import {
+  announcement,
   type ConversationState,
   initialState,
   phase,
@@ -175,5 +176,75 @@ describe("explicit phases", () => {
       expired: true,
     });
     assert.equal(phase(expired).kind, "expired");
+  });
+});
+
+describe("announcements", () => {
+  it("announce only outcomes of a question just sent, never restored history", () => {
+    assert.equal(announcement("initializing", { kind: "completed" }), null);
+    assert.equal(
+      announcement("initializing", { kind: "failed", code: "interrupted", retryable: true }),
+      null,
+    );
+    assert.equal(announcement("ready", { kind: "submitting" }), "thinking");
+    assert.equal(announcement("streaming", { kind: "completed" }), "ready");
+    assert.equal(announcement("submitting", { kind: "completed" }), "ready");
+    assert.equal(announcement("streaming", { kind: "cancelled" }), "stopped");
+    assert.equal(
+      announcement("streaming", { kind: "failed", code: "interrupted", retryable: true }),
+      "interrupted",
+    );
+    assert.equal(announcement("submitting", { kind: "failed", code: "busy", retryable: true }), "failed");
+    assert.equal(announcement("completed", { kind: "completed" }), null);
+  });
+});
+
+describe("lifecycle and stream edge cases", () => {
+  it("a stale open settling after dispose/start does not clear the new single-flight open", async () => {
+    const { createAssistant } = await import("../../../src/features/assistant/application/assistant.ts");
+    const resolvers: (() => void)[] = [];
+    let opens = 0;
+    const snapshot = parseSession(session);
+    const transport = {
+      openSession: (signal: AbortSignal) =>
+        new Promise<typeof snapshot>((resolve, reject) => {
+          opens++;
+          resolvers.push(() => resolve(snapshot));
+          signal.addEventListener("abort", () => reject(new Error("aborted")), { once: true });
+        }),
+      deleteSession: async () => {},
+      send: async () => "terminal" as const,
+      cancelRun: async () => {},
+    };
+    const assistant = createAssistant(
+      transport,
+      { id: () => "key-000001", now: () => "2026-10-05T00:00:00Z" },
+      { policy: { storefrontOrigin: "https://pequeverso.com", linkHosts: [] }, locale: "es" },
+    );
+    assistant.start();
+    assistant.dispose();
+    assistant.start(); // second open in flight
+    await new Promise((resolve) => setTimeout(resolve, 0)); // the first (aborted) open settles
+    assistant.start(); // must reuse the in-flight open, not issue a third request
+    assert.equal(opens, 2);
+    resolvers[1]?.();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.equal(assistant.getSnapshot().session, "open");
+  });
+
+  it("treats a stream ending inside a UTF-8 sequence as a protocol error", async () => {
+    const { readSse, StreamProtocolError } = await import("../../../src/features/assistant/adapters/sse.ts");
+    const started = read("examples/stream.recommendation.sse").toString("utf8").split("\n\n")[0] ?? "";
+    const bytes = new Uint8Array([...new TextEncoder().encode(`${started}\n\n`), 0xe2, 0x82]);
+    const stream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(bytes);
+        controller.close();
+      },
+    });
+    await assert.rejects(
+      readSse(stream, () => {}),
+      StreamProtocolError,
+    );
   });
 });

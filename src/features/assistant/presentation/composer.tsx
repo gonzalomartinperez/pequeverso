@@ -85,7 +85,7 @@ export function Composer({
       <div
         className={cx(
           "flex items-end gap-2 rounded-xl border-2 bg-card p-1.5 ps-4 shadow-sm transition-[border-color,box-shadow] duration-(--duration-fast) focus-within:border-ring focus-within:shadow-md",
-          tooLong ? "border-coral" : "border-line-strong",
+          tooLong ? "border-destructive" : "border-line-strong",
         )}
       >
         <label htmlFor={`${hintId}-field`} className="sr-only">
@@ -141,7 +141,7 @@ export function Composer({
         <p
           id={counterId}
           aria-live="polite"
-          className={cx("ms-auto tabular-nums", tooLong && "font-bold text-coral-hover")}
+          className={cx("ms-auto tabular-nums", tooLong && "font-bold text-destructive")}
         >
           {tooLong ? t.tooLong(maxChars) : remaining <= 100 ? t.charactersLeft(remaining) : ""}
         </p>

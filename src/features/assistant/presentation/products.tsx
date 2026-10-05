@@ -1,6 +1,7 @@
 "use client";
 import { formatDay } from "@content/es/assistant";
 import { BookOpen } from "lucide-react";
+import { useId } from "react";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cx } from "@/lib/cx";
 import type { Price, Product, Resource } from "../domain/models";
@@ -52,7 +53,8 @@ function Thumb({ product }: { product: Product }) {
 
 function ProductCard({ product, resources }: { product: Product; resources: Resource[] }) {
   const { t } = usePresentation();
-  const headingId = `assistant-product-${product.id}`;
+  // The same product can appear in several answers: ids must be unique per rendered card.
+  const headingId = useId();
   return (
     <article
       aria-labelledby={headingId}
@@ -133,7 +135,14 @@ function Comparison({ products, resources }: { products: Product[]; resources: R
   const { t } = usePresentation();
   const rows: { label: string; cell: (product: Product) => string }[] = [
     { label: t.ageRange, cell: (product) => product.ageRange },
-    { label: t.price, cell: (product) => product.price?.display ?? t.priceUnverified },
+    {
+      label: t.price,
+      // A price never appears without its notes and confirmation date.
+      cell: (product) =>
+        product.price
+          ? `${product.price.display} ${product.price.taxNote}. ${product.price.note} ${t.priceVerified(formatDay(product.price.verifiedAt))}.`
+          : t.priceUnverified,
+    },
     {
       label: t.resourcesLabel,
       cell: (product) => {

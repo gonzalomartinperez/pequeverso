@@ -41,6 +41,19 @@ async function shot(page: Page, project: string, name: string) {
   await page.screenshot({ path: `${SHOTS}/${project}-${name}.png` });
 }
 
+// The verification build carries a fake Meta Pixel id (as CI does): Meta hosts are always aborted,
+// and every test except the consent one starts with a stored rejection, so no pixel code runs.
+test.beforeEach(async ({ context }, info) => {
+  await context.route(/^https:\/\/([a-z0-9-]+\.)*facebook\.(com|net)\//, (route) => route.abort());
+  if (info.title.includes("consent")) return;
+  await context.addInitScript(() => {
+    window.localStorage.setItem(
+      "pv_consent",
+      JSON.stringify({ version: 2, analytics: false, marketing: false, updatedAt: "2026-10-05T00:00:00Z" }),
+    );
+  });
+});
+
 test.describe("native assistant (enabled verification build, fixture API)", () => {
   test("stays idle until opened and only appears on hub, product and support pages", async ({ page }) => {
     const calls = apiCalls(page);
@@ -155,6 +168,18 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await page.keyboard.press("Escape");
     await expect(panel(page)).toBeHidden();
     await expect(launcher(page)).toBeFocused();
+  });
+
+  test("Escape during an IME composition does not minimize", async ({ page }, info) => {
+    await page.goto(start(info.project.name, "/"));
+    await openPanel(page);
+    await composer(page).evaluate((field) => {
+      field.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", isComposing: true, bubbles: true }));
+      field.dispatchEvent(new KeyboardEvent("keydown", { key: "Process", keyCode: 229, bubbles: true }));
+    });
+    await expect(panel(page)).toBeVisible();
+    await composer(page).press("Escape");
+    await expect(panel(page)).toBeHidden();
   });
 
   test("expands in the page and restores", async ({ page }, info) => {
@@ -320,18 +345,57 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await expect(panel(page)).toHaveAttribute("data-phase", "ready");
   });
 
+  test("an open panel is never covered by the consent banner, which stays usable", async ({ page }, info) => {
+    await page.goto(start(info.project.name, "/"));
+    const banner = page.getByTestId("consent-banner");
+    await expect(banner).toBeVisible();
+    // On phones the banner may cover the launcher until the visitor decides; keyboard still reaches it.
+    await launcher(page).focus();
+    await page.keyboard.press("Enter");
+    await expect(panel(page)).toHaveAttribute("data-phase", /ready|completed/);
+    const box = await composer(page).boundingBox();
+    expect(box).not.toBeNull();
+    if (box) {
+      const top = await page.evaluate(
+        ([x, y]) => document.elementFromPoint(x ?? 0, y ?? 0)?.closest("#pv-assistant-panel") !== null,
+        [box.x + box.width / 2, box.y + box.height / 2],
+      );
+      expect(top, "the composer is the topmost element at its centre").toBe(true);
+    }
+    await ask(page, "¿Para qué edades es?");
+    await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    await panel(page).getByRole("button", { name: "Minimizar asistente" }).click();
+    await expect(banner).toBeVisible();
+    expect(await banner.evaluate((node) => node.closest("[inert]") === null)).toBe(true);
+    await banner.getByRole("button", { name: "Rechazar" }).click();
+    await expect(banner).toHaveCount(0);
+  });
+
   test("has no axe violations (WCAG 2.2 AA) with an answer on screen", async ({ page }, info) => {
     test.skip(info.project.name.startsWith("webkit"), "axe runs on Chromium and Firefox");
     await page.goto(start(info.project.name, "/grafismo-fonetico/"));
     await openPanel(page);
     await ask(page, "¿Qué incluye el kit?");
     await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    // A second answer repeats the product card: ids must stay unique (axe duplicate-id rules).
+    await ask(page, "¿Cuánto cuesta el kit?");
+    await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    expect(await panel(page).getByRole("article").count()).toBeGreaterThan(1);
+    const ids = await page
+      .locator("#pv-assistant-panel [id]")
+      .evaluateAll((nodes) => nodes.map((node) => node.id));
+    expect(new Set(ids).size).toBe(ids.length);
     const results = await new AxeBuilder({ page })
       .include("#pv-assistant-panel")
       .include('[data-testid="assistant-launcher"]')
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
       .analyze();
-    expect(results.violations.map((v) => `${v.id}: ${v.nodes.length}`)).toEqual([]);
+    expect(
+      results.violations.map(
+        (v) =>
+          `${v.id}: ${v.nodes.map((n) => `${n.target.join(" ")} ${n.failureSummary ?? ""}`.slice(0, 300)).join(" | ")}`,
+      ),
+    ).toEqual([]);
   });
 
   test("reduced motion keeps the panel still", async ({ page }, info) => {

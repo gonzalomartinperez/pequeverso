@@ -3,7 +3,7 @@ import { Info } from "lucide-react";
 import Link from "next/link";
 import { type RefObject, useCallback, useEffect, useRef, useState } from "react";
 import type { Assistant } from "../application/assistant";
-import { type ConversationState, canSubmit, type Phase } from "../domain/conversation";
+import { announcement, type ConversationState, canSubmit, type Phase } from "../domain/conversation";
 import styles from "./assistant.module.css";
 import { Composer } from "./composer";
 import { usePresentation } from "./context";
@@ -14,22 +14,24 @@ import { Callout } from "./parts";
 import { Announcer, Transcript } from "./transcript";
 
 /** One polite announcement per phase change (never per token). */
-function useAnnouncement(current: Phase, state: ConversationState): string {
+function useAnnouncement(current: Phase): string {
   const { t } = usePresentation();
   const [message, setMessage] = useState("");
   const previous = useRef(current.kind);
   useEffect(() => {
     const before = previous.current;
     previous.current = current.kind;
-    if (before === current.kind) return;
-    if (current.kind === "submitting") setMessage(t.thinking);
-    else if (current.kind === "cancelled") setMessage(t.answerStopped);
-    else if (current.kind === "failed" && current.code === "interrupted") setMessage(t.answerInterrupted);
-    else if (current.kind === "failed" && (before === "streaming" || before === "submitting"))
-      setMessage(t.answerFailed);
-    else if (current.kind === "completed" && state.messages.at(-1)?.role === "assistant")
-      setMessage(t.answerReady);
-  }, [current, state.messages, t]);
+    const next = announcement(before, current);
+    if (!next) return;
+    const copy = {
+      thinking: t.thinking,
+      stopped: t.answerStopped,
+      interrupted: t.answerInterrupted,
+      failed: t.answerFailed,
+      ready: t.answerReady,
+    } as const;
+    setMessage(copy[next]);
+  }, [current, t]);
   return message;
 }
 
@@ -48,7 +50,7 @@ export function ConversationView({
   const { t, privacyPath, onNavigate } = usePresentation();
   const [follow, setFollow] = useState(0);
   const [focus, setFocus] = useState(0);
-  const announcement = useAnnouncement(phase, state);
+  const announcement = useAnnouncement(phase);
   const ready = canSubmit(state);
 
   const ask = useCallback(

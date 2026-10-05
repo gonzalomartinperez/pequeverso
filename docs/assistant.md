@@ -24,6 +24,11 @@ Advisory, read-only helper that answers questions about the store's products wit
 | `NEXT_PUBLIC_ASSISTANT_API_ORIGIN` | bare `https://host` | API origin the browser calls (`/api/v1/...`) |
 | `ASSISTANT_LOCAL_TEST_BUILD` | `true` | Allows `http://localhost` / `127.0.0.1` origins for local verification only |
 
+`config/next.ts` always defines the switch (normalized to `"true"`/`"false"`) so the bundler can drop
+the assistant code even when the variable is absent; Next only inlines `NEXT_PUBLIC_*` variables that
+exist in the build environment. `npm run build` ends with the publish guard (`check-assistant-disabled`;
+an explicitly enabled verification build only warns), CI runs it strictly, and
+`npm run check:assistant-absent-build` rebuilds with the variable absent from a minimal environment.
 `NEXT_PUBLIC_*` values are inlined at build time. Turning the assistant on or off in the static
 export therefore **requires a rebuild and a release**; vps-ops cannot switch it at runtime. Stopping
 the API alone leaves the launcher visible but harmless: the panel shows an offline notice with a
@@ -62,13 +67,24 @@ The store is a static site on its own origin; the API is a separate HTTPS origin
   modal surface covers the page, `src/motion/motion-hold.ts` pauses the WebGL scene and CSS motion
   under the page landmarks and defers a cold WebGL start; releasing it restores the visitor's own
   pause choice untouched.
+- Retry and Idempotency-Key: a retry is always an explicit click. After a **failure or a
+  cancellation** it sends a new key. After an **interruption** (the connection ended without a
+  terminal event) it first resends the **same** key and body: if the API had completed and stored
+  the answer, it replays it without a new model call or cost; if that run ended failed or
+  cancelled, the API answers `409 idempotency_conflict` and the client retries once with a fresh
+  key. The question bubble is never duplicated. This deliberately refines the API handoff's
+  "retry with a new key" for the interrupted case (`application/assistant.ts`, `retry`).
 - A streamed draft is labelled "en curso" until the API confirms the stored answer; a cut stream is
   labelled incomplete with an explicit retry. Nothing is retried automatically.
 - States: `initializing`, `ready`, `submitting`, `streaming` (`stopping`), `completed`, `cancelled`,
   `failed` (always recoverable), `unavailable`, `expired` (`domain/conversation.ts#phase`).
+- Stacking: an open panel sits above the cookie-consent banner, so its composer is never covered.
+  The banner stays usable while the panel is compact or minimized and returns intact after an
+  expanded or phone (modal) panel closes.
 - Answers render as text (bold and lists only, no HTML, no auto-links). Product cards, prices (only
   with their confirmation date), resources, sources, links and follow-ups come from validated API
-  fields; URLs pass `domain/links.ts` (store origin, plus `consumer.hotmart.com` and
+  fields; URLs pass `domain/links.ts` (backslashes, control characters and `//` paths are refused, so
+no storefront link can become protocol-relative) (store origin, plus `consumer.hotmart.com` and
   `refund.hotmart.com` for links). Store links navigate in the same tab without reloading; external
   links open in a new tab only on click. The assistant never navigates or opens windows on its own.
 - Language: the interface is Spanish; the API answers in Spanish or English per message and the

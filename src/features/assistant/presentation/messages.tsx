@@ -16,9 +16,9 @@ function UserMessage({ message, enter = false }: { message: Message; enter?: boo
   const { t } = usePresentation();
   return (
     <li className={cx("flex justify-end", enter && styles.enter)}>
-      <div className="max-w-[85%] rounded-lg rounded-br-sm bg-navy px-4 py-2.5 text-white shadow-sm">
+      <div className="on-navy max-w-[85%] rounded-lg rounded-br-sm bg-navy px-4 py-2.5 text-white shadow-sm">
         <h2 className="sr-only">{t.you}</h2>
-        <p className="whitespace-pre-wrap [overflow-wrap:anywhere]">{message.content}</p>
+        <p className="whitespace-pre-wrap text-white [overflow-wrap:anywhere]">{message.content}</p>
       </div>
     </li>
   );

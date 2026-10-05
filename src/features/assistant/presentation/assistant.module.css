@@ -48,16 +48,21 @@
   box-shadow: 0 0 0 2px var(--pv-navy);
 }
 
+/*
+ * Stacking: launcher (70) < sticky buy bar (60..70) < consent banner (90) < assistant scrim (94) <
+ * open panel (95). An open panel is never covered (its composer stays usable); the consent banner
+ * stays usable whenever the panel is compact or minimized, and returns intact after a modal one.
+ */
 .backdrop {
   position: fixed;
   inset: 0;
-  z-index: 79;
+  z-index: 94;
   background: oklch(0.2619 0.0887 255.79 / 45%);
 }
 
 .panel {
   position: fixed;
-  z-index: 80;
+  z-index: 95;
   display: flex;
   flex-direction: column;
   overflow: hidden;

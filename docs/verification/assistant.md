@@ -7,10 +7,12 @@ revision 1.2, browser contract = 1.1), fixture provider. No model call, no real 
 
 | Check | Result |
 |---|---|
-| `npm run check` (Biome, TypeScript 7, 135 unit tests, knip, build, media, placeholders, assistant-disabled, bundle, scene, rendered) | Pass, 1 m 30 s |
+| `npm run check` (Biome, TypeScript 7, 143 unit tests, knip, build + publish guard, media, placeholders, bundle, scene, rendered) | Pass |
+| `npm run check:assistant-absent-build` (variable absent, minimal env) | Pass; before the fix the same build emitted the panel chunk and launcher strings |
+| `npm run build:standalone` | Pass; guard scans `.next/static` |
 | `check:assistant-disabled` on `out/` | 127 files, no marker; rejects `out-assistant-fixture/` (positive control) |
-| Disabled export in browsers: `assistant-disabled` + `smoke` specs, Chromium 1440/768/390 | 45 passed |
-| `npm run test:e2e:assistant` (enabled build + real fixture API, HTTPS loopback, 6 projects) | 64 passed, 20 skipped by design, 0 failed; 5 m 33 s including the build |
+| Disabled export in browsers: `assistant-disabled` + `smoke` specs, Chromium 1440/390 | 30 passed |
+| `npm run test:e2e:assistant` (enabled build + real fixture API, HTTPS loopback, 6 projects) | 76 passed, 20 skipped by design, 0 failed; 5 m 23 s including the build. Includes consent-banner stacking, IME Escape, repeated product cards (unique ids, axe ×5 repeats on 3 projects) |
 
 The enabled projects are Chromium desktop, Chromium phone (Pixel 7), Chromium reduced motion,
 Firefox desktop, WebKit desktop and WebKit phone (iPhone 13). Skips are deliberate: keyboard tests

@@ -64,7 +64,7 @@ export function ClearControl({
           aria-modal="false"
           aria-labelledby={titleId}
           onKeyDown={(event) => {
-            if (event.key === "Escape") {
+            if (event.key === "Escape" && !event.nativeEvent.isComposing && event.keyCode !== 229) {
               event.preventDefault();
               event.stopPropagation();
               close();

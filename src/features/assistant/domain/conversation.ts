@@ -311,3 +311,20 @@ export function phase(state: ConversationState): Phase {
   if (state.messages.at(-1)?.role === "assistant") return { kind: "completed" };
   return { kind: "ready" };
 }
+
+export type Announcement = "thinking" | "stopped" | "interrupted" | "failed" | "ready";
+
+/**
+ * The single polite announcement for a phase change, or null. Only outcomes of a question the
+ * visitor just sent are announced: opening a session with restored history announces nothing.
+ */
+export function announcement(before: Phase["kind"], current: Phase): Announcement | null {
+  if (before === current.kind) return null;
+  const answering = before === "submitting" || before === "streaming";
+  if (current.kind === "submitting") return "thinking";
+  if (current.kind === "cancelled") return answering ? "stopped" : null;
+  if (current.kind === "failed" && current.code === "interrupted") return answering ? "interrupted" : null;
+  if (current.kind === "failed") return answering ? "failed" : null;
+  if (current.kind === "completed") return answering ? "ready" : null;
+  return null;
+}

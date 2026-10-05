@@ -15,7 +15,7 @@ export const launcherCopy = {
 
 export const assistantCopy = {
   name: "Asistente Pequeverso",
-  aiDisclosure: "Asistente con IA. Responde con la información publicada en la tienda.",
+  aiDisclosure: "Asistente con IA. Usa la información de la tienda.",
   privacyNote: "No escribas datos personales ni de tus hijos. ",
   privacyLink: "Cómo tratamos tus mensajes",
 

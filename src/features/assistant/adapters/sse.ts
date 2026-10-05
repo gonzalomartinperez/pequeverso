@@ -136,7 +136,12 @@ export async function readSse(
       signal?.throwIfAborted();
       total += value?.byteLength ?? 0;
       if (total > MAX_TOTAL_BYTES) fail("stream too large");
-      buffer += decoder.decode(value, { stream: !done });
+      try {
+        buffer += decoder.decode(value, { stream: !done });
+      } catch {
+        // Invalid UTF-8, including a stream that ends inside a multi-byte sequence.
+        fail("invalid UTF-8");
+      }
       const frames = buffer.split(/\r?\n\r?\n/);
       buffer = frames.pop() ?? "";
       if (buffer.length > MAX_FRAME) fail("frame too large");

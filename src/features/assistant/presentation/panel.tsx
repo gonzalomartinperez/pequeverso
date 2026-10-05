@@ -183,7 +183,8 @@ export default function AssistantPanel({
   );
 
   function onKeyDown(event: KeyboardEvent<HTMLElement>) {
-    if (event.defaultPrevented) return;
+    // An IME composition owns Escape (it cancels the candidate), so it never minimizes the panel.
+    if (event.defaultPrevented || event.nativeEvent.isComposing || event.keyCode === 229) return;
     if (event.key === "Escape") {
       event.preventDefault();
       onMinimize();
@@ -234,7 +235,7 @@ export default function AssistantPanel({
             <h2 id={titleId} className="m-0 font-sans text-base leading-tight font-extrabold text-white">
               {t.name}
             </h2>
-            <p id={descriptionId} className="m-0 line-clamp-2 text-tiny text-on-navy">
+            <p id={descriptionId} className="m-0 text-tiny text-on-navy">
               {t.aiDisclosure}
             </p>
           </div>
