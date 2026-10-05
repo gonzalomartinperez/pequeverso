@@ -15,7 +15,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/check-env.ts && node scripts/build-info.ts && next build --webpack && node scripts/gen-htaccess.ts",
+    "build": "node scripts/check-env.ts && node scripts/build-info.ts && next build --webpack && node scripts/gen-htaccess.ts && node scripts/check-assistant-disabled.ts --allow-enabled",
     "build:standalone": "cross-env NEXT_OUTPUT=standalone npm run build",
     "start": "node scripts/start.ts",
     "typegen": "next typegen",
@@ -27,7 +27,7 @@
     "test": "node --env-file-if-exists=.env.example --test \"tests/unit/**/*.test.ts\"",
     "test:e2e": "cross-env PW_SET=pr playwright test",
     "test:e2e:nightly": "cross-env PW_SET=nightly playwright test",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run knip:production && npm run build && npm run check:media && npm run check:placeholders && npm run check:assistant-disabled && npm run check:bundle && npm run check:scene && npm run check:rendered",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run knip:production && npm run build && npm run check:media && npm run check:placeholders && npm run check:bundle && npm run check:scene && npm run check:rendered",
     "check:env": "node scripts/check-env.ts",
     "check:media": "node scripts/check-media-budget.ts",
     "check:placeholders": "node scripts/check-placeholders.ts",
@@ -45,7 +45,8 @@
     "check:rendered": "node scripts/check-rendered.ts",
     "check:assistant-disabled": "node scripts/check-assistant-disabled.ts",
     "build:assistant-fixture": "node scripts/build-assistant-fixture.ts",
-    "test:e2e:assistant": "node scripts/build-assistant-fixture.ts && playwright test -c playwright.assistant.config.ts"
+    "test:e2e:assistant": "node scripts/build-assistant-fixture.ts && playwright test -c playwright.assistant.config.ts",
+    "check:assistant-absent-build": "node scripts/check-assistant-absent-build.ts"
   },
   "dependencies": {
     "@base-ui/react": "1.8.0",

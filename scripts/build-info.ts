@@ -30,7 +30,7 @@ const info = {
   ref: process.env.GITHUB_REF_NAME || git("rev-parse --abbrev-ref HEAD") || "unknown",
   builtAt: new Date().toISOString(),
   output: process.env.NEXT_OUTPUT === "standalone" ? "standalone" : "export",
-  assistant: process.env.NEXT_PUBLIC_ASSISTANT_ENABLED?.trim() === "true" ? "enabled" : "disabled",
+  assistant: (process.env.NEXT_PUBLIC_ASSISTANT_ENABLED ?? "").trim() === "true" ? "enabled" : "disabled",
 };
 
 mkdirSync(resolve(root, "public"), { recursive: true });
