@@ -1,6 +1,6 @@
 ---
 name: change-assistant
-description: Change the native shopping assistant in src/features/assistant (UI, conversation state, SSE transport, contract pin) while keeping it disabled and compiled out of publishable builds.
+description: Change the native shopping assistant in src/features/assistant (UI, conversation state, SSE transport, contract pin) while keeping it disabled and compiled out of publishable builds. Not for enabling the assistant, API changes or deployment.
 ---
 
 # Change the native assistant
@@ -34,3 +34,10 @@ the API repository, paid model calls, deployment.
    and look at them; record representative ones in `docs/verification/assistant/`.
 5. PR body: what was verified (commands, browsers) and what was not (real model, production
    origin/CORS/TLS, physical devices). A skill is a procedure, not an authorization.
+
+## Limits
+
+- Not an authorization to enable the assistant, publish an enabled build, use a real OpenAI key
+  or change the API repository; each needs the owner's explicit, current approval.
+- Evidence to report: `npm run check`, `npm run check:assistant-disabled`,
+  `npm run test:e2e:assistant` results and the screenshots you inspected.
