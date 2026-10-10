@@ -607,65 +607,75 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
     await ask(page, `¿Sirve este enlace https://pequeverso.com/${"muy-largo-".repeat(30)} para comprar?`);
     await expect(panel(page)).toHaveAttribute("data-phase", "completed");
-    const overflow = await panel(page).evaluate((element) =>
-      [...element.querySelectorAll("ol, p, li, a, button")]
-        .filter(
-          (node) =>
-            node.scrollWidth > node.clientWidth + 1 &&
-            getComputedStyle(node).overflowX !== "auto" &&
-            !node.classList.contains("sr-only") &&
-            getComputedStyle(node).display !== "inline",
-        )
-        .map((node) => `${node.tagName.toLowerCase()}.${node.className}`.slice(0, 120)),
-    );
-    expect(overflow).toEqual([]);
-    const box = await panel(page).boundingBox();
-    expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual((page.viewportSize()?.width ?? 0) + 1);
-    const answerText = panel(page)
-      .getByRole("listitem")
-      .filter({ has: page.getByRole("heading", { name: "Asistente" }) })
-      .last()
-      .locator("p")
-      .first();
-    await answerText.evaluate((paragraph) => {
-      let scroller = paragraph.parentElement;
-      while (scroller && getComputedStyle(scroller).overflowY !== "auto") scroller = scroller.parentElement;
-      if (!scroller) throw new Error("Transcript scroller was not found");
-      scroller.scrollTop += paragraph.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
-    });
-    await expect(answerText).toBeInViewport();
-    const jump = panel(page).getByRole("button", { name: "Ir a la última respuesta" });
-    await expect(jump).toBeVisible();
-    const reading = await answerText.evaluate((paragraph) => {
-      let scroller = paragraph.parentElement;
-      while (scroller && getComputedStyle(scroller).overflowY !== "auto") scroller = scroller.parentElement;
-      if (!scroller) throw new Error("Transcript scroller was not found");
-      const jump = document.querySelector<HTMLButtonElement>('button[aria-label="Ir a la última respuesta"]');
-      if (!jump) throw new Error("Jump control was not found");
-      const area = scroller.getBoundingClientRect();
-      const text = paragraph.getBoundingClientRect();
-      const control = jump.getBoundingClientRect();
-      const line = Number.parseFloat(getComputedStyle(paragraph).lineHeight);
-      const y = Math.max(area.top, text.top) + line / 2;
-      const hit = document.elementFromPoint(text.left + 2, y);
-      return {
-        targetWidth: control.width,
-        targetHeight: control.height,
-        inside: control.top >= area.top && control.bottom <= area.bottom,
-        separate: text.right <= control.left,
-        visibleLine: Math.min(text.bottom, area.bottom) - Math.max(text.top, area.top) >= line,
-        readable: hit === paragraph || (hit !== null && paragraph.contains(hit)),
-      };
-    });
-    expect(reading).toEqual({
-      targetWidth: 44,
-      targetHeight: 44,
-      inside: true,
-      separate: true,
-      visibleLine: true,
-      readable: true,
-    });
-    await shot(page, info.project.name, "zoom-long-text");
+    const viewport = page.viewportSize();
+    if (!viewport) throw new Error("Viewport was not set");
+    for (const width of isMobile(info.project.name) ? [320, 390] : [viewport.width]) {
+      await page.setViewportSize({ width, height: viewport.height });
+      await expect
+        .poll(() => panel(page).evaluate((element) => element.clientWidth))
+        .toBeLessThanOrEqual(width);
+      const overflow = await panel(page).evaluate((element) =>
+        [...element.querySelectorAll("ol, p, li, a, button")]
+          .filter(
+            (node) =>
+              node.scrollWidth > node.clientWidth + 1 &&
+              getComputedStyle(node).overflowX !== "auto" &&
+              !node.classList.contains("sr-only") &&
+              getComputedStyle(node).display !== "inline",
+          )
+          .map((node) => `${node.tagName.toLowerCase()}.${node.className}`.slice(0, 120)),
+      );
+      expect(overflow).toEqual([]);
+      const box = await panel(page).boundingBox();
+      expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual((page.viewportSize()?.width ?? 0) + 1);
+      const answerText = panel(page)
+        .getByRole("listitem")
+        .filter({ has: page.getByRole("heading", { name: "Asistente" }) })
+        .last()
+        .locator("p")
+        .first();
+      await answerText.evaluate((paragraph) => {
+        let scroller = paragraph.parentElement;
+        while (scroller && getComputedStyle(scroller).overflowY !== "auto") scroller = scroller.parentElement;
+        if (!scroller) throw new Error("Transcript scroller was not found");
+        scroller.scrollTop += paragraph.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
+      });
+      await expect(answerText).toBeInViewport();
+      const jump = panel(page).getByRole("button", { name: "Ir a la última respuesta" });
+      await expect(jump).toBeVisible();
+      const reading = await answerText.evaluate((paragraph) => {
+        let scroller = paragraph.parentElement;
+        while (scroller && getComputedStyle(scroller).overflowY !== "auto") scroller = scroller.parentElement;
+        if (!scroller) throw new Error("Transcript scroller was not found");
+        const jump = document.querySelector<HTMLButtonElement>(
+          'button[aria-label="Ir a la última respuesta"]',
+        );
+        if (!jump) throw new Error("Jump control was not found");
+        const area = scroller.getBoundingClientRect();
+        const text = paragraph.getBoundingClientRect();
+        const control = jump.getBoundingClientRect();
+        const line = Number.parseFloat(getComputedStyle(paragraph).lineHeight);
+        const y = Math.max(area.top, text.top) + line / 2;
+        const hit = document.elementFromPoint(text.left + 2, y);
+        return {
+          targetWidth: control.width,
+          targetHeight: control.height,
+          inside: control.top >= area.top && control.bottom <= area.bottom,
+          separate: text.right <= control.left,
+          visibleLine: Math.min(text.bottom, area.bottom) - Math.max(text.top, area.top) >= line,
+          readable: hit === paragraph || (hit !== null && paragraph.contains(hit)),
+        };
+      });
+      expect(reading).toEqual({
+        targetWidth: 44,
+        targetHeight: 44,
+        inside: true,
+        separate: true,
+        visibleLine: true,
+        readable: true,
+      });
+      await shot(page, info.project.name, `zoom-long-text-${width}`);
+    }
   });
 
   test("an unreachable API leaves the store working and recovers on request", async ({ page }, info) => {
