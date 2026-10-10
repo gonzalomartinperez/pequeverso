@@ -197,6 +197,35 @@ describe("assistant controller", () => {
     );
   });
 
+  for (const ending of ["eof", "error"] as const) {
+    it(`preserves an authoritative answer and allows another question after ${ending} without a terminal event`, async () => {
+      let attempt = 0;
+      const { assistant, calls } = fixture(async (input, signal, emit) => {
+        if (++attempt > 1) return answering(input, signal, emit);
+        emit({ type: "started", runId: "run_1", userMessage: message("q", "user") });
+        emit({ type: "answer", message: message("a", "assistant", "Respuesta completa") });
+        if (ending === "error") throw new AssistantError("network", true);
+        return "eof";
+      });
+      assistant.start();
+      await tick();
+      assistant.submit("hola");
+      await tick();
+      assert.equal(assistant.getSnapshot().pending, null);
+      assert.equal(assistant.getSnapshot().outcome, null);
+      assert.deepEqual(
+        assistant.getSnapshot().messages.map((m) => m.id),
+        ["q", "a"],
+      );
+      assert.equal(assistant.getSnapshot().messages.at(-1)?.content, "Respuesta completa");
+      assert.equal(calls.send.length, 1, "no automatic regeneration");
+      assert.equal(assistant.submit("otra pregunta"), true);
+      await tick();
+      assert.equal(calls.send.length, 2);
+      assistant.dispose();
+    });
+  }
+
   it("falls back to a fresh key when the interrupted run failed server-side", async () => {
     let attempt = 0;
     const { assistant, calls } = fixture(async (_input, _signal, emit) => {

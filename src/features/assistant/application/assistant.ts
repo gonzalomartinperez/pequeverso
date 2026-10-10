@@ -140,8 +140,9 @@ export function createAssistant(transport: AssistantTransport, runtime: Runtime,
         signal,
         (event) => onRunEvent(current, event),
       );
-      if (generation === current && !current.settled && end === "eof")
-        dispatch({ type: "run.interrupted", key: turn.key });
+      // The reducer preserves an authoritative answer and clears pending even when the
+      // connection closes before its terminal event. A settled answer is not a settled run.
+      if (generation === current && end === "eof") dispatch({ type: "run.interrupted", key: turn.key });
     } catch (error) {
       if (generation !== current || lifetime.signal.aborted) return;
       if (current.controller.signal.aborted) {
@@ -151,7 +152,7 @@ export function createAssistant(transport: AssistantTransport, runtime: Runtime,
       }
       const code = codeOf(error);
       if (current.runId || current.settled) {
-        if (!current.settled) dispatch({ type: "run.interrupted", key: turn.key });
+        dispatch({ type: "run.interrupted", key: turn.key });
         return;
       }
       if (code === "idempotency_conflict" && allowFreshKey) {
