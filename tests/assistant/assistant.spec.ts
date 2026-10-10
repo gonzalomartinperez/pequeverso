@@ -686,6 +686,29 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         visibleLine: true,
         readable: true,
       });
+      await jump.focus();
+      const tooltip = page.getByRole("tooltip", { name: "Ir a la última respuesta" });
+      await expect(tooltip).toBeVisible();
+      await expect
+        .poll(() =>
+          tooltip.evaluate((element) => {
+            const bounds = element.getBoundingClientRect();
+            const hit = document.elementFromPoint(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+            return {
+              contained:
+                bounds.left >= -1 &&
+                bounds.right <= innerWidth + 1 &&
+                bounds.top >= -1 &&
+                bounds.bottom <= innerHeight + 1,
+              painted: hit === element || (hit !== null && element.contains(hit)),
+            };
+          }),
+        )
+        .toEqual({ contained: true, painted: true });
+      await shot(page, info.project.name, `zoom-jump-tooltip-${width}`);
+      await composer(page).focus();
+      await expect(tooltip).toBeHidden();
+      await expect(panel(page)).toHaveAttribute("data-phase", "completed");
       await shot(page, info.project.name, `zoom-long-text-${width}`);
     }
   });
