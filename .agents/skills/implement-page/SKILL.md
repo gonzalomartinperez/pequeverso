@@ -1,6 +1,6 @@
 ---
 name: implement-page
-description: Build or change a page of pequeverso.com following the design system, content model and commerce rules.
+description: Build or change a page of pequeverso.com following the design system, content model and commerce rules. Not for checkout, Hotmart funnel, tracking or deployment changes.
 ---
 
 # Implement a page or component
@@ -29,3 +29,10 @@ description: Build or change a page of pequeverso.com following the design syste
 8. Run `npm run check`, then `npm run test:e2e` (includes `responsive.spec.ts`). Add or update a
    spec in `tests/e2e/` for every new behaviour; tighten `config/budgets.json` when CSS Modules go.
 9. In the PR body, list what was verified and what was not.
+
+## Limits
+
+- Not for changing checkout URLs, the Hotmart funnel, tracking/consent or edge rules without a
+  task that names them; never invent prices, testimonials or results.
+- Evidence to report: `npm run check`, the relevant `npm run test:e2e` projects and the
+  screenshots you inspected at 390/768/1440.

@@ -1,6 +1,6 @@
 ---
 name: release
-description: Cut a tagged release of pequeverso.com and run the gated deploy with verification and rollback.
+description: Cut a tagged release of pequeverso.com and run the gated deploy with verification and rollback. Not an authorization to release or deploy.
 ---
 
 # Release and deploy
@@ -14,3 +14,10 @@ description: Cut a tagged release of pequeverso.com and run the gated deploy wit
 4. After production: run the curl matrix in `docs/deployment.md`, check Search Console and Hotmart
    test purchase items in `docs/migration.md`.
 5. Rollback: re-run Deploy with the previous tag (or redeploy the previous `deploy` commit in hPanel → Git).
+
+## Limits
+
+- A procedure, never an authorization: each release to `main` and each Deploy run needs the
+  owner's explicit approval for that release. Never push to `main` or `deploy` directly, never
+  bypass rulesets or environment approvals.
+- Publishable builds keep the assistant disabled (`npm run check:assistant-disabled`).

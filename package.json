@@ -46,7 +46,8 @@
     "check:assistant-disabled": "node scripts/check-assistant-disabled.ts",
     "build:assistant-fixture": "node scripts/build-assistant-fixture.ts",
     "test:e2e:assistant": "node scripts/build-assistant-fixture.ts && playwright test -c playwright.assistant.config.ts",
-    "check:assistant-absent-build": "node scripts/check-assistant-absent-build.ts"
+    "check:assistant-absent-build": "node scripts/check-assistant-absent-build.ts",
+    "check:skills": "node scripts/check-skills.ts"
   },
   "dependencies": {
     "@base-ui/react": "1.8.0",
@@ -78,5 +79,13 @@
     "tailwindcss": "4.3.3",
     "typescript": "7.0.2"
   },
-  "type": "module"
+  "type": "module",
+  "overrides": {
+    "@lhci/cli": {
+      "tmp": "^0.2.6",
+      "uuid": "^11.1.1",
+      "qs": "^6.16.0",
+      "basic-ftp": "^6.2.2"
+    }
+  }
 }
