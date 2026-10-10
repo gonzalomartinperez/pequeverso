@@ -55,19 +55,24 @@ test.beforeEach(async ({ context }, info) => {
 });
 
 test.describe("native assistant (enabled verification build, fixture API)", () => {
-  test("stays idle until opened and only appears on hub, product and support pages", async ({ page }) => {
-    const calls = apiCalls(page);
-    for (const path of ["/", "/grafismo-fonetico/", "/soporte/"]) {
+  for (const [path, visible] of [
+    ["/", true],
+    ["/grafismo-fonetico/", true],
+    ["/soporte/", true],
+    ["/imprime-y-juega/", false],
+    ["/grafismo-fonetico/gracias/", false],
+    ["/privacidad/", false],
+    ["/terminos/", false],
+  ] as const) {
+    test(`stays idle before opening on ${path} (${visible ? "eligible" : "excluded"})`, async ({ page }) => {
+      const calls = apiCalls(page);
       await page.goto(path);
-      await expect(launcher(page)).toBeVisible();
-    }
-    for (const path of ["/imprime-y-juega/", "/grafismo-fonetico/gracias/", "/privacidad/", "/terminos/"]) {
-      await page.goto(path);
-      await expect(launcher(page)).toBeHidden();
-    }
-    await page.waitForTimeout(500);
-    expect(calls, "no session or API call before the visitor opens the assistant").toHaveLength(0);
-  });
+      if (visible) await expect(launcher(page)).toBeVisible();
+      else await expect(launcher(page)).toBeHidden();
+      await page.waitForTimeout(500);
+      expect(calls, "no session or API call before the visitor opens the assistant").toHaveLength(0);
+    });
+  }
 
   test("launcher is a named star-only control with a supplementary tooltip", async ({ page }, info) => {
     const calls = apiCalls(page);
@@ -543,6 +548,7 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await panel(page).getByRole("button", { name: "Nueva conversación" }).click();
     await panel(page).getByRole("button", { name: "Borrar" }).click();
     await expect(panel(page).getByRole("region", { name: "Preguntas para empezar" })).toBeVisible();
+    expect(await panel(page).evaluate((element) => element.contains(document.activeElement))).toBe(true);
     const greeting = panel(page).getByRole("list", { name: "Conversación con el asistente" });
     const greetingWidth = await greeting.evaluate((element) => {
       const style = getComputedStyle(element);
@@ -562,9 +568,51 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     expect(calls.some((c) => c.method() === "DELETE" && c.url().endsWith("/api/v1/session"))).toBe(true);
   });
 
+  test("clear confirmation preserves draft and consumes Escape from header controls", async ({ page }) => {
+    await page.goto("/soporte/");
+    await openPanel(page);
+    await ask(page, "¿Para qué edades es?");
+    await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    await composer(page).fill("Mi borrador sin enviar");
+    const trigger = panel(page).getByRole("button", { name: "Nueva conversación" });
+    await trigger.click();
+    await expect(composer(page)).toBeHidden();
+    const language = panel(page).getByRole("combobox");
+    await language.focus();
+    await language.press("Escape");
+    await expect(panel(page).getByRole("dialog", { name: "¿Empezar de nuevo?" })).toBeHidden();
+    await expect(panel(page)).toBeVisible();
+    await expect(trigger).toBeFocused();
+    await expect(composer(page)).toHaveValue("Mi borrador sin enviar");
+    await expect(panel(page).locator("[inert]")).toHaveCount(0);
+  });
+
+  test("confirmed clear keeps focus stable without stealing a visitor's later focus", async ({ page }) => {
+    await page.goto("/soporte/");
+    await openPanel(page);
+    await ask(page, "¿Para qué edades es?");
+    await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    let release: () => void = () => {};
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route(`${API}/api/v1/session`, async (route) => {
+      if (route.request().method() === "DELETE") await gate;
+      await route.continue();
+    });
+    await panel(page).getByRole("button", { name: "Nueva conversación" }).click();
+    await panel(page).getByRole("button", { name: "Borrar" }).click();
+    await expect(panel(page)).toBeFocused();
+    const language = panel(page).getByRole("combobox");
+    await language.focus();
+    release();
+    await expect(panel(page)).toHaveAttribute("data-phase", "ready");
+    await expect(language).toBeFocused();
+  });
+
   for (const width of [320, 390]) {
     for (const locale of ["es", "en"]) {
-      test(`header controls align and ${locale} clear confirmation fits ${width}px at enlarged text`, async ({
+      test(`header controls align and ${locale} clear confirmation fits ${width}px at enlarged text in a short viewport`, async ({
         page,
       }, info) => {
         await page.goto("/soporte/");
@@ -585,7 +633,7 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         await ask(page, "¿Para qué edades es?");
         await expect(panel(page)).toHaveAttribute("data-phase", "completed");
         await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
-        await page.setViewportSize({ width, height: 844 });
+        await page.setViewportSize({ width, height: 420 });
         await panel(page).getByRole("combobox").selectOption(locale);
         const trigger = panel(page).getByRole("button", {
           name: locale === "es" ? "Nueva conversación" : "New conversation",
@@ -595,12 +643,18 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
           name: locale === "es" ? "¿Empezar de nuevo?" : "Start again?",
         });
         await expect(confirmation).toBeVisible();
+        await expect(panel(page).getByRole("textbox")).toBeHidden();
+        await expect(panel(page).locator("[inert]")).toHaveCount(1);
         const geometry = await confirmation.evaluate((element) => {
           const box = element.getBoundingClientRect();
           const parent = element.closest("#pv-assistant-panel");
           if (!parent) throw new Error("Confirmation is outside the assistant");
           const surface = parent.getBoundingClientRect();
           return {
+            top: box.top,
+            bottom: box.bottom,
+            surfaceTop: surface.top,
+            surfaceBottom: surface.bottom,
             left: box.left,
             right: box.right,
             surfaceLeft: surface.left,
@@ -608,6 +662,8 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
             horizontalOverflow: element.scrollWidth - element.clientWidth,
           };
         });
+        expect(geometry.top).toBeGreaterThanOrEqual(geometry.surfaceTop - 1);
+        expect(geometry.bottom).toBeLessThanOrEqual(geometry.surfaceBottom + 1);
         expect(geometry.left).toBeGreaterThanOrEqual(geometry.surfaceLeft - 1);
         expect(geometry.right).toBeLessThanOrEqual(geometry.surfaceRight + 1);
         expect(geometry.horizontalOverflow).toBeLessThanOrEqual(1);
@@ -631,7 +687,7 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         await expect(confirmation).toBeHidden();
         await expect(panel(page)).toBeVisible();
         await expect(trigger).toBeFocused();
-        await expect(panel(page).getByText("¿Para qué edades es?")).toBeVisible();
+        await expect(panel(page).getByText("¿Para qué edades es?")).toHaveCount(1);
       });
     }
   }

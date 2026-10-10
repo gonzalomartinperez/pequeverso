@@ -20,12 +20,15 @@ export function Transcript({
   followSignal,
   busy,
   empty,
+  inactive,
 }: {
   children: ReactNode;
   followSignal: number;
   busy: boolean;
   /** The greeting and starters read from the top; following starts with the first message. */
   empty: boolean;
+  /** A clear-history decision temporarily owns the conversation controls. */
+  inactive: boolean;
 }) {
   const { t } = usePresentation();
   const scroller = useRef<HTMLDivElement>(null);
@@ -94,7 +97,7 @@ export function Transcript({
   }, [toBottom, updateFollow]);
 
   return (
-    <div className="relative min-h-0 flex-1">
+    <div inert={inactive} className="relative min-h-0 flex-1">
       <div ref={scroller} className={cx("cq h-full overflow-y-auto", styles.transcript)}>
         <ol
           ref={content}

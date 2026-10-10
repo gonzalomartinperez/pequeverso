@@ -42,7 +42,7 @@ test("captures the local assistant preview", async ({ page, context }, info) => 
     await route.continue();
   });
   const field = panel.getByRole("textbox", { name: "Escribe tu pregunta" });
-  await field.fill("¿Qué incluye Grafismo Fonético y cómo se imprime?");
+  await field.fill("¿Cuál es la garantía?");
   await field.press("Enter");
   await expect(panel.getByRole("list").getByText("Pensando…", { exact: true })).toBeVisible();
   if (!mobile) await page.screenshot({ path: `${SHOTS}/04-Desktop-Espera.png`, animations: "disabled" });
