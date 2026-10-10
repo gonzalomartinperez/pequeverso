@@ -1,4 +1,54 @@
-# Native assistant verification (2026-10-05, WSL2, Node 24.21.0)
+# Native assistant verification (2026-10-10)
+
+Fixture-only verification on WSL2, Node 24.21.0. Store runtime source `bfa559173da32ac2223bdcdb023c7559d553f63e`, rebased without tree changes to `cec5770`; API producer `b27d35c9ce2f02e5519b4476001f01c7172d6eb2`, v1 revision 1.3, manifest `fa6df707bb05061a77a60d68fbf0c55a7593e815f1110531a9dbbfaac8f3f71e`.
+No paid calls, no real key reads, no deployment. Enabled verification output is explicitly UNPUBLISHABLE and rejected by the publication guard.
+
+## Results
+
+| Check | Result |
+|---|---|
+| `npm run check` | Pass, 53.22 s; 156 unit tests, lint, types, knip, disabled export and budgets |
+| `npm run check:assistant-disabled` | Pass, 127 files; build-info assistant=disabled; enabled fixture positive control rejected with exit 1 |
+| `ASSISTANT_API_DIR=<clean API checkout at the producer SHA> npm run test:e2e:assistant` | 87 passed, 33 conditional skips, 0 failed; 8.1 min test runtime, 524.41 s including isolated build |
+
+Six projects: Chromium desktop, Chromium Pixel 7, Chromium reduced motion, Firefox desktop, WebKit desktop, WebKit iPhone 13. These are browser emulations, not physical-device certification.
+The suite uses HTTPS loopback and fixture streams. It verifies streaming completion and subsequent submission, interruption/cancel/recovery, restore/reset, IME and focus, route/draft/history continuity, localized ES/EN states, request snapshots and revision-gated nested context. Enabled panel text at 200% is checked at 320 and 390 px in all three desktop engines, including horizontal bounds, focus reachability and a reduced 360 px viewport. Mobile response text is explicitly scrolled into view and asserted visible.
+
+## Conditional skips (33)
+
+| Condition | Skips |
+|---|---:|
+| Desktop keyboard case excludes two mobile projects | 2 |
+| Desktop expand/restore case excludes two mobile projects | 2 |
+| Phone geometry case excludes four desktop projects | 4 |
+| Context wire/navigation case runs on Chromium desktop | 5 |
+| ES/EN runtime/draft/history case runs on Chromium desktop | 5 |
+| English-question fixture case runs on Chromium desktop | 5 |
+| Enabled 200%/reduced-viewport case runs in the three desktop engines | 3 |
+| axe case explicitly runs on Chromium and Firefox, excluding WebKit | 2 |
+| Reduced-motion-only case excludes five other projects | 5 |
+
+The inherited axe gate deliberately targets Chromium and Firefox. No harness incompatibility has been established and no axe-on-WebKit pass is claimed. WebKit has functional, keyboard/focus, geometry and inspected visual coverage. Automated axe results do not establish complete WCAG compliance.
+
+## Inspected screenshots
+
+Selected original PNGs are in `assistant/2026-10-10/`: WebKit settled mobile empty/select and visible final answer, English empty/thinking/history, Firefox 320 px text at 200%, WebKit English 390 px text at 200%, and cancellation. Captures fast-forward finite animations for a settled evidence state; reduced-motion behavior is separately asserted. Header, greeting and composer remain opaque and legible. Earlier pre-ready WebKit captures were superseded and are not acceptance evidence.
+The complete external capture set includes SHA-256 receipts and exact source/producer revisions. The document records fixture behavior only; English product facts retain the catalog's original language.
+
+## Reproduce from clean checkouts
+
+Use Node from `.nvmrc`, `npm ci`, Python/uv and `uv sync --frozen` in the API checkout. Pin the API checkout to the producer SHA above and install Playwright browsers. `npm run test:e2e:assistant` creates its own isolated enabled export, loopback TLS and fixture database; it does not modify the public `out/`.
+For the disabled check, provide documented required build values from `.env.example`, keep `NEXT_PUBLIC_ASSISTANT_ENABLED=false`, run `npm run check`, then `npm run check:assistant-disabled`. Never publish `out-assistant-fixture/`.
+
+## Not verified
+
+Real model behavior/cost; production hosts, TLS/proxy/CORS and activation; physical iOS/Android keyboards and screen readers; field Core Web Vitals; authenticated production traffic. Hostinger currently has no Git repository connected (owner confirmation 2026-10-10); the future selected branch is main. A source release is not a production deployment or activation approval.
+
+## Historical verification (2026-10-05)
+
+The following measurements and screenshots describe the earlier implementation, not current acceptance. The former home text-zoom overflow was corrected by the subsequent reflow work.
+
+### Earlier environment: WSL2, Node 24.21.0
 
 Store branch `feat/native-assistant`; API `pequeverso-assistant-api` `87fc109` (develop, contract
 revision 1.2, browser contract = 1.1), fixture provider. No model call, no real key, nothing deployed.
