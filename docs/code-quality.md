@@ -38,6 +38,21 @@ comments; no dead code (knip is a gate); business facts come from `config/` and 
 | Production | `post-deploy-verify`: revision match, smoke, headers, `PW_SET=prod`, informative Lighthouse | main push, deploy | yes |
 | Nightly | 7 widths × Chromium/WebKit, visual snapshots (`tests/e2e/visual.spec.ts`, Linux baselines under `tests/e2e/__screenshots__`, regenerate with the `update_snapshots` input), clean-clone invariant, knip, LHCI ×5, link check, bundle analysis | nightly | report |
 
+### Development-only advisories (2026-10-05)
+
+All open advisories are in `@lhci/cli` 0.15.1 (the latest release), a CI-only devDependency that
+never reaches the site or its build output. `package.json` `overrides`, scoped to `@lhci/cli`,
+pin patched versions of `tmp` (^0.2.6), `uuid` (^11.1.1), `qs` (^6.16.0) and `basic-ftp`
+(^6.2.2); `ip-address` and `brace-expansion` were updated within their ranges. The overridden APIs
+the tool uses (`tmp.fileSync`/`tmpNameSync`, CommonJS `uuid.v4`, `basic-ftp` `Client`) were
+checked, and `lhci healthcheck` plus the Lighthouse CI job pass.
+
+Accepted, still visible: `extract-zip` ≤ 2.0.1 (GHSA-7pqw-9j4j-h8q3, GHSA-jmr9-qjv8-65gv; no
+patched version) via `lighthouse` → `puppeteer-core` → `@puppeteer/browsers`. It would only matter
+when extracting a malicious archive; CI uses the runner's installed Chrome and never downloads
+browsers through it. Revisit when `@lhci/cli` or `@puppeteer/browsers` ship a fix; remove the
+overrides when `@lhci/cli` updates those dependencies itself. The alerts stay open (not dismissed).
+
 Lab numbers (Lighthouse) are not field numbers; real-user Core Web Vitals come from Search
 Console / CrUX after launch.
 
