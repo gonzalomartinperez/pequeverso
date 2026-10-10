@@ -20,12 +20,15 @@ export function Transcript({
   followSignal,
   busy,
   empty,
+  inactive,
 }: {
   children: ReactNode;
   followSignal: number;
   busy: boolean;
   /** The greeting and starters read from the top; following starts with the first message. */
   empty: boolean;
+  /** A clear-history decision temporarily owns the conversation controls. */
+  inactive: boolean;
 }) {
   const { t } = usePresentation();
   const scroller = useRef<HTMLDivElement>(null);
@@ -48,6 +51,13 @@ export function Transcript({
   const updateFollow = useCallback(() => {
     const element = scroller.current;
     if (!element) return;
+    // The greeting is read from the top; a "latest answer" action has no meaning before a message.
+    if (emptyRef.current) {
+      stick.current = true;
+      lastTop.current = element.scrollTop;
+      setShowJump(false);
+      return;
+    }
     const distance = element.scrollHeight - element.scrollTop - element.clientHeight;
     if (distance <= STICK_THRESHOLD_PX) stick.current = true;
     else if (element.scrollTop < lastTop.current) stick.current = false;
@@ -87,13 +97,16 @@ export function Transcript({
   }, [toBottom, updateFollow]);
 
   return (
-    <div className="relative min-h-0 flex-1">
+    <div inert={inactive} className="relative min-h-0 flex-1">
       <div ref={scroller} className={cx("cq h-full overflow-y-auto", styles.transcript)}>
         <ol
           ref={content}
           aria-label={t.transcriptLabel}
           aria-busy={busy || undefined}
-          className={cx("mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-5 cq-md:px-6", styles.reader)}
+          className={cx(
+            "mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-5 cq-md:px-6",
+            !empty && styles.reader,
+          )}
         >
           {children}
         </ol>

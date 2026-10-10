@@ -55,19 +55,24 @@ test.beforeEach(async ({ context }, info) => {
 });
 
 test.describe("native assistant (enabled verification build, fixture API)", () => {
-  test("stays idle until opened and only appears on hub, product and support pages", async ({ page }) => {
-    const calls = apiCalls(page);
-    for (const path of ["/", "/grafismo-fonetico/", "/soporte/"]) {
+  for (const [path, visible] of [
+    ["/", true],
+    ["/grafismo-fonetico/", true],
+    ["/soporte/", true],
+    ["/imprime-y-juega/", false],
+    ["/grafismo-fonetico/gracias/", false],
+    ["/privacidad/", false],
+    ["/terminos/", false],
+  ] as const) {
+    test(`stays idle before opening on ${path} (${visible ? "eligible" : "excluded"})`, async ({ page }) => {
+      const calls = apiCalls(page);
       await page.goto(path);
-      await expect(launcher(page)).toBeVisible();
-    }
-    for (const path of ["/imprime-y-juega/", "/grafismo-fonetico/gracias/", "/privacidad/", "/terminos/"]) {
-      await page.goto(path);
-      await expect(launcher(page)).toBeHidden();
-    }
-    await page.waitForTimeout(500);
-    expect(calls, "no session or API call before the visitor opens the assistant").toHaveLength(0);
-  });
+      if (visible) await expect(launcher(page)).toBeVisible();
+      else await expect(launcher(page)).toBeHidden();
+      await page.waitForTimeout(500);
+      expect(calls, "no session or API call before the visitor opens the assistant").toHaveLength(0);
+    });
+  }
 
   test("launcher is a named star-only control with a supplementary tooltip", async ({ page }, info) => {
     const calls = apiCalls(page);
@@ -543,8 +548,149 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await panel(page).getByRole("button", { name: "Nueva conversación" }).click();
     await panel(page).getByRole("button", { name: "Borrar" }).click();
     await expect(panel(page).getByRole("region", { name: "Preguntas para empezar" })).toBeVisible();
+    expect(await panel(page).evaluate((element) => element.contains(document.activeElement))).toBe(true);
+    const greeting = panel(page).getByRole("list", { name: "Conversación con el asistente" });
+    const greetingWidth = await greeting.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        start: Number.parseFloat(style.paddingInlineStart),
+        end: Number.parseFloat(style.paddingInlineEnd),
+      };
+    });
+    expect(greetingWidth.start).toBe(greetingWidth.end);
+    await greeting.locator("..").evaluate((element) => {
+      element.scrollTop = element.scrollHeight;
+      element.dispatchEvent(new Event("scroll"));
+      element.scrollTop = 0;
+      element.dispatchEvent(new Event("scroll"));
+    });
+    await expect(panel(page).getByRole("button", { name: "Ir a la última respuesta" })).toHaveCount(0);
     expect(calls.some((c) => c.method() === "DELETE" && c.url().endsWith("/api/v1/session"))).toBe(true);
   });
+
+  test("clear confirmation preserves draft and consumes Escape from header controls", async ({ page }) => {
+    await page.goto("/soporte/");
+    await openPanel(page);
+    await ask(page, "¿Para qué edades es?");
+    await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    await composer(page).fill("Mi borrador sin enviar");
+    const trigger = panel(page).getByRole("button", { name: "Nueva conversación" });
+    await trigger.click();
+    await expect(composer(page)).toBeHidden();
+    const language = panel(page).getByRole("combobox");
+    await language.focus();
+    await language.press("Escape");
+    await expect(panel(page).getByRole("dialog", { name: "¿Empezar de nuevo?" })).toBeHidden();
+    await expect(panel(page)).toBeVisible();
+    await expect(trigger).toBeFocused();
+    await expect(composer(page)).toHaveValue("Mi borrador sin enviar");
+    await expect(panel(page).locator("[inert]")).toHaveCount(0);
+  });
+
+  test("confirmed clear keeps focus stable without stealing a visitor's later focus", async ({ page }) => {
+    await page.goto("/soporte/");
+    await openPanel(page);
+    await ask(page, "¿Para qué edades es?");
+    await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    let release: () => void = () => {};
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route(`${API}/api/v1/session`, async (route) => {
+      if (route.request().method() === "DELETE") await gate;
+      await route.continue();
+    });
+    await panel(page).getByRole("button", { name: "Nueva conversación" }).click();
+    await panel(page).getByRole("button", { name: "Borrar" }).click();
+    await expect(panel(page)).toBeFocused();
+    const language = panel(page).getByRole("combobox");
+    await language.focus();
+    release();
+    await expect(panel(page)).toHaveAttribute("data-phase", "ready");
+    await expect(language).toBeFocused();
+  });
+
+  for (const width of [320, 390]) {
+    for (const locale of ["es", "en"]) {
+      test(`header controls align and ${locale} clear confirmation fits ${width}px at enlarged text in a short viewport`, async ({
+        page,
+      }, info) => {
+        await page.goto("/soporte/");
+        await openPanel(page);
+        for (const locale of ["es", "en", "es"]) {
+          const language = panel(page).getByRole("combobox");
+          await language.selectOption(locale);
+          const languageBox = await language.locator("..").boundingBox();
+          const minimizeBox = await panel(page)
+            .getByRole("button", {
+              name: locale === "es" ? "Minimizar asistente" : "Minimize assistant",
+            })
+            .boundingBox();
+          expect(languageBox).not.toBeNull();
+          expect(minimizeBox).not.toBeNull();
+          expect(Math.abs((languageBox?.height ?? 0) - (minimizeBox?.height ?? 0))).toBeLessThanOrEqual(1);
+        }
+        await ask(page, "¿Para qué edades es?");
+        await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+        await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+        await page.setViewportSize({ width, height: 420 });
+        await panel(page).getByRole("combobox").selectOption(locale);
+        const trigger = panel(page).getByRole("button", {
+          name: locale === "es" ? "Nueva conversación" : "New conversation",
+        });
+        await trigger.click();
+        const confirmation = panel(page).getByRole("dialog", {
+          name: locale === "es" ? "¿Empezar de nuevo?" : "Start again?",
+        });
+        await expect(confirmation).toBeVisible();
+        await expect(panel(page).getByRole("textbox")).toBeHidden();
+        await expect(panel(page).locator("[inert]")).toHaveCount(1);
+        const geometry = await confirmation.evaluate((element) => {
+          const box = element.getBoundingClientRect();
+          const parent = element.closest("#pv-assistant-panel");
+          if (!parent) throw new Error("Confirmation is outside the assistant");
+          const surface = parent.getBoundingClientRect();
+          return {
+            top: box.top,
+            bottom: box.bottom,
+            surfaceTop: surface.top,
+            surfaceBottom: surface.bottom,
+            left: box.left,
+            right: box.right,
+            surfaceLeft: surface.left,
+            surfaceRight: surface.right,
+            horizontalOverflow: element.scrollWidth - element.clientWidth,
+          };
+        });
+        expect(geometry.top).toBeGreaterThanOrEqual(geometry.surfaceTop - 1);
+        expect(geometry.bottom).toBeLessThanOrEqual(geometry.surfaceBottom + 1);
+        expect(geometry.left).toBeGreaterThanOrEqual(geometry.surfaceLeft - 1);
+        expect(geometry.right).toBeLessThanOrEqual(geometry.surfaceRight + 1);
+        expect(geometry.horizontalOverflow).toBeLessThanOrEqual(1);
+        for (const name of locale === "es" ? ["Cancelar", "Borrar"] : ["Cancel", "Delete"]) {
+          const button = confirmation.getByRole("button", { name, exact: true });
+          await button.focus();
+          await expect(button).toBeInViewport();
+          expect(
+            await button.evaluate((element) => {
+              const box = element.getBoundingClientRect();
+              return element.contains(
+                document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2),
+              );
+            }),
+          ).toBe(true);
+        }
+        await shot(page, info.project.name, `clear-confirmation-${locale}-${width}-200`);
+        await confirmation
+          .getByRole("button", { name: locale === "es" ? "Cancelar" : "Cancel", exact: true })
+          .press("Escape");
+        await expect(confirmation).toBeHidden();
+        await expect(panel(page)).toBeVisible();
+        await expect(trigger).toBeFocused();
+        await expect(panel(page).getByText("¿Para qué edades es?")).toHaveCount(1);
+      });
+    }
+  }
 
   test("enabled mobile controls reflow at 200 percent and remain reachable in a reduced viewport", async ({
     page,
@@ -708,19 +854,27 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         const area = scroller.getBoundingClientRect();
         const text = paragraph.getBoundingClientRect();
         const control = jump.getBoundingClientRect();
+        const targetStyle = getComputedStyle(jump);
         const line = Number.parseFloat(getComputedStyle(paragraph).lineHeight);
         const y = Math.max(area.top, text.top) + line / 2;
         const hit = document.elementFromPoint(text.left + 2, y);
         return {
-          targetWidth: control.width,
-          targetHeight: control.height,
+          targetWidth: Number.parseFloat(targetStyle.width),
+          targetHeight: Number.parseFloat(targetStyle.height),
+          renderedWidth: control.width,
+          renderedHeight: control.height,
           inside: control.top >= area.top && control.bottom <= area.bottom,
           separate: text.right <= control.left,
           visibleLine: Math.min(text.bottom, area.bottom) - Math.max(text.top, area.top) >= line,
           readable: hit === paragraph || (hit !== null && paragraph.contains(hit)),
         };
       });
-      expect(reading).toEqual({
+      const { renderedWidth, renderedHeight, ...readingGeometry } = reading;
+      // CSS stays exactly 44px. DOMRect subtraction can differ by 0.00003px across engines;
+      // separately verify the rendered size within 0.0005px without weakening any reading check.
+      expect(renderedWidth).toBeCloseTo(44, 3);
+      expect(renderedHeight).toBeCloseTo(44, 3);
+      expect(readingGeometry).toEqual({
         targetWidth: 44,
         targetHeight: 44,
         inside: true,

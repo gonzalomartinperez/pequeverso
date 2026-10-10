@@ -40,11 +40,13 @@ export function ConversationView({
   state,
   phase,
   field,
+  confirming,
 }: {
   assistant: Assistant;
   state: ConversationState;
   phase: Phase;
   field: RefObject<HTMLTextAreaElement | null>;
+  confirming: boolean;
 }) {
   const { t, privacyPath, onNavigate } = usePresentation();
   const [follow, setFollow] = useState(0);
@@ -70,7 +72,12 @@ export function ConversationView({
   // After the conversation is cleared, focus returns to the composer instead of a disabled button.
   const wasClearing = useRef(false);
   useEffect(() => {
-    if (wasClearing.current && !state.clearing) setFocus((value) => value + 1);
+    if (
+      wasClearing.current &&
+      !state.clearing &&
+      (document.activeElement === document.body || document.activeElement?.id === "pv-assistant-panel")
+    )
+      setFocus((value) => value + 1);
     wasClearing.current = state.clearing;
   }, [state.clearing]);
 
@@ -82,7 +89,7 @@ export function ConversationView({
   const empty = state.messages.length === 0 && !pending && !state.outcome;
   return (
     <>
-      <Transcript followSignal={follow} busy={pending !== null} empty={empty}>
+      <Transcript followSignal={follow} busy={pending !== null} empty={empty} inactive={confirming}>
         {empty && state.availability.status === "available" && (
           <EmptyState starters={state.starters} disabled={!ready} onAsk={askAndFocus} />
         )}
@@ -113,7 +120,7 @@ export function ConversationView({
         )}
         {state.refusal && !pending && <RefusalView code={state.refusal} onDismiss={assistant.dismiss} />}
       </Transcript>
-      <div className={`border-t border-line bg-cream px-3 pt-3 ${styles.composer}`}>
+      <div hidden={confirming} className={`border-t border-line bg-cream px-3 pt-3 ${styles.composer}`}>
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-2">
           {state.availability.status === "unavailable" ? (
             <Unavailable availability={state.availability} />
