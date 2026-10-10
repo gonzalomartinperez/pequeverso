@@ -38,7 +38,7 @@ async function ask(page: Page, question: string) {
 }
 
 async function shot(page: Page, project: string, name: string) {
-  await page.screenshot({ path: `${SHOTS}/${project}-${name}.png` });
+  await page.screenshot({ path: `${SHOTS}/${project}-${name}.png`, animations: "disabled" });
 }
 
 // The verification build carries a fake Meta Pixel id (as CI does): Meta hosts are always aborted,
@@ -85,6 +85,7 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     expect(calls).toHaveLength(0);
     await control.press("Enter");
     await expect(panel(page)).toBeVisible();
+    await expect(panel(page)).toHaveAttribute("data-phase", "ready");
     await shot(page, info.project.name, "star-launcher-open");
   });
 
@@ -131,6 +132,12 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     });
     expect(await page.evaluate(() => document.cookie)).not.toContain("pv_assistant");
     await shot(page, info.project.name, "answer");
+    if (isMobile(info.project.name)) {
+      const paragraph = answer.locator("p").first();
+      await paragraph.evaluate((element) => element.scrollIntoView({ block: "center", behavior: "instant" }));
+      await expect(paragraph).toBeInViewport();
+      await shot(page, info.project.name, "final-answer-text-visible");
+    }
   });
 
   test("stops a streaming answer", async ({ page }, info) => {
@@ -498,6 +505,19 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         expect(bounds.y).toBeGreaterThanOrEqual(-1);
         expect(bounds.y + bounds.height).toBeLessThanOrEqual(845);
       }
+      const starter = panel(page)
+        .getByRole("region", { name: "Preguntas para empezar" })
+        .getByRole("button")
+        .last();
+      await starter.focus();
+      await expect(starter).toBeInViewport();
+      const starterBox = await starter.boundingBox();
+      expect(starterBox).not.toBeNull();
+      if (!starterBox) throw new Error("Starter has no layout box");
+      expect(starterBox.x).toBeGreaterThanOrEqual(-1);
+      expect(starterBox.x + starterBox.width).toBeLessThanOrEqual(width + 1);
+      await shot(page, info.project.name, `enabled-zoom-starters-${width}`);
+      await composer(page).focus();
       await shot(page, info.project.name, `enabled-zoom-${width}`);
       await panel(page).getByRole("combobox").selectOption("en");
       const englishField = panel(page).getByRole("textbox", { name: "Write your question" });

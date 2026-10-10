@@ -1,7 +1,7 @@
 "use client";
 import { assistantCopy as enCopy } from "@content/en/assistant";
 import { assistantCopy as esCopy } from "@content/es/assistant";
-import { Globe, Maximize2, Minimize2, Minus } from "lucide-react";
+import { ChevronDown, Globe, Maximize2, Minimize2, Minus } from "lucide-react";
 import {
   type KeyboardEvent,
   type RefObject,
@@ -282,7 +282,7 @@ export default function AssistantPanel({
                   assistant.setLocale(next);
                   onLocaleChange(next);
                 }}
-                className="min-h-11 min-w-11 bg-transparent text-small font-bold text-white"
+                className="min-h-11 min-w-11 appearance-none rounded-none bg-navy-deep px-1 text-small font-bold text-white"
               >
                 <option value="es" className="bg-navy text-white">
                   ES
@@ -291,6 +291,7 @@ export default function AssistantPanel({
                   EN
                 </option>
               </select>
+              <ChevronDown aria-hidden="true" className="size-3 shrink-0" />
             </label>
             <ClearControl
               disabled={state.session !== "open" || state.pending !== null || state.messages.length === 0}
