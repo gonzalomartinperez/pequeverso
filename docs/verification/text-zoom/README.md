@@ -4,7 +4,7 @@ At root font size200%, all13routes reflow at320/390CSSpx in Chromium,Firefox and
 
 The original commit8a205fe was unverified and failed the resumed route checks. Its `text-*.webp` images are preliminary historical captures, not final acceptance evidence. Independent inspection found a floating offer occupying almost the viewport despite horizontal checks passing; the corrected offer gives its summary and action separate rows. Its active state now has a height/visibility/overflow regression test. A second finding corrected the closing price grid in all three engines.
 
-Verified locally after clean locked installation: npm run check, check:assistant-disabled (127 files without assistant code), skills and media types. All39route/engine cases pass; the three active-offer cases pass after the scroll driver uses native instant scrolling instead of waiting for a reveal target to become stable. The previous failed WebKit stability wait remains in the task evidence. Normal Chromium390/768/1440 smoke, axe and responsive tests:95passed,28expected skips. Full PR CI remains a merge prerequisite.
+Verified locally after clean locked installation: npm run check, check:assistant-disabled (127 files without assistant code), skills and media types. The final combined three-engine suite passes all42cases (39route/engine cases and three active offers) in4.5minutes. The scroll driver uses native instant scrolling instead of waiting for a reveal target to become stable. The previous failed WebKit stability wait remains in the task evidence. Normal Chromium390/768/1440 smoke, axe and responsive tests:95passed,28expected skips. Full PR CI remains a merge prerequisite.
 
 ## Inspected before and after
 
@@ -16,7 +16,7 @@ Before screenshots use the development export at8f36e1e; after screenshots use t
 | 768px | [before](independent-settled-before-normal-768-closing-top.png) | [after](independent-settled-after-normal-768-closing-top.png) | [before](independent-settled-before-normal-768-closing-media.png) | [after](independent-settled-after-normal-768-closing-media.png) |
 | 1440px | [before](independent-settled-before-normal-1440-closing-top.png) | [after](independent-settled-after-normal-1440-closing-top.png) | [before](independent-settled-before-normal-1440-closing-media.png) | [after](independent-settled-after-normal-1440-closing-media.png) |
 
-At normal320px the secondary closing product link can wrap onto two lines; the label remains complete. Primary checkout/hero labels retain their responsive checks. The requested390/768/1440 comparisons preserve the layout.
+At normal320px the secondary closing product link can wrap onto two lines; the label remains complete. Primary checkout/hero labels retain their responsive checks. The requested390/768/1440 comparisons preserve the layout. A later nightly exposed a missing query container in offer counters and a10px offset from header margin containment; both were corrected. Independent baseline/candidate geometry matches at390/1440. A local snapshot rerun passed9/12: footer capture stability timed out under load (final raw pairs differ only9/14pixels by one channel), and both local downsell builds measure8629px against the8631px CI baseline. Candidate nightly38016225694 passes all12visual baselines unchanged and the clean-clone invariant on UI commit2cc9289. Its complete seven-width browser and quality jobs remain required before merge. No baseline was changed to hide a difference.
 
 | Text200% | Closing before | Closing after | Active offer after |
 |---|---|---|---|
