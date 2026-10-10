@@ -75,7 +75,10 @@ export function Includes({
         </dl>
       </div>
 
-      <ul className="grid grid-cols-1 gap-3 cq-xs:grid-cols-2 cq-sm:gap-4 cq-lg:grid-cols-4 cq-lg:gap-5" role="list">
+      <ul
+        className="grid grid-cols-1 gap-3 cq-xs:grid-cols-2 cq-sm:gap-4 cq-lg:grid-cols-4 cq-lg:gap-5"
+        role="list"
+      >
         {main ? (
           <li
             className="on-navy relative grid min-h-80 overflow-hidden rounded-2xl bg-linear-160 from-navy to-navy-deep p-6 shadow-float cq-xs:col-span-2 cq-sm:p-8 cq-lg:row-span-2"

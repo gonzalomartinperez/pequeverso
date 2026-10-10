@@ -36,7 +36,7 @@ export function ClosingBand() {
             <ProductLink position="closing" className={LINK_WHITE}>
               {c.cta}
             </ProductLink>
-            <p className="grid text-start">
+            <p className="grid min-w-0 max-w-full text-start">
               <span className="font-display text-[1.75rem] leading-none font-bold text-gold tabular-nums">
                 {price}
                 <span className="ml-2 font-sans text-small font-extrabold text-white">{c.priceSuffix}</span>

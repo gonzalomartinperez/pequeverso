@@ -292,7 +292,7 @@ export function CoreLanding({ product }: Props) {
           body: (
             <ul className="grid gap-2" role="list">
               {product.resources.map((resource, index) => (
-                <li key={resource.id} className="flex items-baseline justify-between gap-3">
+                <li key={resource.id} className="flex flex-wrap items-baseline justify-between gap-3">
                   <span className="font-bold text-ink">
                     {index === 0 ? resource.title : `${labels?.bonus ?? ""} ${index} · ${resource.title}`}
                   </span>

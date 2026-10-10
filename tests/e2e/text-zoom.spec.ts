@@ -25,6 +25,8 @@ const routes = [
   "/grafismo-fonetico/gracias/",
   "/soporte/",
   "/privacidad/",
+  "/cookies/",
+  "/compras-y-reembolsos/",
   "/terminos/",
   "/aviso-legal/",
   "/arrepentimiento/",
@@ -54,7 +56,8 @@ async function reflowFaults(page: Page) {
     const scrolls = (el: Element) => {
       for (let node: Element | null = el; node && node !== document.body; node = node.parentElement) {
         if (["auto", "scroll"].includes(getComputedStyle(node).overflowX)) return true;
-        if (node.matches("[aria-roledescription='diapositiva']:not([data-active]), .pv-marquee-track")) return true;
+        if (node.matches("[aria-roledescription='diapositiva']:not([data-active]), .pv-marquee-track"))
+          return true;
       }
       return false;
     };
@@ -78,7 +81,7 @@ async function reflowFaults(page: Page) {
       const el = node.parentElement;
       if (!el || !node.textContent?.trim()) continue;
       if (el.closest("[aria-hidden='true'], .sr-only, [inert], script, style, noscript, template")) continue;
-      if (getComputedStyle(el).visibility === "hidden" || scrolls(el)) continue;
+      if (!el.checkVisibility() || scrolls(el)) continue;
       const range = document.createRange();
       range.selectNodeContents(node);
       const line = [...range.getClientRects()].find(
@@ -97,6 +100,9 @@ for (const route of routes) {
       await page.setViewportSize({ width, height: 844 });
       await page.goto(route, { waitUntil: "load" });
       await page.addStyleTag({ content: TEXT_ZOOM_CSS });
+      await page.locator("details").evaluateAll((details) => {
+        for (const detail of details) (detail as HTMLDetailsElement).open = true;
+      });
       await page.evaluate(() => document.fonts.ready);
       const result = await reflowFaults(page);
       expect
@@ -105,3 +111,24 @@ for (const route of routes) {
     }
   });
 }
+
+test("enlarged text keeps the active floating offer readable and compact", async ({ page }) => {
+  for (const width of widths) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("/grafismo-fonetico/", { waitUntil: "load" });
+    await page.addStyleTag({ content: TEXT_ZOOM_CSS });
+    await page.evaluate(() => document.fonts.ready);
+    await page.locator("#metodo-title").scrollIntoViewIfNeeded();
+    const sticky = page.getByTestId("sticky-cta");
+    await expect(sticky).toHaveAttribute("data-visible", "");
+    const bounds = await sticky.boundingBox();
+    expect(bounds).not.toBeNull();
+    expect(bounds?.height).toBeLessThan(844 / 3);
+    const result = await reflowFaults(page);
+    expect({ width: result.scrollWidth, faults: result.faults }).toEqual({
+      width: result.clientWidth,
+      faults: [],
+    });
+    await expect(sticky.getByRole("link")).toBeInViewport();
+  }
+});

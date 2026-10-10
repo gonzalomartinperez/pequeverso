@@ -410,11 +410,10 @@
   }
 
   /* Reflow at 200 % text (WCAG 1.4.4/1.4.10): a word wider than its line breaks instead of
-     pushing the page sideways. Body text only breaks a word that cannot fit (`break-word` keeps
-     min-content sizes); display headings may also shrink their box (`anywhere`), so a grid
-     or flex parent never grows past the column to hold one long word. */
+     pushing the page sideways. Text only breaks a word that cannot fit; `anywhere` also allows a grid or flex parent
+     to shrink below the longest word instead of growing past the column. */
   body {
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
   }
 
   h1,
@@ -929,4 +928,52 @@
 @utility arc-top {
   border-top-left-radius: clamp(2rem, 5vw, 4rem);
   border-top-right-radius: clamp(2rem, 5vw, 4rem);
+}
+
+/* The header query uses rem so text enlargement moves the action below the icon row,
+   preserving complete words and prices without changing the ordinary phone layout. */
+.pv-header {
+  container-type: inline-size;
+}
+.pv-sticky {
+  container-type: inline-size;
+}
+@supports (container-type: inline-size scroll-state) {
+  .pv-header {
+    container-type: inline-size scroll-state;
+  }
+}
+@container (width < 16rem) {
+  .pv-sticky-summary {
+    flex-basis: calc(100% - 54px);
+  }
+  .pv-sticky-action {
+    width: 100%;
+    & > * {
+      width: 100%;
+      min-height: 44px;
+    }
+  }
+  .pv-header-pill {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 0;
+    gap: 8px;
+    padding: 8px;
+  }
+  .pv-header-actions {
+    display: contents;
+    & > a {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      width: 100%;
+      min-height: 44px;
+      padding: 8px 16px;
+      overflow-wrap: normal;
+    }
+    & > [data-slot="mobile-nav-trigger"] {
+      grid-column: 2;
+      grid-row: 1;
+    }
+  }
 }

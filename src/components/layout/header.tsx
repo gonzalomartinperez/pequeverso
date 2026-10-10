@@ -43,7 +43,7 @@ export function Header({ nav = [], cta, subtitle, overlay = false }: Props) {
       data-slot="header"
       data-overlay={overlay ? "" : undefined}
       className={cn(
-        "pointer-events-none sticky top-0 z-50 min-h-(--header-height) [container-type:scroll-state]",
+        "pointer-events-none sticky top-0 z-50 min-h-(--header-height) pv-header",
         overlay && "-mb-(--header-height)",
       )}
     >
@@ -57,10 +57,10 @@ export function Header({ nav = [], cta, subtitle, overlay = false }: Props) {
       >
         <Link
           href="/"
-          className="inline-flex min-h-11 min-w-11 shrink-0 items-center gap-3 rounded-full pr-1 text-navy no-underline"
+          className="inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center gap-3 rounded-full pr-1 text-navy no-underline"
           aria-label="Pequeverso, ir al inicio"
         >
-          <BrandLogo priority wordmark="sm-up" />
+          <BrandLogo priority wordmark="sm-up" className="[&_img]:size-[40px]" />
           {subtitle ? (
             <span
               className={cn(
@@ -90,7 +90,7 @@ export function Header({ nav = [], cta, subtitle, overlay = false }: Props) {
         ) : null}
         <div
           className={cn(
-            "ml-auto flex min-w-0 items-center justify-end gap-1.5 max-lg:grow max-lg:basis-[min-content] sm:gap-2 [&>a]:shrink [&>a]:rounded-pill [&>a]:max-sm:min-h-11 [&>a]:max-sm:px-4 [&>a]:max-sm:text-[0.95rem] [&>a_svg]:max-sm:hidden",
+            "pv-header-actions ml-auto flex min-w-0 items-center justify-end gap-1.5 max-lg:grow max-lg:basis-[min-content] sm:gap-2 [&>a]:shrink [&>a]:rounded-pill [&>a]:max-sm:min-h-11 [&>a]:max-sm:px-4 [&>a]:max-sm:text-[0.95rem] [&>a_svg]:max-sm:hidden",
             items.length > 0 && "lg:ml-2",
           )}
         >

@@ -102,7 +102,7 @@ export function Footer() {
       </div>
 
       <div className="page-container cq">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 cq-lg:grid-cols-[1.5fr_repeat(3,1fr)] cq-lg:gap-8">
+        <div className="grid grid-cols-1 gap-x-6 cq-xs:grid-cols-2 gap-y-10 cq-lg:grid-cols-[1.5fr_repeat(3,1fr)] cq-lg:gap-8">
           <div className="col-span-full grid content-start gap-5 cq-lg:col-span-1">
             <BrandLogo className="text-white [&>span]:text-[1.75rem]" />
             <p className="max-w-[30ch] text-lead leading-snug font-semibold text-balance text-white/86">

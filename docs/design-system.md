@@ -199,12 +199,14 @@ Acceptance criterion for every block and page, 320 → 1920 px, enforced by
   below 400 px instead of overflowing.
 - Text enlarged to 200 % (WCAG 1.4.4 / 1.4.10) reflows at 320 and 390 px with no horizontal
   scroll and nothing pushed off-screen, enforced by `tests/e2e/text-zoom.spec.ts` (every route,
-  390 project). The spec doubles the root font size (`html { font-size: 200% }`), which is what the
+  Chromium/Firefox/WebKit 390 projects, including the active floating offer after scrolling). The
+  spec doubles the root font size (`html { font-size: 200% }`), which is what the
   browser's font-size setting does to this rem-based system. The rules that keep it true:
   single-column card stacks use `grid-cols-1` (a `minmax(0, 1fr)` track) rather than an implicit
   `auto` column that grows to the widest word; two-up phone grids are `grid-cols-1
   cq-xs:grid-cols-2` (`cq-xs` = container ≥ 16rem, true on every phone at normal size, false at
-  200 %); h1–h4 use `overflow-wrap: anywhere` and body text `break-word`; buttons are capped at
+  200 %); body text uses `overflow-wrap: anywhere`, with button labels using `break-word` to
+  preserve ordinary words; buttons are capped at
   `max-w-full` and wrap; the header pill and the sticky bar wrap to a second row instead of
   overflowing; the gutter floor is `min(1.25rem, 6.25vw)` so it does not double on phones.
 
