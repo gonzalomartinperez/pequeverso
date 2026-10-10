@@ -118,7 +118,9 @@ test("enlarged text keeps the active floating offer readable and compact", async
     await page.goto("/grafismo-fonetico/", { waitUntil: "load" });
     await page.addStyleTag({ content: TEXT_ZOOM_CSS });
     await page.evaluate(() => document.fonts.ready);
-    await page.locator("#metodo-title").scrollIntoViewIfNeeded();
+    await page.locator("#metodo-title").evaluate((element) => {
+      element.scrollIntoView({ block: "start", behavior: "instant" });
+    });
     const sticky = page.getByTestId("sticky-cta");
     await expect(sticky).toHaveAttribute("data-visible", "");
     const bounds = await sticky.boundingBox();
