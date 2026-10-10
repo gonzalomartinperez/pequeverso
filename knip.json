@@ -17,5 +17,6 @@
   ],
   "project": ["src/**!", "config/**!", "content/**!", "scripts/**", "server/**", "tests/**"],
   "ignoreExportsUsedInFile": true,
-  "tags": ["-internal"]
+  "tags": ["-internal"],
+  "ignoreBinaries": ["openssl"]
 }
