@@ -108,7 +108,9 @@ export function AssistantMount({
           <Sparkles aria-hidden="true" focusable="false" className="size-6" />
           {unread && <span aria-hidden="true" className={styles.unread} />}
         </TooltipTrigger>
-        <TooltipContent role="tooltip">{t.launcherLabel}</TooltipContent>
+        <TooltipContent positionerClassName="z-[100]" role="tooltip">
+          {t.launcherLabel}
+        </TooltipContent>
       </Tooltip>
       {used && (
         <Suspense fallback={null}>

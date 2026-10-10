@@ -122,7 +122,7 @@ export function Transcript({
             >
               <ArrowDown aria-hidden="true" className="size-[20px]" />
             </TooltipTrigger>
-            <TooltipContent role="tooltip" side="top">
+            <TooltipContent positionerClassName="z-[100]" role="tooltip" side="top">
               {t.jumpToLatest}
             </TooltipContent>
           </Tooltip>

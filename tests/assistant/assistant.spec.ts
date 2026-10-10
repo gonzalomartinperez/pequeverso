@@ -170,6 +170,18 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await expect(paragraph).toBeInViewport();
     const jump = panel(page).getByRole("button", { name: "Ir a la última respuesta" });
     await expect(jump).toBeVisible();
+    await jump.focus();
+    const jumpTooltip = page.getByRole("tooltip", { name: "Ir a la última respuesta" });
+    await expect(jumpTooltip).toBeVisible();
+    await expect
+      .poll(() =>
+        jumpTooltip.evaluate((tooltip) => {
+          const bounds = tooltip.getBoundingClientRect();
+          const hit = document.elementFromPoint(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+          return hit === tooltip || (hit !== null && tooltip.contains(hit));
+        }),
+      )
+      .toBe(true);
     if (isMobile(info.project.name)) await shot(page, info.project.name, "final-answer-text-visible");
     await jump.click();
     await expect(jump).toBeHidden();

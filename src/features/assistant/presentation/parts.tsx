@@ -70,7 +70,7 @@ export function IconButton({
       >
         {children}
       </TooltipTrigger>
-      <TooltipContent role="tooltip" side="bottom">
+      <TooltipContent positionerClassName="z-[100]" role="tooltip" side="bottom">
         {label}
       </TooltipContent>
     </Tooltip>
