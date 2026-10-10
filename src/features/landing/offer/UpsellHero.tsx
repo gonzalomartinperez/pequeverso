@@ -59,7 +59,7 @@ export function UpsellHero({ product, counters }: Props) {
           priority
           className="max-w-[26rem] lg:[grid-area:visual] lg:max-w-[34rem]"
         />
-        <div className="grid gap-6 lg:[grid-area:facts]">
+        <div className="cq grid gap-6 lg:[grid-area:facts]">
           <ul
             className="grid grid-cols-1 gap-3 cq-xs:grid-cols-2 sm:flex sm:flex-wrap [&>li]:grid [&>li>*]:w-full"
             aria-label="El pack en números"

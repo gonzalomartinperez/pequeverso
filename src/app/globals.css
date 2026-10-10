@@ -943,6 +943,15 @@
     container-type: inline-size scroll-state;
   }
 }
+/* Direct-body overlay headers previously collapsed the pill's margin into the header.
+   Inline-size containment stops that collapse. Preserve its offset explicitly; headers inside
+   PageShell already had a layout parent preventing collapse and need no added offset. */
+body > .pv-header[data-overlay] {
+  margin-top: 0.625rem;
+  & > .pv-header-pill {
+    margin-top: 0;
+  }
+}
 @container (width < 16rem) {
   .pv-sticky-summary {
     flex-basis: calc(100% - 54px);
