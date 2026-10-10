@@ -28,7 +28,7 @@ The suite uses HTTPS loopback and fixture streams. It verifies streaming complet
 | axe case explicitly runs on Chromium and Firefox, excluding WebKit | 2 |
 | Reduced-motion-only case excludes five other projects | 5 |
 
-The inherited axe gate deliberately targets Chromium and Firefox. No harness incompatibility has been established and no axe-on-WebKit pass is claimed. WebKit has functional, keyboard/focus, geometry and inspected visual coverage. Automated axe results do not establish complete WCAG compliance.
+The inherited axe gate deliberately targets Chromium and Firefox. No harness incompatibility has been established. The six-project suite does not include an axe-on-WebKit gate; separate ad-hoc checks are documented below. WebKit has functional, keyboard/focus, geometry and inspected visual coverage. Automated axe results do not establish complete WCAG compliance.
 
 ## Reader position regression
 
