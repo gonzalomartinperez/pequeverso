@@ -49,7 +49,7 @@ test("captures the local assistant preview", async ({ page, context }, info) => 
   release();
   await expect(panel).toHaveAttribute("data-phase", "completed");
   await panel
-    .getByRole("list")
+    .getByRole("list", { name: "Conversación con el asistente" })
     .locator("..")
     .evaluate((element) => {
       element.scrollTop = element.scrollHeight;
