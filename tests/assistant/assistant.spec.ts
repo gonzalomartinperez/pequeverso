@@ -171,6 +171,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     const jump = panel(page).getByRole("button", { name: "Ir a la última respuesta" });
     await expect(jump).toBeVisible();
     await jump.focus();
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Shift+Tab");
+    await expect(jump).toBeFocused();
     const jumpTooltip = page.getByRole("tooltip", { name: "Ir a la última respuesta" });
     await expect(jumpTooltip).toBeVisible();
     await expect
@@ -638,6 +641,20 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
           .map((node) => `${node.tagName.toLowerCase()}.${node.className}`.slice(0, 120)),
       );
       expect(overflow).toEqual([]);
+      const productTargets = await panel(page)
+        .locator("article a")
+        .evaluateAll((links) =>
+          links.map((link) => {
+            const bounds = link.getBoundingClientRect();
+            return { width: bounds.width, height: bounds.height };
+          }),
+        );
+      expect(productTargets.length).toBeGreaterThan(0);
+      for (const target of productTargets) {
+        expect(target.width).toBeGreaterThanOrEqual(44);
+        expect(target.height).toBeGreaterThanOrEqual(44);
+      }
+
       const box = await panel(page).boundingBox();
       expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual((page.viewportSize()?.width ?? 0) + 1);
       const answerText = panel(page)
@@ -687,6 +704,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         readable: true,
       });
       await jump.focus();
+      await page.keyboard.press("Tab");
+      await page.keyboard.press("Shift+Tab");
+      await expect(jump).toBeFocused();
       const tooltip = page.getByRole("tooltip", { name: "Ir a la última respuesta" });
       await expect(tooltip).toBeVisible();
       await expect
@@ -706,6 +726,13 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         )
         .toEqual({ contained: true, painted: true });
       await shot(page, info.project.name, `zoom-jump-tooltip-${width}`);
+      await page.keyboard.press("Escape");
+      await expect(tooltip).toBeHidden();
+      await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+      await expect(jump).toBeFocused();
+      await page.keyboard.press("Tab");
+      await page.keyboard.press("Shift+Tab");
+      await expect(tooltip).toBeVisible();
       await composer(page).focus();
       await expect(tooltip).toBeHidden();
       await expect(panel(page)).toHaveAttribute("data-phase", "completed");

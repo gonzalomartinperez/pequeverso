@@ -213,3 +213,15 @@
 .reader {
   padding-inline-end: 68px;
 }
+
+/* Preserve native-card captions in the narrower enlarged-text reading column. */
+.productAction {
+  min-width: 0;
+  padding-inline: 12px;
+  overflow-wrap: anywhere;
+}
+
+/* Collision positioning cannot shrink a wide enlarged-text popup by itself. */
+.tooltip {
+  max-width: min(20rem, calc(100vw - 16px));
+}

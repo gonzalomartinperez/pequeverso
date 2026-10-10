@@ -5,6 +5,7 @@ import { useId } from "react";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cx } from "@/lib/cx";
 import type { Price, Product, Resource } from "../domain/models";
+import styles from "./assistant.module.css";
 import { usePresentation } from "./context";
 import { labelClass, SafeLink } from "./parts";
 
@@ -79,12 +80,15 @@ function ProductCard({ product, resources }: { product: Product; resources: Reso
           <p className="line-clamp-3 text-small text-body">{product.summary}</p>
           <PriceLine price={product.price} />
           <div className="flex flex-wrap gap-2">
-            <SafeLink href={product.url} className={buttonVariants({ variant: "outline", size: "sm" })}>
+            <SafeLink
+              href={product.url}
+              className={cx(buttonVariants({ variant: "outline", size: "sm" }), styles.productAction)}
+            >
               {t.viewProduct}
             </SafeLink>
             <SafeLink
               href={product.purchaseUrl}
-              className={buttonVariants({ variant: "primary", size: "sm" })}
+              className={cx(buttonVariants({ variant: "primary", size: "sm" }), styles.productAction)}
             >
               {t.purchaseOptions}
             </SafeLink>
