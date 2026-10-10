@@ -51,6 +51,7 @@ function toRunEvent(event: WireEvent): RunEvent {
 export function createHttpTransport(base = "", fetcher: typeof fetch = fetch): AssistantTransport {
   let csrf: string | null = null;
   let acceptsLocale = false;
+  let acceptsContext = false;
 
   async function request(path: string, signal: AbortSignal, init: RequestInit = {}): Promise<Response> {
     let response: Response;
@@ -88,6 +89,7 @@ export function createHttpTransport(base = "", fetcher: typeof fetch = fetch): A
         const session = parseSession(await response.json());
         csrf = session.csrfToken;
         acceptsLocale = session.acceptsLocale;
+        acceptsContext = session.acceptsContext === true;
         return session;
       } catch (error) {
         if (signal.aborted) throw error;
@@ -99,9 +101,14 @@ export function createHttpTransport(base = "", fetcher: typeof fetch = fetch): A
       await response.body?.cancel().catch(() => {});
       csrf = null;
     },
-    async send({ content, page, key, locale }, signal, onEvent) {
+    async send({ content, page, key, locale, context }, signal, onEvent) {
       // Pre-v1.1 APIs reject unknown body fields, so the hint is sent only when advertised.
-      const body = acceptsLocale ? { content, page, locale } : { content, page };
+      const body = {
+        content,
+        page,
+        ...(acceptsLocale ? { locale } : {}),
+        ...(acceptsContext && context ? { context } : {}),
+      };
       const response = await request("/api/v1/messages", signal, {
         method: "POST",
         headers: { "Idempotency-Key": key },

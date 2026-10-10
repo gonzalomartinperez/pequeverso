@@ -69,6 +69,25 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     expect(calls, "no session or API call before the visitor opens the assistant").toHaveLength(0);
   });
 
+  test("launcher is a named star-only control with a supplementary tooltip", async ({ page }, info) => {
+    const calls = apiCalls(page);
+    await page.goto(start(info.project.name, "/"));
+    const control = launcher(page);
+    await expect(control).toHaveAccessibleName("Abrir el asistente de Pequeverso");
+    await expect(control).toHaveText("");
+    await expect(control.locator("img")).toHaveCount(0);
+    await expect(control.locator("svg")).toHaveCount(1);
+    const bounds = await control.boundingBox();
+    expect(bounds?.width).toBeGreaterThanOrEqual(44);
+    expect(bounds?.height).toBeGreaterThanOrEqual(44);
+    await control.focus();
+    await expect(page.getByRole("tooltip")).toHaveText("Abrir el asistente de Pequeverso");
+    expect(calls).toHaveLength(0);
+    await control.press("Enter");
+    await expect(panel(page)).toBeVisible();
+    await shot(page, info.project.name, "star-launcher-open");
+  });
+
   test("answers a question with a streamed, grounded answer", async ({ page }, info) => {
     const calls = apiCalls(page);
     await page.goto(start(info.project.name, "/grafismo-fonetico/"));
@@ -125,6 +144,7 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await expect(panel(page)).toHaveAttribute("data-phase", "cancelled");
     await expect(panel(page).getByText("Detuviste la respuesta.")).toBeVisible();
     await expect(composer(page)).toBeEnabled();
+    await shot(page, info.project.name, "cancelled");
   });
 
   test("minimizing keeps the conversation and lets an authorized answer finish", async ({ page }, info) => {
@@ -225,10 +245,16 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
 
   test("uses a near-full-screen surface on phones, portrait and landscape", async ({ page }, info) => {
     test.skip(!isMobile(info.project.name), "phone geometry");
+    const calls = apiCalls(page);
     await page.goto(start(info.project.name, "/grafismo-fonetico/"));
     await openPanel(page);
     await ask(page, "¿Qué incluye el kit?");
     await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    const sent = calls
+      .filter((call) => call.url().endsWith("/api/v1/messages"))
+      .at(-1)
+      ?.postDataJSON();
+    expect(sent.context.presentation).toBe("expanded");
     const viewport = page.viewportSize();
     const box = await panel(page).boundingBox();
     expect(box?.width).toBeCloseTo(viewport?.width ?? 0, 0);
@@ -241,6 +267,16 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await shot(page, info.project.name, "portrait");
     if (viewport) await page.setViewportSize({ width: viewport.height, height: viewport.width });
     await expect(panel(page)).toBeVisible();
+    const field = composer(page);
+    await field.fill("Borrador que debe conservarse al cambiar de tamaño");
+    const fieldBox = await field.boundingBox();
+    const visual = await page.evaluate(() => ({
+      top: visualViewport?.offsetTop ?? 0,
+      height: visualViewport?.height ?? innerHeight,
+    }));
+    expect(fieldBox?.y ?? -1).toBeGreaterThanOrEqual(visual.top);
+    expect((fieldBox?.y ?? 0) + (fieldBox?.height ?? 0)).toBeLessThanOrEqual(visual.top + visual.height + 1);
+    await expect(field).toHaveValue("Borrador que debe conservarse al cambiar de tamaño");
     const landscape = await panel(page).boundingBox();
     expect(landscape?.height ?? 0).toBeGreaterThan((viewport?.width ?? 0) * 0.85);
     await shot(page, info.project.name, "landscape");
@@ -278,6 +314,119 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await expect(panel(page).getByText("¿Qué incluye el kit?")).toBeVisible();
   });
 
+  test("sends only negotiated public context and keeps the first opened path across client navigation", async ({
+    page,
+  }, info) => {
+    test.skip(
+      info.project.name !== "chromium-desktop",
+      "wire context is engine-independent; navigation is covered in every engine",
+    );
+    const calls = apiCalls(page);
+    await page.goto("/soporte/?synthetic=private#fragment");
+    await openPanel(page);
+    await ask(page, "¿Qué incluye el kit?");
+    await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    const first = calls
+      .filter((call) => call.url().endsWith("/api/v1/messages"))
+      .at(-1)
+      ?.postDataJSON();
+    expect(first.context).toEqual({
+      opened_path: "/soporte/",
+      current_path: "/soporte/",
+      presentation: "compact",
+    });
+    await panel(page).getByRole("button", { name: "Ampliar panel" }).click();
+    await panel(page).getByRole("link", { name: "Ver el material", exact: true }).first().click();
+    await expect(page).toHaveURL(/\/grafismo-fonetico\/$/);
+    await launcher(page).focus();
+    await launcher(page).press("Enter");
+    await ask(page, "¿Cómo se utiliza el material?");
+    await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    const second = calls
+      .filter((call) => call.url().endsWith("/api/v1/messages"))
+      .at(-1)
+      ?.postDataJSON();
+    expect(second.context).toEqual({
+      opened_path: "/soporte/",
+      current_path: "/grafismo-fonetico/",
+      presentation: "expanded",
+    });
+    expect(second.locale).toBe("es");
+    expect(calls.filter((call) => call.url().endsWith("/api/v1/session"))).toHaveLength(1);
+    await shot(page, info.project.name, "context-preserved-navigation");
+  });
+
+  test("assistant language switches without replacing its runtime, history or unsent draft", async ({
+    page,
+  }, info) => {
+    test.skip(
+      info.project.name !== "chromium-desktop",
+      "localization and request hint are engine-independent",
+    );
+    const calls = apiCalls(page);
+    await page.goto("/soporte/");
+    await openPanel(page);
+    await panel(page).getByRole("combobox", { name: "Idioma del asistente" }).selectOption("en");
+    await shot(page, info.project.name, "english-empty");
+    await panel(page).getByRole("combobox", { name: "Assistant language" }).selectOption("es");
+    let releaseFirst: () => void = () => {};
+    const firstGate = new Promise<void>((resolve) => {
+      releaseFirst = resolve;
+    });
+    await page.route(`${API}/api/v1/messages`, async (route) => {
+      await firstGate;
+      await route.continue();
+    });
+    await ask(page, "¿Qué incluye el kit?");
+    await expect(panel(page).getByRole("list").getByText("Pensando…", { exact: true })).toBeVisible();
+    await shot(page, info.project.name, "spanish-thinking");
+    await panel(page).getByRole("combobox", { name: "Idioma del asistente" }).selectOption("en");
+    await expect(panel(page).getByRole("list").getByText("Thinking…", { exact: true })).toBeVisible();
+    await expect(panel(page)).toHaveAttribute("data-phase", "submitting");
+    await panel(page).getByRole("combobox", { name: "Assistant language" }).selectOption("es");
+    releaseFirst();
+    await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    await page.unroute(`${API}/api/v1/messages`);
+    await composer(page).fill("Unsent draft stays here");
+    await panel(page).getByRole("combobox", { name: "Idioma del asistente" }).selectOption("en");
+    const englishField = panel(page).getByRole("textbox", { name: "Write your question" });
+    await expect(englishField).toHaveValue("Unsent draft stays here");
+    await expect(panel(page)).toHaveAttribute("lang", "en");
+    await expect(panel(page).getByText("¿Qué incluye el kit?", { exact: true })).toBeVisible();
+    await panel(page).getByRole("button", { name: "Expand panel" }).click();
+    await expect(englishField).toHaveValue("Unsent draft stays here");
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(englishField).toHaveValue("Unsent draft stays here");
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    let releaseSecond: () => void = () => {};
+    const secondGate = new Promise<void>((resolve) => {
+      releaseSecond = resolve;
+    });
+    await page.route(`${API}/api/v1/messages`, async (route) => {
+      await secondGate;
+      await route.continue();
+    });
+    await englishField.fill("What is included in the kit?");
+    await englishField.press("Enter");
+    await expect(panel(page).getByRole("list").getByText("Thinking…", { exact: true })).toBeVisible();
+    await shot(page, info.project.name, "english-thinking");
+    releaseSecond();
+    await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    await expect(panel(page).locator('[lang="en"]').first()).toBeVisible();
+    expect(calls.filter((call) => call.url().endsWith("/api/v1/session"))).toHaveLength(1);
+    const sends = calls.filter((call) => call.url().endsWith("/api/v1/messages"));
+    expect(sends).toHaveLength(2);
+    expect(sends[0]?.postDataJSON().locale).toBe("es");
+    expect(sends.at(-1)?.postDataJSON().locale).toBe("en");
+    await shot(page, info.project.name, "english-history");
+    await panel(page).getByRole("button", { name: "Minimize assistant" }).click();
+    await expect(launcher(page)).toHaveAccessibleName("Open the Pequeverso assistant");
+    await launcher(page).press("Enter");
+    await panel(page).getByRole("combobox", { name: "Assistant language" }).selectOption("es");
+    await expect(panel(page)).toHaveAttribute("lang", "es");
+    await shot(page, info.project.name, "language-switch-preserved-history");
+  });
+
   test("answers in English when the visitor writes in English", async ({ page }, info) => {
     test.skip(info.project.name !== "chromium-desktop", "language is API behaviour; one engine is enough");
     await page.goto(start(info.project.name, "/"));
@@ -304,11 +453,91 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     expect(calls.some((c) => c.method() === "DELETE" && c.url().endsWith("/api/v1/session"))).toBe(true);
   });
 
+  test("enabled mobile controls reflow at 200 percent and remain reachable in a reduced viewport", async ({
+    page,
+  }, info) => {
+    test.skip(
+      info.project.name.includes("mobile") || info.project.name.includes("reduced"),
+      "one project per engine covers both explicit phone widths",
+    );
+    for (const width of [320, 390]) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.goto("/soporte/");
+      await openPanel(page);
+      const initialFont = await composer(page).evaluate((element) =>
+        Number.parseFloat(getComputedStyle(element).fontSize),
+      );
+      await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+      await composer(page).fill("Borrador conservado");
+      const zoomFont = await composer(page).evaluate((element) =>
+        Number.parseFloat(getComputedStyle(element).fontSize),
+      );
+      expect(zoomFont / initialFont).toBeGreaterThan(1.9);
+      const overflow = await panel(page).evaluate((element) =>
+        [...element.querySelectorAll("header, form, select, textarea, button, header > div")]
+          .filter((node) => node.scrollWidth > node.clientWidth + 1)
+          .map((node) => `${node.tagName}.${node.className}`),
+      );
+      expect(overflow).toEqual([]);
+      const transcriptBounds = await panel(page)
+        .getByRole("list", { name: "Conversación con el asistente" })
+        .locator("..")
+        .boundingBox();
+      expect(transcriptBounds?.height).toBeGreaterThan(44);
+      for (const control of [
+        panel(page).getByRole("combobox"),
+        panel(page).getByRole("button", { name: "Minimizar asistente" }),
+        composer(page),
+      ]) {
+        await control.focus();
+        const bounds = await control.boundingBox();
+        expect(bounds).not.toBeNull();
+        if (!bounds) throw new Error("Control has no layout box");
+        expect(bounds.x).toBeGreaterThanOrEqual(-1);
+        expect(bounds.x + bounds.width).toBeLessThanOrEqual(width + 1);
+        expect(bounds.y).toBeGreaterThanOrEqual(-1);
+        expect(bounds.y + bounds.height).toBeLessThanOrEqual(845);
+      }
+      await shot(page, info.project.name, `enabled-zoom-${width}`);
+      await panel(page).getByRole("combobox").selectOption("en");
+      const englishField = panel(page).getByRole("textbox", { name: "Write your question" });
+      await expect(englishField).toHaveValue("Borrador conservado");
+      await englishField.focus();
+      const englishOverflow = await panel(page).evaluate((element) =>
+        [...element.querySelectorAll("header, form, select, textarea, button, header > div")]
+          .filter((node) => node.scrollWidth > node.clientWidth + 1)
+          .map((node) => `${node.tagName}.${node.className}`),
+      );
+      expect(englishOverflow).toEqual([]);
+      await shot(page, info.project.name, `enabled-zoom-en-${width}`);
+      await panel(page).getByRole("combobox").selectOption("es");
+      await page.addStyleTag({ content: "html { font-size: 100% !important; }" });
+      await page.setViewportSize({ width, height: 360 });
+      await composer(page).focus();
+      await expect(composer(page)).toHaveValue("Borrador conservado");
+      await expect
+        .poll(async () =>
+          composer(page).evaluate((element) => {
+            const bounds = element.getBoundingClientRect();
+            const viewport = window.visualViewport;
+            return (
+              !!viewport &&
+              bounds.bottom <= viewport.offsetTop + viewport.height + 1 &&
+              bounds.top >= viewport.offsetTop - 1
+            );
+          }),
+        )
+        .toBe(true);
+      const clipped = await panel(page).evaluate((element) => element.scrollWidth > element.clientWidth + 1);
+      expect(clipped).toBe(false);
+      await shot(page, info.project.name, `reduced-viewport-${width}`);
+    }
+  });
+
   test("long unbroken text and 200 % text size do not overflow", async ({ page }, info) => {
     await page.goto(start(info.project.name, "/"));
     await openPanel(page);
-    // Scaled after opening: at a forced 200 % root size the store's own hero overflows on phones
-    // (a page issue outside the assistant); this test judges the assistant surface only.
+    // Scale after opening so the test can inspect the assistant controls and transcript directly.
     await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
     await ask(page, `¿Sirve este enlace https://pequeverso.com/${"muy-largo-".repeat(30)} para comprar?`);
     await expect(panel(page)).toHaveAttribute("data-phase", "completed");
@@ -334,6 +563,7 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await page.goto(start(info.project.name, "/grafismo-fonetico/"));
     await launcher(page).click();
     await expect(panel(page).getByText("No pudimos conectar con el asistente.")).toBeVisible();
+    await shot(page, info.project.name, "connection-error");
     await panel(page).getByRole("button", { name: "Minimizar asistente" }).click();
     // The store keeps working: its own navigation (and, on the landing, the checkout link) is intact.
     await expect(page.locator("main a[href]").first()).toBeAttached();
@@ -343,6 +573,7 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await launcher(page).click();
     await panel(page).getByRole("button", { name: "Reintentar conexión" }).click();
     await expect(panel(page)).toHaveAttribute("data-phase", "ready");
+    await shot(page, info.project.name, "connection-recovered");
   });
 
   test("an open panel is never covered by the consent banner, which stays usable", async ({ page }, info) => {

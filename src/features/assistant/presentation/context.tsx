@@ -2,9 +2,11 @@
 import type { AssistantCopy } from "@content/es/assistant";
 import { createContext, type ReactNode, useContext } from "react";
 import type { LinkPolicy } from "../domain/links";
+import type { Language } from "../domain/models";
 
 export type Presentation = {
   t: AssistantCopy;
+  locale: Language;
   policy: LinkPolicy;
   /** Storefront support page, offered when the assistant is unavailable. */
   supportPath: string;

@@ -166,7 +166,7 @@ if (stepSummary) {
   const rows = results.map((r) => `| ${r.name} | ${icon[r.status]} | ${r.detail.replace(/\|/g, "\\|")} |`);
   appendFileSync(
     stepSummary,
-    ["## Live checks", "", "| Check | | Detail |", "|---|---|---|", ...rows, ""].join("\n") + "\n",
+    `${["## Live checks", "", "| Check | | Detail |", "|---|---|---|", ...rows, ""].join("\n")}\n`,
   );
 }
 const stepOutput = process.env.GITHUB_OUTPUT;

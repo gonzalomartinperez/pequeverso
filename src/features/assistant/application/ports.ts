@@ -1,4 +1,5 @@
 import type { ErrorCode, Language, Page, RunEvent, SessionSnapshot } from "../domain/models.ts";
+import type { VisitorContext } from "../domain/visitor-context.ts";
 
 /** A refusal or failure with the API's code; `retryable` follows the API's own classification. */
 export class AssistantError extends Error {
@@ -13,7 +14,13 @@ export class AssistantError extends Error {
 }
 
 /** `locale` is the interface language: a hint for the API, never an order (it detects the language). */
-export type SendInput = { content: string; page: Page | null; key: string; locale: Language };
+export type SendInput = {
+  content: string;
+  page: Page | null;
+  key: string;
+  locale: Language;
+  context?: VisitorContext;
+};
 
 /** How a stream ended: after its terminal event, or at EOF without one (interrupted). */
 export type StreamEnd = "terminal" | "eof";

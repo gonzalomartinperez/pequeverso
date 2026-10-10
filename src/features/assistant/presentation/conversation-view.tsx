@@ -16,23 +16,22 @@ import { Announcer, Transcript } from "./transcript";
 /** One polite announcement per phase change (never per token). */
 function useAnnouncement(current: Phase): string {
   const { t } = usePresentation();
-  const [message, setMessage] = useState("");
+  const [notice, setNotice] = useState<ReturnType<typeof announcement>>(null);
   const previous = useRef(current.kind);
   useEffect(() => {
     const before = previous.current;
     previous.current = current.kind;
     const next = announcement(before, current);
-    if (!next) return;
-    const copy = {
-      thinking: t.thinking,
-      stopped: t.answerStopped,
-      interrupted: t.answerInterrupted,
-      failed: t.answerFailed,
-      ready: t.answerReady,
-    } as const;
-    setMessage(copy[next]);
-  }, [current, t]);
-  return message;
+    if (next) setNotice(next);
+  }, [current]);
+  const copy = {
+    thinking: t.thinking,
+    stopped: t.answerStopped,
+    interrupted: t.answerInterrupted,
+    failed: t.answerFailed,
+    ready: t.answerReady,
+  } as const;
+  return notice ? copy[notice] : "";
 }
 
 /** The single public conversation implementation of Pequeverso. */

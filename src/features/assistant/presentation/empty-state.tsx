@@ -1,4 +1,6 @@
 "use client";
+import { Sparkles } from "lucide-react";
+import styles from "./assistant.module.css";
 import { usePresentation } from "./context";
 import { chipClass, labelClass } from "./parts";
 
@@ -12,11 +14,14 @@ export function EmptyState({
   disabled: boolean;
   onAsk: (question: string) => void;
 }) {
-  const { t } = usePresentation();
-  const questions = starters.length ? starters : t.starters;
+  const { t, locale } = usePresentation();
+  const questions = locale === "es" && starters.length ? starters : t.starters;
   return (
-    <li className="flex flex-col gap-5 pt-2">
-      <div className="flex flex-col items-start gap-2">
+    <li className="flex flex-col gap-6 pt-2">
+      <div className={styles.greeting}>
+        <span aria-hidden="true" className="grid size-11 place-items-center rounded-full bg-navy text-gold">
+          <Sparkles className="size-6" />
+        </span>
         <h2 className="font-display text-h3 font-bold text-heading">{t.greetingTitle}</h2>
         <p className="max-w-[60ch] text-base text-body">{t.greetingBody}</p>
       </div>
@@ -27,7 +32,7 @@ export function EmptyState({
             <li key={question}>
               <button
                 type="button"
-                className={`${chipClass} w-full justify-start`}
+                className={`${chipClass} w-full justify-start shadow-sm`}
                 disabled={disabled}
                 onClick={() => onAsk(question)}
               >

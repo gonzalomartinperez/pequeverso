@@ -14,7 +14,7 @@ import { labelClass, SafeLink } from "./parts";
  * contract has no stock, rating, discount or urgency field, so none is ever shown.
  */
 function PriceLine({ price }: { price: Price | null }) {
-  const { t } = usePresentation();
+  const { t, locale } = usePresentation();
   if (!price) return <p className="text-small text-subtle">{t.priceUnverified}</p>;
   return (
     <div className="flex flex-col gap-0.5">
@@ -23,7 +23,7 @@ function PriceLine({ price }: { price: Price | null }) {
         <span className="text-tiny text-subtle">{price.taxNote}</span>
       </p>
       <p className="text-tiny text-subtle">{price.note}</p>
-      <p className="text-tiny text-subtle">{t.priceVerified(formatDay(price.verifiedAt))}</p>
+      <p className="text-tiny text-subtle">{t.priceVerified(formatDay(price.verifiedAt, locale))}</p>
     </div>
   );
 }
@@ -132,7 +132,7 @@ function ResourceList({ resources }: { resources: Resource[] }) {
 }
 
 function Comparison({ products, resources }: { products: Product[]; resources: Resource[] }) {
-  const { t } = usePresentation();
+  const { t, locale } = usePresentation();
   const rows: { label: string; cell: (product: Product) => string }[] = [
     { label: t.ageRange, cell: (product) => product.ageRange },
     {
@@ -140,7 +140,7 @@ function Comparison({ products, resources }: { products: Product[]; resources: R
       // A price never appears without its notes and confirmation date.
       cell: (product) =>
         product.price
-          ? `${product.price.display} ${product.price.taxNote}. ${product.price.note} ${t.priceVerified(formatDay(product.price.verifiedAt))}.`
+          ? `${product.price.display} ${product.price.taxNote}. ${product.price.note} ${t.priceVerified(formatDay(product.price.verifiedAt, locale))}.`
           : t.priceUnverified,
     },
     {

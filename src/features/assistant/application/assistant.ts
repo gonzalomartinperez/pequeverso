@@ -17,7 +17,8 @@ import {
 } from "../domain/conversation.ts";
 import { applyLinkPolicy, type LinkPolicy } from "../domain/links.ts";
 import type { ErrorCode, Language, Message, Page, RunEvent } from "../domain/models.ts";
-import { AssistantError, type AssistantTransport, type Runtime } from "./ports.ts";
+import { type VisitorContext, visitorContext } from "../domain/visitor-context.ts";
+import { AssistantError, type AssistantTransport, type Runtime, type SendInput } from "./ports.ts";
 
 export type AssistantOptions = {
   policy: LinkPolicy;
@@ -47,6 +48,9 @@ export function createAssistant(transport: AssistantTransport, runtime: Runtime,
   let opening: Promise<void> | null = null;
   let generation: Generation | null = null;
   let page: Page | null = null;
+  let locale = options.locale;
+  let sentInput: SendInput | null = null;
+  let context: VisitorContext | null = null;
 
   function dispatch(event: ConversationEvent) {
     if (lifetime.signal.aborted) return;
@@ -64,7 +68,7 @@ export function createAssistant(transport: AssistantTransport, runtime: Runtime,
     const signal = lifetime.signal;
     dispatch({ type: "session.opening" });
     const request: Promise<void> = transport
-      .openSession(signal, options.locale)
+      .openSession(signal, locale)
       .then((snapshot) => {
         if (signal.aborted) return;
         dispatch({
@@ -135,10 +139,9 @@ export function createAssistant(transport: AssistantTransport, runtime: Runtime,
     generation = current;
     const signal = AbortSignal.any([current.controller.signal, lifetime.signal]);
     try {
-      const end = await transport.send(
-        { content: turn.prompt, page, key: turn.key, locale: options.locale },
-        signal,
-        (event) => onRunEvent(current, event),
+      const input = sentInput ?? { content: turn.prompt, page, key: turn.key, locale };
+      const end = await transport.send({ ...input, key: turn.key }, signal, (event) =>
+        onRunEvent(current, event),
       );
       // The reducer preserves an authoritative answer and clears pending even when the
       // connection closes before its terminal event. A settled answer is not a settled run.
@@ -193,6 +196,7 @@ export function createAssistant(transport: AssistantTransport, runtime: Runtime,
     const max = state.limits?.maxMessageChars ?? 2000;
     if (!prompt || prompt.length > max || !canSubmit(state) || generation) return false;
     const turn: Turn = { key: runtime.id(), prompt, retry: false };
+    sentInput = { content: prompt, page, key: turn.key, locale, ...(context ? { context } : {}) };
     const question: Message = {
       id: `local-${turn.key}`,
       role: "user",
@@ -221,6 +225,10 @@ export function createAssistant(transport: AssistantTransport, runtime: Runtime,
       prompt: outcome.turn.prompt,
       retry: true,
     };
+    // Replaying an interrupted request keeps its exact body even if the visitor changes
+    // route or interface language. A deliberate new attempt may use the current context.
+    if (!reuse)
+      sentInput = { content: turn.prompt, page, key: turn.key, locale, ...(context ? { context } : {}) };
     dispatch({ type: "turn.submitted", turn, question: null });
     void run(turn, reuse);
     return true;
@@ -278,6 +286,13 @@ export function createAssistant(transport: AssistantTransport, runtime: Runtime,
       generation?.controller.abort();
       generation = null;
       opening = null;
+    },
+    /** Affects the next request only; never restarts the session or active stream. */
+    setLocale(next: Language) {
+      locale = next;
+    },
+    setContext(next: VisitorContext | null) {
+      context = visitorContext(next);
     },
     setPage(next: Page | null) {
       page = next;

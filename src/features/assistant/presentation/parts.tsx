@@ -70,7 +70,9 @@ export function IconButton({
       >
         {children}
       </TooltipTrigger>
-      <TooltipContent side="bottom">{label}</TooltipContent>
+      <TooltipContent role="tooltip" side="bottom">
+        {label}
+      </TooltipContent>
     </Tooltip>
   );
 }
