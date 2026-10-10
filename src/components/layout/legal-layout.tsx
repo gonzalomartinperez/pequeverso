@@ -74,7 +74,7 @@ export function LegalLayout({ title, intro, updatedAt, sections = [], children }
             {hasToc ? (
               <>
                 <details className="pv-details group glass rounded-xl shadow-sm ring-1 ring-navy/6 cq-lg:hidden">
-                  <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 px-5 font-extrabold text-heading [&::-webkit-details-marker]:hidden">
+                  <summary className="flex min-h-14 cursor-pointer list-none flex-wrap items-center gap-3 px-5 font-extrabold text-heading [&::-webkit-details-marker]:hidden">
                     <ListIcon aria-hidden="true" focusable="false" className="size-5 text-icon" />
                     <span className="flex-1">En esta página</span>
                     <span className="text-tiny font-bold text-subtle">{sections.length} apartados</span>
@@ -97,7 +97,7 @@ export function LegalLayout({ title, intro, updatedAt, sections = [], children }
                 </nav>
               </>
             ) : null}
-            <article className="on-light min-w-0 rounded-2xl bg-card p-[clamp(1.25rem,4.5vw,3.5rem)] shadow-float ring-1 ring-navy/6 cq-xl:max-w-[calc(68ch+7rem)]">
+            <article className="on-light min-w-0 rounded-2xl bg-card p-[clamp(min(1.25rem,6.25vw),4.5vw,3.5rem)] shadow-float ring-1 ring-navy/6 cq-xl:max-w-[calc(68ch+7rem)]">
               <div className="prose cq min-w-0">{children}</div>
             </article>
           </div>

@@ -18,7 +18,8 @@ Spanish. Read this file first, then the doc that matches your task.
 | Release or deploy | `docs/deployment.md` |
 | URL changes, redirects, cutover | `docs/migration.md` |
 | Hotmart funnel (checkout, widget, dashboard changes, E2E checklist) | `docs/hotmart-funnel.md` |
-| Skills | `.agents/skills/*/SKILL.md` (canonical); `.claude/skills` are thin adapters |
+| Native shopping assistant (disabled by default) | `docs/assistant.md`, ADR-0008 |
+| Code style, setup, skills validation | `CONTRIBUTING.md` (Google TS style adaptations); skills: `.agents/skills/*/SKILL.md` (canonical), `.claude/skills` thin adapters, `npm run check:skills` |
 
 ## Non-negotiables
 
@@ -45,13 +46,20 @@ Spanish. Read this file first, then the doc that matches your task.
   `exactOptionalPropertyTypes`, `erasableSyntaxOnly`); scripts, server code and unit tests run as
   `node file.ts` (erasable syntax, `.ts` import extensions, `import type`). The only JavaScript is
   the one-line `next.config.mjs` re-export of `config/next.ts` (ADR-0007).
+- **The native assistant stays disabled.** `NEXT_PUBLIC_ASSISTANT_ENABLED` is unset/`false` in every
+  publishable build; enabling it needs the owner's explicit authorization and a rebuild. Enabled
+  builds (`npm run test:e2e:assistant`, `out-assistant-fixture/`) are verification artifacts only;
+  `npm run check:assistant-disabled` must pass on anything that ships. The assistant is advisory:
+  no checkout, payment, cart or tracking features (`docs/assistant.md`).
 - **Placeholders `[[LIKE_THIS]]` are allowed in legal copy until the owner supplies the details**;
   the deploy workflow refuses to ship them.
 
 ## Workflow
 
-- Branches: `develop` is the integration branch (default); `main` is production (Hostinger builds
-  it on every merge). Work on `type/kebab-case` (`feat|fix|chore|docs|refactor|perf|test|ci|build|revert`)
+- Branches: `develop` is the integration branch (default); `main` is the intended production
+  source. Owner confirmed on 2026-10-10 that Hostinger is not connected yet; once connected to
+  main it builds every merge. Set `HOSTINGER_MAIN_AUTODEPLOY_ENABLED=true` only after that setup
+  to enable automatic post-deploy verification. Work on `type/kebab-case` (`feat|fix|chore|docs|refactor|perf|test|ci|build|revert`)
   → squash PR into `develop`. A release is a PR `develop` → `main` merged with a **merge commit**
   (keeps the shared history, so the next release merges cleanly). Hotfix: `fix/…` → PR into `main`,
   then a PR `main` → `develop` (merge commit). Both branches are protected rulesets (required
@@ -60,7 +68,7 @@ Spanish. Read this file first, then the doc that matches your task.
 - Before opening a PR: `npm run check` and the relevant `npm run test:e2e` projects. Keep
   `docs/generated/htaccess.txt` in sync (`node scripts/gen-htaccess.ts`).
 - One owner per lockfile change; dependency updates are their own PR.
-- Releases are tags `vX.Y.Z` deployed manually through the `Deploy` workflow with environment
+- Optional tagged publication uses `vX.Y.Z` manually through the `Deploy` workflow with environment
   approval; it publishes the export to the `deploy` branch (pulled by Hostinger Git) and verifies
   the deployed commit, not just an HTTP 200. Never commit to `deploy` by hand.
 
@@ -68,3 +76,13 @@ Spanish. Read this file first, then the doc that matches your task.
 
 This repository does not contain, and must not import, private business knowledge, media masters,
 WordPress backups, credentials or customer data. Sources for facts are cited in `docs/content-model.md`.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

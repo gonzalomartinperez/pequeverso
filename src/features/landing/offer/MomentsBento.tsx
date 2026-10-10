@@ -28,7 +28,7 @@ const AREAS = ["lg:[grid-area:m0]", "lg:[grid-area:m1]", "lg:[grid-area:m2]", "l
 export function MomentsBento({ items, pageId }: Props) {
   return (
     <ul
-      className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 lg:gap-5 lg:[grid-template-areas:'m0_page_m1''m2_page_m3']"
+      className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 lg:gap-5 lg:[grid-template-areas:'m0_page_m1''m2_page_m3']"
       role="list"
     >
       {items.map((item, index) => (

@@ -1,0 +1,174 @@
+/*
+ * Geometry of the native assistant: launcher, compact/expanded desktop panel, near-full-screen
+ * mobile surface. Colours, type and radii come from the design-system tokens (globals.css).
+ * Motion is transform/opacity only, behind `prefers-reduced-motion: no-preference`; nothing
+ * animates while the panel is hidden (Base UI keeps it mounted with `hidden`).
+ */
+
+.launcher {
+  position: fixed;
+  z-index: 70;
+  right: max(var(--space-4, 1rem), env(safe-area-inset-right));
+  bottom: calc(var(--space-4, 1rem) + env(safe-area-inset-bottom));
+  transition: bottom var(--duration) ease-out;
+}
+
+/* Lift above the mobile sticky purchase bar so it never covers the purchase action. */
+:global(body:has([data-slot="sticky-cta"][data-visible])) .launcher {
+  bottom: calc(var(--sticky-bar-height) + var(--space-5, 1.25rem) + env(safe-area-inset-bottom));
+}
+
+.launcher[hidden] {
+  display: none;
+}
+
+/* The one avatar micro-interaction: a small tilt on hover/focus with a fine pointer. */
+.avatar {
+  transform-origin: 50% 80%;
+}
+
+@media (prefers-reduced-motion: no-preference) and (pointer: fine) {
+  .avatar {
+    transition: transform var(--duration) var(--ease-emphasis, ease-out);
+  }
+  .launcher:hover .avatar,
+  .launcher:focus-visible .avatar {
+    transform: rotate(-8deg) translateY(-1px) scale(1.04);
+  }
+}
+
+.unread {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--pv-gold);
+  box-shadow: 0 0 0 2px var(--pv-navy);
+}
+
+/*
+ * Stacking: launcher (70) < sticky buy bar (60..70) < consent banner (90) < assistant scrim (94) <
+ * open panel (95). An open panel is never covered (its composer stays usable); the consent banner
+ * stays usable whenever the panel is compact or minimized, and returns intact after a modal one.
+ */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 94;
+  background: oklch(0.2619 0.0887 255.79 / 45%);
+}
+
+.panel {
+  position: fixed;
+  z-index: 95;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  outline: none;
+  right: max(var(--space-4, 1rem), env(safe-area-inset-right));
+  bottom: calc(var(--space-4, 1rem) + 3.5rem + var(--space-3, 0.75rem) + env(safe-area-inset-bottom));
+  width: min(26rem, calc(100vw - 2rem));
+  height: min(40rem, calc(100dvh - 7.5rem));
+  border-radius: var(--radius-xl);
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.panel[data-size="expanded"] {
+  right: max(var(--space-6, 1.5rem), env(safe-area-inset-right));
+  bottom: max(var(--space-6, 1.5rem), env(safe-area-inset-bottom));
+  width: min(60rem, calc(100vw - 3rem));
+  height: calc(100dvh - 3rem);
+}
+
+/*
+ * Phones (portrait and landscape): almost the whole visual viewport, below the status area. The
+ * VisualViewport variables keep the composer above the on-screen keyboard (panel.tsx).
+ */
+@media (max-width: 639.98px), (max-height: 520px) {
+  .panel,
+  .panel[data-size="expanded"] {
+    top: calc(var(--pv-vv-top, 0px) + max(var(--space-2, 0.5rem), env(safe-area-inset-top)));
+    right: auto;
+    bottom: auto;
+    left: var(--pv-vv-left, 0px);
+    width: var(--pv-vv-width, 100%);
+    height: calc(var(--pv-vv-height, 100dvh) - max(var(--space-2, 0.5rem), env(safe-area-inset-top)));
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .panel:not([hidden]) {
+    transform-origin: 100% 100%;
+    animation: panel-in var(--duration) ease-out;
+  }
+  .backdrop {
+    animation: fade-in var(--duration) ease-out;
+  }
+  .enter {
+    animation: enter var(--duration) ease-out;
+  }
+  .caret {
+    animation: caret 1s steps(2, start) infinite;
+  }
+  .dot {
+    animation: dot 1.2s ease-in-out infinite;
+  }
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes caret {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes dot {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+.transcript {
+  scrollbar-gutter: stable;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+}
+
+.composer {
+  padding-bottom: max(env(safe-area-inset-bottom), var(--space-3, 0.75rem));
+}
+
+.field {
+  max-height: 9rem;
+}

@@ -24,6 +24,10 @@ env:
   # Fake pixel id so the consent-gated path is exercised by E2E without contacting third parties.
   NEXT_PUBLIC_META_PIXEL_ID: "1234567890123456"
   E2E_EXPECT_CONSENT: "1"
+  # The shopping assistant ships disabled. Every build here (and the artifact other jobs reuse)
+  # is the disabled site; only the `assistant` job builds an enabled copy, which is never uploaded.
+  NEXT_PUBLIC_ASSISTANT_ENABLED: "false"
+  NEXT_PUBLIC_ASSISTANT_API_ORIGIN: ""
 
 jobs:
   workflows:
@@ -50,6 +54,21 @@ jobs:
           annotations: true
           min-severity: low
 
+  secrets:
+    name: Secret scan (history)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: gitleaks over the full history (redacted; fails on zero commits scanned)
+        run: .github/scripts/secret-scan.sh
+
   build:
     name: Build (lint, types, unit, knip, export, budgets)
     runs-on: ubuntu-24.04
@@ -73,8 +92,8 @@ jobs:
           npm run typecheck:media
       - name: Unit tests
         run: npm test
-      - name: Dead code (production)
-        run: npm run knip:production
+      - name: Dead code (production and full, as the nightly runs it)
+        run: npm run knip:production && npm run knip
       - name: Restore Next.js cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -95,6 +114,8 @@ jobs:
         run: npm run check:scene
       - name: Rendered HTML invariants
         run: npm run check:rendered
+      - name: Assistant absent from the export (no launcher, chunk or API origin)
+        run: npm run --if-present check:assistant-disabled
       - name: Audit production dependencies
         run: npm audit --omit=dev --audit-level=high
       - name: Upload export
@@ -160,13 +181,17 @@ jobs:
         run: git diff --exit-code
 
   e2e:
-    name: E2E (chromium 390/768/1440 + reduced motion)
+    name: E2E (chromium 390/768/1440 + reduced motion, ${{ matrix.shard }}/2)
     if: github.event_name != 'push'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     needs: build
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -176,20 +201,96 @@ jobs:
         uses: ./.github/actions/setup
         with:
           browser: chromium
+      - name: Install text-reflow browsers
+        run: npx playwright install --with-deps firefox webkit
       - name: Download export
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: site-export
           path: out
-      - name: Playwright (PW_SET=pr)
-        run: npm run test:e2e
+      - name: Playwright (PW_SET=pr, shard ${{ matrix.shard }}/2)
+        run: npm run test:e2e -- --shard="${SHARD}/2"
+        env:
+          SHARD: ${{ matrix.shard }}
       - name: Upload Playwright report
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.shard }}
           path: playwright-report
           retention-days: 7
+
+  assistant:
+    # Enabled-assistant verification in fixture mode against the real API (no paid model, no
+    # credentials). Runs only once the repository defines `test:e2e:assistant` and pins the API in
+    # tests/assistant/api-revision. The enabled build stays on this runner: only Playwright reports
+    # are uploaded, under a name that marks them as unpublishable.
+    name: Assistant (enabled, fixture API)
+    if: github.event_name != 'push'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    env:
+      AI_PROVIDER: fixture
+      ALLOW_PAID_AI: "false"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Detect the suite
+        id: suite
+        run: |
+          set -euo pipefail
+          if node -e 'process.exit(require("./package.json").scripts?.["test:e2e:assistant"] ? 0 : 1)'; then
+            revision="$(tr -d '[:space:]' < tests/assistant/api-revision)"
+            [[ "$revision" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::tests/assistant/api-revision must hold a full commit sha"; exit 1; }
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            echo "api_revision=$revision" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No test:e2e:assistant script yet; nothing to run." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Checkout the pinned assistant API (public repository, committed revision)
+        if: steps.suite.outputs.present == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: gonzalomartinperez/pequeverso-assistant-api
+          ref: ${{ steps.suite.outputs.api_revision }}
+          path: .assistant-api
+          persist-credentials: false
+      - name: Setup uv
+        if: steps.suite.outputs.present == 'true'
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: 0.12.21
+          enable-cache: true
+          cache-dependency-glob: .assistant-api/uv.lock
+      - name: Install the API (frozen lockfile)
+        if: steps.suite.outputs.present == 'true'
+        run: uv sync --frozen --directory .assistant-api
+      - name: Setup
+        if: steps.suite.outputs.present == 'true'
+        uses: ./.github/actions/setup
+      - name: Install Playwright browsers
+        if: steps.suite.outputs.present == 'true'
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Enabled build + Playwright against the fixture API
+        if: steps.suite.outputs.present == 'true'
+        env:
+          ASSISTANT_API_DIR: ${{ github.workspace }}/.assistant-api
+        run: npm run test:e2e:assistant
+      - name: Upload reports (UNPUBLISHABLE, assistant enabled)
+        if: always() && steps.suite.outputs.present == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: UNPUBLISHABLE-assistant-enabled-reports
+          path: |
+            playwright-report-assistant/
+            test-results-assistant/
+          retention-days: 7
+          if-no-files-found: ignore
 
   lighthouse:
     name: Lighthouse CI
@@ -230,21 +331,30 @@ jobs:
     name: ci
     runs-on: ubuntu-24.04
     timeout-minutes: 2
-    needs: [workflows, build, hostinger, e2e, lighthouse]
+    needs: [workflows, secrets, build, hostinger, e2e, assistant, lighthouse]
     if: always()
+    permissions: {}
     steps:
       - name: Evaluate gates
         env:
           WORKFLOWS: ${{ needs.workflows.result }}
+          SECRETS: ${{ needs.secrets.result }}
           BUILD: ${{ needs.build.result }}
           HOSTINGER: ${{ needs.hostinger.result }}
           E2E: ${{ needs.e2e.result }}
+          ASSISTANT: ${{ needs.assistant.result }}
           LIGHTHOUSE: ${{ needs.lighthouse.result }}
+          EVENT: ${{ github.event_name }}
         run: |
           set -euo pipefail
-          echo "workflows=$WORKFLOWS build=$BUILD hostinger=$HOSTINGER e2e=$E2E lighthouse=$LIGHTHOUSE"
+          echo "workflows=$WORKFLOWS secrets=$SECRETS build=$BUILD hostinger=$HOSTINGER e2e=$E2E assistant=$ASSISTANT lighthouse=$LIGHTHOUSE"
           test "$WORKFLOWS" = success
+          test "$SECRETS" = success
           test "$BUILD" = success
           test "$HOSTINGER" = success
-          case "$E2E" in success|skipped) ;; *) exit 1 ;; esac
-          case "$LIGHTHOUSE" in success|skipped) ;; *) exit 1 ;; esac
+          # Browser gates are skipped only on pushes (they ran on the pull request); a pull request
+          # must run them.
+          if [ "$EVENT" = push ]; then allowed="success skipped"; else allowed="success"; fi
+          for result in "$E2E" "$ASSISTANT" "$LIGHTHOUSE"; do
+            case " $allowed " in *" $result "*) ;; *) echo "browser gate: $result"; exit 1 ;; esac
+          done

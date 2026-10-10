@@ -185,7 +185,8 @@
   --space-8: 4rem;
   --space-9: 6rem;
   --section-pad: clamp(3.5rem, 2.5rem + 3vw, 6rem);
-  --gutter: clamp(1.25rem, 4vw, 1.5rem);
+  /* The floor is capped at 6.25vw (20 px at 320 px) so enlarged text does not double the gutter on phones. */
+  --gutter: clamp(min(1.25rem, 6.25vw), 4vw, 1.5rem);
   --page-max: 1200px;
 
   /* Radius */
@@ -362,6 +363,14 @@
 }
 
 /* 4. Container-query breakpoints: primitives adapt to their container, never to the viewport */
+/* Two-up phone grids: a phone column from 320 px (280 px inside the gutters) is wider than 16rem,
+   but with text at 200 % the rem doubles and it falls under, so those grids reflow to one column
+   (WCAG 1.4.10). */
+@custom-variant cq-xs {
+  @container (width >= 16rem) {
+    @slot;
+  }
+}
 @custom-variant cq-sm {
   @container (width >= 40rem) {
     @slot;
@@ -398,6 +407,27 @@
   /* Email addresses are one unbreakable word; let them wrap anywhere at narrow widths (320 px). */
   a[href^="mailto:"] {
     overflow-wrap: anywhere;
+  }
+
+  /* Reflow at 200 % text (WCAG 1.4.4/1.4.10): a word wider than its line breaks instead of
+     pushing the page sideways. Text only breaks a word that cannot fit; `anywhere` also allows a grid or flex parent
+     to shrink below the longest word instead of growing past the column. */
+  body {
+    overflow-wrap: anywhere;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    overflow-wrap: anywhere;
+  }
+
+  /* Grid items may shrink below their widest word or control (`min-width: 0`), so an implicit
+     column stays as wide as its container and enlarged text wraps inside it instead of being
+     clipped by an `overflow: clip` band. Columns that already fit are unchanged. */
+  :where(.grid, .inline-grid) > * {
+    min-width: 0;
   }
 
   *,
@@ -682,6 +712,7 @@
 
   & dl {
     display: grid;
+    grid-auto-columns: minmax(0, auto);
     margin-bottom: var(--space-5);
   }
 
@@ -897,4 +928,61 @@
 @utility arc-top {
   border-top-left-radius: clamp(2rem, 5vw, 4rem);
   border-top-right-radius: clamp(2rem, 5vw, 4rem);
+}
+
+/* The header query uses rem so text enlargement moves the action below the icon row,
+   preserving complete words and prices without changing the ordinary phone layout. */
+.pv-header {
+  container-type: inline-size;
+}
+.pv-sticky {
+  container-type: inline-size;
+}
+@supports (container-type: inline-size scroll-state) {
+  .pv-header {
+    container-type: inline-size scroll-state;
+  }
+}
+/* Direct-body overlay headers previously collapsed the pill's margin into the header.
+   Inline-size containment stops that collapse. Preserve its offset explicitly; headers inside
+   PageShell already had a layout parent preventing collapse and need no added offset. */
+body > .pv-header[data-overlay] {
+  margin-top: 0.625rem;
+  & > .pv-header-pill {
+    margin-top: 0;
+  }
+}
+@container (width < 16rem) {
+  .pv-sticky-summary {
+    flex-basis: calc(100% - 54px);
+  }
+  .pv-sticky-action {
+    width: 100%;
+    & > * {
+      width: 100%;
+      min-height: 44px;
+    }
+  }
+  .pv-header-pill {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 0;
+    gap: 8px;
+    padding: 8px;
+  }
+  .pv-header-actions {
+    display: contents;
+    & > a {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      width: 100%;
+      min-height: 44px;
+      padding: 8px 16px;
+      overflow-wrap: normal;
+    }
+    & > [data-slot="mobile-nav-trigger"] {
+      grid-column: 2;
+      grid-row: 1;
+    }
+  }
 }

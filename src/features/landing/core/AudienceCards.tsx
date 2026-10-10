@@ -19,12 +19,12 @@ export function AudienceCards({ yes, no, photo }: Props) {
   return (
     <div
       className={cn(
-        "grid gap-5",
+        "grid grid-cols-1 gap-5",
         photo && "cq-lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] cq-lg:items-stretch",
       )}
     >
       {photo ? <div className="hidden min-h-full cq-lg:grid">{photo}</div> : null}
-      <ul className="grid gap-4 cq-md:grid-cols-2" role="list">
+      <ul className="grid grid-cols-1 gap-4 cq-md:grid-cols-2" role="list">
         <li
           className="grid content-start gap-4 rounded-2xl border border-white bg-white p-6 shadow-float cq-sm:p-8"
           data-reveal=""

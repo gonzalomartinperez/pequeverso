@@ -1,8 +1,9 @@
 name: Post-deploy verify
 
-# Hostinger builds `main` on push. This workflow waits for that build to reach production,
+# Once Hostinger is connected to `main`, this workflow waits for its build to reach production,
 # then verifies the deployed revision and runs the smoke suite against the live origin.
 # deploy.yml (after a release) and production-daily.yml reuse it through workflow_call.
+# Owner confirmed no connection yet on 2026-10-10. Enable the repository variable only after setup.
 on:
   push:
     branches: [main]
@@ -37,6 +38,7 @@ concurrency:
 jobs:
   verify:
     name: Verify production revision
+    if: github.event_name != 'push' || vars.HOSTINGER_MAIN_AUTODEPLOY_ENABLED == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:

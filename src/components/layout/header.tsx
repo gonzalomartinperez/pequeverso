@@ -20,10 +20,11 @@ type Props = {
 
 /**
  * Menu trigger: a 44 px round glass button. Computed here (server) so the client island ships
- * no class table.
+ * no class table. Sized in px: an icon control need not grow with text, and with text at 200 %
+ * the CTA keeps room beside it on a 320 px phone.
  */
 const MENU_TRIGGER =
-  "inline-grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border border-navy/14 bg-white/80 text-navy transition duration-(--duration-fast) ease-out hover:border-navy/30 hover:bg-white motion-safe:active:scale-95 lg:hidden [&_svg]:size-5";
+  "inline-grid size-[44px] shrink-0 cursor-pointer place-items-center rounded-full border border-navy/14 bg-white/80 text-navy transition duration-(--duration-fast) ease-out hover:border-navy/30 hover:bg-white motion-safe:active:scale-95 lg:hidden [&_svg]:size-[20px]";
 
 /**
  * Sticky site header: a floating glass pill (brand, inline anchors from lg, the single CTA and
@@ -31,7 +32,9 @@ const MENU_TRIGGER =
  * around the pill is transparent and lets clicks through, so over an `overlay` hero the band
  * paints behind it and on a plain page the row shows the page background. The pill condenses
  * (tighter, stronger shadow) once the page scrolls: scroll-driven CSS, no JavaScript.
- * The CTA is the last tab stop of the header.
+ * The CTA is the last tab stop of the header. When the CTA does not fit beside the brand (text
+ * enlarged to 200 % on a phone) the pill grows: the CTA group moves to a second row and its label
+ * wraps, so nothing scrolls sideways (WCAG 1.4.10).
  */
 export function Header({ nav = [], cta, subtitle, overlay = false }: Props) {
   const items = nav.slice(0, 4);
@@ -40,24 +43,24 @@ export function Header({ nav = [], cta, subtitle, overlay = false }: Props) {
       data-slot="header"
       data-overlay={overlay ? "" : undefined}
       className={cn(
-        "pointer-events-none sticky top-0 z-50 h-(--header-height) [container-type:scroll-state]",
+        "pointer-events-none sticky top-0 z-50 min-h-(--header-height) pv-header",
         overlay && "-mb-(--header-height)",
       )}
     >
       <div
         data-slot="header-pill"
         className={cn(
-          "on-light pv-header-pill glass pointer-events-auto relative mx-auto mt-2.5 flex h-15 w-[min(calc(var(--page-max)+1.5rem),100%-1rem)] items-center gap-2 rounded-full py-2 pr-2 pl-2 shadow-md ring-1 ring-navy/8 transition-all duration-(--duration) ease-out sm:w-[min(calc(var(--page-max)+1.5rem),100%-1.5rem)] sm:gap-3 sm:pl-3",
+          "on-light pv-header-pill glass pointer-events-auto relative mx-auto mt-2.5 flex min-h-15 w-[min(calc(var(--page-max)+1.5rem),100%-1rem)] flex-wrap items-center gap-2 rounded-[1.875rem] py-1 pr-2 pl-2 shadow-md ring-1 ring-navy/8 transition-all duration-(--duration) ease-out sm:w-[min(calc(var(--page-max)+1.5rem),100%-1.5rem)] sm:gap-3 sm:pl-3",
           // Condensed once the header is stuck (Chromium scroll-state queries; elsewhere it stays roomy).
-          "[@container_scroll-state(stuck:top)]:mt-2 [@container_scroll-state(stuck:top)]:h-14 [@container_scroll-state(stuck:top)]:bg-white/86",
+          "[@container_scroll-state(stuck:top)]:mt-2 [@container_scroll-state(stuck:top)]:min-h-14 [@container_scroll-state(stuck:top)]:bg-white/86",
         )}
       >
         <Link
           href="/"
-          className="inline-flex min-h-11 min-w-11 shrink-0 items-center gap-3 rounded-full pr-1 text-navy no-underline"
+          className="inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center gap-3 rounded-full pr-1 text-navy no-underline"
           aria-label="Pequeverso, ir al inicio"
         >
-          <BrandLogo priority wordmark="sm-up" />
+          <BrandLogo priority wordmark="sm-up" className="[&_img]:size-[40px]" />
           {subtitle ? (
             <span
               className={cn(
@@ -87,7 +90,7 @@ export function Header({ nav = [], cta, subtitle, overlay = false }: Props) {
         ) : null}
         <div
           className={cn(
-            "ml-auto flex min-w-0 items-center gap-1.5 sm:gap-2 [&>a]:rounded-pill [&>a]:max-sm:min-h-11 [&>a]:max-sm:px-4 [&>a]:max-sm:text-[0.95rem] [&>a_svg]:max-sm:hidden",
+            "pv-header-actions ml-auto flex min-w-0 items-center justify-end gap-1.5 max-lg:grow max-lg:basis-[min-content] sm:gap-2 [&>a]:shrink [&>a]:rounded-pill [&>a]:max-sm:min-h-11 [&>a]:max-sm:px-4 [&>a]:max-sm:text-[0.95rem] [&>a_svg]:max-sm:hidden",
             items.length > 0 && "lg:ml-2",
           )}
         >

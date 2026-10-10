@@ -3,6 +3,7 @@ import { withCn } from "cn/next";
 import type { NextConfig } from "next";
 import { loadEdgeRules, toNextHeaders, toNextRedirects } from "../scripts/lib/edge-rules.ts";
 import { SceneBudgetPlugin } from "../scripts/scene-budget-plugin.ts";
+import { parseAssistantEnv } from "../src/features/assistant/flag.ts";
 
 /**
  * Next.js configuration, re-exported by the root `next.config.mjs` (the file name Hostinger's
@@ -31,8 +32,25 @@ const onHostingerNodeApp = process.cwd().replace(/\\/g, "/").includes("/hbuilds/
 const output = process.env.NEXT_OUTPUT === "standalone" || onHostingerNodeApp ? "standalone" : "export";
 const edgeRules = loadEdgeRules();
 
+/**
+ * The assistant switch is ALWAYS defined at build time (normalized to "true" or "false"), so the
+ * bundler folds `process.env.NEXT_PUBLIC_ASSISTANT_ENABLED === "true"` in src/features/assistant/slot.tsx
+ * and drops the assistant code. Next only inlines NEXT_PUBLIC_* variables present in the build
+ * environment: an unset variable would otherwise leave the dynamic import (and its chunk) in place.
+ */
+const assistant = parseAssistantEnv({
+  enabled: process.env.NEXT_PUBLIC_ASSISTANT_ENABLED,
+  apiOrigin: process.env.NEXT_PUBLIC_ASSISTANT_API_ORIGIN,
+  localTestBuild: process.env.ASSISTANT_LOCAL_TEST_BUILD,
+});
+if (!assistant.ok) throw new Error(`assistant configuration: ${assistant.errors.join("; ")}`);
+const assistantEnv = assistant.flag.enabled
+  ? { NEXT_PUBLIC_ASSISTANT_ENABLED: "true", NEXT_PUBLIC_ASSISTANT_API_ORIGIN: assistant.flag.apiOrigin }
+  : { NEXT_PUBLIC_ASSISTANT_ENABLED: "false", NEXT_PUBLIC_ASSISTANT_API_ORIGIN: "" };
+
 const nextConfig: NextConfig = {
   output,
+  env: assistantEnv,
   // Route handlers live only in the standalone build: `*.standalone.ts` is a page extension there
   // and plain `route.standalone.ts` files are ignored by the static export (a POST handler breaks
   // `output: "export"`). See docs/decisions/ADR-0005-conversions-api-relay.md.

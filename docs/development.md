@@ -19,7 +19,7 @@
 | `npm run typecheck:media` | `tools/media` project (after `npm ci --prefix tools/media --ignore-scripts`) |
 | `npm test` | Unit tests (`node --test`, TypeScript via Node type stripping) |
 | `npm run test:e2e` | Playwright against `out/` (build first) |
-| `npm run check` | Everything CI runs in the quality job |
+| `npm run check` | Lint, types, unit tests, production knip, export and media/render/bundle gates; CI also runs skills, media types, production audit, workflow/security scans, parity, browser and fixture-assistant jobs |
 | `npm run check:media` | Media budget and manifest provenance |
 | `npm run check:placeholders[:strict]` | Report / fail on `[[PLACEHOLDER]]` tokens |
 | `npm run lhci` | Lighthouse CI on `out/` |
@@ -35,8 +35,8 @@ With the optional variables empty no pixel is injected and the Conversions API r
 ## Conventions
 
 - Server Components by default; `"use client"` only at leaves that need the browser.
-- Copy in `content/es/*.ts` (typed objects), facts in `config/*.ts`, styles in CSS Modules with
-  tokens from `src/styles/tokens.css`. No CSS-in-JS, no Tailwind.
+- Copy in `content/es/*.ts` (typed objects), facts in `config/*.ts`; Tailwind utilities use tokens
+  from `src/app/globals.css`. CSS Modules are reserved for custom geometry; see the design system.
 - TypeScript for every new file (ADR-0007). Scripts, server code, unit tests and anything they
   import run under Node's type stripping: erasable syntax only (no `enum`, runtime `namespace`
   or parameter properties), `import type` for types, relative imports with the `.ts` extension,
@@ -53,9 +53,11 @@ With the optional variables empty no pixel is injected and the Conversions API r
 
 ```bash
 npm run build
-npx playwright install chromium
+npx playwright install --with-deps chromium firefox webkit
 npm run test:e2e -- --project=chromium-390 --project=chromium-1440
+npm run test:e2e -- tests/e2e/text-zoom.spec.ts --project=chromium-390 --project=firefox-390 --project=webkit-390
 ```
 
-Projects: `chromium-1440`, `chromium-768`, `chromium-390`, `reduced-motion` (PR set);
+Projects: `chromium-1440`, `chromium-768`, `chromium-390`, `reduced-motion`, plus targeted text-zoom
+`firefox-390` and `webkit-390` (PR set);
 `nightly-chromium-<w>` / `nightly-webkit-<w>` for 1440/1280/1024/768/430/390/360; `nightly-*` visual snapshots.

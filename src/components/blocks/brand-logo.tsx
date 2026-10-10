@@ -25,7 +25,10 @@ export function BrandLogo({ variant = "full", wordmark = "always", className, pr
   return (
     <span
       data-slot="brand-logo"
-      className={cn("inline-flex items-center gap-2 text-navy no-underline", className)}
+      className={cn(
+        "inline-flex min-w-0 max-w-full flex-wrap items-center gap-2 text-navy no-underline",
+        className,
+      )}
     >
       <img
         src={small.src}
@@ -42,7 +45,7 @@ export function BrandLogo({ variant = "full", wordmark = "always", className, pr
       {variant === "full" ? (
         <span
           className={cn(
-            "font-display text-2xl leading-none font-bold tracking-[-0.01em]",
+            "min-w-0 font-display text-2xl leading-none font-bold tracking-[-0.01em]",
             wordmark === "sm-up" && "hidden sm:inline",
           )}
         >

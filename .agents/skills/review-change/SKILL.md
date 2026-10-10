@@ -1,6 +1,6 @@
 ---
 name: review-change
-description: Review a pull request of pequeverso.com for commerce safety, accessibility, performance and public-repo hygiene.
+description: Review a pull request of pequeverso.com for commerce safety, accessibility, performance and public-repo hygiene. Not for merging, deploying or rewriting the change under review.
 ---
 
 # Review a change
@@ -18,5 +18,12 @@ Check, in this order, and cite file paths:
    the widget slot or fonts, no new dependency without justification.
 5. Both targets: nothing that breaks `output: 'export'` or `standalone`; edge rules only in
    `config/edge-rules.json`; golden `.htaccess` updated.
-6. Tests: the behaviour is covered by unit or Playwright tests; CI is green; PR body states what was
+6. Assistant: stays disabled in publishable builds (`npm run check:assistant-disabled`), no tracking,
+   checkout or cart features, contract pinned to a committed API revision (`docs/assistant.md`).
+7. Tests: the behaviour is covered by unit or Playwright tests; CI is green; PR body states what was
    not verified.
+
+## Limits
+
+- Review only: report findings with file and line; do not merge, push to the author's branch or
+  deploy unless separately asked.

@@ -42,7 +42,8 @@ content/es/      neutral-Spanish copy: home.ts, gracias.ts, legal/, products/<sl
 src/products/    the product registry (schema.ts, <slug>.ts modules, index.ts, jsonld.ts)
 src/app/         routes: page.tsx (hub), [product]/ (one landing per registry product),
                  [product]/gracias/ (thank-you of core products), legal/support pages, sitemap, robots
-src/features/    landing/ (CoreLanding, OfferLanding, ThanksPage templates), commerce/ (client islands),
+src/features/    assistant/ (native shopping assistant, compiled out unless enabled), landing/ (CoreLanding,
+                 OfferLanding, ThanksPage templates), commerce/ (client islands),
                  gallery/, tracking/
 src/app/globals.css  design tokens, Tailwind v4 theme bridge, base layer, utilities (docs/design-system.md)
 src/components/  ui/ (shadcn/ui primitives on Base UI + server-safe *-variants.ts), blocks/ (server
@@ -115,6 +116,16 @@ so there is no flash, no layout shift and no redirect hop. After hydration a cli
 `useSearchParams()` (inside `<Suspense>`) to mirror the mode for event parameters and `aria-hidden`.
 Exactly one `#hotmart-sales-funnel` container exists on the page, outside both views. The Hotmart
 widget itself is identical in both modes: Hotmart decides the offer from the buyer's funnel session.
+
+## Native shopping assistant (disabled)
+
+`src/features/assistant/` holds the store's only public conversation UI with
+`pequeverso-assistant-api` (separate HTTPS origin, credentialed CORS; no endpoint or proxy in this
+repository). `src/app/layout.tsx` renders `AssistantSlot`, which imports the client code only when
+`NEXT_PUBLIC_ASSISTANT_ENABLED === "true"` at build time; the default build emits none of it
+(`scripts/check-assistant-disabled.ts`). Layers: `domain` (pure) → `application` (controller, ports)
+→ `adapters` (HTTP/SSE, validation) → `presentation` (React), wired only in `entry.ts`
+(`tests/unit/assistant/boundaries.test.ts`). Details and activation: `docs/assistant.md`, ADR-0008.
 
 ## Commerce and tracking boundaries
 

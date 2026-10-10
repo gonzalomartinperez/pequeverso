@@ -1,0 +1,9 @@
+{
+  "api_repository": "https://github.com/gonzalomartinperez/pequeverso-assistant-api",
+  "api_commit": "87fc10956dbb7506c5efff5f8d45e01857a4f1e2",
+  "api_manifest_sha256": "7317242259123431f82d0a329b2f7f30358ad7684986b7cc627ad5537571a542",
+  "contract_version": "1",
+  "schema_version": "1",
+  "status": "committed",
+  "copied_with": "node scripts/pin-assistant-contract.ts (git show <api_commit>:contracts/<path>)"
+}

@@ -91,7 +91,7 @@ function ProductTag() {
     <div className="relative z-2 mx-auto -mt-12 w-[min(20rem,100%)] cq-md:absolute cq-md:bottom-[3%] cq-md:left-[-5%] cq-md:mx-0 cq-md:mt-0 cq-md:w-[19.5rem]">
       <Float delay={4} range={8}>
         <div className="glass grid gap-3 rounded-xl p-4 shadow-float">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <div className="w-18 shrink-0 overflow-hidden rounded-md shadow-sm ring-1 ring-line [&_img]:h-auto [&_img]:w-full [&_img]:object-contain">
               <MediaImage id={product.media.cards[0] ?? product.media.hero} sizes="72px" alt="" />
             </div>
@@ -112,13 +112,13 @@ function ProductTag() {
               </p>
             </div>
           </div>
-          <div className="flex items-center justify-between gap-3 border-t border-line pt-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-3">
             <p className="font-display text-[1.6rem] leading-none font-bold text-navy tabular-nums">
               {price}
             </p>
             <ProductLink
               position="hero-card"
-              className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-pill bg-navy px-4 text-small font-extrabold text-white no-underline transition-colors hover:bg-navy-deep hover:text-gold [&_svg]:size-4"
+              className="inline-flex max-w-full min-h-11 items-center justify-center gap-1.5 rounded-pill bg-navy px-4 text-small font-extrabold text-white no-underline transition-colors hover:bg-navy-deep hover:text-gold [&_svg]:size-4"
             >
               {copy.hero.tag.cta}
             </ProductLink>

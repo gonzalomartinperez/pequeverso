@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { preload } from "react-dom";
 import { SkipLink } from "@/components/blocks/skip-link";
 import { buttonVariants } from "@/components/ui/button-variants";
+import { AssistantSlot } from "@/features/assistant/slot";
 import { ConsentBanner } from "@/features/tracking/ConsentBanner";
 import { Analytics } from "@/features/tracking/TrackingScripts";
 import { versionedPublicUrl } from "@/lib/media";
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <SkipLink />
         {children}
+        <AssistantSlot />
         <ConsentBanner classes={consentClasses} />
         <Analytics />
         <RevealObserver />
