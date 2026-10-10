@@ -20,7 +20,7 @@ comments; no dead code (knip is a gate); business facts come from `config/` and 
 | Format + lint | Biome 2.5 (`biome ci --error-on-warnings`), `next`/`react` domains | PR, main | yes |
 | Types | TypeScript 7 `tsc`: `next typegen` + root project (app, scripts, server, unit + e2e tests) + `tsconfig.node.json` (Node-run graph under `nodenext`) + `tools/media`; `next build` re-checks through the `tsc` CLI | PR, main | yes |
 | Unit | `node --test`: edge rules ↔ golden `.htaccess`, checkout params, commerce facts, media manifest, content invariants (retired names, outcome claims, placeholders, guarantee days, price format), design-system invariants (no `@apply` in modules, no retired style paths, kebab-case + `data-slot`, light-only, OKLCH contrast pairs), scene-budget plugin | PR, main | yes |
-| Dead code | `knip --production` (PR/main), full `knip` (nightly) | PR, main, nightly | yes |
+| Dead code | `knip --production` and full `knip` (PR/main and nightly); `openssl` is a declared system binary (assistant HTTPS fixture) | PR, main, nightly | yes |
 | Build | static export; generated golden files committed | PR, main | yes |
 | Media | manifest record per file, ≤ 5 MB/file, total budget, `--strict` rights gate on deploy | PR, main, deploy | yes |
 | Bundle | gzip per route vs `config/budgets.json` (html/js/css) | PR, main | yes |
