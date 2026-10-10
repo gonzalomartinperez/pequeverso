@@ -91,6 +91,24 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
 
   test("answers a question with a streamed, grounded answer", async ({ page }, info) => {
     const calls = apiCalls(page);
+    // Exercise a resize notification before the browser delivers the reader's scroll event.
+    // Retain the real observer and its callback rather than adding a production test hook.
+    await page.addInitScript(() => {
+      const NativeObserver = window.ResizeObserver;
+      window.ResizeObserver = class extends NativeObserver {
+        constructor(callback: ResizeObserverCallback) {
+          super(callback);
+          const observe = this.observe.bind(this);
+          this.observe = (target, options) => {
+            if (target.matches("ol[aria-label]") && target.closest("#pv-assistant-panel")) {
+              (window as Window & { notifyTranscriptResize?: () => void }).notifyTranscriptResize = () =>
+                callback([], this);
+            }
+            observe(target, options);
+          };
+        }
+      };
+    });
     await page.goto(start(info.project.name, "/grafismo-fonetico/"));
     await openPanel(page);
     expect(calls.filter((c) => c.url().endsWith("/api/v1/session"))).toHaveLength(1);
@@ -132,12 +150,30 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     });
     expect(await page.evaluate(() => document.cookie)).not.toContain("pv_assistant");
     await shot(page, info.project.name, "answer");
-    if (isMobile(info.project.name)) {
-      const paragraph = answer.locator("p").first();
-      await paragraph.evaluate((element) => element.scrollIntoView({ block: "center", behavior: "instant" }));
-      await expect(paragraph).toBeInViewport();
-      await shot(page, info.project.name, "final-answer-text-visible");
-    }
+    const paragraph = answer.locator("p").first();
+    await paragraph.evaluate((element) => {
+      element.scrollIntoView({ block: "center", behavior: "instant" });
+      const notify = (window as Window & { notifyTranscriptResize?: () => void }).notifyTranscriptResize;
+      if (!notify) throw new Error("Transcript resize observer was not captured");
+      notify();
+    });
+    await expect(paragraph).toBeInViewport();
+    const jump = panel(page).getByRole("button", { name: "Ir a la última respuesta" });
+    await expect(jump).toBeVisible();
+    if (isMobile(info.project.name)) await shot(page, info.project.name, "final-answer-text-visible");
+    await jump.click();
+    await expect(jump).toBeHidden();
+    await expect
+      .poll(() =>
+        paragraph.evaluate((element) => {
+          let scroller = element.parentElement;
+          while (scroller && getComputedStyle(scroller).overflowY !== "auto")
+            scroller = scroller.parentElement;
+          if (!scroller) throw new Error("Transcript scroller was not found");
+          return scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight;
+        }),
+      )
+      .toBeLessThanOrEqual(72);
   });
 
   test("stops a streaming answer", async ({ page }, info) => {
