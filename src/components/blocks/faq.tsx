@@ -45,7 +45,10 @@ export function FAQ({ items, openFirst = true, surface = "card", className }: Pr
     <div
       data-slot="faq"
       data-surface={surface}
-      className={cn(lines ? "grid border-t border-line-strong" : "grid gap-3", className)}
+      className={cn(
+        lines ? "grid grid-cols-1 border-t border-line-strong" : "grid grid-cols-1 gap-3",
+        className,
+      )}
     >
       {items.map((item, index) => (
         <details

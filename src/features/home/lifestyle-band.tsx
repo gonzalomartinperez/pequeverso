@@ -12,7 +12,7 @@ export function LifestyleBand() {
   const l = copy.lifestyle;
   return (
     <section aria-labelledby="casa-title" className="cq relative bg-cream px-3 py-(--section-pad) cq-sm:px-5">
-      <figure className="relative mx-auto grid max-w-[88rem] cq-lg:block" data-reveal="blur">
+      <figure className="relative mx-auto grid max-w-[88rem] grid-cols-1 cq-lg:block" data-reveal="blur">
         <div className="overflow-hidden rounded-2xl shadow-float cq-lg:rounded-[3rem] [&_img]:aspect-[16/10] [&_img]:h-auto [&_img]:w-full [&_img]:object-cover cq-md:[&_img]:aspect-video">
           <MediaImage id="gf.life.trazo" sizes="(min-width: 1440px) 1408px, 96vw" />
         </div>

@@ -41,10 +41,10 @@ export function OfferCard({
   className,
 }: Props) {
   return (
-    <div className={cn("cq relative mx-auto grid max-w-6xl gap-6", className)}>
+    <div className={cn("cq relative mx-auto grid max-w-6xl grid-cols-1 gap-6", className)}>
       <div
         data-slot="offer-card"
-        className="border-glow pv-glow-spin relative grid gap-8 rounded-2xl p-5 shadow-float cq-sm:p-8 @min-[64rem]:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] cq-lg:gap-10 cq-lg:p-12 @min-[68rem]:grid-cols-[minmax(0,1fr)_22rem_12rem]"
+        className="border-glow pv-glow-spin relative grid grid-cols-1 gap-8 rounded-2xl p-5 shadow-float cq-sm:p-8 @min-[64rem]:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] cq-lg:gap-10 cq-lg:p-12 @min-[68rem]:grid-cols-[minmax(0,1fr)_22rem_12rem]"
         data-reveal=""
       >
         <div className="grid content-center gap-4">

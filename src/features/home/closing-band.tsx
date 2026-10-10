@@ -24,7 +24,7 @@ export function ClosingBand() {
       defer
     >
       <div className="grid items-center gap-10 cq-lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
-        <div className="grid justify-items-center gap-5 text-center cq-lg:justify-items-start cq-lg:text-start">
+        <div className="grid min-w-0 grid-cols-1 justify-items-center gap-5 text-center cq-lg:justify-items-start cq-lg:text-start">
           <Pill tone="gold">{c.kicker}</Pill>
           <h2 id="cierre-title" className="max-w-[18ch]">
             <Accent title={c.title} tone="dark" />
@@ -32,14 +32,14 @@ export function ClosingBand() {
           <p className="lead max-w-[48ch] text-pretty">
             {c.text} {composition.pdfCount} PDF y {composition.pageCount} páginas {c.textAfter}
           </p>
-          <div className="mt-2 flex flex-wrap items-center justify-center gap-x-6 gap-y-4 cq-lg:justify-start">
+          <div className="mt-2 flex w-full min-w-0 max-w-full flex-wrap items-center justify-center gap-x-6 gap-y-4 cq-lg:justify-start">
             <ProductLink position="closing" className={LINK_WHITE}>
               {c.cta}
             </ProductLink>
-            <p className="grid text-start">
-              <span className="font-display text-[1.75rem] leading-none font-bold text-gold tabular-nums">
+            <p className="grid min-w-0 max-w-full grid-cols-1 text-start">
+              <span className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1 font-display text-[1.75rem] leading-none font-bold text-gold tabular-nums">
                 {price}
-                <span className="ml-2 font-sans text-small font-extrabold text-white">{c.priceSuffix}</span>
+                <span className="font-sans text-small font-extrabold text-white">{c.priceSuffix}</span>
               </span>
               <span className="mt-1 text-small font-semibold text-body">{localCurrencyNoteShort}</span>
             </p>

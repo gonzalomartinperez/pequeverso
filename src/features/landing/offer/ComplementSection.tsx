@@ -13,14 +13,14 @@ export function ComplementSection({ copy }: Props) {
       aria-labelledby="complemento-title"
       className="aurora-cream relative section-pad"
     >
-      <div className="page-container grid gap-10 md:gap-14">
+      <div className="page-container grid grid-cols-1 gap-10 md:gap-14">
         <header className="mx-auto grid max-w-[44rem] justify-items-center gap-4 text-center">
           <Kicker>{copy.kicker}</Kicker>
           <h2 id="complemento-title">
             <AccentText text={copy.title} />
           </h2>
         </header>
-        <div className="relative grid items-stretch gap-5 md:grid-cols-2 md:gap-8">
+        <div className="relative grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 md:gap-8">
           <article
             data-reveal=""
             className="on-light glass grid content-start gap-4 rounded-2xl p-6 shadow-float sm:p-8"

@@ -30,7 +30,7 @@ const COVER_SIZES = "(min-width: 1024px) 280px, (min-width: 640px) 45vw, 46vw";
 /**
  * "Todo lo que incluye" as a bento: a large navy tile for the main PDF, glass tiles with the
  * cover of every bonus, the whole-kit tile and the coral all-included price tile. Counts and
- * price come from the registry; the grid follows its own width (2 → 4 columns).
+ * price come from the registry; the grid follows its own width (1 → 2 → 4 columns).
  */
 export function Includes({
   titleId,
@@ -57,7 +57,7 @@ export function Includes({
           </h2>
           {lead ? <p className="lead text-pretty">{lead}</p> : null}
         </div>
-        <dl className="flex gap-3" data-reveal="">
+        <dl className="flex flex-wrap gap-3" data-reveal="">
           {[
             { value: counts.pdf, unit: units.pdf },
             { value: counts.pages, unit: units.pages },
@@ -75,10 +75,13 @@ export function Includes({
         </dl>
       </div>
 
-      <ul className="grid grid-cols-2 gap-3 cq-sm:gap-4 cq-lg:grid-cols-4 cq-lg:gap-5" role="list">
+      <ul
+        className="grid grid-cols-1 gap-3 cq-xs:grid-cols-2 cq-sm:gap-4 cq-lg:grid-cols-4 cq-lg:gap-5"
+        role="list"
+      >
         {main ? (
           <li
-            className="on-navy relative col-span-2 grid min-h-80 overflow-hidden rounded-2xl bg-linear-160 from-navy to-navy-deep p-6 shadow-float cq-sm:p-8 cq-lg:row-span-2"
+            className="on-navy relative grid min-h-80 overflow-hidden rounded-2xl bg-linear-160 from-navy to-navy-deep p-6 shadow-float cq-xs:col-span-2 cq-sm:p-8 cq-lg:row-span-2"
             data-reveal=""
           >
             <div
@@ -135,7 +138,7 @@ export function Includes({
         ))}
 
         <li
-          className="relative col-span-2 grid min-h-56 items-center gap-4 overflow-hidden rounded-2xl bg-linear-100 from-lemon to-peach p-6 shadow-float cq-sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] cq-sm:p-8 cq-lg:col-span-3"
+          className="relative grid min-h-56 items-center gap-4 overflow-hidden rounded-2xl bg-linear-100 from-lemon to-peach p-6 shadow-float cq-xs:col-span-2 cq-sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] cq-sm:p-8 cq-lg:col-span-3"
           data-reveal=""
         >
           <div className="relative z-1 grid gap-2">
@@ -153,7 +156,7 @@ export function Includes({
         </li>
 
         <li
-          className="relative col-span-2 grid content-center gap-1 overflow-hidden rounded-2xl bg-linear-160 from-coral to-coral-hover p-6 text-white shadow-cta cq-sm:p-8 cq-lg:col-span-1"
+          className="relative grid content-center gap-1 overflow-hidden rounded-2xl bg-linear-160 from-coral to-coral-hover p-6 text-white shadow-cta cq-xs:col-span-2 cq-sm:p-8 cq-lg:col-span-1"
           data-reveal=""
         >
           <div
@@ -173,7 +176,7 @@ export function Includes({
           </a>
         </li>
 
-        {photo ? <li className="col-span-2 cq-lg:col-span-4">{photo}</li> : null}
+        {photo ? <li className="cq-xs:col-span-2 cq-lg:col-span-4">{photo}</li> : null}
       </ul>
     </div>
   );

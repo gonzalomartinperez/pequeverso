@@ -21,7 +21,7 @@ export function HomeHero() {
       className="cq relative isolate overflow-clip bg-[linear-gradient(180deg,var(--pv-celeste)_0%,var(--pv-white)_52%,var(--pv-cream)_100%)] pt-[calc(var(--header-height)+1.5rem)] pb-16 cq-lg:pt-[calc(var(--header-height)+3.5rem)] cq-lg:pb-28"
     >
       <HeroGlows />
-      <div className="page-container grid items-center gap-x-10 gap-y-12 cq-lg:grid-cols-[minmax(0,1.04fr)_minmax(0,0.96fr)]">
+      <div className="page-container grid grid-cols-1 items-center gap-x-10 gap-y-12 cq-lg:grid-cols-[minmax(0,1.04fr)_minmax(0,0.96fr)]">
         <div className="relative z-1 grid content-start justify-items-start gap-5 cq-sm:gap-6">
           <div data-hero-enter="" style={enter(0)}>
             <Pill tone="white">{copy.hero.kicker}</Pill>

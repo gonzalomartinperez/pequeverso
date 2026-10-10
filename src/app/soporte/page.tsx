@@ -37,7 +37,7 @@ export default function SoportePage() {
         className="aurora-cream relative overflow-clip pt-[calc(var(--header-height)+clamp(1.5rem,0.5rem+3vw,3.5rem))] pb-(--section-pad)"
       >
         <div className="page-container relative">
-          <div className="grid items-end gap-x-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
+          <div className="grid grid-cols-1 items-end gap-x-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
             <div className="grid gap-5 pb-8 lg:pb-16">
               <Kicker>{copy.kicker}</Kicker>
               <h1 id="soporte-title" className="text-[clamp(2.3rem,1.6rem+2.8vw,4.2rem)] leading-[1.04]">
@@ -68,7 +68,7 @@ export default function SoportePage() {
             </div>
           </div>
 
-          <ul className="relative grid gap-4 md:grid-cols-3 lg:-mt-6">
+          <ul className="relative grid grid-cols-1 gap-4 md:grid-cols-3 lg:-mt-6">
             {copy.routes.map((route, index) => (
               <li
                 key={route.title}
@@ -103,8 +103,8 @@ export default function SoportePage() {
         aria-label="Cómo escribirnos"
         className="aurora-sky relative section-pad"
       >
-        <div className="page-container grid gap-5 md:grid-cols-2">
-          <div className="on-light glass grid content-start gap-4 rounded-2xl p-6 shadow-float sm:p-8">
+        <div className="page-container grid grid-cols-1 gap-5 md:grid-cols-2">
+          <div className="on-light glass grid grid-cols-1 content-start gap-4 rounded-2xl p-6 shadow-float sm:p-8">
             <h2 className="font-display text-[1.5rem] leading-tight">{copy.include.title}</h2>
             <ul className="grid gap-3">
               {copy.include.items.map((item) => (
@@ -121,7 +121,7 @@ export default function SoportePage() {
               {copy.include.hotmartLabel} <a href={hotmart.consumerArea}>{copy.include.hotmartLink}</a>
             </p>
           </div>
-          <div className="on-light grid content-start gap-4 rounded-2xl border border-coral/15 bg-[linear-gradient(160deg,var(--pv-white),var(--pv-peach))] p-6 shadow-float sm:p-8">
+          <div className="on-light grid grid-cols-1 content-start gap-4 rounded-2xl border border-coral/15 bg-[linear-gradient(160deg,var(--pv-white),var(--pv-peach))] p-6 shadow-float sm:p-8">
             <h2 className="font-display text-[1.5rem] leading-tight">{copy.limits.title}</h2>
             <ul className="grid gap-3">
               {copy.limits.items.map((item) => (
@@ -148,7 +148,7 @@ export default function SoportePage() {
         aria-labelledby="soporte-faq-title"
         className="aurora-cream relative section-pad"
       >
-        <div className="page-container grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
+        <div className="page-container grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
           <header className="grid content-start gap-4">
             <Kicker>{graciasCopy.help.kicker}</Kicker>
             <h2 id="soporte-faq-title">{graciasCopy.help.title}</h2>

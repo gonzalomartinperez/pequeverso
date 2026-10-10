@@ -144,8 +144,8 @@ export function OfferLanding({ product }: Props) {
             aria-labelledby="faq-title"
             className="aurora-sky defer-render relative section-pad"
           >
-            <div className="page-container grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
-              <div className="grid content-start gap-4 lg:sticky lg:top-[calc(var(--header-height)+var(--space-6))] lg:self-start">
+            <div className="page-container grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
+              <div className="grid grid-cols-1 content-start gap-4 lg:sticky lg:top-[calc(var(--header-height)+var(--space-6))] lg:self-start">
                 <Kicker>{copy.faq.kicker}</Kicker>
                 <h2 id="faq-title">{copy.faq.title}</h2>
                 <DecisionLink variant="outline" className="mt-2 w-fit rounded-pill">

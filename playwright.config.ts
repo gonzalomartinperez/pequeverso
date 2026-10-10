@@ -22,15 +22,26 @@ function viewport(width: number) {
 
 const desktopChrome = devices["Desktop Chrome"];
 const desktopSafari = devices["Desktop Safari"];
+const desktopFirefox = devices["Desktop Firefox"];
 const specs = {
   functional:
-    /(playground|smoke|a11y|offer-mode|widget|commerce|consent|legal|motion|navigation|tracking|lcp|responsive|assistant-disabled)\.spec\.ts/,
+    /(playground|smoke|a11y|offer-mode|widget|commerce|consent|legal|motion|navigation|tracking|lcp|responsive|text-zoom|assistant-disabled)\.spec\.ts/,
   visual: /visual\.spec\.ts/,
   prod: /smoke\.spec\.ts/,
 };
 
 const projectSets = {
   pr: [
+    {
+      name: "firefox-390",
+      use: { ...desktopFirefox, viewport: viewport(390) },
+      testMatch: /text-zoom\.spec\.ts/,
+    },
+    {
+      name: "webkit-390",
+      use: { ...desktopSafari, viewport: viewport(390) },
+      testMatch: /text-zoom\.spec\.ts/,
+    },
     {
       name: "chromium-1440",
       use: { ...desktopChrome, viewport: viewport(1440) },

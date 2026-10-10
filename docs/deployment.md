@@ -1,12 +1,23 @@
 # Deployment
 
+## Current hosting status
+
+On 2026-10-10 the owner confirmed that Hostinger is not connected to this repository yet.
+The selected future source branch is **main**. A release merge currently prepares source;
+it does not establish a deployment. Once the owner connects main and supplies the approved
+hosting configuration, set the repository variable `HOSTINGER_MAIN_AUTODEPLOY_ENABLED=true`
+to enable automatic post-deploy verification on main pushes. Until then, that push job is
+skipped; manual verification and reusable calls still execute against their requested revision.
+This variable controls verification only: it never connects hosting, deploys, or enables the
+assistant. Keep `NEXT_PUBLIC_ASSISTANT_ENABLED=false` and verify the actual publishable build.
+
 ## Two supported Hostinger modes (same repository, no SSH, no secrets)
 
-| | **Node.js Web App** (currently connected in hPanel) | **Website + Git deployment** (static export) |
+| | **Node.js Web App** (future main connection) | **Website + Git deployment** (static export alternative) |
 |---|---|---|
 | What Hostinger does | Clones the connected branch, runs `npm install` + `npm run build` on its builder (Node 24, GLIBC 2.28), forces `output: 'standalone'`, starts the app | Pulls the connected branch into `public_html` as plain files; no build |
 | What the repo does | `config/next.ts` (re-exported by `next.config.mjs`) detects the `/hbuilds/` builder and attaches redirects/headers from `config/edge-rules.json`; `npm run build` uses `--webpack` (native SWC/Turbopack bindings cannot load on GLIBC 2.28, the WASM fallback can); Hostinger's Next.js preset starts Next's standalone server directly; the Meta CAPI relay is the route handler `src/app/api/meta/events/route.standalone.ts`, compiled only in standalone builds (`pageExtensions`) | The Deploy workflow builds `out/` and publishes it to the orphan **`deploy`** branch with `.htaccess` (generated from the same edge rules) |
-| Branch to connect in hPanel | **`release`** (recommended — only commits approved in the Deploy workflow) or `main` (every merged PR deploys immediately, gated only by CI) | **`deploy`** |
+| Branch to connect in hPanel | **`main`**, selected by the owner; every merge deploys once connected. `release` remains an optional manual-publication alternative requiring a separate hosting choice | **`deploy`** |
 | Revision check | `https://pequeverso.com/build-info.json` (`Cache-Control: no-store`) | same |
 | Trade-offs | Idle process stop (cold start on first visit), no rollback UI in hPanel (re-run Deploy with the previous tag), Hostinger build time ~2–4 min | No cold starts, `.htaccess` fully ours; no Node, so no Conversions API relay (`/api/meta/events/` is a 404 the browser ignores) |
 
@@ -18,7 +29,7 @@ build:standalone` is the Node parity build you can run locally).
 | Workflow | When | What | Permissions |
 |---|---|---|---|
 | `ci.yml` | pull request, push to `main` or `develop`, manual | `workflows` (actionlint + zizmor), `build` (lint, types, unit, knip, export, budgets, audit), `hostinger` (GLIBC 2.28 container, WASM SWC, standalone build + smoke) in parallel → `e2e` + `lighthouse` (not on push) → `ci` (required check) | `contents: read` |
-| `post-deploy-verify.yml` | push to `main`, manual (`sha`), called by Deploy | waits until `build-info.json` reports the commit, smoke, headers, `PW_SET=prod`, informative Lighthouse; job summary with revision and timings | `contents: read` |
+| `post-deploy-verify.yml` | push to `main` when `HOSTINGER_MAIN_AUTODEPLOY_ENABLED=true`, manual (`sha`), reusable call | waits until `build-info.json` reports the commit, smoke, headers, `PW_SET=prod`, informative Lighthouse; job summary with revision and timings | `contents: read` |
 | `nightly.yml` | 04:17 UTC, manual (`update_snapshots`) | Chromium + WebKit × 7 widths, visual baselines, clean-clone invariant, full knip, Lighthouse ×5, links, bundle analysis | `contents: read` |
 | `deploy.yml` | manual, `production`/`staging` environment approval | gated release below, then `post-deploy-verify` | `contents: write` on the release job only |
 | `production-daily.yml` | 09:00 UTC, manual | live-site checks without building: reuses `post-deploy-verify` with the live sha, plus TLS, header matrix, relay probe, checkout link, sitemap/robots, internal links; opens/closes one `production` issue | `contents: read`; `issues: write` on the report job only |
@@ -45,8 +56,8 @@ Owner toggles that are repository settings, not workflows: CodeQL default setup 
 Code security; JavaScript/TypeScript, free for public repositories), Dependabot alerts, and the
 `ci` required check on the `main` ruleset. A merge queue is not used: one maintainer. Branch flow:
 features squash into `develop` (the default branch; nightly runs there); a release is a PR
-`develop` → `main` merged with a merge commit, which deploys (Hostinger builds `main`) and runs
-`post-deploy-verify`; hotfixes go to `main` and are merged back into `develop`. PRs into `main`
+`develop` → `main` merged with a merge commit. Once hosting is connected, that merge deploys
+and the verification variable enables `post-deploy-verify`; hotfixes go to `main` and are merged back into `develop`. PRs into `main`
 must be up to date with it.
 
 ## Deploy workflow (`.github/workflows/deploy.yml`)
@@ -62,16 +73,20 @@ Manual (`workflow_dispatch`), `production` environment with required approval:
    An HTTP 200 alone never counts as a verified deployment.
 
 > If hPanel is connected to `main`, Hostinger deploys on every merge and the launch gates above
-> are **not** applied. Connect `release` to keep the approval gate.
+> are **not** applied. With the owner's selected main flow, verify those launch requirements
+> before connecting hosting or merging a publishable release. The optional release branch
+> flow would require a separate hosting decision; it is not the current connection plan.
 
 ## One-time setup (owner, hPanel and GitHub)
 
-1. hPanel → Websites → pequeverso.com → Node.js Web App → Repository settings: branch **`release`**
-   (or keep `main`, see note), framework Next.js, build command `npm run build`, start command
+1. hPanel → Websites → pequeverso.com → Node.js Web App → Repository settings: branch **`main`**,
+   framework Next.js, build command `npm run build`, start command
    `npm start`, Node 24. Environment variables: `NEXT_PUBLIC_SITE_URL` and
    `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO` (required — the build refuses to run without them),
    `NEXT_PUBLIC_META_PIXEL_ID` (optional), `META_CAPI_ACCESS_TOKEN` (optional, server-only; generate
    it in Events Manager → Settings → Conversions API → Generate access token). See the table below.
+   After confirming the connection, enable `HOSTINGER_MAIN_AUTODEPLOY_ENABLED=true` in the
+   repository variables and run manual post-deploy verification for the expected main SHA.
 2. GitHub → Settings → Environments → `production`: reviewer = you (already set); variables
    `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_CHECKOUT_URL` (required), `NEXT_PUBLIC_META_PIXEL_ID` (optional).
    The Deploy workflow reads only these `vars`; nothing else is inlined.

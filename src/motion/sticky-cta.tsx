@@ -86,7 +86,8 @@ export function StickyCTA({ hideWhenVisible, label, note, thumb, children }: Pro
       inert={!visible}
       className={cx(
         // Floating glass pill, centred and capped on tablets; the safe area lifts it on notched phones.
-        "glass fixed inset-x-3 bottom-[calc(var(--space-3)+env(safe-area-inset-bottom))] z-60 mx-auto hidden max-w-xl items-center gap-2.5 rounded-pill py-2 pr-2 pl-2 shadow-float ring-1 ring-navy/10 transition-all duration-(--duration) ease-emphasis max-lg:flex",
+        // With enlarged text the action wraps under the name instead of running off-screen.
+        "pv-sticky glass fixed inset-x-3 bottom-[calc(var(--space-3)+env(safe-area-inset-bottom))] z-60 mx-auto hidden max-w-xl flex-wrap items-center gap-[min(0.625rem,10px)] rounded-[2rem] p-[min(0.5rem,8px)] shadow-float ring-1 ring-navy/10 transition-all duration-(--duration) ease-emphasis max-lg:flex",
         "[body:has(dialog[open],[role=dialog][data-open])_&]:invisible [body:has(dialog[open],[role=dialog][data-open])_&]:translate-y-[calc(100%+2rem)] [body:has(dialog[open],[role=dialog][data-open])_&]:opacity-0",
         // Hidden means off-screen *and* invisible, so full-page captures never show it over content.
         visible ? "visible translate-y-0 opacity-100" : "invisible translate-y-[calc(100%+2rem)] opacity-0",
@@ -94,12 +95,12 @@ export function StickyCTA({ hideWhenVisible, label, note, thumb, children }: Pro
     >
       <div
         aria-hidden="true"
-        className="grid size-11 shrink-0 place-items-center overflow-hidden rounded-md bg-navy p-2.5 shadow-sm ring-1 ring-navy/10 max-[22.5rem]:hidden [&:has(img)]:bg-white [&:has(img)]:p-0 [&_img]:size-full [&_img]:object-cover [&_picture]:size-full"
+        className="grid size-[44px] shrink-0 place-items-center overflow-hidden rounded-md bg-navy p-2.5 shadow-sm ring-1 ring-navy/10 max-[22.5rem]:hidden [&:has(img)]:bg-white [&:has(img)]:p-0 [&_img]:size-full [&_img]:object-cover [&_picture]:size-full"
       >
         {thumb ?? <BrandTile />}
       </div>
-      <div className="on-light mr-auto grid min-w-0 gap-0.5">
-        <span className="truncate text-small leading-tight font-extrabold text-heading">
+      <div className="pv-sticky-summary on-light grid min-w-0 grow basis-0 gap-0.5">
+        <span className="text-small leading-tight font-extrabold text-heading">
           {name}
           {price ? <span className="sr-only"> · </span> : null}
         </span>
@@ -112,7 +113,7 @@ export function StickyCTA({ hideWhenVisible, label, note, thumb, children }: Pro
           <span className="truncate text-tiny leading-tight text-subtle">{note}</span>
         ) : null}
       </div>
-      <div className="shrink-0 [&>*]:min-h-12 [&>*]:rounded-pill [&>*]:px-5 [&>*]:whitespace-nowrap max-[25rem]:[&>*]:px-4 max-[25rem]:[&_svg]:hidden">
+      <div className="pv-sticky-action ml-auto max-w-full shrink-0 [&>*]:min-h-12 [&>*]:rounded-pill [&>*]:px-[20px] max-[25rem]:[&>*]:px-[16px] max-[25rem]:[&_svg]:hidden">
         {children}
       </div>
     </div>
