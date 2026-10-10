@@ -244,74 +244,78 @@ export default function AssistantPanel({
         onKeyDown={onKeyDown}
         className={cx(styles.panel, "on-light bg-cream shadow-float ring-1 ring-navy/15 outline-none")}
       >
-        <header
-          className={cx(
-            styles.header,
-            "on-navy flex flex-wrap items-center gap-x-2 gap-y-1 bg-navy py-3 ps-4 pe-2",
-          )}
+        <ClearControl
+          disabled={state.session !== "open" || state.pending !== null || state.messages.length === 0}
+          clearing={state.clearing}
+          onConfirm={() => void assistant.clear()}
         >
-          <img
-            src={avatarSrc}
-            alt=""
-            width={40}
-            height={40}
-            className="size-10 shrink-0 rounded-full bg-white"
-          />
-          <div className="min-w-[min(100%,11rem)] flex-1 [overflow-wrap:anywhere]">
-            <h2 id={titleId} className="m-0 font-sans text-base leading-tight font-extrabold text-white">
-              {t.name}
-            </h2>
-            <p id={descriptionId} className="m-0 text-tiny text-on-navy">
-              {t.aiDisclosure}
-            </p>
-          </div>
-          <div className="ms-auto flex max-w-full flex-wrap items-center justify-end gap-1">
-            <label
+          {(clearTrigger) => (
+            <header
               className={cx(
-                styles.languageControl,
-                "flex min-h-11 items-center gap-1 rounded-pill border border-white/25 px-2",
+                styles.header,
+                "on-navy flex flex-wrap items-center gap-x-2 gap-y-1 bg-navy py-3 ps-4 pe-2",
               )}
             >
-              <Globe aria-hidden="true" className="size-4" />
-              <span className="sr-only">{t.languageLabel}</span>
-              <select
-                aria-label={t.languageLabel}
-                value={locale}
-                onChange={(event) => {
-                  const next = event.target.value === "en" ? "en" : "es";
-                  assistant.setLocale(next);
-                  onLocaleChange(next);
-                }}
-                className="min-h-11 min-w-11 appearance-none rounded-none bg-navy-deep px-1 text-small font-bold text-white"
-              >
-                <option value="es" className="bg-navy text-white">
-                  ES
-                </option>
-                <option value="en" className="bg-navy text-white">
-                  EN
-                </option>
-              </select>
-              <ChevronDown aria-hidden="true" className="size-3 shrink-0" />
-            </label>
-            <ClearControl
-              disabled={state.session !== "open" || state.pending !== null || state.messages.length === 0}
-              clearing={state.clearing}
-              onConfirm={() => void assistant.clear()}
-            />
-            {!phone && (
-              <IconButton
-                label={expanded ? t.restore : t.expand}
-                aria-pressed={expanded}
-                onClick={() => setExpanded((value) => !value)}
-              >
-                {expanded ? <Minimize2 aria-hidden="true" /> : <Maximize2 aria-hidden="true" />}
-              </IconButton>
-            )}
-            <IconButton label={t.minimize} onClick={onMinimize}>
-              <Minus aria-hidden="true" />
-            </IconButton>
-          </div>
-        </header>
+              <img
+                src={avatarSrc}
+                alt=""
+                width={40}
+                height={40}
+                className="size-10 shrink-0 rounded-full bg-white"
+              />
+              <div className="min-w-[min(100%,11rem)] flex-1 [overflow-wrap:anywhere]">
+                <h2 id={titleId} className="m-0 font-sans text-base leading-tight font-extrabold text-white">
+                  {t.name}
+                </h2>
+                <p id={descriptionId} className="m-0 text-tiny text-on-navy">
+                  {t.aiDisclosure}
+                </p>
+              </div>
+              <div className="ms-auto flex max-w-full flex-wrap items-center justify-end gap-1">
+                <label
+                  className={cx(
+                    styles.languageControl,
+                    "flex min-h-11 items-center gap-1 rounded-pill ring-1 ring-inset ring-white/25 px-2",
+                  )}
+                >
+                  <Globe aria-hidden="true" className="size-4" />
+                  <span className="sr-only">{t.languageLabel}</span>
+                  <select
+                    aria-label={t.languageLabel}
+                    value={locale}
+                    onChange={(event) => {
+                      const next = event.target.value === "en" ? "en" : "es";
+                      assistant.setLocale(next);
+                      onLocaleChange(next);
+                    }}
+                    className="min-h-11 min-w-11 appearance-none rounded-none bg-transparent px-1 text-small font-bold text-white"
+                  >
+                    <option value="es" className="bg-navy text-white">
+                      ES
+                    </option>
+                    <option value="en" className="bg-navy text-white">
+                      EN
+                    </option>
+                  </select>
+                  <ChevronDown aria-hidden="true" className="size-3 shrink-0" />
+                </label>
+                {clearTrigger}
+                {!phone && (
+                  <IconButton
+                    label={expanded ? t.restore : t.expand}
+                    aria-pressed={expanded}
+                    onClick={() => setExpanded((value) => !value)}
+                  >
+                    {expanded ? <Minimize2 aria-hidden="true" /> : <Maximize2 aria-hidden="true" />}
+                  </IconButton>
+                )}
+                <IconButton label={t.minimize} onClick={onMinimize}>
+                  <Minus aria-hidden="true" />
+                </IconButton>
+              </div>
+            </header>
+          )}
+        </ClearControl>
         <ConversationView assistant={assistant} state={state} phase={current} field={field} />
       </section>
     </PresentationProvider>

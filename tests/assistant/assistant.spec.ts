@@ -543,8 +543,98 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await panel(page).getByRole("button", { name: "Nueva conversación" }).click();
     await panel(page).getByRole("button", { name: "Borrar" }).click();
     await expect(panel(page).getByRole("region", { name: "Preguntas para empezar" })).toBeVisible();
+    const greeting = panel(page).getByRole("list", { name: "Conversación con el asistente" });
+    const greetingWidth = await greeting.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        start: Number.parseFloat(style.paddingInlineStart),
+        end: Number.parseFloat(style.paddingInlineEnd),
+      };
+    });
+    expect(greetingWidth.start).toBe(greetingWidth.end);
+    await greeting.locator("..").evaluate((element) => {
+      element.scrollTop = element.scrollHeight;
+      element.dispatchEvent(new Event("scroll"));
+      element.scrollTop = 0;
+      element.dispatchEvent(new Event("scroll"));
+    });
+    await expect(panel(page).getByRole("button", { name: "Ir a la última respuesta" })).toHaveCount(0);
     expect(calls.some((c) => c.method() === "DELETE" && c.url().endsWith("/api/v1/session"))).toBe(true);
   });
+
+  for (const width of [320, 390]) {
+    for (const locale of ["es", "en"]) {
+      test(`header controls align and ${locale} clear confirmation fits ${width}px at enlarged text`, async ({
+        page,
+      }, info) => {
+        await page.goto("/soporte/");
+        await openPanel(page);
+        for (const locale of ["es", "en", "es"]) {
+          const language = panel(page).getByRole("combobox");
+          await language.selectOption(locale);
+          const languageBox = await language.locator("..").boundingBox();
+          const minimizeBox = await panel(page)
+            .getByRole("button", {
+              name: locale === "es" ? "Minimizar asistente" : "Minimize assistant",
+            })
+            .boundingBox();
+          expect(languageBox).not.toBeNull();
+          expect(minimizeBox).not.toBeNull();
+          expect(Math.abs((languageBox?.height ?? 0) - (minimizeBox?.height ?? 0))).toBeLessThanOrEqual(1);
+        }
+        await ask(page, "¿Para qué edades es?");
+        await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+        await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+        await page.setViewportSize({ width, height: 844 });
+        await panel(page).getByRole("combobox").selectOption(locale);
+        const trigger = panel(page).getByRole("button", {
+          name: locale === "es" ? "Nueva conversación" : "New conversation",
+        });
+        await trigger.click();
+        const confirmation = panel(page).getByRole("dialog", {
+          name: locale === "es" ? "¿Empezar de nuevo?" : "Start again?",
+        });
+        await expect(confirmation).toBeVisible();
+        const geometry = await confirmation.evaluate((element) => {
+          const box = element.getBoundingClientRect();
+          const parent = element.closest("#pv-assistant-panel");
+          if (!parent) throw new Error("Confirmation is outside the assistant");
+          const surface = parent.getBoundingClientRect();
+          return {
+            left: box.left,
+            right: box.right,
+            surfaceLeft: surface.left,
+            surfaceRight: surface.right,
+            horizontalOverflow: element.scrollWidth - element.clientWidth,
+          };
+        });
+        expect(geometry.left).toBeGreaterThanOrEqual(geometry.surfaceLeft - 1);
+        expect(geometry.right).toBeLessThanOrEqual(geometry.surfaceRight + 1);
+        expect(geometry.horizontalOverflow).toBeLessThanOrEqual(1);
+        for (const name of locale === "es" ? ["Cancelar", "Borrar"] : ["Cancel", "Delete"]) {
+          const button = confirmation.getByRole("button", { name, exact: true });
+          await button.focus();
+          await expect(button).toBeInViewport();
+          expect(
+            await button.evaluate((element) => {
+              const box = element.getBoundingClientRect();
+              return element.contains(
+                document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2),
+              );
+            }),
+          ).toBe(true);
+        }
+        await shot(page, info.project.name, `clear-confirmation-${locale}-${width}-200`);
+        await confirmation
+          .getByRole("button", { name: locale === "es" ? "Cancelar" : "Cancel", exact: true })
+          .press("Escape");
+        await expect(confirmation).toBeHidden();
+        await expect(panel(page)).toBeVisible();
+        await expect(trigger).toBeFocused();
+        await expect(panel(page).getByText("¿Para qué edades es?")).toBeVisible();
+      });
+    }
+  }
 
   test("enabled mobile controls reflow at 200 percent and remain reachable in a reduced viewport", async ({
     page,

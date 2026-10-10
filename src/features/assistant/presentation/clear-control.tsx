@@ -1,6 +1,6 @@
 "use client";
 import { MessageSquarePlus } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { usePresentation } from "./context";
 import { IconButton } from "./parts";
@@ -13,10 +13,13 @@ export function ClearControl({
   disabled,
   clearing,
   onConfirm,
+  children,
 }: {
   disabled: boolean;
   clearing: boolean;
   onConfirm: () => void;
+  /** Keep the confirmation in panel flow, outside the scrollable header. */
+  children: (trigger: ReactNode) => ReactNode;
 }) {
   const { t } = usePresentation();
   const [open, setOpen] = useState(false);
@@ -46,17 +49,19 @@ export function ClearControl({
   }
 
   return (
-    <div className="relative">
-      <IconButton
-        ref={trigger}
-        label={clearing ? t.clearing : t.clear}
-        disabled={disabled || clearing}
-        aria-expanded={open}
-        aria-haspopup="dialog"
-        onClick={() => setOpen((value) => !value)}
-      >
-        <MessageSquarePlus aria-hidden="true" />
-      </IconButton>
+    <>
+      {children(
+        <IconButton
+          ref={trigger}
+          label={clearing ? t.clearing : t.clear}
+          disabled={disabled || clearing}
+          aria-expanded={open}
+          aria-haspopup="dialog"
+          onClick={() => setOpen((value) => !value)}
+        >
+          <MessageSquarePlus aria-hidden="true" />
+        </IconButton>,
+      )}
       {open && (
         <div
           ref={box}
@@ -70,7 +75,7 @@ export function ClearControl({
               close();
             }
           }}
-          className="on-light absolute end-0 top-full z-10 mt-2 flex w-64 flex-col gap-3 rounded-md border border-line bg-card p-4 text-left shadow-md"
+          className="on-light flex max-h-[35%] min-w-0 shrink-0 flex-col gap-3 overflow-y-auto border-b border-line bg-card p-4 text-left"
         >
           <div className="flex flex-col gap-1">
             <p id={titleId} className="font-bold text-heading">
@@ -78,7 +83,7 @@ export function ClearControl({
             </p>
             <p className="text-small text-body">{t.clearConfirmBody}</p>
           </div>
-          <div className="flex justify-end gap-2">
+          <div className="flex flex-wrap justify-end gap-2">
             <button
               ref={cancel}
               type="button"
@@ -100,6 +105,6 @@ export function ClearControl({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
