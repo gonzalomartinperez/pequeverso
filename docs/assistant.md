@@ -55,7 +55,7 @@ The store is a static site on its own origin; the API is a separate HTTPS origin
 
 ## Behaviour
 
-- Star-only44px launcher with accessible name and supplementary tooltip, bottom-right (above the mobile sticky purchase bar). Compact desktop panel: a named,
+- Star-only 44 px launcher with accessible name and supplementary tooltip, bottom-right (above the mobile sticky purchase bar). Compact desktop panel: a named,
   non-modal **region**; the page stays usable. Expanded (in-page) and phone surfaces (portrait and
   landscape): **modal dialog**, background `inert`, page scroll locked, Tab contained, store motion
   held. Escape (after any open confirmation consumes it) or "Minimizar" hides the panel and returns
@@ -114,6 +114,33 @@ thank-you routes never enter context. Compact/expanded reflect actual UI modes; 
 assistant page or theme hint is invented. These are untrusted visitor hints, never instructions
 or catalog evidence. Each request body (including locale/context) is retained for interruption
 replay under the same idempotency key, even after route/language changes.
+
+## Control layout and local preview
+
+Header controls share the design system's 44 px target. The ES/EN selector uses an inset ring,
+so its outline does not add height or misalign it with the adjacent icon buttons; its select
+surface inherits the header control surface. There is no storefront dark/light theme and no
+unsupported theme field is sent to the API.
+
+The new-conversation confirmation is an inline, non-modal panel row outside the scrollable
+header. Its warning can scroll vertically with enlarged text, both actions wrap within the panel,
+and Cancel/Escape from any panel control preserve history and return focus to the named trigger.
+While deciding, the composer stays mounted but hidden (its draft is preserved) and the transcript
+is inert, so a short viewport cannot leave unreachable interactive content in the Tab sequence.
+Confirming first places focus on the stable panel; completion restores the composer only if the
+visitor has not moved focus elsewhere. No deletion occurs
+before an explicit confirmation. The empty welcome uses the full reading width; the 68 px gutter
+and jump-to-latest control are reserved for actual messages.
+
+The seven idle route checks are independent tests with unchanged navigation expectations and
+45-second per-test limits; failures identify a route rather than an accumulated navigation budget.
+
+`tests/assistant/preview.spec.ts` generates six PNG previews under
+`test-results-assistant/preview/` during the fixture suite: desktop launcher, welcome/chips,
+answer/sources and waiting; phone welcome and answer/input. Desktop content previews use the
+expanded presentation so all starter questions and source details can be inspected. The waiting
+preview holds the actual HTTP request before forwarding it to the fixture API; it does not claim
+a model stage or percentage. This enabled export is local verification only and must never ship.
 
 ## Verification
 

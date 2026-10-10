@@ -4,7 +4,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 /**
  * End-to-end tests of the native assistant ENABLED against a real pequeverso-assistant-api in
- * fixture mode (no model calls, no request interception except one targeted outage test). Both
+ * fixture mode (no model calls; targeted tests hold/forward requests or interrupt transport). Both
  * sides run over HTTPS loopback with a throwaway self-signed certificate (accepted only here), so
  * the API issues its production-shaped Secure, HttpOnly `__Host-` cookie and the browser exercises
  * credentialed CORS, CSRF and SSE across two origins exactly as in production. The storefront is
