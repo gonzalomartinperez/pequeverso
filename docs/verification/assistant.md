@@ -1,15 +1,15 @@
 # Native assistant verification (2026-10-10)
 
-Fixture-only verification on WSL2, Node 24.21.0. Store runtime source `b5acff88c5d3752d876f1dbb5d649807ba2a6f7d`; API producer `b27d35c9ce2f02e5519b4476001f01c7172d6eb2`, v1 revision 1.3, manifest `fa6df707bb05061a77a60d68fbf0c55a7593e815f1110531a9dbbfaac8f3f71e`.
+Fixture-only verification on WSL2, Node 24.21.0. Store runtime source `b5acff88c5d3752d876f1dbb5d649807ba2a6f7d`, unchanged by test readiness source `00a121d164f734998c72afb657284f1b4d2f3640`; API producer `b27d35c9ce2f02e5519b4476001f01c7172d6eb2`, v1 revision 1.3, manifest `fa6df707bb05061a77a60d68fbf0c55a7593e815f1110531a9dbbfaac8f3f71e`.
 No paid calls, no real key reads, no deployment. Enabled verification output is explicitly UNPUBLISHABLE and rejected by the publication guard.
 
 ## Results
 
 | Check | Result |
 |---|---|
-| `npm run check` | Pass, 36.89 s; 156 unit tests, lint, types, knip, disabled export and budgets |
+| `npm run check` | Pass, 45.72 s; 156 unit tests, lint, types, knip, disabled export and budgets |
 | `npm run check:assistant-disabled` | Pass, 127 files; build-info assistant=disabled; enabled fixture positive control rejected with exit 1 |
-| `ASSISTANT_API_DIR=<clean API checkout at the producer SHA> npm run test:e2e:assistant` | 87 passed, 33 conditional skips, 0 failed; 5.8 min test runtime, 373.29 s including isolated build |
+| `ASSISTANT_API_DIR=<clean API checkout at the producer SHA> npm run test:e2e:assistant` | 87 passed, 33 conditional skips, 0 failed or retries; 331.70 s test runtime, 355.82 s including isolated build |
 
 Six projects: Chromium desktop, Chromium Pixel 7, Chromium reduced motion, Firefox desktop, WebKit desktop, WebKit iPhone 13. These are browser emulations, not physical-device certification.
 The suite uses HTTPS loopback and fixture streams. It verifies streaming completion and subsequent submission, interruption/cancel/recovery, restore/reset, IME and focus, route/draft/history continuity, localized ES/EN states, request snapshots and revision-gated nested context. Enabled panel text at 200% is checked at 320 and 390 px in all three desktop engines, including horizontal bounds, focus reachability and a reduced 360 px viewport. Mobile response text is explicitly scrolled into view and asserted visible.
@@ -35,6 +35,16 @@ The inherited axe gate deliberately targets Chromium and Firefox. No harness inc
 The PR CI runs at `c869beb` and `5f9ead9` were aggregate green but each had one WebKit-mobile retry (86 passed, 1 flaky, 33 skips). These are historical diagnostics, not clean native acceptance. Investigation established a real ordering risk: a late ResizeObserver callback could pull a reader back to the bottom before the browser delivered an upward scroll event.
 
 The deterministic regression establishes an actual upward scrollTop before invoking the captured native observer callback in the same task. Against the old `c869beb` artifact it fails: scrollTop moves 762→0 and the observer incorrectly restores 762. The corrected runtime synchronously records actual programmatic positions and checks reader movement before following a resize. The same regression retains the reader position, a visible paragraph and jump control, then proves that jump-to-latest restores following. The second historical CI retry's hypothesized asynchronous scrollIntoView cause was not reproduced or established; instrumented receipts and traces remain preserved. The final local collection above has zero retries, failures or new skips. New exact-head CI and nightly remain required; historical runs are not relabelled as clean.
+
+## Automatic-follow precondition
+
+Release CI [38038413638](https://github.com/gonzalomartinperez/pequeverso/actions/runs/38038413638) on `016f0a3` was aggregate green but retained one WebKit-mobile retry: 86 passed, 1 flaky, 33 skips. The failure was `Reader did not move upward: 0 → 0` before invoking the captured observer. Its screenshot, raw report and trace are preserved; it is not clean native acceptance. The failed screenshot shows the transcript at its initial top position.
+
+Three local observational fixture runs passed without retries. Their journals recorded the completed-state observer starting at scrollTop 0 and automatically reaching 759 (scrollHeight 1169, clientHeight 410); the answer screenshot then retained 759. This establishes that protocol completion and applied automatic following are distinct conditions. The instrumentation reads layout and can affect scheduling, and did not reproduce the exact CI failure; its cause remains unproven.
+
+Test source `00a121d164f734998c72afb657284f1b4d2f3640` explicitly waits for real overflow, positive automatic scrollTop, distance to bottom at most 72 px and identical geometry in two consecutive polls. It uses the existing default expectation timeout and intervals, never sets the initial bottom position, and fails if automatic following never arrives. The same-task upward scroll/observer regression, visible paragraph, jump control, keyboard focus and following rearm assertions remain unchanged. All six focused projects passed without retries (38.7 s); `npm run check` passed with 156 unit tests and the disabled export guard (45.72 s). The full six-project fixture suite then passed 87 cases with the same 33 conditional skips, zero failures and zero retries (331.70 s test runtime; 355.82 s including the isolated build). Raw reports and current-source screenshots are preserved outside the repository; the unchanged runtime screenshots below remain identified by their original verification source.
+
+Only the assistant test and this verification document change. Runtime, contracts, lockfiles, public tests, workflows, retries and timeouts are unchanged. Public nightly uses `tests/e2e`, but source equality does not imply literal export equality across commits: build IDs, manifest paths and metadata include the source SHA. A new exact-head CI and candidate nightly are required; earlier source runs remain identified as historical evidence. No deployment, paid calls or assistant activation are authorized.
 
 ## Enlarged reading and supplementary tooltips
 
