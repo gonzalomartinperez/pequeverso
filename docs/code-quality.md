@@ -53,6 +53,22 @@ when extracting a malicious archive; CI uses the runner's installed Chrome and n
 browsers through it. Revisit when `@lhci/cli` or `@puppeteer/browsers` ship a fix; remove the
 overrides when `@lhci/cli` updates those dependencies itself. The alerts stay open (not dismissed).
 
+### New dependency advisories reviewed on 2026-10-10
+
+The lockfile updates `proxy-addr` to 2.0.8 (GHSA-jqcg-44mw-7w3h) and `smol-toml` to 1.9.1
+(GHSA-r4xh-jqrq-34v2). Both are development-only. The former is a compatible Express parser
+patch used by LHCI; the latter's minor changes (null-prototype objects, stricter TOML and a
+deprecated default export) were reviewed explicitly: knip uses the named `parse` export.
+Full knip and LHCI healthcheck verify the installed versions; the production audit gate remains.
+
+`sprintf-js` through LHCI → `js-yaml` 3 → `argparse` remains affected by
+GHSA-hp3w-g68c-fv3c, with no patched npm release available at review time. It handles internal
+CLI formatting, is absent from the published site, and is not a runtime visitor-input parser.
+It remains an open dependency risk pending upstream remediation and owner review, **not** an
+extension of the owner's previously accepted `extract-zip` risk. Its alert is not dismissed.
+Replacing `js-yaml` with version 4 would break LHCI's `safeLoad` calls and is not a safe override.
+Do not feed untrusted configuration or format strings into these CI tools.
+
 Lab numbers (Lighthouse) are not field numbers; real-user Core Web Vitals come from Search
 Console / CrUX after launch.
 
