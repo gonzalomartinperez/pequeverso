@@ -126,7 +126,11 @@ artifacts omitted that hidden file and scanned 126 text files. The difference wa
 upload default, not a Meta Pixel configuration difference. Those historical downloads are not
 complete static deployment packages; the actual builds still generated and guarded `.htaccess`.
 
-CI and nightly now include hidden files only within the existing `out/` upload path. The verified
+CI and nightly now include hidden files only within the existing `out/` export upload path;
+Lighthouse uploads also retain hidden JSON reports under their explicit `.lighthouseci` path.
+Every CI/nightly export consumer compares the downloaded `.htaccess` byte-for-byte with
+`docs/generated/htaccess.txt` before running its checks, so missing or altered edge rules fail
+at the artifact boundary. The verified
 output has `.htaccess` as its sole hidden file and contains no `.env` or `.git` path. Fresh artifact
 inspection must confirm `.htaccess`, its hash against the generated build output, absence of
 secret/configuration paths, the actual guard count and `build-info.json` with `assistant: disabled`
