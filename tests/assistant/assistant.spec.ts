@@ -151,6 +151,31 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     expect(await page.evaluate(() => document.cookie)).not.toContain("pv_assistant");
     await shot(page, info.project.name, "answer");
     const paragraph = answer.locator("p").first();
+    let previousGeometry: { top: number; height: number; client: number } | undefined;
+    // Completion is a protocol state; the observer may not have applied automatic following yet.
+    // Wait for actual overflow and a stable bottom position without moving the scroller ourselves.
+    await expect
+      .poll(async () => {
+        const geometry = await paragraph.evaluate((element) => {
+          let scroller = element.parentElement;
+          while (scroller && getComputedStyle(scroller).overflowY !== "auto")
+            scroller = scroller.parentElement;
+          if (!scroller) throw new Error("Transcript scroller was not found");
+          return { top: scroller.scrollTop, height: scroller.scrollHeight, client: scroller.clientHeight };
+        });
+        const stable =
+          previousGeometry?.top === geometry.top &&
+          previousGeometry.height === geometry.height &&
+          previousGeometry.client === geometry.client;
+        previousGeometry = geometry;
+        return (
+          stable &&
+          geometry.height > geometry.client &&
+          geometry.top > 0 &&
+          geometry.height - geometry.top - geometry.client <= 72
+        );
+      })
+      .toBe(true);
     const reader = await paragraph.evaluate((element) => {
       let scroller = element.parentElement;
       while (scroller && getComputedStyle(scroller).overflowY !== "auto") scroller = scroller.parentElement;
