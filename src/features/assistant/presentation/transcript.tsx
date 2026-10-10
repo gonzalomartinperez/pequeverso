@@ -2,6 +2,7 @@
 import { ArrowDown } from "lucide-react";
 import { type ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { buttonVariants } from "@/components/ui/button-variants";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cx } from "@/lib/cx";
 import styles from "./assistant.module.css";
 import { usePresentation } from "./context";
@@ -92,29 +93,39 @@ export function Transcript({
           ref={content}
           aria-label={t.transcriptLabel}
           aria-busy={busy || undefined}
-          className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-5 cq-md:px-6"
+          className={cx("mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-5 cq-md:px-6", styles.reader)}
         >
           {children}
         </ol>
       </div>
       {showJump && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center">
-          <button
-            type="button"
-            className={cx(
-              buttonVariants({ variant: "secondary", size: "sm" }),
-              "pointer-events-auto",
-              styles.enter,
-            )}
-            onClick={() => {
-              stick.current = true;
-              setShowJump(false);
-              toBottom(true);
-            }}
-          >
-            <ArrowDown aria-hidden="true" className="size-4" />
-            {t.jumpToLatest}
-          </button>
+        <div className="pointer-events-none absolute right-[8px] bottom-[8px]">
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <button
+                  type="button"
+                  aria-label={t.jumpToLatest}
+                  className={cx(
+                    buttonVariants({ variant: "secondary", size: "icon" }),
+                    "pointer-events-auto",
+                    styles.jump,
+                    styles.enter,
+                  )}
+                  onClick={() => {
+                    stick.current = true;
+                    setShowJump(false);
+                    toBottom(true);
+                  }}
+                />
+              }
+            >
+              <ArrowDown aria-hidden="true" className="size-[20px]" />
+            </TooltipTrigger>
+            <TooltipContent role="tooltip" side="top">
+              {t.jumpToLatest}
+            </TooltipContent>
+          </Tooltip>
         </div>
       )}
     </div>
