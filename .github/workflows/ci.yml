@@ -123,6 +123,7 @@ jobs:
         with:
           name: site-export
           path: out
+          include-hidden-files: true
           retention-days: 3
           if-no-files-found: error
 
@@ -208,6 +209,8 @@ jobs:
         with:
           name: site-export
           path: out
+      - name: Verify exported edge rules
+        run: cmp out/.htaccess docs/generated/htaccess.txt
       - name: Playwright (PW_SET=pr, shard ${{ matrix.shard }}/2)
         run: npm run test:e2e -- --shard="${SHARD}/2"
         env:
@@ -312,6 +315,8 @@ jobs:
         with:
           name: site-export
           path: out
+      - name: Verify exported edge rules
+        run: cmp out/.htaccess docs/generated/htaccess.txt
       - name: Lighthouse (2 runs, mobile emulation)
         run: npx lhci autorun
       - name: Summary
@@ -323,6 +328,7 @@ jobs:
         with:
           name: lighthouse
           path: .lighthouseci
+          include-hidden-files: true
           retention-days: 30
           if-no-files-found: warn
 

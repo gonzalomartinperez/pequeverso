@@ -26,7 +26,7 @@ visitor ──► pequeverso.com (static HTML/CSS, small client islands)
 | Redirects/headers | `out/.htaccess` generated from `config/edge-rules.json` | `redirects()`/`headers()` from the same file |
 | Meta CAPI relay | `scripts/serve-static.ts` mounts `server/meta-capi.ts` (Node.js Web App only; the LiteSpeed mode has no relay) | `src/app/api/meta/events/route.standalone.ts`, compiled only when `output === "standalone"` (`pageExtensions` adds `standalone.ts`) |
 | Images | Build-time WebP derivatives (`tools/media`), `images.unoptimized` | same |
-| Status | Supported (Deploy workflow publishes `deploy`) | **Connected in hPanel by the owner** (Deploy workflow promotes `release`) |
+| Status | Supported (Deploy workflow publishes `deploy`) | **No Git repository currently connected in hPanel** (owner confirmed 2026-10-10); the owner selected `main` for the future connection |
 
 Rules that keep both targets valid: no `proxy.ts`/middleware, no `cookies()`/`headers()`/request-time
 APIs, no route handlers beyond `sitemap.ts`/`robots.ts`/metadata images (plus `*.standalone.ts`

@@ -49,6 +49,7 @@ jobs:
         with:
           name: site-export
           path: out
+          include-hidden-files: true
           retention-days: 3
           if-no-files-found: error
 
@@ -79,16 +80,20 @@ jobs:
         with:
           name: site-export
           path: out
+      - name: Verify exported edge rules
+        run: cmp out/.htaccess docs/generated/htaccess.txt
       - name: Playwright (PW_SET=nightly)
         env:
           PW_SET: nightly
         run: npx playwright test --project="$BROWSER-*"
       - name: Upload Playwright report
-        if: failure()
+        if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: playwright-report-${{ matrix.browser }}
-          path: playwright-report
+          path: |
+            playwright-report
+            test-results
           retention-days: 14
 
   visual:
@@ -112,6 +117,8 @@ jobs:
         with:
           name: site-export
           path: out
+      - name: Verify exported edge rules
+        run: cmp out/.htaccess docs/generated/htaccess.txt
       - name: Compare with baselines
         if: ${{ !inputs.update_snapshots }}
         run: npm run test:e2e:visual
@@ -150,6 +157,8 @@ jobs:
         with:
           name: site-export
           path: out
+      - name: Verify exported edge rules
+        run: cmp out/.htaccess docs/generated/htaccess.txt
       - name: Consent and commerce specs without any integration id
         run: npx playwright test --project=chromium-1440 tests/e2e/consent.spec.ts tests/e2e/commerce.spec.ts
 
@@ -174,6 +183,8 @@ jobs:
         with:
           name: site-export
           path: out
+      - name: Verify exported edge rules
+        run: cmp out/.htaccess docs/generated/htaccess.txt
       - name: Lighthouse (5 runs, mobile emulation)
         run: npx lhci autorun --collect.numberOfRuns=5
       - name: Summary
@@ -188,6 +199,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: quality-reports
+          include-hidden-files: true
           path: |
             .lighthouseci
             .next/analyze

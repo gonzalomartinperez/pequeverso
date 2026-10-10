@@ -1,14 +1,13 @@
 /**
  * Interface copy of the native shopping assistant (neutral Latin American Spanish, "tú", like the
  * rest of the store). Answers may arrive in English when the visitor writes in English; the
- * interface itself stays in Spanish and each answer carries its own `lang`. The assistant is
+ * assistant interface can switch between Spanish and English without changing the store; each answer carries its own `lang`. The assistant is
  * advisory: no copy here promises prices, stock, discounts or learning outcomes.
  */
 import type { ErrorCode, Notice, UnavailableReason } from "../../src/features/assistant/domain/models.ts";
 
 /** The only strings the eager launcher needs (kept apart so the initial bundle stays small). */
 export const launcherCopy = {
-  launcher: "Pregúntanos",
   launcherLabel: "Abrir el asistente de Pequeverso",
   launcherUnread: "Hay una respuesta nueva",
 };
@@ -43,7 +42,7 @@ export const assistantCopy = {
   charactersLeft: (count: number) => (count === 1 ? "Queda 1 carácter" : `Quedan ${count} caracteres`),
   tooLong: (max: number) => `Tu pregunta supera el máximo de ${max} caracteres.`,
 
-  thinking: "Buscando en la información de la tienda…",
+  thinking: "Pensando…",
   answerReady: "Respuesta lista.",
   answerStopped: "Respuesta detenida.",
   answerInterrupted: "La respuesta se interrumpió.",
@@ -97,6 +96,7 @@ export const assistantCopy = {
   expand: "Ampliar panel",
   restore: "Reducir panel",
   minimize: "Minimizar asistente",
+  languageLabel: "Idioma del asistente",
 
   connecting: "Conectando con el asistente…",
   reconnect: "Reintentar conexión",
@@ -139,8 +139,8 @@ export const assistantCopy = {
 export type AssistantCopy = typeof assistantCopy;
 
 /** "5 de octubre" (date of a confirmed price), in the store's locale. */
-export function formatDay(iso: string): string {
-  return new Intl.DateTimeFormat("es", { day: "numeric", month: "long", timeZone: "UTC" }).format(
+export function formatDay(iso: string, locale: "es" | "en" = "es"): string {
+  return new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", timeZone: "UTC" }).format(
     new Date(iso),
   );
 }

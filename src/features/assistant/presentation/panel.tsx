@@ -1,6 +1,7 @@
 "use client";
-import { assistantCopy } from "@content/es/assistant";
-import { Maximize2, Minimize2, Minus } from "lucide-react";
+import { assistantCopy as enCopy } from "@content/en/assistant";
+import { assistantCopy as esCopy } from "@content/es/assistant";
+import { ChevronDown, Globe, Maximize2, Minimize2, Minus } from "lucide-react";
 import {
   type KeyboardEvent,
   type RefObject,
@@ -15,7 +16,8 @@ import { cx } from "@/lib/cx";
 import { holdPageMotion } from "@/motion/motion-hold";
 import { phase } from "../domain/conversation";
 import type { LinkPolicy } from "../domain/links";
-import type { Page } from "../domain/models";
+import type { Language, Page } from "../domain/models";
+import type { PublicPath } from "../domain/visitor-context";
 import { createStoreAssistant } from "../entry";
 import styles from "./assistant.module.css";
 import { ClearControl } from "./clear-control";
@@ -26,6 +28,10 @@ import { useConversation } from "./use-conversation";
 
 export type PanelProps = {
   open: boolean;
+  locale: Language;
+  openedPath: PublicPath | null;
+  currentPath: PublicPath | null;
+  onLocaleChange: (locale: Language) => void;
   /** Hide the panel (minimize). The conversation and any authorized answer continue. */
   onMinimize: () => void;
   page: Page | null;
@@ -113,6 +119,10 @@ function useVisualViewport(active: boolean, surface: RefObject<HTMLElement | nul
  */
 export default function AssistantPanel({
   open,
+  locale,
+  openedPath,
+  currentPath,
+  onLocaleChange,
   onMinimize,
   page,
   apiOrigin,
@@ -123,7 +133,7 @@ export default function AssistantPanel({
   host,
   onUnread,
 }: PanelProps) {
-  const [assistant] = useState(() => createStoreAssistant(apiOrigin, policy));
+  const [assistant] = useState(() => createStoreAssistant(apiOrigin, policy, locale));
   const state = useConversation(assistant);
   const current = phase(state);
   const phone = useMedia(PHONE);
@@ -133,14 +143,23 @@ export default function AssistantPanel({
   const surface = useRef<HTMLElement>(null);
   const titleId = useId();
   const descriptionId = useId();
-  const t = assistantCopy;
+  const t = locale === "en" ? enCopy : esCopy;
+
+  useEffect(() => {
+    assistant.setLocale(locale);
+  }, [assistant, locale]);
 
   useModalBackground(modal, host);
   useVisualViewport(open && phone, surface);
 
   useEffect(() => {
     assistant.setPage(page);
-  }, [assistant, page]);
+    assistant.setContext({
+      opened_path: openedPath,
+      current_path: currentPath,
+      presentation: expanded || phone ? "expanded" : "compact",
+    });
+  }, [assistant, page, openedPath, currentPath, expanded, phone]);
 
   // Opening moves focus into the panel: the composer once it exists (never on touch devices, where
   // it would pop the keyboard over the answer), otherwise the surface itself.
@@ -171,6 +190,7 @@ export default function AssistantPanel({
   const presentation = useMemo<Presentation>(
     () => ({
       t,
+      locale,
       policy,
       supportPath,
       privacyPath,
@@ -179,7 +199,7 @@ export default function AssistantPanel({
         if (modal) onMinimize();
       },
     }),
-    [policy, supportPath, privacyPath, open, modal, onMinimize],
+    [t, locale, policy, supportPath, privacyPath, open, modal, onMinimize],
   );
 
   function onKeyDown(event: KeyboardEvent<HTMLElement>) {
@@ -209,6 +229,7 @@ export default function AssistantPanel({
     <PresentationProvider value={presentation}>
       {modal && <div aria-hidden="true" className={styles.backdrop} onClick={onMinimize} />}
       <section
+        lang={locale}
         ref={surface}
         id="pv-assistant-panel"
         data-testid="assistant-panel"
@@ -223,7 +244,12 @@ export default function AssistantPanel({
         onKeyDown={onKeyDown}
         className={cx(styles.panel, "on-light bg-cream shadow-float ring-1 ring-navy/15 outline-none")}
       >
-        <header className="on-navy flex flex-wrap items-center gap-x-2 gap-y-1 bg-navy py-2.5 ps-4 pe-2">
+        <header
+          className={cx(
+            styles.header,
+            "on-navy flex flex-wrap items-center gap-x-2 gap-y-1 bg-navy py-3 ps-4 pe-2",
+          )}
+        >
           <img
             src={avatarSrc}
             alt=""
@@ -239,7 +265,34 @@ export default function AssistantPanel({
               {t.aiDisclosure}
             </p>
           </div>
-          <div className="ms-auto flex items-center gap-1">
+          <div className="ms-auto flex max-w-full flex-wrap items-center justify-end gap-1">
+            <label
+              className={cx(
+                styles.languageControl,
+                "flex min-h-11 items-center gap-1 rounded-pill border border-white/25 px-2",
+              )}
+            >
+              <Globe aria-hidden="true" className="size-4" />
+              <span className="sr-only">{t.languageLabel}</span>
+              <select
+                aria-label={t.languageLabel}
+                value={locale}
+                onChange={(event) => {
+                  const next = event.target.value === "en" ? "en" : "es";
+                  assistant.setLocale(next);
+                  onLocaleChange(next);
+                }}
+                className="min-h-11 min-w-11 appearance-none rounded-none bg-navy-deep px-1 text-small font-bold text-white"
+              >
+                <option value="es" className="bg-navy text-white">
+                  ES
+                </option>
+                <option value="en" className="bg-navy text-white">
+                  EN
+                </option>
+              </select>
+              <ChevronDown aria-hidden="true" className="size-3 shrink-0" />
+            </label>
             <ClearControl
               disabled={state.session !== "open" || state.pending !== null || state.messages.length === 0}
               clearing={state.clearing}

@@ -83,6 +83,8 @@ export type SessionSnapshot = {
   starters: string[];
   /** True when the API accepts the v1.1 `locale` hint on questions. */
   acceptsLocale: boolean;
+  /** Optional capability derived from an advertised compatible revision, never guessed. */
+  acceptsContext?: boolean;
 };
 
 /** Every error code the API documents (`app/domain/errors.py`), plus transport-level failures. */
