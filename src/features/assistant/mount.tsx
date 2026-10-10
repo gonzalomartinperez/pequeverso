@@ -1,11 +1,15 @@
 "use client";
-import { launcherCopy as t } from "@content/es/assistant";
+import { launcherCopy as enLauncher } from "@content/en/assistant";
+import { launcherCopy as esLauncher } from "@content/es/assistant";
+import { Sparkles } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { buttonVariants } from "@/components/ui/button-variants";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cx } from "@/lib/cx";
 import type { LinkPolicy } from "./domain/links";
-import type { Page } from "./domain/models";
+import type { Language, Page } from "./domain/models";
+import { type PublicPath, publicPath } from "./domain/visitor-context";
 import styles from "./presentation/assistant.module.css";
 
 export type RouteContext = { path: string; page: Page };
@@ -44,12 +48,15 @@ export function AssistantMount({
 }: Props) {
   const pathname = normalize(usePathname());
   const route = routes.find((candidate) => candidate.path === pathname);
+  const [locale, setLocale] = useState<Language>("es");
+  const t = locale === "en" ? enLauncher : esLauncher;
   const [used, setUsed] = useState(false);
   const [open, setOpen] = useState(false);
   const [unread, setUnread] = useState(false);
   const launcher = useRef<HTMLButtonElement>(null);
   const host = useRef<HTMLDivElement>(null);
   const restoreFocus = useRef(false);
+  const openedPath = useRef<PublicPath | null>(null);
   const policy = useMemo<LinkPolicy>(() => ({ storefrontOrigin, linkHosts }), [storefrontOrigin, linkHosts]);
 
   useEffect(() => {
@@ -71,43 +78,47 @@ export function AssistantMount({
 
   return (
     <div ref={host} data-assistant-host="">
-      <button
-        ref={launcher}
-        type="button"
-        hidden={!route || open}
-        data-testid="assistant-launcher"
-        aria-expanded={open}
-        aria-controls={used ? "pv-assistant-panel" : undefined}
-        aria-label={unread ? `${t.launcherLabel}. ${t.launcherUnread}` : t.launcherLabel}
-        onPointerEnter={() => void loadPanel()}
-        onFocus={() => void loadPanel()}
-        onClick={() => {
-          setUsed(true);
-          setUnread(false);
-          setOpen(true);
-        }}
-        className={cx(
-          buttonVariants({ variant: "secondary", size: "sm" }),
-          "relative gap-2 ps-1.5 pe-1.5 shadow-float sm:pe-5",
-          styles.launcher,
-        )}
-      >
-        <span
-          className={cx(
-            "grid size-9 place-items-center overflow-hidden rounded-full bg-white",
-            styles.avatar,
-          )}
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <button
+              ref={launcher}
+              type="button"
+              hidden={!route || open}
+              data-testid="assistant-launcher"
+              aria-expanded={open}
+              aria-controls={used ? "pv-assistant-panel" : undefined}
+              aria-label={unread ? `${t.launcherLabel}. ${t.launcherUnread}` : t.launcherLabel}
+              onPointerEnter={() => void loadPanel()}
+              onFocus={() => void loadPanel()}
+              onClick={() => {
+                if (openedPath.current === null) openedPath.current = publicPath(pathname);
+                setUsed(true);
+                setUnread(false);
+                setOpen(true);
+              }}
+              className={cx(
+                buttonVariants({ variant: "secondary", size: "icon" }),
+                "shadow-float",
+                styles.launcher,
+              )}
+            />
+          }
         >
-          <img src={avatarSrc} alt="" width={36} height={36} className="size-9" />
-        </span>
-        <span aria-hidden="true" className="hidden sm:inline">
-          {t.launcher}
-        </span>
-        {unread && <span aria-hidden="true" className={styles.unread} />}
-      </button>
+          <Sparkles aria-hidden="true" focusable="false" className="size-6" />
+          {unread && <span aria-hidden="true" className={styles.unread} />}
+        </TooltipTrigger>
+        <TooltipContent className={styles.tooltip} positionerClassName="z-[100]" role="tooltip">
+          {t.launcherLabel}
+        </TooltipContent>
+      </Tooltip>
       {used && (
         <Suspense fallback={null}>
           <Panel
+            openedPath={openedPath.current}
+            currentPath={publicPath(pathname)}
+            locale={locale}
+            onLocaleChange={setLocale}
             open={open && route !== undefined}
             onMinimize={onMinimize}
             page={route?.page ?? null}

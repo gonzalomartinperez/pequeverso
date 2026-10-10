@@ -7,6 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { cx } from "@/lib/cx";
 import { cn } from "@/lib/utils";
 import { externalUrl, storefrontPath } from "../domain/links";
+import styles from "./assistant.module.css";
 import { usePresentation } from "./context";
 
 /** Suggestion chips (starters, follow-ups): mint tint, teal text, 44 px targets; never coral. */
@@ -70,7 +71,9 @@ export function IconButton({
       >
         {children}
       </TooltipTrigger>
-      <TooltipContent side="bottom">{label}</TooltipContent>
+      <TooltipContent className={styles.tooltip} positionerClassName="z-[100]" role="tooltip" side="bottom">
+        {label}
+      </TooltipContent>
     </Tooltip>
   );
 }

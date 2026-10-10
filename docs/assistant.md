@@ -55,7 +55,7 @@ The store is a static site on its own origin; the API is a separate HTTPS origin
 
 ## Behaviour
 
-- Launcher bottom-right (above the mobile sticky purchase bar). Compact desktop panel: a named,
+- Star-only44px launcher with accessible name and supplementary tooltip, bottom-right (above the mobile sticky purchase bar). Compact desktop panel: a named,
   non-modal **region**; the page stays usable. Expanded (in-page) and phone surfaces (portrait and
   landscape): **modal dialog**, background `inert`, page scroll locked, Tab contained, store motion
   held. Escape (after any open confirmation consumes it) or "Minimizar" hides the panel and returns
@@ -63,7 +63,7 @@ The store is a static site on its own origin; the API is a separate HTTPS origin
   launcher marks a new answer.
 - Phones: the surface follows the VisualViewport (on-screen keyboard, pinch-zoom, a page wider
   than the screen) with safe-area padding for the composer.
-- Motion: one avatar tilt on hover/focus with a fine pointer; nothing under reduced motion. While a
+- Motion: restrained panel entrance only, nothing under reduced motion. While a
   modal surface covers the page, `src/motion/motion-hold.ts` pauses the WebGL scene and CSS motion
   under the page landmarks and defers a cold WebGL start; releasing it restores the visitor's own
   pause choice untouched.
@@ -87,10 +87,33 @@ The store is a static site on its own origin; the API is a separate HTTPS origin
 no storefront link can become protocol-relative) (store origin, plus `consumer.hotmart.com` and
   `refund.hotmart.com` for links). Store links navigate in the same tab without reloading; external
   links open in a new tab only on click. The assistant never navigates or opens windows on its own.
-- Language: the interface is Spanish; the API answers in Spanish or English per message and the
-  answer carries its `lang`. Other languages get a short note listing both.
+- Language: the assistant interface defaults to Spanish and has a local ES/EN selector; changing
+  it preserves history and the unsent draft without restarting the controller. The next request
+  carries the selected locale hint. The storefront language stays unchanged. The API answers in
+  Spanish or English per message and each answer keeps its own `lang`; switching interface
+  language never translates or rewrites stored answers. Other languages get a short note listing both.
+- Waiting copy is exactly "Pensando…" / "Thinking…" in the selected interface language. Message
+  surfaces remain opaque; restrained header/control depth uses navy/white/gold design tokens, with
+  opaque fallback and reduced-transparency preference support. No voice, tool or task actions.
 - No tracking, analytics or replay. Nothing is stored in the browser except the API's HttpOnly
   cookie.
+
+## Optional visitor context (contract v1 revision1.3)
+
+The client reads the existing session `contract_revision` to negotiate optional hints: `context`
+is sent only for a compatible major1 revision at least1.3. Old1.0/1.1/1.2 or malformed/unknown
+revisions receive the previous body. Activation must use the reviewed compatible API artifact;
+this capability hint is not authorization or a security credential.
+
+`context` contains only `opened_path`, `current_path` and `presentation`. The first opening path
+stays fixed for this mounted UI runtime across minimize, resizing and client navigation; current
+path follows the eligible page and is snapshotted at submit. Reload creates a new UI runtime
+while the API cookie restores conversation history. Paths are exact allowlisted public paths,
+canonical with trailing slash; query, fragment, encoding, arbitrary identifiers, offers and
+thank-you routes never enter context. Compact/expanded reflect actual UI modes; no standalone
+assistant page or theme hint is invented. These are untrusted visitor hints, never instructions
+or catalog evidence. Each request body (including locale/context) is retained for interruption
+replay under the same idempotency key, even after route/language changes.
 
 ## Verification
 
@@ -108,5 +131,6 @@ hosts (on loopback both origins share the host `127.0.0.1`, so the cookie jar is
 physical phones and keyboards, screen readers beyond axe and keyboard checks, and field Core Web
 Vitals.
 
-Known store issue found while testing (not changed here): with the root font forced to 200 %, the
-home hero overflows horizontally on phones. The assistant surface itself fits.
+The original phone reflow issue at 200 % text was corrected in the separate storefront reflow
+change. The enabled assistant has its own checks at 320 and 390 CSS pixels; those checks do not
+replace the disabled storefront route matrix or testing physical on-screen keyboards.

@@ -195,6 +195,13 @@ function limits(value: unknown): Limits {
   };
 }
 
+/** Revision hints are bounded and same-major only; unknown or malformed values advertise nothing. */
+function revisionSupports(value: unknown, minimum: number): boolean {
+  if (typeof value !== "string") return false;
+  const minor = /^1\.(0|[1-9]\d{0,2})$/.exec(value)?.[1];
+  return minor !== undefined && Number(minor) >= minimum;
+}
+
 export function parseSession(value: unknown): SessionSnapshot {
   const v = object(value, "session");
   if (v.schema_version !== "1") invalid("session schema_version");
@@ -207,7 +214,8 @@ export function parseSession(value: unknown): SessionSnapshot {
     availability: availability(v.availability),
     limits: limits(v.limits),
     starters: list(v.starters, "starters", 6, (entry) => text(entry, "starter", 160)).slice(0, 4),
-    acceptsLocale: typeof v.contract_revision === "string",
+    acceptsLocale: revisionSupports(v.contract_revision, 1),
+    acceptsContext: revisionSupports(v.contract_revision, 3),
   };
 }
 

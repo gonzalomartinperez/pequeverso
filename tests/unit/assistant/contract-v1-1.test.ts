@@ -34,6 +34,45 @@ describe("pinned API contract", () => {
   });
 });
 
+describe("contract v1.3 visitor hints are negotiated from the existing revision", () => {
+  it("omits context for old or unknown revisions and sends it only to compatible v1.3+ APIs", async () => {
+    const context = {
+      opened_path: "/soporte/" as const,
+      current_path: "/" as const,
+      presentation: "compact" as const,
+    };
+    for (const revision of [
+      undefined,
+      "1.1",
+      "1.2",
+      "1.3",
+      "1.10",
+      "2.3",
+      "1.03",
+      "1.3?private",
+      "invalid",
+    ]) {
+      const bodies: Record<string, unknown>[] = [];
+      const fetcher: typeof fetch = async (_input, init = {}) => {
+        bodies.push(JSON.parse(String(init.body)));
+        return json({ ...session, contract_revision: revision });
+      };
+      const transport = createHttpTransport("https://api.example", fetcher);
+      await transport.openSession(new AbortController().signal, "en");
+      await transport
+        .send(
+          { content: "Hi", page: null, key: "key-000001", locale: "en", context },
+          new AbortController().signal,
+          () => {},
+        )
+        .catch(() => {});
+      const compatible = revision === "1.3" || revision === "1.10";
+      assert.deepEqual(bodies[1]?.context, compatible ? context : undefined, String(revision));
+      assert.equal(parseSession({ ...session, contract_revision: revision }).acceptsContext, compatible);
+    }
+  });
+});
+
 describe("contract v1.1 additions are optional and forward compatible", () => {
   it("defaults language and starters for a v1.0 API and does not send the locale hint", async () => {
     const { contract_revision: _revision, starters: _starters, ...v10 } = session;

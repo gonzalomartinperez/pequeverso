@@ -5,6 +5,7 @@ import { useId } from "react";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cx } from "@/lib/cx";
 import type { Price, Product, Resource } from "../domain/models";
+import styles from "./assistant.module.css";
 import { usePresentation } from "./context";
 import { labelClass, SafeLink } from "./parts";
 
@@ -14,7 +15,7 @@ import { labelClass, SafeLink } from "./parts";
  * contract has no stock, rating, discount or urgency field, so none is ever shown.
  */
 function PriceLine({ price }: { price: Price | null }) {
-  const { t } = usePresentation();
+  const { t, locale } = usePresentation();
   if (!price) return <p className="text-small text-subtle">{t.priceUnverified}</p>;
   return (
     <div className="flex flex-col gap-0.5">
@@ -23,7 +24,7 @@ function PriceLine({ price }: { price: Price | null }) {
         <span className="text-tiny text-subtle">{price.taxNote}</span>
       </p>
       <p className="text-tiny text-subtle">{price.note}</p>
-      <p className="text-tiny text-subtle">{t.priceVerified(formatDay(price.verifiedAt))}</p>
+      <p className="text-tiny text-subtle">{t.priceVerified(formatDay(price.verifiedAt, locale))}</p>
     </div>
   );
 }
@@ -79,12 +80,15 @@ function ProductCard({ product, resources }: { product: Product; resources: Reso
           <p className="line-clamp-3 text-small text-body">{product.summary}</p>
           <PriceLine price={product.price} />
           <div className="flex flex-wrap gap-2">
-            <SafeLink href={product.url} className={buttonVariants({ variant: "outline", size: "sm" })}>
+            <SafeLink
+              href={product.url}
+              className={cx(buttonVariants({ variant: "outline", size: "sm" }), styles.productAction)}
+            >
               {t.viewProduct}
             </SafeLink>
             <SafeLink
               href={product.purchaseUrl}
-              className={buttonVariants({ variant: "primary", size: "sm" })}
+              className={cx(buttonVariants({ variant: "primary", size: "sm" }), styles.productAction)}
             >
               {t.purchaseOptions}
             </SafeLink>
@@ -132,7 +136,7 @@ function ResourceList({ resources }: { resources: Resource[] }) {
 }
 
 function Comparison({ products, resources }: { products: Product[]; resources: Resource[] }) {
-  const { t } = usePresentation();
+  const { t, locale } = usePresentation();
   const rows: { label: string; cell: (product: Product) => string }[] = [
     { label: t.ageRange, cell: (product) => product.ageRange },
     {
@@ -140,7 +144,7 @@ function Comparison({ products, resources }: { products: Product[]; resources: R
       // A price never appears without its notes and confirmation date.
       cell: (product) =>
         product.price
-          ? `${product.price.display} ${product.price.taxNote}. ${product.price.note} ${t.priceVerified(formatDay(product.price.verifiedAt))}.`
+          ? `${product.price.display} ${product.price.taxNote}. ${product.price.note} ${t.priceVerified(formatDay(product.price.verifiedAt, locale))}.`
           : t.priceUnverified,
     },
     {

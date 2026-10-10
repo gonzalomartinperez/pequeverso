@@ -117,6 +117,23 @@ describe("assistant controller", () => {
     );
   });
 
+  it("changes the interface locale for the next question without reopening or clearing history", async () => {
+    const { assistant, calls } = fixture(answering);
+    assistant.start();
+    await tick();
+    assert.equal(assistant.submit("Pregunta inicial"), true);
+    await tick();
+    const messages = assistant.getSnapshot().messages;
+    assistant.setLocale("en");
+    assert.equal(assistant.getSnapshot().messages, messages);
+    assert.equal(calls.open, 1);
+    assert.equal(calls.delete, 0);
+    assert.equal(assistant.submit("Follow-up question"), true);
+    await tick();
+    assert.equal(calls.send[0]?.locale, "es");
+    assert.equal(calls.send[1]?.locale, "en");
+  });
+
   it("refuses empty and over-limit questions locally", async () => {
     const { assistant, calls } = fixture(answering);
     assistant.start();
@@ -225,6 +242,28 @@ describe("assistant controller", () => {
       assistant.dispose();
     });
   }
+
+  it("replays an interrupted request with its original locale and page after host changes", async () => {
+    let attempt = 0;
+    const { assistant, calls } = fixture(async (_input, _signal, emit) => {
+      attempt++;
+      if (attempt === 1) return "eof";
+      return answering(_input, _signal, emit);
+    });
+    assistant.start();
+    await tick();
+    assistant.setPage("product");
+    assistant.setContext({ opened_path: "/", current_path: "/grafismo-fonetico/", presentation: "compact" });
+    assert.equal(assistant.submit("Original question"), true);
+    await tick();
+    assistant.setPage("support");
+    assistant.setLocale("en");
+    assistant.setContext({ opened_path: "/", current_path: "/soporte/", presentation: "expanded" });
+    assert.equal(assistant.retry(), true);
+    await tick();
+    assert.deepEqual(calls.send[1], calls.send[0]);
+    assert.equal(calls.open, 1);
+  });
 
   it("falls back to a fresh key when the interrupted run failed server-side", async () => {
     let attempt = 0;
