@@ -117,3 +117,22 @@ Enabled adds the launcher (layout chunk, +2.3 KB) and Next's navigation helpers 
 Real model answers and cost, production hostnames/TLS/proxy/CORS across two different hosts,
 physical devices and on-screen keyboards, screen readers beyond axe and keyboard tests, field Core
 Web Vitals, Hotmart purchases.
+
+## Complete static export artifacts
+
+The complete local/runner `out/` contains `.htaccess`, generated from the shared edge rules,
+and the absence guard scans 127 text files. Historical downloaded `site-export` verification
+artifacts omitted that hidden file and scanned 126 text files. The difference was the inherited
+upload default, not a Meta Pixel configuration difference. Those historical downloads are not
+complete static deployment packages; the actual builds still generated and guarded `.htaccess`.
+
+CI and nightly now include hidden files only within the existing `out/` export upload path;
+Lighthouse uploads also retain hidden JSON reports under their explicit `.lighthouseci` path.
+Every CI/nightly export consumer compares the downloaded `.htaccess` byte-for-byte with
+`docs/generated/htaccess.txt` before running its checks, so missing or altered edge rules fail
+at the artifact boundary. The verified
+output has `.htaccess` as its sole hidden file and contains no `.env` or `.git` path. Fresh artifact
+inspection must confirm `.htaccess`, its hash against the generated build output, absence of
+secret/configuration paths, the actual guard count and `build-info.json` with `assistant: disabled`
+before release. Neither this packaging change nor artifact verification deploys anything or
+authorizes assistant activation.
