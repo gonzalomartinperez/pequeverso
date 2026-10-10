@@ -854,19 +854,27 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         const area = scroller.getBoundingClientRect();
         const text = paragraph.getBoundingClientRect();
         const control = jump.getBoundingClientRect();
+        const targetStyle = getComputedStyle(jump);
         const line = Number.parseFloat(getComputedStyle(paragraph).lineHeight);
         const y = Math.max(area.top, text.top) + line / 2;
         const hit = document.elementFromPoint(text.left + 2, y);
         return {
-          targetWidth: control.width,
-          targetHeight: control.height,
+          targetWidth: Number.parseFloat(targetStyle.width),
+          targetHeight: Number.parseFloat(targetStyle.height),
+          renderedWidth: control.width,
+          renderedHeight: control.height,
           inside: control.top >= area.top && control.bottom <= area.bottom,
           separate: text.right <= control.left,
           visibleLine: Math.min(text.bottom, area.bottom) - Math.max(text.top, area.top) >= line,
           readable: hit === paragraph || (hit !== null && paragraph.contains(hit)),
         };
       });
-      expect(reading).toEqual({
+      const { renderedWidth, renderedHeight, ...readingGeometry } = reading;
+      // CSS stays exactly 44px. DOMRect subtraction can differ by 0.00003px across engines;
+      // separately verify the rendered size within 0.0005px without weakening any reading check.
+      expect(renderedWidth).toBeCloseTo(44, 3);
+      expect(renderedHeight).toBeCloseTo(44, 3);
+      expect(readingGeometry).toEqual({
         targetWidth: 44,
         targetHeight: 44,
         inside: true,
