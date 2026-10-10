@@ -8,13 +8,13 @@ Verified locally after clean locked installation: npm run check, check:assistant
 
 ## Inspected before and after
 
-Before screenshots use the development export at8f36e1e; after screenshots use the verified UI candidate. The publishable assistant is disabled in both. These are local fixture builds, not production screenshots. Viewport captures scroll to both text and media and decode lazy images before capture; a full-section capture could omit offscreen deferred paint and is not used for acceptance.
+Before screenshots use the development export at8f36e1e; after screenshots use the verified UI candidate. The publishable assistant is disabled in both. These are local fixture builds, not production screenshots. The independent reviewer captured both text and media with viewport, heading opacity, font and image-decode checks. All six normal before/after pairs are byte-identical; SHA256SUMS records the immutable files. An apparent missing-text discrepancy was traced to inconsistent representations of identical PNG bytes by the image viewer, corroborated by decoded pixels. It was not a demonstrated product rendering regression. Earlier captures are not acceptance evidence.
 
 | Viewport | Before text | After text | Before media | After media |
 |---|---|---|---|---|
-| 390px | [before](before-verified-normal-390-closing-top.png) | [after](after-verified-normal-390-closing-top.png) | [before](before-verified-normal-390-closing-media.png) | [after](after-verified-normal-390-closing-media.png) |
-| 768px | [before](before-verified-normal-768-closing-top.png) | [after](after-verified-normal-768-closing-top.png) | [before](before-verified-normal-768-closing-media.png) | [after](after-verified-normal-768-closing-media.png) |
-| 1440px | [before](before-verified-normal-1440-closing-top.png) | [after](after-verified-normal-1440-closing-top.png) | [before](before-verified-normal-1440-closing-media.png) | [after](after-verified-normal-1440-closing-media.png) |
+| 390px | [before](independent-settled-before-normal-390-closing-top.png) | [after](independent-settled-after-normal-390-closing-top.png) | [before](independent-settled-before-normal-390-closing-media.png) | [after](independent-settled-after-normal-390-closing-media.png) |
+| 768px | [before](independent-settled-before-normal-768-closing-top.png) | [after](independent-settled-after-normal-768-closing-top.png) | [before](independent-settled-before-normal-768-closing-media.png) | [after](independent-settled-after-normal-768-closing-media.png) |
+| 1440px | [before](independent-settled-before-normal-1440-closing-top.png) | [after](independent-settled-after-normal-1440-closing-top.png) | [before](independent-settled-before-normal-1440-closing-media.png) | [after](independent-settled-after-normal-1440-closing-media.png) |
 
 At normal320px the secondary closing product link can wrap onto two lines; the label remains complete. Primary checkout/hero labels retain their responsive checks. The requested390/768/1440 comparisons preserve the layout.
 
