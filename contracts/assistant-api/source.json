@@ -1,6 +1,6 @@
 {
   "api_repository": "https://github.com/gonzalomartinperez/pequeverso-assistant-api",
-  "api_commit": "debb678559b59425503e70fec3e6d16ea173ae81",
+  "api_commit": "b7dcb0c27d214cb1b560a8ee6101f858545646fc",
   "api_manifest_sha256": "6533cb6e32c08d782d00269a8d2ace0d644d343451851f733bf0f38c936f90a5",
   "contract_version": "1",
   "schema_version": "1",

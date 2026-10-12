@@ -5,6 +5,52 @@ historical evidence; the current Spanish-only interface requires a separate exac
 verification against the compatible API revision. Do not attribute these results or images to
 the later compact refinement or Spanish-only profile.
 
+## Compact Spanish refinement (2026-10-12, local evidence)
+
+Runtime candidate `ec32eb1a3bbcd11eae49f20dfb6da670ddce4b5d` keeps the storefront identity,
+opens a compact 408×560 px desktop region, fixes the interface to Spanish, uses the title
+“Asistente de Pequeverso” without a visible IA badge or language selector, and requires API
+v1 revision 1.4 for its immutable Spanish response policy. Legacy transport behavior and stored
+answer languages remain compatible. The final producer pin is the reviewed, protected API
+integration commit `b7dcb0c27d214cb1b560a8ee6101f858545646fc`; its 17 manifest artifacts are byte-identical
+to the temporary `debb678559b59425503e70fec3e6d16ea173ae81` used for the local browser run below.
+
+The initial compact trial's conditional reading gutter caused a real defect: at doubled text,
+a long earlier user question rewrapped when the latest-answer control appeared and displaced
+the answer out of the Chromium phone viewport. The original candidate `127a003` run is preserved:
+36 cases, 18 passed, 14 conditional skips, 4 failed, 0 retries. The correction restores a stable
+68 px reading gutter once messages exist, keeps the full-width greeting, and strengthens the
+regression with actual scrollTop and paragraph-position checks. All prior control separation,
+44 px target, visible-line, paint, keyboard and card/source wrapping assertions remain.
+
+For `ec32eb1`, `npm run check` passed in 71.086 s (160 unit tests, disabled guard over 127 files,
+14 rendered pages and existing budgets); skills passed in 0.332 s and the isolated enabled fixture
+build in 59.800 s. A six-project, retries-0 affected run completed 60 cases: 51 passed, 7 conditional
+skips and 2 Firefox deadline failures, in 1160.788 s test time / 1163.565 s process time. The long-text
+200% regression passed in every project, including both 320/390 px phone widths. All 24 enlarged-text
+short-header/clear-confirmation cases passed. The two failures remain recorded: streamed-answer
+verification and the two-width mobile-controls case exhausted their existing 45 s limits. Their
+root cause is not established; this is not a completely green local browser run. An earlier
+interrupted attempt exited 143 before JSON reporting, with unknown case results; its raw files
+and owned orphan-process cleanup receipt are preserved. Exact-head full CI and the remaining
+focused revalidation are required before integration.
+
+Three separately authorized storefront corrections preserve facts, checkout, consent and tracking:
+the local Includes counter aligns the actual “414” text range with its tile (offset 7.5/6.5/4.5 px
+before, 0 px after at 1440/768/390); the existing desktop family portrait grows from 318×477 to
+404×606 px with complete faces and GA·TO cards and the same image asset; and both published demo
+word catalogs now mix ordered/reversed pairs through the shared deterministic shuffle. The old
+home catalog's all-reversed negative control is retained. Tablet/mobile keep the decorative
+portrait hidden. Before/after captures at all three widths were inspected by the implementing
+agent; a separate agent also inspected the 1440 px counter/portrait pair. These checks are not
+human review, physical-device certification or VPS capacity measurements.
+
+No provider calls, key reads, deployment or activation occurred in these storefront checks.
+Enabled previews are local fixture artifacts; every publishable export must still pass the strict
+disabled guard. The dated evidence below remains historical and is not relabelled as this candidate.
+
+## Historical verification (2026-10-10)
+
 Fixture-only verification on WSL2, Node 24.21.0. Store runtime source `b5acff88c5d3752d876f1dbb5d649807ba2a6f7d`, unchanged by test readiness source `00a121d164f734998c72afb657284f1b4d2f3640`; API producer `b27d35c9ce2f02e5519b4476001f01c7172d6eb2`, v1 revision 1.3, manifest `fa6df707bb05061a77a60d68fbf0c55a7593e815f1110531a9dbbfaac8f3f71e`.
 No paid calls, no real key reads, no deployment. Enabled verification output is explicitly UNPUBLISHABLE and rejected by the publication guard.
 

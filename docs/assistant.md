@@ -190,8 +190,9 @@ The seven idle route checks are independent tests with unchanged navigation expe
 `tests/assistant/preview.spec.ts` generates six PNG previews under
 `test-results-assistant/preview/` during the fixture suite: desktop launcher, welcome/chips,
 answer/sources and waiting; phone welcome and answer/input. Desktop content previews use the
-expanded presentation so all starter questions and source details can be inspected. The waiting
-preview holds the actual HTTP request before forwarding it to the fixture API; it does not claim
+default compact presentation. The recipe verifies all opening chips, answer text, a source link
+and the composer in the actual viewport; it scrolls the transcript without hiding product content.
+The waiting preview holds the actual HTTP request before forwarding it to the fixture API; it does not claim
 a model stage or percentage. This enabled export is local verification only and must never ship.
 
 ## Verification
@@ -201,7 +202,7 @@ a model stage or percentage. This enabled export is local verification only and 
 | `npm test` | Flag parsing, reducer and phases, controller, SSE framing (split UTF-8, CRLF, comments, multiline, bounds, order, early EOF, stall, abort), validation, link policy, contract pin, boundaries |
 | `npm run build && npm run check:assistant-disabled` | The publishable export has no assistant code |
 | `npm run test:e2e -- --project=chromium-1440` (`assistant-disabled.spec.ts`) | Real disabled export: no launcher, no assistant script, no request outside the known hosts |
-| `ASSISTANT_API_DIR=<api checkout at tests/assistant/api-revision> npm run test:e2e:assistant` | Enabled build + real fixture API, both over **HTTPS loopback** (throwaway self-signed certificate made with the system `openssl`, a test prerequisite, accepted only by the test servers and Playwright), in Chromium desktop/phone/reduced-motion, Firefox and WebKit desktop/phone: Secure HttpOnly `__Host-` session cookie with credentialed CORS and CSRF, ask, SSE stream, stop, minimize while streaming, keyboard and Escape, region vs modal semantics with inert background and contained Tab, motion hold, phone geometry, client navigation and reload history, English, delete with confirmation, 200 % text and long text, API outage, axe |
+| `ASSISTANT_API_DIR=<api checkout at tests/assistant/api-revision> npm run test:e2e:assistant` | Enabled build + real fixture API, both over **HTTPS loopback** (throwaway self-signed certificate made with the system `openssl`, a test prerequisite, accepted only by the test servers and Playwright), in Chromium desktop/phone/reduced-motion, Firefox and WebKit desktop/phone: Secure HttpOnly `__Host-` session cookie with credentialed CORS and CSRF, ask, SSE stream, stop, minimize while streaming, keyboard and Escape, region vs modal semantics with inert background and contained Tab, motion hold, phone geometry, client navigation and reload history, English input with Spanish output and preserved historical answer languages, delete with confirmation, 200 % text and long text, API outage, axe |
 
 Measured results, bundle impact and screenshots: `docs/verification/assistant.md`.
 
