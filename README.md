@@ -43,7 +43,7 @@ Hosting was last confirmed **unconnected on 2026-10-10**, with `main` selected f
 
 ## Native assistant
 
-A star-only launcher opens a compact conversation panel on desktop and a comfortable viewport-aware surface on mobile. The assistant uses Pequeverso navy, cream, gold and teal; there is no independent dark/light theme. It preserves history and drafts when minimized, resized or switched between Spanish and English.
+A star-only launcher opens a compact conversation panel on desktop and a comfortable viewport-aware surface on mobile. The assistant uses Pequeverso navy, cream, gold and teal; there is no independent dark/light theme. The interface is Spanish-only, with no language selector. It preserves history and drafts when minimized, resized or restored.
 
 ```mermaid
 sequenceDiagram
@@ -119,7 +119,7 @@ Measured runs and screenshots establish what was actually exercised. CI does not
 | `contracts/assistant-api` | Pinned API contract artifacts and provenance |
 | `src/features/commerce`, `src/features/tracking` | Existing checkout and consent-gated events |
 | `src/motion` | CSS motion and lazily loaded scene with static fallback |
-| `content/es`, `content/en/assistant.ts` | Store copy and assistant-local translations |
+| `content/es` | Store and Spanish-only assistant copy |
 | `media/manifest.json`, `tools/media` | Media provenance, rights and build-time pipeline |
 | `scripts`, `tests`, `.github` | Build/publish guards, verification and protected workflow |
 | `.agents/skills`, `.claude/skills` | Canonical skills and checked thin adapters |

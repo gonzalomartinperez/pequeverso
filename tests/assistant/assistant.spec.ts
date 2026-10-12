@@ -393,7 +393,7 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await page.goto(start(info.project.name, "/grafismo-fonetico/"));
     await openPanel(page);
     // Compact: a named, non-modal region; the page stays usable and its motion keeps running.
-    await expect(page.getByRole("region", { name: "Asistente Pequeverso" })).toBeVisible();
+    await expect(page.getByRole("region", { name: "Asistente de Pequeverso" })).toBeVisible();
     expect(await page.evaluate(() => Boolean(document.querySelector("main")?.closest("[inert]")))).toBe(
       false,
     );
@@ -422,7 +422,7 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await panel(page).getByRole("button", { name: "Ampliar panel" }).click();
     await expect(panel(page)).toHaveAttribute("data-size", "expanded");
     // Expanded: a modal dialog; background inert, page motion held, Tab stays inside.
-    await expect(page.getByRole("dialog", { name: "Asistente Pequeverso" })).toHaveAttribute(
+    await expect(page.getByRole("dialog", { name: "Asistente de Pequeverso" })).toHaveAttribute(
       "aria-modal",
       "true",
     );
@@ -465,7 +465,7 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     const box = await panel(page).boundingBox();
     expect(box?.width).toBeCloseTo(viewport?.width ?? 0, 0);
     expect(box?.height ?? 0).toBeGreaterThan((viewport?.height ?? 0) * 0.9);
-    await expect(page.getByRole("dialog", { name: "Asistente Pequeverso" })).toHaveAttribute(
+    await expect(page.getByRole("dialog", { name: "Asistente de Pequeverso" })).toHaveAttribute(
       "aria-modal",
       "true",
     );
@@ -558,88 +558,120 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
       presentation: "expanded",
     });
     expect(second.locale).toBe("es");
+    expect(second.response_language).toBe("es");
     expect(calls.filter((call) => call.url().endsWith("/api/v1/session"))).toHaveLength(1);
     await shot(page, info.project.name, "context-preserved-navigation");
   });
 
-  test("assistant language switches without replacing its runtime, history or unsent draft", async ({
+  test("Spanish interface keeps its runtime, history and draft without a language selector", async ({
     page,
   }, info) => {
     test.skip(
       info.project.name !== "chromium-desktop",
-      "localization and request hint are engine-independent",
+      "locale and request profile are engine-independent; continuity is covered in every engine",
     );
     const calls = apiCalls(page);
     await page.goto("/soporte/");
     await openPanel(page);
-    await panel(page).getByRole("combobox", { name: "Idioma del asistente" }).selectOption("en");
-    await shot(page, info.project.name, "english-empty");
-    await panel(page).getByRole("combobox", { name: "Assistant language" }).selectOption("es");
-    let releaseFirst: () => void = () => {};
-    const firstGate = new Promise<void>((resolve) => {
-      releaseFirst = resolve;
-    });
-    await page.route(`${API}/api/v1/messages`, async (route) => {
-      await firstGate;
-      await route.continue();
-    });
-    await ask(page, "¿Qué incluye el kit?");
-    await expect(panel(page).getByRole("list").getByText("Pensando…", { exact: true })).toBeVisible();
-    await shot(page, info.project.name, "spanish-thinking");
-    await panel(page).getByRole("combobox", { name: "Idioma del asistente" }).selectOption("en");
-    await expect(panel(page).getByRole("list").getByText("Thinking…", { exact: true })).toBeVisible();
-    await expect(panel(page)).toHaveAttribute("data-phase", "submitting");
-    await panel(page).getByRole("combobox", { name: "Assistant language" }).selectOption("es");
-    releaseFirst();
-    await expect(panel(page)).toHaveAttribute("data-phase", "completed");
-    await page.unroute(`${API}/api/v1/messages`);
-    await composer(page).fill("Unsent draft stays here");
-    await panel(page).getByRole("combobox", { name: "Idioma del asistente" }).selectOption("en");
-    const englishField = panel(page).getByRole("textbox", { name: "Write your question" });
-    await expect(englishField).toHaveValue("Unsent draft stays here");
-    await expect(panel(page)).toHaveAttribute("lang", "en");
-    await expect(panel(page).getByText("¿Qué incluye el kit?", { exact: true })).toBeVisible();
-    await panel(page).getByRole("button", { name: "Expand panel" }).click();
-    await expect(englishField).toHaveValue("Unsent draft stays here");
-    await page.setViewportSize({ width: 390, height: 844 });
-    await expect(englishField).toHaveValue("Unsent draft stays here");
-    await page.setViewportSize({ width: 1440, height: 1000 });
-    let releaseSecond: () => void = () => {};
-    const secondGate = new Promise<void>((resolve) => {
-      releaseSecond = resolve;
-    });
-    await page.route(`${API}/api/v1/messages`, async (route) => {
-      await secondGate;
-      await route.continue();
-    });
-    await englishField.fill("What is included in the kit?");
-    await englishField.press("Enter");
-    await expect(panel(page).getByRole("list").getByText("Thinking…", { exact: true })).toBeVisible();
-    await shot(page, info.project.name, "english-thinking");
-    releaseSecond();
-    await expect(panel(page)).toHaveAttribute("data-phase", "completed");
-    await expect(panel(page).locator('[lang="en"]').first()).toBeVisible();
-    expect(calls.filter((call) => call.url().endsWith("/api/v1/session"))).toHaveLength(1);
-    const sends = calls.filter((call) => call.url().endsWith("/api/v1/messages"));
-    expect(sends).toHaveLength(2);
-    expect(sends[0]?.postDataJSON().locale).toBe("es");
-    expect(sends.at(-1)?.postDataJSON().locale).toBe("en");
-    await shot(page, info.project.name, "english-history");
-    await panel(page).getByRole("button", { name: "Minimize assistant" }).click();
-    await expect(launcher(page)).toHaveAccessibleName("Open the Pequeverso assistant");
-    await launcher(page).press("Enter");
-    await panel(page).getByRole("combobox", { name: "Assistant language" }).selectOption("es");
     await expect(panel(page)).toHaveAttribute("lang", "es");
-    await shot(page, info.project.name, "language-switch-preserved-history");
+    await expect(
+      panel(page).getByRole("heading", { name: "Asistente de Pequeverso", exact: true }),
+    ).toBeVisible();
+    await expect(panel(page).getByRole("heading", { name: "Asistente Pequeverso", exact: true })).toHaveCount(
+      0,
+    );
+    await expect(panel(page).locator("header").getByText("IA", { exact: true })).toHaveCount(0);
+    await expect(panel(page).getByRole("combobox")).toHaveCount(0);
+    await expect(panel(page).locator("select")).toHaveCount(0);
+    await ask(page, "¿Qué incluye el kit?");
+    await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    await composer(page).fill("Mi borrador sin enviar");
+    await panel(page).getByRole("button", { name: "Ampliar panel" }).click();
+    await expect(composer(page)).toHaveValue("Mi borrador sin enviar");
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(composer(page)).toHaveValue("Mi borrador sin enviar");
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await panel(page).getByRole("button", { name: "Minimizar asistente" }).click();
+    await expect(launcher(page)).toHaveAccessibleName("Abrir el asistente de Pequeverso");
+    await launcher(page).press("Enter");
+    await expect(composer(page)).toHaveValue("Mi borrador sin enviar");
+    await expect(panel(page).getByText("¿Qué incluye el kit?", { exact: true })).toBeVisible();
+    await expect(panel(page).getByRole("combobox")).toHaveCount(0);
+    expect(calls.filter((call) => call.url().endsWith("/api/v1/session"))).toHaveLength(1);
+    const sends = calls.filter((call) => call.url().endsWith("/api/v1/messages") && call.method() === "POST");
+    expect(sends).toHaveLength(1);
+    expect(sends[0]?.postDataJSON().locale).toBe("es");
+    expect(sends[0]?.postDataJSON().response_language).toBe("es");
+    await shot(page, info.project.name, "spanish-only-preserved-history-draft");
   });
 
-  test("answers in English when the visitor writes in English", async ({ page }, info) => {
-    test.skip(info.project.name !== "chromium-desktop", "language is API behaviour; one engine is enough");
-    await page.goto(start(info.project.name, "/"));
+  test("ordinary English input receives Spanish output while interface stays Spanish", async ({
+    page,
+  }, info) => {
+    test.skip(
+      info.project.name !== "chromium-desktop",
+      "output language is API behavior; one browser exercises its real fixture response",
+    );
+    const calls = apiCalls(page);
+    await page.goto("/soporte/");
     await openPanel(page);
     await ask(page, "What is included in the kit and how do I print it?");
     await expect(panel(page)).toHaveAttribute("data-phase", "completed");
-    await expect(panel(page).locator('[lang="en"]').first()).toBeVisible();
+    await expect(panel(page)).toHaveAttribute("lang", "es");
+    await expect(panel(page).locator('[lang="en"]')).toHaveCount(0);
+    await expect(panel(page).locator('[lang="es"]').first()).toBeVisible();
+    expect(
+      calls
+        .filter((call) => call.url().endsWith("/api/v1/messages"))
+        .at(-1)
+        ?.postDataJSON().locale,
+    ).toBe("es");
+  });
+
+  test("old API revision refuses native Spanish generation with a safe connection state", async ({
+    page,
+  }, info) => {
+    test.skip(info.project.name !== "chromium-desktop", "revision negotiation is engine-independent");
+    const calls = apiCalls(page);
+    await page.route(`${API}/api/v1/session`, async (route) => {
+      const response = await route.fetch();
+      const body = await response.json();
+      await route.fulfill({ response, json: { ...body, contract_revision: "1.3" } });
+    });
+    await page.goto("/soporte/");
+    await launcher(page).click();
+    await expect(panel(page)).toHaveAttribute("data-phase", "failed");
+    await expect(
+      panel(page).getByText("No pudimos conectar con el asistente.", { exact: true }),
+    ).toBeVisible();
+    await expect(composer(page)).toHaveCount(0);
+    expect(calls.filter((call) => call.url().endsWith("/api/v1/messages"))).toHaveLength(0);
+    expect(calls.filter((call) => call.url().endsWith("/api/v1/session"))).toHaveLength(1);
+    await panel(page).getByRole("button", { name: "Reintentar conexión" }).click();
+    await expect(panel(page)).toHaveAttribute("data-phase", "failed");
+    expect(calls.filter((call) => call.url().endsWith("/api/v1/session"))).toHaveLength(2);
+    expect(calls.filter((call) => call.url().endsWith("/api/v1/messages"))).toHaveLength(0);
+  });
+
+  test("explicit requests for other response languages stay Spanish-only", async ({ page }, info) => {
+    test.skip(info.project.name !== "chromium-desktop", "Spanish response policy uses the real fixture API");
+    const calls = apiCalls(page);
+    await page.goto("/soporte/");
+    await openPanel(page);
+    for (const question of [
+      "Answer in English: what is included?",
+      "Responde em português: o que inclui?",
+      "Antworte auf Deutsch: was ist enthalten?",
+    ]) {
+      await ask(page, question);
+      await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    }
+    const messages = panel(page).getByRole("list", { name: "Conversación con el asistente" });
+    await expect(messages.locator('[lang="en"]')).toHaveCount(0);
+    await expect(messages.getByText("Por ahora respondo solo en español.", { exact: true })).toHaveCount(3);
+    const requests = calls.filter((call) => call.url().endsWith("/api/v1/messages"));
+    expect(requests).toHaveLength(3);
+    for (const request of requests) expect(request.postDataJSON().response_language).toBe("es");
   });
 
   test("deletes the conversation only after confirmation", async ({ page }, info) => {
@@ -685,9 +717,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     const trigger = panel(page).getByRole("button", { name: "Nueva conversación" });
     await trigger.click();
     await expect(composer(page)).toBeHidden();
-    const language = panel(page).getByRole("combobox");
-    await language.focus();
-    await language.press("Escape");
+    const headerControl = panel(page).getByRole("button", { name: "Minimizar asistente" });
+    await headerControl.focus();
+    await headerControl.press("Escape");
     await expect(panel(page).getByRole("dialog", { name: "¿Empezar de nuevo?" })).toBeHidden();
     await expect(panel(page)).toBeVisible();
     await expect(trigger).toBeFocused();
@@ -711,44 +743,38 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await panel(page).getByRole("button", { name: "Nueva conversación" }).click();
     await panel(page).getByRole("button", { name: "Borrar" }).click();
     await expect(panel(page)).toBeFocused();
-    const language = panel(page).getByRole("combobox");
-    await language.focus();
+    const headerControl = panel(page).getByRole("button", { name: "Minimizar asistente" });
+    await headerControl.focus();
     release();
     await expect(panel(page)).toHaveAttribute("data-phase", "ready");
-    await expect(language).toBeFocused();
+    await expect(headerControl).toBeFocused();
   });
 
   for (const width of [320, 390]) {
-    for (const locale of ["es", "en"]) {
-      test(`header controls align and ${locale} clear confirmation fits ${width}px at enlarged text in a short viewport`, async ({
+    for (const height of [420, 360]) {
+      test(`header controls align and Spanish clear confirmation fits ${width}x${height}px at enlarged text`, async ({
         page,
       }, info) => {
         await page.goto("/soporte/");
         await openPanel(page);
-        for (const locale of ["es", "en", "es"]) {
-          const language = panel(page).getByRole("combobox");
-          await language.selectOption(locale);
-          const languageBox = await language.locator("..").boundingBox();
-          const minimizeBox = await panel(page)
-            .getByRole("button", {
-              name: locale === "es" ? "Minimizar asistente" : "Minimize assistant",
-            })
-            .boundingBox();
-          expect(languageBox).not.toBeNull();
-          expect(minimizeBox).not.toBeNull();
-          expect(Math.abs((languageBox?.height ?? 0) - (minimizeBox?.height ?? 0))).toBeLessThanOrEqual(1);
+        await expect(panel(page).getByRole("combobox")).toHaveCount(0);
+        const controls = panel(page).locator("header button");
+        for (const control of await controls.all()) {
+          const box = await control.boundingBox();
+          expect(box).not.toBeNull();
+          expect(box?.width ?? 0).toBeGreaterThanOrEqual(44);
+          expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
         }
         await ask(page, "¿Para qué edades es?");
         await expect(panel(page)).toHaveAttribute("data-phase", "completed");
         await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
-        await page.setViewportSize({ width, height: 420 });
-        await panel(page).getByRole("combobox").selectOption(locale);
+        await page.setViewportSize({ width, height });
         const trigger = panel(page).getByRole("button", {
-          name: locale === "es" ? "Nueva conversación" : "New conversation",
+          name: "Nueva conversación",
         });
         await trigger.click();
         const confirmation = panel(page).getByRole("dialog", {
-          name: locale === "es" ? "¿Empezar de nuevo?" : "Start again?",
+          name: "¿Empezar de nuevo?",
         });
         await expect(confirmation).toBeVisible();
         await expect(panel(page).getByRole("textbox")).toBeHidden();
@@ -775,7 +801,7 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         expect(geometry.left).toBeGreaterThanOrEqual(geometry.surfaceLeft - 1);
         expect(geometry.right).toBeLessThanOrEqual(geometry.surfaceRight + 1);
         expect(geometry.horizontalOverflow).toBeLessThanOrEqual(1);
-        for (const name of locale === "es" ? ["Cancelar", "Borrar"] : ["Cancel", "Delete"]) {
+        for (const name of ["Cancelar", "Borrar"]) {
           const button = confirmation.getByRole("button", { name, exact: true });
           await button.focus();
           await expect(button).toBeInViewport();
@@ -788,10 +814,8 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
             }),
           ).toBe(true);
         }
-        await shot(page, info.project.name, `clear-confirmation-${locale}-${width}-200`);
-        await confirmation
-          .getByRole("button", { name: locale === "es" ? "Cancelar" : "Cancel", exact: true })
-          .press("Escape");
+        await shot(page, info.project.name, `clear-confirmation-es-${width}x${height}-200`);
+        await confirmation.getByRole("button", { name: "Cancelar", exact: true }).press("Escape");
         await expect(confirmation).toBeHidden();
         await expect(panel(page)).toBeVisible();
         await expect(trigger).toBeFocused();
@@ -832,7 +856,6 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         .boundingBox();
       expect(transcriptBounds?.height).toBeGreaterThan(44);
       for (const control of [
-        panel(page).getByRole("combobox"),
         panel(page).getByRole("button", { name: "Minimizar asistente" }),
         composer(page),
       ]) {
@@ -859,18 +882,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
       await shot(page, info.project.name, `enabled-zoom-starters-${width}`);
       await composer(page).focus();
       await shot(page, info.project.name, `enabled-zoom-${width}`);
-      await panel(page).getByRole("combobox").selectOption("en");
-      const englishField = panel(page).getByRole("textbox", { name: "Write your question" });
-      await expect(englishField).toHaveValue("Borrador conservado");
-      await englishField.focus();
-      const englishOverflow = await panel(page).evaluate((element) =>
-        [...element.querySelectorAll("header, form, select, textarea, button, header > div")]
-          .filter((node) => node.scrollWidth > node.clientWidth + 1)
-          .map((node) => `${node.tagName}.${node.className}`),
-      );
-      expect(englishOverflow).toEqual([]);
-      await shot(page, info.project.name, `enabled-zoom-en-${width}`);
-      await panel(page).getByRole("combobox").selectOption("es");
+      await expect(panel(page).getByRole("combobox")).toHaveCount(0);
+      await expect(panel(page)).toHaveAttribute("lang", "es");
+      await expect(composer(page)).toHaveValue("Borrador conservado");
       await page.addStyleTag({ content: "html { font-size: 100% !important; }" });
       await page.setViewportSize({ width, height: 360 });
       await composer(page).focus();

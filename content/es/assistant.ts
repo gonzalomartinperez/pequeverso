@@ -1,8 +1,8 @@
 /**
  * Interface copy of the native shopping assistant (neutral Latin American Spanish, "tú", like the
- * rest of the store). Answers may arrive in English when the visitor writes in English; the
- * assistant interface can switch between Spanish and English without changing the store; each answer carries its own `lang`. The assistant is
- * advisory: no copy here promises prices, stock, discounts or learning outcomes.
+ * rest of the store). The native interface and new answers use Spanish, without a language
+ * selector. Stored answers retain their original language. The assistant is advisory: no copy
+ * here promises prices, stock, discounts or learning outcomes.
  */
 import type { ErrorCode, Notice, UnavailableReason } from "../../src/features/assistant/domain/models.ts";
 
@@ -13,9 +13,8 @@ export const launcherCopy = {
 };
 
 export const assistantCopy = {
-  name: "Asistente Pequeverso",
+  name: "Asistente de Pequeverso",
   aiDisclosure: "Asistente con IA. Usa la información de la tienda.",
-  aiBadge: "IA",
   privacyNote: "No escribas datos personales ni de tus hijos. ",
   privacyLink: "Cómo tratamos tus mensajes",
 
@@ -95,7 +94,7 @@ export const assistantCopy = {
     payment_data_refused:
       "Por tu seguridad, no escribas datos de tarjetas aquí. El pago se hace solo en la página segura de Hotmart.",
     contact_data_redacted: "Ocultamos datos de contacto de tu mensaje para proteger tu privacidad.",
-    language_unsupported: "Por ahora respondo en español y en inglés.",
+    language_unsupported: "Por ahora respondo solo en español.",
   } satisfies Record<Notice, string>,
 
   clear: "Nueva conversación",
@@ -107,7 +106,6 @@ export const assistantCopy = {
   expand: "Ampliar panel",
   restore: "Reducir panel",
   minimize: "Minimizar asistente",
-  languageLabel: "Idioma del asistente",
 
   connecting: "Conectando con el asistente…",
   reconnect: "Reintentar conexión",

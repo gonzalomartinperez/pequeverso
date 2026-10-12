@@ -14,8 +14,8 @@ export function EmptyState({
   disabled: boolean;
   onAsk: (question: string) => void;
 }) {
-  const { t, locale } = usePresentation();
-  const questions = locale === "es" && starters.length ? starters : t.starters;
+  const { t } = usePresentation();
+  const questions = starters.length ? starters : t.starters;
   return (
     <li className="flex flex-col gap-4">
       <div className={styles.greeting}>

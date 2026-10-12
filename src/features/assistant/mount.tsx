@@ -1,6 +1,5 @@
 "use client";
-import { launcherCopy as enLauncher } from "@content/en/assistant";
-import { launcherCopy as esLauncher } from "@content/es/assistant";
+import { launcherCopy as t } from "@content/es/assistant";
 import { Sparkles } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -8,7 +7,7 @@ import { buttonVariants } from "@/components/ui/button-variants";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cx } from "@/lib/cx";
 import type { LinkPolicy } from "./domain/links";
-import type { Language, Page } from "./domain/models";
+import type { Page } from "./domain/models";
 import { type PublicPath, publicPath } from "./domain/visitor-context";
 import styles from "./presentation/assistant.module.css";
 
@@ -48,8 +47,6 @@ export function AssistantMount({
 }: Props) {
   const pathname = normalize(usePathname());
   const route = routes.find((candidate) => candidate.path === pathname);
-  const [locale, setLocale] = useState<Language>("es");
-  const t = locale === "en" ? enLauncher : esLauncher;
   const [used, setUsed] = useState(false);
   const [open, setOpen] = useState(false);
   const [unread, setUnread] = useState(false);
@@ -117,8 +114,6 @@ export function AssistantMount({
           <Panel
             openedPath={openedPath.current}
             currentPath={publicPath(pathname)}
-            locale={locale}
-            onLocaleChange={setLocale}
             open={open && route !== undefined}
             onMinimize={onMinimize}
             page={route?.page ?? null}

@@ -36,7 +36,8 @@ link to Soporte and the store keeps selling.
 
 ## API requirements for activation (cross-origin)
 
-The store is a static site on its own origin; the API is a separate HTTPS origin.
+The store is a static site on its own origin; the API is a separate HTTPS origin. The native
+Spanish response profile requires a reviewed compatible v1 API revision **at least 1.4**.
 
 - `ALLOWED_ORIGINS` on the API lists exactly the store origin (`https://pequeverso.com`; `www`
   redirects to the apex, so it is not added). No wildcard, no `null`.
@@ -87,14 +88,12 @@ The store is a static site on its own origin; the API is a separate HTTPS origin
 no storefront link can become protocol-relative) (store origin, plus `consumer.hotmart.com` and
   `refund.hotmart.com` for links). Store links navigate in the same tab without reloading; external
   links open in a new tab only on click. The assistant never navigates or opens windows on its own.
-- Language: the assistant interface defaults to Spanish and has a local ES/EN selector; changing
-  it preserves history and the unsent draft without restarting the controller. The next request
-  carries the selected locale hint. The storefront language stays unchanged. The API answers in
-  Spanish or English per message and each answer keeps its own `lang`; switching interface
-  language never translates or rewrites stored answers. Other languages get a short note listing both.
-- Waiting copy is exactly "Pensando…" / "Thinking…" in the selected interface language. Message
-  surfaces remain opaque; restrained header/control depth uses navy/white/gold design tokens, with
-  opaque fallback and reduced-transparency preference support. No voice, tool or task actions.
+- Language: the native interface is Spanish-only and has no language selector. Minimizing, resizing
+  and navigation preserve history and the unsent draft without restarting the controller. Stored
+  answers retain their original `lang`; previous conversation history is never translated or rewritten.
+- Waiting copy is exactly "Pensando…". Message surfaces remain opaque; restrained header/control
+  depth uses navy/white/gold design tokens, with opaque fallback and reduced-transparency preference
+  support. No voice, tool or task actions.
 - No tracking, analytics or replay. Nothing is stored in the browser except the API's HttpOnly
   cookie.
 
@@ -105,10 +104,11 @@ bottom-right corner and leaves the store usable. Preview screenshots open this d
 expanded previews, if included, are explicitly labelled. Expanding remains a visitor action and
 changes the surface to a modal dialog. Phones retain the viewport-aware modal layout.
 
-The toolbar combines a 28 px brand mark, 14 px title, visible IA/AI disclosure badge and 18 px icons.
-Every icon and language control retains a 44 px physical target; smaller artwork does not shrink
-its hit area. The complete AI disclosure remains the accessible panel description. Text grows and
-wraps when enlarged; short viewports keep scrollable header, transcript and composer regions.
+The toolbar combines a 28 px brand mark, the 14 px title “Asistente de Pequeverso” and 18 px icons.
+It has no visible IA badge; the truthful AI disclosure remains the accessible panel description.
+Every icon control retains a 44 px physical target; smaller artwork does not shrink its hit area.
+Text grows and wraps when enlarged; short viewports keep scrollable header, transcript and composer
+regions.
 
 Welcome copy is concise, the greeting is not another raised landing-page card, and known opening
 questions use compact natural-width chips. Abbreviations are an exact allowlist of existing
@@ -134,6 +134,22 @@ The adaptation adopts proportional typography and separates icon artwork from hi
 it retains Pequeverso fonts, colors, copy, contract and activation boundary, and imports no
 portfolio identity, theme selector, history sidebar or unsupported feedback capabilities.
 
+## Spanish-native response profile (contract v1 revision 1.4)
+
+The composition root fixes the interface locale and the HTTP response profile to Spanish. Every
+native message, including same-key interruption replay, carries `locale: "es"` and
+`response_language: "es"`. The latter is the optional additive field in the pinned OpenAPI contract;
+Spanish is a response policy rather than the legacy locale hint. The transport captures its
+profile once, checks the session's compatible major-1 revision and refuses older, malformed or
+other-major APIs before any message request. The visitor gets the safe connection-unavailable
+state and may explicitly retry the connection; no generation or silent downgrade occurs.
+
+Ordinary English input can receive a Spanish answer. Explicit requests to answer in another
+language receive the API's Spanish-only local notice. These behaviors belong to the backend
+policy, not an invented client translation. Existing stored answers retain their original `lang`.
+The generic transport remains backward-compatible when no native profile is configured: it
+negotiates legacy locale/context hints and omits `response_language`.
+
 ## Optional visitor context (contract v1 revision1.3)
 
 The client reads the existing session `contract_revision` to negotiate optional hints: `context`
@@ -149,13 +165,12 @@ canonical with trailing slash; query, fragment, encoding, arbitrary identifiers,
 thank-you routes never enter context. Compact/expanded reflect actual UI modes; no standalone
 assistant page or theme hint is invented. These are untrusted visitor hints, never instructions
 or catalog evidence. Each request body (including locale/context) is retained for interruption
-replay under the same idempotency key, even after route/language changes.
+replay under the same idempotency key, even after route changes.
 
 ## Control layout and local preview
 
-Header controls share the design system's 44 px target. The ES/EN selector uses an inset ring,
-so its outline does not add height or misalign it with the adjacent icon buttons; its select
-surface inherits the header control surface. There is no storefront dark/light theme and no
+Header controls share the design system's 44 px target. Icon artwork stays at 18 px and the
+Spanish-only header has no language selector. There is no storefront dark/light theme and no
 unsupported theme field is sent to the API.
 
 The new-conversation confirmation is an inline, non-modal panel row outside the scrollable

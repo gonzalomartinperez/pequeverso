@@ -154,7 +154,8 @@ The storefront contains no provider key, public assistant endpoint, database or 
 
 At standard text size, the desktop launcher opens a compact 408×560 px maximum region without a
 scrim; expanding is an explicit choice. Mobile follows VisualViewport and safe areas. The single
-mounted controller survives minimizing, client navigation and assistant-local language changes.
+mounted controller survives minimizing, client navigation and resizing. Its interface is Spanish-only,
+with no language selector.
 Question chips may abbreviate known labels, but accessible names and submitted questions stay
 complete. Sources and product facts stay available in the scrollable transcript. A latest-answer
 control reserves its own reading gutter only while visible; it never overlays the text.

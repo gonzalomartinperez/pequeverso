@@ -173,24 +173,6 @@
   border-bottom: 1px solid var(--pv-line-strong);
 }
 
-.languageControl {
-  background: var(--pv-navy-deep);
-}
-
-@supports (backdrop-filter: blur(4px)) {
-  .languageControl {
-    background: color-mix(in oklch, var(--pv-navy-deep) 88%, transparent);
-    backdrop-filter: blur(4px);
-  }
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  .languageControl {
-    background: var(--pv-navy-deep);
-    backdrop-filter: none;
-  }
-}
-
 .greeting {
   display: flex;
   flex-direction: column;

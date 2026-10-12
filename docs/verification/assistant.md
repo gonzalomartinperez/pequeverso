@@ -1,5 +1,10 @@
 # Native assistant verification (2026-10-10)
 
+This dated report preserves the earlier bilingual implementation and its exact fixtures. It is
+historical evidence; the current Spanish-only interface requires a separate exact-source
+verification against the compatible API revision. Do not attribute these results or images to
+the later compact refinement or Spanish-only profile.
+
 Fixture-only verification on WSL2, Node 24.21.0. Store runtime source `b5acff88c5d3752d876f1dbb5d649807ba2a6f7d`, unchanged by test readiness source `00a121d164f734998c72afb657284f1b4d2f3640`; API producer `b27d35c9ce2f02e5519b4476001f01c7172d6eb2`, v1 revision 1.3, manifest `fa6df707bb05061a77a60d68fbf0c55a7593e815f1110531a9dbbfaac8f3f71e`.
 No paid calls, no real key reads, no deployment. Enabled verification output is explicitly UNPUBLISHABLE and rejected by the publication guard.
 

@@ -85,6 +85,8 @@ export type SessionSnapshot = {
   acceptsLocale: boolean;
   /** Optional capability derived from an advertised compatible revision, never guessed. */
   acceptsContext?: boolean;
+  /** Compatible v1.4+ API can enforce the native Spanish response profile. */
+  acceptsResponseLanguage?: boolean;
 };
 
 /** Every error code the API documents (`app/domain/errors.py`), plus transport-level failures. */
