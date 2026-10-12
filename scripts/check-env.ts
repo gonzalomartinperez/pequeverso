@@ -5,6 +5,7 @@ import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseAssistantEnv } from "../src/features/assistant/flag.ts";
+import { affiliateEnvNames, isAffiliateUrl } from "./lib/edge-rules.ts";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const CHECKOUT_ORIGIN = "https://pay.hotmart.com/";
@@ -57,10 +58,20 @@ function validate(): string[] {
   if (token !== undefined && token !== "" && (token.length < 32 || /\s/.test(token)))
     errors.push("META_CAPI_ACCESS_TOKEN must be at least 32 characters without whitespace");
 
+  for (const name of affiliateNames()) {
+    if (!isAffiliateUrl(read(name)))
+      errors.push(`${name} must be a plain https:// affiliate link (no spaces, quotes or $)`);
+  }
+
   const assistant = assistantFlag();
   if (!assistant.ok) errors.push(...assistant.errors);
 
   return errors;
+}
+
+/** Affiliate redirect destinations that are set (config/edge-rules.json `destinationEnv`). */
+function affiliateNames(): string[] {
+  return affiliateEnvNames().filter((name) => read(name));
 }
 
 /** The native assistant is disabled unless explicitly enabled (src/features/assistant/flag.ts). */
@@ -80,7 +91,8 @@ function summary(): string {
     result.ok && result.flag.enabled
       ? "ENABLED (verification build: not authorized for publication)"
       : "disabled";
-  return `tracking: meta=${meta} capi=${capi}\nassistant: ${assistant}`;
+  const affiliates = affiliateNames().length;
+  return `tracking: meta=${meta} capi=${capi}\nassistant: ${assistant}\naffiliate redirects: ${affiliates}`;
 }
 
 loadEnvFiles();
