@@ -76,7 +76,7 @@ function ProductCard({ product, resources }: { product: Product; resources: Reso
           </div>
         </div>
         <div className="flex min-w-0 flex-col gap-2.5">
-          <p className="line-clamp-3 text-small text-body">{product.summary}</p>
+          <p className="text-small text-body">{product.summary}</p>
           <PriceLine price={product.price} />
           <div className="flex flex-wrap gap-2">
             <SafeLink

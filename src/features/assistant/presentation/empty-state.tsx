@@ -40,7 +40,7 @@ export function EmptyState({
                 disabled={disabled}
                 onClick={() => onAsk(question)}
               >
-                {t.starterLabels[question] ?? question}
+                {Object.hasOwn(t.starterLabels, question) ? t.starterLabels[question] : question}
               </button>
             </li>
           ))}

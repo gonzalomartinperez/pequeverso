@@ -117,10 +117,16 @@ complete original question. Unrecognized API questions keep their full visible t
 not add catalog knowledge or change the contract. Product cards use a 72 px thumbnail and preserve
 authorized summaries, age ranges, resources, price notes/confirmation and navigation actions.
 
+Sources appear immediately after the answer and notices, before product recommendations. The accordion
+keeps its existing complete validated links; product cards, summaries, resources and actions remain
+available below it without truncated summaries.
+
 The transcript uses its full reading width while the latest-answer control is absent. When the
 visitor scrolls away from the latest answer, the existing 68 px gutter separates the 44 px control
 from the reading column. Returning to the latest answer restores full width and follows new
-content. Neither operation initiates or retries a generation.
+content. Native scroll anchoring is disabled within the transcript because following and the reader
+position are explicitly managed; a changing gutter must not move the reader. Neither operation
+initiates or retries a generation.
 
 Reference implementation inspected read-only: `gonzalomartinperez/portfolio` commit
 `246c4892276de3cf0d2ee950b8eabb8159050172`, specifically its native host and chat presentation.

@@ -117,6 +117,29 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     ).toBeVisible();
   });
 
+  test("unrecognized question labels stay literal even for inherited object names", async ({
+    page,
+  }, info) => {
+    const questions = ["__proto__", "constructor", "toString", "¿Una pregunta nueva sin etiqueta?"];
+    await page.route(`${API}/api/v1/session`, async (route) => {
+      if (route.request().method() !== "POST") return route.continue();
+      const response = await route.fetch();
+      const payload: unknown = await response.json();
+      if (!payload || typeof payload !== "object" || Array.isArray(payload))
+        throw new Error("Invalid fixture session");
+      // Replace only opening-question metadata; auth/session response and provider remain real fixtures.
+      await route.fulfill({ response, json: { ...payload, starters: questions } });
+    });
+    await page.goto(start(info.project.name, "/soporte/"));
+    await openPanel(page);
+    for (const question of questions) {
+      const chip = panel(page).getByRole("button", { name: question, exact: true });
+      await expect(chip).toHaveText(question);
+      await expect(chip).toHaveAttribute("title", question);
+    }
+    await expect(composer(page)).toBeEnabled();
+  });
+
   test("answers a question with a streamed, grounded answer", async ({ page }, info) => {
     const calls = apiCalls(page);
     // Exercise a resize notification before the browser delivers the reader's scroll event.
