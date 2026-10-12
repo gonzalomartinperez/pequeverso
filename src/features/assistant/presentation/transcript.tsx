@@ -105,7 +105,7 @@ export function Transcript({
           aria-busy={busy || undefined}
           className={cx(
             "mx-auto flex w-full max-w-3xl flex-col gap-4 px-3 py-3 cq-md:px-5",
-            !empty && showJump && styles.reader,
+            !empty && styles.reader,
           )}
         >
           {children}

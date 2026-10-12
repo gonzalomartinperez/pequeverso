@@ -158,7 +158,8 @@ mounted controller survives minimizing, client navigation and resizing. Its inte
 with no language selector.
 Question chips may abbreviate known labels, but accessible names and submitted questions stay
 complete. Sources and product facts stay available in the scrollable transcript. A latest-answer
-control reserves its own reading gutter only while visible; it never overlays the text.
+control has a stable reading gutter once messages exist; toggling it never rewraps earlier messages
+or overlays the text.
 
 Default publishable artifacts must pass `check:assistant-disabled` and record
 `"assistant": "disabled"` in `build-info.json`. Local fixture screenshots do not validate a real

@@ -121,12 +121,13 @@ Sources appear immediately after the answer and notices, before product recommen
 keeps its existing complete validated links; product cards, summaries, resources and actions remain
 available below it without truncated summaries.
 
-The transcript uses its full reading width while the latest-answer control is absent. When the
-visitor scrolls away from the latest answer, the existing 68 px gutter separates the 44 px control
-from the reading column. Returning to the latest answer restores full width and follows new
-content. Native scroll anchoring is disabled within the transcript because following and the reader
-position are explicitly managed; a changing gutter must not move the reader. Neither operation
-initiates or retries a generation.
+Once messages exist, a stable 68 px gutter separates the 44 px latest-answer control from the
+reading column, whether that control is visible or not. The initial greeting keeps its full width.
+A trial conditional gutter rewrapped a long earlier question at 200% text size and moved the answer
+outside the phone viewport; its failed run is retained. The stable column avoids that height change
+and keeps the reader's actual position. Returning to the latest answer restores following.
+Native scroll anchoring is disabled because following and reader position are explicitly managed.
+Neither operation initiates or retries a generation.
 
 Reference implementation inspected read-only: `gonzalomartinperez/portfolio` commit
 `246c4892276de3cf0d2ee950b8eabb8159050172`, specifically its native host and chat presentation.

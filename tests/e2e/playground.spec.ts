@@ -1,3 +1,4 @@
+import { homeCopy } from "../../content/es/home.ts";
 import { expect, test } from "./fixtures";
 
 /** Routes that mount the interactive pieces (overridable while a page is being built). */
@@ -58,6 +59,47 @@ test.describe("syllable playground", () => {
     await expect(game.locator("img:visible").first()).not.toHaveAttribute("alt", before ?? "");
     await expect(game.getByText(/^0 de \d+$/)).toHaveCount(1);
   });
+});
+
+test("home demo mixes reading order and reversed pairs and completes by keyboard or touch", async ({
+  page,
+}, info) => {
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  const game = page.locator('[data-slot="syllable-playground"]').first();
+  await game.scrollIntoViewIfNeeded();
+  const orders: string[] = [];
+  for (const item of homeCopy.method.playground.words) {
+    const chip = game
+      .getByRole("group", { name: "Elige una palabra" })
+      .getByRole("button", { name: item.word, exact: true });
+    if (info.project.use.hasTouch) await chip.tap();
+    else {
+      await chip.focus();
+      await chip.press("Enter");
+    }
+    await expect(chip).toHaveAttribute("aria-pressed", "true");
+    await expect(game.getByText("0 de 2", { exact: true })).toHaveCount(1);
+    const tiles = game.locator('[data-slot="syllable-tile"]');
+    orders.push(
+      (
+        await tiles.evaluateAll((elements) => elements.map((element) => element.getAttribute("data-index")))
+      ).join(""),
+    );
+    for (let index = 0; index < item.syllables.length; index += 1) {
+      const tile = game.locator(`[data-slot="syllable-tile"][data-index="${index}"]`);
+      if (info.project.use.hasTouch) await tile.tap();
+      else {
+        await tile.focus();
+        await tile.press("Enter");
+      }
+    }
+    await expect(game.locator("[data-done]").first()).toBeVisible();
+    await expect(game.getByText("2 de 2", { exact: true })).toHaveCount(1);
+    for (const tile of await tiles.all()) await expect(tile).toHaveAttribute("aria-disabled", "true");
+  }
+  expect(orders).toContain("01");
+  expect(orders).toContain("10");
 });
 
 test("page wall drifts without widening the page and can be paused", async ({ page }) => {

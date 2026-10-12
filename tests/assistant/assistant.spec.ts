@@ -237,15 +237,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
           end: Number.parseFloat(style.paddingInlineEnd),
         };
       });
-    // Full-width text while following; only an actual jump control reserves reading space.
-    await expect.poll(readingPadding).toEqual(
-      await paragraph.evaluate((element) => {
-        const list = element.closest("ol");
-        if (!list) throw new Error("Transcript list was not found");
-        const start = Number.parseFloat(getComputedStyle(list).paddingInlineStart);
-        return { start, end: start };
-      }),
-    );
+    // Reserve the control gutter before scrolling: toggling it must not rewrap earlier messages.
+    const initialPadding = await readingPadding();
+    expect(initialPadding.end).toBeGreaterThan(initialPadding.start);
     const reader = await paragraph.evaluate((element) => {
       let scroller = element.parentElement;
       while (scroller && getComputedStyle(scroller).overflowY !== "auto") scroller = scroller.parentElement;
@@ -265,12 +259,7 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await expect(paragraph).toBeInViewport();
     const jump = panel(page).getByRole("button", { name: "Ir a la última respuesta" });
     await expect(jump).toBeVisible();
-    await expect
-      .poll(async () => {
-        const geometry = await readingPadding();
-        return geometry.end > geometry.start;
-      })
-      .toBe(true);
+    await expect.poll(readingPadding).toEqual(initialPadding);
     await expect
       .poll(() =>
         paragraph.evaluate((element) => {
@@ -300,12 +289,7 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     if (isMobile(info.project.name)) await shot(page, info.project.name, "final-answer-text-visible");
     await jump.click();
     await expect(jump).toBeHidden();
-    await expect
-      .poll(async () => {
-        const geometry = await readingPadding();
-        return geometry.start === geometry.end;
-      })
-      .toBe(true);
+    await expect.poll(readingPadding).toEqual(initialPadding);
     await expect
       .poll(() =>
         paragraph.evaluate((element) => {
@@ -956,15 +940,43 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         .last()
         .locator("p")
         .first();
-      await answerText.evaluate((paragraph) => {
+      const readingPosition = await answerText.evaluate((paragraph) => {
         let scroller = paragraph.parentElement;
         while (scroller && getComputedStyle(scroller).overflowY !== "auto") scroller = scroller.parentElement;
         if (!scroller) throw new Error("Transcript scroller was not found");
         scroller.scrollTop += paragraph.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
+        return {
+          top: scroller.scrollTop,
+          offset: paragraph.getBoundingClientRect().top - scroller.getBoundingClientRect().top,
+        };
       });
       await expect(answerText).toBeInViewport();
       const jump = panel(page).getByRole("button", { name: "Ir a la última respuesta" });
       await expect(jump).toBeVisible();
+      await expect
+        .poll(() =>
+          answerText.evaluate((paragraph) => {
+            let scroller = paragraph.parentElement;
+            while (scroller && getComputedStyle(scroller).overflowY !== "auto")
+              scroller = scroller.parentElement;
+            if (!scroller) throw new Error("Transcript scroller was not found");
+            return scroller.scrollTop;
+          }),
+        )
+        .toBe(readingPosition.top);
+      await expect
+        .poll(() =>
+          answerText.evaluate((paragraph, offset) => {
+            let scroller = paragraph.parentElement;
+            while (scroller && getComputedStyle(scroller).overflowY !== "auto")
+              scroller = scroller.parentElement;
+            if (!scroller) throw new Error("Transcript scroller was not found");
+            return Math.abs(
+              paragraph.getBoundingClientRect().top - scroller.getBoundingClientRect().top - offset,
+            );
+          }, readingPosition.offset),
+        )
+        .toBeLessThanOrEqual(1);
       const reading = await answerText.evaluate((paragraph) => {
         let scroller = paragraph.parentElement;
         while (scroller && getComputedStyle(scroller).overflowY !== "auto") scroller = scroller.parentElement;

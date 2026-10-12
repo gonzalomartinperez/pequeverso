@@ -145,7 +145,7 @@
 }
 
 .transcript {
-  /* Following is explicit: native anchoring must not move a reader when the gutter changes. */
+  /* Following is explicit: native anchoring must not move an established reader. */
   overflow-anchor: none;
   scrollbar-gutter: stable;
   touch-action: pan-y;
