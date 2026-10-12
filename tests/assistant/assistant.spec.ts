@@ -170,9 +170,20 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
             continue;
           const range = document.createRange();
           range.selectNodeContents(node);
+          const bounds = [box];
+          for (
+            let ancestor: Element | null = parent;
+            ancestor && ancestor !== surface;
+            ancestor = ancestor.parentElement
+          ) {
+            if (getComputedStyle(ancestor).overflowX !== "visible")
+              bounds.push(ancestor.getBoundingClientRect());
+          }
           if (
             [...range.getClientRects()].some(
-              (rect) => rect.width > 0 && (rect.left < box.left - 1 || rect.right > box.right + 1),
+              (rect) =>
+                rect.width > 0 &&
+                bounds.some((bound) => rect.left < bound.left - 1 || rect.right > bound.right + 1),
             )
           )
             failures.push(node.textContent.trim());
