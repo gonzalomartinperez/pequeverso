@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "build_sha": "8865edd5ff9fe471f1eb335a195a33cbc8662898",
+  "presentation_runtime_sha": "ec32eb1a3bbcd11eae49f20dfb6da670ddce4b5d",
+  "producer_sha": "b7dcb0c27d214cb1b560a8ee6101f858545646fc",
+  "public_contract": "v1 revision 1.4",
+  "desktop_css_viewport": [1440, 1000],
+  "desktop_css_panel": [408, 560],
+  "mobile_css_viewport": [390, 844],
+  "device_pixel_ratio": 2,
+  "provider": "fixture",
+  "paid_provider_requests": 0,
+  "production_assistant": "disabled",
+  "rights": "Pequeverso-owned interface and existing repository media under LICENSE-CONTENT.md. Public fixture questions only; no customer data.",
+  "capture_result": {
+    "passed": 4,
+    "failed": 0,
+    "flaky": 0,
+    "retries": 0,
+    "process_seconds": 108.567,
+    "note": "Two viewport cases were each discovered twice because the external recipe archive was inside testDir. Both passed; final files come from the same recipe/runtime/config. No provider call."
+  },
+  "review": "Implementing agent and ROOT independent agent inspected each of the 14 selected PNGs at original detail on 2026-10-12; approved composition, legibility, alignment and disclosed scroll context. No human review claimed.",
+  "files": [
+    {
+      "file": "01-Desktop-Boton.png",
+      "sha256": "5604932827d387823b7f3347ffa499b8f41d5f241da9656c735feff5372f5cb4",
+      "bytes": 1564486,
+      "width": 2880,
+      "height": 2000,
+      "source": "actual Chromium rendered page or panel screenshot",
+      "mode": "fixture"
+    },
+    {
+      "file": "02-Desktop-Bienvenida.png",
+      "sha256": "36b4b102b72567b2d91e31391142e157b161f710576f2973df3e64b939fac8a4",
+      "bytes": 1246524,
+      "width": 2880,
+      "height": 2000,
+      "source": "actual Chromium rendered page or panel screenshot",
+      "mode": "fixture"
+    },
+    {
+      "file": "03-Desktop-Conversacion.png",
+      "sha256": "32d7d380f6e74d87750439b08d07d6dba0700d136172bdd8508c1cd27f7f06bd",
+      "bytes": 1287895,
+      "width": 2880,
+      "height": 2000,
+      "source": "actual Chromium rendered page or panel screenshot",
+      "mode": "fixture"
+    },
+    {
+      "file": "04-Desktop-Espera.png",
+      "sha256": "1e68ac9d0e4fa4d436e5736ababb405d323e714e9cd0dd12ed707f6105b2ca1d",
+      "bytes": 1217134,
+      "width": 2880,
+      "height": 2000,
+      "source": "actual Chromium rendered page or panel screenshot",
+      "mode": "fixture"
+    },
+    {
+      "file": "05-Mobile-Bienvenida.png",
+      "sha256": "21bc294fc2f43680b194bdd6bd7eac8b70d7257e0fc049b8b95a63cd561e13fa",
+      "bytes": 97747,
+      "width": 780,
+      "height": 1688,
+      "source": "actual Chromium rendered page or panel screenshot",
+      "mode": "fixture"
+    },
+    {
+      "file": "06-Mobile-Conversacion.png",
+      "sha256": "531dc4cd92c7137bd766a185a5497a10ba7a2ba80f1f98542ec8b74b8ba94390",
+      "bytes": 204944,
+      "width": 780,
+      "height": 1688,
+      "source": "actual Chromium rendered page or panel screenshot",
+      "mode": "fixture"
+    },
+    {
+      "file": "desktop-bienvenida-detalle.png",
+      "sha256": "ed0bbc6c501d7d1c2915ed6abe1b04173c76ac04734a7117047e5516672f3ce5",
+      "bytes": 104411,
+      "width": 816,
+      "height": 1120,
+      "source": "actual Chromium rendered page or panel screenshot",
+      "mode": "fixture"
+    },
+    {
+      "file": "desktop-espera-detalle.png",
+      "sha256": "dc34e5f354a035a78dc1af75471b42cbdf02f3c4cbc2608425f8ad0120086cd8",
+      "bytes": 78299,
+      "width": 816,
+      "height": 1120,
+      "source": "actual Chromium rendered page or panel screenshot",
+      "mode": "fixture"
+    },
+    {
+      "file": "desktop-streaming-detalle.png",
+      "sha256": "1ede978b41476e3e6e41a16679382f2ca15da48f3706705a9ffd35c14cd0110b",
+      "bytes": 99663,
+      "width": 816,
+      "height": 1120,
+      "source": "actual Chromium rendered page or panel screenshot",
+      "mode": "fixture"
+    },
+    {
+      "file": "desktop-respuesta-fuentes-detalle.png",
+      "sha256": "e71d71bf1bab8d1d2a9abb1774fac7c4bd22fc5d00b39ee2c6cbd5ac5c0b407c",
+      "bytes": 141500,
+      "width": 816,
+      "height": 1120,
+      "source": "actual Chromium rendered page or panel screenshot",
+      "mode": "fixture"
+    },
+    {
+      "file": "desktop-conversacion-restaurada-detalle.png",
+      "sha256": "52dbe2601fdd89b376980c443b04638f6bb16b4e71c8b957868622e82bbed4e5",
+      "bytes": 123139,
+      "width": 816,
+      "height": 1120,
+      "source": "actual Chromium rendered page or panel screenshot",
+      "mode": "fixture"
+    },
+    {
+      "file": "desktop-error-conexion-detalle.png",
+      "sha256": "3042fc54fd35fde306d57d59405d802bea6f760cb30ee51eded66c58df8f4e70",
+      "bytes": 118848,
+      "width": 816,
+      "height": 1120,
+      "source": "actual Chromium rendered page or panel screenshot",
+      "mode": "fixture"
+    },
+    {
+      "file": "mobile-producto-precio-acciones-detalle.png",
+      "sha256": "69baf7a478f41d0c19cff46667b33b28feca31f59d0624a950e74017af2c7cce",
+      "bytes": 207616,
+      "width": 780,
+      "height": 1672,
+      "source": "actual Chromium rendered page or panel screenshot",
+      "mode": "fixture"
+    },
+    {
+      "file": "mobile-error-conexion-detalle.png",
+      "sha256": "5c03e0d44f4525a908216c093a23003992429acea75dc477aee2a397ecb7f5af",
+      "bytes": 171473,
+      "width": 780,
+      "height": 1672,
+      "source": "actual Chromium rendered page or panel screenshot",
+      "mode": "fixture"
+    }
+  ]
+}

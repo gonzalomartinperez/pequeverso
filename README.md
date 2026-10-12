@@ -4,12 +4,12 @@ Printable learning resources for families with children aged 3–7. This reposit
 
 [![CI](https://github.com/gonzalomartinperez/pequeverso/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/gonzalomartinperez/pequeverso/actions/workflows/ci.yml)
 [![Nightly](https://github.com/gonzalomartinperez/pequeverso/actions/workflows/nightly.yml/badge.svg)](https://github.com/gonzalomartinperez/pequeverso/actions/workflows/nightly.yml)
-[![Node 24LTS](https://img.shields.io/badge/Node-24_LTS-43853d?logo=nodedotjs&logoColor=white)](https://github.com/nodejs/Release#release-schedule)
+[![Node 24 LTS](https://img.shields.io/badge/Node-24_LTS-43853d?logo=nodedotjs&logoColor=white)](https://github.com/nodejs/Release#release-schedule)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)](package.json)
 [![React 19](https://img.shields.io/badge/React-19-087ea4?logo=react&logoColor=white)](package.json)
-[![TypeScriptstrict](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)](tsconfig.json)
+[![TypeScript strict](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)](tsconfig.json)
 [![Tailwind 4](https://img.shields.io/badge/Tailwind-4-0f6f83?logo=tailwindcss&logoColor=white)](docs/design-system.md)
-[![Assistantdisabled](https://img.shields.io/badge/Assistant-DISABLED-003068)](docs/assistant.md)
+[![Assistant disabled](https://img.shields.io/badge/Assistant-DISABLED-003068)](docs/assistant.md)
 
 > **The assistant remains disabled in publishable builds.** No launcher, runtime or API traffic is emitted without explicit activation and a rebuild. Fixture previews demonstrate local behavior; they do not establish production readiness.
 >
@@ -69,6 +69,21 @@ Messages are rendered safely as text and supported formatting, with validated li
 | Future enabled build | Requires reviewed API origin, owner authorization and verified VPS backend | Not authorized by this implementation |
 
 [Behavior, contract and activation checklist](docs/assistant.md) · [Reproducible evidence and limitations](docs/verification/assistant.md).
+
+### See the actual interface
+
+These are high-resolution photographs of the **local fixture build**, at the default compact
+size. They show the real welcome, answer/source disclosure and complete product details; they
+are not screenshots of an activated production assistant.
+
+| Compact desktop welcome | Answer with its sources | Complete product card on mobile |
+|---|---|---|
+| <a href="docs/verification/assistant/2026-10-12/desktop-bienvenida-detalle.png"><img src="docs/verification/assistant/2026-10-12/desktop-bienvenida-detalle.png" width="300" alt="Spanish welcome with aligned chips and composer"></a> | <a href="docs/verification/assistant/2026-10-12/desktop-respuesta-fuentes-detalle.png"><img src="docs/verification/assistant/2026-10-12/desktop-respuesta-fuentes-detalle.png" width="300" alt="Fixture answer with expanded sources and composer"></a> | <a href="docs/verification/assistant/2026-10-12/mobile-producto-precio-acciones-detalle.png"><img src="docs/verification/assistant/2026-10-12/mobile-producto-precio-acciones-detalle.png" width="285" alt="Full product summary, price caveats, product actions and follow-up questions"></a> |
+
+[Open the detailed gallery](docs/verification/assistant/2026-10-12/README.md) for original PNGs,
+full-window context, waiting, streaming, retained drafts and safe network-error states. Each photo
+has source/API provenance and a SHA-256 in its [manifest](docs/verification/assistant/2026-10-12/manifest.json).
+
 
 ## Clean checkout
 

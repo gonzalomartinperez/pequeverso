@@ -32,8 +32,26 @@ short-header/clear-confirmation cases passed. The two failures remain recorded: 
 verification and the two-width mobile-controls case exhausted their existing 45 s limits. Their
 root cause is not established; this is not a completely green local browser run. An earlier
 interrupted attempt exited 143 before JSON reporting, with unknown case results; its raw files
-and owned orphan-process cleanup receipt are preserved. Exact-head full CI and the remaining
-focused revalidation are required before integration.
+and owned orphan-process cleanup receipt are preserved. Exact-head full CI is required before
+integration; the isolated revalidation below does not relabel the original full run.
+
+At final producer pin source `8865edd5ff9fe471f1eb335a195a33cbc8662898`, the unchanged two failing
+Firefox cases passed once, retries 0, in 95.205 s test time / 97.739 s process time. Their 45 s case
+limits, assertions and skips were not changed. `npm run check` passed in 127.335 s (160 unit tests,
+14-page disabled export, guard 127 and budgets); skills passed in 0.995 s and the fixture build
+in 77.839 s. All 16 public playground cases passed in 175.641 s test time / 179.398 s process time,
+covering the real home and landing catalogs, keyboard/touch and reduced motion. The existing
+200 % text checks passed home and landing at both 320/390 px in Chromium, Firefox and WebKit:
+6 passed, 4 configuration skips, 0 retries, 110.244 s test time / 113.232 s process time.
+
+The [DPR-2 photography gallery](assistant/2026-10-12/README.md) includes all six requested full-window
+states plus legible details of waiting, real fixture SSE, sources, the full product card, retained
+drafts and network errors. Every selected image was inspected at original detail by the implementing
+agent. The image manifest keeps the exact build/runtime/API SHAs, dimensions and hashes. The original
+external photography recipe discovered its two viewport cases twice through an archive inside its
+test directory: 4 passed, 0 failed/flaky/retries, 108.567 s process time; this is recorded explicitly.
+A portable documentation-only recipe is outside the normal CI test directory and retains the
+unchanged behavioral gates.
 
 Three separately authorized storefront corrections preserve facts, checkout, consent and tracking:
 the local Includes counter aligns the actual “414” text range with its tile (offset 7.5/6.5/4.5 px
