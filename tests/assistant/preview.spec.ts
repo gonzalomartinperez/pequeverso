@@ -26,7 +26,10 @@ test("captures the local assistant preview", async ({ page, context }, info) => 
   await launcher.click();
   const panel = page.getByTestId("assistant-panel");
   await expect(panel).toHaveAttribute("data-phase", "ready");
-  if (!mobile) await panel.getByRole("button", { name: "Ampliar panel" }).click();
+  if (!mobile) {
+    await expect(panel).toHaveAttribute("data-size", "compact");
+    await expect(panel).toHaveAttribute("role", "region");
+  }
   await expect(panel.getByRole("region", { name: "Preguntas para empezar" })).toBeVisible();
   await page.screenshot({
     path: `${SHOTS}/${mobile ? "05-Mobile-Bienvenida" : "02-Desktop-Bienvenida"}.png`,

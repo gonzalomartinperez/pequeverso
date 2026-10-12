@@ -11,7 +11,7 @@ Advisory, read-only helper that answers questions about the store's products wit
 | Code in `src/features/assistant/` (domain, application, adapters, presentation, entry) | Implemented |
 | Default build (`npm run build`) | Disabled and compiled out; verified by `npm run check:assistant-disabled` |
 | Enabled verification build against the fixture API | Implemented: `npm run test:e2e:assistant` (never publish) |
-| Real model (`gpt-6-luna`), production API, hostname, CORS in production | **Not** done: owner authorization pending |
+| Store connected to the deployed API, production hostname and CORS | **Not exercised** in this repository; storefront activation is not authorized. Real-model evaluation evidence belongs to the API repository. |
 | Privacy-policy section for the assistant | **Not** written in `/privacidad/`: required before activation |
 
 ## Switch
@@ -97,6 +97,36 @@ no storefront link can become protocol-relative) (store origin, plus `consumer.h
   opaque fallback and reduced-transparency preference support. No voice, tool or task actions.
 - No tracking, analytics or replay. Nothing is stored in the browser except the API's HttpOnly
   cookie.
+
+## Presentation and proportional controls
+
+The default desktop surface is compact: at 16 px root text it is at most 408×560 px, anchored near the
+bottom-right corner and leaves the store usable. Preview screenshots open this default surface;
+expanded previews, if included, are explicitly labelled. Expanding remains a visitor action and
+changes the surface to a modal dialog. Phones retain the viewport-aware modal layout.
+
+The toolbar combines a 28 px brand mark, 14 px title, visible IA/AI disclosure badge and 18 px icons.
+Every icon and language control retains a 44 px physical target; smaller artwork does not shrink
+its hit area. The complete AI disclosure remains the accessible panel description. Text grows and
+wraps when enlarged; short viewports keep scrollable header, transcript and composer regions.
+
+Welcome copy is concise, the greeting is not another raised landing-page card, and known opening
+questions use compact natural-width chips. Abbreviations are an exact allowlist of existing
+questions in assistant-local copy: the accessible name/title and the HTTP request still carry the
+complete original question. Unrecognized API questions keep their full visible text. This does
+not add catalog knowledge or change the contract. Product cards use a 72 px thumbnail and preserve
+authorized summaries, age ranges, resources, price notes/confirmation and navigation actions.
+
+The transcript uses its full reading width while the latest-answer control is absent. When the
+visitor scrolls away from the latest answer, the existing 68 px gutter separates the 44 px control
+from the reading column. Returning to the latest answer restores full width and follows new
+content. Neither operation initiates or retries a generation.
+
+Reference implementation inspected read-only: `gonzalomartinperez/portfolio` commit
+`246c4892276de3cf0d2ee950b8eabb8159050172`, specifically its native host and chat presentation.
+The adaptation adopts proportional typography and separates icon artwork from hit-area geometry;
+it retains Pequeverso fonts, colors, copy, contract and activation boundary, and imports no
+portfolio identity, theme selector, history sidebar or unsupported feedback capabilities.
 
 ## Optional visitor context (contract v1 revision1.3)
 

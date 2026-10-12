@@ -1,7 +1,7 @@
 "use client";
 import { assistantCopy as enCopy } from "@content/en/assistant";
 import { assistantCopy as esCopy } from "@content/es/assistant";
-import { ChevronDown, Globe, Maximize2, Minimize2, Minus } from "lucide-react";
+import { Maximize2, Minimize2, Minus } from "lucide-react";
 import {
   type KeyboardEvent,
   type RefObject,
@@ -254,45 +254,45 @@ export default function AssistantPanel({
               <header
                 className={cx(
                   styles.header,
-                  "on-navy flex flex-wrap items-center gap-x-2 gap-y-1 bg-navy py-3 ps-4 pe-2",
+                  "on-navy flex flex-wrap items-center gap-x-2 gap-y-1 bg-navy py-2 ps-3 pe-2",
                 )}
               >
-                <img
-                  src={avatarSrc}
-                  alt=""
-                  width={40}
-                  height={40}
-                  className="size-10 shrink-0 rounded-full bg-white"
-                />
-                <div className="min-w-[min(100%,11rem)] flex-1 [overflow-wrap:anywhere]">
-                  <h2
-                    id={titleId}
-                    className="m-0 font-sans text-base leading-tight font-extrabold text-white"
-                  >
-                    {t.name}
-                  </h2>
-                  <p id={descriptionId} className="m-0 text-tiny text-on-navy">
-                    {t.aiDisclosure}
-                  </p>
+                <div className={styles.headerIdentity}>
+                  <img
+                    src={avatarSrc}
+                    alt=""
+                    width={28}
+                    height={28}
+                    className={cx(styles.headerMark, "rounded-full bg-white")}
+                  />
+                  <div className="min-w-0 [overflow-wrap:anywhere]">
+                    <h2 id={titleId} className={cx(styles.headerTitle, "m-0 font-sans font-bold text-white")}>
+                      {t.name}
+                      <span
+                        aria-hidden="true"
+                        className="ms-1.5 inline-block rounded-sm bg-white/10 px-1 py-0.5 align-middle text-[0.75rem] leading-none font-semibold text-on-navy"
+                      >
+                        {t.aiBadge}
+                      </span>
+                    </h2>
+                    <p id={descriptionId} className="sr-only">
+                      {t.aiDisclosure}
+                    </p>
+                  </div>
                 </div>
                 <div className="ms-auto flex max-w-full flex-wrap items-center justify-end gap-1">
-                  <label
-                    className={cx(
-                      styles.languageControl,
-                      "flex min-h-11 items-center gap-1 rounded-pill ring-1 ring-inset ring-white/25 px-2",
-                    )}
-                  >
-                    <Globe aria-hidden="true" className="size-4" />
+                  <label className={cx(styles.languageControl, "flex min-h-[44px] items-center rounded-md")}>
                     <span className="sr-only">{t.languageLabel}</span>
                     <select
                       aria-label={t.languageLabel}
+                      title={t.languageLabel}
                       value={locale}
                       onChange={(event) => {
                         const next = event.target.value === "en" ? "en" : "es";
                         assistant.setLocale(next);
                         onLocaleChange(next);
                       }}
-                      className="min-h-11 min-w-11 appearance-none rounded-none bg-transparent px-1 text-small font-bold text-white"
+                      className="min-h-[44px] w-[44px] appearance-none rounded-md bg-transparent text-center text-small font-bold text-white"
                     >
                       <option value="es" className="bg-navy text-white">
                         ES
@@ -301,7 +301,6 @@ export default function AssistantPanel({
                         EN
                       </option>
                     </select>
-                    <ChevronDown aria-hidden="true" className="size-3 shrink-0" />
                   </label>
                   {clearTrigger}
                   {!phone && (

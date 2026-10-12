@@ -15,13 +15,24 @@ export const launcherCopy = {
 export const assistantCopy = {
   name: "Asistente Pequeverso",
   aiDisclosure: "Asistente con IA. Usa la información de la tienda.",
+  aiBadge: "IA",
   privacyNote: "No escribas datos personales ni de tus hijos. ",
   privacyLink: "Cómo tratamos tus mensajes",
 
   greetingTitle: "¡Hola! ¿En qué te ayudo?",
-  greetingBody:
-    "Pregúntame qué incluye cada material, para qué edades es, cómo se imprime o cómo se usa en casa. Te respondo con la información de la tienda.",
+  greetingBody: "Te ayudo a conocer los materiales, elegir por edad y resolver dudas sobre su uso.",
   startersLabel: "Preguntas para empezar",
+  // Only known opening questions receive shorter visual labels; the full question is sent unchanged.
+  starterLabels: {
+    "¿Qué incluye exactamente la compra?": "Qué incluye",
+    "¿Para qué edades se recomienda?": "Edades recomendadas",
+    "¿Tengo que imprimir todo el material?": "Impresión y uso",
+    "¿Cómo funciona la garantía de 7 días?": "Garantía",
+    "¿Qué incluye Grafismo Fonético?": "Qué incluye",
+    "¿Sirve para un niño de 4 años?": "Para niños de 4 años",
+    "¿Cómo se imprime y se usa en casa?": "Impresión y uso",
+    "¿Cómo recibo el material después de comprar?": "Entrega digital",
+  } as Record<string, string>,
   /** Fallback only: the API sends starters built from approved catalog topics. */
   starters: [
     "¿Qué incluye Grafismo Fonético?",

@@ -9,12 +9,18 @@ export const launcherCopy = {
 export const assistantCopy: AssistantCopy = {
   name: "Pequeverso Assistant",
   aiDisclosure: "AI assistant. Uses information from the store.",
+  aiBadge: "AI",
   privacyNote: "Do not enter personal information about you or your children. ",
   privacyLink: "How we handle your messages",
   greetingTitle: "Hi! How can I help?",
-  greetingBody:
-    "Ask what each material includes, which ages it is for, how to print it or use it at home. I answer using information from the store.",
+  greetingBody: "Explore the materials, find an option by age, or ask how to use them.",
   startersLabel: "Questions to get started",
+  starterLabels: {
+    "What does Grafismo Fonético include?": "What's included",
+    "Is it suitable for a 4-year-old?": "For a 4-year-old",
+    "How do I print it and use it at home?": "Printing and use",
+    "How do I receive the material after buying it?": "Digital delivery",
+  },
   starters: [
     "What does Grafismo Fonético include?",
     "Is it suitable for a 4-year-old?",

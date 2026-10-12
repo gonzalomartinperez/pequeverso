@@ -104,8 +104,8 @@ export function Transcript({
           aria-label={t.transcriptLabel}
           aria-busy={busy || undefined}
           className={cx(
-            "mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-5 cq-md:px-6",
-            !empty && styles.reader,
+            "mx-auto flex w-full max-w-3xl flex-col gap-4 px-3 py-3 cq-md:px-5",
+            !empty && showJump && styles.reader,
           )}
         >
           {children}

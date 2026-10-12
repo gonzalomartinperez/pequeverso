@@ -9,13 +9,18 @@ and refunds run on Hotmart. The only server endpoint is the Meta Conversions API
 (`POST /api/meta/events/`): core in `server/meta-capi.ts`, served by `scripts/serve-static.ts`
 (export) and by a standalone-only route handler (Node target).
 
+```mermaid
+flowchart LR
+  Visitor[Visitor] --> Store[Public store]
+  Products[Typed product registry] --> Build[Next.js static or standalone build]
+  Build --> Store
+  Store -->|Explicit principal CTA| Checkout[Hotmart checkout]
+  Store -->|Post-purchase widget| Funnel[Hotmart sales funnel]
+  Store -->|Guidance links only| Delivery[Hotmart consumer access]
+  Store -.->|Only after separate activation| Native[Native conversation UI]
+  Native -->|Credentialed HTTP/SSE /api/v1| API[Separate assistant API]
 ```
-visitor ──► pequeverso.com (static HTML/CSS, small client islands)
-              │  principal CTA (allowlisted params)            Hotmart checkout (pay.hotmart.com)
-              │  post-purchase pages embed the Hotmart          Hotmart sales-funnel widget decides
-              │  sales-funnel widget (Sí / No)                  upsell / downsell server-side
-              └─ /grafismo-fonetico/gracias/ links to           consumer.hotmart.com (delivery)
-```
+
 
 ## Build targets
 
@@ -126,6 +131,38 @@ repository). `src/app/layout.tsx` renders `AssistantSlot`, which imports the cli
 (`scripts/check-assistant-disabled.ts`). Layers: `domain` (pure) → `application` (controller, ports)
 → `adapters` (HTTP/SSE, validation) → `presentation` (React), wired only in `entry.ts`
 (`tests/unit/assistant/boundaries.test.ts`). Details and activation: `docs/assistant.md`, ADR-0008.
+
+### Assistant ownership and runtime
+
+```mermaid
+flowchart TB
+  Slot[Build-time AssistantSlot] -->|Flag unset or false| Absent[No launcher runtime or API traffic]
+  Slot -->|Isolated fixture or separately authorized build| Host[Root-mounted lazy host]
+  Host --> View[React presentation]
+  View --> Controller[Framework-free conversation controller]
+  Controller --> Domain[Pure state and safe-link policy]
+  Controller --> Ports[API and clock ports]
+  Wiring[entry.ts composition] --> Ports
+  Wiring --> Adapter[Validated HTTP and bounded SSE adapters]
+  Adapter --> API[External API: session CSRF idempotency and history]
+```
+
+The store owns presentation, safe rendering, its compatible contract pin and publish guards.
+The API owns provider credentials, grounding and conversation persistence; the private backoffice
+owns authenticated administration. vps-ops owns future deployment, proxy and shared infrastructure.
+The storefront contains no provider key, public assistant endpoint, database or backoffice login.
+
+At standard text size, the desktop launcher opens a compact 408×560 px maximum region without a
+scrim; expanding is an explicit choice. Mobile follows VisualViewport and safe areas. The single
+mounted controller survives minimizing, client navigation and assistant-local language changes.
+Question chips may abbreviate known labels, but accessible names and submitted questions stay
+complete. Sources and product facts stay available in the scrollable transcript. A latest-answer
+control reserves its own reading gutter only while visible; it never overlays the text.
+
+Default publishable artifacts must pass `check:assistant-disabled` and record
+`"assistant": "disabled"` in `build-info.json`. Local fixture screenshots do not validate a real
+provider, physical phone keyboard or production VPS cookies/CORS/proxy behavior. See
+[assistant verification](verification/assistant.md) and [activation requirements](assistant.md).
 
 ## Commerce and tracking boundaries
 

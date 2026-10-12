@@ -17,26 +17,30 @@ export function EmptyState({
   const { t, locale } = usePresentation();
   const questions = locale === "es" && starters.length ? starters : t.starters;
   return (
-    <li className="flex flex-col gap-6 pt-2">
+    <li className="flex flex-col gap-4">
       <div className={styles.greeting}>
-        <span aria-hidden="true" className="grid size-11 place-items-center rounded-full bg-navy text-gold">
-          <Sparkles className="size-6" />
+        <span aria-hidden="true" className="grid size-8 place-items-center rounded-md bg-navy text-gold">
+          <Sparkles className="size-[18px]" />
         </span>
-        <h2 className="font-display text-h3 font-bold text-heading">{t.greetingTitle}</h2>
-        <p className="max-w-[60ch] text-base text-body">{t.greetingBody}</p>
+        <h2 className="font-display text-[1.375rem] leading-tight font-bold text-heading">
+          {t.greetingTitle}
+        </h2>
+        <p className="max-w-[60ch] text-small leading-relaxed text-body">{t.greetingBody}</p>
       </div>
       <section aria-label={t.startersLabel} className="flex flex-col gap-2">
         <h3 className={labelClass}>{t.startersLabel}</h3>
-        <ul className="grid gap-2 cq-lg:grid-cols-2">
+        <ul className="flex flex-wrap gap-2">
           {questions.map((question) => (
             <li key={question}>
               <button
                 type="button"
-                className={`${chipClass} w-full justify-start shadow-sm`}
+                className={`${chipClass} justify-start`}
+                aria-label={question}
+                title={question}
                 disabled={disabled}
                 onClick={() => onAsk(question)}
               >
-                {question}
+                {t.starterLabels[question] ?? question}
               </button>
             </li>
           ))}

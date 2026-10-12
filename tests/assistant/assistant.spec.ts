@@ -94,6 +94,29 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await shot(page, info.project.name, "star-launcher-open");
   });
 
+  test("short question chips retain and send the complete API question", async ({ page }, info) => {
+    const calls = apiCalls(page);
+    await page.goto(start(info.project.name, "/soporte/"));
+    await openPanel(page);
+    const question = "¿Qué incluye exactamente la compra?";
+    const chip = panel(page).getByRole("button", { name: question, exact: true });
+    await expect(chip).toHaveText("Qué incluye");
+    await expect(chip).toHaveAttribute("title", question);
+    await chip.click();
+    await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    const messages = calls.filter(
+      (call) => call.url().endsWith("/api/v1/messages") && call.method() === "POST",
+    );
+    expect(messages).toHaveLength(1);
+    expect(messages[0]?.postDataJSON().content).toBe(question);
+    await expect(
+      panel(page)
+        .getByRole("list", { name: "Conversación con el asistente" })
+        .getByRole("paragraph")
+        .filter({ hasText: question }),
+    ).toBeVisible();
+  });
+
   test("answers a question with a streamed, grounded answer", async ({ page }, info) => {
     const calls = apiCalls(page);
     // Exercise a resize notification before the browser delivers the reader's scroll event.
@@ -181,6 +204,25 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         );
       })
       .toBe(true);
+    const readingPadding = () =>
+      paragraph.evaluate((element) => {
+        const list = element.closest("ol");
+        if (!list) throw new Error("Transcript list was not found");
+        const style = getComputedStyle(list);
+        return {
+          start: Number.parseFloat(style.paddingInlineStart),
+          end: Number.parseFloat(style.paddingInlineEnd),
+        };
+      });
+    // Full-width text while following; only an actual jump control reserves reading space.
+    await expect.poll(readingPadding).toEqual(
+      await paragraph.evaluate((element) => {
+        const list = element.closest("ol");
+        if (!list) throw new Error("Transcript list was not found");
+        const start = Number.parseFloat(getComputedStyle(list).paddingInlineStart);
+        return { start, end: start };
+      }),
+    );
     const reader = await paragraph.evaluate((element) => {
       let scroller = element.parentElement;
       while (scroller && getComputedStyle(scroller).overflowY !== "auto") scroller = scroller.parentElement;
@@ -200,6 +242,23 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await expect(paragraph).toBeInViewport();
     const jump = panel(page).getByRole("button", { name: "Ir a la última respuesta" });
     await expect(jump).toBeVisible();
+    await expect
+      .poll(async () => {
+        const geometry = await readingPadding();
+        return geometry.end > geometry.start;
+      })
+      .toBe(true);
+    await expect
+      .poll(() =>
+        paragraph.evaluate((element) => {
+          let scroller = element.parentElement;
+          while (scroller && getComputedStyle(scroller).overflowY !== "auto")
+            scroller = scroller.parentElement;
+          if (!scroller) throw new Error("Transcript scroller was not found");
+          return scroller.scrollTop;
+        }),
+      )
+      .toBe(reader.after);
     await jump.focus();
     await page.keyboard.press("Tab");
     await page.keyboard.press("Shift+Tab");
@@ -218,6 +277,12 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     if (isMobile(info.project.name)) await shot(page, info.project.name, "final-answer-text-visible");
     await jump.click();
     await expect(jump).toBeHidden();
+    await expect
+      .poll(async () => {
+        const geometry = await readingPadding();
+        return geometry.start === geometry.end;
+      })
+      .toBe(true);
     await expect
       .poll(() =>
         paragraph.evaluate((element) => {
@@ -310,6 +375,26 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
       false,
     );
     await expect(page.locator("html")).not.toHaveAttribute("data-motion-hold", "");
+    const compact = await panel(page).boundingBox();
+    expect(compact?.width ?? 0).toBeLessThanOrEqual(416);
+    expect(compact?.height ?? 0).toBeLessThanOrEqual(560);
+    const starterButtons = panel(page)
+      .getByRole("region", { name: "Preguntas para empezar" })
+      .getByRole("button");
+    const composer = await panel(page).getByRole("textbox", { name: "Escribe tu pregunta" }).boundingBox();
+    for (const starter of await starterButtons.all()) {
+      const bounds = await starter.boundingBox();
+      expect(bounds).not.toBeNull();
+      if (!bounds || !composer) throw new Error("Opening questions and composer must be laid out");
+      expect(bounds.y + bounds.height).toBeLessThanOrEqual(composer.y);
+      await expect(starter).toHaveAccessibleName(/.+/);
+      expect(
+        await starter.evaluate((button) => {
+          const box = button.getBoundingClientRect();
+          return button.contains(document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2));
+        }),
+      ).toBe(true);
+    }
     await shot(page, info.project.name, "compact");
     await panel(page).getByRole("button", { name: "Ampliar panel" }).click();
     await expect(panel(page)).toHaveAttribute("data-size", "expanded");

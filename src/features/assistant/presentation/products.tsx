@@ -34,7 +34,7 @@ function Thumb({ product }: { product: Product }) {
     return (
       <div
         aria-hidden="true"
-        className="grid aspect-[4/3] w-full place-items-center bg-mint text-icon cq-md:w-40"
+        className={cx(styles.productThumb, "grid place-items-center rounded-md bg-mint text-icon")}
       >
         <BookOpen className="size-7" />
       </div>
@@ -47,7 +47,7 @@ function Thumb({ product }: { product: Product }) {
       height={product.image.height}
       loading="lazy"
       decoding="async"
-      className="aspect-[4/3] w-full bg-mint object-cover cq-md:aspect-auto cq-md:w-40 cq-md:shrink-0"
+      className={cx(styles.productThumb, "rounded-md bg-mint")}
     />
   );
 }
@@ -57,15 +57,12 @@ function ProductCard({ product, resources }: { product: Product; resources: Reso
   // The same product can appear in several answers: ids must be unique per rendered card.
   const headingId = useId();
   return (
-    <article
-      aria-labelledby={headingId}
-      className="cq overflow-hidden rounded-lg border border-line bg-card shadow-sm"
-    >
-      <div className="flex flex-col cq-md:flex-row">
-        <Thumb product={product} />
-        <div className="flex min-w-0 flex-1 flex-col gap-3 p-4">
-          <div className="flex flex-col gap-1.5">
-            <h3 id={headingId} className="font-display text-h3 font-bold text-heading">
+    <article aria-labelledby={headingId} className="cq rounded-lg border border-line bg-card p-3">
+      <div className="flex min-w-0 flex-col gap-2.5">
+        <div className="flex min-w-0 items-start gap-3">
+          <Thumb product={product} />
+          <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+            <h3 id={headingId} className={cx(styles.productTitle, "font-sans font-bold text-heading")}>
               {product.name}
             </h3>
             <p className="flex flex-wrap gap-1.5 text-tiny font-bold">
@@ -77,6 +74,8 @@ function ProductCard({ product, resources }: { product: Product; resources: Reso
               )}
             </p>
           </div>
+        </div>
+        <div className="flex min-w-0 flex-col gap-2.5">
           <p className="line-clamp-3 text-small text-body">{product.summary}</p>
           <PriceLine price={product.price} />
           <div className="flex flex-wrap gap-2">
