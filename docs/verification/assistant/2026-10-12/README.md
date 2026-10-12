@@ -51,7 +51,7 @@ Neither view invents percentages, searches, tools or provider stages.
 ## Product details and continuity
 
 This mobile photograph shows the entire product card, including its full summary, age, catalog
-price, taxes/currency explanation, confirmation date and both permitted product-page actions.
+price, taxes/currency explanation, catalog-reference date and both permitted product-page actions.
 The following questions and composer are visible too. This is a genuine scroll position in the
 conversation, not stitched content. Prices are a **dated catalog snapshot**, not a purchase quote.
 

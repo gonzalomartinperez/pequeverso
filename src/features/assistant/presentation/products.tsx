@@ -10,8 +10,9 @@ import { usePresentation } from "./context";
 import { labelClass, SafeLink } from "./parts";
 
 /**
- * A price appears only when the API sends `price` (it withholds prices it cannot confirm as
- * current), always with its tax and local-currency notes and the date it was confirmed. The
+ * A price appears only when the API supplies a dated public-catalog reference, with its tax and
+ * local-currency notes. The legacy `verifiedAt` field dates the catalog export, not a live merchant
+ * confirmation; Hotmart establishes the final total. The
  * contract has no stock, rating, discount or urgency field, so none is ever shown.
  */
 function PriceLine({ price }: { price: Price | null }) {
@@ -24,7 +25,7 @@ function PriceLine({ price }: { price: Price | null }) {
         <span className="text-tiny text-subtle">{price.taxNote}</span>
       </p>
       <p className="text-tiny text-subtle">{price.note}</p>
-      <p className="text-tiny text-subtle">{t.priceVerified(formatDay(price.verifiedAt, locale))}</p>
+      <p className="text-tiny text-subtle">{t.priceReferenceDate(formatDay(price.verifiedAt, locale))}</p>
     </div>
   );
 }
@@ -141,10 +142,10 @@ function Comparison({ products, resources }: { products: Product[]; resources: R
     { label: t.ageRange, cell: (product) => product.ageRange },
     {
       label: t.price,
-      // A price never appears without its notes and confirmation date.
+      // Catalog reference prices retain their notes and export date; no merchant confirmation.
       cell: (product) =>
         product.price
-          ? `${product.price.display} ${product.price.taxNote}. ${product.price.note} ${t.priceVerified(formatDay(product.price.verifiedAt, locale))}.`
+          ? `${product.price.display} ${product.price.taxNote}. ${product.price.note} ${t.priceReferenceDate(formatDay(product.price.verifiedAt, locale))}`
           : t.priceUnverified,
     },
     {

@@ -115,7 +115,7 @@ questions use compact natural-width chips. Abbreviations are an exact allowlist 
 questions in assistant-local copy: the accessible name/title and the HTTP request still carry the
 complete original question. Unrecognized API questions keep their full visible text. This does
 not add catalog knowledge or change the contract. Product cards use a 72 px thumbnail and preserve
-authorized summaries, age ranges, resources, price notes/confirmation and navigation actions.
+authorized summaries, age ranges, resources, price notes/catalog-reference date and navigation actions.
 
 Sources appear immediately after the answer and notices, before product recommendations. The accordion
 keeps its existing complete validated links; product cards, summaries, resources and actions remain

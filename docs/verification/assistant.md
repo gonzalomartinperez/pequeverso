@@ -78,7 +78,24 @@ and explain “Selección para esta respuesta”. The canonical nine-PDF product
 The deterministic presentation regression uses three actual published resources through a pinned
 SSE fixture at doubled text and both phone widths; it does not claim a model or persistence test.
 The reviewed guarantee gallery has zero resources, so the changed subset labels do not render there.
-Exact-source build/browser/CI receipts for this final increment are required before integration.
+The price date is also labelled “Referencia del catálogo del ….”: legacy `verified_at` is the
+export reference date, not a live Hotmart confirmation. Prices, dates and tax/conversion notes
+are unchanged; final payment totals remain Hotmart's responsibility. Render regressions forbid
+the old “Precio confirmado” claim. Original gallery/CI receipts are retained; affected photographs
+require a new exact-source gallery and independent review.
+
+For subset/source-scanner increment `0fa4d4dc78a3b8de9ab03431f91f5fb66a9054c3`, full check passed
+173.552 s (160 unit tests, disabled export/guard127), skills0.915 s and fixture build79.612 s.
+Six-project subset/preview verification passed8, skipped4 conditional preview projects, failed0,
+flaky0, retries0,152.544 s process time. The portable photography passed exactly2 cases,77.138 s.
+The final source's ordinary-clone history scan passed83 scanned commits. Re-adding the identical
+public-SHA provenance in a different isolated audit commit still produced a finding and exit1;
+an empty-history repository also failed. The first wording-only negative control returned0
+because the hash line was not added in that Git diff; its insufficient result is preserved.
+No audit commit was pushed, no history was rewritten, and no real key was read or printed.
+
+The later catalog-date increment still needs its own exact-source full build/browser/CI and
+photography receipts before integration.
 
 No provider calls, key reads, deployment or activation occurred in these storefront checks.
 Enabled previews are local fixture artifacts; every publishable export must still pass the strict

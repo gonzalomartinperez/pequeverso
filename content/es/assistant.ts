@@ -78,7 +78,7 @@ export const assistantCopy = {
   opensInNewTab: "(se abre en una pestaña nueva)",
   ageRange: "Edad",
   price: "Precio",
-  priceVerified: (date: string) => `Precio confirmado el ${date}`,
+  priceReferenceDate: (date: string) => `Referencia del catálogo del ${date}.`,
   priceUnverified: "Consulta el precio vigente en la página del material",
   resourcesLabel: "Materiales destacados",
   resourcesHint: "Selección para esta respuesta",
@@ -148,7 +148,7 @@ export const assistantCopy = {
 
 export type AssistantCopy = typeof assistantCopy;
 
-/** "5 de octubre" (date of a confirmed price), in the store's locale. */
+/** "5 de octubre" (catalog reference date in UTC), in the store's locale. */
 export function formatDay(iso: string, locale: "es" | "en" = "es"): string {
   return new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", timeZone: "UTC" }).format(
     new Date(iso),

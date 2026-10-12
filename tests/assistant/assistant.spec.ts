@@ -146,6 +146,8 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
       await expect(panel(page)).toHaveAttribute("data-phase", "completed");
       const product = panel(page).getByRole("article", { name: "Grafismo Fonético" });
       await expect(product.getByText(/Kit imprimible de 9 PDF y 414 páginas/)).toHaveCount(1);
+      await expect(product.getByText(/^Referencia del catálogo del .+\.$/)).toHaveCount(1);
+      await expect(product.getByText(/Precio confirmado/)).toHaveCount(0);
       const badge = product.getByText("3 destacados", { exact: true });
       await badge.scrollIntoViewIfNeeded();
       await expect(badge).toBeInViewport();
@@ -280,14 +282,15 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     const purchase = panel(page).getByRole("link", { name: "Ver opciones de compra" }).first();
     if (await purchase.count())
       await expect(purchase).toHaveAttribute("href", /^\/grafismo-fonetico\/#comprar$/);
-    // A price is shown only with its confirmation date; otherwise the honest fallback appears.
-    const confirmed = await panel(page)
-      .getByText(/Precio confirmado el/)
+    // A price is a dated catalog reference, not merchant confirmation; otherwise it is withheld.
+    const referenced = await panel(page)
+      .getByText(/Referencia del catálogo del/)
       .count();
     const withheld = await panel(page)
       .getByText("Consulta el precio vigente en la página del material")
       .count();
-    if (await panel(page).getByRole("article").count()) expect(confirmed + withheld).toBeGreaterThan(0);
+    if (await panel(page).getByRole("article").count()) expect(referenced + withheld).toBeGreaterThan(0);
+    await expect(panel(page).getByText(/Precio confirmado/)).toHaveCount(0);
     const message = calls.find((c) => c.url().endsWith("/api/v1/messages"));
     expect(message?.headers()["idempotency-key"]).toMatch(/^[A-Za-z0-9_-]{8,128}$/);
     expect(message?.headers()["x-csrf-token"]).toBeTruthy();
