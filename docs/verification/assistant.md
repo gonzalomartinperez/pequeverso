@@ -82,7 +82,8 @@ The price date is also labelled “Referencia del catálogo del ….”: legacy 
 export reference date, not a live Hotmart confirmation. Prices, dates and tax/conversion notes
 are unchanged; final payment totals remain Hotmart's responsibility. Render regressions forbid
 the old “Precio confirmado” claim. Original gallery/CI receipts are retained; affected photographs
-require a new exact-source gallery and independent review.
+were recaptured uniformly at `3514aca`; implementing and independent agents inspected all 14
+selected images at original detail. The original `8865edd` photography remains preserved.
 
 For subset/source-scanner increment `0fa4d4dc78a3b8de9ab03431f91f5fb66a9054c3`, full check passed
 173.552 s (160 unit tests, disabled export/guard127), skills0.915 s and fixture build79.612 s.
@@ -94,8 +95,29 @@ an empty-history repository also failed. The first wording-only negative control
 because the hash line was not added in that Git diff; its insufficient result is preserved.
 No audit commit was pushed, no history was rewritten, and no real key was read or printed.
 
-The later catalog-date increment still needs its own exact-source full build/browser/CI and
-photography receipts before integration.
+Catalog-date source `3514aca` passed full check (93.937 s), skills (0.470 s), and the
+isolated enabled fixture build (73.984 s). Its 18-case affected run remains **13 passed,
+4 conditional preview skips, 1 WebKit-mobile deadline, 0 flaky and 0 retries** (298.408 s test,
+303.454 s process). The original trace passed the 320 px subset geometry, then exhausted the
+shared 45 s deadline while reaching the 390 px visibility assertion. Neither a clipped-content
+cause nor a successful second-width assertion is claimed.
+
+The exact-source [CI 38316958678](https://github.com/gonzalomartinperez/pequeverso/actions/runs/38316958678)
+failed the native gate: **170 passed, 47 conditional skips, 7 failed and 4 flaky**. All failures
+and retries were in the new header geometry test. A separate actual-browser mutation/animation
+probe established `ready` during the own 220 ms panel entrance: computed target 44 px, running
+scale 0.990912, rendered width 43.600098 px. After the animation the transform was `none` and
+width exactly 44 px. The test now waits only for finite animations owned by the panel before
+measuring, preserving `>= 44`, every focus/geometry check and the existing deadlines/retries.
+The negative 43.99 px control still fails. The two subset widths are separate 45 s cases with
+identical assertions; the existing continuity case now also preserves draft/history across
+320↔390 resizes and retains its one-session/one-message assertions.
+
+A separate portable photography run at `3514aca` passed exactly two cases (78.862 s test,
+85.322 s process), with zero failures/flaky/retries. All 14 selected DPR-2 PNGs now show the
+current catalog-reference copy. Photography is not acceptance for the failed native gate.
+The originals, both failed runs and diagnostic probe remain preserved. The later test-only
+correction still requires affected browser revalidation and a completely green exact-head CI.
 
 No provider calls, key reads, deployment or activation occurred in these storefront checks.
 Enabled previews are local fixture artifacts; every publishable export must still pass the strict

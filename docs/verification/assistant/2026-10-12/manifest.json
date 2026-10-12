@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "build_sha": "8865edd5ff9fe471f1eb335a195a33cbc8662898",
-  "presentation_runtime_sha": "ec32eb1a3bbcd11eae49f20dfb6da670ddce4b5d",
+  "build_sha": "3514aca47482d6e57a8db224defa7dbad8990096",
+  "presentation_runtime_sha": "3514aca47482d6e57a8db224defa7dbad8990096",
   "producer_sha": "b7dcb0c27d214cb1b560a8ee6101f858545646fc",
   "public_contract": "v1 revision 1.4",
   "desktop_css_viewport": [1440, 1000],
@@ -13,14 +13,15 @@
   "production_assistant": "disabled",
   "rights": "Pequeverso-owned interface and existing repository media under LICENSE-CONTENT.md. Public fixture questions only; no customer data.",
   "capture_result": {
-    "passed": 4,
+    "passed": 2,
     "failed": 0,
     "flaky": 0,
     "retries": 0,
-    "process_seconds": 108.567,
-    "note": "Two viewport cases were each discovered twice because the external recipe archive was inside testDir. Both passed; final files come from the same recipe/runtime/config. No provider call."
+    "process_seconds": 85.322,
+    "test_seconds": 78.861922,
+    "note": "Portable repository recipe, two sequential viewport cases, fixture-only. Separate from failed native acceptance run."
   },
-  "review": "Implementing agent and ROOT independent agent inspected each of the 14 selected PNGs at original detail on 2026-10-12; approved composition, legibility, alignment and disclosed scroll context. No human review claimed.",
+  "review": "The implementing agent and ROOT independent agent individually inspected all 14 selected PNGs at original detail on 2026-10-12; approved composition, alignment, legibility and honest scroll context. No human review claimed.",
   "files": [
     {
       "file": "01-Desktop-Boton.png",
@@ -96,8 +97,8 @@
     },
     {
       "file": "desktop-streaming-detalle.png",
-      "sha256": "1ede978b41476e3e6e41a16679382f2ca15da48f3706705a9ffd35c14cd0110b",
-      "bytes": 99663,
+      "sha256": "3943dd0fc9fd94b30d1ea9636d5e005e09b951a7946e112b773cc3439b1f4dbf",
+      "bytes": 92913,
       "width": 816,
       "height": 1120,
       "source": "actual Chromium rendered page or panel screenshot",
@@ -132,8 +133,8 @@
     },
     {
       "file": "mobile-producto-precio-acciones-detalle.png",
-      "sha256": "69baf7a478f41d0c19cff46667b33b28feca31f59d0624a950e74017af2c7cce",
-      "bytes": 207616,
+      "sha256": "3bc4219dda6ba530cc3de772147e2426bfc20f23603ee6263b78ab08487b47d7",
+      "bytes": 208690,
       "width": 780,
       "height": 1672,
       "source": "actual Chromium rendered page or panel screenshot",
@@ -141,8 +142,8 @@
     },
     {
       "file": "mobile-error-conexion-detalle.png",
-      "sha256": "5c03e0d44f4525a908216c093a23003992429acea75dc477aee2a397ecb7f5af",
-      "bytes": 171473,
+      "sha256": "d22f8f1ceb86774eb0d884597c24eb8b5c1dcd7054443a9f4346307ecc3ae8aa",
+      "bytes": 172247,
       "width": 780,
       "height": 1672,
       "source": "actual Chromium rendered page or panel screenshot",

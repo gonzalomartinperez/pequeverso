@@ -1,4 +1,4 @@
 # Reviewed public Git SHA provenance, not a credential: the historical README placed
-# the words "API producer" next to committed backend source hashes. Ignore only this
+# the words "API producer" next to public Git source provenance hashes. Ignore only this
 # exact commit/path/rule/line fingerprint; later commits and other lines stay scanned.
 88f2dab5e089aebda7cd35298ebb2f991a6ee4bc:docs/verification/assistant/2026-10-12/README.md:generic-api-key:13

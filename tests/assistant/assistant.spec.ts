@@ -95,49 +95,49 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await shot(page, info.project.name, "star-launcher-open");
   });
 
-  test("a partial resource selection is distinguished from the full nine-PDF kit at 200 percent", async ({
-    page,
-  }) => {
-    const extra = grafismoResources.find((resource) => resource.id === "silabas-en-tus-manos");
-    if (!extra) throw new Error("The regression needs an actual published kit resource");
-    const sample = readFileSync("contracts/assistant-api/examples/stream.recommendation.sse", "utf8");
-    // This is a deterministic presentation fixture, not a backend/model/persistence claim.
-    const body = sample
-      .split("\n")
-      .map((line) => {
-        if (!line.startsWith("data: ")) return line;
-        const event = JSON.parse(line.slice(6)) as Record<string, unknown>;
-        if (event.type !== "message.completed") return line;
-        const message = event.message as Record<string, unknown>;
-        const selected = message.resources as unknown[];
-        if (selected.length !== 2) throw new Error("Review the pinned recommendation example selection");
-        return `data: ${JSON.stringify({
-          ...event,
-          message: {
-            ...message,
-            resources: [
-              ...selected,
-              {
-                id: `grafismo-fonetico/${extra.id}`,
-                product_id: "grafismo-fonetico",
-                title: extra.title,
-                pages: extra.pages,
-                description: extra.description,
-                image: null,
-              },
-            ],
-          },
-        })}`;
-      })
-      .join("\n");
-    await page.route(`${API}/api/v1/messages`, (route) =>
-      route.fulfill({
-        status: 200,
-        contentType: "text/event-stream",
-        body,
-      }),
-    );
-    for (const width of [320, 390]) {
+  for (const width of [320, 390]) {
+    test(`a partial resource selection is distinguished from the full nine-PDF kit at 200 percent (${width}px)`, async ({
+      page,
+    }) => {
+      const extra = grafismoResources.find((resource) => resource.id === "silabas-en-tus-manos");
+      if (!extra) throw new Error("The regression needs an actual published kit resource");
+      const sample = readFileSync("contracts/assistant-api/examples/stream.recommendation.sse", "utf8");
+      // This is a deterministic presentation fixture, not a backend/model/persistence claim.
+      const body = sample
+        .split("\n")
+        .map((line) => {
+          if (!line.startsWith("data: ")) return line;
+          const event = JSON.parse(line.slice(6)) as Record<string, unknown>;
+          if (event.type !== "message.completed") return line;
+          const message = event.message as Record<string, unknown>;
+          const selected = message.resources as unknown[];
+          if (selected.length !== 2) throw new Error("Review the pinned recommendation example selection");
+          return `data: ${JSON.stringify({
+            ...event,
+            message: {
+              ...message,
+              resources: [
+                ...selected,
+                {
+                  id: `grafismo-fonetico/${extra.id}`,
+                  product_id: "grafismo-fonetico",
+                  title: extra.title,
+                  pages: extra.pages,
+                  description: extra.description,
+                  image: null,
+                },
+              ],
+            },
+          })}`;
+        })
+        .join("\n");
+      await page.route(`${API}/api/v1/messages`, (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: "text/event-stream",
+          body,
+        }),
+      );
       await page.setViewportSize({ width, height: 844 });
       await page.goto("/soporte/");
       await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
@@ -197,8 +197,8 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         path: `${SHOTS}/resource-selection-${test.info().project.name}-${width}.png`,
         animations: "disabled",
       });
-    }
-  });
+    });
+  }
 
   test("short question chips retain and send the complete API question", async ({ page }, info) => {
     const calls = apiCalls(page);
@@ -679,8 +679,12 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await composer(page).fill("Mi borrador sin enviar");
     await panel(page).getByRole("button", { name: "Ampliar panel" }).click();
     await expect(composer(page)).toHaveValue("Mi borrador sin enviar");
-    await page.setViewportSize({ width: 390, height: 844 });
-    await expect(composer(page)).toHaveValue("Mi borrador sin enviar");
+    for (const width of [320, 390, 320, 390]) {
+      await page.setViewportSize({ width, height: 844 });
+      await expect(composer(page)).toHaveValue("Mi borrador sin enviar");
+      await expect(panel(page).getByText("¿Qué incluye el kit?", { exact: true })).toHaveCount(1);
+      await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+    }
     await page.setViewportSize({ width: 1440, height: 1000 });
     await panel(page).getByRole("button", { name: "Minimizar asistente" }).click();
     await expect(launcher(page)).toHaveAccessibleName("Abrir el asistente de Pequeverso");
@@ -849,6 +853,16 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         await page.goto("/soporte/");
         await openPanel(page);
         await expect(panel(page).getByRole("combobox")).toHaveCount(0);
+        // Ready can precede the panel's finite entrance animation. Measure its final layout,
+        // without waiting for descendant typing indicators or relaxing the 44 px target.
+        await panel(page).evaluate(async (element) => {
+          await Promise.all(
+            element
+              .getAnimations()
+              .filter((animation) => Number.isFinite(animation.effect?.getComputedTiming().endTime))
+              .map((animation) => animation.finished),
+          );
+        });
         const controls = panel(page).locator("header button");
         for (const control of await controls.all()) {
           const box = await control.boundingBox();

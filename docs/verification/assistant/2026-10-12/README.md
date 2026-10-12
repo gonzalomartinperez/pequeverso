@@ -9,12 +9,13 @@ Panel details are element screenshots, not enlarged layouts, generated mockups o
 verification artifact. The fixture API exercises sessions, cookies, CSRF and HTTP/SSE over
 throwaway self-signed HTTPS loopback. These photographs do not validate the model or the VPS.
 
-Build: `8865edd5ff9fe471f1eb335a195a33cbc8662898`; presentation runtime:
-`ec32eb1a3bbcd11eae49f20dfb6da670ddce4b5d`; reviewed backend source commit:
+Build: `3514aca47482d6e57a8db224defa7dbad8990096`; presentation runtime:
+`3514aca47482d6e57a8db224defa7dbad8990096`; reviewed backend source commit:
 `b7dcb0c27d214cb1b560a8ee6101f858545646fc` (public contract v1, revision 1.4).
 The [manifest](manifest.json) records dimensions, file hashes, configuration and capture receipts.
-The implementing agent and an independent agent inspected all 14 selected PNGs at original detail
-and approved their legibility, alignment and composition. This is agent review, not human review.
+The implementing agent and ROOT independent agent individually inspected all 14 selected PNGs
+at original detail and approved their legibility, alignment and composition. This is agent review,
+not human review.
 
 ## The panel in the store
 
