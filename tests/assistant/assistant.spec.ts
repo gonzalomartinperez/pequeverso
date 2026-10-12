@@ -1,6 +1,7 @@
-import { mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, type Request, test } from "@playwright/test";
+import { grafismoResources } from "../../content/es/products/grafismo-fonetico/resources.ts";
 
 const API = "https://127.0.0.1:8217";
 const SHOTS = "test-results-assistant/screenshots";
@@ -92,6 +93,98 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await expect(panel(page)).toBeVisible();
     await expect(panel(page)).toHaveAttribute("data-phase", "ready");
     await shot(page, info.project.name, "star-launcher-open");
+  });
+
+  test("a partial resource selection is distinguished from the full nine-PDF kit at 200 percent", async ({
+    page,
+  }) => {
+    const extra = grafismoResources.find((resource) => resource.id === "silabas-en-tus-manos");
+    if (!extra) throw new Error("The regression needs an actual published kit resource");
+    const sample = readFileSync("contracts/assistant-api/examples/stream.recommendation.sse", "utf8");
+    // This is a deterministic presentation fixture, not a backend/model/persistence claim.
+    const body = sample
+      .split("\n")
+      .map((line) => {
+        if (!line.startsWith("data: ")) return line;
+        const event = JSON.parse(line.slice(6)) as Record<string, unknown>;
+        if (event.type !== "message.completed") return line;
+        const message = event.message as Record<string, unknown>;
+        const selected = message.resources as unknown[];
+        if (selected.length !== 2) throw new Error("Review the pinned recommendation example selection");
+        return `data: ${JSON.stringify({
+          ...event,
+          message: {
+            ...message,
+            resources: [
+              ...selected,
+              {
+                id: `grafismo-fonetico/${extra.id}`,
+                product_id: "grafismo-fonetico",
+                title: extra.title,
+                pages: extra.pages,
+                description: extra.description,
+                image: null,
+              },
+            ],
+          },
+        })}`;
+      })
+      .join("\n");
+    await page.route(`${API}/api/v1/messages`, (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "text/event-stream",
+        body,
+      }),
+    );
+    for (const width of [320, 390]) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.goto("/soporte/");
+      await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+      await openPanel(page);
+      await ask(page, "¿Qué materiales del kit pueden servir para empezar?");
+      await expect(panel(page)).toHaveAttribute("data-phase", "completed");
+      const product = panel(page).getByRole("article", { name: "Grafismo Fonético" });
+      await expect(product.getByText(/Kit imprimible de 9 PDF y 414 páginas/)).toHaveCount(1);
+      const badge = product.getByText("3 destacados", { exact: true });
+      await badge.scrollIntoViewIfNeeded();
+      await expect(badge).toBeInViewport();
+      await expect(product.getByText("3 recursos", { exact: true })).toHaveCount(0);
+      const selection = panel(page).getByRole("region", { name: "Materiales destacados", exact: true });
+      await expect(selection.getByText("Selección para esta respuesta", { exact: true })).toHaveCount(1);
+      await expect(selection.getByRole("listitem")).toHaveCount(3);
+      await selection.getByRole("heading").scrollIntoViewIfNeeded();
+      await expect(selection.getByRole("heading")).toBeInViewport();
+      const faults = await panel(page).evaluate((surface) => {
+        const box = surface.getBoundingClientRect();
+        const walker = document.createTreeWalker(surface, NodeFilter.SHOW_TEXT);
+        const failures: string[] = [];
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+          const parent = node.parentElement;
+          if (
+            !parent ||
+            !node.textContent?.trim() ||
+            parent.closest(".sr-only, [aria-hidden='true']") ||
+            !parent.checkVisibility()
+          )
+            continue;
+          const range = document.createRange();
+          range.selectNodeContents(node);
+          if (
+            [...range.getClientRects()].some(
+              (rect) => rect.width > 0 && (rect.left < box.left - 1 || rect.right > box.right + 1),
+            )
+          )
+            failures.push(node.textContent.trim());
+        }
+        return { width: document.documentElement.scrollWidth, viewport: window.innerWidth, failures };
+      });
+      expect(faults).toEqual({ width, viewport: width, failures: [] });
+      await page.screenshot({
+        path: `${SHOTS}/resource-selection-${test.info().project.name}-${width}.png`,
+        animations: "disabled",
+      });
+    }
   });
 
   test("short question chips retain and send the complete API question", async ({ page }, info) => {

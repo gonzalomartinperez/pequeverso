@@ -104,6 +104,7 @@ function ResourceList({ resources }: { resources: Resource[] }) {
   return (
     <section aria-label={t.resourcesLabel} className="flex flex-col gap-2">
       <h3 className={labelClass}>{t.resourcesLabel}</h3>
+      <p className="text-tiny text-subtle">{t.resourcesHint}</p>
       <ul className="flex flex-col divide-y divide-line overflow-hidden rounded-md border border-line bg-card">
         {resources.map((resource) => (
           <li key={resource.id} className="flex items-start gap-3 p-3">

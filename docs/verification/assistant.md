@@ -63,6 +63,23 @@ portrait hidden. Before/after captures at all three widths were inspected by the
 agent; a separate agent also inspected the 1440 px counter/portrait pair. These checks are not
 human review, physical-device certification or VPS capacity measurements.
 
+The first exact-head PR CI at `88f2dab` ([38312209865](https://github.com/gonzalomartinperez/pequeverso/actions/runs/38312209865))
+failed before native browsers: uv 0.12.21 could not locate the producer's Python 3.14.8, and the
+history scanner matched a public Git SHA beside “API producer” in the gallery provenance.
+Build, standalone parity, workflow lint, Lighthouse and both public E2E shards passed; the run
+remains failed. The fixture consumer tool now matches the reviewed producer's uv 0.13.0.
+Provenance wording is corrected, and only the exact old commit/path/rule/line fingerprint is
+ignored; default secret rules, redaction and the nonzero-history gate remain active. A same-hash,
+same-file finding in a new commit must still fail the negative control.
+
+A real-model UI review separately found that three selected resources could be mistaken for the
+kit inventory. Product badges now say “3 destacados”; lists/comparisons say “Materiales destacados”
+and explain “Selección para esta respuesta”. The canonical nine-PDF product summary is unchanged.
+The deterministic presentation regression uses three actual published resources through a pinned
+SSE fixture at doubled text and both phone widths; it does not claim a model or persistence test.
+The reviewed guarantee gallery has zero resources, so the changed subset labels do not render there.
+Exact-source build/browser/CI receipts for this final increment are required before integration.
+
 No provider calls, key reads, deployment or activation occurred in these storefront checks.
 Enabled previews are local fixture artifacts; every publishable export must still pass the strict
 disabled guard. The dated evidence below remains historical and is not relabelled as this candidate.

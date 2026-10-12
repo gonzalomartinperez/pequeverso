@@ -129,6 +129,11 @@ and keeps the reader's actual position. Returning to the latest answer restores 
 Native scroll anchoring is disabled because following and reader position are explicitly managed.
 Neither operation initiates or retries a generation.
 
+Resource arrays are response selections, not the kit inventory. Product badges use “3 destacados”
+and lists/comparisons use “Materiales destacados”, with “Selección para esta respuesta”. The
+canonical product summary retains the total (for example nine PDFs); no total is inferred from
+`resources.length`. Empty selections render no badge or resource list.
+
 Reference implementation inspected read-only: `gonzalomartinperez/portfolio` commit
 `246c4892276de3cf0d2ee950b8eabb8159050172`, specifically its native host and chat presentation.
 The adaptation adopts proportional typography and separates icon artwork from hit-area geometry;
