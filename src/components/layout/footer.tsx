@@ -3,16 +3,23 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { BrandLogo } from "@/components/blocks/brand-logo";
 import { SocialLinks } from "@/components/blocks/social-links";
+import { feeding } from "@/features/hub/hub-products";
 import { CookieSettingsLink } from "@/features/tracking/CookieSettingsLink";
 import { coreProducts } from "@/products";
 
+/**
+ * Both products (docs/specs/home-hub.md): our own kit with its landing, and the recommended
+ * course through its home chapter, where the affiliate disclosure sits next to the button (the
+ * footer never links to the affiliate redirect without it).
+ */
 const productLinks = [
   { href: "/", label: "Inicio" },
   ...coreProducts().flatMap((product) => [
     { href: product.path, label: product.name },
     { href: `${product.path}#incluye`, label: "Qué incluye" },
-    { href: `${product.path}#preguntas`, label: "Preguntas frecuentes" },
   ]),
+  { href: `/${feeding.anchor}`, label: feeding.name },
+  { href: "/#preguntas", label: "Preguntas frecuentes" },
 ];
 
 const helpLinks = [
@@ -113,7 +120,7 @@ export function Footer() {
               <SocialLinks tone="dark" />
             </div>
           </div>
-          <LinkColumn label="Producto" items={productLinks} />
+          <LinkColumn label="Productos" items={productLinks} />
           <LinkColumn label="Ayuda" items={helpLinks}>
             <li>
               <a href={`mailto:${site.supportEmail}`} className={footerLinkClass}>

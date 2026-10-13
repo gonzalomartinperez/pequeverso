@@ -228,12 +228,21 @@ Acceptance criterion for every block and page, 320 → 1920 px, enforced by
 
 ## Page templates
 
-**Home and principal landing** (`src/app/page.tsx`, `CoreLanding`, `features/landing/core/*`,
+**Home (hub of two products, docs/specs/home-hub.md)** (`src/app/page.tsx`, `features/home/*`,
+`features/hub/*`): `#hero` with the need selector (`Door` ×2, same size, navy action, the one priority
+image) → trust strip → `#leer` (`ProductStory` + `HowBand` with the playground) → `#bebe` (the same
+components, mirrored) → `#preguntas` (FAQ by product) → `#cierre` (both doors to their destinations)
+→ `HubSticky` (contextual phone bar: doors / kit / course). The header carries the «Productos» menu
+(`ProductsMenu`: native popover mega-menu, `.pv-popover` transition, staggered cards; Header
+`products`), auto-hides on the home while reading down (`.pv-header[data-hidden]`) and marks the
+chapter in view with `aria-current="location"`. No coral on the home: every product action is the
+same navy (or white on navy) pill.
+
+**Principal landing** (`CoreLanding`, `features/landing/core/*`,
 `AgeSelector`, gallery and video) are built only from primitives, blocks and utilities; no CSS
 Modules remain there. `ProductHero` places copy, the `HeroStack` of real worksheets, the sticky price
 aside and the desk on one container-query grid (below lg: copy → real pages → price → desk).
-Conversion rules applied: one dominant action per viewport (coral only for purchase; home links
-to the product are white/navy), hierarchy H1 → value → real pages → price → CTA, assurances
+Conversion rules applied: one dominant action per viewport (coral only for purchase), hierarchy H1 → value → real pages → price → CTA, assurances
 (payment through Hotmart, access, `guaranteeDays`) next to every purchase CTA, objections
 (`#para-quien`, FAQ) right after the offer, the mobile sticky bar hidden over any CTA. The age
 selector keeps the `RadioGroup variant="chip"` look on native radios (Base UI's radio runtime

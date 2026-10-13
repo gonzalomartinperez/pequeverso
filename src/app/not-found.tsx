@@ -5,6 +5,7 @@ import { CTAButton } from "@/components/blocks/cta-button";
 import { Eyebrow } from "@/components/blocks/eyebrow";
 import { MediaImage } from "@/components/blocks/media-image";
 import { PageShell } from "@/components/layout/page-shell";
+import { feeding } from "@/features/hub/hub-products";
 import { Float } from "@/motion/float";
 import { Orbit } from "@/motion/orbit";
 import { coreProducts } from "@/products";
@@ -44,6 +45,9 @@ export default function NotFound() {
                     {copy.product} {product.name}
                   </CTAButton>
                 ))}
+                <CTAButton href={`/${feeding.anchor}`} variant="outline" iconAfter="arrow">
+                  {copy.product} {feeding.name}
+                </CTAButton>
                 <CTAButton href="/soporte/" variant="ghost" iconAfter="arrow">
                   {copy.support}
                 </CTAButton>

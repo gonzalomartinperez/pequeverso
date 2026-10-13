@@ -6,8 +6,9 @@ import { cn } from "@/lib/utils";
 import { product } from "./home-data";
 
 /**
- * Home links lead to the product page, never to payment: navy (on light) or white (on navy)
- * pills with a shine sweep; coral stays reserved for the purchase CTA on the landing.
+ * Home links lead to each product's destination, never to payment: navy (on light) or white (on
+ * navy) pills with a shine sweep and a 2 px lift, the same for both products; coral stays reserved
+ * for the purchase CTA on the landing.
  */
 const PILL = "pv-shine rounded-pill motion-safe:hover:-translate-y-0.5";
 export const LINK_NAVY = cn(
@@ -20,8 +21,6 @@ export const LINK_WHITE = cn(
   PILL,
   "shadow-[0_18px_40px_-16px_oklch(0_0_0/60%)]",
 );
-export const LINK_OUTLINE = cn(buttonVariants({ variant: "outline", size: "sm" }), PILL, "min-h-12 px-5");
-export const LINK_HEADER = cn(buttonVariants({ variant: "secondary", size: "sm" }), "rounded-pill");
 
 /** Hub → product link (keeps acquisition params, emits PequeversoProductInterest). */
 export function ProductLink({

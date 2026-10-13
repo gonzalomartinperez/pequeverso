@@ -1515,24 +1515,6 @@
       }
     },
     {
-      "id": "gf.life.logro",
-      "role": "scene",
-      "page": "grafismo-fonetico",
-      "group": "gf",
-      "source": {
-        "library": "ai-business-assets",
-        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S10-lo-logre.png"
-      },
-      "provenance": "imagegen-scenes-2026-09",
-      "alt": {
-        "es": "Niña sonriente mostrando su hoja terminada junto a su madre"
-      },
-      "outputs": {
-        "widths": [640, 1024],
-        "avif": [1024]
-      }
-    },
-    {
       "id": "gf.life.imprimir",
       "role": "scene",
       "page": "grafismo-fonetico",
@@ -1551,13 +1533,13 @@
       }
     },
     {
-      "id": "bebe.scene.mama",
-      "role": "scene",
+      "id": "bebe.cutout.mama-brazos",
+      "role": "cutout",
       "page": "home",
       "group": "afiliados",
       "source": {
         "library": "pequeverso-content-studio",
-        "path": "01-produccion/alimentacion-bebe/2026/2026-10/estaticos/imagenes-sitio/fondos/web-bebe-01-hero-mama-dando-de-comer.png"
+        "path": "01-produccion/alimentacion-bebe/2026/2026-10/estaticos/imagenes-sitio/transparentes/web-bebe-t12-mama-bebe-en-brazos.png"
       },
       "provenance": "imagegen-affiliate-bebe-2026-10",
       "rights": {
@@ -1566,21 +1548,21 @@
         "approvedAt": "2026-10-12T00:00:00.000Z"
       },
       "alt": {
-        "es": "Mamá sonriente dándole papilla con una cucharita a su bebé, sentado en su silla de comer con babero"
+        "es": "Mamá sonriente con su bebé en brazos; el bebé lleva babero y sostiene una cucharita"
       },
       "outputs": {
-        "widths": [640, 1024, 1440],
-        "avif": [1024]
+        "widths": [360, 640],
+        "avif": [640]
       }
     },
     {
-      "id": "bebe.scene.mama-vertical",
+      "id": "bebe.scene.primera-papilla",
       "role": "scene",
       "page": "home",
       "group": "afiliados",
       "source": {
         "library": "pequeverso-content-studio",
-        "path": "01-produccion/alimentacion-bebe/2026/2026-10/estaticos/imagenes-sitio/fondos/web-bebe-02-hero-movil-mama-cucharita.png"
+        "path": "01-produccion/alimentacion-bebe/2026/2026-10/estaticos/imagenes-sitio/fondos/web-bebe-03-primera-papilla.png"
       },
       "provenance": "imagegen-affiliate-bebe-2026-10",
       "rights": {
@@ -1589,11 +1571,57 @@
         "approvedAt": "2026-10-12T00:00:00.000Z"
       },
       "alt": {
-        "es": "Mamá sonriente dándole papilla con una cucharita a su bebé, sentado en su silla de comer con babero"
+        "es": "Mamá sonriente le acerca una cucharita de papilla a su bebé, sentado en su silla de comer"
       },
       "outputs": {
         "widths": [640, 1024],
         "avif": [1024]
+      }
+    },
+    {
+      "id": "bebe.scene.menu",
+      "role": "scene",
+      "page": "home",
+      "group": "afiliados",
+      "source": {
+        "library": "pequeverso-content-studio",
+        "path": "01-produccion/alimentacion-bebe/2026/2026-10/estaticos/imagenes-sitio/fondos/web-bebe-07-menu-de-papillas.png"
+      },
+      "provenance": "imagegen-affiliate-bebe-2026-10",
+      "rights": {
+        "owner": "Gonzalo Martín Pérez (Pequeverso)",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-10-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Doce platitos de colores con papillas y verduras cortadas, ordenados como un menú"
+      },
+      "outputs": {
+        "widths": [480, 768],
+        "avif": [768]
+      }
+    },
+    {
+      "id": "bebe.cutout.planeta",
+      "role": "cutout",
+      "page": "home",
+      "group": "afiliados",
+      "source": {
+        "library": "pequeverso-content-studio",
+        "path": "01-produccion/alimentacion-bebe/2026/2026-10/estaticos/imagenes-sitio/transparentes/web-bebe-t09-planeta-comida.png"
+      },
+      "provenance": "imagegen-affiliate-bebe-2026-10",
+      "rights": {
+        "owner": "Gonzalo Martín Pérez (Pequeverso)",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-10-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": ""
+      },
+      "outputs": {
+        "widths": [360, 640],
+        "avif": [640]
       }
     },
     {

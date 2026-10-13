@@ -972,13 +972,17 @@ body > .pv-header[data-overlay] {
   }
   .pv-header-actions {
     display: contents;
-    & > a {
+    & > a,
+    & > [data-products-trigger] {
       grid-column: 1 / -1;
       grid-row: 2;
       width: 100%;
       min-height: 44px;
       padding: 8px 16px;
       overflow-wrap: normal;
+    }
+    & > a + [data-products-trigger] {
+      grid-row: 3;
     }
     & > [data-slot="mobile-nav-trigger"] {
       grid-column: 2;

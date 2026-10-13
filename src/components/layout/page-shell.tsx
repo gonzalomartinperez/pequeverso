@@ -15,15 +15,25 @@ type Props = {
    * must then reserve `var(--header-height)` of top padding itself.
    */
   overlay?: boolean;
+  /** Header «Productos» menu (see Header). */
+  products?: boolean;
 };
 
 /** Withdrawal link + header + main landmark + footer. Every route uses it so navigation is complete everywhere. */
-export function PageShell({ children, nav, cta, subtitle, topbar, overlay = false }: Props) {
+export function PageShell({
+  children,
+  nav,
+  cta,
+  subtitle,
+  topbar,
+  overlay = false,
+  products = false,
+}: Props) {
   return (
     <div data-slot="page-shell" className="flex min-h-dvh flex-col">
       <WithdrawalStrip />
       {topbar}
-      <Header nav={nav} cta={cta} subtitle={subtitle} overlay={overlay} />
+      <Header nav={nav} cta={cta} subtitle={subtitle} overlay={overlay} products={products} />
       <main id="contenido" className="flex-[1_0_auto]">
         <PageMotion>{children}</PageMotion>
       </main>

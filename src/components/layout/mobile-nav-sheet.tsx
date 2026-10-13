@@ -1,9 +1,11 @@
 "use client";
 
+import { hubCopy } from "@content/es/hub";
 import { ArrowUpRightIcon, LifeBuoyIcon } from "lucide-react";
 import type { CSSProperties, ReactNode } from "react";
 import { BrandLogo } from "@/components/blocks/brand-logo";
 import type { NavItem } from "@/components/layout/header";
+import type { MobileNavProduct } from "@/components/layout/mobile-nav";
 import {
   Sheet,
   SheetClose,
@@ -17,6 +19,8 @@ type Props = {
   items: readonly NavItem[];
   /** The header CTA, repeated at the foot of the sheet. */
   cta?: ReactNode | undefined;
+  /** Product cards shown first (one per hub need). */
+  products?: readonly MobileNavProduct[] | undefined;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };
@@ -30,7 +34,8 @@ const ROW =
  * support link. Each link closes the sheet before the page scrolls. The panel slides from the
  * right (full width on phones, 28 rem from sm) and its rows follow with a short stagger.
  */
-export function MobileNavSheet({ items, cta, open, onOpenChange }: Props) {
+export function MobileNavSheet({ items, cta, products, open, onOpenChange }: Props) {
+  const offset = products?.length ?? 0;
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
@@ -50,48 +55,98 @@ export function MobileNavSheet({ items, cta, open, onOpenChange }: Props) {
           <BrandLogo />
           <div className="grid gap-1">
             <SheetTitle className="text-tiny font-extrabold tracking-[0.12em] text-teal-text uppercase">
-              Secciones
+              {products ? hubCopy.menu.title : "Secciones"}
             </SheetTitle>
             <SheetDescription className="text-small text-subtle">
-              Ir directamente a una parte de esta página.
+              {products ? hubCopy.menu.hint : "Ir directamente a una parte de esta página."}
             </SheetDescription>
           </div>
         </SheetHeader>
 
-        <nav aria-label="Secciones" className="px-4">
-          <ol className="grid" role="list">
-            {items.map((item, index) => (
-              <li
-                key={item.href}
-                className={`${ROW} border-b border-navy/8 last:border-b-0`}
-                style={{ "--i": index } as CSSProperties}
-              >
-                <SheetClose
-                  render={<a href={item.href} />}
-                  className="group/link flex min-h-16 items-center gap-4 rounded-lg px-2 font-display text-[1.75rem] leading-tight font-bold tracking-[-0.01em] text-heading no-underline transition-colors duration-(--duration-fast) hover:bg-white/70"
+        {products ? (
+          <nav aria-label={hubCopy.menu.label} className="px-4 pb-4">
+            <ul className="grid gap-3" role="list">
+              {products.map(({ need, thumb }, index) => (
+                <li key={need.key} className={ROW} style={{ "--i": index } as CSSProperties}>
+                  <SheetClose
+                    render={<a href={`/${need.anchor}`} />}
+                    className="group/card grid min-h-28 grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-4 rounded-xl bg-white p-3 text-ink no-underline shadow-sm ring-1 ring-line transition-[translate,box-shadow] duration-(--duration) ease-out active:scale-[0.99] hover:shadow-float"
+                  >
+                    <span
+                      className={`block aspect-square overflow-hidden rounded-lg [&_img]:size-full ${
+                        need.recommended
+                          ? "bg-[linear-gradient(160deg,var(--pv-peach),var(--pv-celeste))] [&_img]:object-contain [&_img]:object-bottom"
+                          : "bg-[linear-gradient(160deg,var(--pv-celeste),var(--pv-white))] [&_img]:object-cover"
+                      }`}
+                    >
+                      {thumb}
+                    </span>
+                    <span className="grid min-w-0 gap-1">
+                      <span className="flex flex-wrap items-center gap-1.5">
+                        <span className="rounded-pill bg-mint px-2.5 py-0.5 text-tiny font-extrabold text-teal-text">
+                          {need.stage}
+                        </span>
+                        {need.recommended ? (
+                          <span className="rounded-pill bg-lemon px-2.5 py-0.5 text-tiny font-extrabold text-ink">
+                            {hubCopy.feeding.recommended}
+                          </span>
+                        ) : null}
+                      </span>
+                      <span className="font-display text-[1.375rem] leading-tight font-bold text-heading">
+                        {need.need}
+                      </span>
+                      <span className="text-tiny font-bold text-subtle">
+                        {need.name} · {need.format}
+                      </span>
+                      {need.recommended ? (
+                        <span className="text-tiny text-pretty text-subtle">
+                          {hubCopy.feeding.disclosure}
+                        </span>
+                      ) : null}
+                    </span>
+                  </SheetClose>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ) : null}
+
+        {items.length > 0 ? (
+          <nav aria-label="Secciones" className="px-4">
+            <ol className="grid" role="list">
+              {items.map((item, index) => (
+                <li
+                  key={item.href}
+                  className={`${ROW} border-b border-navy/8 last:border-b-0`}
+                  style={{ "--i": index + offset } as CSSProperties}
                 >
-                  <span
-                    aria-hidden="true"
-                    className="w-6 font-sans text-tiny font-extrabold text-teal-text tabular-nums"
+                  <SheetClose
+                    render={<a href={item.href} />}
+                    className="group/link flex min-h-16 items-center gap-4 rounded-lg px-2 font-display text-[1.75rem] leading-tight font-bold tracking-[-0.01em] text-heading no-underline transition-colors duration-(--duration-fast) hover:bg-white/70"
                   >
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <span className="min-w-0 flex-1">{item.label}</span>
-                  <span
-                    aria-hidden="true"
-                    className="grid size-10 shrink-0 place-items-center rounded-full border border-navy/12 bg-white/70 text-navy transition duration-(--duration) ease-out group-hover/link:bg-navy group-hover/link:text-white motion-safe:group-hover/link:rotate-45"
-                  >
-                    <ArrowUpRightIcon className="size-5" focusable="false" />
-                  </span>
-                </SheetClose>
-              </li>
-            ))}
-          </ol>
-        </nav>
+                    <span
+                      aria-hidden="true"
+                      className="w-6 font-sans text-tiny font-extrabold text-teal-text tabular-nums"
+                    >
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="min-w-0 flex-1">{item.label}</span>
+                    <span
+                      aria-hidden="true"
+                      className="grid size-10 shrink-0 place-items-center rounded-full border border-navy/12 bg-white/70 text-navy transition duration-(--duration) ease-out group-hover/link:bg-navy group-hover/link:text-white motion-safe:group-hover/link:rotate-45"
+                    >
+                      <ArrowUpRightIcon className="size-5" focusable="false" />
+                    </span>
+                  </SheetClose>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        ) : null}
 
         <div
           className={`${ROW} mt-auto grid gap-4 px-6 pt-8 pb-[calc(var(--space-6)+env(safe-area-inset-bottom))] [&>div>a]:w-full [&>div>a]:min-h-14 [&>div>a]:rounded-pill [&>div>a]:text-[1.0625rem]`}
-          style={{ "--i": items.length } as CSSProperties}
+          style={{ "--i": items.length + offset } as CSSProperties}
         >
           {cta ? <div>{cta}</div> : null}
           <a
