@@ -35,7 +35,8 @@ export const reading: HubNeed = {
   format: hubCopy.reading.format,
   name: kit.name,
   go: hubCopy.reading.go,
-  photo: kit.media.hero,
+  /** Door-sized rendition of the kit's real pages (400/720 px, AVIF + WebP): the hero's LCP image. */
+  photo: "gf.door",
   thumb: kit.media.cards[0] ?? kit.media.hero,
   recommended: false,
 };

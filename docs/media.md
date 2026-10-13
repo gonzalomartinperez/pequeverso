@@ -174,6 +174,7 @@ const demo = getVideo("video.gf.mapa"); // { mp4, webm?, poster: { src, srcSet }
 | `brand.isotipo`, `brand.logo` | `brand` | WebP 96/192/512, 320/640 | `getImage` → `BrandLogo` | Alpha preserved. |
 | `brand.og` | `og` | PNG + WebP 1200×630 | `src/lib/metadata.ts` (fixed names) | |
 | `brand.icons` | `icons` | ico/svg/png at `public/` root | `app` metadata | Outside `public/media`. |
+| `gf.door` | `hero` | WebP + AVIF 400/720 | `MediaImage` (`priority`, the home's reading door) | Door-sized rendition of the `gf.hero` source (the hub's LCP image, docs/specs/home-hub.md). |
 | `gf.hero`, `pack.hero` | `hero` | WebP 480/768/1024/1440 + AVIF 1024/1440 | `MediaImage` (`priority`) | `gf.hero` 1440×1080 (4:3); `pack.hero` clamps to 1024. |
 | `gf.scene.{mesa,trazo,carpeta,mecanismo,flatlay,stack,entrega,cierre}` | `scene` | WebP 480/768/1024 + AVIF 768/1024 | `MediaImage` | AI-generated. |
 | `gf.page.01…20`, `pack.page.01…12` | `page` | WebP 640/1100 (portrait 640/1055) | `MediaImage` / gallery | Line art, WebP only. |

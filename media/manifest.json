@@ -1,6 +1,6 @@
 {
   "$schemaVersion": 1,
-  "generatedAt": "2026-10-13T01:43:36.573Z",
+  "generatedAt": "2026-10-13T03:57:50.021Z",
   "generator": "tools/media/media-build.ts v1 (sharp 0.35.5, libvips 8.18.7)",
   "extras": [
     "public/manifest.webmanifest"
@@ -328,6 +328,75 @@
           "sha256": "c4709fee2575b0bae0c45888f93889b6c009ab6e54e3edc9e1bfaff94779ca5d",
           "width": 1440,
           "height": 1080,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.door",
+      "role": "hero",
+      "page": "home",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/16-oferta-kit-completo-bonos-flatlay.png",
+        "sha256": "13c8bf375db651cd0e1569508bd9829f3afe60ecde78fe37179c191bd3d572c2",
+        "bytes": 2374818,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation",
+        "date": "2026-06",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Kit completo Grafismo Fonético impreso junto a sus ocho recursos complementarios"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-door-w400-70f4a465.webp",
+          "bytes": 26038,
+          "sha256": "dd3a46bf39f3d24374819b7da85283153f8aa3bdd486febf0203de87f4cd252d",
+          "width": 400,
+          "height": 300,
+          "format": "webp",
+          "quality": 82
+        },
+        {
+          "file": "public/media/gf/gf-door-w720-849166b0.webp",
+          "bytes": 71284,
+          "sha256": "8ffbeed49c8e34446fe01d75a8fc6e3e6a919646d438129e7ed14cc6953c74a3",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 82
+        },
+        {
+          "file": "public/media/gf/gf-door-w400-748eb24d.avif",
+          "bytes": 13865,
+          "sha256": "5c312eca5006b19024c69af64dc5162d0b171daec31eedebf7d0f1358135f4f8",
+          "width": 400,
+          "height": 300,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-door-w720-7d56625e.avif",
+          "bytes": 38840,
+          "sha256": "0d17e64d53d8c342a1f4c2f1b695e38f06d98a915accb0cfc982f34d738b01be",
+          "width": 720,
+          "height": 540,
           "format": "avif",
           "quality": 55
         }
@@ -5766,29 +5835,38 @@
       },
       "outputs": [
         {
-          "file": "public/media/afiliados/bebe-scene-primera-papilla-w640-89bb37a4.webp",
-          "bytes": 28742,
-          "sha256": "3bd6e25e3a88f49052430913f8ef3420ae2b191743ba775607f805fe8c270cfe",
-          "width": 640,
-          "height": 640,
+          "file": "public/media/afiliados/bebe-scene-primera-papilla-w400-b8ea06b3.webp",
+          "bytes": 15076,
+          "sha256": "a3708084e1b5f4eed1185539ece3dfa8b49ecab33c458ec59f1cdc84c5750b6e",
+          "width": 400,
+          "height": 400,
           "format": "webp",
           "quality": 78
         },
         {
-          "file": "public/media/afiliados/bebe-scene-primera-papilla-w1024-5af9e17f.webp",
-          "bytes": 54266,
-          "sha256": "2e6c853097773e343f925c40b271a7bb3f5d765ed3137e838029a4a90732340f",
-          "width": 1024,
-          "height": 1024,
+          "file": "public/media/afiliados/bebe-scene-primera-papilla-w720-a78672fe.webp",
+          "bytes": 33882,
+          "sha256": "3a18bafe9aa7f11d3dce5ad0127ba41b77d9e3332cc440adf47b93db4437d953",
+          "width": 720,
+          "height": 720,
           "format": "webp",
           "quality": 78
         },
         {
-          "file": "public/media/afiliados/bebe-scene-primera-papilla-w1024-637a2ad0.avif",
-          "bytes": 40927,
-          "sha256": "7fc48449689fbfa66869b2d36cb24bee81d6506e5e8893767ba2043bfc24b577",
-          "width": 1024,
-          "height": 1024,
+          "file": "public/media/afiliados/bebe-scene-primera-papilla-w400-df82ec27.avif",
+          "bytes": 10965,
+          "sha256": "531bf5419dca59d8ac4e2dd9a4cf15f9e1f8cc0fbfd90512d35b714ca922ffca",
+          "width": 400,
+          "height": 400,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/afiliados/bebe-scene-primera-papilla-w720-9b7f6d8b.avif",
+          "bytes": 25496,
+          "sha256": "eaa13d5514f1f8ec786d10e1302e2903782285a225c65e0e5a32acb056636a3b",
+          "width": 720,
+          "height": 720,
           "format": "avif",
           "quality": 55
         }

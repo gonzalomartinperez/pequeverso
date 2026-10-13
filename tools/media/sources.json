@@ -242,6 +242,24 @@
       }
     },
     {
+      "id": "gf.door",
+      "role": "hero",
+      "page": "home",
+      "group": "gf",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/16-oferta-kit-completo-bonos-flatlay.png"
+      },
+      "provenance": "imagegen-2026-06",
+      "alt": {
+        "es": "Kit completo Grafismo Fonético impreso junto a sus ocho recursos complementarios"
+      },
+      "outputs": {
+        "widths": [400, 720],
+        "avif": [400, 720]
+      }
+    },
+    {
       "id": "gf.scene.mesa",
       "role": "scene",
       "page": "grafismo-fonetico",
@@ -1574,8 +1592,8 @@
         "es": "Mamá sonriente le acerca una cucharita de papilla a su bebé, sentado en su silla de comer"
       },
       "outputs": {
-        "widths": [640, 1024],
-        "avif": [1024]
+        "widths": [400, 720],
+        "avif": [400, 720]
       }
     },
     {

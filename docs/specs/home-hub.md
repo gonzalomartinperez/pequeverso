@@ -92,7 +92,7 @@ the owner's request wins (the «Productos» dropdown stays).
 
 | # | Section | Purpose | Copy source | Media | Behaviour |
 |---|---|---|---|---|---|
-| 1 | `#hero` + `#elige` | Promise and need selector with two equal doors joined by a dashed orbit and the gold star | `home.hero`, `hub.*` | `gf.hero` (priority, the one preloaded image), `bebe.scene.primera-papilla` (eager, never preloaded) | Doors → `#leer` / `#bebe`; the course door is described by the disclosure under the doors |
+| 1 | `#hero` + `#elige` | Promise and need selector with two equal doors joined by a dashed orbit and the gold star | `home.hero`, `hub.*` | `gf.door` (door-sized 400/720 rendition of the kit's pages, priority, the one preloaded image), `bebe.scene.primera-papilla` (eager, never preloaded) | Doors → `#leer` / `#bebe`; the course door is described by the disclosure under the doors |
 | 2 | trust strip | Hotmart payment · 7-day guarantee (shown as a number only when both products share it) · digital access · local currency | `home.trust` | — | Static, staggered reveal |
 | 3 | `#leer` (alias `#grafismo-fonetico`) | The kit from the reading need: girl tracing a real page, pain → desire, what you get, product box (PDF/pages/bundle from the registry, price + local-currency note), CTA, note, «Ver qué incluye» | `home.reading` | `gf.cutout.trazo`, `gf.page.07` | `ProductLink position="story"` |
 | 4 | `#leer-como` | Mira · Di · Traza · Une and the syllable playground on real pages | `home.method` | `gf.cutout.tarjetas`, real pages | Playground island (unchanged) |
@@ -115,7 +115,7 @@ wall, and the values bento. Retired media: `gf.life.logro`, `bebe.scene.mama` an
   `@starting-style` transition. Cards and doors get hover lift, photo zoom and arrow nudges
   (`motion-safe:`). The sticky bar swaps content with a short rise (`.pv-swap`), and the orbit star
   bobs (`Float`). Under reduced motion everything is still and complete.
-- One priority image (`gf.hero`, AVIF/WebP, preloaded, `fetchpriority="high"`); the h1 is the LCP
+- One priority image (`gf.door`, 400/720 px AVIF/WebP sized for the door, preloaded, `fetchpriority="high"`); the h1 is the LCP
   candidate on phones. The other door image is eager without a preload. Everything below the fold
   is lazy. Images inside the closed menu are never requested.
 - Fewer islands than the old home: no page wall and no flip previews. The sticky bar, header
