@@ -1,6 +1,7 @@
 import bundleAnalyzer from "@next/bundle-analyzer";
 import { withCn } from "cn/next";
 import type { NextConfig } from "next";
+import { buildOutput } from "../scripts/lib/build-target.ts";
 import { loadEdgeRules, toNextHeaders, toNextRedirects } from "../scripts/lib/edge-rules.ts";
 import { SceneBudgetPlugin } from "../scripts/scene-budget-plugin.ts";
 import { parseAssistantEnv } from "../src/features/assistant/flag.ts";
@@ -28,8 +29,7 @@ import { parseAssistantEnv } from "../src/features/assistant/flag.ts";
  * before the compiler starts (dev, build and typegen alike); `SceneBudgetPlugin` records the
  * chunk closure of the deferred 3D scene for `scripts/check-scene-budget.ts`.
  */
-const onHostingerNodeApp = process.cwd().replace(/\\/g, "/").includes("/hbuilds/");
-const output = process.env.NEXT_OUTPUT === "standalone" || onHostingerNodeApp ? "standalone" : "export";
+const output = buildOutput();
 const edgeRules = loadEdgeRules();
 
 /**
