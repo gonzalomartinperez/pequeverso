@@ -68,7 +68,7 @@ function ReadingStage() {
         />
       </div>
       <Float delay={2} range={10} rotate={6} className="absolute top-[6%] right-[5%] w-[40%]">
-        <div className="overflow-hidden rounded-md border-4 border-white bg-white shadow-float [&_img]:h-auto [&_img]:w-full">
+        <div className="overflow-hidden rounded-md border-4 border-white bg-white shadow-float [&_img]:h-auto [&_img]:w-full [&_img]:object-contain">
           <MediaImage id={pageAt(6)} sizes="(min-width: 1024px) 220px, 38vw" />
         </div>
         <p className="mt-2 w-fit rounded-pill bg-white px-3 py-1 text-tiny font-extrabold text-navy shadow-sm">

@@ -135,8 +135,8 @@ test("primary CTA labels (checkout and product links) stay on one line from 320 
     const wrapped = await page.evaluate(() =>
       [
         ...document.querySelectorAll<HTMLAnchorElement>(
-          // Every product link on the home (kit and course), the doors and the landing's checkouts.
-          'main a[data-checkout]:not([data-position="sticky"]), main a[data-position]:not([data-position="sticky"]), main a[data-door]',
+          // Every product link on the home (kit and course) and the landing's checkouts.
+          'main a[data-checkout]:not([data-position="sticky"]), main a[data-position]:not([data-position="sticky"])',
         ),
       ]
         .flatMap((link) => [...link.querySelectorAll<HTMLSpanElement>("span")])

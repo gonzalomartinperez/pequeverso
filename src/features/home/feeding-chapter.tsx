@@ -94,7 +94,7 @@ function FeedingStage() {
         <MediaImage
           id={course.media.device}
           sizes="(min-width: 1024px) 250px, 42vw"
-          className="h-auto w-full drop-shadow-[0_22px_28px_oklch(0.3175_0.1094_256.25/30%)]"
+          className="h-auto w-full object-contain drop-shadow-[0_22px_28px_oklch(0.3175_0.1094_256.25/30%)]"
         />
       </Float>
     </StoryStage>
