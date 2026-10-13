@@ -16,6 +16,7 @@ import {
   FORBIDDEN_EVENTS,
   flush,
   track,
+  trackAffiliateClick,
   trackCheckoutIntent,
 } from "../../src/features/tracking/track.ts";
 
@@ -101,6 +102,30 @@ test("every event gets a UUID id and is mirrored to dataLayer with undefined par
   assert.deepEqual(adapter.sent, [
     { name: "CheckoutIntent", params: { product: "gf", offer: "main", cta_position: "hero" }, eventId: id },
   ]);
+});
+
+test("affiliate clicks are their own custom event, never a checkout or purchase", () => {
+  const adapter = fakeAdapter();
+  _resetForTests([adapter]);
+  const id = trackAffiliateClick({
+    product: "alimentacion-bebe",
+    position: "home",
+    destination: "/alimentacion-bebe/?src=sitio-home",
+  });
+  assert.match(id, UUID);
+  assert.deepEqual(adapter.sent, [
+    {
+      name: "PequeversoAffiliateClick",
+      params: {
+        product: "alimentacion-bebe",
+        cta_position: "home",
+        destination: "/alimentacion-bebe/?src=sitio-home",
+      },
+      eventId: id,
+    },
+  ]);
+  const names = adapter.sent.map((event) => event.name as string);
+  for (const forbidden of [...FORBIDDEN_EVENTS, "CheckoutIntent"]) assert.ok(!names.includes(forbidden));
 });
 
 test("measurement is on by default: events reach a gated adapter before any decision", () => {

@@ -198,6 +198,38 @@ test("validation matrix: bad JSON, forbidden event, unknown param, oversized bod
   assert.equal(calls.length, 0);
 });
 
+test("the affiliate click is relayed as its own custom event", async () => {
+  const { handler, calls } = enabledHandler();
+  await withServer(handler, async (base) => {
+    const res = await post(
+      base,
+      {
+        events: [
+          event({
+            name: "PequeversoAffiliateClick",
+            params: {
+              product: "alimentacion-bebe",
+              cta_position: "home",
+              destination: "/alimentacion-bebe/",
+            },
+          }),
+        ],
+      },
+      { headers: { origin: "https://pequeverso.com" } },
+    );
+    assert.equal(res.status, 202);
+    await Promise.all(handler.pending);
+  });
+  assert.equal(calls.length, 1);
+  const sent = at(at(calls, 0).body.data, 0);
+  assert.equal(sent.event_name, "PequeversoAffiliateClick");
+  assert.deepEqual(sent.custom_data, {
+    product: "alimentacion-bebe",
+    cta_position: "home",
+    destination: "/alimentacion-bebe/",
+  });
+});
+
 test("valid batch: 202 at once, then Graph API payload with bearer token, ids, ip and user agent", async () => {
   const { handler, calls, logs, results } = enabledHandler();
   await withServer(handler, async (base) => {

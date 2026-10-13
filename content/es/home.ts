@@ -157,6 +157,26 @@ export const homeCopy = {
       minutes: "minutos por día",
     },
   },
+  /**
+   * "Recomendado por Pequeverso": one third-party course the site recommends as a Hotmart
+   * affiliate. Product facts (name, topics, guarantee, path) live in `config/affiliates.ts`;
+   * the disclosure is mandatory and stays visible next to the link.
+   */
+  affiliate: {
+    kicker: "Recomendado por Pequeverso",
+    title: { before: "¿También tienes un bebé que ", accent: "empieza a comer", after: "?" },
+    lead: "Un curso en línea que Pequeverso recomienda para organizar la alimentación complementaria paso a paso.",
+    topicsLabel: "Qué enseña el curso",
+    format: "Curso en video, en línea",
+    /** Followed by the guarantee days from config: "Garantía de 7 días de Hotmart". */
+    guaranteeBefore: "Garantía de",
+    guaranteeAfter: "días de Hotmart",
+    cta: "Ver el curso",
+    newTab: "(se abre en una pestaña nueva)",
+    disclosure:
+      "Recomendación con enlace de afiliado: si compras, Pequeverso recibe una comisión. El curso es de un tercero; Hotmart gestiona el pago, la entrega y los reembolsos.",
+    disclosureLink: "Más información sobre los enlaces de afiliado",
+  },
   closing: {
     kicker: "Para empezar hoy",
     title: { before: "Elige una hoja. Imprímela. ", accent: "Practica diez minutos.", after: "" },

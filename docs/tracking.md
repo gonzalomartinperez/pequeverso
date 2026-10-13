@@ -23,12 +23,13 @@ module is inert: no scripts, no banner (the footer control shows a necessary-coo
 | `PageView` | first load + every client navigation (once per path) | — | `fbq('track')` |
 | `ViewContent` | product landing mount; upsell/downsell mount (`content_name` suffixed with the mode) | `content_ids`, `content_name`, `content_type: product`, `value`, `currency` | `fbq('track')` |
 | `PequeversoProductInterest` | hub → product link click | `product`, `cta_position`, `destination` | `fbq('trackCustom')` |
+| `PequeversoAffiliateClick` | click on a recommended third-party product (`AffiliateLink`, docs/affiliates.md) | `product`, `cta_position`, `destination` | `fbq('trackCustom')` |
 | `CheckoutIntent` | principal CTA click | `product`, `offer`, `cta_position`, `offer_mode` | `fbq('trackCustom')` |
 
 Every event gets a UUID `eventId` (`crypto.randomUUID`), is pushed to `window.dataLayer` as
 `{ event, event_id, ...params }`, and reaches Meta as `{ eventID }` from the pixel and as
 `event_id` from the Conversions API relay, so browser/server pairs deduplicate. Typed helpers: `trackPageView`, `trackViewContent`, `trackProductInterest`,
-`trackCheckoutIntent`; `isTrackingConfigured()` is true when at least one adapter is enabled.
+`trackCheckoutIntent`, `trackAffiliateClick`; `isTrackingConfigured()` is true when at least one adapter is enabled.
 
 ## Forbidden events
 
@@ -66,7 +67,7 @@ Contract:
 | Request | Response |
 |---|---|
 | `POST /api/meta/events/`, `Content-Type: application/json`, body `{ events: [{ name, eventId, time, sourceUrl, params, fbp?, fbc? }] }` (1–10 events, ≤ 16 KB) | `202` (relayed), `204` (relay disabled: no token or no pixel id) |
-| `name` outside `PageView`/`ViewContent`/`PequeversoProductInterest`/`CheckoutIntent`, `eventId` not a UUID v4, `sourceUrl` off-origin, unknown `params` key, non-finite number, string > 200 chars, malformed `fbp`/`fbc`, bad JSON | `400 { "error": "<field>" }` (input never echoed) |
+| `name` outside `PageView`/`ViewContent`/`PequeversoProductInterest`/`PequeversoAffiliateClick`/`CheckoutIntent`, `eventId` not a UUID v4, `sourceUrl` off-origin, unknown `params` key, non-finite number, string > 200 chars, malformed `fbp`/`fbc`, bad JSON | `400 { "error": "<field>" }` (input never echoed) |
 | body > 16 KB · other `Content-Type` · `Origin` not the site/host · non-POST · > 60 events/min per IP | `413` · `415` · `403` · `405` · `429` |
 
 Every response carries `Cache-Control: no-store` (also in `config/edge-rules.json` for `/api/*`).

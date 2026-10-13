@@ -1,3 +1,4 @@
+import { affiliateExamplePath } from "@config/affiliates";
 import { dataAuthority } from "@content/es/legal/argentina";
 import { seller, sellerIdentity } from "@content/es/legal/seller";
 import type { Metadata } from "next";
@@ -165,11 +166,11 @@ export default function PrivacidadPage() {
         <dd>
           Salvo que te opongas, Meta recibe identificadores de navegación (cookies <code>_fbp</code> y{" "}
           <code>_fbc</code>, dirección IP, agente de usuario) y eventos del Sitio: página vista, interés en el
-          producto y clic hacia la página de pago, tanto desde tu navegador como, para que la medición sea
-          fiable, a través del servidor del Sitio (API de conversiones de Meta) con los mismos datos. Si te
-          opones, la medición se desactiva por ambas vías y no se carga ningún script de Meta en tus próximas
-          visitas. No se envían a Meta tu nombre, tu correo ni datos de compra. Detalle en la{" "}
-          <Link href="/cookies/">Política de cookies</Link>.
+          producto, clic hacia la página de pago y clic en un producto recomendado de terceros, tanto desde tu
+          navegador como, para que la medición sea fiable, a través del servidor del Sitio (API de
+          conversiones de Meta) con los mismos datos. Si te opones, la medición se desactiva por ambas vías y
+          no se carga ningún script de Meta en tus próximas visitas. No se envían a Meta tu nombre, tu correo
+          ni datos de compra. Detalle en la <Link href="/cookies/">Política de cookies</Link>.
         </dd>
         <dt>Compra</dt>
         <dd>
@@ -224,6 +225,15 @@ export default function PrivacidadPage() {
       <p>
         El Titular no vende ni cede tus datos a otros terceros. Solo los comunicaría a una autoridad cuando
         una obligación legal lo exija.
+      </p>
+      <p>
+        <strong>Enlaces de afiliado.</strong> Las direcciones cortas con las que el Sitio recomienda productos
+        de terceros (por ejemplo, <code>pequeverso.com{affiliateExamplePath}</code>) solo redirigen tu
+        navegador a Hotmart: la redirección la hace el servidor sin instalar cookies ni pedirte datos, más
+        allá de los registros técnicos del alojamiento. A partir de ahí, tus datos los tratan Hotmart y el
+        productor de ese producto según sus propias políticas de privacidad y de cookies. Hotmart puede
+        informar al Titular de la venta para calcular su comisión, conforme a sus términos. Más información en
+        el <Link href="/aviso-legal/#afiliados">Aviso legal</Link>.
       </p>
 
       <SectionHeading sections={sections} id="transferencias" />

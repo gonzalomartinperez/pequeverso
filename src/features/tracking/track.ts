@@ -7,7 +7,7 @@ export const FORBIDDEN_EVENTS = ["InitiateCheckout", "Purchase", "PlaceAnOrder",
 
 type ForbiddenEvent = (typeof FORBIDDEN_EVENTS)[number];
 type StandardEvent = "PageView" | "ViewContent";
-type CustomEvent = "PequeversoProductInterest" | "CheckoutIntent";
+type CustomEvent = "PequeversoProductInterest" | "CheckoutIntent" | "PequeversoAffiliateClick";
 
 /** Events the site may emit; the forbidden set is excluded by construction. */
 export type EventName = Exclude<StandardEvent | CustomEvent, ForbiddenEvent>;
@@ -149,6 +149,22 @@ export function trackProductInterest(params: {
   destination: string;
 }): string {
   return track("PequeversoProductInterest", {
+    product: params.product,
+    cta_position: params.position,
+    destination: params.destination,
+  });
+}
+
+/**
+ * Click on a recommended third-party (affiliate) product. Measures interest only: the sale
+ * happens on Hotmart under the producer's checkout, so no checkout or purchase event is sent.
+ */
+export function trackAffiliateClick(params: {
+  product: string;
+  position: string;
+  destination: string;
+}): string {
+  return track("PequeversoAffiliateClick", {
     product: params.product,
     cta_position: params.position,
     destination: params.destination,
