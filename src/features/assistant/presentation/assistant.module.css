@@ -53,9 +53,9 @@
   overflow: hidden;
   outline: none;
   right: max(var(--space-4, 1rem), env(safe-area-inset-right));
-  bottom: calc(var(--space-4, 1rem) + 3.5rem + var(--space-3, 0.75rem) + env(safe-area-inset-bottom));
-  width: min(26rem, calc(100vw - 2rem));
-  height: min(40rem, calc(100dvh - 7.5rem));
+  bottom: max(var(--space-4, 1rem), env(safe-area-inset-bottom));
+  width: min(25.5rem, calc(100vw - 2rem));
+  height: min(35rem, calc(100dvh - 2rem));
   border-radius: var(--radius-xl);
 }
 
@@ -145,6 +145,8 @@
 }
 
 .transcript {
+  /* Following is explicit: native anchoring must not move an established reader. */
+  overflow-anchor: none;
   scrollbar-gutter: stable;
   touch-action: pan-y;
   overscroll-behavior: contain;
@@ -171,34 +173,12 @@
   border-bottom: 1px solid var(--pv-line-strong);
 }
 
-.languageControl {
-  background: var(--pv-navy-deep);
-}
-
-@supports (backdrop-filter: blur(4px)) {
-  .languageControl {
-    background: color-mix(in oklch, var(--pv-navy-deep) 88%, transparent);
-    backdrop-filter: blur(4px);
-  }
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  .languageControl {
-    background: var(--pv-navy-deep);
-    backdrop-filter: none;
-  }
-}
-
 .greeting {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-3, 0.75rem);
-  padding: var(--space-4, 1rem);
-  border: 1px solid var(--pv-line);
-  border-radius: var(--radius-xl);
-  background: var(--pv-white);
-  box-shadow: var(--shadow-sm);
+  gap: var(--space-2, 0.5rem);
+  padding: var(--space-2, 0.5rem);
 }
 
 /* A physical 44px target cannot grow over the reading area at 200% text size. */
@@ -224,4 +204,42 @@
 /* Collision positioning cannot shrink a wide enlarged-text popup by itself. */
 .tooltip {
   max-width: min(20rem, calc(100vw - 16px));
+}
+
+/* Compact hierarchy uses the same brand roles without the scale of a store landing card. */
+.headerIdentity {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  min-width: min(100%, 8rem);
+}
+.headerTitle {
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+.headerMark {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+.iconControl {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  border-width: 1px;
+}
+.iconControl svg {
+  width: 18px;
+  height: 18px;
+}
+.productThumb {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+.productTitle {
+  font-size: 1rem;
+  line-height: 1.35;
 }

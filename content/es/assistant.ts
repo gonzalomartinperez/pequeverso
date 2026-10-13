@@ -1,8 +1,8 @@
 /**
  * Interface copy of the native shopping assistant (neutral Latin American Spanish, "tú", like the
- * rest of the store). Answers may arrive in English when the visitor writes in English; the
- * assistant interface can switch between Spanish and English without changing the store; each answer carries its own `lang`. The assistant is
- * advisory: no copy here promises prices, stock, discounts or learning outcomes.
+ * rest of the store). The native interface and new answers use Spanish, without a language
+ * selector. Stored answers retain their original language. The assistant is advisory: no copy
+ * here promises prices, stock, discounts or learning outcomes.
  */
 import type { ErrorCode, Notice, UnavailableReason } from "../../src/features/assistant/domain/models.ts";
 
@@ -13,15 +13,25 @@ export const launcherCopy = {
 };
 
 export const assistantCopy = {
-  name: "Asistente Pequeverso",
+  name: "Asistente de Pequeverso",
   aiDisclosure: "Asistente con IA. Usa la información de la tienda.",
   privacyNote: "No escribas datos personales ni de tus hijos. ",
   privacyLink: "Cómo tratamos tus mensajes",
 
   greetingTitle: "¡Hola! ¿En qué te ayudo?",
-  greetingBody:
-    "Pregúntame qué incluye cada material, para qué edades es, cómo se imprime o cómo se usa en casa. Te respondo con la información de la tienda.",
+  greetingBody: "Te ayudo a conocer los materiales, elegir por edad y resolver dudas sobre su uso.",
   startersLabel: "Preguntas para empezar",
+  // Only known opening questions receive shorter visual labels; the full question is sent unchanged.
+  starterLabels: {
+    "¿Qué incluye exactamente la compra?": "Qué incluye",
+    "¿Para qué edades se recomienda?": "Edades recomendadas",
+    "¿Tengo que imprimir todo el material?": "Impresión y uso",
+    "¿Cómo funciona la garantía de 7 días?": "Garantía",
+    "¿Qué incluye Grafismo Fonético?": "Qué incluye",
+    "¿Sirve para un niño de 4 años?": "Para niños de 4 años",
+    "¿Cómo se imprime y se usa en casa?": "Impresión y uso",
+    "¿Cómo recibo el material después de comprar?": "Entrega digital",
+  } as Record<string, string>,
   /** Fallback only: the API sends starters built from approved catalog topics. */
   starters: [
     "¿Qué incluye Grafismo Fonético?",
@@ -68,11 +78,12 @@ export const assistantCopy = {
   opensInNewTab: "(se abre en una pestaña nueva)",
   ageRange: "Edad",
   price: "Precio",
-  priceVerified: (date: string) => `Precio confirmado el ${date}`,
+  priceReferenceDate: (date: string) => `Referencia del catálogo del ${date}.`,
   priceUnverified: "Consulta el precio vigente en la página del material",
-  resourcesLabel: "Incluye",
+  resourcesLabel: "Materiales destacados",
+  resourcesHint: "Selección para esta respuesta",
   pages: (count: number) => (count === 1 ? "1 página" : `${count} páginas`),
-  resourceCount: (count: number) => (count === 1 ? "1 recurso" : `${count} recursos`),
+  resourceCount: (count: number) => (count === 1 ? "1 destacado" : `${count} destacados`),
   sourcesLabel: (count: number) => (count === 1 ? "1 fuente" : `${count} fuentes`),
   sourcesHint: "Información de la tienda usada en esta respuesta",
   linksLabel: "Enlaces útiles",
@@ -84,7 +95,7 @@ export const assistantCopy = {
     payment_data_refused:
       "Por tu seguridad, no escribas datos de tarjetas aquí. El pago se hace solo en la página segura de Hotmart.",
     contact_data_redacted: "Ocultamos datos de contacto de tu mensaje para proteger tu privacidad.",
-    language_unsupported: "Por ahora respondo en español y en inglés.",
+    language_unsupported: "Por ahora respondo solo en español.",
   } satisfies Record<Notice, string>,
 
   clear: "Nueva conversación",
@@ -96,7 +107,6 @@ export const assistantCopy = {
   expand: "Ampliar panel",
   restore: "Reducir panel",
   minimize: "Minimizar asistente",
-  languageLabel: "Idioma del asistente",
 
   connecting: "Conectando con el asistente…",
   reconnect: "Reintentar conexión",
@@ -138,7 +148,7 @@ export const assistantCopy = {
 
 export type AssistantCopy = typeof assistantCopy;
 
-/** "5 de octubre" (date of a confirmed price), in the store's locale. */
+/** "5 de octubre" (catalog reference date in UTC), in the store's locale. */
 export function formatDay(iso: string, locale: "es" | "en" = "es"): string {
   return new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", timeZone: "UTC" }).format(
     new Date(iso),

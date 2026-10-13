@@ -91,9 +91,9 @@ const AssistantMessage = memo(function AssistantMessage({
         </div>
       )}
       <Notices notices={message.notices} />
+      <Sources sources={message.sources} />
       <ProductSection products={message.products} resources={message.resources} />
       <Links links={message.links} />
-      <Sources sources={message.sources} />
       {followUps && (
         <div lang={message.language ?? undefined}>
           <FollowUps items={message.followUps} disabled={false} onSelect={onFollowUp} />

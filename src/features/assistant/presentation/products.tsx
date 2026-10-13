@@ -10,8 +10,9 @@ import { usePresentation } from "./context";
 import { labelClass, SafeLink } from "./parts";
 
 /**
- * A price appears only when the API sends `price` (it withholds prices it cannot confirm as
- * current), always with its tax and local-currency notes and the date it was confirmed. The
+ * A price appears only when the API supplies a dated public-catalog reference, with its tax and
+ * local-currency notes. The legacy `verifiedAt` field dates the catalog export, not a live merchant
+ * confirmation; Hotmart establishes the final total. The
  * contract has no stock, rating, discount or urgency field, so none is ever shown.
  */
 function PriceLine({ price }: { price: Price | null }) {
@@ -24,7 +25,7 @@ function PriceLine({ price }: { price: Price | null }) {
         <span className="text-tiny text-subtle">{price.taxNote}</span>
       </p>
       <p className="text-tiny text-subtle">{price.note}</p>
-      <p className="text-tiny text-subtle">{t.priceVerified(formatDay(price.verifiedAt, locale))}</p>
+      <p className="text-tiny text-subtle">{t.priceReferenceDate(formatDay(price.verifiedAt, locale))}</p>
     </div>
   );
 }
@@ -34,7 +35,7 @@ function Thumb({ product }: { product: Product }) {
     return (
       <div
         aria-hidden="true"
-        className="grid aspect-[4/3] w-full place-items-center bg-mint text-icon cq-md:w-40"
+        className={cx(styles.productThumb, "grid place-items-center rounded-md bg-mint text-icon")}
       >
         <BookOpen className="size-7" />
       </div>
@@ -47,7 +48,7 @@ function Thumb({ product }: { product: Product }) {
       height={product.image.height}
       loading="lazy"
       decoding="async"
-      className="aspect-[4/3] w-full bg-mint object-cover cq-md:aspect-auto cq-md:w-40 cq-md:shrink-0"
+      className={cx(styles.productThumb, "rounded-md bg-mint")}
     />
   );
 }
@@ -57,15 +58,12 @@ function ProductCard({ product, resources }: { product: Product; resources: Reso
   // The same product can appear in several answers: ids must be unique per rendered card.
   const headingId = useId();
   return (
-    <article
-      aria-labelledby={headingId}
-      className="cq overflow-hidden rounded-lg border border-line bg-card shadow-sm"
-    >
-      <div className="flex flex-col cq-md:flex-row">
-        <Thumb product={product} />
-        <div className="flex min-w-0 flex-1 flex-col gap-3 p-4">
-          <div className="flex flex-col gap-1.5">
-            <h3 id={headingId} className="font-display text-h3 font-bold text-heading">
+    <article aria-labelledby={headingId} className="cq rounded-lg border border-line bg-card p-3">
+      <div className="flex min-w-0 flex-col gap-2.5">
+        <div className="flex min-w-0 items-start gap-3">
+          <Thumb product={product} />
+          <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+            <h3 id={headingId} className={cx(styles.productTitle, "font-sans font-bold text-heading")}>
               {product.name}
             </h3>
             <p className="flex flex-wrap gap-1.5 text-tiny font-bold">
@@ -77,7 +75,9 @@ function ProductCard({ product, resources }: { product: Product; resources: Reso
               )}
             </p>
           </div>
-          <p className="line-clamp-3 text-small text-body">{product.summary}</p>
+        </div>
+        <div className="flex min-w-0 flex-col gap-2.5">
+          <p className="text-small text-body">{product.summary}</p>
           <PriceLine price={product.price} />
           <div className="flex flex-wrap gap-2">
             <SafeLink
@@ -105,6 +105,7 @@ function ResourceList({ resources }: { resources: Resource[] }) {
   return (
     <section aria-label={t.resourcesLabel} className="flex flex-col gap-2">
       <h3 className={labelClass}>{t.resourcesLabel}</h3>
+      <p className="text-tiny text-subtle">{t.resourcesHint}</p>
       <ul className="flex flex-col divide-y divide-line overflow-hidden rounded-md border border-line bg-card">
         {resources.map((resource) => (
           <li key={resource.id} className="flex items-start gap-3 p-3">
@@ -141,10 +142,10 @@ function Comparison({ products, resources }: { products: Product[]; resources: R
     { label: t.ageRange, cell: (product) => product.ageRange },
     {
       label: t.price,
-      // A price never appears without its notes and confirmation date.
+      // Catalog reference prices retain their notes and export date; no merchant confirmation.
       cell: (product) =>
         product.price
-          ? `${product.price.display} ${product.price.taxNote}. ${product.price.note} ${t.priceVerified(formatDay(product.price.verifiedAt, locale))}.`
+          ? `${product.price.display} ${product.price.taxNote}. ${product.price.note} ${t.priceReferenceDate(formatDay(product.price.verifiedAt, locale))}`
           : t.priceUnverified,
     },
     {

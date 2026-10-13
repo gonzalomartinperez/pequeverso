@@ -216,6 +216,7 @@ export function parseSession(value: unknown): SessionSnapshot {
     starters: list(v.starters, "starters", 6, (entry) => text(entry, "starter", 160)).slice(0, 4),
     acceptsLocale: revisionSupports(v.contract_revision, 1),
     acceptsContext: revisionSupports(v.contract_revision, 3),
+    acceptsResponseLanguage: revisionSupports(v.contract_revision, 4),
   };
 }
 

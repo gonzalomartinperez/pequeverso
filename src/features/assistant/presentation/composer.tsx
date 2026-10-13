@@ -84,8 +84,8 @@ export function Composer({
     <form onSubmit={submit} className="flex flex-col gap-1.5">
       <div
         className={cx(
-          "flex items-end gap-2 rounded-xl border-2 bg-card p-1.5 ps-4 shadow-sm transition-[border-color,box-shadow] duration-(--duration-fast) focus-within:border-ring focus-within:shadow-md",
-          tooLong ? "border-destructive" : "border-line-strong",
+          "flex items-end gap-2 rounded-lg border bg-card p-1 ps-3 transition-[border-color,box-shadow] duration-(--duration-fast) focus-within:border-ring focus-within:ring-1 focus-within:ring-ring",
+          tooLong ? "border-destructive" : "border-navy/55",
         )}
       >
         <label htmlFor={`${hintId}-field`} className="sr-only">
@@ -104,7 +104,7 @@ export function Composer({
           aria-describedby={`${hintId} ${counterId}`}
           aria-invalid={tooLong || undefined}
           className={cx(
-            "min-h-11 flex-1 resize-none self-center bg-transparent py-2.5 text-base text-ink outline-none placeholder:text-subtle focus-visible:outline-none",
+            "min-h-[44px] flex-1 resize-none self-center bg-transparent py-2 text-base text-ink outline-none placeholder:text-subtle focus-visible:outline-none",
             styles.field,
           )}
         />
