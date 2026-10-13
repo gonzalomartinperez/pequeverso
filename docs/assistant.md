@@ -86,7 +86,12 @@ Spanish response profile requires a reviewed compatible v1 API revision **at lea
   with their confirmation date), resources, sources, links and follow-ups come from validated API
   fields; URLs pass `domain/links.ts` (backslashes, control characters and `//` paths are refused, so
 no storefront link can become protocol-relative) (store origin, plus `consumer.hotmart.com` and
-  `refund.hotmart.com` for links). Store links navigate in the same tab without reloading; external
+  `refund.hotmart.com` for links). Three canonical Hotmart help articles are separately authorized
+  by exact URL in `config/assistant.ts`; `help.hotmart.com` is not a host permission. Article URLs
+  reject alternate paths, queries, fragments, ports, parser normalization, credentials and unsafe
+  characters. Existing catalog sources and their identities remain unchanged. These citations
+  retain their server-owned title and add “Hotmart · procedimiento general”: platform procedures
+  do not establish a product-specific guarantee, paid order, delivery status or an executed refund. Store links navigate in the same tab without reloading; external
   links open in a new tab only on click. The assistant never navigates or opens windows on its own.
 - Language: the native interface is Spanish-only and has no language selector. Minimizing, resizing
   and navigation preserve history and the unsent draft without restarting the controller. Stored
@@ -219,3 +224,15 @@ Vitals.
 The original phone reflow issue at 200 % text was corrected in the separate storefront reflow
 change. The enabled assistant has its own checks at 320 and 390 CSS pixels; those checks do not
 replace the disabled storefront route matrix or testing physical on-screen keyboards.
+
+
+### Official informational source verification
+
+`tests/assistant/official-sources.spec.ts` exercises the real fixture session, CSRF and HTTP/SSE
+flow, then enriches the response with synthetic article citations. It checks exactly three allowed
+links; a separate envelope of at most three malicious citations rejects path/query/fragment variants, retains the answer and draft after minimizing, makes
+one generation/session request, and makes no request to Hotmart. This is a consumer rendering and
+continuity test; it does not prove web retrieval, article freshness, or backend persistence of the
+synthetically enriched fields. Unit tests also cover canonicalization, ports, controls, credentials,
+lookalike hosts, unknown redirect paths, and unchanged legacy policies. Provider web access remains
+backend-owned and disabled by default; no new public contract field or browser web tool is added.

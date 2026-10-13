@@ -2,12 +2,13 @@
 import { ChevronDown, FileText, Info, MessageCircleQuestion } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cx } from "@/lib/cx";
+import { approvedSourceUrl } from "../domain/links";
 import type { Link, Notice, Source } from "../domain/models";
 import { usePresentation } from "./context";
 import { Callout, chipClass, labelClass, SafeLink } from "./parts";
 
 export function Sources({ sources }: { sources: Source[] }) {
-  const { t } = usePresentation();
+  const { t, policy } = usePresentation();
   if (!sources.length) return null;
   return (
     <details className="group/sources rounded-md border border-line bg-card">
@@ -29,6 +30,9 @@ export function Sources({ sources }: { sources: Source[] }) {
             >
               {source.title}
             </SafeLink>
+            {approvedSourceUrl(source.url, policy) && (
+              <p className="text-tiny text-subtle [overflow-wrap:anywhere]">{t.officialProcedureLabel}</p>
+            )}
           </li>
         ))}
       </ul>

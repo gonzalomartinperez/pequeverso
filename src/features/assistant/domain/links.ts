@@ -11,6 +11,8 @@ export type LinkPolicy = {
   storefrontOrigin: string;
   /** Exact extra hosts allowed for informational links (https only), e.g. "consumer.hotmart.com". */
   linkHosts: readonly string[];
+  /** Optional exact canonical informational URLs; this never grants an entire host. */
+  approvedSourceUrls?: readonly string[];
 };
 
 /** Backslash or a C0/DEL control character: the URL parser would silently normalize them away. */
@@ -54,11 +56,26 @@ export function storefrontPath(value: string, policy: LinkPolicy): string | null
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
-/** A link the visitor may open in a new tab: the storefront, or https on an allowlisted host. */
+/** An exact approved article, without URL-parser normalization or tracking/redirect parameters. */
+export function approvedSourceUrl(value: string, policy: LinkPolicy): string | null {
+  const url = parse(value);
+  return url &&
+    url.protocol === "https:" &&
+    !url.port &&
+    !url.search &&
+    !url.hash &&
+    url.href === value &&
+    policy.approvedSourceUrls?.includes(value)
+    ? value
+    : null;
+}
+
+/** A visitor-initiated link: storefront, an existing https host, or an exact approved article. */
 export function externalUrl(value: string, policy: LinkPolicy): string | null {
   const url = parse(value);
   if (!url) return null;
   if (url.origin === policy.storefrontOrigin) return storefrontUrl(value, policy);
+  if (approvedSourceUrl(value, policy)) return value;
   return url.protocol === "https:" && policy.linkHosts.includes(url.hostname) ? url.href : null;
 }
 

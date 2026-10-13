@@ -152,3 +152,64 @@ describe("storefront URLs cannot become protocol-relative links", async () => {
     for (const path of ["/grafismo-fonetico/", "/%2F%2Fevil.com"]) assert.ok(/^\/(?!\/)/.test(path));
   });
 });
+
+it("allows only the three exact canonical official articles without granting their host", async () => {
+  const { assistantConfig } = await import("../../../config/assistant.ts");
+  const exact = { ...policy, approvedSourceUrls: assistantConfig.approvedSourceUrls };
+  assert.equal(exact.approvedSourceUrls.length, 3);
+  assert.equal(exact.linkHosts.includes("help.hotmart.com"), false);
+  for (const url of exact.approvedSourceUrls) {
+    assert.equal(externalUrl(url, exact), url);
+    assert.equal(externalUrl(url, policy), null, "legacy policy remains closed to official articles");
+    for (const bad of [
+      `${url}?next=https://evil.example`,
+      `${url}#fragment`,
+      `${url}/`,
+      `${url}?`,
+      `${url}#`,
+      url.replace("https:", "http:"),
+      url.replace("help.hotmart.com", "help.hotmart.com:8443"),
+      url.replace("help.hotmart.com", "help.hotmart.com:443"),
+      url.replace("help.hotmart.com", "HELP.hotmart.com"),
+      url.replace("help.hotmart.com", "help.hotmart.com.evil.example"),
+      url.replace("help.hotmart.com", "sub.help.hotmart.com"),
+      url.replace("help.hotmart.com", "user:pass@help.hotmart.com"),
+      url.replace("/es/article/", "/es/redirect/"),
+      url.replace("/es/article/", "/es/other/../article/"),
+      url.replace("/es/article/", "/es/%61rticle/"),
+      ` ${url}`,
+      `${url}\n`,
+      `${url}\u007f`,
+      url.replace("https://", "https:\\\\"),
+    ])
+      assert.equal(externalUrl(bad, exact), null, JSON.stringify(bad));
+  }
+  assert.equal(externalUrl("https://help.hotmart.com/es/article/123/unknown", exact), null);
+  assert.equal(externalUrl("https://help.hotmart.com/redirect", exact), null);
+  assert.equal(externalUrl("https://consumer.hotmart.com/", exact), "https://consumer.hotmart.com/");
+  assert.equal(externalUrl("https://pequeverso.com/soporte/", exact), "https://pequeverso.com/soporte/");
+});
+
+it("drops unsafe official citations without changing distinct source identities", async () => {
+  const { assistantConfig } = await import("../../../config/assistant.ts");
+  const exact = { ...policy, approvedSourceUrls: assistantConfig.approvedSourceUrls };
+  const sources = exact.approvedSourceUrls.map((url, index) => ({
+    id: `hotmart:${index}`,
+    title: "Procedimiento",
+    url,
+  }));
+  const safe = applyLinkPolicy(
+    answer({
+      sources: [
+        ...sources,
+        { id: "redirect", title: "No permitido", url: `${sources[0]?.url}?redirect=evil` },
+      ],
+    }),
+    exact,
+  );
+  assert.deepEqual(safe.sources, sources);
+  const first = sources[0];
+  if (!first) throw new Error("An approved reference must exist");
+  const distinctDocuments = [first, { ...first, id: "another-document" }];
+  assert.deepEqual(applyLinkPolicy(answer({ sources: distinctDocuments }), exact).sources, distinctDocuments);
+});

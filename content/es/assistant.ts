@@ -85,6 +85,7 @@ export const assistantCopy = {
   pages: (count: number) => (count === 1 ? "1 página" : `${count} páginas`),
   resourceCount: (count: number) => (count === 1 ? "1 destacado" : `${count} destacados`),
   sourcesLabel: (count: number) => (count === 1 ? "1 fuente" : `${count} fuentes`),
+  officialProcedureLabel: "Hotmart · procedimiento general",
   sourcesHint: "Información de la tienda usada en esta respuesta",
   linksLabel: "Enlaces útiles",
   followUpsLabel: "Puedes preguntar",
