@@ -58,6 +58,12 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "react-dom"
         update-types: ["version-update:semver-major"]
+      # Playwright 1.64.0 bundles a Linux WebKit (27.2, build 2370) that stops rendering updates
+      # (no requestAnimationFrame, IntersectionObserver or pagereveal) once backdrop-filter surfaces
+      # are scrolled into view; the webkit-390 text-zoom spec fails on it with any app code. Only
+      # this exact version is skipped: the next release is proposed and has to pass CI.
+      - dependency-name: "@playwright/test"
+        versions: ["1.64.0"]
   - package-ecosystem: npm
     directory: /tools/media
     target-branch: develop
