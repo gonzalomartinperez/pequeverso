@@ -27,6 +27,7 @@
           "description": { "type": "string" },
           "source": { "type": "string", "pattern": "^/" },
           "destination": { "type": "string" },
+          "destinationEnv": { "type": "string", "pattern": "^NEXT_PUBLIC_CHECKOUT_URL_[A-Z0-9_]+$" },
           "permanent": { "type": "boolean" },
           "gone": { "type": "boolean" }
         }

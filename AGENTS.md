@@ -17,6 +17,7 @@ Spanish. Read this file first, then the doc that matches your task.
 | Legal/support pages | `docs/legal-checklist.md` |
 | Release or deploy | `docs/deployment.md` |
 | URL changes, redirects, cutover | `docs/migration.md` |
+| Affiliate redirects (`/<slug>/` → affiliate link from an env variable) | `docs/affiliates.md` |
 | Hotmart funnel (checkout, widget, dashboard changes, E2E checklist) | `docs/hotmart-funnel.md` |
 | Native shopping assistant (disabled by default) | `docs/assistant.md`, ADR-0008 |
 | Code style, setup, skills validation | `CONTRIBUTING.md` (Google TS style adaptations); skills: `.agents/skills/*/SKILL.md` (canonical), `.claude/skills` thin adapters, `npm run check:skills` |

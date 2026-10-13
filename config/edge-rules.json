@@ -55,6 +55,13 @@
       "permanent": true
     },
     {
+      "id": "affiliate-alimentacion-bebe",
+      "description": "Affiliate product recommended by Pequeverso (Hotmart course «Guía de Alimentación para Bebés»). Destination = build variable NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE (the owner's hotlink); 302 so the link can change; the visitor's query is appended. Unset variable: no rule, the path 404s.",
+      "source": "/alimentacion-bebe/",
+      "destinationEnv": "NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE",
+      "permanent": false
+    },
+    {
       "id": "prior-owner-shop",
       "description": "URLs indexed from the previous owner of pequeverso.com (Montessori shop). Return 410 Gone.",
       "source": "/shop-2/:path*",
