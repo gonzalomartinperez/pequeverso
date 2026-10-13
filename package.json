@@ -67,7 +67,7 @@
     "@biomejs/biome": "2.5.15",
     "@lhci/cli": "0.15.1",
     "@next/bundle-analyzer": "16.4.0",
-    "@playwright/test": "1.64.0",
+    "@playwright/test": "1.63.0",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "24.19.2",
     "@types/react": "19.3.0",
