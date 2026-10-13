@@ -2,7 +2,8 @@ name: Nightly
 
 # Full matrix and slow checks that do not gate pull requests: Chromium + WebKit at seven widths,
 # visual snapshots, the clean-clone invariant, full knip, Lighthouse ×5, link check, bundle analysis.
-# Runs on main and therefore also warms the Playwright browser caches that pull requests restore.
+# Scheduled runs use the default branch (currently develop); dispatches use the selected ref.
+# Default-branch jobs also warm the Playwright browser caches that pull requests can restore.
 on:
   schedule:
     - cron: "17 4 * * *"
@@ -54,7 +55,7 @@ jobs:
           if-no-files-found: error
 
   matrix:
-    name: Playwright ${{ matrix.browser }} × 7 widths
+    name: Playwright ${{ matrix.browser }} × 7 widths (${{ matrix.shard }}/${{ matrix.shards }})
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     needs: build
@@ -63,9 +64,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, webkit]
+        include:
+          - browser: chromium
+            shard: 1
+            shards: 1
+          - browser: webkit
+            shard: 1
+            shards: 2
+          - browser: webkit
+            shard: 2
+            shards: 2
     env:
       BROWSER: ${{ matrix.browser }}
+      SHARD: ${{ matrix.shard }}
+      SHARDS: ${{ matrix.shards }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -82,18 +94,59 @@ jobs:
           path: out
       - name: Verify exported edge rules
         run: cmp out/.htaccess docs/generated/htaccess.txt
-      - name: Playwright (PW_SET=nightly)
+      - name: Verify complete, disjoint shard inventories (no browser execution)
         env:
           PW_SET: nightly
-        run: npx playwright test --project="$BROWSER-*"
+        run: |
+          set -euo pipefail
+          mkdir -p nightly-evidence
+          npx playwright test --project="$BROWSER-*" --list --reporter=json > nightly-evidence/full.json
+          for part in $(seq 1 "$SHARDS"); do
+            npx playwright test --project="$BROWSER-*" --shard="$part/$SHARDS" --list --reporter=json > "nightly-evidence/shard-$part.json"
+          done
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from "node:fs";
+          function inventory(path) {
+            const report = JSON.parse(readFileSync(path, "utf8"));
+            if (report.errors?.length) throw new Error(`inventory errors: ${path}`);
+            const ids = [];
+            function visit(suite, parents = []) {
+              const titles = [...parents, suite.title];
+              for (const spec of suite.specs ?? []) {
+                for (const test of spec.tests ?? []) {
+                  ids.push(JSON.stringify([test.projectName, spec.file, spec.line, spec.column, ...titles, spec.title]));
+                }
+              }
+              for (const child of suite.suites ?? []) visit(child, titles);
+            }
+            for (const suite of report.suites ?? []) visit(suite);
+            if (!ids.length || new Set(ids).size !== ids.length) throw new Error(`empty/duplicate inventory: ${path}`);
+            return ids.sort();
+          }
+          const full = inventory("nightly-evidence/full.json");
+          const parts = Array.from({ length: Number(process.env.SHARDS) }, (_, i) => inventory(`nightly-evidence/shard-${i + 1}.json`));
+          const union = parts.flat().sort();
+          if (new Set(union).size !== union.length || JSON.stringify(union) !== JSON.stringify(full)) throw new Error("shards must partition the complete inventory exactly");
+          const receipt = { browser: process.env.BROWSER, full: full.length, shards: parts.map(part => part.length), disjoint: true, exactUnion: true };
+          writeFileSync("nightly-evidence/inventory-receipt.json", JSON.stringify(receipt, null, 2) + "\n");
+          console.log(JSON.stringify(receipt));
+          NODE
+      - name: Playwright (PW_SET=nightly, unchanged projects and limits)
+        env:
+          PW_SET: nightly
+          PLAYWRIGHT_JSON_OUTPUT_NAME: nightly-evidence/results.json
+        run: |
+          set -euo pipefail
+          npx playwright test --project="$BROWSER-*" --shard="$SHARD/$SHARDS" --reporter=github,html,json 2>&1 | tee nightly-evidence/run.log
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: playwright-report-${{ matrix.browser }}
+          name: playwright-report-${{ matrix.browser }}-${{ matrix.shard }}-of-${{ matrix.shards }}
           path: |
             playwright-report
             test-results
+            nightly-evidence
           retention-days: 14
 
   visual:
