@@ -161,7 +161,7 @@ it("allows only the three exact canonical official articles without granting the
     approvedSourceUrls: assistantConfig.approvedSourceUrls,
   };
   assert.equal(exact.approvedSourceUrls.length, 3);
-  assert.equal(exact.linkHosts.includes("help.hotmart.com"), false);
+  assert.deepEqual(exact.linkHosts, ["consumer.hotmart.com", "refund.hotmart.com"]);
   for (const url of exact.approvedSourceUrls) {
     assert.equal(externalUrl(url, exact), url);
     assert.equal(externalUrl(url, policy), null, "legacy policy remains closed to official articles");
