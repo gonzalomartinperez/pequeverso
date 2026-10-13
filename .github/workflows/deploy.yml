@@ -93,6 +93,7 @@ jobs:
           GITHUB_SHA: ${{ steps.meta.outputs.sha }}
           GITHUB_REF_NAME: ${{ inputs.ref }}
           NEXT_PUBLIC_META_PIXEL_ID: ${{ vars.NEXT_PUBLIC_META_PIXEL_ID }}
+          NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE: ${{ vars.NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE }}
         run: |
           set -euo pipefail
           test -n "$NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO" || { echo "::error::Set NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO (or NEXT_PUBLIC_CHECKOUT_URL) in the environment's variables"; exit 1; }
