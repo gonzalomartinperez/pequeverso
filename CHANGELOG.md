@@ -4,6 +4,29 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
 
 ## [Unreleased]
 
+## [1.0.0] — 2026-10-13
+
+pequeverso.com v1: the home is the hub of two products. Grafismo Fonético is Pequeverso's own kit.
+Guía de Alimentación para Bebés is a recommended Hotmart affiliate course. Hostinger builds every
+merge to `main`.
+
+### Added
+- Affiliate redirect `/alimentacion-bebe/` (`config/edge-rules.json`, 302 with query passthrough).
+  The destination lives only in `NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE` (hPanel), and
+  `check-env` validates it (docs/affiliates.md).
+- Affiliate disclosures: in the legal notice (`/aviso-legal/#afiliados`), terms, privacy and
+  cookies, and next to every affiliate link with the commission wording.
+
+### Fixed
+- Hostinger Node builder: `/hbuilds/` is detected in one place (`scripts/lib/build-target.ts`), so
+  the build info and the assistant-disabled check follow the standalone output.
+
+### Changed
+- Dependencies updated to the latest release of each line (Next 16.4). Playwright stays on 1.63
+  because the WebKit build in 1.64 stops painting with `backdrop-filter` on Linux (see
+  `.github/dependabot.yml`).
+- Docs: Hostinger is connected to `main` and auto-deploys every merge (docs/deployment.md).
+
 ### Changed
 - Home redesigned as the hub of two products with the same weight from the hero to the close
   (docs/specs/home-hub.md): need selector with two doors («Aprender a leer · 3 a 7 años», «Empezar a
