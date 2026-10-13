@@ -14,7 +14,8 @@ components — never retyped.
 | `content/es/products/index.ts` | shared shapes: `Resource`, `FaqItem`, `CoreLandingCopy`, `OfferLandingCopy` | — |
 | `content/es/products/grafismo-fonetico/{copy,resources,faq}.ts` | landing copy, the 9 resources (names, page counts, descriptions), the 10 FAQ answers | published landing copy and `offer-content.mjs`, reviewed |
 | `content/es/products/imprime-y-juega/{copy,resources,faq}.ts` | upsell/downsell copy, the 9 resources, the 9 FAQ answers | published post-purchase copy, reviewed |
-| `content/es/home.ts` | homepage copy | new (grounded in brand foundations and the product brief) |
+| `content/es/home.ts` | homepage copy (hub of two products: hero, trust strip, the two chapters, FAQ by product, close) | brand foundations, the product brief and `config/affiliates.ts` (docs/specs/home-hub.md) |
+| `content/es/hub.ts` | the two needs as the chooser shows them everywhere (home doors, header «Productos» menu, mobile menu, sticky bar, footer, 404): task, line, format, the short affiliate disclosure | owner request 2026-10-13, conversion research (pequeverso-marketing) |
 | `content/es/gracias.ts` | thank-you guidance (shared by every core product's `/<slug>/gracias/`) | published thank-you page, condensed |
 | `content/es/legal/seller.ts` | seller identity (Gonzalo Martín Pérez, persona humana, CUIL, Bahía Blanca domicile, courts) and the single support/privacy/arrepentimiento mailbox | owner, 2026-09-24 (consented to publication) |
 | `content/es/legal/argentina.ts` | Argentine anchors: revocation period and 24 h code, consumer and data authorities, the AAIP notice (verbatim), the jurisdiction clause | Ley 24.240, CCyC, Disp. SSDCyLC 954/2025, Res. AAIP 14/2018 (sources in docs/legal-checklist.md) |

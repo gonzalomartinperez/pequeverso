@@ -4,6 +4,17 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
 
 ## [Unreleased]
 
+### Changed
+- Home redesigned as the hub of two products with the same weight from the hero to the close
+  (docs/specs/home-hub.md): need selector with two doors («Aprender a leer · 3 a 7 años», «Empezar a
+  comer · 6 a 12 meses»), shared trust strip, mirrored chapters `#leer` and `#bebe` (stable anchors
+  for bios, plus `#grafismo-fonetico` / `#alimentacion-bebe`), FAQ by product and a close with both.
+  Header «Productos» mega-menu (native popover, zero JS to open) on the home, auto-hiding header and contextual phone sticky bar on the home, footer «Productos» with both.
+  The landing, offer and thank-you pages keep their own header and the Hotmart funnel as they were.
+- Media: four new images of the course from the content-studio set with faces
+  (`bebe.scene.primera-papilla`, `bebe.scene.menu`, `bebe.cutout.mama-brazos`, `bebe.cutout.planeta`);
+  `bebe.scene.mama`, `bebe.scene.mama-vertical` and `gf.life.logro` retired.
+
 ### Added
 - Native shopping assistant (`src/features/assistant/`, docs/assistant.md, ADR-0008), **disabled by
   default and compiled out** of publishable builds (`NEXT_PUBLIC_ASSISTANT_ENABLED`, guarded by

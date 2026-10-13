@@ -7,6 +7,11 @@ type Props = {
   sizes: string;
   /** LCP image: eager, high priority, preloaded from the document head; everything else lazy. */
   priority?: boolean;
+  /**
+   * Above-the-fold image that is not the LCP candidate (e.g. the second of two equal hero cards):
+   * eager and async-decoded, without preload or high priority, so it never competes with the LCP image.
+   */
+  eager?: boolean;
   className?: string;
   /** Override alt (e.g. decorative → ""). */
   alt?: string;
@@ -19,7 +24,7 @@ type Props = {
  * `data-lcp`, and is preloaded from the head with the same srcset/sizes the browser will pick
  * (typed `image/avif` when available), because React only preloads bare `<img>` elements.
  */
-export function MediaImage({ id, sizes, priority = false, className, alt }: Props) {
+export function MediaImage({ id, sizes, priority = false, eager = false, className, alt }: Props) {
   const image = getImage(id);
   const avif = image.sources?.find((source) => source.type === "image/avif");
   if (priority) {
@@ -46,7 +51,7 @@ export function MediaImage({ id, sizes, priority = false, className, alt }: Prop
             loading: "eager" as const,
             "data-lcp": "",
           }
-        : { decoding: "async" as const, loading: "lazy" as const })}
+        : { decoding: "async" as const, loading: eager ? ("eager" as const) : ("lazy" as const) })}
     />
   );
   if (!image.sources?.length) return img;

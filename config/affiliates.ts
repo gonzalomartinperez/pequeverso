@@ -19,6 +19,8 @@ export type AffiliateProduct = {
   name: string;
   /** Who it is for, in the producer's terms. */
   audience: string;
+  /** Short stage label for chips and menus (the age range of `audience`). */
+  stage: string;
   /** Platform that sells, delivers and refunds the product. */
   platform: "Hotmart";
   /** Refund guarantee set on the producer's Hotmart product (days). */
@@ -28,10 +30,10 @@ export type AffiliateProduct = {
   /** `src` value appended to the redirect path so Hotmart reports show the placement. */
   source: string;
   /**
-   * Manifest ids used by the site block: the landscape photo (phones and tablets), the portrait
-   * art of the same scene (desktop column) and the transparent cut-outs.
+   * Manifest ids used on the home (docs/specs/home-hub.md): the hero figure, the chapter scene,
+   * the menu scene and the transparent cut-outs (devices, bowl, food planet).
    */
-  media: { photo: string; photoTall: string; device: string; detail: string };
+  media: { figure: string; photo: string; menu: string; device: string; detail: string; planet: string };
 };
 
 export const alimentacionBebe = {
@@ -40,6 +42,7 @@ export const alimentacionBebe = {
   destinationEnv: "NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE",
   name: "Guía de Alimentación para Bebés",
   audience: "Alimentación complementaria de 6 a 12 meses",
+  stage: "6 a 12 meses",
   platform: "Hotmart",
   guaranteeDays: 7,
   topics: [
@@ -50,10 +53,12 @@ export const alimentacionBebe = {
   ],
   source: "sitio-home",
   media: {
-    photo: "bebe.scene.mama",
-    photoTall: "bebe.scene.mama-vertical",
+    figure: "bebe.cutout.mama-brazos",
+    photo: "bebe.scene.primera-papilla",
+    menu: "bebe.scene.menu",
     device: "bebe.cutout.dispositivos",
     detail: "bebe.cutout.bol",
+    planet: "bebe.cutout.planeta",
   },
 } as const satisfies AffiliateProduct;
 

@@ -25,7 +25,7 @@ const desktopSafari = devices["Desktop Safari"];
 const desktopFirefox = devices["Desktop Firefox"];
 const specs = {
   functional:
-    /(playground|smoke|a11y|offer-mode|widget|commerce|consent|legal|motion|navigation|tracking|lcp|responsive|text-zoom|assistant-disabled)\.spec\.ts/,
+    /(hub|playground|smoke|a11y|offer-mode|widget|commerce|consent|legal|motion|navigation|tracking|lcp|responsive|text-zoom|assistant-disabled)\.spec\.ts/,
   visual: /visual\.spec\.ts/,
   prod: /smoke\.spec\.ts/,
 };

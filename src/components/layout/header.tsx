@@ -2,7 +2,10 @@ import { MenuIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { BrandLogo } from "@/components/blocks/brand-logo";
-import { MobileNav } from "@/components/layout/mobile-nav";
+import { MediaImage } from "@/components/blocks/media-image";
+import { MobileNav, type MobileNavProduct } from "@/components/layout/mobile-nav";
+import { hubNeeds } from "@/features/hub/hub-products";
+import { ProductsMenu } from "@/features/hub/products-menu";
 import { cn } from "@/lib/utils";
 
 export type NavItem = { href: string; label: string };
@@ -16,7 +19,19 @@ type Props = {
   subtitle?: string | undefined;
   /** Float over the first band instead of taking its own row (see PageShell `overlay`). */
   overlay?: boolean | undefined;
+  /**
+   * The «Productos» menu (both needs, docs/specs/home-hub.md): a pill that opens the mega-menu
+   * panel, plus large product cards at the top of the mobile menu. Off on the purchase and
+   * post-purchase pages, where the visitor has already chosen.
+   */
+  products?: boolean | undefined;
 };
+
+/** Mobile-menu product cards: the hub needs with a server-rendered thumbnail. */
+const mobileProducts: MobileNavProduct[] = hubNeeds.map((need) => ({
+  need,
+  thumb: <MediaImage id={need.thumb} sizes="96px" alt="" />,
+}));
 
 /**
  * Menu trigger: a 44 px round glass button. Computed here (server) so the client island ships
@@ -36,8 +51,13 @@ const MENU_TRIGGER =
  * enlarged to 200 % on a phone) the pill grows: the CTA group moves to a second row and its label
  * wraps, so nothing scrolls sideways (WCAG 1.4.10).
  */
-export function Header({ nav = [], cta, subtitle, overlay = false }: Props) {
+export function Header({ nav = [], cta, subtitle, overlay = false, products = false }: Props) {
   const items = nav.slice(0, 4);
+  const hasMenu = items.length > 0 || products;
+  // The product cards already lead to the chapters: the sheet lists only the other anchors.
+  const sheetItems = products
+    ? items.filter((item) => !hubNeeds.some((need) => need.anchor === item.href))
+    : items;
   return (
     <header
       data-slot="header"
@@ -79,7 +99,7 @@ export function Header({ nav = [], cta, subtitle, overlay = false }: Props) {
                 <li key={item.href}>
                   <a
                     href={item.href}
-                    className="inline-flex min-h-11 items-center rounded-full px-4 text-[0.95rem] font-bold text-body no-underline transition-colors duration-(--duration-fast) hover:bg-navy/6 hover:text-navy"
+                    className="inline-flex min-h-11 items-center rounded-full px-4 text-[0.95rem] font-bold text-body no-underline transition-colors duration-(--duration-fast) hover:bg-navy/6 hover:text-navy aria-[current=location]:bg-navy/8 aria-[current=location]:text-navy"
                   >
                     {item.label}
                   </a>
@@ -95,8 +115,14 @@ export function Header({ nav = [], cta, subtitle, overlay = false }: Props) {
           )}
         >
           {cta}
-          {items.length > 0 ? (
-            <MobileNav items={items} cta={cta} className={MENU_TRIGGER}>
+          {products ? <ProductsMenu /> : null}
+          {hasMenu ? (
+            <MobileNav
+              items={sheetItems}
+              cta={cta}
+              products={products ? mobileProducts : undefined}
+              className={MENU_TRIGGER}
+            >
               <MenuIcon aria-hidden="true" focusable="false" strokeWidth={2.4} />
               <span className="sr-only">Abrir el menú</span>
             </MobileNav>

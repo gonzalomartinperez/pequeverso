@@ -35,6 +35,9 @@ test("footer cookie control exists and legal links are complete", async ({ page 
 test("footer control opens a necessary-cookies notice when nothing is configured", async ({ page }) => {
   test.skip(!!process.env.E2E_EXPECT_CONSENT, "build was configured with a pixel id");
   await page.goto("/");
+  // The footer control works after hydration; on the GPU-less WebKit runners a click right after
+  // `load` can land before it (seen on the hub home, nightly webkit-1440).
+  await page.waitForLoadState("networkidle");
   await page.getByRole("button", { name: "Configurar cookies" }).click();
   const banner = page.getByTestId("consent-banner");
   await expect(banner).toBeVisible();

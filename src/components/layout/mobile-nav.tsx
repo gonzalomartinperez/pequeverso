@@ -2,6 +2,10 @@
 
 import { lazy, type ReactNode, Suspense, useState } from "react";
 import type { NavItem } from "@/components/layout/header";
+import type { HubNeed } from "@/features/hub/hub-products";
+
+/** A product card at the top of the mobile menu (hub need + server-rendered thumbnail). */
+export type MobileNavProduct = { need: HubNeed; thumb: ReactNode };
 
 const load = () => import("./mobile-nav-sheet");
 const NavSheet = lazy(() => load().then((module) => ({ default: module.MobileNavSheet })));
@@ -15,6 +19,8 @@ type Props = {
   children: ReactNode;
   /** The header CTA, repeated at the foot of the sheet. */
   cta?: ReactNode | undefined;
+  /** Product cards shown first in the sheet (header `products`). */
+  products?: readonly MobileNavProduct[] | undefined;
 };
 
 /**
@@ -22,7 +28,7 @@ type Props = {
  * (hover, focus, touch) or first open, so the shared header adds no dialog code to the initial
  * bundle of every page.
  */
-export function MobileNav({ items, className, children, cta }: Props) {
+export function MobileNav({ items, className, children, cta, products }: Props) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const show = () => {
@@ -46,7 +52,7 @@ export function MobileNav({ items, className, children, cta }: Props) {
       </button>
       {mounted ? (
         <Suspense fallback={null}>
-          <NavSheet items={items} cta={cta} open={open} onOpenChange={setOpen} />
+          <NavSheet items={items} cta={cta} products={products} open={open} onOpenChange={setOpen} />
         </Suspense>
       ) : null}
     </>

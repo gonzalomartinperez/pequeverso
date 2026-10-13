@@ -325,6 +325,66 @@
   }
 }
 
+/*
+ * Hub (docs/specs/home-hub.md): the «Productos» popover, the auto-hiding home header and the
+ * contextual sticky bar. Transform/opacity only; under reduced motion everything appears at once.
+ */
+@layer components {
+  /* Popover panel: closed state is display:none (UA); the transition runs on open and close. */
+  .pv-popover {
+    transform-origin: top center;
+  }
+
+  .pv-header {
+    transition: translate var(--duration-hide, 340ms) var(--pv-ease-emphasis);
+  }
+
+  /* Home header slides away while reading down and returns on the way up (HeaderAutoHide). It
+     never hides while it holds focus or its menu is open. */
+  .pv-header[data-hidden]:not(:focus-within):not(:has(:popover-open)) {
+    translate: 0 calc(-100% - 1rem);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pv-popover {
+      transition:
+        opacity var(--duration) var(--pv-ease-out),
+        scale var(--duration) var(--pv-ease-emphasis),
+        overlay var(--duration) allow-discrete,
+        display var(--duration) allow-discrete;
+    }
+
+    .pv-popover:not(:popover-open) {
+      opacity: 0;
+      scale: 0.97;
+    }
+
+    @starting-style {
+      .pv-popover:popover-open {
+        opacity: 0;
+        scale: 0.97;
+      }
+    }
+
+    .pv-popover:popover-open [data-menu-card] {
+      animation: pv-menu-in var(--duration-reveal) var(--pv-ease-emphasis) both;
+      animation-delay: calc(60ms + var(--i, 0) * var(--stagger));
+    }
+
+    /* Sticky bar content swaps (doors → a product) with a short rise. */
+    .pv-swap {
+      animation: pv-menu-in var(--duration) var(--pv-ease-emphasis) both;
+    }
+  }
+}
+
+@keyframes pv-menu-in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+
 @property --glow-angle {
   syntax: "<angle>";
   inherits: false;
