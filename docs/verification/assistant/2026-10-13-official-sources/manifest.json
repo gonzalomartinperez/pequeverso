@@ -1,0 +1,25 @@
+{
+  "runtime_commit": "e4ed641b525d695605fa39a436b58d83e83a4cd7",
+  "test_commit": "cd4512005c5a92d1d2d250fc00b325852c3cee73",
+  "fixture_server_commit": "b7dcb0c27d214cb1b560a8ee6101f858545646fc",
+  "mode": "isolated fixture HTTP/SSE with synthetic citation enrichment; no Hotmart fetch or paid provider",
+  "publishable_assistant": "disabled",
+  "presentation": "compact desktop; responsive mobile",
+  "device_scale_factor": 2,
+  "implementing_agent_original_review": true,
+  "independent_root_original_review": true,
+  "images": {
+    "desktop.png": {
+      "sha256": "f0905b343250c726bb60efe0a8f9e12939959a60ee32b5088b1d8cb42a215c95",
+      "dimensions": [816, 1120],
+      "bytes": 103987
+    },
+    "mobile.png": {
+      "sha256": "4d5a12b312e5a34e02d3af9eea955cfd3e5e8edab7e2e68662ea4c05b4c5c940",
+      "dimensions": [824, 1662],
+      "bytes": 115339
+    }
+  },
+  "independent_reviewed_at": "2026-10-13T04:27:48.033869+00:00",
+  "reviewer": "coordinating Root agent; source and both original PNGs; not human review"
+}

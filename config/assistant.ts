@@ -9,6 +9,12 @@ export const assistantConfig = {
    * be on the storefront origin itself.
    */
   linkHosts: ["consumer.hotmart.com", "refund.hotmart.com"],
+  /** Exact informational articles, never a wildcard permission for the Hotmart help host. */
+  approvedSourceUrls: [
+    "https://help.hotmart.com/es/article/209033897/-como-recibire-el-producto-que-compre-en-hotmart-",
+    "https://help.hotmart.com/es/article/360061973392/como-solicitar-el-reembolso-de-mi-compra",
+    "https://help.hotmart.com/es/article/9312940657933/tenho-duvidas-referentes-ao-produto-que-comprei",
+  ],
   supportPath: "/soporte/",
   privacyPath: "/privacidad/",
   /**
