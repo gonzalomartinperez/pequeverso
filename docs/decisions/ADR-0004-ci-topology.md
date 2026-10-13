@@ -226,3 +226,99 @@ Evaluated and rejected:
   guarantee the image's libraries match the pinned browser build; kept.
 - **`workflow_dispatch` input `sha` with an expression default**: input defaults must be literals;
   the empty default falls back to `github.sha` in `env`.
+
+
+## 2026-10-12 measured browser partitioning
+
+The unsharded nightly run [38040018157](https://github.com/gonzalomartinperez/pequeverso/actions/runs/38040018157)
+spent 1,835 seconds in its WebKit job (1,749 seconds executing tests), versus 759 seconds
+for Chromium and 465 seconds for the Lighthouse ×5, links and bundle job. The WebKit sweep
+therefore uses two isolated runner shards; Chromium keeps one. On 2026-10-13, GitHub reports
+`develop` as the repository default branch: scheduled nightly runs use that branch, while a
+manual dispatch tests its selected ref. Both engines retain all seven
+widths, specs, worker settings, timeouts, assertions and retry configuration. An inventory
+check rejects empty selections, duplicates, overlapping shards or a union different from the
+complete unsharded suite before any browser executes. Each runner retains its inventories,
+JSON and HTML reports and execution log under a unique browser/shard artifact name.
+
+Local `--list --reporter=json` verification on 2026-10-13 at source `83b8cf7` found
+889 identities per engine: Chromium retains all 889 in its single shard, and WebKit partitions
+into 445 and 444 unique identities with an exact union. These are discovery counts, including
+all discovered cases; runtime conditional skips, actual retries and outcomes still require the
+complete Actions run. The earlier nightly's 882 cases per engine belong to its earlier source
+and are not the expected count for this candidate. Eight deterministic validator controls also
+check acceptance of exact partitions and rejection of empty, duplicated, overlapping, missing
+or errored inventories. No build or browser ran during this inventory check. After a normal merge of protected
+`develop` at `6265591`, discovery finds 896 identities per engine: Chromium retains 896 and
+WebKit partitions into 448 + 448. The seven additional identities per engine come from the
+integrated commerce coverage; the earlier inventories remain historical evidence.
+
+This changes scheduling, not coverage. Lighthouse still checks four routes five times each;
+visual snapshots, clean-clone, links and bundle checks remain unchanged. A successful run is
+not evidence of zero retries: the retained JSON results must be reviewed for attempts, skipped
+cases and flaky outcomes. Compare actual wall time and total runner-seconds after a complete
+run; duplicated setup can increase aggregate runner time even when elapsed time falls. No speedup
+is claimed from the partitioning proposal alone.
+
+The API's recent Quality runs [38316588475](https://github.com/gonzalomartinperez/pequeverso-assistant-api/actions/runs/38316588475)
+and [38321008029](https://github.com/gonzalomartinperez/pequeverso-assistant-api/actions/runs/38321008029)
+spent only 32–39 seconds in the container lane. Additional remote Docker caching was not added
+without a measured net benefit. The backoffice's last available Actions baseline is historical
+and cannot represent its new dashboard candidate. Browser-cache expansion is also deferred:
+[Playwright's guidance](https://playwright.dev/docs/ci#caching-browsers) notes that restoring
+browser binaries can cost as much as downloading them, while system dependencies still need
+installation. These optimizations never justify skipping required security or quality gates.
+
+
+### Native-assistant verification partition
+
+The enabled fixture job in [38319525680](https://github.com/gonzalomartinperez/pequeverso/actions/runs/38319525680)
+took 581 seconds, including 487 seconds for the enabled build and browser command. Its raw
+browser report records 234 identities, 187 passing cases, 47 conditional skips, zero flaky
+outcomes and no retries. Local discovery at the same test source confirms a disjoint exact
+117 + 117 partition across all six projects. The first shard contains Chromium's three
+presentations; the second contains Firefox and WebKit. Historical summed test work is unequal
+(484.312 versus 823.450 seconds), so this is not a claim of a 50% reduction. With the unchanged
+three-worker and one-worker-per-Firefox/WebKit constraints, the ideal historical critical-work
+lower bound changes from 435.921 to 296.240 seconds; this is an estimate that excludes builds,
+startup, fixture scheduling and runner queues, not an observed speedup.
+
+Each shard installs the same frozen, pinned API and builds its own enabled verification export.
+Its API, sessions, temporary SQLite and HTTPS servers run on an isolated runner. No enabled
+export is uploaded. The optional-suite detection, fixtures, empty provider key, CORS/CSRF and
+TLS tests, projects, workers, deadlines, retries and publishable disabled build are unchanged.
+The umbrella `ci` check still requires the entire assistant matrix to succeed. Inventories,
+JSON/HTML results and execution logs retain distinct `UNPUBLISHABLE` artifact names; actual
+counts, conditional skips, attempts and flaky outcomes must be reviewed from a complete run.
+Repeated setup can increase aggregate runner time even if the critical path becomes shorter.
+
+
+### 2026-10-13 observed nightly result and project-group refinement
+
+The first complete partitioned run [38332837744](https://github.com/gonzalomartinperez/pequeverso/actions/runs/38332837744)
+at `e98857c` failed its visual gate and retained one WebKit flaky case: the 768 px commerce
+CTA event-count case failed its first attempt and passed on retry. All three browser jobs
+reported success, which does not erase that failed attempt. Its wall time was 1,275 seconds
+and summed recorded job lifetimes were 3,296 seconds, versus 1,263 and 2,539 seconds for the
+nearest unpartitioned run [38326375800](https://github.com/gonzalomartinperez/pequeverso/actions/runs/38326375800)
+at `14558bb`. The two WebKit jobs took 1,233 and 612 seconds. These observations show no
+elapsed-time benefit for the first partition and higher aggregate runner occupancy. Different
+revisions, setup, queues and failed attempts prevent treating this as a controlled benchmark
+or attributing the flaky case to runner load. Original reports and failed attempts are retained.
+
+The replacement partitions complete projects: WebKit 1440/1280/430 px versus
+1024/768/390/360 px. At the unchanged test source, discovery must prove a disjoint exact
+384 + 512 union of all 896 identities; Chromium retains all 896. Repeated `--project=`
+arguments are built from fixed shell arrays, validated against the full inventory, retained
+as NUL-delimited arguments and reused for execution. An unknown browser/group or empty
+selection fails closed. This is a project partition, not Playwright's count-based `--shard`.
+All seven widths, worker limits, timeouts, retries, assertions and artifact retention remain.
+Native-assistant verification remains its existing 117 + 117 partition.
+
+Summed observed WebKit attempt work in the original run predicts 1,669.373 versus
+1,644.559 seconds for these groups, including the original failed attempt. This is only a
+scheduling estimate: concurrent workers, setup, queues and a new run can change elapsed
+and aggregate time. No new speedup is claimed before reviewing complete Actions results.
+The independent visual correction and the observed commerce flaky case must remain visible;
+rebalancing does not establish that either defect is fixed. Lighthouse's 20 distinct runs,
+links, bundle analysis, clean-clone and the disabled publishable export remain required.
