@@ -226,3 +226,40 @@ Evaluated and rejected:
   guarantee the image's libraries match the pinned browser build; kept.
 - **`workflow_dispatch` input `sha` with an expression default**: input defaults must be literals;
   the empty default falls back to `github.sha` in `env`.
+
+
+## 2026-10-12 measured browser partitioning
+
+The unsharded nightly run [38040018157](https://github.com/gonzalomartinperez/pequeverso/actions/runs/38040018157)
+spent 1,835 seconds in its WebKit job (1,749 seconds executing tests), versus 759 seconds
+for Chromium and 465 seconds for the Lighthouse ×5, links and bundle job. The WebKit sweep
+therefore uses two isolated runner shards; Chromium keeps one. Both engines retain all seven
+widths, specs, worker settings, timeouts, assertions and retry configuration. An inventory
+check rejects empty selections, duplicates, overlapping shards or a union different from the
+complete unsharded suite before any browser executes. Each runner retains its inventories,
+JSON and HTML reports and execution log under a unique browser/shard artifact name.
+
+Local `--list --reporter=json` verification on 2026-10-13 at source `83b8cf7` found
+889 identities per engine: Chromium retains all 889 in its single shard, and WebKit partitions
+into 445 and 444 unique identities with an exact union. These are discovery counts, including
+all discovered cases; runtime conditional skips, actual retries and outcomes still require the
+complete Actions run. The earlier nightly's 882 cases per engine belong to its earlier source
+and are not the expected count for this candidate. Eight deterministic validator controls also
+check acceptance of exact partitions and rejection of empty, duplicated, overlapping, missing
+or errored inventories. No build or browser ran during this inventory check.
+
+This changes scheduling, not coverage. Lighthouse still checks four routes five times each;
+visual snapshots, clean-clone, links and bundle checks remain unchanged. A successful run is
+not evidence of zero retries: the retained JSON results must be reviewed for attempts, skipped
+cases and flaky outcomes. Compare actual wall time and total runner-seconds after a complete
+run; duplicated setup can increase billed runner time even when elapsed time falls. No speedup
+is claimed from the partitioning proposal alone.
+
+The API's recent Quality runs [38316588475](https://github.com/gonzalomartinperez/pequeverso-assistant-api/actions/runs/38316588475)
+and [38321008029](https://github.com/gonzalomartinperez/pequeverso-assistant-api/actions/runs/38321008029)
+spent only 32–39 seconds in the container lane. Additional remote Docker caching was not added
+without a measured net benefit. The backoffice's last available Actions baseline is historical
+and cannot represent its new dashboard candidate. Browser-cache expansion is also deferred:
+[Playwright's guidance](https://playwright.dev/docs/ci#caching-browsers) notes that restoring
+browser binaries can cost as much as downloading them, while system dependencies still need
+installation. These optimizations never justify skipping required security or quality gates.
