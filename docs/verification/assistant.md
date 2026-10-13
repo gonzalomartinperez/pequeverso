@@ -95,6 +95,17 @@ an empty-history repository also failed. The first wording-only negative control
 because the hash line was not added in that Git diff; its insufficient result is preserved.
 No audit commit was pushed, no history was rewritten, and no real key was read or printed.
 
+A later independently committed integration change (`83dcd05`, PR88) added a broad exception for
+any backticked 40-hex match inside `docs/verification/**`. A factorized isolated audit used the
+same 90 commits, exact historical fingerprint and a new synthetic README line13: the original
+configuration detected one generic-api-key finding (exit1,12.329 s), while the broad exception
+hid it (exit0,8.078 s). Only known public Git hashes were used; no real credential was read.
+The assistant branch reconciles protected develop through a normal merge, removes only that
+broad exception and restores the original reviewed configuration bytes. The exact historical
+fingerprint, generated-manifest whole-line exceptions, default rules, redaction100 and the
+nonzero-history requirement remain intact. Corrected-head positive/new-commit negative/empty
+history controls and exact-head CI are required before integration.
+
 Catalog-date source `3514aca` passed full check (93.937 s), skills (0.470 s), and the
 isolated enabled fixture build (73.984 s). Its 18-case affected run remains **13 passed,
 4 conditional preview skips, 1 WebKit-mobile deadline, 0 flaky and 0 retries** (298.408 s test,
