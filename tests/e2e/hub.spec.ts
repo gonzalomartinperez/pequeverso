@@ -21,8 +21,11 @@ test("both doors are inside the first viewport, the same size, and lead to stabl
     // Visible without scrolling (at least the top half of each door).
     expect((box?.y ?? 0) + (box?.height ?? 0) / 2).toBeLessThanOrEqual(viewport?.height ?? 0);
   }
-  expect(Math.abs((boxes[0]?.width ?? 0) - (boxes[1]?.width ?? 0))).toBeLessThanOrEqual(1);
-  expect(Math.abs((boxes[0]?.height ?? 0) - (boxes[1]?.height ?? 0))).toBeLessThanOrEqual(1);
+  // Same layout size (offset sizes ignore the entrance transform that may still be running).
+  const sizes = await doors.evaluateAll((els) =>
+    els.map((el) => [(el as HTMLElement).offsetWidth, (el as HTMLElement).offsetHeight]),
+  );
+  expect(sizes[0]).toEqual(sizes[1]);
   // The course door is described by the affiliate disclosure, printed right under the doors.
   const describedBy = await doors.nth(1).getAttribute("aria-describedby");
   await expect(page.locator(`#${describedBy}`)).toContainText("Enlace de afiliado");
