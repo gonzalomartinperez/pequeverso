@@ -59,6 +59,7 @@ Status: ✅ done · ⚠️ done with a caveat · ❌ gap (owner action) · — n
 | Database registration | Ley 25.326 art. 21 | — | ❌ owner action 3 |
 | Consent for marketing measurement | Ley 25.326 art. 5 | Opt-out banner (owner decision) | ⚠️ owner action 7 |
 | Cookies policy | Ley 25.326 (IP/identifiers); RGPD/ePrivacy for EU visitors | `/cookies/` | ✅ |
+| Affiliate recommendations identified as such (commission disclosed, third-party seller, no health advice) | Ley 24.240 arts. 4 and 8 (information, offer content); DNU 274/2019 (lealtad comercial: no misleading advertising); FTC Endorsement Guides and EU UCPD as reference for international visitors | Disclosure next to the home block button (`content/es/home.ts` `affiliate.disclosure`), `/aviso-legal/#afiliados`, `/terminos/#afiliados`, `/privacidad/` (redirect), `/cookies/#afiliados`; links `rel="sponsored"` | ✅ (added 2026-10-12) |
 
 ### International buyers
 

@@ -92,3 +92,37 @@ test("landing records ViewContent once on mount", async ({ page }) => {
   await page.waitForTimeout(500);
   expect(await dataLayer(page, "ViewContent")).toHaveLength(1);
 });
+
+test("home recommends the affiliate course with a visible disclosure and its own click event", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  const block = page.locator("[data-affiliate-block]");
+  await block.scrollIntoViewIfNeeded();
+  await expect(block.getByRole("heading", { level: 2 })).toContainText("empieza a comer");
+  const disclosure = block.locator("[data-affiliate-disclosure]");
+  await expect(disclosure).toBeVisible();
+  await expect(disclosure).toContainText("Recomendación con enlace de afiliado");
+  await expect(disclosure).toContainText("Hotmart gestiona el pago, la entrega y los reembolsos.");
+  await expect(disclosure.getByRole("link")).toHaveAttribute("href", "/aviso-legal/#afiliados");
+  await expect(block).toContainText("Garantía de 7 días de Hotmart");
+  await expect(block).not.toContainText("US$");
+
+  const link = block.getByRole("link", { name: /Ver el curso/ });
+  await expect(link).toHaveAttribute("href", "/alimentacion-bebe/?src=sitio-home");
+  await expect(link).toHaveAttribute("target", "_blank");
+  await expect(link).toHaveAttribute("rel", /sponsored/);
+  await expect(link).toHaveAttribute("rel", /noopener/);
+  // The affiliate link is navy (secondary), never the coral purchase CTA.
+  await expect(link).toHaveClass(/\bbg-secondary\b/);
+  await expect(link).not.toHaveClass(/\bbg-primary\b/);
+  for (const img of await block.locator("img").all()) await expect(img).toHaveAttribute("loading", "lazy");
+
+  await preventNavigation(page, "a[data-affiliate]");
+  await link.click();
+  await expect.poll(async () => (await dataLayer(page, "PequeversoAffiliateClick")).length).toBe(1);
+  expect((await dataLayer(page, "PequeversoAffiliateClick"))[0]?.cta_position).toBe("home");
+  for (const name of ["CheckoutIntent", "InitiateCheckout", "Purchase"])
+    expect(await dataLayer(page, name)).toHaveLength(0);
+});

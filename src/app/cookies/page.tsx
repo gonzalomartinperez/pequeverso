@@ -1,3 +1,4 @@
+import { affiliateExamplePath } from "@config/affiliates";
 import { seller } from "@content/es/legal/seller";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -19,6 +20,7 @@ const sections: readonly Section[] = [
   { id: "banner", title: "Funcionamiento del banner" },
   { id: "elegir", title: "Cómo cambiar tu elección" },
   { id: "hotmart", title: "Cookies de Hotmart" },
+  { id: "afiliados", title: "Enlaces de afiliado" },
   { id: "cambios", title: "Modificaciones" },
 ];
 
@@ -135,6 +137,17 @@ export default function CookiesPage() {
         consumer.hotmart.com), igual que el widget de ofertas que Hotmart muestra dentro del Sitio después de
         una compra. Esas cookies se rigen por la política de cookies de Hotmart, que puedes consultar en su
         propia página.
+      </p>
+
+      <SectionHeading sections={sections} id="afiliados" />
+      <p>
+        Las direcciones del Sitio que recomiendan productos de terceros (por ejemplo,{" "}
+        <code>pequeverso.com{affiliateExamplePath}</code>) redirigen a Hotmart. El Sitio no instala cookies en
+        esa redirección. El sitio de destino es de un tercero y puede usar sus propias cookies, por ejemplo
+        para atribuir la recomendación al afiliado; se rigen por la política de cookies de Hotmart y del
+        productor. El clic en el botón de una recomendación se mide como un evento más del píxel de Meta, con
+        las mismas opciones del banner. Más información en el{" "}
+        <Link href="/aviso-legal/#afiliados">Aviso legal</Link>.
       </p>
 
       <SectionHeading sections={sections} id="cambios" />

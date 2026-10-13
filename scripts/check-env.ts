@@ -5,7 +5,7 @@ import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseAssistantEnv } from "../src/features/assistant/flag.ts";
-import { affiliateEnvNames, isAffiliateUrl } from "./lib/edge-rules.ts";
+import { affiliateEnvNames, affiliateSources, isAffiliateUrl } from "./lib/edge-rules.ts";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const CHECKOUT_ORIGIN = "https://pay.hotmart.com/";
@@ -102,3 +102,9 @@ if (errors.length > 0) {
   process.exit(1);
 }
 console.log(summary());
+// The home block links to every affiliate path; without its variable the path answers 404.
+const unsetAffiliates = affiliateEnvNames().filter((name) => !read(name));
+if (unsetAffiliates.length > 0)
+  console.warn(
+    `check-env: warning: ${unsetAffiliates.join(", ")} empty: ${affiliateSources().join(", ")} will 404 (set it for a publishable build; docs/affiliates.md)`,
+  );

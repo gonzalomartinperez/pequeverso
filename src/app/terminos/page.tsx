@@ -29,6 +29,7 @@ const sections: readonly Section[] = [
   { id: "garantia", title: "Garantía de reembolso" },
   { id: "arrepentimiento", title: "Derecho de arrepentimiento" },
   { id: "soporte", title: "Soporte y reclamos" },
+  { id: "afiliados", title: "Productos de terceros" },
   { id: "cambios", title: "Modificaciones" },
   { id: "ley", title: "Ley aplicable y jurisdicción" },
 ];
@@ -295,6 +296,15 @@ export default function TerminosPage() {
         Si tu reclamo no se resuelve, puedes presentarlo ante la autoridad de consumo de tu país; en la
         República Argentina, ante <a href={consumerAuthority.url}>{consumerAuthority.name}</a>. La{" "}
         <Link href="/arrepentimiento/#paises">referencia por país</Link> reúne los enlaces oficiales.
+      </p>
+
+      <SectionHeading sections={sections} id="afiliados" />
+      <p>
+        Estos términos se aplican solo a los materiales del Titular. El Sitio también recomienda productos de
+        terceros mediante enlaces de afiliado de Hotmart: esas compras se hacen con el productor de cada
+        producto, a través de Hotmart y bajo sus condiciones, que incluyen el pago, la entrega, el soporte, la
+        garantía y los reembolsos. El Titular puede recibir una comisión, sin costo adicional para ti. Detalle
+        en <Link href="/aviso-legal/#afiliados">Enlaces de afiliado y productos de terceros</Link>.
       </p>
 
       <SectionHeading sections={sections} id="cambios" />

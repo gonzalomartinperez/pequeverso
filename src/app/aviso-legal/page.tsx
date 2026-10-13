@@ -1,3 +1,4 @@
+import { affiliates } from "@config/affiliates";
 import {
   consumerAuthority,
   jurisdictionClause,
@@ -26,6 +27,7 @@ const sections: readonly Section[] = [
   { id: "propiedad", title: "Propiedad intelectual" },
   { id: "uso", title: "Condiciones de uso y responsabilidad" },
   { id: "terceros", title: "Enlaces a terceros" },
+  { id: "afiliados", title: "Enlaces de afiliado y productos de terceros" },
   { id: "consumidor", title: "Defensa del consumidor" },
   { id: "accesibilidad", title: "Accesibilidad" },
   { id: "ley", title: "Ley aplicable y jurisdicción" },
@@ -145,8 +147,41 @@ export default function AvisoLegalPage() {
       <p>
         El Sitio enlaza a servicios de terceros con sus propias condiciones y políticas de privacidad: Hotmart
         (página de pago, área de compras y reembolsos), las autoridades de defensa del consumidor y de
-        protección de datos, y los perfiles de {seller.brand} en redes sociales. El Titular no controla el
-        contenido de esos sitios; conviene revisar sus condiciones antes de usarlos.
+        protección de datos, los perfiles de {seller.brand} en redes sociales y los productos de terceros que
+        el Sitio recomienda (ver la sección siguiente). El Titular no controla el contenido de esos sitios;
+        conviene revisar sus condiciones antes de usarlos.
+      </p>
+
+      <SectionHeading sections={sections} id="afiliados" />
+      <p>
+        Además de sus propios materiales, {seller.brand} recomienda algunos productos de terceros, como cursos
+        en línea, mediante <strong>enlaces de afiliado</strong> del programa de afiliados de Hotmart. Esos
+        enlaces son direcciones cortas del Sitio que redirigen a la página del producto en Hotmart:
+      </p>
+      <ul>
+        {affiliates.map((product) => (
+          <li key={product.slug}>
+            <code>pequeverso.com{product.path.slice(0, -1)}</code>: «{product.name}» ({product.platform})
+          </li>
+        ))}
+      </ul>
+      <p>
+        Si compras a través de uno de esos enlaces, el Titular puede recibir una comisión del productor. La
+        comisión <strong>no tiene costo adicional para ti</strong>: pagas el mismo precio que verías sin el
+        enlace. Cada recomendación lo indica junto al botón.
+      </p>
+      <p>
+        El producto no es del Titular. El productor y Hotmart son los responsables del producto, de su
+        contenido, del pago, de la entrega, del soporte y de los reembolsos; la garantía es la que Hotmart y
+        el productor indican en la página de pago, conforme a los términos de Hotmart. Los{" "}
+        <Link href="/terminos/">Términos de compra</Link> de {seller.brand} no se aplican a esas compras. Si
+        tienes un problema con un producto de terceros, escribe al productor desde Hotmart o al centro de
+        ayuda de Hotmart; también puedes escribirnos y te indicaremos por dónde seguir.
+      </p>
+      <p>
+        Las recomendaciones son orientativas. {seller.brand} no ofrece asesoramiento médico, nutricional ni de
+        salud: ante cualquier duda sobre la alimentación o la salud de un bebé o un niño, consulta con su
+        pediatra o con un profesional de la salud.
       </p>
 
       <SectionHeading sections={sections} id="consumidor" />
