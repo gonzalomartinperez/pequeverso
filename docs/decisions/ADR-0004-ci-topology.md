@@ -233,7 +233,9 @@ Evaluated and rejected:
 The unsharded nightly run [38040018157](https://github.com/gonzalomartinperez/pequeverso/actions/runs/38040018157)
 spent 1,835 seconds in its WebKit job (1,749 seconds executing tests), versus 759 seconds
 for Chromium and 465 seconds for the Lighthouse ×5, links and bundle job. The WebKit sweep
-therefore uses two isolated runner shards; Chromium keeps one. Both engines retain all seven
+therefore uses two isolated runner shards; Chromium keeps one. On 2026-10-13, GitHub reports
+`develop` as the repository default branch: scheduled nightly runs use that branch, while a
+manual dispatch tests its selected ref. Both engines retain all seven
 widths, specs, worker settings, timeouts, assertions and retry configuration. An inventory
 check rejects empty selections, duplicates, overlapping shards or a union different from the
 complete unsharded suite before any browser executes. Each runner retains its inventories,
@@ -246,13 +248,16 @@ all discovered cases; runtime conditional skips, actual retries and outcomes sti
 complete Actions run. The earlier nightly's 882 cases per engine belong to its earlier source
 and are not the expected count for this candidate. Eight deterministic validator controls also
 check acceptance of exact partitions and rejection of empty, duplicated, overlapping, missing
-or errored inventories. No build or browser ran during this inventory check.
+or errored inventories. No build or browser ran during this inventory check. After a normal merge of protected
+`develop` at `6265591`, discovery finds 896 identities per engine: Chromium retains 896 and
+WebKit partitions into 448 + 448. The seven additional identities per engine come from the
+integrated commerce coverage; the earlier inventories remain historical evidence.
 
 This changes scheduling, not coverage. Lighthouse still checks four routes five times each;
 visual snapshots, clean-clone, links and bundle checks remain unchanged. A successful run is
 not evidence of zero retries: the retained JSON results must be reviewed for attempts, skipped
 cases and flaky outcomes. Compare actual wall time and total runner-seconds after a complete
-run; duplicated setup can increase billed runner time even when elapsed time falls. No speedup
+run; duplicated setup can increase aggregate runner time even when elapsed time falls. No speedup
 is claimed from the partitioning proposal alone.
 
 The API's recent Quality runs [38316588475](https://github.com/gonzalomartinperez/pequeverso-assistant-api/actions/runs/38316588475)
@@ -263,3 +268,26 @@ and cannot represent its new dashboard candidate. Browser-cache expansion is als
 [Playwright's guidance](https://playwright.dev/docs/ci#caching-browsers) notes that restoring
 browser binaries can cost as much as downloading them, while system dependencies still need
 installation. These optimizations never justify skipping required security or quality gates.
+
+
+### Native-assistant verification partition
+
+The enabled fixture job in [38319525680](https://github.com/gonzalomartinperez/pequeverso/actions/runs/38319525680)
+took 581 seconds, including 487 seconds for the enabled build and browser command. Its raw
+browser report records 234 identities, 187 passing cases, 47 conditional skips, zero flaky
+outcomes and no retries. Local discovery at the same test source confirms a disjoint exact
+117 + 117 partition across all six projects. The first shard contains Chromium's three
+presentations; the second contains Firefox and WebKit. Historical summed test work is unequal
+(484.312 versus 823.450 seconds), so this is not a claim of a 50% reduction. With the unchanged
+three-worker and one-worker-per-Firefox/WebKit constraints, the ideal historical critical-work
+lower bound changes from 435.921 to 296.240 seconds; this is an estimate that excludes builds,
+startup, fixture scheduling and runner queues, not an observed speedup.
+
+Each shard installs the same frozen, pinned API and builds its own enabled verification export.
+Its API, sessions, temporary SQLite and HTTPS servers run on an isolated runner. No enabled
+export is uploaded. The optional-suite detection, fixtures, empty provider key, CORS/CSRF and
+TLS tests, projects, workers, deadlines, retries and publishable disabled build are unchanged.
+The umbrella `ci` check still requires the entire assistant matrix to succeed. Inventories,
+JSON/HTML results and execution logs retain distinct `UNPUBLISHABLE` artifact names; actual
+counts, conditional skips, attempts and flaky outcomes must be reviewed from a complete run.
+Repeated setup can increase aggregate runner time even if the critical path becomes shorter.

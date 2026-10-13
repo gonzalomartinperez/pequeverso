@@ -2,7 +2,8 @@ name: Nightly
 
 # Full matrix and slow checks that do not gate pull requests: Chromium + WebKit at seven widths,
 # visual snapshots, the clean-clone invariant, full knip, Lighthouse ×5, link check, bundle analysis.
-# Runs on main and therefore also warms the Playwright browser caches that pull requests restore.
+# Scheduled runs use the default branch (currently develop); dispatches use the selected ref.
+# Default-branch jobs also warm the Playwright browser caches that pull requests can restore.
 on:
   schedule:
     - cron: "17 4 * * *"
