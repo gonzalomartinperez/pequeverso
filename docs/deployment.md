@@ -2,22 +2,23 @@
 
 ## Current hosting status
 
-On 2026-10-10 the owner confirmed that Hostinger is not connected to this repository yet.
-The selected future source branch is **main**. A release merge currently prepares source;
-it does not establish a deployment. Once the owner connects main and supplies the approved
-hosting configuration, set the repository variable `HOSTINGER_MAIN_AUTODEPLOY_ENABLED=true`
-to enable automatic post-deploy verification on main pushes. Until then, that push job is
-skipped; manual verification and reusable calls still execute against their requested revision.
-This variable controls verification only: it never connects hosting, deploys, or enables the
-assistant. Keep `NEXT_PUBLIC_ASSISTANT_ENABLED=false` and verify the actual publishable build.
+Since 2026-10-13 Hostinger is connected to **main** as a Node.js Web App (standalone build
+under `/hbuilds/`). Every merge to `main` (a release from `develop`) is built and published
+automatically; no manual Redeploy is needed. Environment variables (for example
+`NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE`) are set in hPanel. The repository variable
+`HOSTINGER_MAIN_AUTODEPLOY_ENABLED=true` enables the post-deploy verification on main pushes,
+which waits until `https://pequeverso.com/build-info.json` reports the merged commit. If the
+Hostinger build fails, the site keeps serving the previous build; read the build log in hPanel.
+This variable controls verification only: it never deploys or enables the assistant. Keep
+`NEXT_PUBLIC_ASSISTANT_ENABLED=false` and verify the actual publishable build.
 
 ## Two supported Hostinger modes (same repository, no SSH, no secrets)
 
-| | **Node.js Web App** (future main connection) | **Website + Git deployment** (static export alternative) |
+| | **Node.js Web App** (connected to main) | **Website + Git deployment** (static export alternative) |
 |---|---|---|
 | What Hostinger does | Clones the connected branch, runs `npm install` + `npm run build` on its builder (Node 24, GLIBC 2.28), forces `output: 'standalone'`, starts the app | Pulls the connected branch into `public_html` as plain files; no build |
 | What the repo does | `config/next.ts` (re-exported by `next.config.mjs`) detects the `/hbuilds/` builder and attaches redirects/headers from `config/edge-rules.json`; `npm run build` uses `--webpack` (native SWC/Turbopack bindings cannot load on GLIBC 2.28, the WASM fallback can); Hostinger's Next.js preset starts Next's standalone server directly; the Meta CAPI relay is the route handler `src/app/api/meta/events/route.standalone.ts`, compiled only in standalone builds (`pageExtensions`) | The Deploy workflow builds `out/` and publishes it to the orphan **`deploy`** branch with `.htaccess` (generated from the same edge rules) |
-| Branch to connect in hPanel | **`main`**, selected by the owner; every merge deploys once connected. `release` remains an optional manual-publication alternative requiring a separate hosting choice | **`deploy`** |
+| Branch to connect in hPanel | **`main`** (connected); every merge deploys. `release` remains an optional manual-publication alternative requiring a separate hosting choice | **`deploy`** |
 | Revision check | `https://pequeverso.com/build-info.json` (`Cache-Control: no-store`) | same |
 | Trade-offs | Idle process stop (cold start on first visit), no rollback UI in hPanel (re-run Deploy with the previous tag), Hostinger build time ~2–4 min | No cold starts, `.htaccess` fully ours; no Node, so no Conversions API relay (`/api/meta/events/` is a 404 the browser ignores) |
 
