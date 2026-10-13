@@ -126,23 +126,36 @@ test("short landscape phone: no fixed layer covers a checkout CTA", async ({ pag
 });
 
 test("primary CTA labels (checkout and product links) stay on one line from 320 px up", async ({ page }) => {
-  for (const [route, width] of [320, 390, 768, 1024].flatMap((w) => [
-    ["/grafismo-fonetico/", w] as const,
-    ["/", w] as const,
-  ])) {
+  // 360 covers the home's narrow-phone pills; the landing keeps its original widths (funnel pages
+  // are out of scope for the hub change).
+  for (const [route, width] of [
+    ...[320, 390, 768, 1024].map((w) => ["/grafismo-fonetico/", w] as const),
+    ...[320, 360, 390, 768, 1024].map((w) => ["/", w] as const),
+  ]) {
     await page.setViewportSize({ width, height: height(width) });
     await page.goto(route, { waitUntil: "load" });
     const wrapped = await page.evaluate(() =>
       [
         ...document.querySelectorAll<HTMLAnchorElement>(
-          'main a[data-checkout]:not([data-position="sticky"]), main a[data-position^="hero"]',
+          // Every product link on the home (kit and course) and the landing's checkouts.
+          'main a[data-checkout]:not([data-position="sticky"]), main a[data-position]:not([data-position="sticky"])',
         ),
       ]
         .flatMap((link) => [...link.querySelectorAll<HTMLSpanElement>("span")])
         .filter(
-          (span) => span.offsetParent !== null && !span.querySelector("span") && span.textContent?.trim(),
+          (span) =>
+            span.offsetParent !== null &&
+            !span.classList.contains("sr-only") &&
+            !span.querySelector("span") &&
+            span.textContent?.trim(),
         )
-        .filter((span) => span.getClientRects().length > 1)
+        // A label inside a flex button is blockified (one client rect even when it wraps), so
+        // compare its height with one line of its own line-height.
+        .filter((span) => {
+          const style = getComputedStyle(span);
+          const line = Number.parseFloat(style.lineHeight) || Number.parseFloat(style.fontSize) * 1.2;
+          return span.getBoundingClientRect().height > line * 1.5;
+        })
         .map((span) => span.textContent?.trim()),
     );
     expect(wrapped, `${route} @${width}`).toEqual([]);

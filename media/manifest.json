@@ -1,6 +1,6 @@
 {
   "$schemaVersion": 1,
-  "generatedAt": "2026-10-13T00:01:00.396Z",
+  "generatedAt": "2026-10-13T03:57:50.021Z",
   "generator": "tools/media/media-build.ts v1 (sharp 0.35.5, libvips 8.18.7)",
   "extras": [
     "public/manifest.webmanifest"
@@ -328,6 +328,75 @@
           "sha256": "c4709fee2575b0bae0c45888f93889b6c009ab6e54e3edc9e1bfaff94779ca5d",
           "width": 1440,
           "height": 1080,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "gf.door",
+      "role": "hero",
+      "page": "home",
+      "kind": "image",
+      "source": {
+        "library": "ai-business-assets",
+        "path": "02-products/grafismo-fonetico/source/website/landing-image-candidates/16-oferta-kit-completo-bonos-flatlay.png",
+        "sha256": "13c8bf375db651cd0e1569508bd9829f3afe60ecde78fe37179c191bd3d572c2",
+        "bytes": 2374818,
+        "width": 1448,
+        "height": 1086
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation",
+        "date": "2026-06",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a"
+      },
+      "rights": {
+        "owner": "Pequeverso / Digital Products Team",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-09-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Kit completo Grafismo Fonético impreso junto a sus ocho recursos complementarios"
+      },
+      "outputs": [
+        {
+          "file": "public/media/gf/gf-door-w400-70f4a465.webp",
+          "bytes": 26038,
+          "sha256": "dd3a46bf39f3d24374819b7da85283153f8aa3bdd486febf0203de87f4cd252d",
+          "width": 400,
+          "height": 300,
+          "format": "webp",
+          "quality": 82
+        },
+        {
+          "file": "public/media/gf/gf-door-w720-849166b0.webp",
+          "bytes": 71284,
+          "sha256": "8ffbeed49c8e34446fe01d75a8fc6e3e6a919646d438129e7ed14cc6953c74a3",
+          "width": 720,
+          "height": 540,
+          "format": "webp",
+          "quality": 82
+        },
+        {
+          "file": "public/media/gf/gf-door-w400-748eb24d.avif",
+          "bytes": 13865,
+          "sha256": "5c312eca5006b19024c69af64dc5162d0b171daec31eedebf7d0f1358135f4f8",
+          "width": 400,
+          "height": 300,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/gf/gf-door-w720-7d56625e.avif",
+          "bytes": 38840,
+          "sha256": "0d17e64d53d8c342a1f4c2f1b695e38f06d98a915accb0cfc982f34d738b01be",
+          "width": 720,
+          "height": 540,
           "format": "avif",
           "quality": 55
         }
@@ -5613,66 +5682,6 @@
       ]
     },
     {
-      "id": "gf.life.logro",
-      "role": "scene",
-      "page": "grafismo-fonetico",
-      "kind": "image",
-      "source": {
-        "library": "ai-business-assets",
-        "path": "02-products/grafismo-fonetico/source/website/landing-scenes-2026-09/S10-lo-logre.png",
-        "sha256": "ba9009a401a29d63988267e6dafcf8c1ba07b530d8411fccb35b36edca93f188",
-        "bytes": 2036250,
-        "width": 1448,
-        "height": 1086
-      },
-      "provenance": {
-        "origin": "ai-generated",
-        "tool": "ChatGPT image generation (lifestyle scenes, landing redesign 2026-09-26; selected 10 of 20); QA 2026-09-26: off-brand logos removed by crop (reto, tarjetas, flatlay) and retouch (kit cover), hands/faces checked",
-        "date": "2026-09-26",
-        "people": "synthetic",
-        "minors": "synthetic",
-        "release": "n/a"
-      },
-      "rights": {
-        "owner": "Pequeverso / Digital Products Team",
-        "license": "proprietary-all-rights-reserved",
-        "redistribution": "public-repo-approved",
-        "approvedAt": "2026-09-12T00:00:00.000Z"
-      },
-      "alt": {
-        "es": "Niña sonriente mostrando su hoja terminada junto a su madre"
-      },
-      "outputs": [
-        {
-          "file": "public/media/gf/gf-life-logro-w640-e599f7a9.webp",
-          "bytes": 40274,
-          "sha256": "9a467c9a3451b1a3a9be3775666e0f4d4bad9efe6c0b540b1b3a27c1a98fc0ed",
-          "width": 640,
-          "height": 480,
-          "format": "webp",
-          "quality": 78
-        },
-        {
-          "file": "public/media/gf/gf-life-logro-w1024-3f862700.webp",
-          "bytes": 75034,
-          "sha256": "b13702967614b984f83ba7651cb852ca601db5f2995606326e3c45e65a7a7c6a",
-          "width": 1024,
-          "height": 768,
-          "format": "webp",
-          "quality": 78
-        },
-        {
-          "file": "public/media/gf/gf-life-logro-w1024-5f29e8b3.avif",
-          "bytes": 50676,
-          "sha256": "d5f9deae54bfe49f463212dabb4422d073fa218d781c00cfb6b912ce016bf7b0",
-          "width": 1024,
-          "height": 768,
-          "format": "avif",
-          "quality": 55
-        }
-      ]
-    },
-    {
       "id": "gf.life.imprimir",
       "role": "scene",
       "page": "grafismo-fonetico",
@@ -5733,17 +5742,17 @@
       ]
     },
     {
-      "id": "bebe.scene.mama",
-      "role": "scene",
+      "id": "bebe.cutout.mama-brazos",
+      "role": "cutout",
       "page": "home",
       "kind": "image",
       "source": {
         "library": "pequeverso-content-studio",
-        "path": "01-produccion/alimentacion-bebe/2026/2026-10/estaticos/imagenes-sitio/fondos/web-bebe-01-hero-mama-dando-de-comer.png",
-        "sha256": "f136982ccebbf158f5bf06498ff66abf23258de3dee2ddc2301660f361fbd2da",
-        "bytes": 1960719,
-        "width": 1672,
-        "height": 941
+        "path": "01-produccion/alimentacion-bebe/2026/2026-10/estaticos/imagenes-sitio/transparentes/web-bebe-t12-mama-bebe-en-brazos.png",
+        "sha256": "9adad948490b1dd6771ae0b50ffb32de100464c9304e9bf9f219526a3e96622a",
+        "bytes": 1832478,
+        "width": 1254,
+        "height": 1254
       },
       "provenance": {
         "origin": "ai-generated",
@@ -5761,59 +5770,50 @@
         "approvedAt": "2026-10-12T00:00:00.000Z"
       },
       "alt": {
-        "es": "Mamá sonriente dándole papilla con una cucharita a su bebé, sentado en su silla de comer con babero"
+        "es": "Mamá sonriente con su bebé en brazos; el bebé lleva babero y sostiene una cucharita"
       },
       "outputs": [
         {
-          "file": "public/media/afiliados/bebe-scene-mama-w640-b253ac78.webp",
-          "bytes": 18966,
-          "sha256": "0efd14dbf67e5cc1c0384d20d6ef106b027a15332b7dd7925c883b9a14069f5c",
-          "width": 640,
+          "file": "public/media/afiliados/bebe-cutout-mama-brazos-w360-650a600c.webp",
+          "bytes": 20666,
+          "sha256": "9759b96fa1f5f428ae8d45d7086d2c1164b9b86afd7bafcb5129bbbade0da5c3",
+          "width": 360,
           "height": 360,
           "format": "webp",
-          "quality": 78
+          "quality": 72
         },
         {
-          "file": "public/media/afiliados/bebe-scene-mama-w1024-59a9fbda.webp",
-          "bytes": 35870,
-          "sha256": "d45525f546a0c3fd6b556f46fda550b994151071a8ab3e8050ddadb9877a506b",
-          "width": 1024,
-          "height": 576,
+          "file": "public/media/afiliados/bebe-cutout-mama-brazos-w640-7f5da490.webp",
+          "bytes": 47630,
+          "sha256": "2f3f3dad6f0f7aa6820894ef6b226977a6f357877f3f6dfe33302f95693bbe83",
+          "width": 640,
+          "height": 640,
           "format": "webp",
-          "quality": 78
+          "quality": 72
         },
         {
-          "file": "public/media/afiliados/bebe-scene-mama-w1440-d9a52d96.webp",
-          "bytes": 57522,
-          "sha256": "ebd96d23820b93eb24e7bb2f9d67eb63f4eccc1055d14a5e0bc85b97cd4a88e7",
-          "width": 1440,
-          "height": 810,
-          "format": "webp",
-          "quality": 78
-        },
-        {
-          "file": "public/media/afiliados/bebe-scene-mama-w1024-f6ea1018.avif",
-          "bytes": 24953,
-          "sha256": "a11ec6a40c6ebd1cb3c0274ec6538ae6e04e17c4f5f2f713ddc90c418569cde5",
-          "width": 1024,
-          "height": 576,
+          "file": "public/media/afiliados/bebe-cutout-mama-brazos-w640-16a2c10e.avif",
+          "bytes": 32115,
+          "sha256": "75053b789758e69cb5b3adbd2675d3c1fdd02f612e08e7265e2f1a96cffec9df",
+          "width": 640,
+          "height": 640,
           "format": "avif",
           "quality": 55
         }
       ]
     },
     {
-      "id": "bebe.scene.mama-vertical",
+      "id": "bebe.scene.primera-papilla",
       "role": "scene",
       "page": "home",
       "kind": "image",
       "source": {
         "library": "pequeverso-content-studio",
-        "path": "01-produccion/alimentacion-bebe/2026/2026-10/estaticos/imagenes-sitio/fondos/web-bebe-02-hero-movil-mama-cucharita.png",
-        "sha256": "2f716b91595274eae3f8457f35a83c38c6d139e5be9c36097ec582aef1b5718c",
-        "bytes": 1955070,
-        "width": 1122,
-        "height": 1402
+        "path": "01-produccion/alimentacion-bebe/2026/2026-10/estaticos/imagenes-sitio/fondos/web-bebe-03-primera-papilla.png",
+        "sha256": "f8837cac7d226b803c4a577857287fc1c13cf67139134e01bc85c803113cbca8",
+        "bytes": 1888266,
+        "width": 1254,
+        "height": 1254
       },
       "provenance": {
         "origin": "ai-generated",
@@ -5831,33 +5831,164 @@
         "approvedAt": "2026-10-12T00:00:00.000Z"
       },
       "alt": {
-        "es": "Mamá sonriente dándole papilla con una cucharita a su bebé, sentado en su silla de comer con babero"
+        "es": "Mamá sonriente le acerca una cucharita de papilla a su bebé, sentado en su silla de comer"
       },
       "outputs": [
         {
-          "file": "public/media/afiliados/bebe-scene-mama-vertical-w640-c922c55b.webp",
-          "bytes": 31082,
-          "sha256": "2a4f92fae1f05d5c79dac6f8f2af1c015b1a557bd0fcc34a275c79ac3d58c955",
+          "file": "public/media/afiliados/bebe-scene-primera-papilla-w400-b8ea06b3.webp",
+          "bytes": 15076,
+          "sha256": "a3708084e1b5f4eed1185539ece3dfa8b49ecab33c458ec59f1cdc84c5750b6e",
+          "width": 400,
+          "height": 400,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/afiliados/bebe-scene-primera-papilla-w720-a78672fe.webp",
+          "bytes": 33882,
+          "sha256": "3a18bafe9aa7f11d3dce5ad0127ba41b77d9e3332cc440adf47b93db4437d953",
+          "width": 720,
+          "height": 720,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/afiliados/bebe-scene-primera-papilla-w400-df82ec27.avif",
+          "bytes": 10965,
+          "sha256": "531bf5419dca59d8ac4e2dd9a4cf15f9e1f8cc0fbfd90512d35b714ca922ffca",
+          "width": 400,
+          "height": 400,
+          "format": "avif",
+          "quality": 55
+        },
+        {
+          "file": "public/media/afiliados/bebe-scene-primera-papilla-w720-9b7f6d8b.avif",
+          "bytes": 25496,
+          "sha256": "eaa13d5514f1f8ec786d10e1302e2903782285a225c65e0e5a32acb056636a3b",
+          "width": 720,
+          "height": 720,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "bebe.scene.menu",
+      "role": "scene",
+      "page": "home",
+      "kind": "image",
+      "source": {
+        "library": "pequeverso-content-studio",
+        "path": "01-produccion/alimentacion-bebe/2026/2026-10/estaticos/imagenes-sitio/fondos/web-bebe-07-menu-de-papillas.png",
+        "sha256": "209138bdb1b4f9e4e87dc645fd5fcd3c78f981216a0cee92d5e9362385390d92",
+        "bytes": 1875521,
+        "width": 1254,
+        "height": 1254
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (affiliate block «Recomendado por Pequeverso», alimentación complementaria, 2026-10-12); final set with visible faces, 2026-10-12",
+        "date": "2026-10-12",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a",
+        "notes": "Generated by the owner for Pequeverso; fictional people (mother and baby) with visible faces, no real person depicted. The earlier faceless versions (v1-sin-caras/) are not used. No third-party logo, course artwork or price is baked into the pixels."
+      },
+      "rights": {
+        "owner": "Gonzalo Martín Pérez (Pequeverso)",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-10-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": "Doce platitos de colores con papillas y verduras cortadas, ordenados como un menú"
+      },
+      "outputs": [
+        {
+          "file": "public/media/afiliados/bebe-scene-menu-w480-e6d8a7aa.webp",
+          "bytes": 22960,
+          "sha256": "69fea54b003cd7db4c09737f929c96650b5e043f7314683e52daf54efa756764",
+          "width": 480,
+          "height": 480,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/afiliados/bebe-scene-menu-w768-bc8d5b00.webp",
+          "bytes": 45352,
+          "sha256": "53b685348d01b3af6f3f65c7c91878edc9e3ec008c109673f472b77404429f07",
+          "width": 768,
+          "height": 768,
+          "format": "webp",
+          "quality": 78
+        },
+        {
+          "file": "public/media/afiliados/bebe-scene-menu-w768-11845ba3.avif",
+          "bytes": 32199,
+          "sha256": "6823af082bfd22e0f16da4fcb491655007620ff7b0cdc61a38e8a47b9ff22415",
+          "width": 768,
+          "height": 768,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "bebe.cutout.planeta",
+      "role": "cutout",
+      "page": "home",
+      "kind": "image",
+      "source": {
+        "library": "pequeverso-content-studio",
+        "path": "01-produccion/alimentacion-bebe/2026/2026-10/estaticos/imagenes-sitio/transparentes/web-bebe-t09-planeta-comida.png",
+        "sha256": "7abda6d4fde8e483fd8c29e04f3f10234edea255560474a9f88d665286591d46",
+        "bytes": 1268961,
+        "width": 1254,
+        "height": 1254
+      },
+      "provenance": {
+        "origin": "ai-generated",
+        "tool": "ChatGPT image generation (affiliate block «Recomendado por Pequeverso», alimentación complementaria, 2026-10-12); final set with visible faces, 2026-10-12",
+        "date": "2026-10-12",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a",
+        "notes": "Generated by the owner for Pequeverso; fictional people (mother and baby) with visible faces, no real person depicted. The earlier faceless versions (v1-sin-caras/) are not used. No third-party logo, course artwork or price is baked into the pixels."
+      },
+      "rights": {
+        "owner": "Gonzalo Martín Pérez (Pequeverso)",
+        "license": "proprietary-all-rights-reserved",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-10-12T00:00:00.000Z"
+      },
+      "alt": {
+        "es": ""
+      },
+      "outputs": [
+        {
+          "file": "public/media/afiliados/bebe-cutout-planeta-w360-2f0fcf8a.webp",
+          "bytes": 22316,
+          "sha256": "5a582bc772441c2319a59f997c2fa5aa04d296d9a878268ffa880710df0f316f",
+          "width": 360,
+          "height": 360,
+          "format": "webp",
+          "quality": 72
+        },
+        {
+          "file": "public/media/afiliados/bebe-cutout-planeta-w640-fc3776cb.webp",
+          "bytes": 48292,
+          "sha256": "ab81e63a2e530513189416280a5c2e5b1a57b62a5cfa1f96f2b9e8ca35471ca5",
           "width": 640,
-          "height": 800,
+          "height": 640,
           "format": "webp",
-          "quality": 78
+          "quality": 72
         },
         {
-          "file": "public/media/afiliados/bebe-scene-mama-vertical-w1024-8bbc2adc.webp",
-          "bytes": 60426,
-          "sha256": "062f41773475f478ffb19aff937a595a8dfa4090b106a32ae053e620eeae2942",
-          "width": 1024,
-          "height": 1280,
-          "format": "webp",
-          "quality": 78
-        },
-        {
-          "file": "public/media/afiliados/bebe-scene-mama-vertical-w1024-32b559fd.avif",
-          "bytes": 43782,
-          "sha256": "c5d3b642b1a5c87af130e15c0342de656534ac072185494fccb2ed81e09776a9",
-          "width": 1024,
-          "height": 1280,
+          "file": "public/media/afiliados/bebe-cutout-planeta-w640-973eda55.avif",
+          "bytes": 35385,
+          "sha256": "b99085386ef694a35f18f4d2e37f4e8a74f09cf1bf3b8c77ad510a60e83a7a9d",
+          "width": 640,
+          "height": 640,
           "format": "avif",
           "quality": 55
         }

@@ -1,8 +1,8 @@
 import { expect, test } from "./fixtures";
 
 const routes = ["/", "/grafismo-fonetico/"];
-/** File name of a hero-class rendition (product hero, cutout hero, or a real page). */
-const HERO_RENDITION = /-(hero|hero-alt|cutout-[a-z-]+|page-\d+)-w\d+-/;
+/** File name of a hero-class rendition (product hero, cutout hero, the hub's door, or a real page). */
+const HERO_RENDITION = /-(hero|hero-alt|door|cutout-[a-z-]+|page-\d+)-w\d+-/;
 
 /** Largest Contentful Paint element as reported by the browser after the page settles. */
 async function lcpElement(page: import("@playwright/test").Page) {

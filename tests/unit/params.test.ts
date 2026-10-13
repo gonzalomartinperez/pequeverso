@@ -43,6 +43,9 @@ test("internal passthrough keeps only allowlisted params", () => {
     "/grafismo-fonetico/?utm_source=ig",
   );
   assert.equal(withPassthrough("/grafismo-fonetico/", ""), "/grafismo-fonetico/");
+  // Hub anchors keep the fragment after the query (header menu → home chapter).
+  assert.equal(withPassthrough("/#bebe", "?utm_source=ig&foo=bar"), "/?utm_source=ig#bebe");
+  assert.equal(withPassthrough("/#bebe", ""), "/#bebe");
 });
 
 test("sck carries the product prefix, is sanitized and capped at 30 characters", () => {

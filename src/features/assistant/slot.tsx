@@ -34,6 +34,7 @@ export async function AssistantSlot() {
       apiOrigin={parsed.flag.apiOrigin}
       storefrontOrigin={new URL(site.url).origin}
       linkHosts={assistantConfig.linkHosts}
+      approvedSourceUrls={assistantConfig.approvedSourceUrls}
       routes={routes}
       avatarSrc={small?.src ?? avatar.src}
       supportPath={assistantConfig.supportPath}

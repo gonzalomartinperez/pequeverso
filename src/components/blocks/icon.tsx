@@ -1,9 +1,12 @@
 import {
+  ArrowDown,
+  Baby,
   BookOpen,
   Calendar,
   Car,
   Check,
   CircleCheck,
+  CirclePlay,
   Clock,
   Download,
   Ear,
@@ -27,10 +30,13 @@ import {
   Smile,
   Sparkles,
   Star,
+  Utensils,
 } from "lucide-react";
 
 /** Central icon map so content files reference icons by name (kept small; tree-shaken). */
 export const icons = {
+  arrowDown: ArrowDown,
+  baby: Baby,
   book: BookOpen,
   calendar: Calendar,
   car: Car,
@@ -52,11 +58,13 @@ export const icons = {
   login: LogIn,
   mail: Mail,
   pen: PenLine,
+  play: CirclePlay,
   printer: Printer,
   refresh: RefreshCcw,
   shield: ShieldCheck,
   sparkles: Sparkles,
   star: Star,
+  utensils: Utensils,
   /** Plain check mark for use inside a round marker (BulletList, AssuranceList). */
   tick: Check,
 } as const;

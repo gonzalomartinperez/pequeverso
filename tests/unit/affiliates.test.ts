@@ -8,6 +8,7 @@ import {
   alimentacionBebe,
 } from "../../config/affiliates.ts";
 import { homeCopy } from "../../content/es/home.ts";
+import { hubCopy } from "../../content/es/hub.ts";
 import { affiliateEnvNames, CHECKOUT_ENV_PATTERN } from "../../scripts/lib/edge-rules.ts";
 import { hasMedia } from "../../src/lib/media.ts";
 
@@ -57,16 +58,32 @@ test("affiliate media exist, are approved for the public repo and declared as AI
   }
 });
 
-test("affiliate block copy: disclosure, no price, reviews or health promises", () => {
+test("affiliate copy: disclosure, no price, reviews or health promises", () => {
   const copy = homeCopy.affiliate;
   assert.equal(
     copy.disclosure,
     "Recomendación con enlace de afiliado: si compras, Pequeverso recibe una comisión. El curso es de un tercero; Hotmart gestiona el pago, la entrega y los reembolsos.",
   );
-  assert.equal(copy.cta, "Ver el curso");
-  const text = [JSON.stringify(copy), ...affiliates.flatMap((p) => [p.name, p.audience, ...p.topics])].join(
-    " ",
+  // The short form shown wherever the course appears outside its chapter (doors, menus, close).
+  assert.equal(
+    hubCopy.feeding.disclosure,
+    "Enlace de afiliado: si compras, Pequeverso recibe una comisión; a ti no te cuesta más.",
   );
+  // There is a single short form: the sticky bar uses the same text as the doors and menus.
+  assert.deepEqual(
+    Object.keys(hubCopy.feeding).filter((key) => key.startsWith("disclosure")),
+    ["disclosure"],
+  );
+  assert.equal(copy.cta, "Ver la guía en Hotmart");
+  // Every piece of copy about the course: its chapter, its hub entry (doors, menu, sticky bar),
+  // its closing button and the FAQ answers about it.
+  const text = [
+    JSON.stringify(copy),
+    JSON.stringify(hubCopy.feeding),
+    homeCopy.closing.feedingCta,
+    ...homeCopy.faq.items.filter((item) => item.about === "feeding").flatMap((item) => [item.q, item.a]),
+    ...affiliates.flatMap((p) => [p.name, p.audience, p.stage, ...p.topics]),
+  ].join(" ");
   for (const forbidden of [
     /US\$|\$\s?\d|precio|descuento|oferta/i,
     /reseñ|opini|estrellas|testimoni|★/i,

@@ -3,7 +3,8 @@ import { expect, test } from "./fixtures";
 
 /** Routes that mount the interactive pieces (overridable while a page is being built). */
 const PLAYGROUND_PATH = process.env.PLAYGROUND_PATH ?? "/grafismo-fonetico/";
-const WALL_PATH = process.env.WALL_PATH ?? "/";
+// The drifting page wall left the home with the hub redesign (docs/specs/home-hub.md); the landing keeps it.
+const WALL_PATH = process.env.WALL_PATH ?? "/grafismo-fonetico/";
 
 test.describe("syllable playground", () => {
   test.beforeEach(async ({ page }) => {

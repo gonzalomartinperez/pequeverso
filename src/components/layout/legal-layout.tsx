@@ -40,6 +40,7 @@ export function LegalLayout({ title, intro, updatedAt, sections = [], children }
   return (
     <PageShell
       overlay
+      hub
       cta={
         <CTAButton href="/soporte/" variant="ghost" size="sm" icon={LifeBuoyIcon}>
           Soporte

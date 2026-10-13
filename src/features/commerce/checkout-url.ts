@@ -35,7 +35,10 @@ export function withPassthrough(path: string, pageSearch: string): string {
   const kept = new URLSearchParams();
   for (const [key, value] of incoming.entries()) if (value && isAllowedParam(key)) kept.set(key, value);
   const query = kept.toString();
-  return query ? `${path}?${query}` : path;
+  if (!query) return path;
+  // Keep a fragment after the query (`/#bebe` → `/?utm_source=ig#bebe`).
+  const hashAt = path.indexOf("#");
+  return hashAt === -1 ? `${path}?${query}` : `${path.slice(0, hashAt)}?${query}${path.slice(hashAt)}`;
 }
 
 /** `pv-<product prefix>-<position>`; Hotmart `sck` is limited to 30 characters. */
