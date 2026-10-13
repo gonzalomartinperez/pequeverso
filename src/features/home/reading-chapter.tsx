@@ -83,7 +83,7 @@ function ReadingStage() {
 function ReadingBox() {
   const r = copy.reading;
   return (
-    <div className="grid gap-4 rounded-xl bg-white p-5 shadow-sm ring-1 ring-line cq-sm:grid-cols-[minmax(0,1fr)_auto] cq-sm:items-center">
+    <div className="grid gap-4 rounded-xl bg-white p-5 shadow-sm ring-1 ring-line">
       <div className="grid min-w-0 gap-2">
         <p className="font-display text-[1.5rem] leading-tight font-bold text-heading">{product.name}</p>
         <p className="text-small font-bold text-subtle">
@@ -94,7 +94,7 @@ function ReadingBox() {
           {r.bundle.main} + {bonuses.length} {r.bundle.bonuses}
         </p>
       </div>
-      <p className="grid gap-0.5 cq-sm:justify-items-end cq-sm:text-end">
+      <p className="grid gap-0.5 border-t border-line pt-3">
         <span className="flex items-baseline gap-2">
           <span className="font-display text-price leading-none font-bold text-navy tabular-nums">
             {price}
