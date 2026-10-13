@@ -9,6 +9,12 @@ type RedirectRule = {
   id: string;
   source: string;
   destination?: string;
+  /**
+   * Affiliate redirects: name of the build-time variable holding the destination (a Hotmart
+   * affiliate link). The repository never ships the link itself (AGENTS.md: deployment values
+   * live in environment variables). Unset variable → the rule is skipped and the path 404s.
+   */
+  destinationEnv?: string;
   permanent?: boolean;
   gone?: boolean;
   description?: string;
@@ -31,10 +37,70 @@ type NextRedirect = {
 };
 type NextHeader = { source: string; headers: Array<{ key: string; value: string }> };
 
-export function loadEdgeRules(path: string = EDGE_RULES_PATH): EdgeRules {
+/**
+ * Variables that may hold affiliate destinations (`destinationEnv`): the repository's naming
+ * standard for product checkout links, `NEXT_PUBLIC_CHECKOUT_URL_<PRODUCT>`. Only the redirect reads
+ * them at build time; no page references them, so nothing is inlined in the browser bundle.
+ */
+export const CHECKOUT_ENV_PATTERN = /^NEXT_PUBLIC_CHECKOUT_URL_[A-Z0-9_]+$/;
+
+/** `destinationEnv` names declared in config/edge-rules.json (affiliate redirects). */
+export function affiliateEnvNames(path: string = EDGE_RULES_PATH): string[] {
+  const rules = JSON.parse(readFileSync(path, "utf8")) as EdgeRules;
+  return rules.redirects.flatMap((rule) => (rule.destinationEnv ? [rule.destinationEnv] : []));
+}
+
+/** Affiliate redirect paths (`source` of `destinationEnv` rules): answered by the edge, not a file. */
+export function affiliateSources(path: string = EDGE_RULES_PATH): string[] {
+  const rules = JSON.parse(readFileSync(path, "utf8")) as EdgeRules;
+  return rules.redirects.flatMap((rule) => (rule.destinationEnv ? [rule.source] : []));
+}
+
+/**
+ * True when `value` is a plain https URL usable as an affiliate destination. Affiliate links may
+ * land on Hotmart or on the producer's own checkout/sales page, so no host allow-list: the guard
+ * is the scheme and a conservative character set (no spaces, quotes, `$`, `\\`, `<>` or braces).
+ */
+export function isAffiliateUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return (
+      url.protocol === "https:" && url.hostname.includes(".") && /^[A-Za-z0-9:/._~?=&%+,#@!*-]+$/.test(value)
+    );
+  } catch {
+    return false;
+  }
+}
+
+type Env = Record<string, string | undefined>;
+
+/**
+ * Loads config/edge-rules.json and resolves `destinationEnv` rules against `env` (the build
+ * environment by default). Rules whose variable is empty are dropped; a malformed value throws so
+ * a broken affiliate link never ships. Pass `{}` to render the variable-free golden copy.
+ */
+export function loadEdgeRules(path: string = EDGE_RULES_PATH, env: Env = process.env): EdgeRules {
   const rules = JSON.parse(readFileSync(path, "utf8")) as EdgeRules;
   validateEdgeRules(rules);
-  return rules;
+  return resolveEdgeRules(rules, env);
+}
+
+export function resolveEdgeRules(rules: EdgeRules, env: Env): EdgeRules {
+  const redirects: RedirectRule[] = [];
+  for (const rule of rules.redirects) {
+    if (!rule.destinationEnv) {
+      redirects.push(rule);
+      continue;
+    }
+    const value = (env[rule.destinationEnv] ?? "").trim();
+    if (!value) continue;
+    if (!isAffiliateUrl(value))
+      throw new Error(
+        `edge-rules: ${rule.destinationEnv} must be a plain https:// affiliate link (${rule.id})`,
+      );
+    redirects.push({ ...rule, destination: value });
+  }
+  return { ...rules, redirects };
 }
 
 export function validateEdgeRules(rules: EdgeRules): void {
@@ -45,6 +111,15 @@ export function validateEdgeRules(rules: EdgeRules): void {
     if (!rule.source.startsWith("/")) throw new Error(`edge-rules: source must start with "/" (${rule.id})`);
   }
   for (const rule of rules.redirects) {
+    if (rule.destinationEnv !== undefined) {
+      if (!CHECKOUT_ENV_PATTERN.test(rule.destinationEnv))
+        throw new Error(
+          `edge-rules: ${rule.id} destinationEnv must match NEXT_PUBLIC_CHECKOUT_URL_<PRODUCT>`,
+        );
+      if (rule.destination || rule.gone || rule.permanent !== false)
+        throw new Error(`edge-rules: ${rule.id} (affiliate) must be temporary and have no destination/gone`);
+      continue;
+    }
     if (!rule.gone && !rule.destination)
       throw new Error(`edge-rules: redirect ${rule.id} needs a destination or gone:true`);
     if (rule.destination?.startsWith(rule.source) && rule.source.endsWith("*")) {
@@ -143,8 +218,11 @@ export function toHtaccess(rules: EdgeRules, opts: { buildId?: string } = {}): s
     if (r.gone) {
       lines.push(`RewriteRule ${toApacheRegex(r.source)} - [G,L]`);
     } else {
-      const dest = (r.destination ?? "").replace(/:[a-zA-Z0-9_]+\*/g, "$1");
-      lines.push(`RewriteRule ${toApacheRegex(r.source)} ${dest} [R=${r.permanent === false ? 302 : 301},L]`);
+      // `%` would read as a RewriteCond back-reference in the substitution: escape it.
+      const dest = (r.destination ?? "").replace(/:[a-zA-Z0-9_]+\*/g, "$1").replace(/%/g, "\\%");
+      // Affiliate links keep the visitor's query (?src=… reaches Hotmart) even when they carry their own.
+      const flags = `R=${r.permanent === false ? 302 : 301},L${r.destinationEnv ? ",QSA,NE" : ""}`;
+      lines.push(`RewriteRule ${toApacheRegex(r.source)} ${dest} [${flags}]`);
     }
   }
   lines.push("</IfModule>");

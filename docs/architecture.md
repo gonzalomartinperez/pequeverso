@@ -173,7 +173,7 @@ provider, physical phone keyboard or production VPS cookies/CORS/proxy behavior.
   `features/commerce/checkout-url.ts` builds checkout URLs (never forwards `off`/`ref`) and the
   per-product `sck=pv-<sckPrefix>-<position>`.
 - `features/tracking` owns site events (PageView, ViewContent, PequeversoProductInterest,
-  CheckoutIntent) with UUID event IDs, gated by `consent.ts`, sent by the browser pixel and
+  PequeversoAffiliateClick, CheckoutIntent) with UUID event IDs, gated by `consent.ts`, sent by the browser pixel and
   mirrored through the same-origin Conversions API relay with the same ids. Hotmart owns
   InitiateCheckout and Purchase. See `docs/tracking.md`.
 

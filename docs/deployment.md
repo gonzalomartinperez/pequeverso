@@ -108,9 +108,10 @@ boot line: `meta-capi: enabled|disabled`.
 | `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO` (or legacy `NEXT_PUBLIC_CHECKOUT_URL`) | yes | starts with `https://pay.hotmart.com/` | build fails (the repository ships no checkout URL) |
 | `NEXT_PUBLIC_META_PIXEL_ID` | optional | 15–16 digits | no pixel; the first-visit banner is not shown and "Configurar cookies" opens a necessary-cookies notice. When set, the pixel runs by default and the banner withdraws it (`docs/tracking.md`) |
 | `META_CAPI_ACCESS_TOKEN` | optional, **server-only** (never `NEXT_PUBLIC_`, never in the repo or CI) | ≥ 32 characters, no whitespace | the `/api/meta/events/` relay answers `204` and Meta is never called from the server. With the pixel id set too, browser events are mirrored to the Conversions API and deduplicated by event id |
+| `NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE` (one `NEXT_PUBLIC_CHECKOUT_URL_<PRODUCT>` per affiliate redirect in `config/edge-rules.json`) | optional; follows the `NEXT_PUBLIC_CHECKOUT_URL_<PRODUCT>` naming standard, but only the redirect reads it at build time (never inlined in pages) | plain `https://` affiliate link (Hotmart hotlink or the producer's page with the affiliate code) | `/alimentacion-bebe/` answers 404. Set: `302` to the link, visitor query appended. Build log line: `affiliate redirects: N` |
 | `NEXT_OUTPUT` | never in hPanel | `export` (default) or `standalone` | auto-detected: Hostinger's Node builder gets `standalone` |
 
-Those four are the whole surface: no analytics, consent-mode, test-event or debug variables
+Those (plus the affiliate links) are the whole surface: no analytics, consent-mode, test-event or debug variables
 exist; debug logging follows `NODE_ENV=development`.
 
 ## Verification matrix (after every deploy)

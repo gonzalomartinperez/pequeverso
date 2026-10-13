@@ -27,7 +27,7 @@ export const seller = {
   legalEmail: "gonzalomartinperez2002@gmail.com",
   legalEmailLabel: "Correo del titular (cuenta de Hotmart)",
   responseTime: "48 horas hábiles",
-  updatedAt: "24 de septiembre de 2026",
+  updatedAt: "12 de octubre de 2026",
 } as const;
 
 /** Routes allowed to render `seller.legalEmail` (checked by tests/unit and scripts/check-rendered.ts). @internal */

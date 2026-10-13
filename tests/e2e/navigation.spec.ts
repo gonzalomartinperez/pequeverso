@@ -1,6 +1,9 @@
 import { expect, test } from "./fixtures";
 
-/** Crawls every internal link reachable from the home page and asserts none 404s. */
+/**
+ * Crawls every internal link reachable from the home page and asserts none 404s. Affiliate links
+ * (`rel="sponsored"`) are edge redirects to a build variable, covered by tests/unit/edge-rules.
+ */
 test("complete internal navigation: no dead links", async ({ page, request }) => {
   const seen = new Set<string>();
   const queue = ["/"];
@@ -15,7 +18,7 @@ test("complete internal navigation: no dead links", async ({ page, request }) =>
       continue;
     }
     const links = await page
-      .locator("a[href]")
+      .locator('a[href]:not([rel~="sponsored"])')
       .evaluateAll((els) =>
         els
           .map((el) => (el as HTMLAnchorElement).getAttribute("href") ?? "")
