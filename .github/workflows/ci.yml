@@ -291,9 +291,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p assistant-evidence
-          npx playwright test -c playwright.assistant.config.ts --list --reporter=json > assistant-evidence/full.json
+          npx playwright test --config=playwright.assistant.config.ts --list --reporter=json > assistant-evidence/full.json
           for part in $(seq 1 "$SHARDS"); do
-            npx playwright test -c playwright.assistant.config.ts --shard="$part/$SHARDS" --list --reporter=json > "assistant-evidence/shard-$part.json"
+            npx playwright test --config=playwright.assistant.config.ts --shard="$part/$SHARDS" --list --reporter=json > "assistant-evidence/shard-$part.json"
           done
           node --input-type=module <<'NODE'
           import { readFileSync, writeFileSync } from "node:fs";
