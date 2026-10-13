@@ -57,10 +57,11 @@ Spanish. Read this file first, then the doc that matches your task.
 
 ## Workflow
 
-- Branches: `develop` is the integration branch (default); `main` is the intended production
-  source. Owner confirmed on 2026-10-10 that Hostinger is not connected yet; once connected to
-  main it builds every merge. Set `HOSTINGER_MAIN_AUTODEPLOY_ENABLED=true` only after that setup
-  to enable automatic post-deploy verification. Work on `type/kebab-case` (`feat|fix|chore|docs|refactor|perf|test|ci|build|revert`)
+- Branches: `develop` is the integration branch (default); `main` is production. Since
+  2026-10-13 Hostinger (Node.js Web App, standalone) is connected to `main` and builds and
+  publishes every merge on its own; `HOSTINGER_MAIN_AUTODEPLOY_ENABLED=true` runs the
+  post-deploy verification. Check `https://pequeverso.com/build-info.json` for the merged SHA.
+  Work on `type/kebab-case` (`feat|fix|chore|docs|refactor|perf|test|ci|build|revert`)
   → squash PR into `develop`. A release is a PR `develop` → `main` merged with a **merge commit**
   (keeps the shared history, so the next release merges cleanly). Hotfix: `fix/…` → PR into `main`,
   then a PR `main` → `develop` (merge commit). Both branches are protected rulesets (required
