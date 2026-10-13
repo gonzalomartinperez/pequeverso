@@ -6,6 +6,7 @@ import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { buildOutput } from "./lib/build-target.ts";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -29,7 +30,8 @@ const info = {
   sha: process.env.GITHUB_SHA || git("rev-parse HEAD") || "unknown",
   ref: process.env.GITHUB_REF_NAME || git("rev-parse --abbrev-ref HEAD") || "unknown",
   builtAt: new Date().toISOString(),
-  output: process.env.NEXT_OUTPUT === "standalone" ? "standalone" : "export",
+  // Same detection as config/next.ts: Hostinger's builder is standalone without NEXT_OUTPUT.
+  output: buildOutput(),
   assistant: (process.env.NEXT_PUBLIC_ASSISTANT_ENABLED ?? "").trim() === "true" ? "enabled" : "disabled",
 };
 
