@@ -291,3 +291,34 @@ The umbrella `ci` check still requires the entire assistant matrix to succeed. I
 JSON/HTML results and execution logs retain distinct `UNPUBLISHABLE` artifact names; actual
 counts, conditional skips, attempts and flaky outcomes must be reviewed from a complete run.
 Repeated setup can increase aggregate runner time even if the critical path becomes shorter.
+
+
+### 2026-10-13 observed nightly result and project-group refinement
+
+The first complete partitioned run [38332837744](https://github.com/gonzalomartinperez/pequeverso/actions/runs/38332837744)
+at `e98857c` failed its visual gate and retained one WebKit flaky case: the 768 px commerce
+CTA event-count case failed its first attempt and passed on retry. All three browser jobs
+reported success, which does not erase that failed attempt. Its wall time was 1,275 seconds
+and summed recorded job lifetimes were 3,296 seconds, versus 1,263 and 2,539 seconds for the
+nearest unpartitioned run [38326375800](https://github.com/gonzalomartinperez/pequeverso/actions/runs/38326375800)
+at `14558bb`. The two WebKit jobs took 1,233 and 612 seconds. These observations show no
+elapsed-time benefit for the first partition and higher aggregate runner occupancy. Different
+revisions, setup, queues and failed attempts prevent treating this as a controlled benchmark
+or attributing the flaky case to runner load. Original reports and failed attempts are retained.
+
+The replacement partitions complete projects: WebKit 1440/1280/430 px versus
+1024/768/390/360 px. At the unchanged test source, discovery must prove a disjoint exact
+384 + 512 union of all 896 identities; Chromium retains all 896. Repeated `--project=`
+arguments are built from fixed shell arrays, validated against the full inventory, retained
+as NUL-delimited arguments and reused for execution. An unknown browser/group or empty
+selection fails closed. This is a project partition, not Playwright's count-based `--shard`.
+All seven widths, worker limits, timeouts, retries, assertions and artifact retention remain.
+Native-assistant verification remains its existing 117 + 117 partition.
+
+Summed observed WebKit attempt work in the original run predicts 1,669.373 versus
+1,644.559 seconds for these groups, including the original failed attempt. This is only a
+scheduling estimate: concurrent workers, setup, queues and a new run can change elapsed
+and aggregate time. No new speedup is claimed before reviewing complete Actions results.
+The independent visual correction and the observed commerce flaky case must remain visible;
+rebalancing does not establish that either defect is fixed. Lighthouse's 20 distinct runs,
+links, bundle analysis, clean-clone and the disabled publishable export remain required.
