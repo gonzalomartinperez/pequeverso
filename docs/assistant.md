@@ -11,7 +11,7 @@ Advisory, read-only helper that answers questions about the store's products wit
 | Code in `src/features/assistant/` (domain, application, adapters, presentation, entry) | Implemented |
 | Default build (`npm run build`) | Disabled and compiled out; verified by `npm run check:assistant-disabled` |
 | Enabled verification build against the fixture API | Implemented: `npm run test:e2e:assistant` (never publish) |
-| Real model (`gpt-6-luna`), production API, hostname, CORS in production | **Not** done: owner authorization pending |
+| Store connected to the deployed API, production hostname and CORS | **Not exercised** in this repository; storefront activation is not authorized. Real-model evaluation evidence belongs to the API repository. |
 | Privacy-policy section for the assistant | **Not** written in `/privacidad/`: required before activation |
 
 ## Switch
@@ -36,7 +36,8 @@ link to Soporte and the store keeps selling.
 
 ## API requirements for activation (cross-origin)
 
-The store is a static site on its own origin; the API is a separate HTTPS origin.
+The store is a static site on its own origin; the API is a separate HTTPS origin. The native
+Spanish response profile requires a reviewed compatible v1 API revision **at least 1.4**.
 
 - `ALLOWED_ORIGINS` on the API lists exactly the store origin (`https://pequeverso.com`; `www`
   redirects to the apex, so it is not added). No wildcard, no `null`.
@@ -87,16 +88,73 @@ The store is a static site on its own origin; the API is a separate HTTPS origin
 no storefront link can become protocol-relative) (store origin, plus `consumer.hotmart.com` and
   `refund.hotmart.com` for links). Store links navigate in the same tab without reloading; external
   links open in a new tab only on click. The assistant never navigates or opens windows on its own.
-- Language: the assistant interface defaults to Spanish and has a local ES/EN selector; changing
-  it preserves history and the unsent draft without restarting the controller. The next request
-  carries the selected locale hint. The storefront language stays unchanged. The API answers in
-  Spanish or English per message and each answer keeps its own `lang`; switching interface
-  language never translates or rewrites stored answers. Other languages get a short note listing both.
-- Waiting copy is exactly "Pensando…" / "Thinking…" in the selected interface language. Message
-  surfaces remain opaque; restrained header/control depth uses navy/white/gold design tokens, with
-  opaque fallback and reduced-transparency preference support. No voice, tool or task actions.
+- Language: the native interface is Spanish-only and has no language selector. Minimizing, resizing
+  and navigation preserve history and the unsent draft without restarting the controller. Stored
+  answers retain their original `lang`; previous conversation history is never translated or rewritten.
+- Waiting copy is exactly "Pensando…". Message surfaces remain opaque; restrained header/control
+  depth uses navy/white/gold design tokens, with opaque fallback and reduced-transparency preference
+  support. No voice, tool or task actions.
 - No tracking, analytics or replay. Nothing is stored in the browser except the API's HttpOnly
   cookie.
+
+## Presentation and proportional controls
+
+The default desktop surface is compact: at 16 px root text it is at most 408×560 px, anchored near the
+bottom-right corner and leaves the store usable. Preview screenshots open this default surface;
+expanded previews, if included, are explicitly labelled. Expanding remains a visitor action and
+changes the surface to a modal dialog. Phones retain the viewport-aware modal layout.
+
+The toolbar combines a 28 px brand mark, the 14 px title “Asistente de Pequeverso” and 18 px icons.
+It has no visible IA badge; the truthful AI disclosure remains the accessible panel description.
+Every icon control retains a 44 px physical target; smaller artwork does not shrink its hit area.
+Text grows and wraps when enlarged; short viewports keep scrollable header, transcript and composer
+regions.
+
+Welcome copy is concise, the greeting is not another raised landing-page card, and known opening
+questions use compact natural-width chips. Abbreviations are an exact allowlist of existing
+questions in assistant-local copy: the accessible name/title and the HTTP request still carry the
+complete original question. Unrecognized API questions keep their full visible text. This does
+not add catalog knowledge or change the contract. Product cards use a 72 px thumbnail and preserve
+authorized summaries, age ranges, resources, price notes/catalog-reference date and navigation actions.
+
+Sources appear immediately after the answer and notices, before product recommendations. The accordion
+keeps its existing complete validated links; product cards, summaries, resources and actions remain
+available below it without truncated summaries.
+
+Once messages exist, a stable 68 px gutter separates the 44 px latest-answer control from the
+reading column, whether that control is visible or not. The initial greeting keeps its full width.
+A trial conditional gutter rewrapped a long earlier question at 200% text size and moved the answer
+outside the phone viewport; its failed run is retained. The stable column avoids that height change
+and keeps the reader's actual position. Returning to the latest answer restores following.
+Native scroll anchoring is disabled because following and reader position are explicitly managed.
+Neither operation initiates or retries a generation.
+
+Resource arrays are response selections, not the kit inventory. Product badges use “3 destacados”
+and lists/comparisons use “Materiales destacados”, with “Selección para esta respuesta”. The
+canonical product summary retains the total (for example nine PDFs); no total is inferred from
+`resources.length`. Empty selections render no badge or resource list.
+
+Reference implementation inspected read-only: `gonzalomartinperez/portfolio` commit
+`246c4892276de3cf0d2ee950b8eabb8159050172`, specifically its native host and chat presentation.
+The adaptation adopts proportional typography and separates icon artwork from hit-area geometry;
+it retains Pequeverso fonts, colors, copy, contract and activation boundary, and imports no
+portfolio identity, theme selector, history sidebar or unsupported feedback capabilities.
+
+## Spanish-native response profile (contract v1 revision 1.4)
+
+The composition root fixes the interface locale and the HTTP response profile to Spanish. Every
+native message, including same-key interruption replay, carries `locale: "es"` and
+`response_language: "es"`. The latter is the optional additive field in the pinned OpenAPI contract;
+Spanish is a response policy rather than the legacy locale hint. The transport captures its
+profile once, checks the session's compatible major-1 revision and refuses older, malformed or
+other-major APIs before any message request. The visitor gets the safe connection-unavailable
+state and may explicitly retry the connection; no generation or silent downgrade occurs.
+
+Ordinary English input can receive a Spanish answer. Explicit requests to answer in another
+language receive the API's Spanish-only local notice. These behaviors belong to the backend
+policy, not an invented client translation. Existing stored answers retain their original `lang`.
+The generic transport remains backward-compatible when no native profile is configured: it
+negotiates legacy locale/context hints and omits `response_language`.
 
 ## Optional visitor context (contract v1 revision1.3)
 
@@ -113,13 +171,12 @@ canonical with trailing slash; query, fragment, encoding, arbitrary identifiers,
 thank-you routes never enter context. Compact/expanded reflect actual UI modes; no standalone
 assistant page or theme hint is invented. These are untrusted visitor hints, never instructions
 or catalog evidence. Each request body (including locale/context) is retained for interruption
-replay under the same idempotency key, even after route/language changes.
+replay under the same idempotency key, even after route changes.
 
 ## Control layout and local preview
 
-Header controls share the design system's 44 px target. The ES/EN selector uses an inset ring,
-so its outline does not add height or misalign it with the adjacent icon buttons; its select
-surface inherits the header control surface. There is no storefront dark/light theme and no
+Header controls share the design system's 44 px target. Icon artwork stays at 18 px and the
+Spanish-only header has no language selector. There is no storefront dark/light theme and no
 unsupported theme field is sent to the API.
 
 The new-conversation confirmation is an inline, non-modal panel row outside the scrollable
@@ -138,8 +195,9 @@ The seven idle route checks are independent tests with unchanged navigation expe
 `tests/assistant/preview.spec.ts` generates six PNG previews under
 `test-results-assistant/preview/` during the fixture suite: desktop launcher, welcome/chips,
 answer/sources and waiting; phone welcome and answer/input. Desktop content previews use the
-expanded presentation so all starter questions and source details can be inspected. The waiting
-preview holds the actual HTTP request before forwarding it to the fixture API; it does not claim
+default compact presentation. The recipe verifies all opening chips, answer text, a source link
+and the composer in the actual viewport; it scrolls the transcript without hiding product content.
+The waiting preview holds the actual HTTP request before forwarding it to the fixture API; it does not claim
 a model stage or percentage. This enabled export is local verification only and must never ship.
 
 ## Verification
@@ -149,7 +207,7 @@ a model stage or percentage. This enabled export is local verification only and 
 | `npm test` | Flag parsing, reducer and phases, controller, SSE framing (split UTF-8, CRLF, comments, multiline, bounds, order, early EOF, stall, abort), validation, link policy, contract pin, boundaries |
 | `npm run build && npm run check:assistant-disabled` | The publishable export has no assistant code |
 | `npm run test:e2e -- --project=chromium-1440` (`assistant-disabled.spec.ts`) | Real disabled export: no launcher, no assistant script, no request outside the known hosts |
-| `ASSISTANT_API_DIR=<api checkout at tests/assistant/api-revision> npm run test:e2e:assistant` | Enabled build + real fixture API, both over **HTTPS loopback** (throwaway self-signed certificate made with the system `openssl`, a test prerequisite, accepted only by the test servers and Playwright), in Chromium desktop/phone/reduced-motion, Firefox and WebKit desktop/phone: Secure HttpOnly `__Host-` session cookie with credentialed CORS and CSRF, ask, SSE stream, stop, minimize while streaming, keyboard and Escape, region vs modal semantics with inert background and contained Tab, motion hold, phone geometry, client navigation and reload history, English, delete with confirmation, 200 % text and long text, API outage, axe |
+| `ASSISTANT_API_DIR=<api checkout at tests/assistant/api-revision> npm run test:e2e:assistant` | Enabled build + real fixture API, both over **HTTPS loopback** (throwaway self-signed certificate made with the system `openssl`, a test prerequisite, accepted only by the test servers and Playwright), in Chromium desktop/phone/reduced-motion, Firefox and WebKit desktop/phone: Secure HttpOnly `__Host-` session cookie with credentialed CORS and CSRF, ask, SSE stream, stop, minimize while streaming, keyboard and Escape, region vs modal semantics with inert background and contained Tab, motion hold, phone geometry, client navigation and reload history, English input with Spanish output and preserved historical answer languages, delete with confirmation, 200 % text and long text, API outage, axe |
 
 Measured results, bundle impact and screenshots: `docs/verification/assistant.md`.
 

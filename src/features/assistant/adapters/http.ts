@@ -48,10 +48,19 @@ function toRunEvent(event: WireEvent): RunEvent {
   }
 }
 
-export function createHttpTransport(base = "", fetcher: typeof fetch = fetch): AssistantTransport {
+/** Optional native response profile; omitted by generic legacy clients. Captured once per transport. */
+export type ResponseProfile = { readonly responseLanguage?: "es" };
+
+export function createHttpTransport(
+  base = "",
+  fetcher: typeof fetch = fetch,
+  profile: ResponseProfile = {},
+): AssistantTransport {
+  const responseLanguage = profile.responseLanguage;
   let csrf: string | null = null;
   let acceptsLocale = false;
   let acceptsContext = false;
+  let acceptsResponseLanguage = false;
 
   async function request(path: string, signal: AbortSignal, init: RequestInit = {}): Promise<Response> {
     let response: Response;
@@ -81,15 +90,21 @@ export function createHttpTransport(base = "", fetcher: typeof fetch = fetch): A
 
   return {
     async openSession(signal, locale) {
+      csrf = null;
+      acceptsLocale = false;
+      acceptsContext = false;
+      acceptsResponseLanguage = false;
       const response = await request("/api/v1/session", signal, {
         method: "POST",
-        body: JSON.stringify({ locale }),
+        body: JSON.stringify({ locale: responseLanguage ?? locale }),
       });
       try {
         const session = parseSession(await response.json());
+        if (responseLanguage && !session.acceptsResponseLanguage) throw new AssistantError("protocol");
         csrf = session.csrfToken;
         acceptsLocale = session.acceptsLocale;
         acceptsContext = session.acceptsContext === true;
+        acceptsResponseLanguage = session.acceptsResponseLanguage === true;
         return session;
       } catch (error) {
         if (signal.aborted) throw error;
@@ -102,11 +117,14 @@ export function createHttpTransport(base = "", fetcher: typeof fetch = fetch): A
       csrf = null;
     },
     async send({ content, page, key, locale, context }, signal, onEvent) {
+      // A native Spanish profile never silently downgrades or generates against an old API.
+      if (responseLanguage && !acceptsResponseLanguage) throw new AssistantError("protocol");
       // Pre-v1.1 APIs reject unknown body fields, so the hint is sent only when advertised.
       const body = {
         content,
         page,
-        ...(acceptsLocale ? { locale } : {}),
+        ...(acceptsLocale ? { locale: responseLanguage ?? locale } : {}),
+        ...(responseLanguage ? { response_language: responseLanguage } : {}),
         ...(acceptsContext && context ? { context } : {}),
       };
       const response = await request("/api/v1/messages", signal, {

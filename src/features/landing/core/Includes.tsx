@@ -67,7 +67,7 @@ export function Includes({
               className="glass grid min-w-28 flex-1 justify-items-center rounded-xl px-6 py-4 text-center shadow-float"
             >
               <dt className="order-2 text-small font-extrabold text-body">{count.unit}</dt>
-              <dd className="order-1 m-0 font-display text-[clamp(2.25rem,1.8rem+1.6vw,3rem)] leading-none font-bold text-navy tabular-nums">
+              <dd className="order-1 m-0 font-display text-[clamp(2.25rem,1.8rem+1.6vw,3rem)] leading-none font-bold text-navy tabular-nums [&_[data-slot=counter]]:text-center">
                 <Counter value={count.value} />
               </dd>
             </div>

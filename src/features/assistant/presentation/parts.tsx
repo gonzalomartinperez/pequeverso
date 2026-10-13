@@ -12,7 +12,7 @@ import { usePresentation } from "./context";
 
 /** Suggestion chips (starters, follow-ups): mint tint, teal text, 44 px targets; never coral. */
 export const chipClass =
-  "inline-flex min-h-11 max-w-full items-center rounded-pill border-2 border-line-strong bg-card px-4 py-2 text-left text-small font-bold text-heading transition-colors duration-(--duration-fast) hover:border-teal hover:bg-mint disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex min-h-11 max-w-full items-center rounded-md border border-navy/55 bg-card px-3 py-2 text-left text-small font-semibold text-heading transition-colors duration-(--duration-fast) hover:border-teal hover:bg-mint disabled:pointer-events-none disabled:opacity-50";
 
 /** Small uppercase section label inside an answer. */
 export const labelClass =
@@ -63,6 +63,7 @@ export function IconButton({
             className={cn(
               buttonVariants({ variant: "ghost", size: "icon" }),
               "border-transparent",
+              styles.iconControl,
               className,
             )}
             {...props}

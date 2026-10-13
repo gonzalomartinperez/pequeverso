@@ -50,6 +50,12 @@ export function affiliateEnvNames(path: string = EDGE_RULES_PATH): string[] {
   return rules.redirects.flatMap((rule) => (rule.destinationEnv ? [rule.destinationEnv] : []));
 }
 
+/** Affiliate redirect paths (`source` of `destinationEnv` rules): answered by the edge, not a file. */
+export function affiliateSources(path: string = EDGE_RULES_PATH): string[] {
+  const rules = JSON.parse(readFileSync(path, "utf8")) as EdgeRules;
+  return rules.redirects.flatMap((rule) => (rule.destinationEnv ? [rule.source] : []));
+}
+
 /**
  * True when `value` is a plain https URL usable as an affiliate destination. Affiliate links may
  * land on Hotmart or on the producer's own checkout/sales page, so no host allow-list: the guard

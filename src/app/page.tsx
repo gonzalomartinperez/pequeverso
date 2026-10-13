@@ -11,6 +11,7 @@ import { LINK_HEADER, ProductLink } from "@/features/home/home-ui";
 import { LifestyleBand } from "@/features/home/lifestyle-band";
 import { MethodBand } from "@/features/home/method-band";
 import { PagesShowcase } from "@/features/home/pages-showcase";
+import { RecommendedAffiliate } from "@/features/home/recommended-affiliate";
 import { ValuesBento } from "@/features/home/values-bento";
 import { buildMetadata } from "@/lib/metadata";
 
@@ -47,7 +48,9 @@ const organizationJsonLd = {
  * Hub, laid out as a storefront under the "pequeño universo": the light-sky hero with the family
  * on a navy planet, the featured product card, purchase benefits, the collection inside the kit,
  * a lifestyle banner, real pages, how it works (with the syllable playground), what to expect and
- * the navy close. Every product link is a navy/white `ProductInterestLink` (never the coral CTA):
+ * a recommended third-party course (affiliate: navy link to its redirect path, visible
+ * disclosure) and the navy close. Every product link is a navy/white `ProductInterestLink`
+ * (never the coral CTA):
  * positions header, hero, hero-card, start, preview, closing.
  */
 export default function HomePage() {
@@ -74,6 +77,7 @@ export default function HomePage() {
       <PagesShowcase />
       <MethodBand />
       <ValuesBento />
+      <RecommendedAffiliate />
       <ClosingBand />
     </PageShell>
   );

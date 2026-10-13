@@ -26,8 +26,8 @@ function random(seed: number): () => number {
   };
 }
 
-/** Seed salt chosen so the landing's two-syllable words split between in-order and reversed. */
-const SHUFFLE_SALT = ":1";
+/** Seed salt chosen so both published demo catalogs mix reading order and reversed pairs. */
+const SHUFFLE_SALT = ":0";
 
 /**
  * Display order of the tiles: a deterministic shuffle of `0…count-1` seeded by `key`. Two-syllable

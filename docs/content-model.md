@@ -8,6 +8,7 @@ components — never retyped.
 |---|---|---|
 | `config/site.ts` | brand name, tagline, canonical URL, support email, social profiles, theme colour | brand foundations + `social-profiles.json` (private ops repo); env `NEXT_PUBLIC_SITE_URL` |
 | `config/commerce.ts` | currency, local-currency notes (`localCurrencyNote`, `localCurrencyNoteShort`), guarantee (7 days), passthrough allowlist, Hotmart URLs | product README 2026-08-04, Hotmart docs |
+| `config/affiliates.ts` | recommended third-party products (Hotmart affiliate): slug, redirect path and variable, name, audience, topics, guarantee days, `src`, media ids | producer's public Hotmart page, owner decision 2026-10-12 (docs/affiliates.md) |
 | `src/products/grafismo-fonetico.ts` | price US$14.99, 9 PDF / 414 pp, 3-7 años, checkout env key + offer id + `sck` prefix, thank-you path, post-purchase offer, media ids, SEO title/description | product README 2026-08-04, Hotmart upload manifest 2026-07-24, live landing |
 | `src/products/imprime-y-juega.ts` | upsell US$14.99 / downsell US$7.49, 6 PDF / 384 pp / 9 visible resources, parent product, media ids, SEO (noindex) | Hotmart upload manifest 2026-07-26, live post-purchase page |
 | `content/es/products/index.ts` | shared shapes: `Resource`, `FaqItem`, `CoreLandingCopy`, `OfferLandingCopy` | — |

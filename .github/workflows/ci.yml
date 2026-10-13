@@ -228,15 +228,22 @@ jobs:
     # credentials). Runs only once the repository defines `test:e2e:assistant` and pins the API in
     # tests/assistant/api-revision. The enabled build stays on this runner: only Playwright reports
     # are uploaded, under a name that marks them as unpublishable.
-    name: Assistant (enabled, fixture API)
+    name: Assistant (enabled, fixture API, ${{ matrix.shard }}/2)
     if: github.event_name != 'push'
     runs-on: ubuntu-24.04
     timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     permissions:
       contents: read
     env:
       AI_PROVIDER: fixture
       ALLOW_PAID_AI: "false"
+      SHARD: ${{ matrix.shard }}
+      SHARDS: "2"
+      BROWSER: all-native-projects
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -267,7 +274,7 @@ jobs:
         if: steps.suite.outputs.present == 'true'
         uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
-          version: 0.12.21
+          version: 0.13.0 # matches reviewed API producer b7dcb0c; manages Python 3.14.8
           enable-cache: true
           cache-dependency-glob: .assistant-api/uv.lock
       - name: Install the API (frozen lockfile)
@@ -279,19 +286,60 @@ jobs:
       - name: Install Playwright browsers
         if: steps.suite.outputs.present == 'true'
         run: npx playwright install --with-deps chromium firefox webkit
+      - name: Verify complete, disjoint shard inventories (no browser execution)
+        if: steps.suite.outputs.present == 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p assistant-evidence
+          npx playwright test --config=playwright.assistant.config.ts --list --reporter=json > assistant-evidence/full.json
+          for part in $(seq 1 "$SHARDS"); do
+            npx playwright test --config=playwright.assistant.config.ts --shard="$part/$SHARDS" --list --reporter=json > "assistant-evidence/shard-$part.json"
+          done
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from "node:fs";
+          function inventory(path) {
+            const report = JSON.parse(readFileSync(path, "utf8"));
+            if (report.errors?.length) throw new Error(`inventory errors: ${path}`);
+            const ids = [];
+            function visit(suite, parents = []) {
+              const titles = [...parents, suite.title];
+              for (const spec of suite.specs ?? []) {
+                for (const test of spec.tests ?? []) {
+                  ids.push(JSON.stringify([test.projectName, spec.file, spec.line, spec.column, ...titles, spec.title]));
+                }
+              }
+              for (const child of suite.suites ?? []) visit(child, titles);
+            }
+            for (const suite of report.suites ?? []) visit(suite);
+            if (!ids.length || new Set(ids).size !== ids.length) throw new Error(`empty/duplicate inventory: ${path}`);
+            return ids.sort();
+          }
+          const full = inventory("assistant-evidence/full.json");
+          const parts = Array.from({ length: Number(process.env.SHARDS) }, (_, i) => inventory(`assistant-evidence/shard-${i + 1}.json`));
+          const union = parts.flat().sort();
+          if (new Set(union).size !== union.length || JSON.stringify(union) !== JSON.stringify(full)) throw new Error("shards must partition the complete inventory exactly");
+          const receipt = { browser: process.env.BROWSER, full: full.length, shards: parts.map(part => part.length), disjoint: true, exactUnion: true };
+          writeFileSync("assistant-evidence/inventory-receipt.json", JSON.stringify(receipt, null, 2) + "\n");
+          console.log(JSON.stringify(receipt));
+          NODE
       - name: Enabled build + Playwright against the fixture API
         if: steps.suite.outputs.present == 'true'
         env:
           ASSISTANT_API_DIR: ${{ github.workspace }}/.assistant-api
-        run: npm run test:e2e:assistant
+          PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report-assistant
+          PLAYWRIGHT_JSON_OUTPUT_NAME: assistant-evidence/results.json
+        run: |
+          set -euo pipefail
+          npm run test:e2e:assistant -- --shard="$SHARD/$SHARDS" --reporter=list,html,json 2>&1 | tee assistant-evidence/run.log
       - name: Upload reports (UNPUBLISHABLE, assistant enabled)
         if: always() && steps.suite.outputs.present == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: UNPUBLISHABLE-assistant-enabled-reports
+          name: UNPUBLISHABLE-assistant-enabled-reports-${{ matrix.shard }}-of-2
           path: |
             playwright-report-assistant/
             test-results-assistant/
+            assistant-evidence/
           retention-days: 7
           if-no-files-found: ignore
 

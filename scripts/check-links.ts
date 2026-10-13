@@ -1,6 +1,10 @@
-// Verifies that every internal href/src in the static export resolves to a file.
+// Verifies that every internal href/src in the static export resolves to a file. Affiliate
+// redirect paths (config/edge-rules.json `destinationEnv`) are answered by the edge, not a file.
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { affiliateSources } from "./lib/edge-rules.ts";
+
+const edgeRedirects = new Set(affiliateSources());
 
 const root = resolve(process.cwd(), "out");
 const pages: string[] = [];
@@ -15,7 +19,7 @@ walk(root);
 
 const resolvesToFile = (target: string): boolean => {
   const path = decodeURIComponent(target.split(/[?#]/)[0] ?? "");
-  if (!path.startsWith("/")) return true;
+  if (!path.startsWith("/") || edgeRedirects.has(path)) return true;
   const candidates = [join(root, path), join(root, path, "index.html"), join(root, `${path}.html`)];
   return candidates.some((file) => existsSync(file) && statSync(file).isFile());
 };
