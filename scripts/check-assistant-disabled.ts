@@ -37,6 +37,7 @@ const MARKERS = [
   "Idempotency-Key",
   "X-CSRF-Token",
   "Asistente Pequeverso",
+  "Asistente de Pequeverso",
   "Abrir el asistente de Pequeverso",
 ];
 

@@ -120,8 +120,8 @@ export function ConversationView({
         )}
         {state.refusal && !pending && <RefusalView code={state.refusal} onDismiss={assistant.dismiss} />}
       </Transcript>
-      <div hidden={confirming} className={`border-t border-line bg-cream px-3 pt-3 ${styles.composer}`}>
-        <div className="mx-auto flex w-full max-w-3xl flex-col gap-2">
+      <div hidden={confirming} className={`border-t border-line bg-cream px-3 pt-2 ${styles.composer}`}>
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-1.5">
           {state.availability.status === "unavailable" ? (
             <Unavailable availability={state.availability} />
           ) : (

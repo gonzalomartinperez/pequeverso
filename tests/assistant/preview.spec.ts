@@ -26,8 +26,15 @@ test("captures the local assistant preview", async ({ page, context }, info) => 
   await launcher.click();
   const panel = page.getByTestId("assistant-panel");
   await expect(panel).toHaveAttribute("data-phase", "ready");
-  if (!mobile) await panel.getByRole("button", { name: "Ampliar panel" }).click();
-  await expect(panel.getByRole("region", { name: "Preguntas para empezar" })).toBeVisible();
+  if (!mobile) {
+    await expect(panel).toHaveAttribute("data-size", "compact");
+    await expect(panel).toHaveAttribute("role", "region");
+  }
+  await expect(panel.getByRole("heading", { name: "Asistente de Pequeverso", exact: true })).toBeVisible();
+  await expect(panel.locator("select")).toHaveCount(0);
+  const starters = panel.getByRole("region", { name: "Preguntas para empezar" });
+  await expect(starters).toBeVisible();
+  for (const chip of await starters.getByRole("button").all()) await expect(chip).toBeInViewport();
   await page.screenshot({
     path: `${SHOTS}/${mobile ? "05-Mobile-Bienvenida" : "02-Desktop-Bienvenida"}.png`,
     animations: "disabled",
@@ -48,6 +55,10 @@ test("captures the local assistant preview", async ({ page, context }, info) => 
   if (!mobile) await page.screenshot({ path: `${SHOTS}/04-Desktop-Espera.png`, animations: "disabled" });
   release();
   await expect(panel).toHaveAttribute("data-phase", "completed");
+  // The delivered guarantee photographs have no selected-resource badge/list. Changing the
+  // subset labels does not change the pixels of these previously reviewed fixture states.
+  await expect(panel.getByRole("region", { name: "Materiales destacados", exact: true })).toHaveCount(0);
+  await expect(panel.getByText(/^\d+ destacados?$/)).toHaveCount(0);
   await panel
     .getByRole("list", { name: "Conversación con el asistente" })
     .locator("..")
@@ -60,6 +71,15 @@ test("captures the local assistant preview", async ({ page, context }, info) => 
     .last();
   await expect(sources).toBeVisible();
   await sources.locator("summary").click();
+  const answer = panel
+    .getByRole("list", { name: "Conversación con el asistente" })
+    .locator('li > div[lang="es"]')
+    .first();
+  await answer.scrollIntoViewIfNeeded();
+  await expect(answer.locator("p").first()).toBeInViewport();
+  await expect(sources.locator("summary")).toBeInViewport();
+  await expect(sources.getByRole("link").first()).toBeInViewport();
+  await expect(field).toBeInViewport();
   await page.screenshot({
     path: `${SHOTS}/${mobile ? "06-Mobile-Conversacion" : "03-Desktop-Conversacion"}.png`,
     animations: "disabled",

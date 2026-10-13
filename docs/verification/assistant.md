@@ -1,5 +1,141 @@
 # Native assistant verification (2026-10-10)
 
+This dated report preserves the earlier bilingual implementation and its exact fixtures. It is
+historical evidence; the current Spanish-only interface requires a separate exact-source
+verification against the compatible API revision. Do not attribute these results or images to
+the later compact refinement or Spanish-only profile.
+
+## Compact Spanish refinement (2026-10-12, local evidence)
+
+Runtime candidate `ec32eb1a3bbcd11eae49f20dfb6da670ddce4b5d` keeps the storefront identity,
+opens a compact 408×560 px desktop region, fixes the interface to Spanish, uses the title
+“Asistente de Pequeverso” without a visible IA badge or language selector, and requires API
+v1 revision 1.4 for its immutable Spanish response policy. Legacy transport behavior and stored
+answer languages remain compatible. The final producer pin is the reviewed, protected API
+integration commit `b7dcb0c27d214cb1b560a8ee6101f858545646fc`; its 17 manifest artifacts are byte-identical
+to the temporary `debb678559b59425503e70fec3e6d16ea173ae81` used for the local browser run below.
+
+The initial compact trial's conditional reading gutter caused a real defect: at doubled text,
+a long earlier user question rewrapped when the latest-answer control appeared and displaced
+the answer out of the Chromium phone viewport. The original candidate `127a003` run is preserved:
+36 cases, 18 passed, 14 conditional skips, 4 failed, 0 retries. The correction restores a stable
+68 px reading gutter once messages exist, keeps the full-width greeting, and strengthens the
+regression with actual scrollTop and paragraph-position checks. All prior control separation,
+44 px target, visible-line, paint, keyboard and card/source wrapping assertions remain.
+
+For `ec32eb1`, `npm run check` passed in 71.086 s (160 unit tests, disabled guard over 127 files,
+14 rendered pages and existing budgets); skills passed in 0.332 s and the isolated enabled fixture
+build in 59.800 s. A six-project, retries-0 affected run completed 60 cases: 51 passed, 7 conditional
+skips and 2 Firefox deadline failures, in 1160.788 s test time / 1163.565 s process time. The long-text
+200% regression passed in every project, including both 320/390 px phone widths. All 24 enlarged-text
+short-header/clear-confirmation cases passed. The two failures remain recorded: streamed-answer
+verification and the two-width mobile-controls case exhausted their existing 45 s limits. Their
+root cause is not established; this is not a completely green local browser run. An earlier
+interrupted attempt exited 143 before JSON reporting, with unknown case results; its raw files
+and owned orphan-process cleanup receipt are preserved. Exact-head full CI is required before
+integration; the isolated revalidation below does not relabel the original full run.
+
+At final producer pin source `8865edd5ff9fe471f1eb335a195a33cbc8662898`, the unchanged two failing
+Firefox cases passed once, retries 0, in 95.205 s test time / 97.739 s process time. Their 45 s case
+limits, assertions and skips were not changed. `npm run check` passed in 127.335 s (160 unit tests,
+14-page disabled export, guard 127 and budgets); skills passed in 0.995 s and the fixture build
+in 77.839 s. All 16 public playground cases passed in 175.641 s test time / 179.398 s process time,
+covering the real home and landing catalogs, keyboard/touch and reduced motion. The existing
+200 % text checks passed home and landing at both 320/390 px in Chromium, Firefox and WebKit:
+6 passed, 4 configuration skips, 0 retries, 110.244 s test time / 113.232 s process time.
+
+The [DPR-2 photography gallery](assistant/2026-10-12/README.md) includes all six requested full-window
+states plus legible details of waiting, real fixture SSE, sources, the full product card, retained
+drafts and network errors. Every selected image was inspected at original detail by the implementing
+agent. The image manifest keeps the exact build/runtime/API SHAs, dimensions and hashes. The original
+external photography recipe discovered its two viewport cases twice through an archive inside its
+test directory: 4 passed, 0 failed/flaky/retries, 108.567 s process time; this is recorded explicitly.
+A portable documentation-only recipe is outside the normal CI test directory and retains the
+unchanged behavioral gates.
+
+Three separately authorized storefront corrections preserve facts, checkout, consent and tracking:
+the local Includes counter aligns the actual “414” text range with its tile (offset 7.5/6.5/4.5 px
+before, 0 px after at 1440/768/390); the existing desktop family portrait grows from 318×477 to
+404×606 px with complete faces and GA·TO cards and the same image asset; and both published demo
+word catalogs now mix ordered/reversed pairs through the shared deterministic shuffle. The old
+home catalog's all-reversed negative control is retained. Tablet/mobile keep the decorative
+portrait hidden. Before/after captures at all three widths were inspected by the implementing
+agent; a separate agent also inspected the 1440 px counter/portrait pair. These checks are not
+human review, physical-device certification or VPS capacity measurements.
+
+The first exact-head PR CI at `88f2dab` ([38312209865](https://github.com/gonzalomartinperez/pequeverso/actions/runs/38312209865))
+failed before native browsers: uv 0.12.21 could not locate the producer's Python 3.14.8, and the
+history scanner matched a public Git SHA beside “API producer” in the gallery provenance.
+Build, standalone parity, workflow lint, Lighthouse and both public E2E shards passed; the run
+remains failed. The fixture consumer tool now matches the reviewed producer's uv 0.13.0.
+Provenance wording is corrected, and only the exact old commit/path/rule/line fingerprint is
+ignored; default secret rules, redaction and the nonzero-history gate remain active. A same-hash,
+same-file finding in a new commit must still fail the negative control.
+
+A real-model UI review separately found that three selected resources could be mistaken for the
+kit inventory. Product badges now say “3 destacados”; lists/comparisons say “Materiales destacados”
+and explain “Selección para esta respuesta”. The canonical nine-PDF product summary is unchanged.
+The deterministic presentation regression uses three actual published resources through a pinned
+SSE fixture at doubled text and both phone widths; it does not claim a model or persistence test.
+The reviewed guarantee gallery has zero resources, so the changed subset labels do not render there.
+The price date is also labelled “Referencia del catálogo del ….”: legacy `verified_at` is the
+export reference date, not a live Hotmart confirmation. Prices, dates and tax/conversion notes
+are unchanged; final payment totals remain Hotmart's responsibility. Render regressions forbid
+the old “Precio confirmado” claim. Original gallery/CI receipts are retained; affected photographs
+were recaptured uniformly at `3514aca`; implementing and independent agents inspected all 14
+selected images at original detail. The original `8865edd` photography remains preserved.
+
+For subset/source-scanner increment `0fa4d4dc78a3b8de9ab03431f91f5fb66a9054c3`, full check passed
+173.552 s (160 unit tests, disabled export/guard127), skills0.915 s and fixture build79.612 s.
+Six-project subset/preview verification passed8, skipped4 conditional preview projects, failed0,
+flaky0, retries0,152.544 s process time. The portable photography passed exactly2 cases,77.138 s.
+The final source's ordinary-clone history scan passed83 scanned commits. Re-adding the identical
+public-SHA provenance in a different isolated audit commit still produced a finding and exit1;
+an empty-history repository also failed. The first wording-only negative control returned0
+because the hash line was not added in that Git diff; its insufficient result is preserved.
+No audit commit was pushed, no history was rewritten, and no real key was read or printed.
+
+A later independently committed integration change (`83dcd05`, PR88) added a broad exception for
+any backticked 40-hex match inside `docs/verification/**`. A factorized isolated audit used the
+same 90 commits, exact historical fingerprint and a new synthetic README line13: the original
+configuration detected one generic-api-key finding (exit1,12.329 s), while the broad exception
+hid it (exit0,8.078 s). Only known public Git hashes were used; no real credential was read.
+The assistant branch reconciles protected develop through a normal merge, removes only that
+broad exception and restores the original reviewed configuration bytes. The exact historical
+fingerprint, generated-manifest whole-line exceptions, default rules, redaction100 and the
+nonzero-history requirement remain intact. Corrected-head positive/new-commit negative/empty
+history controls and exact-head CI are required before integration.
+
+Catalog-date source `3514aca` passed full check (93.937 s), skills (0.470 s), and the
+isolated enabled fixture build (73.984 s). Its 18-case affected run remains **13 passed,
+4 conditional preview skips, 1 WebKit-mobile deadline, 0 flaky and 0 retries** (298.408 s test,
+303.454 s process). The original trace passed the 320 px subset geometry, then exhausted the
+shared 45 s deadline while reaching the 390 px visibility assertion. Neither a clipped-content
+cause nor a successful second-width assertion is claimed.
+
+The exact-source [CI 38316958678](https://github.com/gonzalomartinperez/pequeverso/actions/runs/38316958678)
+failed the native gate: **170 passed, 47 conditional skips, 7 failed and 4 flaky**. All failures
+and retries were in the new header geometry test. A separate actual-browser mutation/animation
+probe established `ready` during the own 220 ms panel entrance: computed target 44 px, running
+scale 0.990912, rendered width 43.600098 px. After the animation the transform was `none` and
+width exactly 44 px. The test now waits only for finite animations owned by the panel before
+measuring, preserving `>= 44`, every focus/geometry check and the existing deadlines/retries.
+The negative 43.99 px control still fails. The two subset widths are separate 45 s cases with
+identical assertions; the existing continuity case now also preserves draft/history across
+320↔390 resizes and retains its one-session/one-message assertions.
+
+A separate portable photography run at `3514aca` passed exactly two cases (78.862 s test,
+85.322 s process), with zero failures/flaky/retries. All 14 selected DPR-2 PNGs now show the
+current catalog-reference copy. Photography is not acceptance for the failed native gate.
+The originals, both failed runs and diagnostic probe remain preserved. The later test-only
+correction still requires affected browser revalidation and a completely green exact-head CI.
+
+No provider calls, key reads, deployment or activation occurred in these storefront checks.
+Enabled previews are local fixture artifacts; every publishable export must still pass the strict
+disabled guard. The dated evidence below remains historical and is not relabelled as this candidate.
+
+## Historical verification (2026-10-10)
+
 Fixture-only verification on WSL2, Node 24.21.0. Store runtime source `b5acff88c5d3752d876f1dbb5d649807ba2a6f7d`, unchanged by test readiness source `00a121d164f734998c72afb657284f1b4d2f3640`; API producer `b27d35c9ce2f02e5519b4476001f01c7172d6eb2`, v1 revision 1.3, manifest `fa6df707bb05061a77a60d68fbf0c55a7593e815f1110531a9dbbfaac8f3f71e`.
 No paid calls, no real key reads, no deployment. Enabled verification output is explicitly UNPUBLISHABLE and rejected by the publication guard.
 

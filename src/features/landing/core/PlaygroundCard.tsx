@@ -12,7 +12,7 @@ type Props = {
 
 /**
  * The syllable playground inside the navy method band; from lg a family holding the GA · TO
- * cards stands in a frosted portal beside it, cut by the portal's lower edge.
+ * cards stands in a frosted portrait portal beside it, without stretching or clipping the faces.
  */
 export function PlaygroundCard({ kicker, children, image }: Props) {
   return (
@@ -20,7 +20,7 @@ export function PlaygroundCard({ kicker, children, image }: Props) {
       data-slot="playground-card"
       className={
         image
-          ? "grid gap-6 @min-[60rem]:grid-cols-[minmax(0,1fr)_minmax(0,0.42fr)] @min-[60rem]:items-end"
+          ? "grid gap-6 @min-[60rem]:grid-cols-[minmax(0,1fr)_minmax(0,0.6fr)] @min-[60rem]:items-end"
           : "grid gap-6"
       }
     >
@@ -31,12 +31,12 @@ export function PlaygroundCard({ kicker, children, image }: Props) {
       {image ? (
         <div
           aria-hidden="true"
-          className="glass-dark relative hidden aspect-[4/5] self-end overflow-hidden rounded-2xl @min-[60rem]:block"
+          className="glass-dark relative hidden aspect-[2/3] self-end overflow-hidden rounded-2xl @min-[60rem]:block"
           data-reveal=""
         >
           <div className="absolute inset-0 bg-[radial-gradient(70%_55%_at_50%_35%,oklch(0.5324_0.0917_190.84/55%),transparent_72%)]" />
           <div className="absolute inset-x-[4%] bottom-0 [&_img]:h-auto [&_img]:w-full [&_picture]:contents">
-            <MediaImage id={image} sizes="360px" alt="" />
+            <MediaImage id={image} sizes="(min-width: 1248px) 404px, calc(34.5vw - 27px)" alt="" />
           </div>
         </div>
       ) : null}

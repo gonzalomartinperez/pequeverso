@@ -1,7 +1,6 @@
 "use client";
-import { assistantCopy as enCopy } from "@content/en/assistant";
-import { assistantCopy as esCopy } from "@content/es/assistant";
-import { ChevronDown, Globe, Maximize2, Minimize2, Minus } from "lucide-react";
+import { assistantCopy as t } from "@content/es/assistant";
+import { Maximize2, Minimize2, Minus } from "lucide-react";
 import {
   type KeyboardEvent,
   type RefObject,
@@ -16,7 +15,7 @@ import { cx } from "@/lib/cx";
 import { holdPageMotion } from "@/motion/motion-hold";
 import { phase } from "../domain/conversation";
 import type { LinkPolicy } from "../domain/links";
-import type { Language, Page } from "../domain/models";
+import type { Page } from "../domain/models";
 import type { PublicPath } from "../domain/visitor-context";
 import { createStoreAssistant } from "../entry";
 import styles from "./assistant.module.css";
@@ -28,10 +27,8 @@ import { useConversation } from "./use-conversation";
 
 export type PanelProps = {
   open: boolean;
-  locale: Language;
   openedPath: PublicPath | null;
   currentPath: PublicPath | null;
-  onLocaleChange: (locale: Language) => void;
   /** Hide the panel (minimize). The conversation and any authorized answer continue. */
   onMinimize: () => void;
   page: Page | null;
@@ -119,10 +116,8 @@ function useVisualViewport(active: boolean, surface: RefObject<HTMLElement | nul
  */
 export default function AssistantPanel({
   open,
-  locale,
   openedPath,
   currentPath,
-  onLocaleChange,
   onMinimize,
   page,
   apiOrigin,
@@ -133,7 +128,7 @@ export default function AssistantPanel({
   host,
   onUnread,
 }: PanelProps) {
-  const [assistant] = useState(() => createStoreAssistant(apiOrigin, policy, locale));
+  const [assistant] = useState(() => createStoreAssistant(apiOrigin, policy));
   const state = useConversation(assistant);
   const current = phase(state);
   const phone = useMedia(PHONE);
@@ -143,11 +138,6 @@ export default function AssistantPanel({
   const surface = useRef<HTMLElement>(null);
   const titleId = useId();
   const descriptionId = useId();
-  const t = locale === "en" ? enCopy : esCopy;
-
-  useEffect(() => {
-    assistant.setLocale(locale);
-  }, [assistant, locale]);
 
   useModalBackground(modal, host);
   useVisualViewport(open && phone, surface);
@@ -190,7 +180,7 @@ export default function AssistantPanel({
   const presentation = useMemo<Presentation>(
     () => ({
       t,
-      locale,
+      locale: "es",
       policy,
       supportPath,
       privacyPath,
@@ -199,7 +189,7 @@ export default function AssistantPanel({
         if (modal) onMinimize();
       },
     }),
-    [t, locale, policy, supportPath, privacyPath, open, modal, onMinimize],
+    [policy, supportPath, privacyPath, open, modal, onMinimize],
   );
 
   function onKeyDown(event: KeyboardEvent<HTMLElement>) {
@@ -229,7 +219,7 @@ export default function AssistantPanel({
     <PresentationProvider value={presentation}>
       {modal && <div aria-hidden="true" className={styles.backdrop} onClick={onMinimize} />}
       <section
-        lang={locale}
+        lang="es"
         ref={surface}
         id="pv-assistant-panel"
         data-testid="assistant-panel"
@@ -254,55 +244,27 @@ export default function AssistantPanel({
               <header
                 className={cx(
                   styles.header,
-                  "on-navy flex flex-wrap items-center gap-x-2 gap-y-1 bg-navy py-3 ps-4 pe-2",
+                  "on-navy flex flex-wrap items-center gap-x-2 gap-y-1 bg-navy py-2 ps-3 pe-2",
                 )}
               >
-                <img
-                  src={avatarSrc}
-                  alt=""
-                  width={40}
-                  height={40}
-                  className="size-10 shrink-0 rounded-full bg-white"
-                />
-                <div className="min-w-[min(100%,11rem)] flex-1 [overflow-wrap:anywhere]">
-                  <h2
-                    id={titleId}
-                    className="m-0 font-sans text-base leading-tight font-extrabold text-white"
-                  >
-                    {t.name}
-                  </h2>
-                  <p id={descriptionId} className="m-0 text-tiny text-on-navy">
-                    {t.aiDisclosure}
-                  </p>
+                <div className={styles.headerIdentity}>
+                  <img
+                    src={avatarSrc}
+                    alt=""
+                    width={28}
+                    height={28}
+                    className={cx(styles.headerMark, "rounded-full bg-white")}
+                  />
+                  <div className="min-w-0 [overflow-wrap:anywhere]">
+                    <h2 id={titleId} className={cx(styles.headerTitle, "m-0 font-sans font-bold text-white")}>
+                      {t.name}
+                    </h2>
+                    <p id={descriptionId} className="sr-only">
+                      {t.aiDisclosure}
+                    </p>
+                  </div>
                 </div>
                 <div className="ms-auto flex max-w-full flex-wrap items-center justify-end gap-1">
-                  <label
-                    className={cx(
-                      styles.languageControl,
-                      "flex min-h-11 items-center gap-1 rounded-pill ring-1 ring-inset ring-white/25 px-2",
-                    )}
-                  >
-                    <Globe aria-hidden="true" className="size-4" />
-                    <span className="sr-only">{t.languageLabel}</span>
-                    <select
-                      aria-label={t.languageLabel}
-                      value={locale}
-                      onChange={(event) => {
-                        const next = event.target.value === "en" ? "en" : "es";
-                        assistant.setLocale(next);
-                        onLocaleChange(next);
-                      }}
-                      className="min-h-11 min-w-11 appearance-none rounded-none bg-transparent px-1 text-small font-bold text-white"
-                    >
-                      <option value="es" className="bg-navy text-white">
-                        ES
-                      </option>
-                      <option value="en" className="bg-navy text-white">
-                        EN
-                      </option>
-                    </select>
-                    <ChevronDown aria-hidden="true" className="size-3 shrink-0" />
-                  </label>
                   {clearTrigger}
                   {!phone && (
                     <IconButton

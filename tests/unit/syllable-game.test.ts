@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { homeCopy } from "../../content/es/home.ts";
+import { grafismoCopy } from "../../content/es/products/grafismo-fonetico/copy.ts";
 import { press, slotTexts, tileOrder } from "../../src/features/playground/syllable-game.ts";
 
 test("tile order is a deterministic permutation; three or more syllables never show the solved order", () => {
@@ -26,6 +28,31 @@ test("tile order is a deterministic permutation; three or more syllables never s
   const pairs = ["gato", "mapa", "luna", "perro"].map((word) => tileOrder(2, word).join(""));
   assert.ok(pairs.includes("01") && pairs.includes("10"), pairs.join(" "));
   assert.deepEqual(tileOrder(0, ""), []);
+});
+
+test("both published demo catalogs mix ordered and reversed pairs deterministically", () => {
+  for (const [name, words] of [
+    ["home", homeCopy.method.playground.words],
+    ["landing", grafismoCopy.playground.words],
+  ] as const) {
+    const pairs = words
+      .filter((item) => item.syllables.length === 2)
+      .map((item) => tileOrder(2, item.word).join(""));
+    assert.ok(pairs.includes("01") && pairs.includes("10"), `${name}: ${pairs.join(" ")}`);
+    for (const item of words) {
+      const order = tileOrder(item.syllables.length, item.word);
+      assert.deepEqual(
+        tileOrder(item.syllables.length, item.word),
+        order,
+        `${name}/${item.word}: SSR = hydration`,
+      );
+      if (item.syllables.length > 2)
+        assert.notDeepEqual(
+          order,
+          item.syllables.map((_, index) => index),
+        );
+    }
+  }
 });
 
 test("slot texts follow the printed word, accents included", () => {

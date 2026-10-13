@@ -9,4 +9,4 @@ they do not fabricate provider stages or substitute answers. Reports: `playwrigh
 `test-results-assistant/screenshots/` (unpublishable CI artifact).
 
 Six preview states are generated under `test-results-assistant/preview/`. Desktop previews use
-the expanded panel; these local fixture images do not validate a provider model or a VPS deployment.
+the default compact panel; these local fixture images do not validate a provider model or a VPS deployment.

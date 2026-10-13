@@ -66,7 +66,13 @@ const MAX_EVENTS = 10;
 const MAX_STRING = 200;
 const MAX_URL = 2048;
 const TIME_SKEW_MS = 10 * 60 * 1000;
-const ALLOWED_EVENTS = new Set(["PageView", "ViewContent", "PequeversoProductInterest", "CheckoutIntent"]);
+const ALLOWED_EVENTS = new Set([
+  "PageView",
+  "ViewContent",
+  "PequeversoProductInterest",
+  "PequeversoAffiliateClick",
+  "CheckoutIntent",
+]);
 const FORBIDDEN_EVENTS = new Set(["InitiateCheckout", "Purchase", "PlaceAnOrder", "begin_checkout"]);
 const ALLOWED_PARAMS = new Set([
   "content_ids",
