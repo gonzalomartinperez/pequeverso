@@ -7,20 +7,21 @@ import { feeding } from "@/features/hub/hub-products";
 import { CookieSettingsLink } from "@/features/tracking/CookieSettingsLink";
 import { coreProducts } from "@/products";
 
-/**
- * Both products (docs/specs/home-hub.md): our own kit with its landing, and the recommended
- * course through its home chapter, where the affiliate disclosure sits next to the button (the
- * footer never links to the affiliate redirect without it).
- */
 const productLinks = [
   { href: "/", label: "Inicio" },
   ...coreProducts().flatMap((product) => [
     { href: product.path, label: product.name },
     { href: `${product.path}#incluye`, label: "Qué incluye" },
+    { href: `${product.path}#preguntas`, label: "Preguntas frecuentes" },
   ]),
-  { href: `/${feeding.anchor}`, label: feeding.name },
-  { href: "/#preguntas", label: "Preguntas frecuentes" },
 ];
+
+/**
+ * Hub pages (home, support, legal, 404) also list the recommended course, through its home
+ * chapter where the affiliate disclosure sits next to the button (docs/specs/home-hub.md). The
+ * purchase and post-purchase pages keep the single-product column unchanged.
+ */
+const hubProductLinks = [...productLinks, { href: `/${feeding.anchor}`, label: feeding.name }];
 
 const helpLinks = [
   { href: "/soporte/", label: "Soporte y contacto" },
@@ -95,7 +96,7 @@ function LinkColumn({ label, items, children }: Column) {
  * disclaimer, and a giant outlined "pequeverso" wordmark
  * (decorative) sinking into the bottom edge.
  */
-export function Footer() {
+export function Footer({ hub = false }: { hub?: boolean } = {}) {
   return (
     <footer
       data-slot="footer"
@@ -120,7 +121,11 @@ export function Footer() {
               <SocialLinks tone="dark" />
             </div>
           </div>
-          <LinkColumn label="Productos" items={productLinks} />
+          {hub ? (
+            <LinkColumn label="Productos" items={hubProductLinks} />
+          ) : (
+            <LinkColumn label="Producto" items={productLinks} />
+          )}
           <LinkColumn label="Ayuda" items={helpLinks}>
             <li>
               <a href={`mailto:${site.supportEmail}`} className={footerLinkClass}>

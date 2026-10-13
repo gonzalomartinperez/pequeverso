@@ -29,7 +29,7 @@ const faq = graciasCopy.help.items.map((item) => ({ q: item.title, a: item.text 
 
 export default function SoportePage() {
   return (
-    <PageShell overlay>
+    <PageShell overlay hub>
       <section
         data-slot="section"
         data-tone="aurora-cream"

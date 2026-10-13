@@ -124,12 +124,14 @@ export function MobileNavSheet({ items, cta, products, open, onOpenChange }: Pro
                     render={<a href={item.href} />}
                     className="group/link flex min-h-16 items-center gap-4 rounded-lg px-2 font-display text-[1.75rem] leading-tight font-bold tracking-[-0.01em] text-heading no-underline transition-colors duration-(--duration-fast) hover:bg-white/70"
                   >
-                    <span
-                      aria-hidden="true"
-                      className="w-6 font-sans text-tiny font-extrabold text-teal-text tabular-nums"
-                    >
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
+                    {items.length > 1 ? (
+                      <span
+                        aria-hidden="true"
+                        className="w-6 font-sans text-tiny font-extrabold text-teal-text tabular-nums"
+                      >
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                    ) : null}
                     <span className="min-w-0 flex-1">{item.label}</span>
                     <span
                       aria-hidden="true"

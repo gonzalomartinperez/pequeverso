@@ -9,6 +9,10 @@
  */
 import { alimentacionBebe as course } from "../../config/affiliates.ts";
 import { guaranteeDays } from "../../config/commerce.ts";
+import { grafismoFonetico } from "../../src/products/grafismo-fonetico.ts";
+
+/** "3 a 7 años" → "entre los 3 y los 7 años" (ages read from the registry and config). */
+const between = (range: string): string => range.replace(/^(\d+) a (\d+) (.+)$/, "entre los $1 y los $2 $3");
 
 export const homeCopy = {
   meta: {
@@ -37,8 +41,12 @@ export const homeCopy = {
       { icon: "shield", title: "Pago seguro por Hotmart", text: "Hotmart cobra y entrega los dos." },
       /** `days`: the title is preceded by the shared guarantee days from config ("7 días de garantía"). */
       { icon: "refresh", title: "días de garantía", text: "Pides el reembolso en Hotmart.", days: true },
-      { icon: "download", title: "Acceso digital", text: "Llega a tu correo al confirmar el pago." },
-      { icon: "globe", title: "En tu moneda", text: "Se cobra en tu moneda local." },
+      {
+        icon: "download",
+        title: "Acceso digital",
+        text: "El acceso llega a tu correo al confirmar el pago.",
+      },
+      { icon: "globe", title: "Kit en tu moneda", text: "Grafismo Fonético se cobra en tu moneda local." },
     ],
   },
   /** Chapter 1: Grafismo Fonético, from the reading need. */
@@ -68,7 +76,7 @@ export const homeCopy = {
   },
   method: {
     kicker: "Cómo funciona · Grafismo Fonético",
-    title: "Mira · Di · Traza · Une",
+    title: "Mira\u00a0· Di\u00a0· Traza\u00a0· Une",
     lead: "Cada página sigue la misma secuencia de cuatro gestos. Diez minutos y una sola hoja son suficientes para empezar.",
     steps: [
       { icon: "eye", title: "Mira", text: "La sílaba grande y su imagen." },
@@ -105,7 +113,7 @@ export const homeCopy = {
     guaranteeBefore: "Garantía de",
     guaranteeAfter: "días de Hotmart",
     cta: "Ver la guía en Hotmart",
-    ctaNote: `Garantía de ${course.guaranteeDays} días de Hotmart · se cobra en tu moneda local`,
+    ctaNote: `Garantía de ${course.guaranteeDays} días de Hotmart · pago y acceso en Hotmart`,
     secondary: "Ver cómo funciona",
     newTab: "(se abre en una pestaña nueva)",
     disclosure:
@@ -113,7 +121,7 @@ export const homeCopy = {
     disclosureLink: "Más información sobre los enlaces de afiliado",
     how: {
       kicker: "Cómo funciona · el curso",
-      title: "Mira · Organiza · Cocina",
+      title: "Mira\u00a0· Organiza\u00a0· Cocina",
       lead: "Un curso en video para seguir a tu ritmo, desde el celular, la tableta o la computadora.",
       steps: [
         { icon: "play", title: "Mira", text: "Las clases en video, cuando tengas un rato." },
@@ -121,7 +129,7 @@ export const homeCopy = {
         { icon: "utensils", title: "Cocina", text: "El menú de 4 semanas y recetas para todos." },
       ],
       menuTitle: "Un menú para las primeras 4 semanas",
-      menuText: "Las comidas del mes, ordenadas de antemano: sabes qué preparar cada día.",
+      menuText: "El curso incluye un menú para las primeras 4 semanas de la alimentación complementaria.",
     },
   },
   faq: {
@@ -137,7 +145,7 @@ export const homeCopy = {
       {
         about: "both",
         q: "¿Cuál de los dos es para mi familia?",
-        a: `Depende de la etapa. Si tu hijo tiene entre 3 y 7 años y quieres acompañarlo a leer por sílabas, Grafismo Fonético. Si tu bebé tiene entre ${course.stage} y empieza a comer, la ${course.name}.`,
+        a: `Depende de la etapa. Si tu hijo tiene ${between(grafismoFonetico.composition.ageRange)} y quieres acompañarlo a leer por sílabas, Grafismo Fonético. Si tu bebé tiene ${between(course.stage)} y empieza a comer, la ${course.name}.`,
       },
       {
         about: "reading",
@@ -167,7 +175,7 @@ export const homeCopy = {
       {
         about: "both",
         q: "¿Puedo pagar en mi moneda?",
-        a: "Sí. Hotmart convierte el importe a la moneda de tu país y te muestra el total final antes de confirmar. Los medios de pago dependen del país.",
+        a: `Grafismo Fonético, sí: Hotmart convierte el importe a la moneda de tu país y te muestra el total final antes de confirmar. La ${course.name} la cobra su productor en Hotmart: el importe y los medios de pago se ven en su página de pago.`,
       },
     ],
   },
@@ -177,7 +185,6 @@ export const homeCopy = {
     text: "Elige lo que tu familia necesita hoy. Lo demás puede esperar.",
     readingCta: "Ver Grafismo Fonético",
     feedingCta: "Ver la guía en Hotmart",
-    social: "Síguenos: ideas y páginas nuevas cada semana en @somospequeverso",
   },
 } as const;
 

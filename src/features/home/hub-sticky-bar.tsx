@@ -99,14 +99,30 @@ export function HubStickyBar({ doors, reading, feeding }: Props) {
     const questions = document.getElementById("preguntas");
     if (questions) zoneObserver.observe(questions);
 
-    // Header direction: hide after reading down past the hero, show on any way up.
+    // Header direction: hide after reading down past the hero, show on any way up. An in-page
+    // anchor jump (doors, menus, header links) keeps the header visible: the target lands right
+    // under it (html scroll-padding) instead of under an empty band.
     let last = window.scrollY;
     let frame = 0;
+    let hold = 0;
+    const onAnchor = (event: MouseEvent) => {
+      if (!(event.target as Element | null)?.closest?.('a[href^="#"], a[href^="/#"]')) return;
+      header?.removeAttribute("data-hidden");
+      clearTimeout(hold);
+      hold = window.setTimeout(() => {
+        hold = 0;
+        last = window.scrollY;
+      }, 1200);
+    };
     const onScroll = () => {
       if (frame) return;
       frame = requestAnimationFrame(() => {
         frame = 0;
         const y = window.scrollY;
+        if (hold) {
+          last = y;
+          return;
+        }
         if (Math.abs(y - last) < 8) return;
         const down = y > last && y > 320;
         if (down) header?.setAttribute("data-hidden", "");
@@ -115,11 +131,14 @@ export function HubStickyBar({ doors, reading, feeding }: Props) {
       });
     };
     window.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("click", onAnchor, true);
     mobile.addEventListener("change", sync);
     return () => {
       coverObserver.disconnect();
       zoneObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("click", onAnchor, true);
+      clearTimeout(hold);
       mobile.removeEventListener("change", sync);
       cancelAnimationFrame(frame);
       header?.removeAttribute("data-hidden");
@@ -136,7 +155,7 @@ export function HubStickyBar({ doors, reading, feeding }: Props) {
       data-visible={visible ? "" : undefined}
       inert={!visible}
       className={cx(
-        "pv-sticky glass fixed inset-x-3 bottom-[calc(var(--space-3)+env(safe-area-inset-bottom))] z-60 mx-auto hidden max-w-xl rounded-[2rem] p-[min(0.5rem,8px)] shadow-float ring-1 ring-navy/10 transition-[translate,opacity,visibility] duration-(--duration) ease-emphasis max-lg:block",
+        "pv-sticky fixed inset-x-3 bottom-[calc(var(--space-3)+env(safe-area-inset-bottom))] z-60 mx-auto hidden max-w-xl rounded-[2rem] bg-white p-[min(0.5rem,8px)] shadow-float ring-1 ring-navy/12 transition-[translate,opacity,visibility] duration-(--duration) ease-emphasis max-lg:block",
         "[body:has(dialog[open],[role=dialog][data-open])_&]:invisible [body:has(dialog[open],[role=dialog][data-open])_&]:translate-y-[calc(100%+2rem)] [body:has(dialog[open],[role=dialog][data-open])_&]:opacity-0",
         visible ? "visible translate-y-0 opacity-100" : "invisible translate-y-[calc(100%+2rem)] opacity-0",
       )}

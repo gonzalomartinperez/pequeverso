@@ -31,7 +31,5 @@ export const hubCopy = {
     recommended: "Recomendado",
     /** Affiliate disclosure wherever the course appears outside its chapter (doors, menu, sticky bar). */
     disclosure: "Enlace de afiliado: si compras, Pequeverso recibe una comisión; a ti no te cuesta más.",
-    /** Shortest form, for the sticky bar beside the course button. */
-    disclosureTiny: "Enlace de afiliado · a ti no te cuesta más",
   },
 } as const;

@@ -50,7 +50,7 @@ const organizationJsonLd = {
  */
 export default function HomePage() {
   return (
-    <PageShell overlay nav={copy.nav} products>
+    <PageShell overlay nav={copy.nav} products hub>
       <script
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD built from config

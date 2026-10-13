@@ -32,16 +32,18 @@ export function HubSticky() {
             <li key={need.key} className="min-w-0">
               <a
                 href={need.anchor}
-                className="flex min-h-12 items-center gap-2 rounded-[1.5rem] bg-navy px-3 py-1.5 text-white no-underline transition-colors hover:bg-navy-deep hover:text-gold"
+                className="flex min-h-12 items-center gap-2 rounded-[1.5rem] bg-navy px-3 py-1.5 text-white no-underline transition-colors hover:bg-navy-deep hover:text-gold @max-[25rem]:px-2.5"
               >
                 <Icon
                   name={NEED_TONE[need.key].icon}
                   size={18}
                   strokeWidth={2.4}
-                  className="shrink-0 text-gold"
+                  className="shrink-0 text-gold @max-[25rem]:hidden"
                 />
                 <span className="grid min-w-0 leading-tight">
-                  <span className="text-small font-extrabold">{need.need}</span>
+                  <span className="text-small font-extrabold whitespace-nowrap @max-[25rem]:text-tiny">
+                    {need.need}
+                  </span>
                   <span className="text-tiny text-white/80">{need.stage}</span>
                 </span>
               </a>
@@ -61,7 +63,7 @@ export function HubSticky() {
         </Row>
       }
       feeding={
-        <Row need={feeding} title={course.name} detail={hubCopy.feeding.disclosureTiny}>
+        <Row need={feeding} title={course.name} detail={hubCopy.feeding.disclosure}>
           <AffiliateLink
             href={affiliateHref(course)}
             product={course.slug}
@@ -102,7 +104,7 @@ function Row({
       </span>
       <span className="on-light grid min-w-0 grow basis-0 gap-0.5">
         <span className="truncate text-small leading-tight font-extrabold text-heading">{title}</span>
-        <span className="text-tiny leading-tight text-pretty text-subtle">{detail}</span>
+        <span className="text-tiny leading-tight text-pretty text-body">{detail}</span>
       </span>
       {children}
     </div>

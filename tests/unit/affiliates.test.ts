@@ -69,6 +69,11 @@ test("affiliate copy: disclosure, no price, reviews or health promises", () => {
     hubCopy.feeding.disclosure,
     "Enlace de afiliado: si compras, Pequeverso recibe una comisión; a ti no te cuesta más.",
   );
+  // There is a single short form: the sticky bar uses the same text as the doors and menus.
+  assert.deepEqual(
+    Object.keys(hubCopy.feeding).filter((key) => key.startsWith("disclosure")),
+    ["disclosure"],
+  );
   assert.equal(copy.cta, "Ver la guía en Hotmart");
   // Every piece of copy about the course: its chapter, its hub entry (doors, menu, sticky bar),
   // its closing button and the FAQ answers about it.

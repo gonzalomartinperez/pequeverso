@@ -98,7 +98,53 @@ test("phone sticky bar follows the chapter in view and keeps the disclosure next
   await page.evaluate(() => window.scrollBy(0, 200));
   await expect(bar).toHaveAttribute("data-mode", "feeding");
   await expect(bar.locator("a[data-affiliate]")).toHaveAttribute("rel", /sponsored/);
-  await expect(bar).toContainText("Enlace de afiliado");
+  await expect(bar).toContainText("Enlace de afiliado: si compras, Pequeverso recibe una comisión");
   await page.locator("#cierre").scrollIntoViewIfNeeded();
   await expect(bar).toHaveAttribute("data-mode", "hidden");
+});
+
+test("an anchor jump keeps the header visible and lands the chapter right under it", async ({ page }) => {
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  await page.locator('a[data-door="feeding"]').click();
+  await expect(page).toHaveURL(/#bebe$/);
+  const header = page.locator('[data-slot="header"]');
+  await expect(header).not.toHaveAttribute("data-hidden", "");
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        // Gap between the visible header and the chapter's first visible content.
+        const pill = document.querySelector('[data-slot="header-pill"]')?.getBoundingClientRect();
+        const tops = [...document.querySelectorAll<HTMLElement>("#bebe [data-reveal], #bebe h2")]
+          .map((el) => el.getBoundingClientRect())
+          .filter((rect) => rect.height > 0)
+          .map((rect) => rect.top);
+        return Math.min(...tops) - (pill?.bottom ?? 0);
+      }),
+    )
+    .toBeLessThan(64);
+});
+
+test("purchase and post-purchase footers keep the single-product column", async ({ page }) => {
+  for (const route of ["/grafismo-fonetico/", "/imprime-y-juega/", "/grafismo-fonetico/gracias/"]) {
+    await page.goto(route);
+    const footer = page.getByRole("contentinfo");
+    await expect(footer.getByRole("navigation", { name: "Producto", exact: true }), route).toHaveCount(1);
+    await expect(footer.locator('a[href="/#bebe"]'), route).toHaveCount(0);
+    await expect(footer.locator('a[href="/grafismo-fonetico/#preguntas"]'), route).toHaveCount(1);
+  }
+  await page.goto("/");
+  await expect(page.getByRole("contentinfo").locator('a[href="/#bebe"]')).toHaveCount(1);
+});
+
+test("Tab past the last menu card closes the products panel", async ({ page }) => {
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  const trigger = page.locator("header [data-products-trigger]");
+  await trigger.click();
+  const panel = page.getByRole("navigation", { name: "Menú de productos" });
+  await expect(panel).toBeVisible();
+  await panel.getByRole("link").last().focus();
+  await page.keyboard.press("Tab");
+  await expect(panel).toBeHidden();
 });

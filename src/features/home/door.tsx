@@ -49,7 +49,7 @@ export function Door({ need, priority = false, order, describedBy }: Props) {
       data-door={need.key}
       data-hero-enter="media"
       style={{ "--i": order } as CSSProperties}
-      className="group/door relative grid h-full grid-cols-1 overflow-hidden rounded-xl bg-white text-ink no-underline shadow-float ring-1 ring-line transition-[translate,box-shadow] duration-(--duration) ease-out hover:ring-teal/40 motion-safe:hover:-translate-y-1.5 cq-lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] cq-lg:rounded-2xl"
+      className="group/door relative grid h-full grid-cols-1 grid-rows-[auto_1fr] overflow-hidden rounded-xl bg-white text-ink no-underline shadow-float ring-1 ring-line transition-[translate,box-shadow] duration-(--duration) ease-out hover:ring-teal/40 motion-safe:hover:-translate-y-1.5 cq-lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] cq-lg:grid-rows-1 cq-lg:rounded-2xl"
     >
       <span
         className={cn(
@@ -70,7 +70,7 @@ export function Door({ need, priority = false, order, describedBy }: Props) {
           </span>
         ) : null}
       </span>
-      <span className="grid content-between gap-3 p-3 cq-sm:p-5 cq-lg:p-6">
+      <span className="flex flex-col gap-3 p-3 cq-sm:p-5 cq-lg:p-6">
         <span className="grid gap-2">
           <span
             className={cn(
@@ -99,7 +99,7 @@ export function Door({ need, priority = false, order, describedBy }: Props) {
 /** The door's single visual action: a navy pill (the whole card is the link). */
 function DoorAction({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-pill bg-navy px-3 text-small font-extrabold text-white shadow-[0_14px_28px_-14px_oklch(0.3175_0.1094_256.25/70%)] transition-colors duration-(--duration) group-hover/door:bg-navy-deep group-hover/door:text-gold cq-sm:w-fit cq-sm:px-5 cq-sm:text-base">
+    <span className="mt-auto inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-pill bg-navy px-3 text-small font-extrabold text-white shadow-[0_14px_28px_-14px_oklch(0.3175_0.1094_256.25/70%)] transition-colors duration-(--duration) group-hover/door:bg-navy-deep group-hover/door:text-gold cq-sm:w-fit cq-sm:px-5 cq-sm:text-base">
       {children}
       <Icon
         name="arrowDown"

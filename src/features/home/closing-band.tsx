@@ -6,7 +6,6 @@ import type { CSSProperties, ReactNode } from "react";
 import { Icon } from "@/components/blocks/icon";
 import { MediaImage } from "@/components/blocks/media-image";
 import { Section } from "@/components/blocks/section";
-import { SocialLinks } from "@/components/blocks/social-links";
 import { AffiliateLink } from "@/features/commerce/AffiliateLink/AffiliateLink";
 import { feeding, type HubNeed, reading } from "@/features/hub/hub-products";
 import { cn } from "@/lib/utils";
@@ -20,7 +19,7 @@ import { Accent, LINK_WHITE, Pill, ProductLink } from "./home-ui";
  * Closing band (`#cierre`): the navy universe with the two doors again, now pointing straight to
  * each destination with the same white pill: the kit's product page (with its price) and the
  * course's affiliate redirect (with its disclosure). The syllable cards and the food planet float
- * on either side (decorative). Social profiles close the page before the footer.
+ * on either side (decorative). The footer right below carries the social profiles.
  */
 export function ClosingBand() {
   const c = copy.closing;
@@ -76,10 +75,6 @@ export function ClosingBand() {
             </ClosingDoor>
           </li>
         </ul>
-        <div className="mt-8 grid w-full justify-items-center gap-3 border-t border-white/15 pt-7">
-          <p className="text-small">{c.social}</p>
-          <SocialLinks tone="dark" />
-        </div>
       </div>
     </Section>
   );
@@ -90,7 +85,7 @@ function ClosingDoor({ need, note, children }: { need: HubNeed; note: string; ch
   return (
     <div
       data-closing-door={need.key}
-      className="glass-dark grid h-full content-between gap-5 rounded-xl p-5 ring-1 ring-white/12 transition-[translate,background-color] duration-(--duration) ease-out hover:bg-white/12 motion-safe:hover:-translate-y-1 cq-sm:p-7"
+      className="cq glass-dark grid h-full content-between gap-5 rounded-xl p-5 ring-1 ring-white/12 transition-[translate,background-color] duration-(--duration) ease-out hover:bg-white/12 motion-safe:hover:-translate-y-1 cq-sm:p-7"
     >
       <div className="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-4">
         <span
@@ -116,9 +111,10 @@ function ClosingDoor({ need, note, children }: { need: HubNeed; note: string; ch
           </span>
         </span>
       </div>
-      <div className="grid gap-2">
-        {children}
+      {/* Note above the button, so both buttons sit on the card's bottom edge at the same y. */}
+      <div className="grid gap-3">
         <p className="text-tiny text-pretty text-body">{note}</p>
+        {children}
       </div>
     </div>
   );

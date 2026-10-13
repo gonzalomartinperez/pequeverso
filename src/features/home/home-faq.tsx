@@ -19,7 +19,7 @@ export function HomeFaq() {
     <section
       id="preguntas"
       aria-labelledby="preguntas-title"
-      className="cq relative scroll-mt-(--header-height) bg-cream pt-(--section-pad) pb-[calc(var(--section-pad)+var(--section-overlap))]"
+      className="cq relative scroll-mt-[calc(1.25rem-var(--section-pad))] bg-cream pt-(--section-pad) pb-[calc(var(--section-pad)+var(--section-overlap))]"
     >
       <div className="page-container grid gap-10">
         <div className="grid justify-items-center gap-3 text-center" data-reveal="">

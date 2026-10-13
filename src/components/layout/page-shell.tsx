@@ -17,6 +17,8 @@ type Props = {
   overlay?: boolean;
   /** Header «Productos» menu (see Header). */
   products?: boolean;
+  /** Hub page (home, support, legal, 404): the footer also lists the recommended course. */
+  hub?: boolean;
 };
 
 /** Withdrawal link + header + main landmark + footer. Every route uses it so navigation is complete everywhere. */
@@ -28,6 +30,7 @@ export function PageShell({
   topbar,
   overlay = false,
   products = false,
+  hub = false,
 }: Props) {
   return (
     <div data-slot="page-shell" className="flex min-h-dvh flex-col">
@@ -37,7 +40,7 @@ export function PageShell({
       <main id="contenido" className="flex-[1_0_auto]">
         <PageMotion>{children}</PageMotion>
       </main>
-      <Footer />
+      <Footer hub={hub} />
     </div>
   );
 }

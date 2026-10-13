@@ -10,7 +10,12 @@ import { product } from "./home-data";
  * navy) pills with a shine sweep and a 2 px lift, the same for both products; coral stays reserved
  * for the purchase CTA on the landing.
  */
-const PILL = "pv-shine rounded-pill motion-safe:hover:-translate-y-0.5";
+/**
+ * Narrow containers (phones under ~416 px): tighter padding and a 16 px label so every CTA stays on
+ * one line; under ~352 px the trailing icon goes (the new-tab note stays for screen readers).
+ */
+const PILL =
+  "pv-shine rounded-pill motion-safe:hover:-translate-y-0.5 @max-[26rem]:px-4 @max-[26rem]:text-base @max-[22rem]:[&_svg[data-icon=inline-end]]:hidden";
 export const LINK_NAVY = cn(
   buttonVariants({ variant: "secondary", size: "lg" }),
   PILL,

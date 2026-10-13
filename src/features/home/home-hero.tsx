@@ -49,7 +49,7 @@ export function HomeHero() {
         </p>
       </div>
 
-      <div id="elige" className="page-container relative mt-6 scroll-mt-(--header-height) cq-md:mt-10">
+      <div id="elige" className="page-container relative mt-6 cq-md:mt-10">
         <h2
           className="mb-3 flex items-center justify-center gap-3 text-small font-extrabold tracking-[0.1em] text-navy uppercase cq-md:mb-5"
           data-hero-enter=""
@@ -77,7 +77,7 @@ export function HomeHero() {
           id={DISCLOSURE_ID}
           className="mx-auto mt-3 max-w-[68rem] text-center text-tiny text-pretty text-subtle cq-xs:text-end"
         >
-          {feeding.name}: {hubCopy.feeding.disclosure}
+          {feeding.name} · {hubCopy.feeding.disclosure}
         </p>
       </div>
     </section>

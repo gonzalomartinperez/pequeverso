@@ -69,8 +69,8 @@ Rules the hub keeps:
   afiliado: si compras, Pequeverso recibe una comisión…», linked to `/aviso-legal/#afiliados`) next to
   the chapter button; the short form («Enlace de afiliado: si compras, Pequeverso recibe una comisión; a
   ti no te cuesta más.») under the hero doors, on the menu cards, in the sticky bar and on the closing
-  card. The hero door, the menus and the footer link to the chapter `#bebe`, never straight to the
-  redirect. No price, reviews, ratings or health promises (unit invariant over all of that copy).
+  card. The hero door, the menus and the footer of the hub pages (home, support, legal, 404; never the
+  purchase or post-purchase pages) link to the chapter `#bebe`, never straight to the redirect. No price, reviews, ratings or health promises (unit invariant over all of that copy).
 - Tracking: one `PequeversoAffiliateClick` (`product`, `cta_position`: `home`, `sticky`, `closing`,
   `destination`) per click, through the pixel and the Conversions API relay. Never `CheckoutIntent`,
   `InitiateCheckout` or `Purchase` (e2e `commerce.spec.ts`).

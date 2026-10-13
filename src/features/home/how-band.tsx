@@ -51,7 +51,7 @@ export function HowBand({
     <section
       id={id}
       aria-labelledby={`${id}-title`}
-      className="cq relative scroll-mt-(--header-height) bg-cream px-3 pt-24 pb-(--section-pad) cq-sm:px-5 cq-lg:pt-32"
+      className="cq relative bg-cream px-3 pt-24 pb-(--section-pad) cq-sm:px-5 cq-lg:pt-32"
     >
       <div className="on-navy relative mx-auto max-w-[88rem] rounded-2xl cq-lg:rounded-[3rem]">
         <div

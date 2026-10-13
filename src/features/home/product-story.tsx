@@ -70,14 +70,18 @@ export function ProductStory({
       data-chapter={need}
       data-affiliate-block={affiliate}
       className={cn(
-        "cq relative isolate scroll-mt-(--header-height) overflow-clip section-pad",
+        "cq relative isolate scroll-mt-[calc(1.25rem-var(--section-pad))] overflow-clip section-pad",
         need === "reading"
           ? "bg-[radial-gradient(45%_40%_at_0%_20%,oklch(0.8521_0.0956_187.2/22%),transparent_70%),linear-gradient(180deg,var(--pv-cream),var(--pv-celeste)_45%,var(--pv-cream))]"
           : "bg-[radial-gradient(45%_40%_at_100%_20%,oklch(0.9483_0.0301_55.6/90%),transparent_70%),linear-gradient(180deg,var(--pv-cream),var(--pv-rose)_45%,var(--pv-cream))]",
       )}
     >
       {/* Descriptive alias for links that name the product (`/#grafismo-fonetico`). */}
-      <span id={alias} aria-hidden="true" className="absolute top-0 block scroll-mt-(--header-height)" />
+      <span
+        id={alias}
+        aria-hidden="true"
+        className="absolute top-0 block scroll-mt-[calc(1.25rem-var(--section-pad))]"
+      />
       <div className="page-container grid items-center gap-10 cq-lg:grid-cols-2 cq-lg:gap-16">
         <div className={cn("min-w-0", mediaFirst ? "cq-lg:order-1" : "cq-lg:order-2")} data-reveal="blur">
           {media}

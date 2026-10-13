@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <PageShell overlay>
+    <PageShell overlay hub>
       <section
         aria-labelledby="not-found-title"
         className="aurora-sky relative isolate overflow-clip pt-[calc(var(--header-height)+clamp(2rem,6vw,4.5rem))] pb-[calc(var(--section-pad)+clamp(2rem,5vw,4rem))]"
