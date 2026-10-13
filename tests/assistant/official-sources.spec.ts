@@ -1,6 +1,7 @@
 import { mkdirSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 import { assistantConfig } from "../../config/assistant.ts";
+import { assistantCopy } from "../../content/es/assistant.ts";
 
 const API = "https://127.0.0.1:8217";
 const ANSWER = "Puedes consultar estas guías generales de Hotmart.";
@@ -103,10 +104,9 @@ for (const malicious of [false, true]) {
       await expect(sources.getByRole("link")).toHaveCount(3);
       for (const source of SOURCES) {
         if (!source.title) throw new Error("Each fixture article needs an explicit title");
-        await expect(sources.getByRole("link", { name: source.title, exact: true })).toHaveAttribute(
-          "href",
-          source.url,
-        );
+        await expect(
+          sources.getByRole("link", { name: `${source.title} ${assistantCopy.opensInNewTab}`, exact: true }),
+        ).toHaveAttribute("href", source.url);
       }
       await expect(sources.getByText("Hotmart · procedimiento general", { exact: true })).toHaveCount(3);
     } else {

@@ -155,7 +155,11 @@ describe("storefront URLs cannot become protocol-relative links", async () => {
 
 it("allows only the three exact canonical official articles without granting their host", async () => {
   const { assistantConfig } = await import("../../../config/assistant.ts");
-  const exact = { ...policy, approvedSourceUrls: assistantConfig.approvedSourceUrls };
+  const exact = {
+    ...policy,
+    linkHosts: assistantConfig.linkHosts,
+    approvedSourceUrls: assistantConfig.approvedSourceUrls,
+  };
   assert.equal(exact.approvedSourceUrls.length, 3);
   assert.equal(exact.linkHosts.includes("help.hotmart.com"), false);
   for (const url of exact.approvedSourceUrls) {
@@ -187,12 +191,17 @@ it("allows only the three exact canonical official articles without granting the
   assert.equal(externalUrl("https://help.hotmart.com/es/article/123/unknown", exact), null);
   assert.equal(externalUrl("https://help.hotmart.com/redirect", exact), null);
   assert.equal(externalUrl("https://consumer.hotmart.com/", exact), "https://consumer.hotmart.com/");
+  assert.equal(externalUrl("https://refund.hotmart.com/", exact), "https://refund.hotmart.com/");
   assert.equal(externalUrl("https://pequeverso.com/soporte/", exact), "https://pequeverso.com/soporte/");
 });
 
 it("drops unsafe official citations without changing distinct source identities", async () => {
   const { assistantConfig } = await import("../../../config/assistant.ts");
-  const exact = { ...policy, approvedSourceUrls: assistantConfig.approvedSourceUrls };
+  const exact = {
+    ...policy,
+    linkHosts: assistantConfig.linkHosts,
+    approvedSourceUrls: assistantConfig.approvedSourceUrls,
+  };
   const sources = exact.approvedSourceUrls.map((url, index) => ({
     id: `hotmart:${index}`,
     title: "Procedimiento",
