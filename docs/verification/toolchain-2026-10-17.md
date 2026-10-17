@@ -113,4 +113,13 @@ notice under the fake-pixel setting; the references represented an already-decid
 visitor. Original actual/expected/diff images and traces were preserved and
 inspected. Only deterministic rejected consent in the visual harness is authorized
 for the follow-up: no application consent/tracking changes, masks, relaxed limits
-or screenshot replacements. Final follow-up results are still pending.
+or screenshot replacements. After integrating the reviewed test-only harness
+`5e62bde`, all four Home/footer cases passed in 41.652 s, with zero skips,
+retries, flaky results or errors, against the same existing references. Lint and
+types passed again. Application and assistant source blobs remained unchanged,
+so no build or native-matrix result is relabeled as newly executed.
+
+After the protected Home PR #114 squash, a normal merge of develop `7ad3acd`
+produced an application-identical tree. This dedicated dependency PR changes only
+the ten toolchain, compatible pin and documentation paths; its complete protected
+CI and integrated Nightly remain required.
