@@ -7,6 +7,7 @@ import { describe, it } from "node:test";
 import {
   assistantDependencyAllowed,
   assistantLayer,
+  assistantSourcePlacementAllowed,
   sourceFiles as files,
   sourceImports,
   sourceModule,
@@ -31,6 +32,28 @@ const layer = (file: string) => toPosix(relative(root, file)).split("/")[0] ?? "
 const all = files(root);
 
 describe("native assistant boundaries", () => {
+  it("checks source placement even when a module has no imports", () => {
+    for (const file of all) assert.ok(assistantSourcePlacementAllowed(toPosix(file)), file);
+    for (const file of ["misc/empty.ts", "empty.ts", "entry.ts/empty.ts", "Application/empty.ts"]) {
+      const path = `${root}/${file}`;
+      assert.deepEqual(sourceModule(path, "export const value = 1;").imports, []);
+      assert.equal(assistantSourcePlacementAllowed(path), false, file);
+    }
+    for (const file of ["entry.ts", "flag.ts", "mount.tsx", "runtime.tsx", "slot.tsx"])
+      assert.equal(assistantSourcePlacementAllowed(`${root}/${file}`), true, file);
+  });
+
+  it("rejects imports from assistant modules outside the declared layers and composition files", () => {
+    for (const file of [
+      "misc/unchecked.ts",
+      "unchecked.ts",
+      "application2/unchecked.ts",
+      "entry.ts/unchecked.ts",
+    ]) {
+      assert.equal(assistantDependencyAllowed(`${root}/${file}`, "react"), false, file);
+    }
+  });
+
   it("keeps domain pure, application framework-free and adapters out of presentation", () => {
     for (const file of all) {
       const name = toPosix(file);

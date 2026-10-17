@@ -208,11 +208,21 @@ export function assistantLayer(path: string): string | null {
     : null;
 }
 
+/** Only the named composition modules may live outside the assistant's four layers. */
+export function assistantSourcePlacementAllowed(path: string): boolean {
+  const layer = assistantLayer(path);
+  if (["domain", "application", "adapters", "presentation"].includes(layer ?? "")) return true;
+  return ["entry.ts", "flag.ts", "mount.tsx", "runtime.tsx", "slot.tsx"].some(
+    (file) => path === `${assistantRoot}/${file}`,
+  );
+}
+
 export function assistantDependencyAllowed(
   file: string,
   specifier: string | null,
   typeOnly = false,
 ): boolean {
+  if (!assistantSourcePlacementAllowed(file)) return false;
   const from = assistantLayer(file);
   if (specifier === null) return !["domain", "application", "adapters", "presentation"].includes(from ?? "");
   const target = sourceTarget(file, specifier);
