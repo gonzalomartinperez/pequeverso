@@ -1,16 +1,8 @@
-name: Dependabot auto-merge
+name: Dependabot manual review
 
-# Conservative, fail-closed policy. Enables GitHub's native auto-merge (squash, pinned to the
-# evaluated head commit) only when EVERY condition below is verified; otherwise it turns auto-merge
-# off and leaves the PR for a human. It never approves (no bot review stands in for a person),
-# never merges directly, and never targets `main`: the `ci` and `Branch policy` required checks of
-# the `develop` ruleset stay the authority. Production deploys are separate and manual.
-#
-# Eligible: a Dependabot npm version update of the root package into `develop`, patch or minor,
-# whose every changed dependency is outside REVIEW_REQUIRED (frameworks, compilers, runtime
-# validation, the test runner), with every commit authored by Dependabot, and with the develop
-# ruleset verified to require `ci` and `Branch policy`. Bypass actors are checked by the owner (none on 2026-10-05; the token cannot read them). GitHub Actions,
-# Docker, tools/media and security updates always get human review.
+# Read-only metadata assessment. Every update requires manual review and a protected merge.
+# No PR code is checked out or executed, and this workflow cannot arm or perform a merge.
+# Candidate classification is advisory; it is not approval or merge authorization.
 on:
   pull_request:
     types: [opened, reopened, synchronize]
@@ -29,14 +21,14 @@ env:
 
 jobs:
   automerge:
-    name: Evaluate auto-merge
+    name: Assess update for manual review
     # Routing only; identity is re-verified below.
     if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'gonzalomartinperez/pequeverso'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
-      contents: write # required by GitHub to enable auto-merge
-      pull-requests: write
+      contents: read
+      pull-requests: read
     steps:
       - name: Read update metadata
         id: meta
@@ -91,26 +83,8 @@ jobs:
           case ",$checks," in *",ci,"*) ;; *) reasons+=("develop does not require ci") ;; esac
           if [ "${#reasons[@]}" -eq 0 ]; then
             echo "eligible=true" >> "$GITHUB_OUTPUT"
-            echo "Eligible: $UPDATE_TYPE of ${DEPENDENCIES}." >> "$GITHUB_STEP_SUMMARY"
+            echo "Candidate: $UPDATE_TYPE of ${DEPENDENCIES}; manual review and merge required." >> "$GITHUB_STEP_SUMMARY"
           else
             echo "eligible=false" >> "$GITHUB_OUTPUT"
             { echo "Manual review:"; printf -- '- %s\n' "${reasons[@]}"; } >> "$GITHUB_STEP_SUMMARY"
-          fi
-      - name: Enable auto-merge for the evaluated head
-        if: steps.decide.outputs.eligible == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          PR: ${{ github.event.pull_request.number }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: gh pr merge "$PR" --repo "$REPO" --auto --squash --match-head-commit "$HEAD_SHA"
-      - name: Keep auto-merge off
-        if: steps.decide.outputs.eligible != 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          PR: ${{ github.event.pull_request.number }}
-        run: |
-          if gh pr view "$PR" --repo "$REPO" --json autoMergeRequest --jq '.autoMergeRequest != null' | grep -q true; then
-            gh pr merge "$PR" --repo "$REPO" --disable-auto
           fi
