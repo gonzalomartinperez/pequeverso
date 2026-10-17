@@ -42,14 +42,16 @@ handlers, invisible to the export), no runtime image optimizer. Server logic liv
 
 ```
 config/          site-wide facts: site.ts (brand, URLs), commerce.ts (currency, guarantee, passthrough
-                 allowlist, Hotmart URLs), edge-rules.json, budgets.json
-content/es/      neutral-Spanish copy: home.ts, gracias.ts, legal/, products/<slug>/{copy,resources,faq}.ts
+                 allowlist, Hotmart URLs), affiliates.ts (approved affiliate facts and redirect env key),
+                 edge-rules.json, budgets.json
+content/es/      neutral-Spanish copy: home.ts, hub.ts (shared need labels), gracias.ts, legal/,
+                 products/<slug>/{copy,resources,faq}.ts
 src/products/    the product registry (schema.ts, <slug>.ts modules, index.ts, jsonld.ts)
 src/app/         routes: page.tsx (hub), [product]/ (one landing per registry product),
                  [product]/gracias/ (thank-you of core products), legal/support pages, sitemap, robots
 src/features/    assistant/ (native shopping assistant, compiled out unless enabled), landing/ (CoreLanding,
-                 OfferLanding, ThanksPage templates), commerce/ (client islands),
-                 gallery/, tracking/
+                 OfferLanding, ThanksPage templates), home/ (two-product chapters and sticky chooser),
+                 hub/ (shared product needs and menu), commerce/ (client islands), gallery/, tracking/
 src/app/globals.css  design tokens, Tailwind v4 theme bridge, base layer, utilities (docs/design-system.md)
 src/components/  ui/ (shadcn/ui primitives on Base UI + server-safe *-variants.ts), blocks/ (server
                  blocks: section, grid, split, price-block, cta-button, faq, …), layout/ (page-shell,
@@ -64,7 +66,8 @@ server/          meta-capi.ts (Conversions API relay core + Node adapter, erasab
 
 ## Product registry
 
-`src/products` is the single source of product facts. Each product is a module
+`src/products` is the source of core kit and post-purchase-offer facts; the affiliate course
+uses the separate configuration described below. Each registry product is a module
 (`src/products/grafismo-fonetico.ts`, `src/products/imprime-y-juega.ts`) declared with
 `satisfies ProductInput` and parsed once, at build time, by `src/products/index.ts` through the Zod
 schema in `src/products/schema.ts` (discriminated union on `kind`):
@@ -84,11 +87,35 @@ Every media id is refined with `hasMedia()` (unknown ids fail the build); the re
 checks unique slugs/codes, that `parent`/`postPurchaseOffer` resolve to the right kind, that
 `thanksPath` is `/<slug>/gracias/` and that resource page counts sum to `composition.pageCount`.
 API: `products`, `getProduct(slug)`, `coreProducts()`, `offerProducts()`, `indexableProducts()`,
-`featuredProduct()` (the hub's product), `checkoutFallbackPath(product)`. Zod and the media manifest
+`featuredProduct()` (the hub's own kit), `checkoutFallbackPath(product)`. Zod and the media manifest
 stay on the server: client islands (`CheckoutLink`, `ProductInterestLink`, `OfferModeMirror`) receive
 plain props from the templates. `src/products/jsonld.ts` emits a `Product` + single `Offer` (and a
 `BreadcrumbList`) for indexable core products only — never ratings, reviews or merchant-listing fields.
 ADR: `docs/decisions/ADR-0002-product-registry.md`.
+
+## Home hub and affiliate course
+
+`src/app/page.tsx` composes `src/features/home/`: equal product doors, the reading
+chapter (`#leer`), first-meals chapter (`#bebe`), FAQ, closing choices and contextual
+sticky chooser. `src/features/hub/hub-products.ts` projects the core kit registry
+and `config/affiliates.ts` into the shared need model used by doors and menus.
+Page copy lives in `content/es/home.ts`; shared labels live in `content/es/hub.ts`.
+`HubProductLink` receives the plain shared need model (with a type-only import),
+then selects exactly one existing `ProductInterestLink` or `AffiliateLink` handler.
+The registry stays outside the client import graph; stable `#leer` / `#bebe` chapters
+remain informational rather than an extra required selection step.
+The full behavior and ownership map is the [Home hub spec](specs/home-hub.md).
+
+`config/affiliates.ts` owns the approved course facts, local redirect path and
+configuration key; the actual affiliate destination is a deployment value. The
+`/alimentacion-bebe/` redirect is declared in `config/edge-rules.json` (temporary302;
+404 when its destination variable is unset), with no local course landing. This
+course is not a third `src/products` kind and does not inherit the kit's price,
+PDF composition or funnel. Home links to the kit landing before its configured
+checkout, while `AffiliateLink` sends an explicitly disclosed recommendation
+through the configured redirect. Post-purchase offers retain their existing
+Hotmart widget flow. See [affiliate configuration](affiliates.md) for the redirect
+and attribution contract; those facts are not duplicated in presentation code.
 
 ## Routes
 
@@ -99,7 +126,8 @@ footer/404 links and terms paragraph without touching the app tree.
 
 | Route | Role | robots | canonical |
 |---|---|---|---|
-| `/` | Hub / homepage (`featuredProduct()`) | index | self |
+| `/` | Two-product hub (`#leer` / `#bebe`) | index | self |
+| `/alimentacion-bebe/` | Configured temporary affiliate redirect, separate from the registry | — (redirect or404) | — |
 | `/grafismo-fonetico/` | Principal landing (checkout CTA), `[product]` core | index | self |
 | `/imprime-y-juega/` | Upsell (Hotmart widget), `[product]` offer | noindex | self |
 | `/imprime-y-juega/?downsell=1` (alias `?offer=downsell`) | Same page, downsell mode | noindex | `/imprime-y-juega/` |
