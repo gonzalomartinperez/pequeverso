@@ -17,3 +17,9 @@ Renderer: Mermaid 12.2.0, from the local locked distribution installed with Merm
 rendered with its browser bundle in Playwright 1.64.1 / Chromium 156.0.8078.4, with strict
 security and HTML labels disabled. No GitHub-native preview or CLI subprocess render is claimed.
 Both themes were inspected at original resolution and at 896/390 pixels before acceptance.
+
+Biome continues to parse and lint both SVGs. Its `noImportantStyles` and `noDescendingSpecificity` style heuristics are
+waived for these two exact generated files: Mermaid emits intentional CSS cascade precedence,
+including the explicit contrast styles reviewed above. The generated selector ordering is retained as reviewed. No source-code rule or complete-file
+exclusion is introduced. Preserve the generated asset hashes; inspect regenerated SVGs for
+active content and actual contrast, and update their provenance together.
