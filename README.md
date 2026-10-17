@@ -17,18 +17,19 @@ Printable learning resources and curated courses for families: Grafismo Fonétic
 
 ## Architecture at a glance
 
-```mermaid
-flowchart LR
-  Visitor[Visitor] --> Store[Pequeverso store]
-  Registry[Typed product registry] --> Build[Next.js build]
-  Build --> Store
-  Store -->|Explicit checkout action| Hotmart[Hotmart payment and delivery]
-  Store -.->|Only after separate activation| Native[Lazy native assistant]
-  Native -->|Session and HTTP/SSE /api/v1| API[Separate assistant API]
-  Backoffice[Private backoffice] -->|Authorized administration| API
-  Ops[vps-ops] -.->|Future deployment and proxy| API
-  Ops -.-> Backoffice
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/architecture/system-dark.svg">
+  <img src="docs/architecture/system-light.svg" alt="Pequeverso architecture: the kit opens its own landing; the affiliate course redirects to the producer. The native assistant is disabled, and vps-ops owns future infrastructure.">
+</picture>
+
+[Open full-size diagram](docs/architecture/system-light.svg) ·
+[Dark version](docs/architecture/system-dark.svg) ·
+[Editable Mermaid and provenance](docs/architecture/README.md).
+
+From Home, **Grafismo Fonético opens `/grafismo-fonetico/`**; the affiliate guide uses the
+existing **`/alimentacion-bebe/` redirect to its producer**. Product selection adds no intermediate
+landing or required in-page step. Hotmart owns payment, delivery and refunds. Dashed assistant
+and infrastructure paths describe integration responsibilities, not a running VPS deployment.
 
 The store presents **Grafismo Fonético** and the affiliate **Guía de Alimentación para Bebés**, with their respective format, audience and ownership clearly identified. The optional **Pack Imprime y Juega** remains a post-purchase offer. Product facts come from the [typed registry](src/products), [affiliate registry](config/affiliates.ts) and [commerce configuration](config/commerce.ts); copy never invents prices, guarantees or benefits. Offer pages embed the Hotmart sales-funnel widget; a thank-you URL is not proof of payment and exposes no product files.
 
@@ -40,7 +41,7 @@ and run `npm run check:architecture` locally.
 |---|---|---|
 | This store | Public product pages, checkout links, native conversation UI | Static export by default; Node standalone also supported |
 | [Assistant API](https://github.com/gonzalomartinperez/pequeverso-assistant-api) | Sessions, grounding, streaming, conversation persistence and provider credentials | Deployment belongs to vps-ops; no provider secret reaches this store |
-| [Backoffice](https://github.com/gonzalomartinperez/pequeverso-assistant-backoffice) | Private administration and authenticated operations | Separate application; never a public chat iframe |
+| [Backoffice](https://github.com/gonzalomartinperez/pequeverso-backoffice) | Private administration and authenticated operations | Separate application; never a public chat iframe |
 | vps-ops | VPS deployment, Coolify, reverse proxy and shared infrastructure | This repository supplies artifacts and contracts; it does not provision the VPS |
 
 The owner confirmed that **Hostinger is connected to `main`** and automatically builds and publishes every merge. Verify the deployed SHA and `assistant: disabled` in `build-info.json`, then check `post-deploy-verify` and the live site; a source merge alone is not deployment evidence. [Build targets, routing and boundaries](docs/architecture.md) · [Hosting and deployment gates](docs/deployment.md).
@@ -76,18 +77,19 @@ Messages are rendered safely as text and supported formatting, with validated li
 
 ### See the actual interface
 
-These are high-resolution photographs of the **local fixture build**, at the default compact
-size. They show the real welcome, answer/source disclosure and complete product details; they
-are not screenshots of an activated production assistant.
+These are original-resolution photographs of the **2026-10-17 local fixture build**,
+showing the final reading polish and aligned controls. They are not an activated production assistant.
 
-| Compact desktop welcome | Answer with its sources | Complete product card on mobile |
-|---|---|---|
-| <a href="docs/verification/assistant/2026-10-12/desktop-bienvenida-detalle.png"><img src="docs/verification/assistant/2026-10-12/desktop-bienvenida-detalle.png" width="300" alt="Spanish welcome with aligned chips and composer"></a> | <a href="docs/verification/assistant/2026-10-12/desktop-respuesta-fuentes-detalle.png"><img src="docs/verification/assistant/2026-10-12/desktop-respuesta-fuentes-detalle.png" width="300" alt="Fixture answer with expanded sources and composer"></a> | <a href="docs/verification/assistant/2026-10-12/mobile-producto-precio-acciones-detalle.png"><img src="docs/verification/assistant/2026-10-12/mobile-producto-precio-acciones-detalle.png" width="285" alt="Full product summary, price caveats, product actions and follow-up questions"></a> |
+| Compact welcome and questions | Answer and sources |
+|---|---|
+| <a href="docs/verification/assistant/2026-10-17/desktop-welcome.png"><img src="docs/verification/assistant/2026-10-17/desktop-welcome.png" width="408" alt="Actual Spanish compact panel with suggested questions and input"></a> | <a href="docs/verification/assistant/2026-10-17/desktop-answer-sources.png"><img src="docs/verification/assistant/2026-10-17/desktop-answer-sources.png" width="408" alt="Complete fixture guarantee answer with two expanded source links and input"></a> |
 
-[Open the detailed gallery](docs/verification/assistant/2026-10-12/README.md) for original PNGs,
-full-window context, waiting, streaming, retained drafts and safe network-error states. Each photo
-has source/API provenance and a SHA-256 in its [manifest](docs/verification/assistant/2026-10-12/manifest.json).
-
+[Mobile conversation](docs/verification/assistant/2026-10-17/mobile-conversation.png) ·
+[Expanded desktop](docs/verification/assistant/2026-10-17/desktop-expanded.png) ·
+[Gallery, exact revisions and hashes](docs/verification/assistant/2026-10-17/README.md).
+The fixture API validates the local transport flow; these images do not validate real-model
+commercial correctness. [Earlier 2026-10-12 states](docs/verification/assistant/2026-10-12/README.md)
+retain their original provenance.
 
 ## Clean checkout
 

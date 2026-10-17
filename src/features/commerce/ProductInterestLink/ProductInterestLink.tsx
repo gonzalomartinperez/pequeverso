@@ -2,24 +2,27 @@
 
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { type ReactNode, useEffect, useState } from "react";
+import { type AnchorHTMLAttributes, type ReactNode, useEffect, useState } from "react";
 import { withPassthrough } from "@/features/commerce/checkout-url";
 import { trackProductInterest } from "@/features/tracking/track";
 
-type Props = {
+type Props = Pick<
+  AnchorHTMLAttributes<HTMLAnchorElement>,
+  "id" | "style" | "aria-describedby" | "onBlur" | "onClickCapture"
+> & {
   href: string;
   /** Slug of the product the link promotes (event `product` parameter). */
   product: string;
   position: string;
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
 };
 
 /**
  * Hub → product link. Keeps allowlisted acquisition params across the internal navigation
  * and emits PequeversoProductInterest once per click.
  */
-export function ProductInterestLink({ href, product, position, children, className }: Props) {
+export function ProductInterestLink({ href, product, position, children, className, ...attributes }: Props) {
   const [target, setTarget] = useState(href);
 
   useEffect(() => {
@@ -28,6 +31,7 @@ export function ProductInterestLink({ href, product, position, children, classNa
 
   return (
     <Link
+      {...attributes}
       href={target}
       className={className}
       data-position={position}

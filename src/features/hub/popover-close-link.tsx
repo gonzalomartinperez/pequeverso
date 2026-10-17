@@ -1,20 +1,20 @@
 "use client";
 
-import type { AnchorHTMLAttributes } from "react";
+import type { ComponentProps } from "react";
+import { HubProductLink } from "./hub-product-link";
 
-type Props = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "onClick" | "onBlur" | "href"> & { href: string };
+type Props = Omit<ComponentProps<typeof HubProductLink>, "onBlur" | "onClickCapture">;
 
 /**
- * Plain link that closes the popover it sits in. A real `<a href>` (works before hydration and in
- * in-app browsers); the click only adds `hidePopover()`, so a same-page anchor (`/#leer` on the
- * home) scrolls with the panel already gone. When focus leaves the panel, the panel closes.
+ * Product selection that closes its popover. A real `<a href>` works before hydration and in
+ * in-app browsers. Capture only adds `hidePopover()`, without cancelling navigation or adding
+ * another commerce event. When focus leaves the panel, the panel closes.
  */
-export function PopoverCloseLink({ href, ...props }: Props) {
+export function PopoverCloseLink(props: Props) {
   return (
-    <a
+    <HubProductLink
       {...props}
-      href={href}
-      onClick={(event) => {
+      onClickCapture={(event) => {
         const panel = event.currentTarget.closest<HTMLElement>("[popover]");
         if (panel?.matches(":popover-open")) panel.hidePopover();
       }}

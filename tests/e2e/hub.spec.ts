@@ -1,3 +1,4 @@
+import { createServer } from "node:http";
 import { expect, test } from "./fixtures";
 
 /**
@@ -6,14 +7,14 @@ import { expect, test } from "./fixtures";
  * bar with the affiliate disclosure.
  */
 
-test("both doors are inside the first viewport, the same size, and lead to stable anchors", async ({
+test("both doors are inside the first viewport, the same size, and select each product destination directly", async ({
   page,
 }) => {
   await page.goto("/");
   const doors = page.locator("a[data-door]");
   await expect(doors).toHaveCount(2);
-  await expect(doors.nth(0)).toHaveAttribute("href", "#leer");
-  await expect(doors.nth(1)).toHaveAttribute("href", "#bebe");
+  await expect(doors.nth(0)).toHaveAttribute("href", "/grafismo-fonetico/");
+  await expect(doors.nth(1)).toHaveAttribute("href", "/alimentacion-bebe/?src=sitio-home");
   const viewport = page.viewportSize();
   const boxes = await Promise.all([doors.nth(0).boundingBox(), doors.nth(1).boundingBox()]);
   for (const box of boxes) {
@@ -68,17 +69,18 @@ test("header «Productos» opens a menu with both needs and closes on Escape", a
   await expect(panel).toBeVisible();
   const cards = panel.getByRole("link");
   await expect(cards).toHaveCount(2);
-  await expect(cards.nth(0)).toHaveAttribute("href", "/#leer");
-  await expect(cards.nth(1)).toHaveAttribute("href", "/#bebe");
+  await expect(cards.nth(0)).toHaveAttribute("href", "/grafismo-fonetico/");
+  await expect(cards.nth(1)).toHaveAttribute("href", "/alimentacion-bebe/?src=sitio-home");
   await expect(cards.nth(1)).toContainText("Recomendado");
   await expect(cards.nth(1)).toContainText("Enlace de afiliado");
   await page.keyboard.press("Escape");
   await expect(panel).toBeHidden();
-  // Choosing a card closes the panel and lands on the chapter.
+  // Prevent real affiliate navigation while exercising its click and panel dismissal.
   await trigger.click();
+  await cards.nth(1).evaluate((link) => link.addEventListener("click", (event) => event.preventDefault()));
   await cards.nth(1).click();
   await expect(panel).toBeHidden();
-  await expect(page).toHaveURL(/#bebe$/);
+  await expect(page).toHaveURL(/\/$/);
 });
 
 test("the header menu is on the hub pages but never on the purchase or post-purchase pages", async ({
@@ -118,8 +120,15 @@ test("phone sticky bar follows the chapter in view and keeps the disclosure next
 test("an anchor jump keeps the header visible and lands the chapter right under it", async ({ page }) => {
   await page.goto("/");
   await page.waitForLoadState("networkidle");
-  await page.locator('a[data-door="feeding"]').click();
-  await expect(page).toHaveURL(/#bebe$/);
+  // Existing informational navigation still jumps with the header visible. Product selection does not scroll.
+  const trigger = page.locator('[data-slot="mobile-nav-trigger"]');
+  if (await trigger.isVisible()) {
+    await trigger.click();
+    await page.getByRole("dialog").getByRole("link", { name: "Preguntas", exact: true }).click();
+  } else {
+    await page.locator('header a[href="#preguntas"]').click();
+  }
+  await expect(page).toHaveURL(/#preguntas$/);
   const header = page.locator('[data-slot="header"]');
   await expect(header).not.toHaveAttribute("data-hidden", "");
   await expect
@@ -127,7 +136,7 @@ test("an anchor jump keeps the header visible and lands the chapter right under 
       page.evaluate(() => {
         // Gap between the visible header and the chapter's first visible content.
         const pill = document.querySelector('[data-slot="header-pill"]')?.getBoundingClientRect();
-        const tops = [...document.querySelectorAll<HTMLElement>("#bebe [data-reveal], #bebe h2")]
+        const tops = [...document.querySelectorAll<HTMLElement>("#preguntas [data-reveal], #preguntas h2")]
           .map((el) => el.getBoundingClientRect())
           .filter((rect) => rect.height > 0)
           .map((rect) => rect.top);
@@ -146,7 +155,11 @@ test("purchase and post-purchase footers keep the single-product column", async 
     await expect(footer.locator('a[href="/grafismo-fonetico/#preguntas"]'), route).toHaveCount(1);
   }
   await page.goto("/");
-  await expect(page.getByRole("contentinfo").locator('a[href="/#bebe"]')).toHaveCount(1);
+  const course = page.getByRole("contentinfo").locator("a[data-affiliate]");
+  await expect(course).toHaveAttribute("href", "/alimentacion-bebe/?src=sitio-home");
+  await expect(course).toHaveAttribute("target", "_blank");
+  await expect(course).toHaveAttribute("rel", "sponsored noopener");
+  await expect(page.getByRole("contentinfo")).toContainText("Enlace de afiliado");
 });
 
 test("Tab past the last menu card closes the products panel", async ({ page }) => {
@@ -159,4 +172,146 @@ test("Tab past the last menu card closes the products panel", async ({ page }) =
   await panel.getByRole("link").last().focus();
   await page.keyboard.press("Tab");
   await expect(panel).toBeHidden();
+});
+
+test("direct selection preserves acquisition, announces the affiliate and emits one existing event", async ({
+  page,
+}) => {
+  await page.goto("/?utm_source=home-regression&off=EVIL&ref=EVIL");
+  const kit = page.locator('a[data-door="reading"]');
+  const course = page.locator('a[data-door="feeding"]');
+  await expect(kit).toHaveAttribute("href", "/grafismo-fonetico/?utm_source=home-regression");
+  await expect(course).toHaveAttribute("href", "/alimentacion-bebe/?src=sitio-home");
+  await expect(course).toHaveAttribute("target", "_blank");
+  await expect(course).toHaveAttribute("rel", "sponsored noopener");
+  await expect(course).toContainText("se abre en una pestaña nueva");
+  await expect(course.locator("svg.lucide-external-link:visible")).toHaveCount(1);
+  await expect(page.locator("a a, a button")).toHaveCount(0);
+  await kit.evaluate((link) => link.addEventListener("click", (event) => event.preventDefault()));
+  await course.evaluate((link) => link.addEventListener("click", (event) => event.preventDefault()));
+  await kit.click();
+  await course.click();
+  const events = await page.evaluate(
+    () => (window as unknown as { dataLayer?: { event: string }[] }).dataLayer ?? [],
+  );
+  expect(events.filter(({ event }) => event === "PequeversoProductInterest")).toHaveLength(1);
+  expect(events.filter(({ event }) => event === "PequeversoAffiliateClick")).toHaveLength(1);
+  expect(
+    events.filter(({ event }) => ["CheckoutIntent", "InitiateCheckout", "Purchase"].includes(event)),
+  ).toHaveLength(0);
+});
+
+test("mobile product selections go directly to the destinations and close the sheet", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.locator('[data-slot="mobile-nav-trigger"]').click();
+  const menu = page.getByRole("dialog").getByRole("navigation", { name: "Productos", exact: true });
+  const links = menu.getByRole("link");
+  await expect(links.nth(0)).toHaveAttribute("href", "/grafismo-fonetico/");
+  await expect(links.nth(1)).toHaveAttribute("href", "/alimentacion-bebe/?src=sitio-home");
+  await expect(links.nth(1)).toHaveAttribute("rel", "sponsored noopener");
+  await expect(links.nth(1)).toContainText("Enlace de afiliado");
+  await links.nth(1).evaluate((link) => link.addEventListener("click", (event) => event.preventDefault()));
+  await links.nth(1).click();
+  await expect(page.getByRole("dialog")).toBeHidden();
+});
+
+test("the kit door opens our landing, keeping acquisition and excluding offer overrides", async ({
+  page,
+}) => {
+  await page.goto("/?utm_source=home-route&off=EVIL&ref=EVIL");
+  const kit = page.locator('a[data-door="reading"]');
+  await expect(kit).toHaveAttribute("href", "/grafismo-fonetico/?utm_source=home-route");
+  await kit.click();
+  await expect(page).toHaveURL(/\/grafismo-fonetico\/\?utm_source=home-route$/);
+  await expect(page.locator("main a[data-checkout]").first()).toBeVisible();
+});
+
+test("404 offers the existing affiliate redirect with a disclosure instead of a chapter detour", async ({
+  page,
+}) => {
+  await page.goto("/pagina-inexistente-para-prueba/");
+  const course = page.locator("main a[data-affiliate]");
+  await expect(course).toHaveAttribute("href", "/alimentacion-bebe/?src=sitio-home");
+  await expect(course).toHaveAttribute("target", "_blank");
+  await expect(course).toHaveAttribute("rel", "sponsored noopener");
+  await expect(page.locator("#not-found-affiliate")).toBeVisible();
+  await expect(page.locator("main a[href='/#bebe']")).toHaveCount(0);
+});
+
+test("the course selection opens the redirect path in a separate tab without contacting a merchant", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/");
+  const destination = new URL("/__merchant-fixture/", page.url());
+  const received: string[] = [];
+  // WebKit cannot route.fulfill a 302. Send a real HTTP redirect from a private loopback
+  // server instead; no configured merchant URL or checkout is ever requested.
+  const redirect = createServer((request, response) => {
+    received.push(request.url ?? "");
+    response.writeHead(302, { Location: destination.href });
+    response.end();
+  });
+  await new Promise<void>((resolve) => redirect.listen(0, "127.0.0.1", resolve));
+  try {
+    const address = redirect.address();
+    if (!address || typeof address === "string") throw new Error("Missing isolated redirect port");
+    await context.route("**/alimentacion-bebe/?src=sitio-home", (route) =>
+      route.continue({ url: `http://127.0.0.1:${address.port}/alimentacion-bebe/?src=sitio-home` }),
+    );
+    await context.route("**/__merchant-fixture/", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "text/html",
+        body: "<title>Destino aislado</title><p>Redirección simulada</p>",
+      }),
+    );
+    const popupPromise = page.waitForEvent("popup");
+    await page.locator('a[data-door="feeding"]').click();
+    const popup = await popupPromise;
+    await expect(popup).toHaveURL(destination.href);
+    expect(received).toEqual(["/alimentacion-bebe/?src=sitio-home"]);
+    await expect(page).toHaveURL(/\/$/);
+    await popup.close();
+  } finally {
+    await new Promise<void>((resolve, reject) =>
+      redirect.close((error) => (error ? reject(error) : resolve())),
+    );
+  }
+});
+
+test("enlarged text keeps both product menus free of clipped selections", async ({ page }) => {
+  test.setTimeout(60_000);
+  for (const width of [320, 390]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("/");
+    await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+    for (const mode of ["popover", "sheet"]) {
+      await page
+        .locator(mode === "popover" ? "header [data-products-trigger]" : '[data-slot="mobile-nav-trigger"]')
+        .click();
+      const menu =
+        mode === "popover"
+          ? page.locator("#pv-productos")
+          : page.getByRole("dialog").getByRole("navigation", { name: "Productos", exact: true });
+      await expect(menu).toBeVisible();
+      const links = menu.getByRole("link");
+      await expect(links).toHaveCount(2);
+      for (const link of await links.all()) {
+        await link.focus();
+        expect(
+          await link.evaluate((element) => element.scrollWidth <= element.clientWidth + 1),
+          `${mode} @${width}: selection text must fit`,
+        ).toBe(true);
+      }
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth === document.documentElement.clientWidth,
+        ),
+      ).toBe(true);
+      await page.keyboard.press("Escape");
+      await expect(menu).toBeHidden();
+    }
+  }
 });
