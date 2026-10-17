@@ -80,7 +80,9 @@ test("captures the local assistant preview", async ({ page, context }, info) => 
     .evaluate((element) => {
       element.scrollTop = 0;
     });
-  await expect(panel.getByText("¿Cómo funciona la garantía de Grafismo Fonético?", { exact: true })).toBeInViewport();
+  await expect(
+    panel.getByText("¿Cómo funciona la garantía de Grafismo Fonético?", { exact: true }),
+  ).toBeInViewport();
   await expect(answer.locator("p").first()).toBeInViewport();
   await expect(sources.locator("summary")).toBeInViewport();
   await expect(sources.getByRole("link").first()).toBeInViewport();
