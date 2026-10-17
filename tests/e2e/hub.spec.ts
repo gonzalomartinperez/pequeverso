@@ -237,3 +237,30 @@ test("404 offers the existing affiliate redirect with a disclosure instead of a 
   await expect(page.locator("#not-found-affiliate")).toBeVisible();
   await expect(page.locator("main a[href='/#bebe']")).toHaveCount(0);
 });
+
+test("the course selection opens the redirect path in a separate tab without contacting a merchant", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/");
+  const destination = new URL("/__merchant-fixture/", page.url());
+  let redirectRequests = 0;
+  await context.route("**/alimentacion-bebe/?src=sitio-home", async (route) => {
+    redirectRequests += 1;
+    await route.fulfill({ status: 302, headers: { location: destination.href } });
+  });
+  await context.route("**/__merchant-fixture/", (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "text/html",
+      body: "<title>Destino aislado</title><p>Redirección simulada</p>",
+    }),
+  );
+  const popupPromise = page.waitForEvent("popup");
+  await page.locator('a[data-door="feeding"]').click();
+  const popup = await popupPromise;
+  await expect(popup).toHaveURL(destination.href);
+  expect(redirectRequests).toBe(1);
+  await expect(page).toHaveURL(/\/$/);
+  await popup.close();
+});

@@ -30,42 +30,43 @@ export function HubSticky() {
   return (
     <HubStickyBar
       doors={
-        <ul className="grid grid-cols-2 gap-[min(0.5rem,8px)] @max-[12rem]:grid-cols-1" role="list">
-          {[reading, feeding].map((need) => (
-            <li key={need.key} className="min-w-0">
-              <HubProductLink
-                need={need}
-                position="sticky"
-                className={`${HUB_CARD_LINK} flex h-full min-h-12 items-center gap-2 rounded-[1.5rem] bg-navy px-3 py-1.5 text-white no-underline transition-colors hover:bg-navy-deep hover:text-gold @max-[25rem]:px-2.5`}
-              >
-                <Icon
-                  name={NEED_TONE[need.key].icon}
-                  size={18}
-                  strokeWidth={2.4}
-                  className="shrink-0 text-gold @max-[25rem]:hidden"
-                />
-                <span className="grid min-w-0 leading-tight">
-                  <span className="text-small leading-tight font-extrabold @max-[25rem]:text-tiny">
-                    {need.need}
-                    {need.recommended ? (
-                      <ExternalLink
-                        aria-hidden="true"
-                        focusable="false"
-                        className="ml-1 inline size-3.5 align-baseline"
-                      />
-                    ) : null}
-                  </span>
-                  <span className="text-tiny leading-tight text-white/80">{need.stage}</span>
-                  {need.recommended ? (
-                    <span className="text-tiny leading-tight text-white/80">
-                      {hubCopy.feeding.disclosure}
+        <div className="grid gap-2">
+          <ul className="grid grid-cols-2 gap-[min(0.5rem,8px)] @max-[12rem]:grid-cols-1" role="list">
+            {[reading, feeding].map((need) => (
+              <li key={need.key} className="min-w-0">
+                <HubProductLink
+                  need={need}
+                  position="sticky"
+                  aria-describedby={need.recommended ? "hub-sticky-affiliate-note" : undefined}
+                  className={`${HUB_CARD_LINK} flex h-full min-h-12 items-center gap-2 rounded-[1.5rem] bg-navy px-3 py-1.5 text-white no-underline transition-colors hover:bg-navy-deep hover:text-gold @max-[25rem]:px-2.5`}
+                >
+                  <Icon
+                    name={NEED_TONE[need.key].icon}
+                    size={18}
+                    strokeWidth={2.4}
+                    className="shrink-0 text-gold @max-[25rem]:hidden"
+                  />
+                  <span className="grid min-w-0 leading-tight">
+                    <span className="text-small leading-tight font-extrabold @max-[25rem]:text-tiny">
+                      {need.need}
+                      {need.recommended ? (
+                        <ExternalLink
+                          aria-hidden="true"
+                          focusable="false"
+                          className="ml-1 inline size-3.5 align-baseline"
+                        />
+                      ) : null}
                     </span>
-                  ) : null}
-                </span>
-              </HubProductLink>
-            </li>
-          ))}
-        </ul>
+                    <span className="text-tiny leading-tight text-white/80">{need.stage}</span>
+                  </span>
+                </HubProductLink>
+              </li>
+            ))}
+          </ul>
+          <p id="hub-sticky-affiliate-note" className="text-tiny text-pretty text-body">
+            {hubCopy.feeding.disclosure}
+          </p>
+        </div>
       }
       reading={
         <Row
