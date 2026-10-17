@@ -22,7 +22,9 @@ test("affiliate course has its own card, disclosure and safe action, and survive
   page.on("request", (request) => {
     if (request.method() === "POST" && request.url() === `${API}/api/v1/messages`) generations++;
   });
-  await page.goto("/");
+  // Match the existing suite: software WebKit exercises this same runtime on /soporte/,
+  // where decorative Home rendering does not starve its actionability checks.
+  await page.goto(info.project.name.startsWith("webkit") ? "/soporte/" : "/");
   await page.getByTestId("assistant-launcher").click();
   const panel = page.getByTestId("assistant-panel");
   await expect(panel).toHaveAttribute("data-phase", "ready");
@@ -53,7 +55,9 @@ test("affiliate course has its own card, disclosure and safe action, and survive
 });
 
 test("comparison distinguishes course, printable kit and unknown affiliate price", async ({ page }, info) => {
-  await page.goto("/");
+  // Match the existing suite: software WebKit exercises this same runtime on /soporte/,
+  // where decorative Home rendering does not starve its actionability checks.
+  await page.goto(info.project.name.startsWith("webkit") ? "/soporte/" : "/");
   await page.getByTestId("assistant-launcher").click();
   const panel = page.getByTestId("assistant-panel");
   await expect(panel).toHaveAttribute("data-phase", "ready");
