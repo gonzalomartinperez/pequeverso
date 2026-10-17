@@ -1,3 +1,4 @@
+import { createServer } from "node:http";
 import { expect, test } from "./fixtures";
 
 /**
@@ -244,23 +245,38 @@ test("the course selection opens the redirect path in a separate tab without con
 }) => {
   await page.goto("/");
   const destination = new URL("/__merchant-fixture/", page.url());
-  let redirectRequests = 0;
-  await context.route("**/alimentacion-bebe/?src=sitio-home", async (route) => {
-    redirectRequests += 1;
-    await route.fulfill({ status: 302, headers: { location: destination.href } });
+  const received: string[] = [];
+  // WebKit cannot route.fulfill a 302. Send a real HTTP redirect from a private loopback
+  // server instead; no configured merchant URL or checkout is ever requested.
+  const redirect = createServer((request, response) => {
+    received.push(request.url ?? "");
+    response.writeHead(302, { Location: destination.href });
+    response.end();
   });
-  await context.route("**/__merchant-fixture/", (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: "text/html",
-      body: "<title>Destino aislado</title><p>Redirección simulada</p>",
-    }),
-  );
-  const popupPromise = page.waitForEvent("popup");
-  await page.locator('a[data-door="feeding"]').click();
-  const popup = await popupPromise;
-  await expect(popup).toHaveURL(destination.href);
-  expect(redirectRequests).toBe(1);
-  await expect(page).toHaveURL(/\/$/);
-  await popup.close();
+  await new Promise<void>((resolve) => redirect.listen(0, "127.0.0.1", resolve));
+  try {
+    const address = redirect.address();
+    if (!address || typeof address === "string") throw new Error("Missing isolated redirect port");
+    await context.route("**/alimentacion-bebe/?src=sitio-home", (route) =>
+      route.continue({ url: `http://127.0.0.1:${address.port}/alimentacion-bebe/?src=sitio-home` }),
+    );
+    await context.route("**/__merchant-fixture/", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "text/html",
+        body: "<title>Destino aislado</title><p>Redirección simulada</p>",
+      }),
+    );
+    const popupPromise = page.waitForEvent("popup");
+    await page.locator('a[data-door="feeding"]').click();
+    const popup = await popupPromise;
+    await expect(popup).toHaveURL(destination.href);
+    expect(received).toEqual(["/alimentacion-bebe/?src=sitio-home"]);
+    await expect(page).toHaveURL(/\/$/);
+    await popup.close();
+  } finally {
+    await new Promise<void>((resolve, reject) =>
+      redirect.close((error) => (error ? reject(error) : resolve())),
+    );
+  }
 });
