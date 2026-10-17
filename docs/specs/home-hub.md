@@ -82,7 +82,10 @@ not measured evidence of higher conversion.
      and the commission disclosure. The landing, offer and thank-you pages
      keep the single-product «Producto» column exactly as before (funnel pages unchanged).
    - *404:* its body links to the configured course redirect next to the kit landing, with disclosure.
-4. **Contextual sticky bar (home, below lg).** It shows the two doors before a chapter, the kit
+4. **Contextual sticky bar (home, below lg).** Before a chapter it shows two compact direct
+   actions («Ver el kit», «Ver la guía») with canonical accessible names and the complete short
+   affiliate disclosure adjacent across the available width. It does not repeat the stages from
+   the hero, so enlarged text leaves the page readable. It shows the kit
    with its price and link inside `#leer`, and the course with the short disclosure («Enlace de
    afiliado: si compras, Pequeverso recibe una comisión; a ti no te cuesta más.») and its link inside
    `#bebe`. The bar is opaque white with body-colour text (≥ 4.5:1 over any band). It is hidden over

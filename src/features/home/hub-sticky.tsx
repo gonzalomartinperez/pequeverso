@@ -4,7 +4,6 @@ import { homeCopy as copy } from "@content/es/home";
 import { hubCopy } from "@content/es/hub";
 import { ExternalLink } from "lucide-react";
 import type { ReactNode } from "react";
-import { Icon } from "@/components/blocks/icon";
 import { MediaImage } from "@/components/blocks/media-image";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { AffiliateLink } from "@/features/commerce/AffiliateLink/AffiliateLink";
@@ -31,33 +30,26 @@ export function HubSticky() {
     <HubStickyBar
       doors={
         <div className="grid gap-2">
-          <ul className="grid grid-cols-2 gap-[min(0.5rem,8px)] @max-[12rem]:grid-cols-1" role="list">
+          <ul className="grid grid-cols-2 gap-[min(0.5rem,8px)]" role="list">
             {[reading, feeding].map((need) => (
               <li key={need.key} className="min-w-0">
                 <HubProductLink
                   need={need}
                   position="sticky"
                   aria-describedby={need.recommended ? "hub-sticky-affiliate-note" : undefined}
-                  className={`${HUB_CARD_LINK} flex h-full min-h-12 items-center gap-2 rounded-[1.5rem] bg-navy px-3 py-1.5 text-white no-underline transition-colors hover:bg-navy-deep hover:text-gold @max-[25rem]:px-2.5`}
+                  className={`${HUB_CARD_LINK} flex h-full min-h-12 items-center justify-center rounded-[1.5rem] bg-navy px-[min(0.75rem,12px)] py-1.5 text-white no-underline transition-colors hover:bg-navy-deep hover:text-gold`}
                 >
-                  <Icon
-                    name={NEED_TONE[need.key].icon}
-                    size={18}
-                    strokeWidth={2.4}
-                    className="shrink-0 text-gold @max-[25rem]:hidden"
-                  />
-                  <span className="grid min-w-0 leading-tight">
-                    <span className="text-small leading-tight font-extrabold @max-[25rem]:text-tiny">
-                      {need.need}
-                      {need.recommended ? (
-                        <ExternalLink
-                          aria-hidden="true"
-                          focusable="false"
-                          className="ml-1 inline size-3.5 align-baseline"
-                        />
-                      ) : null}
-                    </span>
-                    <span className="text-tiny leading-tight text-white/80">{need.stage}</span>
+                  <span className="sr-only">{need.name}: </span>
+                  <span className="min-w-0 text-center text-small leading-tight font-extrabold">
+                    {need.go}
+                    {need.recommended ? (
+                      <ExternalLink
+                        aria-hidden="true"
+                        focusable="false"
+                        size={14}
+                        className="ml-1 inline align-baseline"
+                      />
+                    ) : null}
                   </span>
                 </HubProductLink>
               </li>

@@ -115,7 +115,7 @@ function DoorAction({ children, external }: { children: ReactNode; external: boo
       data-door-action=""
       className="mt-auto inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-pill bg-navy px-3 text-small font-extrabold text-white shadow-[0_14px_28px_-14px_oklch(0.3175_0.1094_256.25/70%)] transition-colors duration-(--duration) group-hover/door:bg-navy-deep group-hover/door:text-gold cq-sm:px-5 cq-sm:text-base"
     >
-      {children}
+      <span>{children}</span>
       <Direction
         aria-hidden="true"
         focusable="false"
