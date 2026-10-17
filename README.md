@@ -17,10 +17,12 @@ Printable learning resources and curated courses for families: Grafismo Fonétic
 
 ## Architecture at a glance
 
+<p align="center">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/architecture/system-dark.svg">
-  <img src="docs/architecture/system-light.svg" alt="Pequeverso architecture: the kit opens its own landing; the affiliate course redirects to the producer. The native assistant is disabled, and vps-ops owns future infrastructure.">
+  <img src="docs/architecture/system-light.svg" alt="Pequeverso architecture: the kit opens its own landing; the affiliate course uses its configured Hotmart destination. The native assistant is disabled, and vps-ops owns future infrastructure.">
 </picture>
+</p>
 
 [Open full-size diagram](docs/architecture/system-light.svg) ·
 [Dark version](docs/architecture/system-dark.svg) ·
