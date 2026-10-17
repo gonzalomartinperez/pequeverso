@@ -17,18 +17,19 @@ Printable learning resources and curated courses for families: Grafismo Fonétic
 
 ## Architecture at a glance
 
-```mermaid
-flowchart LR
-  Visitor[Visitor] --> Store[Pequeverso store]
-  Registry[Typed product registry] --> Build[Next.js build]
-  Build --> Store
-  Store -->|Explicit checkout action| Hotmart[Hotmart payment and delivery]
-  Store -.->|Only after separate activation| Native[Lazy native assistant]
-  Native -->|Session and HTTP/SSE /api/v1| API[Separate assistant API]
-  Backoffice[Private backoffice] -->|Authorized administration| API
-  Ops[vps-ops] -.->|Future deployment and proxy| API
-  Ops -.-> Backoffice
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/architecture/system-dark.svg">
+  <img src="docs/architecture/system-light.svg" alt="Pequeverso architecture: the kit opens its own landing; the affiliate course redirects to the producer. The native assistant is disabled, and vps-ops owns future infrastructure.">
+</picture>
+
+[Open full-size diagram](docs/architecture/system-light.svg) ·
+[Dark version](docs/architecture/system-dark.svg) ·
+[Editable Mermaid and provenance](docs/architecture/README.md).
+
+From Home, **Grafismo Fonético opens `/grafismo-fonetico/`**; the affiliate guide uses the
+existing **`/alimentacion-bebe/` redirect to its producer**. Product selection adds no intermediate
+landing or required in-page step. Hotmart owns payment, delivery and refunds. Dashed assistant
+and infrastructure paths describe integration responsibilities, not a running VPS deployment.
 
 The store presents **Grafismo Fonético** and the affiliate **Guía de Alimentación para Bebés**, with their respective format, audience and ownership clearly identified. The optional **Pack Imprime y Juega** remains a post-purchase offer. Product facts come from the [typed registry](src/products), [affiliate registry](config/affiliates.ts) and [commerce configuration](config/commerce.ts); copy never invents prices, guarantees or benefits. Offer pages embed the Hotmart sales-funnel widget; a thank-you URL is not proof of payment and exposes no product files.
 
