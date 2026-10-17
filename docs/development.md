@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Node 24 (`.nvmrc`; `engines` allows 22.18+, the first release that runs `.ts` files without a flag). `nvm use` on macOS/Linux, `nvm use $(cat .nvmrc)` on Windows nvm.
+- Node 24.22.0 LTS (`.nvmrc`; `engines` allows 22.18+, the first release that runs `.ts` files without a flag). `nvm use` on macOS/Linux, `nvm use $(cat .nvmrc)` on Windows nvm.
 - npm bundled with Node. `.npmrc` enforces exact versions, engine checks and **no lifecycle scripts**.
 - No system ffmpeg/ImageMagick needed: media outputs are committed; the pipeline in `tools/media` is
   optional and has its own `package.json` (it allows install scripts for `ffmpeg-static`).
@@ -51,6 +51,19 @@ With the optional variables empty no pixel is injected and the Conversions API r
 
 ## Playwright locally
 
+The locked test runner is Playwright **1.64.1** (Chromium, Firefox and WebKit);
+install browsers through this checkout's CLI after `npm ci`. Device descriptors now
+propagate their screen size in Playwright 1.64; the existing viewport/device and
+accessibility assertions remain authoritative. A browser upgrade does not authorize
+automatic screenshot replacement or changed comparison thresholds.
+
+For concurrent worktrees on a shared workstation, use a task-owned
+`PLAYWRIGHT_BROWSERS_PATH` consistently for installation and execution, or set
+`PLAYWRIGHT_SKIP_BROWSER_GC=1` when installing. Never uninstall another task's
+browsers. CI's browser cache is keyed by the locked Playwright version, so the
+first run after this update is a cold cache. See the official
+[browser management guide](https://playwright.dev/docs/browsers#stale-browser-removal).
+
 ```bash
 npm run build
 npx playwright install --with-deps chromium firefox webkit
@@ -60,4 +73,5 @@ npm run test:e2e -- tests/e2e/text-zoom.spec.ts --project=chromium-390 --project
 
 Projects: `chromium-1440`, `chromium-768`, `chromium-390`, `reduced-motion`, plus targeted text-zoom
 `firefox-390` and `webkit-390` (PR set);
-`nightly-chromium-<w>` / `nightly-webkit-<w>` for 1440/1280/1024/768/430/390/360; `nightly-*` visual snapshots.
+`PW_SET=nightly` uses `chromium-<w>` / `webkit-<w>` at 1440/1280/1024/768/430/390/360;
+`PW_SET=visual` uses `visual-chromium-390` / `visual-chromium-1440` for reference comparisons.
