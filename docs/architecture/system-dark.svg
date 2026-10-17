@@ -19,17 +19,11 @@
 <text x="553" y="334" fill="#bdcbd9" font-family="Arial, sans-serif" font-size="16" font-weight="400">/alimentacion-bebe/</text>
 <polyline points="269,358 269,408" fill="none" stroke="#9aafc2" stroke-width="2" marker-end="url(#arrow)"/>
 <polyline points="770,358 770,408" fill="none" stroke="#9aafc2" stroke-width="2" marker-end="url(#arrow)"/>
-<rect x="32" y="408" width="475" height="112" rx="16" fill="#172a40" stroke="#486078"/>
+<rect x="32" y="408" width="976" height="112" rx="16" fill="#172a40" stroke="#486078"/>
 <rect x="48" y="425" width="4" height="23" rx="2" fill="#81d2c2"/>
-<text x="62" y="443" fill="#f4f0e9" font-family="Arial, sans-serif" font-size="20" font-weight="700">Hotmart · external checkout</text>
-<text x="52" y="472" fill="#bdcbd9" font-family="Arial, sans-serif" font-size="16" font-weight="400">Visitor explicitly chooses to purchase</text>
-<text x="52" y="496" fill="#bdcbd9" font-family="Arial, sans-serif" font-size="16" font-weight="400">Payment, delivery and refunds</text>
-<rect x="533" y="408" width="475" height="112" rx="16" fill="#172a40" stroke="#486078"/>
-<rect x="549" y="425" width="4" height="23" rx="2" fill="#81d2c2"/>
-<text x="563" y="443" fill="#f4f0e9" font-family="Arial, sans-serif" font-size="20" font-weight="700">Producer’s sales page</text>
-<text x="553" y="472" fill="#bdcbd9" font-family="Arial, sans-serif" font-size="16" font-weight="400">External affiliate destination</text>
-<text x="553" y="496" fill="#bdcbd9" font-family="Arial, sans-serif" font-size="16" font-weight="400">Visitor may continue to checkout</text>
-<polyline points="533,466 508,466" fill="none" stroke="#9aafc2" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="62" y="443" fill="#f4f0e9" font-family="Arial, sans-serif" font-size="20" font-weight="700">Hotmart · external commerce</text>
+<text x="52" y="472" fill="#bdcbd9" font-family="Arial, sans-serif" font-size="16" font-weight="400">Configured affiliate hotlink: checkout or the producer’s sales page</text>
+<text x="52" y="496" fill="#bdcbd9" font-family="Arial, sans-serif" font-size="16" font-weight="400">Visitor chooses to purchase; Hotmart owns payment, delivery and refunds</text>
 <polyline points="1008,154 1024,154 1024,636 1008,636" fill="none" stroke="#9aafc2" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
 <rect x="32" y="578" width="976" height="116" rx="16" fill="#172a40" stroke="#486078"/>
 <rect x="48" y="595" width="4" height="23" rx="2" fill="#ffb6a6"/>

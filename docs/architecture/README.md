@@ -7,9 +7,11 @@ relationships and can be edited independently; they do not generate the same pix
 
 The public Home keeps two product paths distinct: Grafismo Fonético opens the store’s own
 `/grafismo-fonetico/` landing; the affiliate course follows the existing `/alimentacion-bebe/`
-redirect to the external producer’s sales page. Checkout, delivery and refunds belong to Hotmart.
+redirect to its configured Hotmart affiliate destination (checkout or the producer’s sales page).
+There is no course landing hosted by Pequeverso. Payment, delivery and refunds belong to Hotmart.
 The native assistant remains OFF: no launcher, runtime chunk or assistant API traffic is emitted.
-Future API deployment, HTTPS and proxy configuration belong to vps-ops.
+Future API deployment, HTTPS and proxy configuration belong to vps-ops. Route semantics come
+from the [affiliate redirect contract](../affiliates.md) and [Home hub spec](../specs/home-hub.md).
 
 Solid arrows identify explicit visitor paths or guarded application/storage access. Dashed arrows
 identify disabled or optional integration; the labels distinguish them. A dashed box marks

@@ -10,15 +10,15 @@
     "network_requests": 0
   },
   "review": {
-    "implementing_agent": "Inspected both themes at README896 and mobile390; native previews also reviewed by coordinating agent. No clipping or overlap observed. Narrow readers use prose/alt/full-size links.",
-    "independent_visual_peer": "Coordinating agent approved all four native SVG previews; final source/docs peer pending",
+    "agent_inspection": "README896px and mobile390px previews inspected. Native1040px exported for independent review; narrow readers use adjacent prose, alt text and full-size links.",
+    "independent_review": "Evidence accompanies the PR; no human review is asserted.",
     "human_review_claimed": false
   },
   "sha256": {
-    "system-light.svg": "318f7da4f896c6fa57db91820de74fcfc71c90eb84af23f00a2462ed5f37dba2",
-    "system-dark.mmd": "5abf524fe9562b1aed8949b54bac3a0823f41c1e2d5b19527aee1f84f0f4c5c7",
-    "system-dark.svg": "b2c323e0a18e683871becbfb29b690add2e507395aa5d4d3f0673400b561077d",
-    "system-light.mmd": "5abf524fe9562b1aed8949b54bac3a0823f41c1e2d5b19527aee1f84f0f4c5c7"
+    "system-light.svg": "0fe3efa066c0135514ba879c14ae5f680bc5f383d09a5371ea20cc5031c76faf",
+    "system-dark.mmd": "6b38e53c28d0ccf6df01e3beddd7fbcee52ea0ffb1db611956a75e7be1ee4cf6",
+    "system-dark.svg": "4f9b1cb553263511fe51022a004a757424223f009099aed56745013588a77e35",
+    "system-light.mmd": "6b38e53c28d0ccf6df01e3beddd7fbcee52ea0ffb1db611956a75e7be1ee4cf6"
   },
   "contrast": {
     "light": {
