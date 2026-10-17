@@ -67,6 +67,21 @@ test("footer matches its baseline", async ({ page }) => {
   await page.evaluate(() => document.fonts.ready);
   await prepareHomeCapture(page);
   const footer = page.getByRole("contentinfo");
+  const viewport = page.viewportSize();
+  const bounds = await footer.boundingBox();
+  if (!viewport || !bounds) throw new Error("Missing footer capture dimensions");
+  // Element screenshots otherwise resize the viewport implicitly when the footer is taller.
+  // Prepare that same width and required height first, before checking layout stability.
+  const captureViewport = { ...viewport, height: Math.max(viewport.height, Math.ceil(bounds.height)) };
+  await page.setViewportSize(captureViewport);
+  test.info().annotations.push({
+    type: "footer-capture-dimensions",
+    description: JSON.stringify({
+      original: viewport,
+      capture: captureViewport,
+      footerHeight: bounds.height,
+    }),
+  });
   await footer.scrollIntoViewIfNeeded();
   await expect
     .poll(async () => {

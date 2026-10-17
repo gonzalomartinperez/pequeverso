@@ -157,7 +157,9 @@ wall, and the values bento. Retired media: `gf.life.logro`, `bebe.scene.mama` an
   overflowing sliver. Normal-size layouts retain their existing columns.
 - Home/footer visual captures explicitly materialize deferred sections and decode rendered images
   before comparison. Capture-only `content-visibility: visible` prevents blank off-screen bands;
-  production retains deferred rendering. Screenshot thresholds and other pages remain unchanged.
+  production retains deferred rendering. Footer-only captures explicitly prepare the height that
+  Playwright would otherwise add implicitly for a footer taller than the viewport; the width stays
+  unchanged. Functional/mobile/reflow viewports and screenshot thresholds remain unchanged.
 - Sticky bar modes and disclosure (`hub.spec.ts`). Affiliate link attributes, disclosure, lazy
   images and events (`commerce.spec.ts`). The home has no checkout link and no coral.
 - Hub link keeps acquisition params (`commerce.spec.ts`, `position="story"`).
