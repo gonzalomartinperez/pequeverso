@@ -21,8 +21,10 @@ The pinned engines are Chromium 156.0.8078.4, Firefox 157.0 and WebKit 27.2.
 
 ## Compatible producer pin
 
-The owner-reviewed API releases PR #73 (runtime cohort) and PR #76 (manual Dependabot
-profile) promoted final `ce17289b3e5b0be6f9235609c65b5b5f7c907df2` to main. The pin script copied its
+The owner-reviewed API releases PR #73 (runtime cohort), PR #76 (manual Dependabot
+profile) and PR #80 (reviewed action pin and architecture documentation) promoted
+`591a6f9079933b0f857759a54684a5a665763447` to main. Its post-main Quality run
+39067070256 passed all five required jobs; the history PR #81 has an identical tree. The pin script copied its
 committed contracts; all 19 artifact blobs are byte-identical to the previous
 `8ba99fe` producer, with manifest SHA256 unchanged. Only source.json and the fixture
 revision change. This does not change wire fields, assistant availability or the
