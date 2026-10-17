@@ -31,7 +31,7 @@ flowchart LR
 | Redirects/headers | `out/.htaccess` generated from `config/edge-rules.json` | `redirects()`/`headers()` from the same file |
 | Meta CAPI relay | `scripts/serve-static.ts` mounts `server/meta-capi.ts` (Node.js Web App only; the LiteSpeed mode has no relay) | `src/app/api/meta/events/route.standalone.ts`, compiled only when `output === "standalone"` (`pageExtensions` adds `standalone.ts`) |
 | Images | Build-time WebP derivatives (`tools/media`), `images.unoptimized` | same |
-| Status | Supported (Deploy workflow publishes `deploy`) | **Connected to `main` since 2026-10-13** (owner confirmed); Hostinger automatically builds and publishes merges. Post-deploy verification is enabled, but release acceptance remains blocked by the verification runner’s HTTP 403; new releases require that check to pass |
+| Status | Supported (Deploy workflow publishes `deploy`) | **Connected to `main` since 2026-10-13** (owner confirmed); Hostinger automatically builds and publishes merges. Post-deploy verification is enabled. On 2026-10-17 the owner confirmed the product page works in a browser; an earlier HEAD probe returned HTTP 403 and remains a probe-specific observation, not a diagnosed hosting outage. Each release still requires its own post-deploy verification |
 
 Rules that keep both targets valid: no `proxy.ts`/middleware, no `cookies()`/`headers()`/request-time
 APIs, no route handlers beyond `sitemap.ts`/`robots.ts`/metadata images (plus `*.standalone.ts`
@@ -182,3 +182,20 @@ provider, physical phone keyboard or production VPS cookies/CORS/proxy behavior.
 `scripts/build-info.ts` writes `public/build-info.json` (`sha`, `ref`, `builtAt`) served with
 `Cache-Control: no-store`; the deploy workflow compares it with the commit it built and runs
 `scripts/smoke.ts` before declaring success. See `docs/deployment.md`.
+
+
+### Enforced dependency contracts
+
+[Engineering standards](engineering-standards.md) document ownership, review and blocking CI rules.
+`npm run check:architecture` parses imports with Oxc, checks runtime cycles and follows client
+imports transitively through barrels and aliases. Assistant presentation receives a stable
+controller from `runtime.tsx`; only `entry.ts` constructs its HTTP adapter. Domain and application
+receive platform IO through ports, including cancellation deadlines and waits. Presentation uses
+application types only. Biome checks restricted globals semantically, including code after URL
+strings; negative fixtures exercise the actual rules.
+
+The exact `src/lib/cn-tables` module is a generated build artifact owned by `cn/next` in
+`config/next.ts`. Its declaration is tracked and its JavaScript is generated before Next builds.
+When present the checker parses its JavaScript; a clean checkout may omit it until generation.
+Other unresolved local imports in client graphs fail closed. These checks supplement behavior,
+strict typing and disabled-build verification; they do not prove production security.

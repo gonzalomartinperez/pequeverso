@@ -34,7 +34,7 @@ mechanical parts; the rest is review.
 | JSDoc on exported API | Concise JSDoc on exported symbols that are not obvious from their type; no narrative comments |
 | Classes for stateful objects | Closures and plain functions (the assistant controller is a closure-based external store); React components are functions |
 | Imports | `import type` for types; `.ts` extensions in files Node runs directly (`scripts/`, `server/`, unit tests); `@/` alias inside `src/` |
-| Formatting | Biome (2-space indent, 100 columns, double quotes), not clang-format |
+| Formatting | Biome (2-space indent, 110 columns, double quotes), not clang-format |
 
 ## Architecture boundaries
 
@@ -44,6 +44,12 @@ mechanical parts; the rest is review.
   assistant's boundaries are checked by `tests/unit/assistant/boundaries.test.ts`.
 - Business facts come from `config/` and `src/products`, never from component copy.
 - No new dependency for something the platform or an existing dependency already does.
+
+`npm run check:architecture` runs the same architecture contracts included in `npm test` and
+the required CI build. It parses imports as TypeScript syntax, resolves aliases and relative paths,
+rejects runtime cycles and checks the complete client import graph. Negative fixtures must prove
+that forbidden dependencies fail; a passing scan of the current tree alone is insufficient.
+See [engineering standards](docs/engineering-standards.md) for ownership, review and maintenance.
 
 ## Commits and pull requests
 

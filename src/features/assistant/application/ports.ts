@@ -40,4 +40,7 @@ export interface Runtime {
   /** Unique id usable as an Idempotency-Key (`^[A-Za-z0-9_-]{8,128}$`). */
   id(): string;
   now(): string;
+  /** Cancellation timing belongs to the runtime; tests can advance it deterministically. */
+  wait(milliseconds: number): Promise<void>;
+  timeout(milliseconds: number): AbortSignal;
 }

@@ -178,7 +178,7 @@ export function createAssistant(transport: AssistantTransport, runtime: Runtime,
 
   async function requestCancel(current: Generation) {
     if (!current.runId) return;
-    const timeout = AbortSignal.timeout(CANCEL_GRACE_MS);
+    const timeout = runtime.timeout(CANCEL_GRACE_MS);
     try {
       await transport.cancelRun(current.runId, AbortSignal.any([lifetime.signal, timeout]));
     } catch {
@@ -186,7 +186,7 @@ export function createAssistant(transport: AssistantTransport, runtime: Runtime,
     }
     // The stream normally ends with run.cancelled; stop waiting after the grace period.
     if (generation === current && !current.settled) {
-      await new Promise((resolve) => setTimeout(resolve, 250));
+      await runtime.wait(250);
       if (generation === current && !current.settled) current.controller.abort();
     }
   }

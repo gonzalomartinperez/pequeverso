@@ -25,7 +25,7 @@ type Props = {
   privacyPath: string;
 };
 
-const loadPanel = () => import("./presentation/panel");
+const loadPanel = () => import("./runtime").then(({ AssistantRuntime }) => ({ default: AssistantRuntime }));
 const Panel = lazy(loadPanel);
 
 function normalize(pathname: string | null): string {
