@@ -1,4 +1,5 @@
 import type { Page } from "@playwright/test";
+import { CONSENT_KEY, CONSENT_VERSION } from "../../src/features/tracking/consent";
 import { expect, test } from "./fixtures";
 
 /**
@@ -7,6 +8,19 @@ import { expect, test } from "./fixtures";
  * tests/e2e/__screenshots__. Reduced motion freezes every CSS animation, so only video is masked.
  */
 const MASKED = "video";
+
+// Visual references describe the page after an explicit rejection. Consent behavior has its
+// own suite; optional integration configuration must not open a dialog over these components.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(
+    ({ key, version }) =>
+      window.localStorage.setItem(
+        key,
+        JSON.stringify({ version, analytics: false, marketing: false, updatedAt: new Date().toISOString() }),
+      ),
+    { key: CONSENT_KEY, version: CONSENT_VERSION },
+  );
+});
 
 /** Materialize deferred Home sections and lazy media before comparing complete rendered content. */
 async function prepareHomeCapture(page: Page) {

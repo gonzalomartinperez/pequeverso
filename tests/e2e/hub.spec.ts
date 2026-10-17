@@ -205,7 +205,8 @@ test("mobile product selections go directly to the destinations and close the sh
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await page.locator('[data-slot="mobile-nav-trigger"]').click();
-  const menu = page.getByRole("dialog").getByRole("navigation", { name: "Productos", exact: true });
+  const sheet = page.getByRole("dialog", { name: "¿Qué necesitas hoy?", exact: true });
+  const menu = sheet.getByRole("navigation", { name: "Productos", exact: true });
   const links = menu.getByRole("link");
   await expect(links.nth(0)).toHaveAttribute("href", "/grafismo-fonetico/");
   await expect(links.nth(1)).toHaveAttribute("href", "/alimentacion-bebe/?src=sitio-home");
@@ -213,7 +214,7 @@ test("mobile product selections go directly to the destinations and close the sh
   await expect(links.nth(1)).toContainText("Enlace de afiliado");
   await links.nth(1).evaluate((link) => link.addEventListener("click", (event) => event.preventDefault()));
   await links.nth(1).click();
-  await expect(page.getByRole("dialog")).toBeHidden();
+  await expect(sheet).toBeHidden();
 });
 
 test("the kit door opens our landing, keeping acquisition and excluding offer overrides", async ({
