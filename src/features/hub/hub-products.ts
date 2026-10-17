@@ -1,4 +1,4 @@
-import { alimentacionBebe as course } from "@config/affiliates";
+import { affiliateHref, alimentacionBebe as course } from "@config/affiliates";
 import { hubCopy } from "@content/es/hub";
 import { featuredProduct } from "@/products";
 
@@ -7,8 +7,13 @@ const kit = featuredProduct();
 /** One need the hub answers, with everything a chooser (door, menu card, sticky pill) shows. */
 export type HubNeed = {
   key: "reading" | "feeding";
-  /** Stable in-page anchor on the home (`#leer`, `#bebe`), for bios, posts and the menus. */
+  /** Stable in-page anchor on the home (`#leer`, `#bebe`), for bios, posts and explicit informational navigation. */
   anchor: `#${string}`;
+  /** Selection goes straight to our landing or the existing affiliate redirect. */
+  destination: string;
+  product: string;
+  /** Accessible outbound-tab note, resolved on the server from shared Spanish copy. */
+  newTabLabel: string;
   /** The task, never an identity: «Aprender a leer». */
   need: string;
   /** Age or stage from config: «3 a 7 años», «6 a 12 meses». */
@@ -28,6 +33,9 @@ export type HubNeed = {
 
 export const reading: HubNeed = {
   key: "reading",
+  destination: kit.path,
+  product: kit.slug,
+  newTabLabel: "",
   anchor: `#${hubCopy.reading.anchor}`,
   need: hubCopy.reading.need,
   stage: kit.composition.ageRange,
@@ -43,6 +51,9 @@ export const reading: HubNeed = {
 
 export const feeding: HubNeed = {
   key: "feeding",
+  destination: affiliateHref(course),
+  product: course.slug,
+  newTabLabel: hubCopy.feeding.newTab,
   anchor: `#${hubCopy.feeding.anchor}`,
   need: hubCopy.feeding.need,
   stage: course.stage,

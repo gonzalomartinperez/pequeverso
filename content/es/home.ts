@@ -10,6 +10,7 @@
 import { alimentacionBebe as course } from "../../config/affiliates.ts";
 import { guaranteeDays } from "../../config/commerce.ts";
 import { grafismoFonetico } from "../../src/products/grafismo-fonetico.ts";
+import { hubCopy } from "./hub.ts";
 
 /** "3 a 7 años" → "entre los 3 y los 7 años" (ages read from the registry and config). */
 const between = (range: string): string => range.replace(/^(\d+) a (\d+) (.+)$/, "entre los $1 y los $2 $3");
@@ -20,11 +21,7 @@ export const homeCopy = {
     description:
       "Un pequeño universo para familias: Grafismo Fonético, el kit imprimible para aprender a leer por sílabas (3 a 7 años), y la Guía de Alimentación para Bebés que recomendamos para sus primeras comidas (6 a 12 meses).",
   },
-  nav: [
-    { href: "#leer", label: "Aprender a leer" },
-    { href: "#bebe", label: "Primeras comidas de tu bebé" },
-    { href: "#preguntas", label: "Preguntas" },
-  ],
+  nav: [{ href: "#preguntas", label: "Preguntas" }],
   /** Caption under AI-generated images where people are the subject. */
   illustrative: "Imagen ilustrativa.",
   illustrativePlural: "Imágenes ilustrativas.",
@@ -116,7 +113,7 @@ export const homeCopy = {
     cta: "Ver la guía en Hotmart",
     ctaNote: `Garantía de ${course.guaranteeDays} días de Hotmart · pago y acceso en Hotmart`,
     secondary: "Ver cómo funciona",
-    newTab: "(se abre en una pestaña nueva)",
+    newTab: hubCopy.feeding.newTab,
     disclosure:
       "Recomendación con enlace de afiliado: si compras, Pequeverso recibe una comisión. El curso es de un tercero; Hotmart gestiona el pago, la entrega y los reembolsos.",
     disclosureLink: "Más información sobre los enlaces de afiliado",
