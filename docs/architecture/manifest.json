@@ -1,39 +1,38 @@
 {
-  "created_on": "2026-10-17",
-  "kind": "First-party documentation context diagram, not deployment evidence",
-  "application_source_commit": "66f3a6af73bccaadcf5cbcf428bbfff81bafd098",
-  "readme_source_commit": "9001f8bff932d943be380095dbf37598033bf9ba",
-  "visual_review": "Independent root and implementing agents inspected actual light/dark renders at 896 and 390 pixels. First tall/low-contrast candidates rejected and retained externally. Agent review, not human review.",
-  "production_assistant": "disabled",
-  "runtime_dependencies_added": false,
-  "files": [
-    {
-      "file": "system-light.svg",
-      "bytes": 35898,
-      "sha256": "2607fa2bc1f11ff143851e431304f7558a4d8d4767ee772f7860d81fb54d78b8"
-    },
-    {
-      "file": "system-light.mmd",
-      "bytes": 2272,
-      "sha256": "19929660cc6c531a2b187311e44287c5e63214df0158afc5aef0b8f59fb6921c"
-    },
-    {
-      "file": "system-dark.svg",
-      "bytes": 35982,
-      "sha256": "f5b3c862056b2af63d0c3bb0b1af2e1bc8fd53a41978f3c02c6523665f3fc7d8"
-    },
-    {
-      "file": "system-dark.mmd",
-      "bytes": 2272,
-      "sha256": "5a1b1658043e4bcb52754450570747a01ac17b7fcf98a6b7f710967f2a202d23"
-    }
-  ],
+  "format": "authored native SVG; Mermaid preserves semantic relationships, not pixel layout",
+  "committed_architecture_reference": "4c3b1e72b43c0161d96fc1cdd74985298540dd5e",
+  "scope": "Application boundaries; no deployment, activation, capacity or conversion claim",
+  "native_size": [1040, 880],
   "renderer": {
-    "mermaid": "12.2.0",
-    "distribution_cli": "12.0.0",
-    "execution": "Local Mermaid browser bundle; not CLI subprocess or GitHub native render",
     "playwright": "1.64.1",
     "chromium": "156.0.8078.4",
-    "security": "strict; htmlLabels false; no network"
+    "widths": [1040, 896, 390],
+    "network_requests": 0
+  },
+  "review": {
+    "agent_inspection": "README896px and mobile390px previews inspected. Native1040px exported for independent review; narrow readers use adjacent prose, alt text and full-size links.",
+    "independent_review": "Coordinating agent approved native/mobile previews, source, README and removal of exact generated-SVG lint exceptions. No human review is asserted.",
+    "human_review_claimed": false
+  },
+  "sha256": {
+    "system-light.svg": "0fe3efa066c0135514ba879c14ae5f680bc5f383d09a5371ea20cc5031c76faf",
+    "system-dark.mmd": "6b38e53c28d0ccf6df01e3beddd7fbcee52ea0ffb1db611956a75e7be1ee4cf6",
+    "system-dark.svg": "4f9b1cb553263511fe51022a004a757424223f009099aed56745013588a77e35",
+    "system-light.mmd": "6b38e53c28d0ccf6df01e3beddd7fbcee52ea0ffb1db611956a75e7be1ee4cf6"
+  },
+  "contrast": {
+    "light": {
+      "min_text_ratio": 7.203,
+      "min_connection_ratio": 3.882
+    },
+    "dark": {
+      "min_text_ratio": 8.815,
+      "min_connection_ratio": 6.441
+    }
+  },
+  "semantic_mermaid_validation": {
+    "version": "12.2.0",
+    "engine": "locked local browser bundle",
+    "result": "both theme sources parse as flowchart-v2; no network"
   }
 }
