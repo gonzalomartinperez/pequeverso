@@ -82,5 +82,39 @@
         "organizeImports": "on"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["src/features/assistant/domain/**", "src/features/assistant/application/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedGlobals": {
+              "level": "error",
+              "options": {
+                "deniedGlobals": {
+                  "window": "Inject platform IO through an application port.",
+                  "document": "Inject platform IO through an application port.",
+                  "navigator": "Inject platform IO through an application port.",
+                  "localStorage": "Inject platform IO through an application port.",
+                  "sessionStorage": "Inject platform IO through an application port.",
+                  "fetch": "Inject platform IO through an application port.",
+                  "XMLHttpRequest": "Inject platform IO through an application port.",
+                  "WebSocket": "Inject platform IO through an application port.",
+                  "setTimeout": "Inject platform IO through an application port.",
+                  "setInterval": "Inject platform IO through an application port.",
+                  "globalThis": "Inject platform IO through an application port.",
+                  "global": "Inject platform IO through an application port.",
+                  "process": "Inject platform IO through an application port.",
+                  "require": "Inject platform IO through an application port.",
+                  "eval": "Inject platform IO through an application port.",
+                  "Function": "Inject platform IO through an application port."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

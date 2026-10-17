@@ -3,7 +3,7 @@
 **Central idea:** a parent who lands on pequeverso.com (mostly on a phone, from a social post or
 bio) understands in the first viewport that Pequeverso accompanies each stage of the family. They
 pick the door that matches today's need: «Aprender a leer · 3 a 7 años» (Grafismo Fonético, our
-printable kit) or «Empezar a comer · 6 a 12 meses» (Guía de Alimentación para Bebés, a
+printable kit) or «Primeras comidas de tu bebé · 6 a 12 meses» (Guía de Alimentación para Bebés, a
 third-party course recommended as a Hotmart affiliate). Both products get the same weight from
 the hero to the close.
 **Primary action:** one per product, with the same visual weight. `ProductInterestLink` goes to
@@ -48,7 +48,7 @@ the owner's request wins (the «Productos» dropdown stays).
      `@starting-style`) with staggered cards, and it simply appears under reduced motion. Base UI
      `NavigationMenu` was not used because it would add a client island to every page for
      behaviour the platform already provides.
-   - *Text anchors (from lg):* «Aprender a leer», «Empezar a comer» and «Preguntas». The anchor of the
+   - *Text anchors (from lg):* «Aprender a leer», «Primeras comidas de tu bebé» and «Preguntas». The anchor of the
      chapter in view is marked `aria-current="location"`.
    - *Auto-hide (home only):* the header slides away while the visitor reads down past the hero and
      returns on any scroll up (transform, 340 ms). It never hides while it holds focus or while its
@@ -147,3 +147,26 @@ wall, and the values bento. Retired media: `gf.life.logro`, `bebe.scene.mama` an
 
 - None blocking. Measurement per placement (`src`/`sck`, a «need selected» event) is a future
   improvement (owner, 2026-10-13).
+
+## Refinement — 2026-10-17
+
+The two existing chapters, acquisition parameters and product destinations remain unchanged.
+The hero now identifies each actual product on phones as well as desktop; the previous phone
+layout showed only the need and format. Equal provenance pills distinguish «Kit de Pequeverso»
+from «Curso afiliado» before the visitor chooses. The full commission disclosure remains visible
+below the selector and next to outbound affiliate actions. Both hero actions fill their equal
+columns, without making either product a primary purchase action.
+
+The introduction names both needs explicitly. The course heading uses «paso a paso» rather
+than promising an absence of fear or time in the kitchen. This is presentation and copy clarity,
+not evidence of higher conversion or improved health/learning outcomes. Product facts, media,
+checkout, affiliate redirects, tracking, consent and the disabled assistant are unchanged.
+
+Acceptance keeps the existing hub tests and adds visible canonical names, provenance and equal
+action geometry at normal size. Existing 200% text-reflow tests remain binding; enlarged text
+may stack the two doors rather than truncate either. Before/after local screenshots and the
+exact test receipts are kept outside the repository; they are not a production deployment.
+
+The owner refined the shared feeding label to «Primeras comidas de tu bebé» on 2026-10-17.
+It is used consistently in the selector, navigation, menus, closing cards and footer; anchors,
+canonical product names and commercial facts remain unchanged.

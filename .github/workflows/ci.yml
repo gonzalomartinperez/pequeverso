@@ -90,7 +90,7 @@ jobs:
         run: |
           npm ci --prefix tools/media --ignore-scripts --no-audit --no-fund
           npm run typecheck:media
-      - name: Unit tests
+      - name: Unit tests and architecture contracts (including negative fixtures)
         run: npm test
       - name: Dead code (production and full, as the nightly runs it)
         run: npm run knip:production && npm run knip

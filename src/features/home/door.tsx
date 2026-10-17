@@ -1,4 +1,4 @@
-import { hubCopy } from "@content/es/hub";
+import { homeCopy } from "@content/es/home";
 import type { CSSProperties, ReactNode } from "react";
 import { Icon } from "@/components/blocks/icon";
 import { MediaImage } from "@/components/blocks/media-image";
@@ -64,11 +64,9 @@ export function Door({ need, priority = false, order, describedBy }: Props) {
         ) : (
           <MediaImage id={need.photo} sizes={DOOR_SIZES} eager />
         )}
-        {need.recommended ? (
-          <span className="absolute top-2 left-2 rounded-pill bg-white/92 px-2.5 py-0.5 text-tiny font-extrabold text-ink shadow-sm cq-sm:top-3 cq-sm:left-3">
-            {hubCopy.feeding.recommended}
-          </span>
-        ) : null}
+        <span className="absolute top-2 right-2 left-2 w-fit max-w-[calc(100%-1rem)] rounded-pill bg-white px-2.5 py-1 text-tiny font-extrabold text-ink shadow-sm cq-sm:top-3 cq-sm:left-3">
+          {homeCopy.hero.origins[need.key]}
+        </span>
       </span>
       <span className="flex flex-col gap-3 p-3 cq-sm:p-5 cq-lg:p-6">
         <span className="grid gap-2">
@@ -85,10 +83,10 @@ export function Door({ need, priority = false, order, describedBy }: Props) {
             {need.need}
           </span>
           <span className="hidden text-small text-pretty text-body cq-sm:block">{need.line}</span>
-          <span className="text-tiny font-bold text-subtle cq-sm:text-small">
-            <span className="hidden cq-sm:inline">{need.name} · </span>
-            {need.format}
+          <span className="text-tiny font-extrabold text-navy cq-xs:min-h-[3lh] cq-sm:min-h-0 cq-sm:text-small">
+            {need.name}
           </span>
+          <span className="text-tiny font-semibold text-subtle cq-sm:text-small">{need.format}</span>
         </span>
         <DoorAction>{need.go}</DoorAction>
       </span>
@@ -99,7 +97,10 @@ export function Door({ need, priority = false, order, describedBy }: Props) {
 /** The door's single visual action: a navy pill (the whole card is the link). */
 function DoorAction({ children }: { children: ReactNode }) {
   return (
-    <span className="mt-auto inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-pill bg-navy px-3 text-small font-extrabold text-white shadow-[0_14px_28px_-14px_oklch(0.3175_0.1094_256.25/70%)] transition-colors duration-(--duration) group-hover/door:bg-navy-deep group-hover/door:text-gold cq-sm:w-fit cq-sm:px-5 cq-sm:text-base">
+    <span
+      data-door-action=""
+      className="mt-auto inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-pill bg-navy px-3 text-small font-extrabold text-white shadow-[0_14px_28px_-14px_oklch(0.3175_0.1094_256.25/70%)] transition-colors duration-(--duration) group-hover/door:bg-navy-deep group-hover/door:text-gold cq-sm:px-5 cq-sm:text-base"
+    >
       {children}
       <Icon
         name="arrowDown"

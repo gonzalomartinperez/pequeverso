@@ -22,7 +22,7 @@ export const homeCopy = {
   },
   nav: [
     { href: "#leer", label: "Aprender a leer" },
-    { href: "#bebe", label: "Empezar a comer" },
+    { href: "#bebe", label: "Primeras comidas de tu bebé" },
     { href: "#preguntas", label: "Preguntas" },
   ],
   /** Caption under AI-generated images where people are the subject. */
@@ -31,8 +31,9 @@ export const homeCopy = {
   hero: {
     kicker: "Recursos para familias",
     title: { before: "Un pequeño ", accent: "universo", after: " para cada etapa." },
-    lead: "Un recurso claro para cada momento. Elige lo que tu familia necesita hoy.",
+    lead: "Primeras letras o primeras comidas. Encuentra el recurso para su etapa.",
     doors: "¿Qué necesitas hoy?",
+    origins: { reading: "Kit de Pequeverso", feeding: "Curso afiliado" },
   },
   /** Facts shared by both products, right under the hero. */
   trust: {
@@ -103,7 +104,7 @@ export const homeCopy = {
    */
   affiliate: {
     kicker: "Recomendado por Pequeverso",
-    title: { before: "Sus primeras comidas, ", accent: "sin miedo", after: " ni horas en la cocina." },
+    title: { before: "Sus primeras comidas, ", accent: "paso a paso", after: "." },
     pain: "Llega el momento de empezar a comer y aparecen las preguntas: cuándo, cuánto, qué preparar. Y el miedo a equivocarte.",
     desire:
       "Este curso ordena la alimentación complementaria paso a paso, con un menú para las primeras semanas y recetas que sirven para el bebé y para toda la familia.",

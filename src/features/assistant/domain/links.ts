@@ -13,6 +13,8 @@ export type LinkPolicy = {
   linkHosts: readonly string[];
   /** Optional exact canonical informational URLs; this never grants an entire host. */
   approvedSourceUrls?: readonly string[];
+  /** Exact configured affiliate redirect paths, never arbitrary same-origin redirects. */
+  affiliatePurchasePaths?: readonly string[];
 };
 
 /** Backslash or a C0/DEL control character: the URL parser would silently normalize them away. */
@@ -56,6 +58,15 @@ export function storefrontPath(value: string, policy: LinkPolicy): string | null
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
+/** A plain-anchor affiliate action may only use its configured clean redirect, with no tracking. */
+export function affiliatePurchasePath(value: string, policy: LinkPolicy): string | null {
+  const safe = storefrontUrl(value, policy);
+  if (!safe) return null;
+  const url = new URL(safe);
+  if (url.search || url.hash || !policy.affiliatePurchasePaths?.includes(url.pathname)) return null;
+  return url.pathname;
+}
+
 /** An exact approved article, without URL-parser normalization or tracking/redirect parameters. */
 export function approvedSourceUrl(value: string, policy: LinkPolicy): string | null {
   const url = parse(value);
@@ -93,7 +104,10 @@ export function applyLinkPolicy(message: Message, policy: LinkPolicy): Message {
   const products: Product[] = [];
   for (const product of message.products) {
     const url = storefrontUrl(product.url, policy);
-    const purchaseUrl = storefrontUrl(product.purchaseUrl, policy);
+    const purchaseUrl =
+      product.kind === "affiliate"
+        ? affiliatePurchasePath(product.purchaseUrl, policy) && storefrontUrl(product.purchaseUrl, policy)
+        : storefrontUrl(product.purchaseUrl, policy);
     if (url && purchaseUrl) products.push(safeImage({ ...product, url, purchaseUrl }, policy));
   }
   const resources: Resource[] = message.resources.map((resource) => safeImage(resource, policy));

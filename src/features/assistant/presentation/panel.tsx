@@ -13,11 +13,11 @@ import {
 } from "react";
 import { cx } from "@/lib/cx";
 import { holdPageMotion } from "@/motion/motion-hold";
+import type { Assistant } from "../application/assistant";
 import { phase } from "../domain/conversation";
 import type { LinkPolicy } from "../domain/links";
 import type { Page } from "../domain/models";
 import type { PublicPath } from "../domain/visitor-context";
-import { createStoreAssistant } from "../entry";
 import styles from "./assistant.module.css";
 import { ClearControl } from "./clear-control";
 import { type Presentation, PresentationProvider } from "./context";
@@ -32,7 +32,7 @@ export type PanelProps = {
   /** Hide the panel (minimize). The conversation and any authorized answer continue. */
   onMinimize: () => void;
   page: Page | null;
-  apiOrigin: string;
+  assistant: Assistant;
   policy: LinkPolicy;
   avatarSrc: string;
   supportPath: string;
@@ -114,13 +114,13 @@ function useVisualViewport(active: boolean, surface: RefObject<HTMLElement | nul
  * surfaces are modal dialogs: background inert, focus contained, page motion held, Escape and
  * focus restoration (an open confirmation consumes Escape first).
  */
-export default function AssistantPanel({
+export function AssistantPanel({
   open,
   openedPath,
   currentPath,
   onMinimize,
   page,
-  apiOrigin,
+  assistant,
   policy,
   avatarSrc,
   supportPath,
@@ -128,7 +128,6 @@ export default function AssistantPanel({
   host,
   onUnread,
 }: PanelProps) {
-  const [assistant] = useState(() => createStoreAssistant(apiOrigin, policy));
   const state = useConversation(assistant);
   const current = phase(state);
   const phone = useMedia(PHONE);

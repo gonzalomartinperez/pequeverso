@@ -1,6 +1,6 @@
 # Pequeverso
 
-Printable learning resources for families with children aged 3–7. This repository contains the public store and its native shopping assistant; Hotmart handles payments, delivery and refunds.
+Printable learning resources and curated courses for families: Grafismo Fonético for ages 3–7 and the third-party Guía de Alimentación para Bebés for 6–12 months. This repository contains the public store and its native shopping assistant; Hotmart handles payments, delivery and refunds.
 
 [![CI](https://github.com/gonzalomartinperez/pequeverso/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/gonzalomartinperez/pequeverso/actions/workflows/ci.yml)
 [![Nightly](https://github.com/gonzalomartinperez/pequeverso/actions/workflows/nightly.yml/badge.svg)](https://github.com/gonzalomartinperez/pequeverso/actions/workflows/nightly.yml)
@@ -30,7 +30,11 @@ flowchart LR
   Ops -.-> Backoffice
 ```
 
-The store presents **Grafismo Fonético**, the optional **Pack Imprime y Juega**, and post-purchase guidance. Product facts come from the [typed registry](src/products) and [commerce configuration](config/commerce.ts); copy never invents prices, guarantees or benefits. Offer pages embed the Hotmart sales-funnel widget; a thank-you URL is not proof of payment and exposes no product files.
+The store presents **Grafismo Fonético** and the affiliate **Guía de Alimentación para Bebés**, with their respective format, audience and ownership clearly identified. The optional **Pack Imprime y Juega** remains a post-purchase offer. Product facts come from the [typed registry](src/products), [affiliate registry](config/affiliates.ts) and [commerce configuration](config/commerce.ts); copy never invents prices, guarantees or benefits. Offer pages embed the Hotmart sales-funnel widget; a thank-you URL is not proof of payment and exposes no product files.
+
+Dependency direction, client/server separation, acyclic runtime imports and negative architecture
+fixtures are enforced by the required CI build. See [engineering standards](docs/engineering-standards.md)
+and run `npm run check:architecture` locally.
 
 | Application | Responsibility | Operational boundary |
 |---|---|---|
@@ -39,7 +43,7 @@ The store presents **Grafismo Fonético**, the optional **Pack Imprime y Juega**
 | [Backoffice](https://github.com/gonzalomartinperez/pequeverso-assistant-backoffice) | Private administration and authenticated operations | Separate application; never a public chat iframe |
 | vps-ops | VPS deployment, Coolify, reverse proxy and shared infrastructure | This repository supplies artifacts and contracts; it does not provision the VPS |
 
-Hosting was last confirmed **unconnected on 2026-10-10**, with `main` selected for the future Hostinger connection. A source merge alone is not deployment evidence. [Build targets, routing and boundaries](docs/architecture.md) · [Hosting and deployment gates](docs/deployment.md).
+The owner confirmed that **Hostinger is connected to `main`** and automatically builds and publishes every merge. Verify the deployed SHA and `assistant: disabled` in `build-info.json`, then check `post-deploy-verify` and the live site; a source merge alone is not deployment evidence. [Build targets, routing and boundaries](docs/architecture.md) · [Hosting and deployment gates](docs/deployment.md).
 
 ## Native assistant
 

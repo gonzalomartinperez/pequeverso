@@ -27,12 +27,12 @@ export function HubSticky() {
   return (
     <HubStickyBar
       doors={
-        <ul className="grid grid-cols-2 gap-[min(0.5rem,8px)]" role="list">
+        <ul className="grid grid-cols-2 gap-[min(0.5rem,8px)] @max-[12rem]:grid-cols-1" role="list">
           {[reading, feeding].map((need) => (
             <li key={need.key} className="min-w-0">
               <a
                 href={need.anchor}
-                className="flex min-h-12 items-center gap-2 rounded-[1.5rem] bg-navy px-3 py-1.5 text-white no-underline transition-colors hover:bg-navy-deep hover:text-gold @max-[25rem]:px-2.5"
+                className="flex h-full min-h-12 items-center gap-2 rounded-[1.5rem] bg-navy px-3 py-1.5 text-white no-underline transition-colors hover:bg-navy-deep hover:text-gold @max-[25rem]:px-2.5"
               >
                 <Icon
                   name={NEED_TONE[need.key].icon}
@@ -41,10 +41,10 @@ export function HubSticky() {
                   className="shrink-0 text-gold @max-[25rem]:hidden"
                 />
                 <span className="grid min-w-0 leading-tight">
-                  <span className="text-small font-extrabold whitespace-nowrap @max-[25rem]:text-tiny">
+                  <span className="text-small leading-tight font-extrabold @max-[25rem]:text-tiny">
                     {need.need}
                   </span>
-                  <span className="text-tiny text-white/80">{need.stage}</span>
+                  <span className="text-tiny leading-tight text-white/80">{need.stage}</span>
                 </span>
               </a>
             </li>

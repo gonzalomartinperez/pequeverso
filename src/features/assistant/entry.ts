@@ -9,7 +9,12 @@ import type { LinkPolicy } from "./domain/links.ts";
 export function createStoreAssistant(apiOrigin: string, policy: LinkPolicy): Assistant {
   return createAssistant(
     createHttpTransport(apiOrigin, fetch, { responseLanguage: "es" }),
-    { id: () => crypto.randomUUID(), now: () => new Date().toISOString() },
+    {
+      id: () => crypto.randomUUID(),
+      now: () => new Date().toISOString(),
+      wait: (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
+      timeout: (milliseconds) => AbortSignal.timeout(milliseconds),
+    },
     { policy, locale: "es" },
   );
 }

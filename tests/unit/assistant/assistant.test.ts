@@ -4,6 +4,7 @@ import { createAssistant } from "../../../src/features/assistant/application/ass
 import {
   AssistantError,
   type AssistantTransport,
+  type Runtime,
   type SendInput,
 } from "../../../src/features/assistant/application/ports.ts";
 import type { Message, RunEvent, SessionSnapshot } from "../../../src/features/assistant/domain/models.ts";
@@ -52,7 +53,7 @@ type Script = (
   emit: (event: RunEvent) => void,
 ) => Promise<"terminal" | "eof">;
 
-function fixture(script: Script, overrides: Partial<AssistantTransport> = {}) {
+function fixture(script: Script, overrides: Partial<AssistantTransport> = {}, clock: Partial<Runtime> = {}) {
   const calls = { open: 0, send: [] as SendInput[], cancel: [] as string[], delete: 0 };
   let ids = 0;
   const transport: AssistantTransport = {
@@ -74,7 +75,13 @@ function fixture(script: Script, overrides: Partial<AssistantTransport> = {}) {
   };
   const assistant = createAssistant(
     transport,
-    { id: () => `key-${String(++ids).padStart(6, "0")}`, now: () => "2026-09-27T12:00:00Z" },
+    {
+      id: () => `key-${String(++ids).padStart(6, "0")}`,
+      now: () => "2026-09-27T12:00:00Z",
+      wait: (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
+      timeout: (milliseconds) => AbortSignal.timeout(milliseconds),
+      ...clock,
+    },
     { policy, locale: "es" },
   );
   return { assistant, calls };
@@ -184,6 +191,51 @@ describe("assistant controller", () => {
     await tick();
     assert.equal(calls.cancel.length, 0);
     assert.equal(assistant.getSnapshot().outcome?.kind, "cancelled");
+  });
+
+  it("uses the injected cancellation clock before releasing an unresponsive stream", async () => {
+    const grace = deferred<void>();
+    const deadlines: number[] = [];
+    const waits: number[] = [];
+    let aborted = false;
+    const { assistant, calls } = fixture(
+      async (_input, signal, emit) => {
+        emit({ type: "started", runId: "clock-run", userMessage: null });
+        return new Promise((_, reject) => {
+          signal.addEventListener("abort", () => {
+            aborted = true;
+            reject(new DOMException("aborted", "AbortError"));
+          });
+        });
+      },
+      {},
+      {
+        timeout(milliseconds) {
+          deadlines.push(milliseconds);
+          return new AbortController().signal;
+        },
+        wait(milliseconds) {
+          waits.push(milliseconds);
+          return grace.promise;
+        },
+      },
+    );
+    assistant.start();
+    await tick();
+    assistant.submit("Compara los productos");
+    await tick();
+    assistant.stop();
+    await tick();
+    assert.deepEqual(calls.cancel, ["clock-run"]);
+    assert.deepEqual(deadlines, [5000]);
+    assert.deepEqual(waits, [250]);
+    assert.equal(aborted, false);
+    grace.resolve();
+    await tick();
+    assert.equal(aborted, true);
+    assert.equal(assistant.getSnapshot().outcome?.kind, "cancelled");
+    assert.equal(calls.send.length, 1);
+    assistant.dispose();
   });
 
   it("marks EOF without a terminal event as interrupted and retries with the same key", async () => {

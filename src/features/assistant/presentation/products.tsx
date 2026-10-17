@@ -7,7 +7,7 @@ import { cx } from "@/lib/cx";
 import type { Price, Product, Resource } from "../domain/models";
 import styles from "./assistant.module.css";
 import { usePresentation } from "./context";
-import { labelClass, SafeLink } from "./parts";
+import { AffiliateLink, labelClass, SafeLink } from "./parts";
 
 /**
  * A price appears only when the API supplies a dated public-catalog reference, with its tax and
@@ -55,6 +55,14 @@ function Thumb({ product }: { product: Product }) {
 
 function ProductCard({ product, resources }: { product: Product; resources: Resource[] }) {
   const { t } = usePresentation();
+  const affiliate = product.kind === "affiliate";
+  const disclosure = product.disclosure ?? t.affiliateDisclosure;
+  // The canonical summary includes disclosure for older clients. Display its exact trailing
+  // copy only once here, next to the affiliate action; persisted API content remains intact.
+  const summary =
+    affiliate && product.summary.endsWith(disclosure)
+      ? product.summary.slice(0, -disclosure.length).trim()
+      : product.summary;
   // The same product can appear in several answers: ids must be unique per rendered card.
   const headingId = useId();
   return (
@@ -68,6 +76,9 @@ function ProductCard({ product, resources }: { product: Product; resources: Reso
             </h3>
             <p className="flex flex-wrap gap-1.5 text-tiny font-bold">
               <span className="rounded-pill bg-mint px-2.5 py-1 text-teal-text">{product.ageRange}</span>
+              {affiliate && (
+                <span className="rounded-pill bg-sky px-2.5 py-1 text-navy">{t.affiliateLabel}</span>
+              )}
               {resources.length > 0 && (
                 <span className="rounded-pill bg-sky px-2.5 py-1 text-navy">
                   {t.resourceCount(resources.length)}
@@ -77,22 +88,37 @@ function ProductCard({ product, resources }: { product: Product; resources: Reso
           </div>
         </div>
         <div className="flex min-w-0 flex-col gap-2.5">
-          <p className="text-small text-body">{product.summary}</p>
-          <PriceLine price={product.price} />
+          {summary && <p className="text-small text-body">{summary}</p>}
+          {product.format && <p className="text-small text-subtle">{product.format}</p>}
+          {affiliate && !product.price ? (
+            <p className="text-small text-subtle">{t.affiliatePrice}</p>
+          ) : (
+            <PriceLine price={product.price} />
+          )}
           <div className="flex flex-wrap gap-2">
             <SafeLink
               href={product.url}
               className={cx(buttonVariants({ variant: "outline", size: "sm" }), styles.productAction)}
             >
-              {t.viewProduct}
+              {affiliate ? t.affiliateInfo : t.viewProduct}
             </SafeLink>
-            <SafeLink
-              href={product.purchaseUrl}
-              className={cx(buttonVariants({ variant: "primary", size: "sm" }), styles.productAction)}
-            >
-              {t.purchaseOptions}
-            </SafeLink>
+            {affiliate ? (
+              <AffiliateLink
+                href={product.purchaseUrl}
+                className={cx(buttonVariants({ variant: "secondary", size: "sm" }), styles.productAction)}
+              >
+                {t.affiliateAction}
+              </AffiliateLink>
+            ) : (
+              <SafeLink
+                href={product.purchaseUrl}
+                className={cx(buttonVariants({ variant: "primary", size: "sm" }), styles.productAction)}
+              >
+                {t.purchaseOptions}
+              </SafeLink>
+            )}
           </div>
+          {affiliate && <p className="text-tiny text-subtle">{disclosure}</p>}
         </div>
       </div>
     </article>
@@ -140,19 +166,26 @@ function Comparison({ products, resources }: { products: Product[]; resources: R
   const { t, locale } = usePresentation();
   const rows: { label: string; cell: (product: Product) => string }[] = [
     { label: t.ageRange, cell: (product) => product.ageRange },
+    { label: t.format, cell: (product) => product.format ?? t.formatUnknown },
+    {
+      label: t.productRelationship,
+      cell: (product) => (product.kind === "affiliate" ? t.affiliateLabel : t.ownProduct),
+    },
     {
       label: t.price,
       // Catalog reference prices retain their notes and export date; no merchant confirmation.
       cell: (product) =>
         product.price
           ? `${product.price.display} ${product.price.taxNote}. ${product.price.note} ${t.priceReferenceDate(formatDay(product.price.verifiedAt, locale))}`
-          : t.priceUnverified,
+          : product.kind === "affiliate"
+            ? t.affiliatePrice
+            : t.priceUnverified,
     },
     {
       label: t.resourcesLabel,
       cell: (product) => {
         const count = resources.filter((resource) => resource.productId === product.id).length;
-        return count ? t.resourceCount(count) : "—";
+        return count ? t.resourceCount(count) : product.kind === "affiliate" ? t.affiliateResources : "—";
       },
     },
   ];
@@ -163,11 +196,11 @@ function Comparison({ products, resources }: { products: Product[]; resources: R
       tabIndex={0}
       className="overflow-x-auto rounded-md border border-line"
     >
-      <table className="w-full min-w-[20rem] border-collapse bg-card text-small">
+      <table className="w-full min-w-[36rem] table-fixed border-collapse bg-card text-small">
         <caption className="sr-only">{t.compareLabel}</caption>
         <thead className="bg-sky">
           <tr>
-            <td />
+            <td className="w-32" />
             {products.map((product) => (
               <th key={product.id} scope="col" className="px-3 py-2 text-left font-extrabold text-heading">
                 {product.name}
