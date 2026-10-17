@@ -41,12 +41,14 @@ export function ConversationView({
   phase,
   field,
   confirming,
+  onJumpChange,
 }: {
   assistant: Assistant;
   state: ConversationState;
   phase: Phase;
   field: RefObject<HTMLTextAreaElement | null>;
   confirming: boolean;
+  onJumpChange: (action: (() => void) | null) => void;
 }) {
   const { t, privacyPath, onNavigate } = usePresentation();
   const [follow, setFollow] = useState(0);
@@ -89,7 +91,13 @@ export function ConversationView({
   const empty = state.messages.length === 0 && !pending && !state.outcome;
   return (
     <>
-      <Transcript followSignal={follow} busy={pending !== null} empty={empty} inactive={confirming}>
+      <Transcript
+        followSignal={follow}
+        busy={pending !== null}
+        empty={empty}
+        inactive={confirming}
+        onJumpChange={onJumpChange}
+      >
         {empty && state.availability.status === "available" && (
           <EmptyState starters={state.starters} disabled={!ready} onAsk={askAndFocus} />
         )}
@@ -138,7 +146,6 @@ export function ConversationView({
             />
           )}
           <p className="px-2 text-tiny text-subtle">
-            {t.privacyNote}
             <Link
               href={privacyPath}
               onClick={onNavigate}
