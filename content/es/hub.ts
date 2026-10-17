@@ -25,7 +25,7 @@ export const hubCopy = {
     /** Stable anchor of the home chapter, for bios and posts (`pequeverso.com/#bebe`). */
     anchor: "bebe",
     need: "Empezar a comer",
-    line: "Sus primeras comidas, sin miedo ni horas en la cocina.",
+    line: "Una guía para organizar sus primeras comidas, a tu ritmo.",
     format: "Curso en video",
     go: "Ver la guía",
     recommended: "Recomendado",
