@@ -1,3 +1,4 @@
+import { hubCopy } from "@content/es/hub";
 import { notFoundCopy as copy } from "@content/es/soporte";
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
@@ -5,6 +6,8 @@ import { CTAButton } from "@/components/blocks/cta-button";
 import { Eyebrow } from "@/components/blocks/eyebrow";
 import { MediaImage } from "@/components/blocks/media-image";
 import { PageShell } from "@/components/layout/page-shell";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { HubProductLink } from "@/features/hub/hub-product-link";
 import { feeding } from "@/features/hub/hub-products";
 import { Float } from "@/motion/float";
 import { Orbit } from "@/motion/orbit";
@@ -45,13 +48,21 @@ export default function NotFound() {
                     {copy.product} {product.name}
                   </CTAButton>
                 ))}
-                <CTAButton href={`/${feeding.anchor}`} variant="outline" iconAfter="arrow">
+                <HubProductLink
+                  need={feeding}
+                  position="home"
+                  aria-describedby="not-found-affiliate"
+                  className={buttonVariants({ variant: "outline" })}
+                >
                   {copy.product} {feeding.name}
-                </CTAButton>
+                </HubProductLink>
                 <CTAButton href="/soporte/" variant="ghost" iconAfter="arrow">
                   {copy.support}
                 </CTAButton>
               </div>
+              <p id="not-found-affiliate" className="text-small text-pretty text-subtle">
+                {hubCopy.feeding.disclosure}
+              </p>
             </div>
             <LostInSpace />
           </div>

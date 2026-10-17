@@ -1,7 +1,7 @@
 "use client";
 
 import { hubCopy } from "@content/es/hub";
-import { ArrowUpRightIcon, LifeBuoyIcon } from "lucide-react";
+import { ArrowUpRightIcon, ExternalLink, LifeBuoyIcon } from "lucide-react";
 import type { CSSProperties, ReactNode } from "react";
 import { BrandLogo } from "@/components/blocks/brand-logo";
 import type { NavItem } from "@/components/layout/header";
@@ -14,6 +14,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { HUB_CARD_LINK } from "@/features/hub/hub-link-styles";
+import { HubProductLink } from "@/features/hub/hub-product-link";
 
 type Props = {
   items: readonly NavItem[];
@@ -68,9 +70,11 @@ export function MobileNavSheet({ items, cta, products, open, onOpenChange }: Pro
             <ul className="grid gap-3" role="list">
               {products.map(({ need, thumb }, index) => (
                 <li key={need.key} className={ROW} style={{ "--i": index } as CSSProperties}>
-                  <SheetClose
-                    render={<a href={`/${need.anchor}`} />}
-                    className="group/card grid min-h-28 grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-4 rounded-xl bg-white p-3 text-ink no-underline shadow-sm ring-1 ring-line transition-[translate,box-shadow] duration-(--duration) ease-out active:scale-[0.99] hover:shadow-float"
+                  <HubProductLink
+                    need={need}
+                    position="home"
+                    onClickCapture={() => onOpenChange(false)}
+                    className={`${HUB_CARD_LINK} group/card grid min-h-28 grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-4 rounded-xl bg-white p-3 text-ink no-underline shadow-sm ring-1 ring-line transition-[translate,box-shadow] duration-(--duration) ease-out active:scale-[0.99] hover:shadow-float`}
                   >
                     <span
                       className={`block aspect-square overflow-hidden rounded-lg [&_img]:size-full ${
@@ -94,6 +98,13 @@ export function MobileNavSheet({ items, cta, products, open, onOpenChange }: Pro
                       </span>
                       <span className="font-display text-[1.375rem] leading-tight font-bold text-heading">
                         {need.need}
+                        {need.recommended ? (
+                          <ExternalLink
+                            aria-hidden="true"
+                            focusable="false"
+                            className="ml-1 inline size-4 align-baseline"
+                          />
+                        ) : null}
                       </span>
                       <span className="text-tiny font-bold text-subtle">
                         {need.name} · {need.format}
@@ -104,7 +115,7 @@ export function MobileNavSheet({ items, cta, products, open, onOpenChange }: Pro
                         </span>
                       ) : null}
                     </span>
-                  </SheetClose>
+                  </HubProductLink>
                 </li>
               ))}
             </ul>

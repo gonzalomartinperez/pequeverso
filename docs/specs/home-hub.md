@@ -23,12 +23,27 @@ The design also follows the conversion research for multi-product hubs (pequever
 `research/2026-10-13-home-hub-conversion.md`). When the research and an owner request disagree,
 the owner's request wins (the «Productos» dropdown stays).
 
+## Product selection — owner refinement, 2026-10-17
+
+The owner superseded the original chapter-first selection below: **Home → select a product →
+its destination → purchase**. Every hero door, product-menu card (desktop/mobile), chooser
+sticky action and product link uses the registry/configuration destination: the kit goes to our
+`/grafismo-fonetico/` landing; the course goes to `/alimentacion-bebe/?src=sitio-home`, the
+existing affiliate redirect to the producer. There is no Pequeverso landing for the course and
+no kit checkout directly from Home. Chapters and stable anchors remain for explicitly
+informational navigation and old shared links. Both selections keep equal visual weight.
+
+The original 2026-10-13 decision to route doors/menus/footer through chapters is retained here
+as historical context only; it is not the current acceptance criterion. Existing acquisition
+parameters, affiliate code/`src`, handlers, event schema and consent policy are unchanged.
+New selection surfaces reuse those handlers once per click. This is a funnel correction,
+not measured evidence of higher conversion.
+
 ## Decisions
 
 1. **Self-selection first.** The hero is a need selector: a short headline and two doors of the same
-   size and weight. A door's label states the task and the age, never an identity. Each door is one
-   `<a href="#leer">` / `<a href="#bebe">` that works without JavaScript and inside in-app
-   browsers. It holds the real product photo (the kit's pages, the scene of a mother feeding her
+   size and weight. A door's label states the task and the age, never an identity. Each door is one real link to the configured product destination, working before hydration
+   and inside in-app browsers (the former chapter-first destinations are superseded above). It holds the real product photo (the kit's pages, the scene of a mother feeding her
    baby), the stage chip, the format («PDF para imprimir», «Curso en video») and a single visual
    action. On phones the doors sit side by side, so both are inside the first viewport.
 2. **Buttons.** Coral (`primary`) stays reserved for the direct purchase of Grafismo Fonético on its
@@ -41,15 +56,16 @@ the owner's request wins (the «Productos» dropdown stays).
 3. **Header and navigation.**
    - *«Productos» dropdown (every width):* a navy pill in the header CTA slot opens a mega-menu with
      one rich card per need: thumbnail, stage, task, a line about the need, product and format, and
-     «Recomendado» plus the short disclosure on the course. Cards link to `/#leer` and `/#bebe`.
+     «Recomendado» plus the short disclosure on the course. Cards select the kit landing and the existing affiliate redirect directly.
      The menu is built on the native Popover API: it ships no JavaScript to open, it closes on
      Escape or an outside click, the focus order runs from the trigger into the panel, and it sits
      in the top layer with no layout shift. The open/close transition is CSS (`.pv-popover`,
      `@starting-style`) with staggered cards, and it simply appears under reduced motion. Base UI
      `NavigationMenu` was not used because it would add a client island to every page for
      behaviour the platform already provides.
-   - *Text anchors (from lg):* «Aprender a leer», «Primeras comidas de tu bebé» and «Preguntas». The anchor of the
-     chapter in view is marked `aria-current="location"`.
+   - *Informational navigation:* «Preguntas» keeps the existing FAQ anchor. Product-like text
+     shortcuts were removed in the 2026-10-17 refinement: the two direct product cards already
+     cover selection, without an ambiguous chapter shortcut.
    - *Auto-hide (home only):* the header slides away while the visitor reads down past the hero and
      returns on any scroll up (transform, 340 ms). It never hides while it holds focus or while its
      menu is open.
@@ -62,10 +78,10 @@ the owner's request wins (the «Productos» dropdown stays).
      already chosen. The
      landing's coral checkout and the Hotmart funnel (`docs/hotmart-funnel.md`) are unchanged.
    - *Footer (hub pages only: home, support, legal, 404; `PageShell hub`):* the «Productos» column
-     adds the course, which links to `/#bebe`, where the disclosure sits next to the button. The
-     footer never links straight to the affiliate redirect. The landing, offer and thank-you pages
+     adds the course with a plain affiliate link to the configured redirect, an external indicator
+     and the commission disclosure. The landing, offer and thank-you pages
      keep the single-product «Producto» column exactly as before (funnel pages unchanged).
-   - *404:* its body links to the course chapter next to the kit.
+   - *404:* its body links to the configured course redirect next to the kit landing, with disclosure.
 4. **Contextual sticky bar (home, below lg).** It shows the two doors before a chapter, the kit
    with its price and link inside `#leer`, and the course with the short disclosure («Enlace de
    afiliado: si compras, Pequeverso recibe una comisión; a ti no te cuesta más.») and its link inside
@@ -80,7 +96,7 @@ the owner's request wins (the «Productos» dropdown stays).
    replace the paediatrician. Links use `rel="sponsored noopener"` and open a new tab.
 6. **Measurement unchanged.** The existing events keep their parameters:
    `PequeversoProductInterest` and `PequeversoAffiliateClick` with `product` and `cta_position`
-   (`story`, `story-includes`, `sticky`, `closing` for the kit; `home`, `sticky`, `closing` for the
+   (`home`, `story`, `story-includes`, `sticky`, `closing` for the kit; `home`, `sticky`, `closing` for the
    course). The affiliate `src` stays `sitio-home` on every link. No new events and no `src`/`sck`
    per placement (a future improvement, owner decision).
 7. **Copy by need.** Each chapter opens with the family's pain and then its desire. Reading: «Que
@@ -95,7 +111,7 @@ the owner's request wins (the «Productos» dropdown stays).
 
 | # | Section | Purpose | Copy source | Media | Behaviour |
 |---|---|---|---|---|---|
-| 1 | `#hero` + `#elige` | Promise and need selector with two equal doors joined by a dashed orbit and the gold star | `home.hero`, `hub.*` | `gf.door` (door-sized 400/720 rendition of the kit's pages, priority, the one preloaded image), `bebe.scene.primera-papilla` (eager, never preloaded) | Doors → `#leer` / `#bebe`; the course door is described by the disclosure under the doors |
+| 1 | `#hero` + `#elige` | Promise and need selector with two equal doors joined by a dashed orbit and the gold star | `home.hero`, `hub.*` | `gf.door` (door-sized 400/720 rendition of the kit's pages, priority, the one preloaded image), `bebe.scene.primera-papilla` (eager, never preloaded) | Doors → kit landing / configured affiliate redirect; the course door is described by the disclosure under the doors |
 | 2 | trust strip | Hotmart payment · 7-day guarantee (shown as a number only when both products share it) · digital access · local currency | `home.trust` | — | Static, staggered reveal |
 | 3 | `#leer` (alias `#grafismo-fonetico`) | The kit from the reading need: girl tracing a real page, pain → desire, what you get, product box (PDF/pages/bundle from the registry, price + local-currency note), CTA, note, «Ver qué incluye» | `home.reading` | `gf.cutout.trazo`, `gf.page.07` | `ProductLink position="story"` |
 | 4 | `#leer-como` | Mira · Di · Traza · Une and the syllable playground on real pages | `home.method` | `gf.cutout.tarjetas`, real pages | Playground island (unchanged) |

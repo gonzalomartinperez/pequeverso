@@ -1,10 +1,11 @@
 import { hubCopy } from "@content/es/hub";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ExternalLink } from "lucide-react";
 import type { CSSProperties } from "react";
 import { Icon } from "@/components/blocks/icon";
 import { MediaImage } from "@/components/blocks/media-image";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
+import { HUB_CARD_LINK } from "./hub-link-styles";
 import { type HubNeed, hubNeeds } from "./hub-products";
 import { PopoverCloseLink } from "./popover-close-link";
 
@@ -16,8 +17,7 @@ const PANEL_ID = "pv-productos";
  * on the native Popover API: zero JavaScript to open, close on Escape or an outside click, focus
  * order right after the trigger, top layer (no z-index fights, no layout shift). The opening is a
  * CSS transition (`.pv-popover`, motion.css) and the cards rise with a short stagger; under
- * reduced motion it simply appears. Each card links to the need's chapter on the home
- * (`/#leer`, `/#bebe`), where the full facts and the affiliate disclosure sit next to the button.
+ * reduced motion it simply appears. Each card selects the product destination directly; the affiliate disclosure stays on its card.
  * Thumbnails are lazy: inside a closed popover they are never requested.
  */
 export function ProductsMenu() {
@@ -74,9 +74,10 @@ function MenuCard({ need }: { need: HubNeed }) {
   const disclosure = need.recommended ? `${need.key}-menu-note` : undefined;
   return (
     <PopoverCloseLink
-      href={`/${need.anchor}`}
+      need={need}
+      position="home"
       aria-describedby={disclosure}
-      className="group/card relative grid h-full grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-4 rounded-xl bg-white p-3 text-ink no-underline shadow-sm ring-1 ring-line transition-[translate,box-shadow] duration-(--duration) ease-out hover:shadow-float hover:ring-teal/40 motion-safe:hover:-translate-y-1 sm:grid-cols-1 sm:grid-rows-[auto_1fr] sm:content-start sm:items-start sm:p-4"
+      className={`${HUB_CARD_LINK} group/card relative grid h-full grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-4 rounded-xl bg-white p-3 text-ink no-underline shadow-sm ring-1 ring-line transition-[translate,box-shadow] duration-(--duration) ease-out hover:shadow-float hover:ring-teal/40 motion-safe:hover:-translate-y-1 sm:grid-cols-1 sm:grid-rows-[auto_1fr] sm:content-start sm:items-start sm:p-4`}
     >
       <span
         className={cn(
@@ -107,7 +108,11 @@ function MenuCard({ need }: { need: HubNeed }) {
             aria-hidden="true"
             className="grid size-9 shrink-0 place-items-center rounded-full bg-navy text-white transition-[rotate,background-color] duration-(--duration) ease-out group-hover/card:bg-teal motion-safe:group-hover/card:-rotate-45"
           >
-            <Icon name="arrowDown" size={18} strokeWidth={2.6} className="-rotate-90" />
+            {need.recommended ? (
+              <ExternalLink aria-hidden="true" focusable="false" size={18} strokeWidth={2.6} />
+            ) : (
+              <Icon name="arrowDown" size={18} strokeWidth={2.6} className="-rotate-90" />
+            )}
           </span>
         </span>
         <span className="text-small text-pretty text-body">{need.line}</span>
