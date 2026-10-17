@@ -74,3 +74,26 @@ WASM parity), the integrated Nightly and any authorized release/post-deploy chec
 must still finish. No test timeout, retry, mask, comparison tolerance or negative
 architecture fixture was changed. These local results do not certify the VPS,
 managed-host runtime patch, provider quality or production activation.
+
+
+## Integrated local evidence before the final Home bundle adjustment
+
+At `8660ae7`, the reviewed Home9255 and final API591a pin were integrated without
+rewriting history. The complete check passed199 unit tests in6.517s,14 structural
+pages, typing, lint, Knip and bundle budgets. The publishable disabled guard
+inspected127 text files. All12 existing visual comparisons passed in92.805s,
+with no skipped, unexpected, flaky or retried results and no reference updates.
+
+The exact API591a archive used its own Python3.15.0 environment installed by
+uv0.13.1 with the frozen lock and `--no-build`. The native affected matrix ran
+42 unique identities over six projects and three engines:33PASS/9geometrySKIP,
+351.612s, zero retries/flaky/unexpected/top-level errors. It covered streaming and
+scroll/focus, keyboard, mobile portrait/landscape,200% text, recovery, affiliate
+cards and comparison. Original PNGs from Chromium, Firefox and WebKit were inspected.
+The existing Desktop gallery remains honestly attributed to UI61ca/API8ba/PW1.63.
+
+These results precede the separate two-file Home import optimization `ebad242`,
+which fixes a CI-only initial-JS budget failure with the synthetic pixel configured.
+They are not relabeled as post-adjustment evidence. The final integrated check
+and protected CI still have to accept the resulting source. No budget threshold,
+timeout, retry, screenshot reference or provider limit is relaxed.

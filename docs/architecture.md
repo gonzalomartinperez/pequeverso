@@ -100,6 +100,10 @@ chapter (`#leer`), first-meals chapter (`#bebe`), FAQ, closing choices and conte
 sticky chooser. `src/features/hub/hub-products.ts` projects the core kit registry
 and `config/affiliates.ts` into the shared need model used by doors and menus.
 Page copy lives in `content/es/home.ts`; shared labels live in `content/es/hub.ts`.
+`HubProductLink` receives the plain shared need model (with a type-only import),
+then selects exactly one existing `ProductInterestLink` or `AffiliateLink` handler.
+The registry stays outside the client import graph; stable `#leer` / `#bebe` chapters
+remain informational rather than an extra required selection step.
 The full behavior and ownership map is the [Home hub spec](specs/home-hub.md).
 
 `config/affiliates.ts` owns the approved course facts, local redirect path and
