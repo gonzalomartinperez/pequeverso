@@ -3,7 +3,7 @@
 **Central idea:** a parent who lands on pequeverso.com (mostly on a phone, from a social post or
 bio) understands in the first viewport that Pequeverso accompanies each stage of the family. They
 pick the door that matches today's need: «Aprender a leer · 3 a 7 años» (Grafismo Fonético, our
-printable kit) or «Empezar a comer · 6 a 12 meses» (Guía de Alimentación para Bebés, a
+printable kit) or «Primeras comidas de tu bebé · 6 a 12 meses» (Guía de Alimentación para Bebés, a
 third-party course recommended as a Hotmart affiliate). Both products get the same weight from
 the hero to the close.
 **Primary action:** one per product, with the same visual weight. `ProductInterestLink` goes to
@@ -48,7 +48,7 @@ the owner's request wins (the «Productos» dropdown stays).
      `@starting-style`) with staggered cards, and it simply appears under reduced motion. Base UI
      `NavigationMenu` was not used because it would add a client island to every page for
      behaviour the platform already provides.
-   - *Text anchors (from lg):* «Aprender a leer», «Empezar a comer» and «Preguntas». The anchor of the
+   - *Text anchors (from lg):* «Aprender a leer», «Primeras comidas de tu bebé» and «Preguntas». The anchor of the
      chapter in view is marked `aria-current="location"`.
    - *Auto-hide (home only):* the header slides away while the visitor reads down past the hero and
      returns on any scroll up (transform, 340 ms). It never hides while it holds focus or while its
@@ -166,3 +166,7 @@ Acceptance keeps the existing hub tests and adds visible canonical names, proven
 action geometry at normal size. Existing 200% text-reflow tests remain binding; enlarged text
 may stack the two doors rather than truncate either. Before/after local screenshots and the
 exact test receipts are kept outside the repository; they are not a production deployment.
+
+The owner refined the shared feeding label to «Primeras comidas de tu bebé» on 2026-10-17.
+It is used consistently in the selector, navigation, menus, closing cards and footer; anchors,
+canonical product names and commercial facts remain unchanged.

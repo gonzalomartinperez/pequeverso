@@ -142,3 +142,23 @@ re-deployed. The verify job then proves the previous `sha` is live; if Hostinger
 
 Hotmart configuration (sales page URL, funnel stage URLs, thank-you URLs), Search Console
 submissions, social bios and the old-domain `.htaccess` block are manual steps in `docs/migration.md`.
+
+## Daily internal-link and affiliate checks
+
+Production daily checks storefront-origin responses separately from the external merchant.
+The crawler uses manual redirects and follows at most eight internal hops. A first external
+hop is accepted only from a configured affiliate edge path, with temporary status 302 (static)
+or 307 (Next standalone), an HTTPS destination with no credentials/custom port, and an exact
+reviewed Hotmart host (`go.hotmart.com`, `pay.hotmart.com` or `hotmart.com`). It does not follow
+that destination, so a merchant's country/session/bot policy is not misreported as a broken
+storefront link. Other external redirects, missing/invalid destinations, loops, excessive hops
+and storefront 4xx/5xx still fail. HEAD 405 keeps the existing GET fallback; HEAD 403 is not bypassed.
+Future producer-owned hosts need an explicit monitoring-policy review, not a wildcard exception.
+This check proves the public route and approved handoff, not third-party checkout availability,
+a purchase, affiliate attribution or fulfillment. No checkout/tracking behavior changes.
+
+The production-daily sparse checkout includes `scripts/` and `config/` so it reads the same
+committed affiliate paths as the edge-rule generator. Nightly remains the separate export
+matrix/visual/clean-clone/Lighthouse ×5/links/bundle gate; a production-daily failure does not imply
+that Nightly failed. Original daily failures remain evidence; rerun both appropriate workflows
+on integrated refs after corrections and verify every job, rather than changing thresholds.

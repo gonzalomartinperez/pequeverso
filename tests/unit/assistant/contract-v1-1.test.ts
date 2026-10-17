@@ -257,7 +257,12 @@ describe("lifecycle and stream edge cases", () => {
     };
     const assistant = createAssistant(
       transport,
-      { id: () => "key-000001", now: () => "2026-10-05T00:00:00Z" },
+      {
+        id: () => "key-000001",
+        now: () => "2026-10-05T00:00:00Z",
+        wait: (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
+        timeout: (milliseconds) => AbortSignal.timeout(milliseconds),
+      },
       { policy: { storefrontOrigin: "https://pequeverso.com", linkHosts: [] }, locale: "es" },
     );
     assistant.start();

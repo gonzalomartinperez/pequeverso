@@ -6,6 +6,8 @@
 // to $GITHUB_OUTPUT (`failed=`), exits 1 on any failure. Warnings never fail the run.
 import { appendFileSync } from "node:fs";
 import { connect } from "node:tls";
+import { affiliateSources } from "./lib/edge-rules.ts";
+import { checkInternalLink } from "./lib/live-links.ts";
 
 const base = (process.argv[2] || "https://pequeverso.com").replace(/\/$/, "");
 const MIN_TLS_DAYS = 14;
@@ -129,13 +131,15 @@ async function crawl(pages: string[]): Promise<void> {
       if (!m[1]?.startsWith("/cdn-cgi/")) targets.add((m[1] ?? "/").split("#")[0] ?? "/");
   }
   const broken: string[] = [];
+  const affiliatePaths = new Set(affiliateSources());
+  let affiliateRedirects = 0;
   const queue = [...targets];
   await Promise.all(
     Array.from({ length: 8 }, async () => {
       for (let t = queue.shift(); t !== undefined; t = queue.shift()) {
-        let res = await fetch(new URL(t, `${base}/`), { method: "HEAD" });
-        if (res.status === 405) res = await fetch(new URL(t, `${base}/`));
-        if (res.status >= 400) broken.push(`${t} → ${res.status}`);
+        const result = await checkInternalLink(base, t, affiliatePaths);
+        if (!result.ok) broken.push(`${t} → ${result.detail}`);
+        if (result.affiliateRedirect) affiliateRedirects++;
       }
     }),
   );
@@ -144,7 +148,7 @@ async function crawl(pages: string[]): Promise<void> {
     broken.length ? "fail" : "pass",
     broken.length
       ? broken.slice(0, 10).join("; ")
-      : `${targets.size} URLs from ${pages.length} pages resolve`,
+      : `${targets.size} URLs from ${pages.length} pages resolve; ${affiliateRedirects} approved affiliate redirect(s), external merchant responses not probed`,
   );
 }
 

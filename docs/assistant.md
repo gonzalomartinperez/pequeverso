@@ -14,6 +14,35 @@ Advisory, read-only helper that answers questions about the store's products wit
 | Store connected to the deployed API, production hostname and CORS | **Not exercised** in this repository; storefront activation is not authorized. Real-model evaluation evidence belongs to the API repository. |
 | Privacy-policy section for the assistant | **Not** written in `/privacidad/`: required before activation |
 
+## Affiliate recommendations and contract 1.5
+
+The shopping conversation covers the printable Grafismo Fonético kit and the third-party
+Guía de Alimentación para Bebés. The latter is a video course recommended as an affiliate, not
+another Pequeverso PDF kit. Its price, PDF count and page count are not published in the
+storefront and must not be inferred from the kit. The API owns catalog facts, product-specific
+policies, evidence selection and medical-advice boundaries; the storefront displays validated
+metadata and never makes a separate model request.
+
+Contract 1.5 adds optional product `kind`, `format` and `disclosure`. The validator defaults
+missing metadata to the legacy core presentation, rejects malformed consumed fields and preserves
+`price: null`. Affiliate cards display a visible commission disclosure, video format and a price
+lookup message rather than a fabricated amount or a stale-price date. Comparisons distinguish
+format and provenance as well as age and price. Resource badges still mean selected resources,
+never the course's unknown composition.
+
+Product information stays on the storefront (`/#bebe`); an explicit affiliate purchase action
+uses a plain anchor to the exact configured redirect `/alimentacion-bebe/`, opens a new tab and
+has `rel="sponsored noopener"` plus an accessible announcement. It does not use Next.js page
+navigation, append tracking, expose the deployment hotlink, submit payment or load the destination
+automatically. The same-origin URL policy additionally rejects query strings, fragments and
+unregistered paths for these affiliate actions. Existing core product actions are unchanged.
+
+Local fixture coverage is in `tests/assistant/affiliate.spec.ts`: course card and comparison,
+recovery from saved history without a second generation, mobile layout and safe-link attributes.
+`tests/unit/assistant/affiliate-products.test.ts` covers legacy payloads, malformed metadata and
+adversarial redirect destinations. Fixture results do not establish real-provider answer quality
+or the producer's live price, and enabled verification exports remain unpublishable.
+
 ## Switch
 
 | Variable | Values | Effect |

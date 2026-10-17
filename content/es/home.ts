@@ -22,7 +22,7 @@ export const homeCopy = {
   },
   nav: [
     { href: "#leer", label: "Aprender a leer" },
-    { href: "#bebe", label: "Empezar a comer" },
+    { href: "#bebe", label: "Primeras comidas de tu bebé" },
     { href: "#preguntas", label: "Preguntas" },
   ],
   /** Caption under AI-generated images where people are the subject. */

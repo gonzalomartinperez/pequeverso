@@ -2,7 +2,11 @@
  * Facts of the native shopping assistant that are not deployment values. The switch and the API
  * origin are build-time variables (src/features/assistant/flag.ts); the assistant ships disabled.
  */
+import { affiliates } from "./affiliates.ts";
+
 export const assistantConfig = {
+  /** Explicit, same-origin redirect paths; never embed the deployment hotlink. */
+  affiliatePurchasePaths: affiliates.map((product) => product.path),
   /**
    * Extra https hosts the assistant may link to (Hotmart buyer area and refund form), mirroring
    * the API's catalog allowlist (`CATALOG_ALLOWED_HOSTS`). Product, purchase and image URLs must
