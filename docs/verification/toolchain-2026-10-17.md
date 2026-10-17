@@ -78,22 +78,39 @@ managed-host runtime patch, provider quality or production activation.
 
 ## Integrated local evidence before the final Home bundle adjustment
 
-At `8660ae7`, the reviewed Home9255 and final API591a pin were integrated without
-rewriting history. The complete check passed199 unit tests in6.517s,14 structural
+At `8660ae7`, the reviewed Home `9255` and final API `591a` pin were integrated without
+rewriting history. The complete check passed 199 unit tests in 6.517 s, 14 structural
 pages, typing, lint, Knip and bundle budgets. The publishable disabled guard
-inspected127 text files. All12 existing visual comparisons passed in92.805s,
+inspected 127 text files. All 12 existing visual comparisons passed in 92.805 s,
 with no skipped, unexpected, flaky or retried results and no reference updates.
 
-The exact API591a archive used its own Python3.15.0 environment installed by
-uv0.13.1 with the frozen lock and `--no-build`. The native affected matrix ran
-42 unique identities over six projects and three engines:33PASS/9geometrySKIP,
-351.612s, zero retries/flaky/unexpected/top-level errors. It covered streaming and
-scroll/focus, keyboard, mobile portrait/landscape,200% text, recovery, affiliate
+The exact API `591a` archive used its own Python 3.15.0 environment installed by
+uv 0.13.1 with the frozen lock and `--no-build`. The native affected matrix ran
+42 unique identities over six projects and three engines: 33 PASS / 9 geometry SKIP,
+351.612 s, zero retries/flaky/unexpected/top-level errors. It covered streaming and
+scroll/focus, keyboard, mobile portrait/landscape, 200% text, recovery, affiliate
 cards and comparison. Original PNGs from Chromium, Firefox and WebKit were inspected.
-The existing Desktop gallery remains honestly attributed to UI61ca/API8ba/PW1.63.
+The existing Desktop gallery remains honestly attributed to UI `61ca` / API `8ba` / Playwright 1.63.
 
 These results precede the separate two-file Home import optimization `ebad242`,
 which fixes a CI-only initial-JS budget failure with the synthetic pixel configured.
 They are not relabeled as post-adjustment evidence. The final integrated check
 and protected CI still have to accept the resulting source. No budget threshold,
 timeout, retry, screenshot reference or provider limit is relaxed.
+
+
+## CI-environment check after the Home import adjustment
+
+At `fec3c4b`, `npm run check` ran with the same public origin, synthetic checkout
+and fake pixel as CI, with the assistant explicitly disabled. All 199 unit tests
+passed in 14.075 s; types, lint, Knip, 14 rendered pages and all budgets passed.
+Home initial JS measured 159872 gzip bytes against 160256, a 384-byte margin.
+The measurement is a finite gate result, not a promise of future growth headroom.
+
+The affected Home/footer visual check initially produced 2 PASS / 2 FAIL: both
+Home references matched, while both footer captures included the real cookie
+notice under the fake-pixel setting; the references represented an already-decided
+visitor. Original actual/expected/diff images and traces were preserved and
+inspected. Only deterministic rejected consent in the visual harness is authorized
+for the follow-up: no application consent/tracking changes, masks, relaxed limits
+or screenshot replacements. Final follow-up results are still pending.
