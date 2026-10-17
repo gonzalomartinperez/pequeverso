@@ -344,9 +344,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
           end: Number.parseFloat(style.paddingInlineEnd),
         };
       });
-    // Reserve the control gutter before scrolling: toggling it must not rewrap earlier messages.
+    // Messages use the full reading column; showing a header action must not rewrap them.
     const initialPadding = await readingPadding();
-    expect(initialPadding.end).toBeGreaterThan(initialPadding.start);
+    expect(initialPadding.end).toBe(initialPadding.start);
     const reader = await paragraph.evaluate((element) => {
       let scroller = element.parentElement;
       while (scroller && getComputedStyle(scroller).overflowY !== "auto") scroller = scroller.parentElement;
@@ -366,6 +366,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await expect(paragraph).toBeInViewport();
     const jump = panel(page).getByRole("button", { name: "Ir a la última respuesta" });
     await expect(jump).toBeVisible();
+    await expect(
+      panel(page).locator("header").getByRole("button", { name: "Ir a la última respuesta" }),
+    ).toBeVisible();
     await expect.poll(readingPadding).toEqual(initialPadding);
     await expect
       .poll(() =>
@@ -396,6 +399,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     if (isMobile(info.project.name)) await shot(page, info.project.name, "final-answer-text-visible");
     await jump.click();
     await expect(jump).toBeHidden();
+    await expect(
+      panel(page).getByRole("list", { name: "Conversación con el asistente" }).locator(".."),
+    ).toBeFocused();
     await expect.poll(readingPadding).toEqual(initialPadding);
     await expect
       .poll(() =>
@@ -674,6 +680,11 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await expect(panel(page).locator("header").getByText("IA", { exact: true })).toHaveCount(0);
     await expect(panel(page).getByRole("combobox")).toHaveCount(0);
     await expect(panel(page).locator("select")).toHaveCount(0);
+    await expect(panel(page).getByText("No escribas datos personales ni de tus hijos.")).toHaveCount(0);
+    await expect(panel(page).getByRole("link", { name: "Cómo tratamos tus mensajes" })).toHaveAttribute(
+      "href",
+      "/privacidad/",
+    );
     await ask(page, "¿Qué incluye el kit?");
     await expect(panel(page)).toHaveAttribute("data-phase", "completed");
     await composer(page).fill("Mi borrador sin enviar");
@@ -1110,6 +1121,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         );
         if (!jump) throw new Error("Jump control was not found");
         const area = scroller.getBoundingClientRect();
+        const header = jump.closest("header");
+        if (!header) throw new Error("Jump control must belong to the header");
+        const toolbar = header.getBoundingClientRect();
         const text = paragraph.getBoundingClientRect();
         const control = jump.getBoundingClientRect();
         const targetStyle = getComputedStyle(jump);
@@ -1121,8 +1135,18 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
           targetHeight: Number.parseFloat(targetStyle.height),
           renderedWidth: control.width,
           renderedHeight: control.height,
-          inside: control.top >= area.top && control.bottom <= area.bottom,
-          separate: text.right <= control.left,
+          inside:
+            control.top >= toolbar.top &&
+            control.bottom <= toolbar.bottom &&
+            control.left >= toolbar.left &&
+            control.right <= toolbar.right,
+          // A control may share the text's x range when it is above the transcript. Check
+          // both axes: any actual intersection still fails, including an enlarged-text overlap.
+          separate:
+            text.right <= control.left ||
+            text.left >= control.right ||
+            text.bottom <= control.top ||
+            text.top >= control.bottom,
           visibleLine: Math.min(text.bottom, area.bottom) - Math.max(text.top, area.top) >= line,
           readable: hit === paragraph || (hit !== null && paragraph.contains(hit)),
         };

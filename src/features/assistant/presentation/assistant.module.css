@@ -181,19 +181,6 @@
   padding: var(--space-2, 0.5rem);
 }
 
-/* A physical 44px target cannot grow over the reading area at 200% text size. */
-.jump {
-  width: 44px;
-  height: 44px;
-  min-height: 44px;
-  padding: 0;
-}
-
-/* Keep every message outside the floating control, including enlarged text. */
-.reader {
-  padding-inline-end: 68px;
-}
-
 /* Preserve native-card captions in the narrower enlarged-text reading column. */
 .productAction {
   min-width: 0;
