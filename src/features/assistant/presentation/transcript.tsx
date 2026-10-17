@@ -1,8 +1,5 @@
 "use client";
-import { ArrowDown } from "lucide-react";
 import { type ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { buttonVariants } from "@/components/ui/button-variants";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cx } from "@/lib/cx";
 import styles from "./assistant.module.css";
 import { usePresentation } from "./context";
@@ -21,6 +18,7 @@ export function Transcript({
   busy,
   empty,
   inactive,
+  onJumpChange,
 }: {
   children: ReactNode;
   followSignal: number;
@@ -29,6 +27,8 @@ export function Transcript({
   empty: boolean;
   /** A clear-history decision temporarily owns the conversation controls. */
   inactive: boolean;
+  /** Presentation-only registration: the header owns the control, this reader owns scrolling. */
+  onJumpChange: (action: (() => void) | null) => void;
 }) {
   const { t } = usePresentation();
   const scroller = useRef<HTMLDivElement>(null);
@@ -65,6 +65,20 @@ export function Transcript({
     setShowJump(!stick.current);
   }, []);
 
+  const jumpToLatest = useCallback(() => {
+    stick.current = true;
+    setShowJump(false);
+    toBottom(true);
+    // The header action disappears once following resumes. Keep focus in the conversation,
+    // without focusing the composer and opening a touch keyboard over the response.
+    scroller.current?.focus({ preventScroll: true });
+  }, [toBottom]);
+
+  useLayoutEffect(() => {
+    onJumpChange(showJump && !inactive ? jumpToLatest : null);
+    return () => onJumpChange(null);
+  }, [showJump, inactive, jumpToLatest, onJumpChange]);
+
   useLayoutEffect(() => {
     toBottom();
   }, [toBottom]);
@@ -98,54 +112,16 @@ export function Transcript({
 
   return (
     <div inert={inactive} className="relative min-h-0 flex-1">
-      <div ref={scroller} className={cx("cq h-full overflow-y-auto", styles.transcript)}>
+      <div ref={scroller} tabIndex={-1} className={cx("cq h-full overflow-y-auto", styles.transcript)}>
         <ol
           ref={content}
           aria-label={t.transcriptLabel}
           aria-busy={busy || undefined}
-          className={cx(
-            "mx-auto flex w-full max-w-3xl flex-col gap-4 px-3 py-3 cq-md:px-5",
-            !empty && styles.reader,
-          )}
+          className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-3 py-3 cq-md:px-5"
         >
           {children}
         </ol>
       </div>
-      {showJump && (
-        <div className="pointer-events-none absolute right-[8px] bottom-[8px]">
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <button
-                  type="button"
-                  aria-label={t.jumpToLatest}
-                  className={cx(
-                    buttonVariants({ variant: "secondary", size: "icon" }),
-                    "pointer-events-auto",
-                    styles.jump,
-                    styles.enter,
-                  )}
-                  onClick={() => {
-                    stick.current = true;
-                    setShowJump(false);
-                    toBottom(true);
-                  }}
-                />
-              }
-            >
-              <ArrowDown aria-hidden="true" className="size-[20px]" />
-            </TooltipTrigger>
-            <TooltipContent
-              className={styles.tooltip}
-              positionerClassName="z-[100]"
-              role="tooltip"
-              side="top"
-            >
-              {t.jumpToLatest}
-            </TooltipContent>
-          </Tooltip>
-        </div>
-      )}
     </div>
   );
 }

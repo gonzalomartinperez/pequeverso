@@ -155,13 +155,24 @@ Sources appear immediately after the answer and notices, before product recommen
 keeps its existing complete validated links; product cards, summaries, resources and actions remain
 available below it without truncated summaries.
 
-Once messages exist, a stable 68 px gutter separates the 44 px latest-answer control from the
-reading column, whether that control is visible or not. The initial greeting keeps its full width.
-A trial conditional gutter rewrapped a long earlier question at 200% text size and moved the answer
-outside the phone viewport; its failed run is retained. The stable column avoids that height change
-and keeps the reader's actual position. Returning to the latest answer restores following.
-Native scroll anchoring is disabled because following and reader position are explicitly managed.
-Neither operation initiates or retries a generation.
+The transcript uses equal inline padding before and after messages. The 44 px latest-answer
+control belongs to the header, outside the reading area; showing it cannot narrow or rewrap
+messages. A presentation-only callback registers its availability and scroll action; application
+state, transport and generation are unchanged. Scrolling up stops following without moving the
+reader; returning to the latest answer restores following. Activating the action focuses the
+transcript rather than opening a mobile keyboard. The existing icon-control tooltip, keyboard
+navigation and reduced-motion scroll preference apply.
+
+The prior 68 px permanent gutter avoided overlap but unnecessarily narrowed every answer;
+the original width regression is retained in local verification evidence. Geometry regressions
+now require equal inline padding, stable reader position and no two-dimensional intersection
+between the header action and answer text, including at 200% text size. Native scroll anchoring
+remains disabled because following and reader position are explicitly managed. No scroll action
+initiates or retries a generation.
+
+The composer retains the existing accessible “Cómo tratamos tus mensajes” link to `/privacidad/`
+without a generic warning. This does not add a retention/training statement or replace the
+assistant-specific privacy section required before activation.
 
 Resource arrays are response selections, not the kit inventory. Product badges use “3 destacados”
 and lists/comparisons use “Materiales destacados”, with “Selección para esta respuesta”. The
@@ -220,8 +231,8 @@ While deciding, the composer stays mounted but hidden (its draft is preserved) a
 is inert, so a short viewport cannot leave unreachable interactive content in the Tab sequence.
 Confirming first places focus on the stable panel; completion restores the composer only if the
 visitor has not moved focus elsewhere. No deletion occurs
-before an explicit confirmation. The empty welcome uses the full reading width; the 68 px gutter
-and jump-to-latest control are reserved for actual messages.
+before an explicit confirmation. The welcome and messages share the full reading width; the
+header shows the latest-answer action only when a reader has stopped following actual messages.
 
 The seven idle route checks are independent tests with unchanged navigation expectations and
 45-second per-test limits; failures identify a route rather than an accumulated navigation budget.
