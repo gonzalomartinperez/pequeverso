@@ -1,0 +1,39 @@
+{
+  "created_on": "2026-10-17",
+  "kind": "First-party documentation context diagram, not deployment evidence",
+  "application_source_commit": "66f3a6af73bccaadcf5cbcf428bbfff81bafd098",
+  "readme_source_commit": "9001f8bff932d943be380095dbf37598033bf9ba",
+  "visual_review": "Independent root and implementing agents inspected actual light/dark renders at 896 and 390 pixels. First tall/low-contrast candidates rejected and retained externally. Agent review, not human review.",
+  "production_assistant": "disabled",
+  "runtime_dependencies_added": false,
+  "files": [
+    {
+      "file": "system-light.svg",
+      "bytes": 35898,
+      "sha256": "2607fa2bc1f11ff143851e431304f7558a4d8d4767ee772f7860d81fb54d78b8"
+    },
+    {
+      "file": "system-light.mmd",
+      "bytes": 2272,
+      "sha256": "19929660cc6c531a2b187311e44287c5e63214df0158afc5aef0b8f59fb6921c"
+    },
+    {
+      "file": "system-dark.svg",
+      "bytes": 35982,
+      "sha256": "f5b3c862056b2af63d0c3bb0b1af2e1bc8fd53a41978f3c02c6523665f3fc7d8"
+    },
+    {
+      "file": "system-dark.mmd",
+      "bytes": 2272,
+      "sha256": "5a1b1658043e4bcb52754450570747a01ac17b7fcf98a6b7f710967f2a202d23"
+    }
+  ],
+  "renderer": {
+    "mermaid": "12.2.0",
+    "distribution_cli": "12.0.0",
+    "execution": "Local Mermaid browser bundle; not CLI subprocess or GitHub native render",
+    "playwright": "1.64.1",
+    "chromium": "156.0.8078.4",
+    "security": "strict; htmlLabels false; no network"
+  }
+}
