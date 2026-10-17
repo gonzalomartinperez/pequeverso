@@ -197,5 +197,6 @@ strings; negative fixtures exercise the actual rules.
 The exact `src/lib/cn-tables` module is a generated build artifact owned by `cn/next` in
 `config/next.ts`. Its declaration is tracked and its JavaScript is generated before Next builds.
 When present the checker parses its JavaScript; a clean checkout may omit it until generation.
-Other unresolved local imports in client graphs fail closed. These checks supplement behavior,
+The existing public `media/manifest.json` import is explicitly permitted; other asset imports
+must exist under this repository’s `src/` or `content/`. Other unresolved local imports in client graphs fail closed. These checks supplement behavior,
 strict typing and disabled-build verification; they do not prove production security.

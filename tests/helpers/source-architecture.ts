@@ -179,7 +179,7 @@ export function clientBoundaryViolations(modules: ReadonlyMap<string, SourceModu
             local !== "src/lib/cn-tables" &&
             !(
               existsSync(local) &&
-              /^(?:src|content)\//.test(local) &&
+              (/^(?:src|content)\//.test(local) || local === "media/manifest.json") &&
               /\.(?:css|json|svg|png|jpe?g|webp|avif|woff2?)$/.test(local)
             )
           )
