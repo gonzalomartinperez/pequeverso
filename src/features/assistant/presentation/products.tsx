@@ -196,11 +196,11 @@ function Comparison({ products, resources }: { products: Product[]; resources: R
       tabIndex={0}
       className="overflow-x-auto rounded-md border border-line"
     >
-      <table className="w-full min-w-[34rem] table-fixed border-collapse bg-card text-small">
+      <table className="w-full min-w-[36rem] table-fixed border-collapse bg-card text-small">
         <caption className="sr-only">{t.compareLabel}</caption>
         <thead className="bg-sky">
           <tr>
-            <td className="w-24" />
+            <td className="w-32" />
             {products.map((product) => (
               <th key={product.id} scope="col" className="px-3 py-2 text-left font-extrabold text-heading">
                 {product.name}
