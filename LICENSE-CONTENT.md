@@ -14,7 +14,9 @@ redistributed or used to present another product or brand:
 
 Third-party components keep their own licences:
 
-- Fraunces and Nunito Sans fonts: SIL Open Font License 1.1 (`src/fonts/OFL-*.txt`).
+- Fraunces and Nunito Sans fonts: SIL Open Font License 1.1
+  ([Fraunces](public/fonts/OFL-Fraunces.txt),
+  [Nunito Sans](public/fonts/OFL-NunitoSans.txt)).
 - npm dependencies: see each package's licence (`npm ls --json` / `npx license-checker`).
 
 The commercial products themselves (PDF files) are not part of this repository and are delivered
