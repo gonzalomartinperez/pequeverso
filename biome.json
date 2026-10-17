@@ -115,19 +115,6 @@
           }
         }
       }
-    },
-    {
-      "includes": ["docs/architecture/system-light.svg", "docs/architecture/system-dark.svg"],
-      "linter": {
-        "rules": {
-          "complexity": {
-            "noImportantStyles": "off"
-          },
-          "style": {
-            "noDescendingSpecificity": "off"
-          }
-        }
-      }
     }
   ]
 }

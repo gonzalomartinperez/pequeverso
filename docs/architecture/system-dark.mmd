@@ -1,21 +1,10 @@
----
-{"config": {"theme": "base", "look": "classic", "fontFamily": "Arial, sans-serif", "htmlLabels": false, "themeVariables": {"background": "#101b2b", "primaryTextColor": "#f4f5f8", "lineColor": "#9baac0", "clusterBkg": "#101b2b", "clusterBorder": "#9baac0", "edgeLabelBackground": "#101b2b", "fontSize": "18px", "textColor": "#f4f5f8", "titleColor": "#f4f5f8", "nodeTextColor": "#f4f5f8", "clusterTextColor": "#f4f5f8"}, "flowchart": {"curve": "basis", "nodeSpacing": 30, "rankSpacing": 36, "padding": 14, "htmlLabels": false, "wrappingWidth": 340}, "markdownAutoWrap": false, "themeCSS": ".cluster-label text,.nodeLabel,.edgeLabel text,.label text{fill:#f4f5f8!important;} .edgeLabel rect,.edgeLabel polygon{fill:#101b2b!important;opacity:1!important;}"}}
----
 flowchart TB
-  accTitle: Pequeverso storefront components and boundaries
-  accDescr: Public store with separate kit landing and affiliate redirect. Private native assistant remains disabled. Hotmart owns commerce. vps-ops owns future infrastructure.
-  Build["REVIEWED BUILD<br/>Typed registry · Next.js"] --> Store["PUBLIC STOREFRONT<br/>Pequeverso · assistant OFF"]
-  Store -->|"Own kit landing"| Kit["GRAFISMO FONÉTICO<br/>/grafismo-fonetico/"]
-  Store -->|"Affiliate redirect ·302"| Course["BABY FEEDING COURSE<br/>/alimentacion-bebe/"]
-  Kit -->|"Explicit purchase"| Hotmart["HOTMART · EXTERNAL<br/>Payment · delivery · refunds"]
-  Course -->|"To producer · no local landing"| Hotmart
-  Store -. "OFF · no assistant traffic" .-> Native["PRIVATE ASSISTANT INTEGRATION<br/>Lazy UI → /api/v1 · session / CSRF / SSE<br/>Separate API + authorized backoffice"]
-  Ops["VPS-OPS · FUTURE<br/>Deployment · TLS · proxy"] -. "Infrastructure responsibility" .-> Native
-  Native ~~~ Legend["KEY · Solid: implemented path<br/>Dashed: OFF, optional or future · read labels"]
-  class Store,Kit,Course,Native app
-  class Build data
-  class Hotmart,Ops,Legend external
-  classDef person fill:#423620,stroke:#a6c5ed,color:#f4f5f8,stroke-width:1.5px;
-  classDef app fill:#1c3049,stroke:#a6c5ed,color:#f4f5f8,stroke-width:1.5px;
-  classDef data fill:#183b3b,stroke:#77d3c4,color:#f4f5f8,stroke-width:1.5px;
-  classDef external fill:#253144,stroke:#9baac0,color:#f4f5f8,stroke-width:1.2px,stroke-dasharray:4 3;
+  accTitle: Pequeverso storefront product paths and disabled assistant
+  accDescr: Home opens the kit landing or affiliate redirect. The external producer has its own sales page. Visitors explicitly choose Hotmart checkout. The assistant stays disabled and deployment belongs to vps-ops.
+  Home["Home · typed facts and reviewed build"] --> Kit["Our kit · own landing<br/>/grafismo-fonetico/"]
+  Home --> Course["Affiliate course · HTTP 302 redirect<br/>/alimentacion-bebe/"]
+  Kit -->|Explicit purchase| Checkout["Hotmart · external checkout<br/>Payment, delivery and refunds"]
+  Course --> Producer["External producer’s sales page<br/>No course landing hosted here"]
+  Producer -->|Visitor chooses to purchase| Checkout
+  Home -. Disabled integration .-> Assistant["Native assistant · OFF<br/>No launcher, runtime or API traffic"]
+  Ops["vps-ops · future API infrastructure<br/>Deployment, HTTPS and proxy"]
