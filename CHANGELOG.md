@@ -4,6 +4,11 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
 
 ## [Unreleased]
 
+### Changed
+- Home product chooser identifies both canonical product names on phones, gives both actions
+  the same width and distinguishes the Pequeverso kit from the affiliate course. First-meals
+  copy describes the guidance without promising an absence of fear or time in the kitchen.
+
 ## [1.0.0] — 2026-10-13
 
 pequeverso.com v1: the home is the hub of two products. Grafismo Fonético is Pequeverso's own kit.
