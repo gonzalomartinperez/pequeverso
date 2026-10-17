@@ -184,6 +184,7 @@ test("direct selection preserves acquisition, announces the affiliate and emits 
   await expect(course).toHaveAttribute("target", "_blank");
   await expect(course).toHaveAttribute("rel", "sponsored noopener");
   await expect(course).toContainText("se abre en una pestaña nueva");
+  await expect(course.locator("svg.lucide-external-link:visible")).toHaveCount(1);
   await expect(page.locator("a a, a button")).toHaveCount(0);
   await kit.evaluate((link) => link.addEventListener("click", (event) => event.preventDefault()));
   await course.evaluate((link) => link.addEventListener("click", (event) => event.preventDefault()));
@@ -212,4 +213,27 @@ test("mobile product selections go directly to the destinations and close the sh
   await links.nth(1).evaluate((link) => link.addEventListener("click", (event) => event.preventDefault()));
   await links.nth(1).click();
   await expect(page.getByRole("dialog")).toBeHidden();
+});
+
+test("the kit door opens our landing, keeping acquisition and excluding offer overrides", async ({
+  page,
+}) => {
+  await page.goto("/?utm_source=home-route&off=EVIL&ref=EVIL");
+  const kit = page.locator('a[data-door="reading"]');
+  await expect(kit).toHaveAttribute("href", "/grafismo-fonetico/?utm_source=home-route");
+  await kit.click();
+  await expect(page).toHaveURL(/\/grafismo-fonetico\/\?utm_source=home-route$/);
+  await expect(page.locator("main a[data-checkout]").first()).toBeVisible();
+});
+
+test("404 offers the existing affiliate redirect with a disclosure instead of a chapter detour", async ({
+  page,
+}) => {
+  await page.goto("/pagina-inexistente-para-prueba/");
+  const course = page.locator("main a[data-affiliate]");
+  await expect(course).toHaveAttribute("href", "/alimentacion-bebe/?src=sitio-home");
+  await expect(course).toHaveAttribute("target", "_blank");
+  await expect(course).toHaveAttribute("rel", "sponsored noopener");
+  await expect(page.locator("#not-found-affiliate")).toBeVisible();
+  await expect(page.locator("main a[href='/#bebe']")).toHaveCount(0);
 });
