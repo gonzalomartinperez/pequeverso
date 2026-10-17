@@ -19,7 +19,8 @@ export const assistantCopy = {
   privacyLink: "Cómo tratamos tus mensajes",
 
   greetingTitle: "¡Hola! ¿En qué te ayudo?",
-  greetingBody: "Te ayudo a conocer los materiales, elegir por edad y resolver dudas sobre su uso.",
+  greetingBody:
+    "Te ayudo a elegir entre materiales para aprender a leer y una guía de alimentación para bebés.",
   startersLabel: "Preguntas para empezar",
   // Only known opening questions receive shorter visual labels; the full question is sent unchanged.
   starterLabels: {
@@ -31,13 +32,19 @@ export const assistantCopy = {
     "¿Sirve para un niño de 4 años?": "Para niños de 4 años",
     "¿Cómo se imprime y se usa en casa?": "Impresión y uso",
     "¿Cómo recibo el material después de comprar?": "Entrega digital",
+    "¿Qué enseña la Guía de Alimentación para Bebés?": "Guía para bebés",
+    "¿Qué enseña Guía de Alimentación para Bebés?": "Guía para bebés",
+    "¿Para qué edades es Grafismo Fonético?": "Edad recomendada",
+    "¿Qué diferencias hay entre Grafismo Fonético y Guía de Alimentación para Bebés?": "Comparar opciones",
+    "¿Qué opción es para la etapa que busco?": "Elegir por etapa",
+    "¿Cómo accedo después de comprar?": "Acceso a la compra",
   } as Record<string, string>,
   /** Fallback only: the API sends starters built from approved catalog topics. */
   starters: [
     "¿Qué incluye Grafismo Fonético?",
-    "¿Sirve para un niño de 4 años?",
-    "¿Cómo se imprime y se usa en casa?",
-    "¿Cómo recibo el material después de comprar?",
+    "¿Qué enseña la Guía de Alimentación para Bebés?",
+    "¿Qué opción es para la etapa que busco?",
+    "¿Cómo accedo después de comprar?",
   ],
 
   transcriptLabel: "Conversación con el asistente",
@@ -80,6 +87,17 @@ export const assistantCopy = {
   price: "Precio",
   priceReferenceDate: (date: string) => `Referencia del catálogo del ${date}.`,
   priceUnverified: "Consulta el precio vigente en la página del material",
+  affiliatePrice: "Consulta el precio vigente en Hotmart.",
+  affiliateLabel: "Recomendación de afiliado",
+  affiliateAction: "Ver la guía en Hotmart",
+  affiliateInfo: "Conocer la guía",
+  affiliateDisclosure:
+    "Enlace de afiliado: si compras, Pequeverso recibe una comisión; a ti no te cuesta más.",
+  format: "Formato",
+  formatUnknown: "Consulta el formato en la página del producto",
+  productRelationship: "Origen",
+  ownProduct: "Material de Pequeverso",
+  affiliateResources: "Consulta el contenido de la guía en Hotmart",
   resourcesLabel: "Materiales destacados",
   resourcesHint: "Selección para esta respuesta",
   pages: (count: number) => (count === 1 ? "1 página" : `${count} páginas`),

@@ -18,6 +18,7 @@ type Props = {
   storefrontOrigin: string;
   linkHosts: readonly string[];
   approvedSourceUrls: readonly string[];
+  affiliatePurchasePaths: readonly string[];
   routes: readonly RouteContext[];
   avatarSrc: string;
   supportPath: string;
@@ -42,6 +43,7 @@ export function AssistantMount({
   storefrontOrigin,
   linkHosts,
   approvedSourceUrls,
+  affiliatePurchasePaths,
   routes,
   avatarSrc,
   supportPath,
@@ -57,8 +59,8 @@ export function AssistantMount({
   const restoreFocus = useRef(false);
   const openedPath = useRef<PublicPath | null>(null);
   const policy = useMemo<LinkPolicy>(
-    () => ({ storefrontOrigin, linkHosts, approvedSourceUrls }),
-    [storefrontOrigin, linkHosts, approvedSourceUrls],
+    () => ({ storefrontOrigin, linkHosts, approvedSourceUrls, affiliatePurchasePaths }),
+    [storefrontOrigin, linkHosts, approvedSourceUrls, affiliatePurchasePaths],
   );
 
   useEffect(() => {

@@ -6,7 +6,7 @@ import { buttonVariants } from "@/components/ui/button-variants";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cx } from "@/lib/cx";
 import { cn } from "@/lib/utils";
-import { externalUrl, storefrontPath } from "../domain/links";
+import { affiliatePurchasePath, externalUrl, storefrontPath } from "../domain/links";
 import styles from "./assistant.module.css";
 import { usePresentation } from "./context";
 
@@ -106,6 +106,28 @@ export function SafeLink({
   if (!external || new URL(external).origin === policy.storefrontOrigin) return null;
   return (
     <a href={external} target="_blank" rel="noopener noreferrer" className={className}>
+      {children}
+      <ExternalLink aria-hidden="true" className="size-4 shrink-0" />
+      <span className="sr-only">{t.opensInNewTab}</span>
+    </a>
+  );
+}
+
+/** Edge redirects must use a plain anchor, never Next's client-side page navigation. */
+export function AffiliateLink({
+  href,
+  className,
+  children,
+}: {
+  href: string;
+  className?: string | undefined;
+  children: ReactNode;
+}) {
+  const { policy, t } = usePresentation();
+  const path = affiliatePurchasePath(href, policy);
+  if (!path) return null;
+  return (
+    <a href={path} target="_blank" rel="sponsored noopener" className={className}>
       {children}
       <ExternalLink aria-hidden="true" className="size-4 shrink-0" />
       <span className="sr-only">{t.opensInNewTab}</span>

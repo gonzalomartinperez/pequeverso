@@ -95,7 +95,15 @@ function id(value: unknown, what: string): string {
 
 function product(value: unknown): Product {
   const v = object(value, "product");
+  const kind = v.kind === undefined ? "core" : v.kind;
+  if (kind !== "core" && kind !== "affiliate") invalid("product kind");
   return {
+    kind,
+    format: v.format === undefined || v.format === null ? null : text(v.format, "product format", 1500),
+    disclosure:
+      v.disclosure === undefined || v.disclosure === null
+        ? null
+        : text(v.disclosure, "product disclosure", 1500),
     id: id(v.id, "product id"),
     name: text(v.name, "product name", 200),
     summary: text(v.summary, "product summary", 1500),

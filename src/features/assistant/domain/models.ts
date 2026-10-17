@@ -19,6 +19,10 @@ export type Price = {
 };
 
 export type Product = {
+  /** Additive v1.5 metadata; omitted by older compatible APIs. */
+  kind?: "core" | "affiliate";
+  format?: string | null;
+  disclosure?: string | null;
   id: string;
   name: string;
   summary: string;
