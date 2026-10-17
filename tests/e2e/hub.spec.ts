@@ -26,6 +26,18 @@ test("both doors are inside the first viewport, the same size, and lead to stabl
     els.map((el) => [(el as HTMLElement).offsetWidth, (el as HTMLElement).offsetHeight]),
   );
   expect(sizes[0]).toEqual(sizes[1]);
+  // A visitor can identify the actual product and its origin before following either door,
+  // including on phones where the old chooser hid both product names.
+  await expect(doors.nth(0).getByText("Grafismo Fonético", { exact: true })).toBeVisible();
+  await expect(doors.nth(1).getByText("Guía de Alimentación para Bebés", { exact: true })).toBeVisible();
+  await expect(doors.nth(0).getByText("Kit de Pequeverso", { exact: true })).toBeVisible();
+  await expect(doors.nth(1).getByText("Curso afiliado", { exact: true })).toBeVisible();
+  const actions = await doors
+    .locator("[data-door-action]")
+    .evaluateAll((els) =>
+      els.map((el) => [(el as HTMLElement).offsetWidth, (el as HTMLElement).offsetHeight]),
+    );
+  expect(actions[0]).toEqual(actions[1]);
   // The course door is described by the affiliate disclosure, printed right under the doors.
   const describedBy = await doors.nth(1).getAttribute("aria-describedby");
   await expect(page.locator(`#${describedBy}`)).toContainText("Enlace de afiliado");
