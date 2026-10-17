@@ -104,6 +104,20 @@ for (const route of routes) {
         for (const detail of details) (detail as HTMLDetailsElement).open = true;
       });
       await page.evaluate(() => document.fonts.ready);
+      if (route === "/") {
+        // Exercise the actual floating choices: hidden/inert text alone cannot establish that
+        // long labels remain readable or that enlarged controls leave room for the page.
+        await page.locator("#preguntas h2").scrollIntoViewIfNeeded();
+        const bar = page.getByTestId("hub-sticky");
+        await expect(bar).toHaveAttribute("data-mode", "doors");
+        await expect(bar).toHaveCSS("visibility", "visible");
+        const bounds = await bar.boundingBox();
+        expect(bounds).not.toBeNull();
+        expect(bounds?.height).toBeLessThan(844 / 3);
+        for (const link of await bar.getByRole("link").all()) {
+          expect(await link.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+        }
+      }
       const result = await reflowFaults(page);
       expect
         .soft({ width: result.scrollWidth, faults: result.faults }, `${route} @${width} with 200 % text`)
