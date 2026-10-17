@@ -43,7 +43,7 @@ and run `npm run check:architecture` locally.
 | [Backoffice](https://github.com/gonzalomartinperez/pequeverso-assistant-backoffice) | Private administration and authenticated operations | Separate application; never a public chat iframe |
 | vps-ops | VPS deployment, Coolify, reverse proxy and shared infrastructure | This repository supplies artifacts and contracts; it does not provision the VPS |
 
-Hosting was last confirmed **unconnected on 2026-10-10**, with `main` selected for the future Hostinger connection. A source merge alone is not deployment evidence. [Build targets, routing and boundaries](docs/architecture.md) · [Hosting and deployment gates](docs/deployment.md).
+The owner confirmed that **Hostinger is connected to `main`** and automatically builds and publishes every merge. Verify the deployed SHA and `assistant: disabled` in `build-info.json`, then check `post-deploy-verify` and the live site; a source merge alone is not deployment evidence. [Build targets, routing and boundaries](docs/architecture.md) · [Hosting and deployment gates](docs/deployment.md).
 
 ## Native assistant
 
