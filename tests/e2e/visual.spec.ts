@@ -71,8 +71,17 @@ test("footer matches its baseline", async ({ page }) => {
   const bounds = await footer.boundingBox();
   if (!viewport || !bounds) throw new Error("Missing footer capture dimensions");
   // Element screenshots otherwise resize the viewport implicitly when the footer is taller.
-  // Prepare that same width and required height first, before checking layout stability.
-  const captureViewport = { ...viewport, height: Math.max(viewport.height, Math.ceil(bounds.height)) };
+  // Include the CSS scroll-padding in that preparation, so scrollIntoView can fit the whole footer.
+  const scrollPadding = await page.evaluate(() => {
+    const style = getComputedStyle(document.documentElement);
+    return (
+      (Number.parseFloat(style.scrollPaddingTop) || 0) + (Number.parseFloat(style.scrollPaddingBottom) || 0)
+    );
+  });
+  const captureViewport = {
+    ...viewport,
+    height: Math.max(viewport.height, Math.ceil(bounds.height + scrollPadding)),
+  };
   await page.setViewportSize(captureViewport);
   test.info().annotations.push({
     type: "footer-capture-dimensions",
@@ -80,6 +89,7 @@ test("footer matches its baseline", async ({ page }) => {
       original: viewport,
       capture: captureViewport,
       footerHeight: bounds.height,
+      scrollPadding,
     }),
   });
   await footer.scrollIntoViewIfNeeded();
