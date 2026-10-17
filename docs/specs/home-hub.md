@@ -155,6 +155,9 @@ wall, and the values bento. Retired media: `gf.life.logro`, `bebe.scene.mama` an
 - Open desktop/mobile product menus also reflow at 200% text on 320/390 px (`hub.spec.ts`):
   thumbnail/text columns stack below a 16rem container rather than squeezing labels into an
   overflowing sliver. Normal-size layouts retain their existing columns.
+- Home/footer visual captures explicitly materialize deferred sections and decode rendered images
+  before comparison. Capture-only `content-visibility: visible` prevents blank off-screen bands;
+  production retains deferred rendering. Screenshot thresholds and other pages remain unchanged.
 - Sticky bar modes and disclosure (`hub.spec.ts`). Affiliate link attributes, disclosure, lazy
   images and events (`commerce.spec.ts`). The home has no checkout link and no coral.
 - Hub link keeps acquisition params (`commerce.spec.ts`, `position="story"`).
