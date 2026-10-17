@@ -12,6 +12,8 @@ export type HubNeed = {
   /** Selection goes straight to our landing or the existing affiliate redirect. */
   destination: string;
   product: string;
+  /** Accessible outbound-tab note, resolved on the server from shared Spanish copy. */
+  newTabLabel: string;
   /** The task, never an identity: «Aprender a leer». */
   need: string;
   /** Age or stage from config: «3 a 7 años», «6 a 12 meses». */
@@ -33,6 +35,7 @@ export const reading: HubNeed = {
   key: "reading",
   destination: kit.path,
   product: kit.slug,
+  newTabLabel: "",
   anchor: `#${hubCopy.reading.anchor}`,
   need: hubCopy.reading.need,
   stage: kit.composition.ageRange,
@@ -50,6 +53,7 @@ export const feeding: HubNeed = {
   key: "feeding",
   destination: affiliateHref(course),
   product: course.slug,
+  newTabLabel: hubCopy.feeding.newTab,
   anchor: `#${hubCopy.feeding.anchor}`,
   need: hubCopy.feeding.need,
   stage: course.stage,

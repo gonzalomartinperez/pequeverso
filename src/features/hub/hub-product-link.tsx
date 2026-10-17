@@ -1,6 +1,5 @@
 "use client";
 
-import { hubCopy } from "@content/es/hub";
 import type { AnchorHTMLAttributes, ReactNode } from "react";
 import { AffiliateLink } from "@/features/commerce/AffiliateLink/AffiliateLink";
 import { ProductInterestLink } from "@/features/commerce/ProductInterestLink/ProductInterestLink";
@@ -20,7 +19,7 @@ type Props = Pick<
 export function HubProductLink({ need, position, children, ...attributes }: Props) {
   const props = { ...attributes, href: need.destination, product: need.product, position };
   return need.recommended ? (
-    <AffiliateLink {...props} newTabLabel={hubCopy.feeding.newTab}>
+    <AffiliateLink {...props} newTabLabel={need.newTabLabel}>
       {children}
     </AffiliateLink>
   ) : (
