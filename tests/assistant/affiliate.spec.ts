@@ -6,6 +6,12 @@ const SHOTS = "test-results-assistant/affiliate";
 mkdirSync(SHOTS, { recursive: true });
 
 test.beforeEach(async ({ context }) => {
+  await context.addInitScript(() => {
+    window.localStorage.setItem(
+      "pv_consent",
+      JSON.stringify({ version: 2, analytics: false, marketing: false, updatedAt: "2026-10-17T00:00:00Z" }),
+    );
+  });
   await context.route(/^https:\/\/([a-z0-9-]+\.)*facebook\.(com|net)\//, (route) => route.abort());
 });
 
@@ -41,7 +47,7 @@ test("affiliate course has its own card, disclosure and safe action, and survive
   await page.screenshot({ path: `${SHOTS}/${info.project.name}-affiliate-card.png`, animations: "disabled" });
   await page.reload();
   await page.getByTestId("assistant-launcher").click();
-  await expect(panel).toHaveAttribute("data-phase", "ready");
+  await expect(panel).toHaveAttribute("data-phase", "completed");
   await expect(panel.getByRole("article", { name: "Guía de Alimentación para Bebés" })).toHaveCount(1);
   expect(generations).toBe(1);
 });
@@ -68,6 +74,15 @@ test("comparison distinguishes course, printable kit and unknown affiliate price
   ).toBeVisible();
   await expect(input).toBeInViewport();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  // Narrow panels scroll the comparison itself rather than squeezing words into single letters.
+  const widths = await comparison.locator("thead th").evaluateAll((cells) =>
+    cells.map((cell) => cell.getBoundingClientRect().width),
+  );
+  for (const width of widths) expect(width).toBeGreaterThanOrEqual(190);
+  if (!info.project.name.includes("mobile")) {
+    await panel.getByRole("button", { name: "Ampliar panel" }).click();
+    await expect(panel).toHaveAttribute("data-size", "expanded");
+  }
   await comparison.scrollIntoViewIfNeeded();
   await page.screenshot({ path: `${SHOTS}/${info.project.name}-comparison.png`, animations: "disabled" });
 });

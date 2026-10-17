@@ -204,7 +204,7 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     const calls = apiCalls(page);
     await page.goto(start(info.project.name, "/soporte/"));
     await openPanel(page);
-    const question = "¿Qué incluye exactamente la compra?";
+    const question = "¿Qué incluye Grafismo Fonético?";
     const chip = panel(page).getByRole("button", { name: question, exact: true });
     await expect(chip).toHaveText("Qué incluye");
     await expect(chip).toHaveAttribute("title", question);
@@ -1018,7 +1018,10 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await openPanel(page);
     // Scale after opening so the test can inspect the assistant controls and transcript directly.
     await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
-    await ask(page, `¿Sirve este enlace https://pequeverso.com/${"muy-largo-".repeat(30)} para comprar?`);
+    await ask(
+      page,
+      `¿Sirve este enlace https://pequeverso.com/${"muy-largo-".repeat(30)} para comprar Grafismo Fonético?`,
+    );
     await expect(panel(page)).toHaveAttribute("data-phase", "completed");
     const viewport = page.viewportSize();
     if (!viewport) throw new Error("Viewport was not set");

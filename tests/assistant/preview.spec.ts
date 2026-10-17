@@ -49,16 +49,13 @@ test("captures the local assistant preview", async ({ page, context }, info) => 
     await route.continue();
   });
   const field = panel.getByRole("textbox", { name: "Escribe tu pregunta" });
-  await field.fill("¿Cuál es la garantía?");
+  await field.fill("¿Cómo funciona la garantía de Grafismo Fonético?");
   await field.press("Enter");
   await expect(panel.getByRole("list").getByText("Pensando…", { exact: true })).toBeVisible();
   if (!mobile) await page.screenshot({ path: `${SHOTS}/04-Desktop-Espera.png`, animations: "disabled" });
   release();
   await expect(panel).toHaveAttribute("data-phase", "completed");
-  // The delivered guarantee photographs have no selected-resource badge/list. Changing the
-  // subset labels does not change the pixels of these previously reviewed fixture states.
-  await expect(panel.getByRole("region", { name: "Materiales destacados", exact: true })).toHaveCount(0);
-  await expect(panel.getByText(/^\d+ destacados?$/)).toHaveCount(0);
+  // This is a fresh two-product fixture preview; the API owns any selected resource cards.
   await panel
     .getByRole("list", { name: "Conversación con el asistente" })
     .locator("..")
