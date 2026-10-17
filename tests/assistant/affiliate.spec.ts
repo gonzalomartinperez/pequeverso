@@ -75,9 +75,9 @@ test("comparison distinguishes course, printable kit and unknown affiliate price
   await expect(input).toBeInViewport();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   // Narrow panels scroll the comparison itself rather than squeezing words into single letters.
-  const widths = await comparison.locator("thead th").evaluateAll((cells) =>
-    cells.map((cell) => cell.getBoundingClientRect().width),
-  );
+  const widths = await comparison
+    .locator("thead th")
+    .evaluateAll((cells) => cells.map((cell) => cell.getBoundingClientRect().width));
   for (const width of widths) expect(width).toBeGreaterThanOrEqual(190);
   if (!info.project.name.includes("mobile")) {
     await panel.getByRole("button", { name: "Ampliar panel" }).click();
