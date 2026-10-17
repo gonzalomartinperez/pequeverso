@@ -48,7 +48,7 @@ export function ProductsMenu() {
         aria-label={hubCopy.menu.panelLabel}
         className="pv-popover on-light fixed inset-auto top-[calc(var(--header-height)+0.25rem)] left-1/2 m-0 max-h-[calc(100dvh-var(--header-height)-1rem)] w-[min(48rem,calc(100vw-1rem))] -translate-x-1/2 overflow-y-auto overscroll-contain rounded-2xl border-0 bg-transparent p-0 text-ink backdrop:bg-navy-deep/25"
       >
-        <div className="relative overflow-hidden rounded-2xl bg-cream p-3 shadow-[0_28px_60px_-18px_oklch(0.3175_0.1094_256.25/55%)] ring-1 ring-navy/15 sm:p-4">
+        <div className="cq relative overflow-hidden rounded-2xl bg-cream p-3 shadow-[0_28px_60px_-18px_oklch(0.3175_0.1094_256.25/55%)] ring-1 ring-navy/15 sm:p-4">
           <PanelSky />
           <div className="relative flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-2 pt-1 pb-3">
             <p className="font-display text-[1.375rem] leading-tight font-bold text-heading">
@@ -77,7 +77,7 @@ function MenuCard({ need }: { need: HubNeed }) {
       need={need}
       position="home"
       aria-describedby={disclosure}
-      className={`${HUB_CARD_LINK} group/card relative grid h-full grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-4 rounded-xl bg-white p-3 text-ink no-underline shadow-sm ring-1 ring-line transition-[translate,box-shadow] duration-(--duration) ease-out hover:shadow-float hover:ring-teal/40 motion-safe:hover:-translate-y-1 sm:grid-cols-1 sm:grid-rows-[auto_1fr] sm:content-start sm:items-start sm:p-4`}
+      className={`${HUB_CARD_LINK} group/card relative grid h-full grid-cols-1 max-sm:cq-xs:grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-4 rounded-xl bg-white p-3 text-ink no-underline shadow-sm ring-1 ring-line transition-[translate,box-shadow] duration-(--duration) ease-out hover:shadow-float hover:ring-teal/40 motion-safe:hover:-translate-y-1 sm:grid-cols-1 sm:grid-rows-[auto_1fr] sm:content-start sm:items-start sm:p-4`}
     >
       <span
         className={cn(

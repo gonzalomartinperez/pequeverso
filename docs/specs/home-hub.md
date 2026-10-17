@@ -149,6 +149,9 @@ wall, and the values bento. Retired media: `gf.life.logro`, `bebe.scene.mama` an
   the header.
 - The «Productos» menu opens and closes on Escape, has both cards with the right links and the
   disclosure, and is absent on the purchase and post-purchase pages (`hub.spec.ts`).
+- Open desktop/mobile product menus also reflow at 200% text on 320/390 px (`hub.spec.ts`):
+  thumbnail/text columns stack below a 16rem container rather than squeezing labels into an
+  overflowing sliver. Normal-size layouts retain their existing columns.
 - Sticky bar modes and disclosure (`hub.spec.ts`). Affiliate link attributes, disclosure, lazy
   images and events (`commerce.spec.ts`). The home has no checkout link and no coral.
 - Hub link keeps acquisition params (`commerce.spec.ts`, `position="story"`).

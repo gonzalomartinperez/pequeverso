@@ -280,3 +280,38 @@ test("the course selection opens the redirect path in a separate tab without con
     );
   }
 });
+
+test("enlarged text keeps both product menus free of clipped selections", async ({ page }) => {
+  test.setTimeout(60_000);
+  for (const width of [320, 390]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("/");
+    await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+    for (const mode of ["popover", "sheet"]) {
+      await page
+        .locator(mode === "popover" ? "header [data-products-trigger]" : '[data-slot="mobile-nav-trigger"]')
+        .click();
+      const menu =
+        mode === "popover"
+          ? page.locator("#pv-productos")
+          : page.getByRole("dialog").getByRole("navigation", { name: "Productos", exact: true });
+      await expect(menu).toBeVisible();
+      const links = menu.getByRole("link");
+      await expect(links).toHaveCount(2);
+      for (const link of await links.all()) {
+        await link.focus();
+        expect(
+          await link.evaluate((element) => element.scrollWidth <= element.clientWidth + 1),
+          `${mode} @${width}: selection text must fit`,
+        ).toBe(true);
+      }
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth === document.documentElement.clientWidth,
+        ),
+      ).toBe(true);
+      await page.keyboard.press("Escape");
+      await expect(menu).toBeHidden();
+    }
+  }
+});
