@@ -62,6 +62,15 @@ no second redundant architecture job, skip flag or baseline of tolerated violati
 | Alias changes | The checker and its fixtures must be reviewed when TypeScript path mappings change |
 | Regressions in the checker itself | Synthetic forbidden imports, barrels, cycles, side effects, type imports, traversal and parser failures are tested without executing fixture modules |
 
+The same aggregate classifies every scanned module before checking dependencies, including files
+with no imports. The documented `src` roots are `app`, `components`, `features`, `lib`, `motion` and
+`products`; components use `blocks`, `layout` or `ui`, and features use `assistant`, `commerce`,
+`gallery`, `home`, `hub`, `landing`, `playground` or `tracking`. `content`, `config` and `server`
+retain their existing source roles. New roots or groups require a reviewed classifier change.
+Framework route files and the existing generated `src/lib/cn-tables` module remain in their
+current locations; the assistant's stricter layer/composition placement gate still applies.
+This freezes existing responsibilities without moving files or changing commerce behavior.
+
 The checker uses the maintained Oxc TypeScript AST parser, declared directly as an exact development
 dependency. The same package/version was already locked through Knip: this adds no resolved packages
 or browser/runtime dependency. It keeps the architecture checker independent of the older TypeScript compiler JavaScript API

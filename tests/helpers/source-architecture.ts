@@ -23,6 +23,31 @@ export function sourceFiles(directory: string): string[] {
   });
 }
 
+/** Keep the documented store topology explicit, including modules with no imports. */
+export function sourcePlacementViolations(modules: ReadonlyMap<string, SourceModule>): string[] {
+  const roots = new Set(["app", "components", "features", "lib", "motion", "products"]);
+  const components = new Set(["blocks", "layout", "ui"]);
+  const features = new Set([
+    "assistant",
+    "commerce",
+    "gallery",
+    "home",
+    "hub",
+    "landing",
+    "playground",
+    "tracking",
+  ]);
+  return [...modules.keys()].filter((file) => {
+    const parts = posixPath(file).split("/");
+    if (parts.some((part) => !part || part === "." || part === "..")) return true;
+    if (["content", "config", "server"].includes(parts[0] ?? "")) return parts.length < 2;
+    if (parts[0] !== "src" || parts.length < 3 || !roots.has(parts[1] ?? "")) return true;
+    if (parts[1] === "components") return parts.length < 4 || !components.has(parts[2] ?? "");
+    if (parts[1] === "features") return parts.length < 4 || !features.has(parts[2] ?? "");
+    return false;
+  });
+}
+
 /** Parse TypeScript syntax, including side effects, re-exports and import types; never execute it. */
 export function sourceModule(file: string, source = readFileSync(file, "utf8")): SourceModule {
   const parsed = parseSync(file, source);

@@ -7,6 +7,7 @@ import {
   runtimeGraph,
   sourceFiles,
   sourceModule,
+  sourcePlacementViolations,
 } from "../helpers/source-architecture.ts";
 
 const modules = new Map(
@@ -16,6 +17,56 @@ const modules = new Map(
 );
 
 describe("store architecture", () => {
+  it("classifies every source module using the existing store topology", () => {
+    assert.deepEqual(sourcePlacementViolations(modules), []);
+  });
+
+  it("rejects importless modules outside declared roots and component or feature groups", () => {
+    for (const file of [
+      "src/unclassified/policy.ts",
+      "src/unchecked.ts",
+      "src/components/unclassified/empty.tsx",
+      "src/components/layout.tsx",
+      "src/features/unclassified/empty.ts",
+      "src/features/home.ts",
+      "src/Features/home/empty.ts",
+      "src/features/home/../unclassified/empty.ts",
+    ]) {
+      const module = sourceModule(file, "export const value = 1;");
+      assert.deepEqual(module.imports, []);
+      assert.deepEqual(sourcePlacementViolations(new Map([[file, module]])), [file]);
+    }
+  });
+
+  it("preserves existing route, component, feature, generated and public-content placements", () => {
+    const files = [
+      "src/app/[product]/page.tsx",
+      "src/app/api/meta/events/route.standalone.ts",
+      "src/components/blocks/section.tsx",
+      "src/components/layout/header.tsx",
+      "src/components/ui/button.tsx",
+      "src/features/assistant/entry.ts",
+      "src/features/commerce/checkout-url.ts",
+      "src/features/gallery/gallery.tsx",
+      "src/features/home/page.tsx",
+      "src/features/hub/hub-products.ts",
+      "src/features/landing/core-landing.tsx",
+      "src/features/playground/index.tsx",
+      "src/features/tracking/consent.ts",
+      "src/lib/cn-tables.d.ts",
+      "src/lib/cn-tables.js",
+      "src/motion/scene/runtime.ts",
+      "src/products/grafismo-fonetico.ts",
+      "content/es/home.ts",
+      "config/commerce.ts",
+      "server/meta-capi.ts",
+    ];
+    assert.deepEqual(
+      sourcePlacementViolations(new Map(files.map((file) => [file, sourceModule(file, "export {};")]))),
+      [],
+    );
+  });
+
   it("keeps runtime dependencies acyclic across source, public content, config and server", () => {
     assert.equal(firstRuntimeCycle(runtimeGraph(modules)), null);
   });
