@@ -104,17 +104,37 @@ export function HubStickyBar({ doors, reading, feeding }: Props) {
     // under it (html scroll-padding) instead of under an empty band.
     let last = window.scrollY;
     let frame = 0;
-    let hold = 0;
+    let hold = false;
+    let idle = 0;
+    const nativeScrollEnd = "onscrollend" in document;
+    const releaseAnchor = () => {
+      hold = false;
+      clearTimeout(idle);
+      last = window.scrollY;
+    };
+    const onScrollEnd = (event: Event) => {
+      if (hold && event.target === document) releaseAnchor();
+    };
+    const onKeyScroll = (event: KeyboardEvent) => {
+      if (
+        ["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].includes(event.key) &&
+        !(event.target as Element | null)?.closest("input, textarea, select, [contenteditable]")
+      )
+        releaseAnchor();
+    };
     const onAnchor = (event: MouseEvent) => {
       if (!(event.target as Element | null)?.closest?.('a[href^="#"], a[href^="/#"]')) return;
       header?.removeAttribute("data-hidden");
-      clearTimeout(hold);
-      hold = window.setTimeout(() => {
-        hold = 0;
-        last = window.scrollY;
-      }, 1200);
+      clearTimeout(idle);
+      hold = true;
     };
     const onScroll = () => {
+      // Older browsers have no scrollend: release only after scrolling has gone quiet,
+      // never a fixed interval after the click while the anchor is still moving.
+      if (hold && !nativeScrollEnd) {
+        clearTimeout(idle);
+        idle = window.setTimeout(releaseAnchor, 1200);
+      }
       if (frame) return;
       frame = requestAnimationFrame(() => {
         frame = 0;
@@ -131,6 +151,10 @@ export function HubStickyBar({ doors, reading, feeding }: Props) {
       });
     };
     window.addEventListener("scroll", onScroll, { passive: true });
+    if (nativeScrollEnd) document.addEventListener("scrollend", onScrollEnd);
+    window.addEventListener("wheel", releaseAnchor, { passive: true });
+    window.addEventListener("touchstart", releaseAnchor, { passive: true });
+    document.addEventListener("keydown", onKeyScroll);
     document.addEventListener("click", onAnchor, true);
     mobile.addEventListener("change", sync);
     return () => {
@@ -138,7 +162,11 @@ export function HubStickyBar({ doors, reading, feeding }: Props) {
       zoneObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
       document.removeEventListener("click", onAnchor, true);
-      clearTimeout(hold);
+      document.removeEventListener("scrollend", onScrollEnd);
+      window.removeEventListener("wheel", releaseAnchor);
+      window.removeEventListener("touchstart", releaseAnchor);
+      document.removeEventListener("keydown", onKeyScroll);
+      clearTimeout(idle);
       mobile.removeEventListener("change", sync);
       cancelAnimationFrame(frame);
       header?.removeAttribute("data-hidden");
