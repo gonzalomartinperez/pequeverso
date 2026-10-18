@@ -153,6 +153,8 @@ for (const nativeScrollEnd of [true, false]) {
   test(`anchor header follows scroll completion (${nativeScrollEnd ? "native" : "fallback"})`, async ({
     page,
   }) => {
+    // Install before application timers, then pause only after hydration and normal scrolling.
+    await page.clock.install({ time: new Date("2026-10-18T12:00:00Z") });
     if (!nativeScrollEnd) {
       await page.addInitScript(() => {
         let prototype: object | null = document;
@@ -180,7 +182,7 @@ for (const nativeScrollEnd of [true, false]) {
     await expect(header).toHaveAttribute("data-hidden", "");
     await scrollDocument(0);
     await expect(header).not.toHaveAttribute("data-hidden", "");
-    await page.clock.install();
+    await page.clock.pauseAt(new Date("2026-10-18T12:05:00Z"));
     await page.evaluate((native) => {
       if ("onscrollend" in document !== native) throw new Error("Unexpected scrollend fixture support");
       document.addEventListener(
@@ -199,7 +201,9 @@ for (const nativeScrollEnd of [true, false]) {
     }, nativeScrollEnd);
     for (const top of [400, 600, 800, 1000]) {
       await scrollDocument(top);
+      const before = await page.evaluate(() => Date.now());
       await page.clock.runFor(700);
+      expect(await page.evaluate(() => Date.now())).toBe(before + 700);
       await expect(header).not.toHaveAttribute("data-hidden", "");
     }
     // A real completed scroll releases the native lifecycle. The fallback waits for quiet.
