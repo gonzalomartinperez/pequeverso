@@ -281,8 +281,14 @@ jobs:
       - name: Summary
         if: always()
         run: node scripts/lhci-summary.ts >> "$GITHUB_STEP_SUMMARY"
+      - name: Bind fresh public metadata for the separate analyzer rebuild
+        run: node scripts/build-info.ts
       - name: Bundle analysis
         run: npm run analyze
+      - name: Verify analyzer output is still default-OFF
+        run: npm run check:assistant-disabled
+      - name: Record the separate analyzer rebuild identity and file manifest
+        run: node scripts/ci/artifacts.ts pack-off out .ci-analyzer-artifact
       - name: Upload Lighthouse and bundle reports
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
@@ -292,6 +298,7 @@ jobs:
           path: |
             .lighthouseci
             .next/analyze
+            .ci-analyzer-artifact/manifest.json
           retention-days: 30
           if-no-files-found: ignore
   checks:

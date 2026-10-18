@@ -313,3 +313,29 @@ test("quarantine validates before destination writes and rejects real symlinks/h
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("analyzer rebuild has fresh metadata, its own OFF verification and manifest-only evidence", () => {
+  const ci = readFileSync(".github/workflows/ci.yml", "utf8");
+  const nightly = readFileSync(".github/workflows/nightly.yml", "utf8");
+  assert.match(ci, /max-parallel: 4/);
+  const bundle = nightly.slice(nightly.indexOf("  bundle:"), nightly.indexOf("  checks:"));
+  const commands = [
+    "npx lhci autorun --collect.numberOfRuns=5",
+    "node scripts/build-info.ts",
+    "npm run analyze",
+    "npm run check:assistant-disabled",
+    "node scripts/ci/artifacts.ts pack-off out .ci-analyzer-artifact",
+  ];
+  let previous = -1;
+  for (const command of commands) {
+    const index = bundle.indexOf(command);
+    assert.ok(index > previous, `Required analyzer provenance step missing/out of order: ${command}`);
+    previous = index;
+  }
+  const upload = bundle.slice(bundle.indexOf("      - name: Upload Lighthouse and bundle reports"));
+  assert.match(upload, /^\s+\.ci-analyzer-artifact\/manifest\.json$/m);
+  assert.doesNotMatch(
+    upload,
+    /^\s+(?:out\/?|\.ci-analyzer-artifact\/?|\.ci-analyzer-artifact\/payload\/?)$/m,
+  );
+});

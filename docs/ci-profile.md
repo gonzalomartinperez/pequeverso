@@ -32,7 +32,8 @@ with Nightly names. Only superseded PR CI is cancelled; pushes and Nightly are n
 `playwright.config.ts` (`PW_SET=pr`) retains Firefox 390, WebKit 390, Chromium 1440/768/390 and
 reduced motion. `playwright.assistant.config.ts` retains Chromium desktop/mobile/reduced motion,
 Firefox desktop and WebKit desktop/mobile. These are two configurations, not twelve projects in
-one configuration. Each has four shards; `max-parallel: 2` bounds simultaneous legs.
+one configuration. Each has four shards; `max-parallel: 4` bounds simultaneous legs. No speedup
+is inferred.
 
 Before execution, each runner discovers the full configuration and every shard using Playwright
 `--list --reporter=json`. `scripts/ci/inventories.ts` requires the full project catalogue and a
@@ -80,10 +81,16 @@ no pixel ID. The verified OFF export feeds the remaining jobs.
 
 Browser preserves all seven widths on Chromium and WebKit in eight shards of the full 14-project
 configuration, with `max-parallel: 4` and fail-fast false. Every runner discovers the full catalogue
-and all eight shard inventories; the verifier requires their disjoint exact identity union. Visual compares the existing snapshots by default. Links checks the
+and all eight shard inventories; the verifier requires their disjoint exact identity union. Visual
+compares the existing snapshots by default. Links checks the
 export. Bundle retains **20 Lighthouse samples** (five × four routes), the same assertions and
 bundle analysis. Analysis performs its own instrumented same-source build; it does not reuse
-the identical runtime binary. No threshold, retry, timeout, baseline or assertion is relaxed.
+the identical runtime binary. Its fresh public build-info is generated before analysis, the rebuilt
+export must pass the disabled-assistant guard, and a separate source/run/config/file-set manifest
+is recorded afterward. Only that analyzer manifest and reports are uploaded; its payload is not
+uploaded or authorized for deployment. The 20 Lighthouse samples still use the verified downloaded
+OFF export, before this separate analyzer rebuild. No threshold, retry, timeout, baseline or
+assertion is relaxed.
 
 Scheduled runs use the repository default branch (`develop` at this source); manual dispatch uses
 the selected ref. The existing `update_snapshots` boolean stays manual and false by default.
