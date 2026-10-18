@@ -29,9 +29,9 @@ build:standalone` is the Node parity build you can run locally).
 
 | Workflow | When | What | Permissions |
 |---|---|---|---|
-| `ci.yml` | pull request, push to `main` or `develop`, manual | `workflows` (actionlint + zizmor), `build` (lint, types, unit, knip, export, budgets, audit), `hostinger` (GLIBC 2.28 container, WASM SWC, standalone build + smoke) in parallel → `e2e` + `lighthouse` (not on push) → `ci` (required check) | `contents: read` |
+| `ci.yml` | pull request, push to `main` or `develop`, manual | `workflows` + `secrets` + `quality`; `quality` → `build` (OFF export) + `hosting` (GLIBC 2.28, WASM SWC, standalone smoke); `build` → eight `browser` legs + `performance`; `checks` → required `ci` bridge. Same validation on PR/push/manual; [profile](ci-profile.md) | `contents: read` |
 | `post-deploy-verify.yml` | push to `main` when `HOSTINGER_MAIN_AUTODEPLOY_ENABLED=true`, manual (`sha`), reusable call | waits until `build-info.json` reports the commit, smoke, headers, `PW_SET=prod`, informative Lighthouse; job summary with revision and timings | `contents: read` |
-| `nightly.yml` | 04:17 UTC, manual (`update_snapshots`) | Chromium + WebKit × 7 widths, visual baselines, clean-clone invariant, full knip, Lighthouse ×5, links, bundle analysis | `contents: read` |
+| `nightly.yml` | 04:17 UTC, manual (`update_snapshots`) | Chromium + WebKit × 7 widths, visual baselines, clean-clone invariant, full knip, 20 Lighthouse samples (5 × 4 routes), links, bundle analysis; seven jobs with a fail-closed aggregate | `contents: read` |
 | `deploy.yml` | manual, `production`/`staging` environment approval | gated release below, then `post-deploy-verify` | `contents: write` on the release job only |
 | `production-daily.yml` | 09:00 UTC, manual | live-site checks without building: reuses `post-deploy-verify` with the live sha, plus TLS, header matrix, relay probe, checkout link, sitemap/robots, internal links; opens/closes one `production` issue | `contents: read`; `issues: write` on the report job only |
 | `branch-policy.yml` | `pull_request_target` | base `develop` (features) or `main` (releases from `develop`, hotfixes), branch name and PR title policy from the base branch; no checkout, `permissions: {}` | none |
@@ -45,11 +45,11 @@ Build-time business values (required by `scripts/check-env.ts`, no inline defaul
 | Workflow | `NEXT_PUBLIC_SITE_URL` | `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO` | `NEXT_PUBLIC_META_PIXEL_ID` |
 |---|---|---|---|
 | `ci.yml` | `https://pequeverso.com` | fake offer `https://pay.hotmart.com/TEST0000000?checkoutMode=10` (tests assert only the origin and `checkoutMode=10`) | fake id + `E2E_EXPECT_CONSENT=1` |
-| `nightly.yml` | same | same fake offer | none on purpose (clean-clone job: no banner, no cookies) |
+| `nightly.yml` | same | same fake offer | none on purpose (clean-clone assertions in Nightly quality: no banner, no cookies) |
 | `deploy.yml` | `vars.NEXT_PUBLIC_SITE_URL`, else `https://pequeverso.com` | `vars.NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO`, else `vars.NEXT_PUBLIC_CHECKOUT_URL`; `staging` may fall back to the fake offer, `production` fails the build without a real one | `vars.NEXT_PUBLIC_META_PIXEL_ID` |
 | `post-deploy-verify.yml`, `production-daily.yml` | do not build | — | — |
 
-The `hostinger` job is the CI stand-in for the host's builder (`rockylinux:8`, glibc 2.28, Node from
+The `hosting` job is the CI stand-in for the host's builder (`rockylinux:8`, glibc 2.28, Node from
 `.nvmrc`, `next build --webpack` with the WASM SWC bindings, `NEXT_OUTPUT=standalone`, `npm start`
 smoke-tested). A green `ci` therefore means both targets build and the Node one serves.
 

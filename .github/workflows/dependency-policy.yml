@@ -1,4 +1,4 @@
-name: Dependabot manual review
+name: Dependency policy
 
 # Read-only metadata assessment. Every update requires manual review and a protected merge.
 # No PR code is checked out or executed, and this workflow cannot arm or perform a merge.
@@ -10,7 +10,7 @@ on:
 permissions: {}
 
 concurrency:
-  group: dependabot-automerge-${{ github.event.pull_request.number }}
+  group: dependency-policy-${{ github.event.pull_request.number }}
   cancel-in-progress: false
 
 env:
@@ -20,7 +20,7 @@ env:
     tailwindcss @tailwindcss/postcss @base-ui/react zod @playwright/test
 
 jobs:
-  automerge:
+  assess:
     name: Assess update for manual review
     # Routing only; identity is re-verified below.
     if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'gonzalomartinperez/pequeverso'
@@ -28,7 +28,7 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
-      pull-requests: read
+      pull-requests: read # Read PR identity/commits and dependency metadata; advisory only, no write/merge authority.
     steps:
       - name: Read update metadata
         id: meta
