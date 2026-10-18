@@ -20,8 +20,8 @@ forwarding barrels, duplicated code or unused infrastructure are introduced.
 Views compose feature presentation; client interaction state remains feature-owned. The hub's
 sticky client bar and landing hero/gallery client components remain in feature presentation.
 Hub product curation reads the server registry, media and deployment configuration, so belongs
-in hub adapters. Price renderers are commerce presentation; configured social links belong to
-shell. Catalog input/schema/registry remain build-time configuration under `config/products`;
+in hub adapters. Active price presentation remains commerce-owned; configured social links belong
+to shell. Catalog input/schema/registry remain build-time configuration under `config/products`;
 that validator reads the public media manifest and is explicitly forbidden from client runtime.
 The shared media capability retains its existing neutral manifest ownership; shared UI/styles
 and motion do not gain product configuration dependencies.
@@ -30,6 +30,21 @@ The Meta relay moves to `features/tracking/adapters/server`; its standalone rout
 server remain thin outer consumers. `@server/*` targets that exact namespace. The checker must
 follow transitive aliases, barrels, dynamic imports and type/runtime edges, reject the server
 adapter and catalog from client runtime, and preserve legitimate erased type consumers.
+
+Production reachability exposed two obsolete, unreferenced price renderers (`price-block.tsx`
+and `price-tag.tsx`), previously hidden by the broad shared-UI entry glob. Retire them rather
+than invent consumers or expand exemptions. The original 230-module equivalence receipt remains
+historical: the final comparison retains 228 unchanged runtime modules and two explicitly retired,
+unreferenced modules. `tools/serve-static.ts` is an exact production Knip entry and project file because
+`tools/start.ts` selects it through a computed file URL and `start:static` invokes it directly;
+this preserves analysis of the actual static-server consumer of `createMetaCapiHandler` without
+changing the relay implementation or marking every CLI as a production entry.
+The development-only CLI globs exclude that exact file so their production negations do not
+cancel its explicit entry/project membership. The separate media package's `build` and `check`
+scripts invoke `tools/media/media-build.ts`; an explicit `tools/media` Knip workspace binds its
+unmarked entry to that package's own dependency manifest. The root entry/project patterns retain
+their scope under the explicit `.` workspace. This retains full-analysis coverage without adding
+the media pipeline to production analysis or site dependencies.
 
 ## Skill discovery and consumer transition
 
