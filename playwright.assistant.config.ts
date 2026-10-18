@@ -66,6 +66,8 @@ export default defineConfig({
         AI_PROVIDER: "fixture",
         ALLOW_PAID_AI: "false",
         OPENAI_API_KEY: "",
+        APPLICATION_STORAGE: "sqlite",
+        KNOWLEDGE_BACKEND: "sqlite",
         SESSION_COOKIE_SECURE: "true",
         ALLOWED_ORIGINS: JSON.stringify([store]),
         DATABASE_PATH: database,

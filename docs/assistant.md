@@ -247,6 +247,15 @@ a model stage or percentage. This enabled export is local verification only and 
 
 ## Verification
 
+The native fixture pins API commit `d064455593f89b2ed367e36ff1ab793e811b2070` in
+`tests/assistant/api-revision`; `contracts/assistant-api/source.json` records its committed
+contract manifest. The existing HTTPS harness explicitly selects `APPLICATION_STORAGE=sqlite`,
+`KNOWLEDGE_BACKEND=sqlite` and `AI_PROVIDER=fixture`, with paid AI disabled and no provider key.
+It exercises the current API's HTTP/session/CSRF/SSE behavior without PostgreSQL or Neo4j
+services. This profile does not validate the production GraphRAG storage/retrieval stack,
+real-model answers or VPS integration. An updated pin is source configuration, not a claim that
+its browser suite has already passed; results belong to the exact verification run.
+
 | Command | Proves |
 |---|---|
 | `npm test` | Flag parsing, reducer and phases, controller, SSE framing (split UTF-8, CRLF, comments, multiline, bounds, order, early EOF, stall, abort), validation, link policy, contract pin, boundaries |
