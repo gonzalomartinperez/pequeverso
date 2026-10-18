@@ -1,4 +1,5 @@
 import type { Page } from "@playwright/test";
+import { collectLayoutFaults } from "../helpers/responsive-layout.ts";
 import { expect, test } from "./fixtures";
 
 /**
@@ -36,39 +37,7 @@ function height(width: number) {
 }
 
 async function layoutFaults(page: Page) {
-  return page.evaluate(() => {
-    const faults: string[] = [];
-    const doc = document.documentElement;
-    if (doc.scrollWidth > doc.clientWidth) {
-      const culprit = [...document.querySelectorAll<HTMLElement>("body *")].find(
-        (el) =>
-          el.getBoundingClientRect().right > doc.clientWidth + 0.5 && !el.closest("[aria-hidden='true']"),
-      );
-      const where = culprit
-        ? `${culprit.tagName.toLowerCase()}.${String(culprit.className).slice(0, 60)}`
-        : "?";
-      faults.push(`page scrolls horizontally by ${doc.scrollWidth - doc.clientWidth}px (${where})`);
-    }
-    const label = (el: Element) =>
-      `${el.tagName.toLowerCase()} "${(el.textContent ?? "").trim().slice(0, 30)}"`;
-    for (const el of document.querySelectorAll<HTMLElement>("a, button")) {
-      const style = getComputedStyle(el);
-      const rect = el.getBoundingClientRect();
-      if (style.display === "inline" || rect.width <= 2 || el.offsetParent === null) continue;
-      if (el.scrollWidth > el.clientWidth + 1)
-        faults.push(`${label(el)} clips its text (${el.scrollWidth} > ${el.clientWidth})`);
-    }
-    for (const img of document.querySelectorAll<HTMLImageElement>("img")) {
-      const rect = img.getBoundingClientRect();
-      if (!img.complete || !img.naturalWidth || rect.width < 2 || rect.height < 2) continue;
-      if (getComputedStyle(img).objectFit !== "fill") continue;
-      const natural = img.naturalWidth / img.naturalHeight;
-      const drift = Math.abs(rect.width / rect.height - natural) / natural;
-      if (drift > 0.02)
-        faults.push(`img ${img.currentSrc.split("/").pop()} is stretched (${(drift * 100).toFixed(1)}%)`);
-    }
-    return faults;
-  });
+  return page.evaluate(collectLayoutFaults);
 }
 
 for (const route of routes) {
