@@ -1,6 +1,10 @@
 # ADR-0004: CI topology — one build per pull request, verification on main
 
-Date: 2026-09-13 · Status: accepted
+Date: 2026-09-13 · Status: accepted, with dated amendments
+
+The original decision and measurements below are historical. The 2026-10-18 amendment and
+[CI profile](../ci-profile.md) describe the current source topology; earlier green runs do not
+validate the new layout.
 
 ## Context
 
@@ -322,3 +326,31 @@ and aggregate time. No new speedup is claimed before reviewing complete Actions 
 The independent visual correction and the observed commerce flaky case must remain visible;
 rebalancing does not establish that either defect is fixed. Lighthouse's 20 distinct runs,
 links, bundle analysis, clean-clone and the disabled publishable export remain required.
+
+## 2026-10-18 source-only common CI profile
+
+Split quality from build and retain Hostinger GLIBC 2.28/WASM/standalone parity. The eight core
+roles are workflows, secrets, quality, build, hosting, browser, performance and checks. Browser
+uses four shards for each of the existing functional and native configurations: six projects
+each, never a merged catalogue. Exact discovered identities include configuration, project,
+file/location, nested title and parameter identity; each runner checks the disjoint complete
+partition before execution. A temporary `ci` job requires every upstream role and `checks` to
+succeed, preserving the existing required check until an explicit owner-approved settings transition.
+
+Nightly has seven roles: prepare, quality, browser, visual, links, bundle and checks. It retains
+eight shards across the complete existing 14-project configuration, clean-clone
+assertions, full knip, 20 Lighthouse samples (five per route), links and bundle analysis.
+The existing manual snapshot-regeneration input remains false by default; regeneration is
+reported separately and never represents baseline-comparison acceptance. No snapshots change here.
+
+Only the disabled export transfers between jobs, through a bounded directory payload and closed
+manifest bound to source/workflow SHA, run/attempt, public configuration and lockfile. Consumers
+verify the exact complete regular-file set and every checksum before creating `out/`. Enabled
+fixtures rebuild at the same source in each native leg and are never uploaded. Reports are not
+publication artifacts. The analyzer still performs its own same-source instrumented rebuild.
+
+This amendment contains source and synthetic policy validation only. Real Actions lint/security,
+TypeScript, full knip, builds, complete discovered inventories, browsers, snapshots, Lighthouse
+and Hostinger smoke remain required hosted gates. Existing deployment and production-monitoring
+workflows, budgets, baselines, assertion limits and repository protections remain unchanged.
+No speedup, total parity or production acceptance is inferred from this refactor.

@@ -4,8 +4,8 @@
 
 Every Dependabot update requires manual review and a protected merge. Weekly version-update
 schedules for every configured ecosystem, groups, cooldowns and native `rebase-strategy: auto` remain enabled. This profile
-does not pause future updates or hide alerts. The historically named
-`dependabot-automerge.yml` now reports metadata with read-only permissions; it cannot approve,
+does not pause future updates or hide alerts.
+`dependency-policy.yml` reports metadata with read-only permissions; it cannot approve,
 arm auto-merge or merge a PR. Its candidate classification is advisory, never authorization.
 
 The previous `gh pr merge --auto` command could immediately merge a clean, green PR instead
@@ -27,7 +27,7 @@ needs independent review, strict current-head checks/protection/review validatio
    `main`, so a storefront release can publish production. The assistant must remain disabled.
 
 Security alerts stay visible. Routine `target-branch: develop` does not redirect all security
-updates from default `main`; assess those explicitly and retarget or follow a specifically
+updates from the default branch (`develop` at this source revision); assess those explicitly and retarget or follow a specifically
 authorized hotfix. Never automatically merge into `main` or suppress an alert for a green gate.
 
 Use native `@dependabot rebase` when needed; do not add rebase polling or rewrite bot branches.

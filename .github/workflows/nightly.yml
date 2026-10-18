@@ -1,196 +1,197 @@
+# Scheduled validation only. Manual snapshot regeneration remains explicit and is not comparison acceptance.
 name: Nightly
-
-# Full matrix and slow checks that do not gate pull requests: Chromium + WebKit at seven widths,
-# visual snapshots, the clean-clone invariant, full knip, Lighthouse ×5, link check, bundle analysis.
-# Scheduled runs use the default branch (currently develop); dispatches use the selected ref.
-# Default-branch jobs also warm the Playwright browser caches that pull requests can restore.
-on:
+'on':
   schedule:
-    - cron: "17 4 * * *"
+    - cron: 17 4 * * *
   workflow_dispatch:
     inputs:
       update_snapshots:
         description: Regenerate visual baselines and upload them as an artifact
         type: boolean
         default: false
-
 permissions: {}
-
 concurrency:
   group: nightly
   cancel-in-progress: false
-
 env:
-  NEXT_TELEMETRY_DISABLED: "1"
-  # Required build-time values (scripts/check-env.ts) with a fake offer code; deliberately no
-  # NEXT_PUBLIC_META_PIXEL_ID so the clean-clone job proves the export has no banner and no cookies.
+  NEXT_TELEMETRY_DISABLED: '1'
   NEXT_PUBLIC_SITE_URL: https://pequeverso.com
   NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO: https://pay.hotmart.com/TEST0000000?checkoutMode=10
-
+  NEXT_OUTPUT: export
+  NEXT_PUBLIC_ASSISTANT_ENABLED: 'false'
+  NEXT_PUBLIC_ASSISTANT_API_ORIGIN: ''
 jobs:
-  build:
-    name: Build export (public defaults)
+  prepare:
+    name: Nightly prepare candidate
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 3
     permissions:
       contents: read
+    outputs:
+      source_sha: ${{ steps.identity.outputs.source_sha }}
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - name: Setup
-        uses: ./.github/actions/setup
-      - name: Build static export
-        run: npm run build
-      - name: Bundle budget
-        run: npm run check:bundle
-      - name: Upload export
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: site-export
-          path: out
-          include-hidden-files: true
-          retention-days: 3
-          if-no-files-found: error
-
-  matrix:
-    name: Playwright ${{ matrix.browser }} × 7 widths (${{ matrix.group }}/${{ matrix.groups }})
-    runs-on: ubuntu-24.04
-    timeout-minutes: 45
-    needs: build
-    permissions:
-      contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - browser: chromium
-            group: 1
-            groups: 1
-          - browser: webkit
-            group: 1
-            groups: 2
-          - browser: webkit
-            group: 2
-            groups: 2
-    env:
-      BROWSER: ${{ matrix.browser }}
-      PROJECT_GROUP: ${{ matrix.group }}
-      PROJECT_GROUP_COUNT: ${{ matrix.groups }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Setup
-        uses: ./.github/actions/setup
-        with:
-          browser: ${{ matrix.browser }}
-      - name: Download export
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
-          name: site-export
-          path: out
-      - name: Verify exported edge rules
-        run: cmp out/.htaccess docs/generated/htaccess.txt
-      - name: Verify complete, disjoint project-group inventories (no browser execution)
-        env:
-          PW_SET: nightly
-        run: |
+      - name: Freeze the checked candidate identity
+        run: |-
           set -euo pipefail
-          case "$BROWSER:$PROJECT_GROUP:$PROJECT_GROUP_COUNT" in
-            chromium:1:1|webkit:1:2|webkit:2:2) ;;
-            *) echo "Unexpected browser/project group" >&2; exit 1 ;;
-          esac
-          mkdir -p nightly-evidence
-          npx playwright test --project="$BROWSER-*" --list --reporter=json > nightly-evidence/full.json
-          for part in $(seq 1 "$PROJECT_GROUP_COUNT"); do
-            case "$BROWSER:$part" in
-              chromium:1) projects=("chromium-*") ;;
-              webkit:1) projects=(webkit-1440 webkit-1280 webkit-430) ;;
-              webkit:2) projects=(webkit-1024 webkit-768 webkit-390 webkit-360) ;;
-              *) echo "Unexpected browser/project group" >&2; exit 1 ;;
-            esac
-            project_args=()
-            for project in "${projects[@]}"; do
-              project_args+=("--project=$project")
-            done
-            npx playwright test "${project_args[@]}" --list --reporter=json > "nightly-evidence/group-$part.json"
-            if [[ "$part" == "$PROJECT_GROUP" ]]; then
-              printf '%s\0' "${project_args[@]}" > nightly-evidence/selected-projects.args
-            fi
-          done
-          node --input-type=module <<'NODE'
-          import { readFileSync, writeFileSync } from "node:fs";
-          function inventory(path) {
-            const report = JSON.parse(readFileSync(path, "utf8"));
-            if (report.errors?.length) throw new Error(`inventory errors: ${path}`);
-            const ids = [];
-            function visit(suite, parents = []) {
-              const titles = [...parents, suite.title];
-              for (const spec of suite.specs ?? []) {
-                for (const test of spec.tests ?? []) {
-                  ids.push(JSON.stringify([test.projectName, spec.file, spec.line, spec.column, ...titles, spec.title]));
-                }
-              }
-              for (const child of suite.suites ?? []) visit(child, titles);
-            }
-            for (const suite of report.suites ?? []) visit(suite);
-            if (!ids.length || new Set(ids).size !== ids.length) throw new Error(`empty/duplicate inventory: ${path}`);
-            return ids.sort();
-          }
-          const full = inventory("nightly-evidence/full.json");
-          const parts = Array.from({ length: Number(process.env.PROJECT_GROUP_COUNT) }, (_, i) => inventory(`nightly-evidence/group-${i + 1}.json`));
-          const union = parts.flat().sort();
-          if (new Set(union).size !== union.length || JSON.stringify(union) !== JSON.stringify(full)) throw new Error("project groups must partition the complete inventory exactly");
-          const receipt = { browser: process.env.BROWSER, full: full.length, groups: parts.map(part => part.length), disjoint: true, exactUnion: true };
-          writeFileSync("nightly-evidence/inventory-receipt.json", JSON.stringify(receipt, null, 2) + "\n");
-          console.log(JSON.stringify(receipt));
-          NODE
-      - name: Playwright (PW_SET=nightly, unchanged projects and limits)
-        env:
-          PW_SET: nightly
-          PLAYWRIGHT_JSON_OUTPUT_NAME: nightly-evidence/results.json
-        run: |
-          set -euo pipefail
-          mapfile -d '' -t project_args < nightly-evidence/selected-projects.args
-          if (( ${#project_args[@]} == 0 )); then
-            echo "Empty project group" >&2; exit 1
-          fi
-          npx playwright test "${project_args[@]}" --reporter=github,html,json 2>&1 | tee nightly-evidence/run.log
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: playwright-report-${{ matrix.browser }}-${{ matrix.group }}-of-${{ matrix.groups }}
-          path: |
-            playwright-report
-            test-results
-            nightly-evidence
-          retention-days: 14
-
-  visual:
-    name: Visual snapshots
+          actual=$(git rev-parse HEAD)
+          [[ "$actual" == "$GITHUB_SHA" ]] || { echo "Candidate checkout mismatch" >&2; exit 1; }
+          echo "source_sha=$actual" >> "$GITHUB_OUTPUT"
+        id: identity
+  quality:
+    name: Nightly quality checks
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
-    needs: build
+    timeout-minutes: 25
     permissions:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
       - name: Setup
         uses: ./.github/actions/setup
         with:
           browser: chromium
-      - name: Download export
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+      - name: Dead code (full)
+        run: npm run knip
+      - name: Build the no-integration default-OFF export
+        run: npm run build
+      - name: Bundle budget
+        run: npm run check:bundle
+      - name: Verify exported edge rules
+        run: cmp out/.htaccess docs/generated/htaccess.txt
+      - name: Clean clone retains no banner or cookies
+        run: npx playwright test --project=chromium-1440 tests/e2e/consent.spec.ts tests/e2e/commerce.spec.ts
+      - name: Bind and stage the no-integration OFF export
+        run: node scripts/ci/artifacts.ts pack-off out .ci-off-artifact
+        id: package
+        env:
+          CI_CANDIDATE_SHA: ${{ needs.prepare.outputs.source_sha }}
+      - name: Upload bounded verification evidence
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
-          name: site-export
-          path: out
+          name: off-export-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci-off-artifact/
+          retention-days: 3
+          if-no-files-found: error
+          include-hidden-files: true
+    needs:
+      - prepare
+    outputs:
+      source_sha: ${{ steps.package.outputs.source_sha }}
+      manifest_sha256: ${{ steps.package.outputs.manifest_sha256 }}
+  browser:
+    name: Nightly browser tests (${{ matrix.shard }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    needs:
+      - quality
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - shard: 1
+            shards: 8
+          - shard: 2
+            shards: 8
+          - shard: 3
+            shards: 8
+          - shard: 4
+            shards: 8
+          - shard: 5
+            shards: 8
+          - shard: 6
+            shards: 8
+          - shard: 7
+            shards: 8
+          - shard: 8
+            shards: 8
+      max-parallel: 4
+    env:
+      SHARD: ${{ matrix.shard }}
+      SHARDS: '8'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Install the unchanged Nightly browser engines
+        run: npx playwright install --with-deps chromium webkit
+      - name: Download the same-run OFF export into quarantine
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        with:
+          name: off-export-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci-off-artifact
+      - name: Validate complete OFF payload before creating out
+        run: node scripts/ci/artifacts.ts unpack-off out .ci-off-artifact
+        env:
+          CI_CANDIDATE_SHA: ${{ needs.quality.outputs.source_sha }}
+          CI_MANIFEST_SHA256: ${{ needs.quality.outputs.manifest_sha256 }}
+      - name: Verify exported edge rules
+        run: cmp out/.htaccess docs/generated/htaccess.txt
+      - name: Verify the full 14-project configuration has eight disjoint complete test shards
+        env:
+          PW_SET: nightly
+        run: |-
+          set -euo pipefail
+          mkdir -p nightly-evidence
+          npx playwright test --list --reporter=json > nightly-evidence/full.json
+          for part in 1 2 3 4 5 6 7 8; do
+            npx playwright test --shard="$part/8" --list --reporter=json > "nightly-evidence/shard-$part.json"
+          done
+          node scripts/ci/inventories.ts verify nightly nightly-evidence/full.json nightly-evidence/inventory-receipt.json nightly-evidence/shard-{1,2,3,4,5,6,7,8}.json
+      - name: Playwright (PW_SET=nightly, unchanged projects and limits)
+        env:
+          PW_SET: nightly
+          PLAYWRIGHT_JSON_OUTPUT_NAME: nightly-evidence/results.json
+        run: |-
+          set -euo pipefail
+          npx playwright test --shard="$SHARD/8" --reporter=github,html,json 2>&1 | tee nightly-evidence/run.log
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: playwright-report-nightly-${{ matrix.shard }}-of-8
+          path: |
+            playwright-report
+            test-results
+            nightly-evidence
+          retention-days: 14
+  visual:
+    name: Nightly visual checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    needs:
+      - quality
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          browser: chromium
+      - name: Download the same-run OFF export into quarantine
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        with:
+          name: off-export-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci-off-artifact
+      - name: Validate complete OFF payload before creating out
+        run: node scripts/ci/artifacts.ts unpack-off out .ci-off-artifact
+        env:
+          CI_CANDIDATE_SHA: ${{ needs.quality.outputs.source_sha }}
+          CI_MANIFEST_SHA256: ${{ needs.quality.outputs.manifest_sha256 }}
       - name: Verify exported edge rules
         run: cmp out/.htaccess docs/generated/htaccess.txt
       - name: Compare with baselines
@@ -201,7 +202,7 @@ jobs:
         run: npm run test:e2e:visual -- --update-snapshots
       - name: Upload snapshots and report
         if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: visual-results
           path: |
@@ -209,54 +210,70 @@ jobs:
             playwright-report
           retention-days: 14
           if-no-files-found: ignore
-
-  clean-clone:
-    name: Clean clone has no consent banner and no cookies
+      - name: Identify comparison versus explicit manual regeneration
+        run: |-
+          if [ "$UPDATE_SNAPSHOTS" = true ]; then
+            echo "Manual regeneration mode: this run is NOT baseline-comparison acceptance." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Existing baselines compared; no regeneration requested." >> "$GITHUB_STEP_SUMMARY"
+          fi
+        env:
+          UPDATE_SNAPSHOTS: ${{ inputs.update_snapshots }}
+        if: always()
+  links:
+    name: Nightly link checks
     runs-on: ubuntu-24.04
     timeout-minutes: 20
-    needs: build
     permissions:
       contents: read
+    needs:
+      - quality
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
       - name: Setup
         uses: ./.github/actions/setup
+      - name: Download the same-run OFF export into quarantine
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
-          browser: chromium
-      - name: Download export
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
-          name: site-export
-          path: out
+          name: off-export-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci-off-artifact
+      - name: Validate complete OFF payload before creating out
+        run: node scripts/ci/artifacts.ts unpack-off out .ci-off-artifact
+        env:
+          CI_CANDIDATE_SHA: ${{ needs.quality.outputs.source_sha }}
+          CI_MANIFEST_SHA256: ${{ needs.quality.outputs.manifest_sha256 }}
       - name: Verify exported edge rules
         run: cmp out/.htaccess docs/generated/htaccess.txt
-      - name: Consent and commerce specs without any integration id
-        run: npx playwright test --project=chromium-1440 tests/e2e/consent.spec.ts tests/e2e/commerce.spec.ts
-
-  quality:
-    name: knip, Lighthouse (5 runs), links, bundle analysis
+      - name: Link check
+        run: node scripts/check-links.ts
+  bundle:
+    name: Nightly bundle checks
     runs-on: ubuntu-24.04
     timeout-minutes: 30
-    needs: build
+    needs:
+      - quality
     permissions:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
       - name: Setup
         uses: ./.github/actions/setup
-      - name: Dead code (full)
-        run: npm run knip
-      - name: Download export
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+      - name: Download the same-run OFF export into quarantine
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
-          name: site-export
-          path: out
+          name: off-export-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci-off-artifact
+      - name: Validate complete OFF payload before creating out
+        run: node scripts/ci/artifacts.ts unpack-off out .ci-off-artifact
+        env:
+          CI_CANDIDATE_SHA: ${{ needs.quality.outputs.source_sha }}
+          CI_MANIFEST_SHA256: ${{ needs.quality.outputs.manifest_sha256 }}
       - name: Verify exported edge rules
         run: cmp out/.htaccess docs/generated/htaccess.txt
       - name: Lighthouse (5 runs, mobile emulation)
@@ -264,13 +281,11 @@ jobs:
       - name: Summary
         if: always()
         run: node scripts/lhci-summary.ts >> "$GITHUB_STEP_SUMMARY"
-      - name: Link check
-        run: node scripts/check-links.ts
       - name: Bundle analysis
         run: npm run analyze
       - name: Upload Lighthouse and bundle reports
         if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: quality-reports
           include-hidden-files: true
@@ -279,3 +294,39 @@ jobs:
             .next/analyze
           retention-days: 30
           if-no-files-found: ignore
+  checks:
+    name: Nightly required checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      contents: read
+    needs:
+      - prepare
+      - quality
+      - browser
+      - visual
+      - links
+      - bundle
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Setup Node for the dependency-free CI helpers
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version-file: .nvmrc
+      - name: Require successful complete job evidence
+        run: node scripts/ci/acceptance.ts nightly
+        env:
+          CI_NEEDS: ${{ toJSON(needs) }}
+      - name: Record the visual acceptance mode
+        run: |-
+          if [ "$UPDATE_SNAPSHOTS" = true ]; then
+            echo "All jobs succeeded in explicit regeneration mode; not a baseline-comparison approval." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "All Nightly jobs succeeded with existing baseline comparison." >> "$GITHUB_STEP_SUMMARY"
+          fi
+        env:
+          UPDATE_SNAPSHOTS: ${{ inputs.update_snapshots }}

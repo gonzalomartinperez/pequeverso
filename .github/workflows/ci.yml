@@ -1,83 +1,75 @@
+# Validation only. The ci bridge preserves existing protection until an owner-approved transition.
 name: CI
-
-# Pull requests: build + E2E + Lighthouse. Pushes to main: build only (Hostinger builds main;
-# post-deploy-verify.yml checks production). The required status check is the `ci` job.
-on:
+'on':
   pull_request:
+    branches:
+      - develop
+      - main
   push:
-    branches: [main, develop]
-  workflow_dispatch:
-
+    branches:
+      - develop
+      - main
+  workflow_dispatch: null
 permissions: {}
-
 concurrency:
   group: ci-${{ github.ref }}
-  # Supersede an older run of the same pull request; never cancel a push to main.
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-
 env:
-  NEXT_TELEMETRY_DISABLED: "1"
-  # Business values are required at build time (scripts/check-env.ts); CI builds use the public
-  # origin and a fake Hotmart offer code (tests assert only the pay.hotmart.com origin and checkoutMode=10).
+  NEXT_TELEMETRY_DISABLED: '1'
   NEXT_PUBLIC_SITE_URL: https://pequeverso.com
   NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO: https://pay.hotmart.com/TEST0000000?checkoutMode=10
-  # Fake pixel id so the consent-gated path is exercised by E2E without contacting third parties.
-  NEXT_PUBLIC_META_PIXEL_ID: "1234567890123456"
-  E2E_EXPECT_CONSENT: "1"
-  # The shopping assistant ships disabled. Every build here (and the artifact other jobs reuse)
-  # is the disabled site; only the `assistant` job builds an enabled copy, which is never uploaded.
-  NEXT_PUBLIC_ASSISTANT_ENABLED: "false"
-  NEXT_PUBLIC_ASSISTANT_API_ORIGIN: ""
-
+  NEXT_PUBLIC_META_PIXEL_ID: '1234567890123456'
+  E2E_EXPECT_CONSENT: '1'
+  NEXT_PUBLIC_ASSISTANT_ENABLED: 'false'
+  NEXT_PUBLIC_ASSISTANT_API_ORIGIN: ''
+  NEXT_OUTPUT: export
 jobs:
   workflows:
-    name: Lint workflows
+    name: Workflow validation
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
       - name: actionlint
-        uses: raven-actions/actionlint@3d39aea434753780c3b3d4a1a31c854b4dbf49d7 # v2.2.0
+        uses: raven-actions/actionlint@3d39aea434753780c3b3d4a1a31c854b4dbf49d7
         with:
           version: 1.7.12
           pyflakes: false
       - name: zizmor
-        uses: zizmorcore/zizmor-action@cc914d7f3750a2d13d75c7f184a1060aa0e9d482 # v0.6.4
+        uses: zizmorcore/zizmor-action@cc914d7f3750a2d13d75c7f184a1060aa0e9d482
         with:
           version: 1.30.1
           advanced-security: false
           annotations: true
           min-severity: low
-
   secrets:
-    name: Secret scan (history)
+    name: Secret scan
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       contents: read
     steps:
       - name: Checkout (full history)
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
           persist-credentials: false
       - name: gitleaks over the full history (redacted; fails on zero commits scanned)
         run: .github/scripts/secret-scan.sh
-
-  build:
-    name: Build (lint, types, unit, knip, export, budgets)
+  quality:
+    name: Quality checks
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     permissions:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
       - name: Setup
@@ -94,8 +86,31 @@ jobs:
         run: npm test
       - name: Dead code (production and full, as the nightly runs it)
         run: npm run knip:production && npm run knip
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+      - name: Validate focused agent workflows
+        run: npm run check:skills
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    needs:
+      - quality
+    outputs:
+      source_sha: ${{ steps.package.outputs.source_sha }}
+      manifest_sha256: ${{ steps.package.outputs.manifest_sha256 }}
+      browser_matrix: ${{ steps.matrix.outputs.browser_matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Setup
+        uses: ./.github/actions/setup
       - name: Restore Next.js cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: .next/cache
           key: next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
@@ -115,24 +130,25 @@ jobs:
       - name: Rendered HTML invariants
         run: npm run check:rendered
       - name: Assistant absent from the export (no launcher, chunk or API origin)
-        run: npm run --if-present check:assistant-disabled
-      - name: Audit production dependencies
-        run: npm audit --omit=dev --audit-level=high
-      - name: Upload export
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        run: npm run check:assistant-disabled
+      - name: Bind and stage the OFF-only export
+        run: node scripts/ci/artifacts.ts pack-off out .ci-off-artifact
+        id: package
+      - name: Publish the fixed complete browser matrix
+        run: |-
+          matrix=$(node scripts/ci/inventories.ts matrix core)
+          echo "browser_matrix=$matrix" >> "$GITHUB_OUTPUT"
+        id: matrix
+      - name: Upload bounded verification evidence
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
-          name: site-export
-          path: out
-          include-hidden-files: true
+          name: off-export-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci-off-artifact/
           retention-days: 3
           if-no-files-found: error
-
-  hostinger:
-    # Proves the Hostinger Node.js Web App build environment, which the Ubuntu job cannot: GLIBC 2.28
-    # (native SWC/Turbopack bindings do not load; Next must fall back to WASM), `next build --webpack`,
-    # the standalone target and `npm start` serving redirects/headers from config/edge-rules.json.
-    # Origin: PR #5 (86a4bab) — the host build failed although CI was green.
-    name: Hostinger parity (GLIBC 2.28, standalone)
+          include-hidden-files: true
+  hosting:
+    name: Hosting contract
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
@@ -146,11 +162,11 @@ jobs:
       - name: Install container prerequisites
         run: dnf install -y -q git tar gzip xz
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
       - name: Setup Node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -180,189 +196,156 @@ jobs:
         run: cat standalone.log || true
       - name: Build leaves the tree clean
         run: git diff --exit-code
-
-  e2e:
-    name: E2E (chromium 390/768/1440 + reduced motion, ${{ matrix.shard }}/2)
-    if: github.event_name != 'push'
+    needs:
+      - quality
+  browser:
+    name: Browser tests (${{ matrix.index }})
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    needs: build
+    timeout-minutes: 35
     permissions:
       contents: read
+    needs:
+      - build
     strategy:
       fail-fast: false
-      matrix:
-        shard: [1, 2]
+      max-parallel: 2
+      matrix: ${{ fromJSON(needs.build.outputs.browser_matrix) }}
+    env:
+      SUITE: ${{ matrix.suite }}
+      SHARD: ${{ matrix.shard }}
+      SHARDS: '4'
+      AI_PROVIDER: fixture
+      ALLOW_PAID_AI: 'false'
+      OPENAI_API_KEY: ''
+      CI_CANDIDATE_SHA: ${{ needs.build.outputs.source_sha }}
+      PLAYWRIGHT_JSON_OUTPUT_NAME: .ci-evidence/results.json
+      PLAYWRIGHT_HTML_OUTPUT_DIR: ${{ matrix.suite == 'native' && 'playwright-report-assistant' || 'playwright-report' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
       - name: Setup
         uses: ./.github/actions/setup
+      - name: Install the unchanged three-engine browser catalogue
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Download the same-run OFF export into quarantine
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
-          browser: chromium
-      - name: Install text-reflow browsers
-        run: npx playwright install --with-deps firefox webkit
-      - name: Download export
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
-          name: site-export
-          path: out
+          name: off-export-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci-off-artifact
+        if: matrix.suite == 'functional'
+      - name: Validate complete OFF payload before creating out
+        run: node scripts/ci/artifacts.ts unpack-off out .ci-off-artifact
+        env:
+          CI_CANDIDATE_SHA: ${{ needs.build.outputs.source_sha }}
+          CI_MANIFEST_SHA256: ${{ needs.build.outputs.manifest_sha256 }}
+        if: matrix.suite == 'functional'
       - name: Verify exported edge rules
         run: cmp out/.htaccess docs/generated/htaccess.txt
-      - name: Playwright (PW_SET=pr, shard ${{ matrix.shard }}/2)
-        run: npm run test:e2e -- --shard="${SHARD}/2"
-        env:
-          SHARD: ${{ matrix.shard }}
-      - name: Upload Playwright report
-        if: failure()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: playwright-report-${{ matrix.shard }}
-          path: playwright-report
-          retention-days: 7
-
-  assistant:
-    # Enabled-assistant verification in fixture mode against the real API (no paid model, no
-    # credentials). Runs only once the repository defines `test:e2e:assistant` and pins the API in
-    # tests/assistant/api-revision. The enabled build stays on this runner: only Playwright reports
-    # are uploaded, under a name that marks them as unpublishable.
-    name: Assistant (enabled, fixture API, ${{ matrix.shard }}/2)
-    if: github.event_name != 'push'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 25
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2]
-    permissions:
-      contents: read
-    env:
-      AI_PROVIDER: fixture
-      ALLOW_PAID_AI: "false"
-      SHARD: ${{ matrix.shard }}
-      SHARDS: "2"
-      BROWSER: all-native-projects
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Detect the suite
-        id: suite
-        run: |
+        if: matrix.suite == 'functional'
+      - name: Require the pinned native fixture contract
+        run: |-
           set -euo pipefail
-          if node -e 'process.exit(require("./package.json").scripts?.["test:e2e:assistant"] ? 0 : 1)'; then
-            revision="$(tr -d '[:space:]' < tests/assistant/api-revision)"
-            [[ "$revision" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::tests/assistant/api-revision must hold a full commit sha"; exit 1; }
-            echo "present=true" >> "$GITHUB_OUTPUT"
-            echo "api_revision=$revision" >> "$GITHUB_OUTPUT"
-          else
-            echo "present=false" >> "$GITHUB_OUTPUT"
-            echo "No test:e2e:assistant script yet; nothing to run." >> "$GITHUB_STEP_SUMMARY"
-          fi
+          node -e 'if (!require("./package.json").scripts["test:e2e:assistant"]) process.exit(1)'
+          revision="$(tr -d '[:space:]' < tests/assistant/api-revision)"
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]] || { echo "Invalid pinned API revision" >&2; exit 1; }
+          echo "api_revision=$revision" >> "$GITHUB_OUTPUT"
+        id: suite
+        if: matrix.suite == 'native'
       - name: Checkout the pinned assistant API (public repository, committed revision)
-        if: steps.suite.outputs.present == 'true'
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: matrix.suite == 'native'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: gonzalomartinperez/pequeverso-assistant-api
           ref: ${{ steps.suite.outputs.api_revision }}
           path: .assistant-api
           persist-credentials: false
       - name: Setup uv
-        if: steps.suite.outputs.present == 'true'
-        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        if: matrix.suite == 'native'
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884
         with:
-          version: 0.13.1 # matches reviewed API producer 591a6f90; manages Python 3.15.0
+          version: 0.13.1
           enable-cache: true
           cache-dependency-glob: .assistant-api/uv.lock
       - name: Install the API (frozen lockfile)
-        if: steps.suite.outputs.present == 'true'
+        if: matrix.suite == 'native'
         run: uv sync --frozen --directory .assistant-api
-      - name: Setup
-        if: steps.suite.outputs.present == 'true'
-        uses: ./.github/actions/setup
-      - name: Install Playwright browsers
-        if: steps.suite.outputs.present == 'true'
-        run: npx playwright install --with-deps chromium firefox webkit
-      - name: Verify complete, disjoint shard inventories (no browser execution)
-        if: steps.suite.outputs.present == 'true'
-        run: |
+      - name: Prove every test belongs to the exact complete configuration partition
+        run: |-
           set -euo pipefail
-          mkdir -p assistant-evidence
-          npx playwright test --config=playwright.assistant.config.ts --list --reporter=json > assistant-evidence/full.json
-          for part in $(seq 1 "$SHARDS"); do
-            npx playwright test --config=playwright.assistant.config.ts --shard="$part/$SHARDS" --list --reporter=json > "assistant-evidence/shard-$part.json"
+          mkdir -p .ci-evidence
+          case "$SUITE" in
+            functional) config=(--config=playwright.config.ts); export PW_SET=pr ;;
+            native) config=(--config=playwright.assistant.config.ts) ;;
+            *) echo "Unknown browser configuration" >&2; exit 1 ;;
+          esac
+          npx playwright test "${config[@]}" --list --reporter=json > .ci-evidence/full.json
+          for part in 1 2 3 4; do
+            npx playwright test "${config[@]}" --shard="$part/4" --list --reporter=json > ".ci-evidence/shard-$part.json"
           done
-          node --input-type=module <<'NODE'
-          import { readFileSync, writeFileSync } from "node:fs";
-          function inventory(path) {
-            const report = JSON.parse(readFileSync(path, "utf8"));
-            if (report.errors?.length) throw new Error(`inventory errors: ${path}`);
-            const ids = [];
-            function visit(suite, parents = []) {
-              const titles = [...parents, suite.title];
-              for (const spec of suite.specs ?? []) {
-                for (const test of spec.tests ?? []) {
-                  ids.push(JSON.stringify([test.projectName, spec.file, spec.line, spec.column, ...titles, spec.title]));
-                }
-              }
-              for (const child of suite.suites ?? []) visit(child, titles);
-            }
-            for (const suite of report.suites ?? []) visit(suite);
-            if (!ids.length || new Set(ids).size !== ids.length) throw new Error(`empty/duplicate inventory: ${path}`);
-            return ids.sort();
-          }
-          const full = inventory("assistant-evidence/full.json");
-          const parts = Array.from({ length: Number(process.env.SHARDS) }, (_, i) => inventory(`assistant-evidence/shard-${i + 1}.json`));
-          const union = parts.flat().sort();
-          if (new Set(union).size !== union.length || JSON.stringify(union) !== JSON.stringify(full)) throw new Error("shards must partition the complete inventory exactly");
-          const receipt = { browser: process.env.BROWSER, full: full.length, shards: parts.map(part => part.length), disjoint: true, exactUnion: true };
-          writeFileSync("assistant-evidence/inventory-receipt.json", JSON.stringify(receipt, null, 2) + "\n");
-          console.log(JSON.stringify(receipt));
-          NODE
-      - name: Enabled build + Playwright against the fixture API
-        if: steps.suite.outputs.present == 'true'
+          node scripts/ci/inventories.ts verify "$SUITE" .ci-evidence/full.json .ci-evidence/inventory-receipt.json .ci-evidence/shard-{1,2,3,4}.json
         env:
           ASSISTANT_API_DIR: ${{ github.workspace }}/.assistant-api
-          PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report-assistant
-          PLAYWRIGHT_JSON_OUTPUT_NAME: assistant-evidence/results.json
-        run: |
+      - name: Build the unpublishable native fixture at this exact candidate
+        run: npm run build:assistant-fixture
+        if: matrix.suite == 'native'
+      - name: Record the native build identity without packaging its export
+        run: node scripts/ci/artifacts.ts attest-native out-assistant-fixture .ci-evidence/native-build-identity.json
+        if: matrix.suite == 'native'
+        env:
+          NEXT_PUBLIC_ASSISTANT_ENABLED: 'true'
+          NEXT_PUBLIC_ASSISTANT_API_ORIGIN: https://127.0.0.1:8217
+          NEXT_PUBLIC_META_PIXEL_ID: '1234567890123456'
+      - name: Run the unchanged functional or native assertions
+        run: |-
           set -euo pipefail
-          npm run test:e2e:assistant -- --shard="$SHARD/$SHARDS" --reporter=list,html,json 2>&1 | tee assistant-evidence/run.log
-      - name: Upload reports (UNPUBLISHABLE, assistant enabled)
-        if: always() && steps.suite.outputs.present == 'true'
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+          case "$SUITE" in
+            functional) export PW_SET=pr; config=(--config=playwright.config.ts) ;;
+            native) config=(--config=playwright.assistant.config.ts) ;;
+            *) echo "Unknown browser configuration" >&2; exit 1 ;;
+          esac
+          npx playwright test "${config[@]}" --shard="$SHARD/4" --reporter=list,html,json 2>&1 | tee .ci-evidence/run.log
+        env:
+          ASSISTANT_API_DIR: ${{ github.workspace }}/.assistant-api
+      - name: Upload bounded verification evidence
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
-          name: UNPUBLISHABLE-assistant-enabled-reports-${{ matrix.shard }}-of-2
-          path: |
+          name: verification-${{ matrix.suite }}-${{ matrix.shard }}-of-4
+          path: |-
+            playwright-report/
             playwright-report-assistant/
+            test-results/
             test-results-assistant/
-            assistant-evidence/
+            .ci-evidence/
           retention-days: 7
-          if-no-files-found: ignore
-
-  lighthouse:
-    name: Lighthouse CI
-    if: github.event_name != 'push'
+          if-no-files-found: warn
+        if: always()
+  performance:
+    name: Performance checks
     runs-on: ubuntu-24.04
     timeout-minutes: 15
-    needs: build
+    needs:
+      - build
     permissions:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
       - name: Setup
         uses: ./.github/actions/setup
-      - name: Download export
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+      - name: Download the same-run OFF export into quarantine
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
-          name: site-export
-          path: out
+          name: off-export-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci-off-artifact
+      - name: Validate complete OFF payload before creating out
+        run: node scripts/ci/artifacts.ts unpack-off out .ci-off-artifact
+        env:
+          CI_CANDIDATE_SHA: ${{ needs.build.outputs.source_sha }}
+          CI_MANIFEST_SHA256: ${{ needs.build.outputs.manifest_sha256 }}
       - name: Verify exported edge rules
         run: cmp out/.htaccess docs/generated/htaccess.txt
       - name: Lighthouse (2 runs, mobile emulation)
@@ -372,43 +355,67 @@ jobs:
         run: node scripts/lhci-summary.ts >> "$GITHUB_STEP_SUMMARY"
       - name: Upload Lighthouse reports
         if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: lighthouse
           path: .lighthouseci
           include-hidden-files: true
           retention-days: 30
           if-no-files-found: warn
-
+  checks:
+    name: Required checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      contents: read
+    needs:
+      - workflows
+      - secrets
+      - quality
+      - build
+      - hosting
+      - browser
+      - performance
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Setup Node for the dependency-free CI helpers
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version-file: .nvmrc
+      - name: Require successful complete job evidence
+        run: node scripts/ci/acceptance.ts core
+        env:
+          CI_NEEDS: ${{ toJSON(needs) }}
   ci:
-    # Required status check (branch ruleset). Passes when every gate passed or was legitimately skipped.
     name: ci
     runs-on: ubuntu-24.04
-    timeout-minutes: 2
-    needs: [workflows, secrets, build, hostinger, e2e, assistant, lighthouse]
+    timeout-minutes: 3
+    permissions:
+      contents: read
+    needs:
+      - workflows
+      - secrets
+      - quality
+      - build
+      - hosting
+      - browser
+      - performance
+      - checks
     if: always()
-    permissions: {}
     steps:
-      - name: Evaluate gates
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Setup Node for the dependency-free CI helpers
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version-file: .nvmrc
+      - name: Require successful complete job evidence
+        run: node scripts/ci/acceptance.ts bridge
         env:
-          WORKFLOWS: ${{ needs.workflows.result }}
-          SECRETS: ${{ needs.secrets.result }}
-          BUILD: ${{ needs.build.result }}
-          HOSTINGER: ${{ needs.hostinger.result }}
-          E2E: ${{ needs.e2e.result }}
-          ASSISTANT: ${{ needs.assistant.result }}
-          LIGHTHOUSE: ${{ needs.lighthouse.result }}
-          EVENT: ${{ github.event_name }}
-        run: |
-          set -euo pipefail
-          echo "workflows=$WORKFLOWS secrets=$SECRETS build=$BUILD hostinger=$HOSTINGER e2e=$E2E assistant=$ASSISTANT lighthouse=$LIGHTHOUSE"
-          test "$WORKFLOWS" = success
-          test "$SECRETS" = success
-          test "$BUILD" = success
-          test "$HOSTINGER" = success
-          # Browser gates are skipped only on pushes (they ran on the pull request); a pull request
-          # must run them.
-          if [ "$EVENT" = push ]; then allowed="success skipped"; else allowed="success"; fi
-          for result in "$E2E" "$ASSISTANT" "$LIGHTHOUSE"; do
-            case " $allowed " in *" $result "*) ;; *) echo "browser gate: $result"; exit 1 ;; esac
-          done
+          CI_NEEDS: ${{ toJSON(needs) }}
