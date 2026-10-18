@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { getImage, getVideo, hasMedia, mediaIds } from "../../src/lib/media.ts";
+import { getImage, getVideo, hasMedia, mediaIds } from "../../src/shared/media/media.ts";
 
 test("site-wide media ids exist in the manifest (product ids are checked by the registry)", () => {
   for (const id of ["brand.isotipo", "brand.logo", "brand.og"])

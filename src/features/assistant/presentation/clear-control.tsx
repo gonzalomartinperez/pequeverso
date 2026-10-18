@@ -1,7 +1,7 @@
 "use client";
 import { MessageSquarePlus } from "lucide-react";
 import { type KeyboardEvent, type ReactNode, useEffect, useId, useRef, useState } from "react";
-import { buttonVariants } from "@/components/ui/button-variants";
+import { buttonVariants } from "@/shared/ui/button-variants.ts";
 import { usePresentation } from "./context";
 import { IconButton } from "./parts";
 

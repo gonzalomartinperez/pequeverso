@@ -9,7 +9,7 @@
  */
 import { alimentacionBebe as course } from "../../config/affiliates.ts";
 import { guaranteeDays } from "../../config/commerce.ts";
-import { grafismoFonetico } from "../../src/products/grafismo-fonetico.ts";
+import { grafismoFonetico } from "../../config/products/grafismo-fonetico.ts";
 import { hubCopy } from "./hub.ts";
 
 /** "3 a 7 años" → "entre los 3 y los 7 años" (ages read from the registry and config). */

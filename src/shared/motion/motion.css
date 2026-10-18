@@ -1,0 +1,521 @@
+/*
+ * Motion rules of the design system (imported once by src/app/globals.css). Every effect is
+ * transform/opacity only, gated by `prefers-reduced-motion` (plus the global kill switch in
+ * globals.css) and, where scroll-driven, by `@supports (animation-timeline: view())`.
+ * Components reference the `pv-*` classes; tokens (durations, easings, travel) come from :root.
+ * See docs/design-system.md → Motion.
+ */
+@layer components {
+  .pv-scene-static {
+    transition: opacity var(--duration-reveal) var(--pv-ease-out);
+  }
+
+  .pv-orbit-traveller {
+    offset-path: path("M 10 200 A 190 72 0 1 1 390 200 A 190 72 0 1 1 10 200");
+    offset-rotate: 0deg;
+    offset-distance: 0%;
+  }
+
+  /*
+   * Reveal on scroll for [data-reveal]. Scroll-driven where supported: an element already in
+   * view at load sits at progress 100%, so nothing flashes. Stagger siblings with `--i`.
+   * Without view timelines, RevealObserver (gsap ScrollTrigger, lazy) marks only below-the-fold
+   * elements with data-reveal-state and reveals them once. Content is always visible without JS.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      [data-reveal] {
+        animation: pv-reveal var(--duration-reveal) var(--pv-ease-emphasis) both;
+        animation-timeline: view();
+        animation-range-start: entry calc(var(--i, 0) * 6%);
+        animation-range-end: entry calc(35% + var(--i, 0) * 6%);
+      }
+    }
+
+    [data-reveal-state="pending"] {
+      opacity: 0;
+      transform: translateY(var(--reveal-y));
+    }
+
+    /*
+     * Hero entrance for [data-hero-enter]: ≤ --duration-hero, staggered with `--i`. The title
+     * (`h1` or data-hero-enter="title") and the media (data-hero-enter="media") never animate
+     * opacity, so the LCP candidate paints at once.
+     */
+    [data-hero-enter] {
+      animation: pv-hero-rise var(--duration-hero) var(--pv-ease-emphasis) both;
+      animation-delay: calc(var(--i, 0) * var(--stagger));
+    }
+
+    h1[data-hero-enter],
+    [data-hero-enter="title"] {
+      animation-name: pv-hero-lift;
+    }
+
+    [data-hero-enter="media"] {
+      animation-name: pv-hero-settle;
+    }
+
+    /* Orbit: the gold star travels the dashed ellipse on an offset-path (48 s loop). */
+    .pv-orbit-traveller {
+      animation: pv-orbit-travel var(--duration-orbit) linear infinite;
+    }
+
+    /* Band orbits follow the scroll instead of a clock: motion stops when scrolling stops. */
+    @supports (animation-timeline: view()) {
+      .pv-orbit[data-motion="scroll"] {
+        view-timeline: --pv-orbit block;
+      }
+
+      .pv-orbit[data-motion="scroll"] .pv-orbit-traveller {
+        animation: pv-orbit-travel linear both;
+        animation-timeline: --pv-orbit;
+        animation-range: cover 0% cover 100%;
+      }
+    }
+
+    /* Scroll-linked drift of ±--parallax-range on a view timeline. */
+    @supports (animation-timeline: view()) {
+      .pv-parallax-layer {
+        animation: pv-drift-up linear both;
+        animation-timeline: view();
+        animation-range: cover 0% cover 100%;
+      }
+
+      .pv-parallax-layer[data-direction="down"] {
+        animation-name: pv-drift-down;
+      }
+    }
+
+    /* Sticky stack: each card sticks under the header and recedes on the next card's timeline. */
+    @supports (animation-timeline: view()) and (timeline-scope: --a) {
+      .pv-stack {
+        timeline-scope: --stack-1, --stack-2, --stack-3, --stack-4, --stack-5, --stack-6;
+      }
+
+      .pv-stack-item {
+        position: sticky;
+        top: var(--stack-top);
+        view-timeline-axis: block;
+        view-timeline-inset: var(--stack-top) 0;
+        animation: pv-recede linear both;
+        animation-range: contain 0% contain 100%;
+      }
+
+      .pv-stack-item:nth-child(1) {
+        view-timeline-name: --stack-1;
+        animation-timeline: --stack-2;
+      }
+      .pv-stack-item:nth-child(2) {
+        view-timeline-name: --stack-2;
+        animation-timeline: --stack-3;
+      }
+      .pv-stack-item:nth-child(3) {
+        view-timeline-name: --stack-3;
+        animation-timeline: --stack-4;
+      }
+      .pv-stack-item:nth-child(4) {
+        view-timeline-name: --stack-4;
+        animation-timeline: --stack-5;
+      }
+      .pv-stack-item:nth-child(5) {
+        view-timeline-name: --stack-5;
+        animation-timeline: --stack-6;
+      }
+      .pv-stack-item:nth-child(6) {
+        view-timeline-name: --stack-6;
+        animation-timeline: none;
+      }
+    }
+
+    /* Float: decorative pages and syllable tiles bob like planets; --float-delay sets the phase. */
+    .pv-float {
+      animation: pv-float var(--duration-float) ease-in-out infinite;
+      animation-delay: var(--float-delay, 0s);
+    }
+
+    /* Marquee: the track holds the list twice and slides half its width, forever. */
+    .pv-marquee-track {
+      animation: pv-marquee var(--marquee-duration, var(--duration-marquee)) linear infinite;
+    }
+
+    .pv-marquee[data-direction="reverse"] .pv-marquee-track {
+      animation-direction: reverse;
+    }
+
+    .pv-marquee:hover .pv-marquee-track,
+    .pv-marquee:focus-within .pv-marquee-track,
+    .pv-marquee[data-paused] .pv-marquee-track {
+      animation-play-state: paused;
+    }
+
+    /* The offer card's ring turns slowly. */
+    .pv-glow-spin {
+      animation: pv-glow-spin 9s linear infinite;
+    }
+
+    /* Shine sweep across the purchase CTA on hover. */
+    @media (hover: hover) and (pointer: fine) {
+      .pv-shine:hover::after {
+        translate: 120% 0;
+        transition: translate 700ms var(--pv-ease-out);
+      }
+    }
+
+    /* Header condenses and a progress bar fills with the page scroll. */
+    @supports (animation-timeline: scroll()) {
+      .pv-scroll-progress {
+        animation: pv-grow-x linear both;
+        animation-timeline: scroll(root block);
+      }
+
+      .pv-header-pill {
+        animation: pv-header-condense linear both;
+        animation-timeline: scroll(root block);
+        animation-range: 0 96px;
+      }
+
+      [data-reveal="blur"] {
+        animation-name: pv-reveal-blur;
+      }
+    }
+
+    /* Pointer tilt glare (TiltCard sets --glare-x/--glare-y from the pointer). */
+    @media (hover: hover) and (pointer: fine) {
+      .pv-tilt:hover::after {
+        opacity: 1;
+      }
+    }
+  }
+
+  .pv-marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+
+  .pv-marquee-track {
+    display: flex;
+    width: max-content;
+    gap: var(--marquee-gap, var(--space-4));
+  }
+
+  .pv-marquee-track > * {
+    flex: none;
+  }
+
+  .pv-scroll-progress {
+    transform-origin: left center;
+    transform: scaleX(0);
+  }
+
+  .pv-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .pv-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(100deg, transparent 20%, oklch(1 0 0 / 28%) 45%, transparent 70%);
+    translate: -120% 0;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pv-orbit-traveller {
+      animation-play-state: paused;
+    }
+
+    /* Static marquee: one copy, wrapped and centred. */
+    .pv-marquee {
+      mask-image: none;
+    }
+
+    .pv-marquee-track {
+      width: auto;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .pv-marquee-track > [aria-hidden="true"] {
+      display: none;
+    }
+
+    .pv-scroll-progress {
+      display: none;
+    }
+
+    .pv-tilt {
+      transform: none;
+    }
+  }
+
+  /* Native <details> (FAQ): the answer's height interpolates where the platform can. */
+  @supports (interpolate-size: allow-keywords) {
+    @media (prefers-reduced-motion: no-preference) {
+      .pv-details {
+        interpolate-size: allow-keywords;
+      }
+
+      .pv-details::details-content {
+        height: 0;
+        overflow: clip;
+        transition:
+          height var(--duration) var(--pv-ease-out),
+          content-visibility var(--duration) allow-discrete;
+      }
+
+      .pv-details[open]::details-content {
+        height: auto;
+      }
+    }
+  }
+
+  /* The SceneStage pause toggle (data-mode="paused") also pauses the CSS orbit fallback. */
+  [data-mode="paused"] .pv-orbit-traveller {
+    animation-play-state: paused;
+  }
+
+  /* While the WebGL scene runs (data-live), the static layers fade out underneath it and their
+     CSS orbit stops (WebKit keeps repainting an offset-path loop even at opacity 0). */
+  [data-live] > * > .pv-scene-static {
+    opacity: 0;
+  }
+
+  [data-live] .pv-orbit-traveller {
+    animation: none;
+  }
+
+  .pv-stack {
+    --stack-top: calc(var(--header-height) + var(--space-5));
+  }
+
+  .pv-stack-item {
+    transform-origin: top center;
+  }
+
+  .pv-tilt {
+    --tilt-rx: 0;
+    --tilt-ry: 0;
+    --glare-x: 50%;
+    --glare-y: 50%;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: perspective(var(--tilt-perspective)) rotateX(calc(var(--tilt-rx) * var(--tilt-max)))
+      rotateY(calc(var(--tilt-ry) * var(--tilt-max)));
+    transition: transform var(--duration) var(--pv-ease-out);
+  }
+
+  .pv-tilt::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      circle at var(--glare-x) var(--glare-y),
+      oklch(1 0 0 / 28%),
+      oklch(1 0 0 / 0%) 55%
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration) var(--pv-ease-out);
+  }
+}
+
+/*
+ * Hub (docs/specs/home-hub.md): the «Productos» popover, the auto-hiding home header and the
+ * contextual sticky bar. Transform/opacity only; under reduced motion everything appears at once.
+ */
+@layer components {
+  /* Popover panel: closed state is display:none (UA); the transition runs on open and close. */
+  .pv-popover {
+    transform-origin: top center;
+  }
+
+  .pv-header {
+    transition: translate var(--duration-hide, 340ms) var(--pv-ease-emphasis);
+  }
+
+  /* Home header slides away while reading down and returns on the way up (HeaderAutoHide). It
+     never hides while it holds focus or its menu is open. */
+  .pv-header[data-hidden]:not(:focus-within):not(:has(:popover-open)) {
+    translate: 0 calc(-100% - 1rem);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pv-popover {
+      transition:
+        opacity var(--duration) var(--pv-ease-out),
+        scale var(--duration) var(--pv-ease-emphasis),
+        overlay var(--duration) allow-discrete,
+        display var(--duration) allow-discrete;
+    }
+
+    .pv-popover:not(:popover-open) {
+      opacity: 0;
+      scale: 0.97;
+    }
+
+    @starting-style {
+      .pv-popover:popover-open {
+        opacity: 0;
+        scale: 0.97;
+      }
+    }
+
+    .pv-popover:popover-open [data-menu-card] {
+      animation: pv-menu-in var(--duration-reveal) var(--pv-ease-emphasis) both;
+      animation-delay: calc(60ms + var(--i, 0) * var(--stagger));
+    }
+
+    /* Sticky bar content swaps (doors → a product) with a short rise. */
+    .pv-swap {
+      animation: pv-menu-in var(--duration) var(--pv-ease-emphasis) both;
+    }
+  }
+}
+
+@keyframes pv-menu-in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+
+@property --glow-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 200deg;
+}
+
+@keyframes pv-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 calc(-1 * var(--float-range, 12px));
+  }
+}
+
+@keyframes pv-marquee {
+  to {
+    transform: translateX(calc(-50% - var(--marquee-gap, var(--space-4)) / 2));
+  }
+}
+
+@keyframes pv-glow-spin {
+  to {
+    --glow-angle: 560deg;
+  }
+}
+
+@keyframes pv-grow-x {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes pv-header-condense {
+  to {
+    box-shadow: var(--pv-shadow-float);
+    border-color: oklch(1 0 0 / 100%);
+  }
+}
+
+@keyframes pv-reveal-blur {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(calc(var(--reveal-y) * 1.5)) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
+
+@keyframes pv-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-y));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pv-hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-y));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pv-hero-lift {
+  from {
+    transform: translateY(var(--reveal-y));
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes pv-hero-settle {
+  from {
+    transform: translateY(var(--reveal-y)) scale(0.97);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes pv-orbit-travel {
+  to {
+    offset-distance: 100%;
+  }
+}
+
+@keyframes pv-drift-up {
+  from {
+    transform: translateY(var(--parallax-range));
+  }
+  to {
+    transform: translateY(calc(-1 * var(--parallax-range)));
+  }
+}
+
+@keyframes pv-drift-down {
+  from {
+    transform: translateY(calc(-1 * var(--parallax-range)));
+  }
+  to {
+    transform: translateY(var(--parallax-range));
+  }
+}
+
+@keyframes pv-recede {
+  to {
+    transform: scale(0.94);
+  }
+}
+
+/*
+ * Scoped motion hold (src/shared/motion/motion-hold.ts): while a surface covers the page (the assistant's
+ * expanded or phone panel), decorative motion under the page landmarks pauses. The assistant lives
+ * outside these landmarks, so its own feedback keeps running. Nothing changes the visitor's choice.
+ */
+:root[data-motion-hold] :is(header, main, footer) *,
+:root[data-motion-hold] :is(header, main, footer) *::before,
+:root[data-motion-hold] :is(header, main, footer) *::after {
+  animation-play-state: paused;
+}

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { checkInternalLink, type LiveFetch } from "../../scripts/lib/live-links.ts";
+import { checkInternalLink, type LiveFetch } from "../../tools/lib/live-links.ts";
 
 const base = "https://store.example.test";
 const affiliates = new Set(["/alimentacion-bebe/"]);

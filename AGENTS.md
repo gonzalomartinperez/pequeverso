@@ -9,6 +9,7 @@ Spanish. Read this file first, then the doc that matches your task.
 | Task | Read |
 |---|---|
 | Understand the system | `docs/architecture.md` |
+| Physical source moves | `docs/decisions/ADR-0009-common-site-module-spine.md`; reconcile every consumer before moving |
 | Run, build, test locally | `docs/development.md` |
 | Change copy, prices, product facts | `docs/content-model.md` (and `config/commerce.ts`) |
 | Visual work | `docs/design-system.md` |
@@ -20,7 +21,7 @@ Spanish. Read this file first, then the doc that matches your task.
 | Affiliate redirects (`/<slug>/` → affiliate link from an env variable) | `docs/affiliates.md` |
 | Hotmart funnel (checkout, widget, dashboard changes, E2E checklist) | `docs/hotmart-funnel.md` |
 | Native shopping assistant (disabled by default) | `docs/assistant.md`, ADR-0008 |
-| Code style, setup, skills validation | `CONTRIBUTING.md` (Google TS style adaptations); skills: `.agents/skills/*/SKILL.md` (canonical), `.claude/skills` thin adapters, `npm run check:skills` |
+| Code style, setup, skills validation | `CONTRIBUTING.md` (Google TS style adaptations); skills: `.agents/skills/*/SKILL.md` (canonical), regular thin `.claude/skills` references, `npm run check:skills` |
 
 ## Non-negotiables
 
@@ -40,7 +41,7 @@ Spanish. Read this file first, then the doc that matches your task.
   focus, 24 px targets, reduced motion, captions/text alternatives), CLS ≤ 0.1, LCP ≤ 2.5 s (lab).
 - **Deployment values live only in environment variables.** The repository ships no inline
   origin, checkout URL, pixel id or token: `NEXT_PUBLIC_SITE_URL` and the checkout URL are
-  required at build time (`scripts/check-env.ts`; copy `.env.example` to `.env.local` locally),
+  required at build time (`tools/check-env.ts`; copy `.env.example` to `.env.local` locally),
   optional integrations are no-ops when their variable is empty. The Meta Pixel runs when its id is
   set and the cookie banner withdraws it.
 - **TypeScript first.** Every file we write is TypeScript under the strict tsconfig (TypeScript 7,
@@ -49,7 +50,7 @@ Spanish. Read this file first, then the doc that matches your task.
   the one-line `next.config.mjs` re-export of `config/next.ts` (ADR-0007).
 - **The native assistant stays disabled.** `NEXT_PUBLIC_ASSISTANT_ENABLED` is unset/`false` in every
   publishable build; enabling it needs the owner's explicit authorization and a rebuild. Enabled
-  builds (`npm run test:e2e:assistant`, `out-assistant-fixture/`) are verification artifacts only;
+  builds (`npm run test:browser:assistant`, `out-assistant-fixture/`) are verification artifacts only;
   `npm run check:assistant-disabled` must pass on anything that ships. The assistant is advisory:
   no checkout, payment, cart or tracking features (`docs/assistant.md`).
 - **Placeholders `[[LIKE_THIS]]` are allowed in legal copy until the owner supplies the details**;
@@ -67,12 +68,31 @@ Spanish. Read this file first, then the doc that matches your task.
   then a PR `main` → `develop` (merge commit). Both branches are protected rulesets (required
   checks `ci` + `Branch policy`). Conventional Commits with a body that states what was verified
   and what was not.
-- Before opening a PR: `npm run check` and the relevant `npm run test:e2e` projects. Keep
-  `docs/generated/htaccess.txt` in sync (`node scripts/gen-htaccess.ts`).
+- Before opening a PR: `npm run check` and the relevant `npm run test:browser` projects. Keep
+  `docs/generated/htaccess.txt` in sync (`node tools/gen-htaccess.ts`).
 - One owner per lockfile change; dependency updates are their own PR.
 - Optional tagged publication uses `vX.Y.Z` manually through the `Deploy` workflow with environment
   approval; it publishes the export to the `deploy` branch (pulled by Hostinger Git) and verifies
   the deployed commit, not just an HTTP 200. Never commit to `deploy` by hand.
+
+## Physical module ownership
+
+The common public-site spine is `src/{app,views,shell,features,shared}`. Framework routes and
+statically analyzed Next exports stay in `app`; page composition belongs in `views`; navigation
+and the existing page shell belong in `shell`. Product capabilities retain their actual layers
+under `features`; reused primitives and presentation use named `shared` capabilities. Business
+configuration, reviewed copy, wire snapshots, media provenance and repository CLI remain owned
+by root `config`, `content`, `contracts`, `media` and `tools` respectively. Browser checks and
+baseline assets live in `tests/browser`. Do not create empty layers or copy another product's identity.
+
+Before a move, reconcile ADR-0009, the exact-source consumer map, imports/aliases, generators,
+CI, tests, active docs and skill pointers. Preserve DOM, copy, styles/media/contract bytes, URLs,
+component mount/cleanup lifetimes, tracking/consent/checkout and disabled-assistant gates.
+No forwarding barrels, duplicated implementation, changed deadlines/retries/budgets or new authority
+follow from a relocation. Historical receipts, copied contract provenance and scanner fingerprints
+retain their original source attribution. The public-site pair keeps one canonical procedure in `.agents/skills/<name>/SKILL.md` and
+a regular `.claude/skills/<name>/SKILL.md` adapter with identical frontmatter and one source reference.
+Do not duplicate the procedure or infer API/backoffice discovery changes from this site convention.
 
 ## Boundaries
 

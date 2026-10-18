@@ -1,7 +1,7 @@
 "use client";
 import { ChevronDown, FileText, Info, MessageCircleQuestion } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button-variants";
-import { cx } from "@/lib/cx";
+import { cx } from "@/shared/styles/cx.ts";
+import { buttonVariants } from "@/shared/ui/button-variants.ts";
 import { approvedSourceUrl } from "../domain/links";
 import type { Link, Notice, Source } from "../domain/models";
 import { usePresentation } from "./context";

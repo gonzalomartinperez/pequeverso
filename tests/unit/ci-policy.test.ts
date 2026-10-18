@@ -12,7 +12,7 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
-import { prerequisites, requireSuccessfulJobs } from "../../scripts/ci/acceptance.ts";
+import { prerequisites, requireSuccessfulJobs } from "../../tools/ci/acceptance.ts";
 import {
   type Binding,
   buildIdentity,
@@ -25,7 +25,7 @@ import {
   requireRegular,
   safeMember,
   validateOffArtifact,
-} from "../../scripts/ci/artifacts.ts";
+} from "../../tools/ci/artifacts.ts";
 import {
   coreMatrix,
   nightlyMatrix,
@@ -33,7 +33,7 @@ import {
   requirePartition,
   type Suite,
   testIdentities,
-} from "../../scripts/ci/inventories.ts";
+} from "../../tools/ci/inventories.ts";
 
 for (const profile of ["core", "nightly", "bridge"] as const) {
   const success = Object.fromEntries(prerequisites[profile].map((name) => [name, { result: "success" }]));
@@ -72,7 +72,7 @@ function report(suite: Suite, selected: readonly string[] = projects[suite]) {
             specs: selected.map((project, index) => ({
               title: `case ${index}`,
               id: `parameter-${index}`,
-              file: "tests/e2e/commerce.spec.ts",
+              file: "tests/browser/commerce.spec.ts",
               line: 20,
               column: 1,
               tests: [{ projectName: project, repeatEachIndex: 0 }],
@@ -321,10 +321,10 @@ test("analyzer rebuild has fresh metadata, its own OFF verification and manifest
   const bundle = nightly.slice(nightly.indexOf("\n  bundle:\n"), nightly.indexOf("\n  checks:\n"));
   const commands = [
     "npx lhci autorun --collect.numberOfRuns=5",
-    "node scripts/build-info.ts",
+    "node tools/build-info.ts",
     "npm run analyze",
     "npm run check:assistant-disabled",
-    "node scripts/ci/artifacts.ts pack-off out .ci-analyzer-artifact",
+    "node tools/ci/artifacts.ts pack-off out .ci-analyzer-artifact",
   ];
   let previous = -1;
   for (const command of commands) {

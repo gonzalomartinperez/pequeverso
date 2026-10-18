@@ -7,7 +7,7 @@ import { legalRoutes, seller } from "../../content/es/legal/seller.ts";
 /**
  * The Titular's own mailbox (`seller.legalEmail`) is a secondary channel for the legal pages only.
  * Commercial pages, the footer, soporte and config/site.ts show `supportEmail` alone
- * (scripts/check-rendered.ts checks the exported HTML).
+ * (tools/check-rendered.ts checks the exported HTML).
  */
 const toPosix = (file: string): string => file.split("\\").join("/");
 

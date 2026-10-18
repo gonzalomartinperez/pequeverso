@@ -1,9 +1,9 @@
 /**
  * Shared shapes for the per-product content folders (`content/es/products/<slug>/`).
  * Each folder holds `copy.ts` (landing copy), `resources.ts` (the real PDFs) and `faq.ts`;
- * the product module in `src/products/<slug>.ts` assembles them with the business facts.
+ * the product module in `config/products/<slug>.ts` assembles them with the business facts.
  */
-import type { IconName } from "@/components/blocks/icon.tsx";
+import type { IconName } from "@/shared/editorial/icon.tsx";
 
 export type Resource = {
   id: string;

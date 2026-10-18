@@ -25,13 +25,15 @@ test("CSS Modules never use @apply", () => {
   }
 });
 
-test("nothing imports the retired src/styles sheets or PascalCase component folders", () => {
+test("nothing imports retired source roots or PascalCase shared folders", () => {
   const retired = [
     /["']@\/styles\//,
     /src\/styles\//,
-    /["']@\/components\/ui\/[A-Z]/,
-    /["']@\/components\/layout\/[A-Z]/,
-    /["']@\/motion\/[A-Z]/,
+    /["']@\/components\//,
+    /["']@\/lib\//,
+    /["']@\/products(?:\/|["'])/,
+    /["']@\/shared\/ui\/[A-Z]/,
+    /["']@\/motion\//,
   ];
   for (const file of [...files("src", /\.(ts|tsx|css)$/), ...files("content", /\.ts$/)]) {
     const text = read(file);
@@ -42,12 +44,12 @@ test("nothing imports the retired src/styles sheets or PascalCase component fold
 });
 
 test("primitives, blocks and layout are kebab-case; primitives tag their root with data-slot", () => {
-  for (const dir of ["src/components/ui", "src/components/blocks", "src/components/layout"]) {
+  for (const dir of ["src/shared/ui", "src/shared/editorial", "src/shell"]) {
     for (const entry of readdirSync(dir)) {
       assert.match(entry, /^[a-z0-9-]+\.(ts|tsx)$/, `${dir}/${entry} is not kebab-case`);
     }
   }
-  for (const file of files("src/components/ui", /\.tsx$/)) {
+  for (const file of files("src/shared/ui", /\.tsx$/)) {
     assert.ok(/data-slot|slot: "/.test(read(file)), `${toPosix(file)} has no data-slot`);
   }
 });
@@ -133,7 +135,7 @@ test("documented WCAG 2.2 AA contrast pairs hold for the OKLCH tokens", () => {
 
 test("cn keeps the project's font sizes and shadows next to colours (config/cn.ts)", async () => {
   const { createCn } = await import("cn/engine");
-  const { default: tables } = await import("../../src/lib/cn-tables.js");
+  const { default: tables } = await import("../../src/shared/styles/cn-tables.js");
   const cn = createCn(tables);
   assert.equal(
     cn("font-display text-price font-bold", "text-coral"),

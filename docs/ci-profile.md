@@ -36,7 +36,7 @@ one configuration. Each has four shards; `max-parallel: 4` bounds simultaneous l
 is inferred.
 
 Before execution, each runner discovers the full configuration and every shard using Playwright
-`--list --reporter=json`. `scripts/ci/inventories.ts` requires the full project catalogue and a
+`--list --reporter=json`. `tools/ci/inventories.ts` requires the full project catalogue and a
 nonempty, duplicate-free, disjoint exact union of identities including configuration, project,
 source file/line/column, nested titles, spec ID and repeat index. Parameter titles/IDs remain
 separate. This proves selection coverage only; the following real browser command must also
@@ -50,7 +50,7 @@ suitable for publication. Reports may contain synthetic browser traces; never ru
 
 ## OFF export transfer
 
-Only `out/` with disabled build identity is transferable. `scripts/ci/artifacts.ts` stages a payload
+Only `out/` with disabled build identity is transferable. `tools/ci/artifacts.ts` stages a payload
 directory and a closed manifest: no tar extraction or base64 container. The producer publishes
 its manifest checksum as a job output. Pinned same-run upload/download actions transport the
 staging directory; their success alone does not establish integrity.

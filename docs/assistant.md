@@ -10,7 +10,7 @@ Advisory, read-only helper that answers questions about the store's products wit
 |---|---|
 | Code in `src/features/assistant/` (domain, application, adapters, presentation, entry) | Implemented |
 | Default build (`npm run build`) | Disabled and compiled out; verified by `npm run check:assistant-disabled` |
-| Enabled verification build against the fixture API | Implemented: `npm run test:e2e:assistant` (never publish) |
+| Enabled verification build against the fixture API | Implemented: `npm run test:browser:assistant` (never publish) |
 | Store connected to the deployed API, production hostname and CORS | **Not exercised** in this repository; storefront activation is not authorized. Real-model evaluation evidence belongs to the API repository. |
 | Privacy-policy section for the assistant | **Not** written in `/privacidad/`: required before activation |
 
@@ -94,7 +94,7 @@ Spanish response profile requires a reviewed compatible v1 API revision **at lea
 - Phones: the surface follows the VisualViewport (on-screen keyboard, pinch-zoom, a page wider
   than the screen) with safe-area padding for the composer.
 - Motion: restrained panel entrance only, nothing under reduced motion. While a
-  modal surface covers the page, `src/motion/motion-hold.ts` pauses the WebGL scene and CSS motion
+  modal surface covers the page, `src/shared/motion/motion-hold.ts` pauses the WebGL scene and CSS motion
   under the page landmarks and defers a cold WebGL start; releasing it restores the visitor's own
   pause choice untouched.
 - Retry and Idempotency-Key: a retry is always an explicit click. After a **failure or a
@@ -260,8 +260,8 @@ its browser suite has already passed; results belong to the exact verification r
 |---|---|
 | `npm test` | Flag parsing, reducer and phases, controller, SSE framing (split UTF-8, CRLF, comments, multiline, bounds, order, early EOF, stall, abort), validation, link policy, contract pin, boundaries |
 | `npm run build && npm run check:assistant-disabled` | The publishable export has no assistant code |
-| `npm run test:e2e -- --project=chromium-1440` (`assistant-disabled.spec.ts`) | Real disabled export: no launcher, no assistant script, no request outside the known hosts |
-| `ASSISTANT_API_DIR=<api checkout at tests/assistant/api-revision> npm run test:e2e:assistant` | Enabled build + real fixture API, both over **HTTPS loopback** (throwaway self-signed certificate made with the system `openssl`, a test prerequisite, accepted only by the test servers and Playwright), in Chromium desktop/phone/reduced-motion, Firefox and WebKit desktop/phone: Secure HttpOnly `__Host-` session cookie with credentialed CORS and CSRF, ask, SSE stream, stop, minimize while streaming, keyboard and Escape, region vs modal semantics with inert background and contained Tab, motion hold, phone geometry, client navigation and reload history, English input with Spanish output and preserved historical answer languages, delete with confirmation, 200 % text and long text, API outage, axe |
+| `npm run test:browser -- --project=chromium-1440` (`assistant-disabled.spec.ts`) | Real disabled export: no launcher, no assistant script, no request outside the known hosts |
+| `ASSISTANT_API_DIR=<api checkout at tests/assistant/api-revision> npm run test:browser:assistant` | Enabled build + real fixture API, both over **HTTPS loopback** (throwaway self-signed certificate made with the system `openssl`, a test prerequisite, accepted only by the test servers and Playwright), in Chromium desktop/phone/reduced-motion, Firefox and WebKit desktop/phone: Secure HttpOnly `__Host-` session cookie with credentialed CORS and CSRF, ask, SSE stream, stop, minimize while streaming, keyboard and Escape, region vs modal semantics with inert background and contained Tab, motion hold, phone geometry, client navigation and reload history, English input with Spanish output and preserved historical answer languages, delete with confirmation, 200 % text and long text, API outage, axe |
 
 Measured results, bundle impact and screenshots: `docs/verification/assistant.md`.
 

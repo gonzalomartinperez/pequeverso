@@ -1,4 +1,4 @@
-import type { ConsentState } from "../consent.ts";
+import type { ConsentState } from "./consent.ts";
 import type { ScriptSpec, TrackedEvent, TrackingAdapter } from "./types.ts";
 
 type Fbq = ((...args: unknown[]) => void) & {

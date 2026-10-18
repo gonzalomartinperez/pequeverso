@@ -34,11 +34,11 @@ the API repository, paid model calls, deployment.
 ## Steps and evidence
 
 1. Change the code; add or update unit tests for pure logic.
-2. `npm run check:architecture`, then `npm run lint && npm run typecheck && npm test`.
+2. `npm run test:architecture`, then `npm run lint && npm run typecheck && npm test`.
    Exercise the real guards with forbidden-import fixtures. Temporary parser/linter probes must
    stay outside source roots so parallel tests cannot observe transient modules.
 3. `npm run build && npm run check:assistant-disabled` (publishable build still has no assistant).
-4. `ASSISTANT_API_DIR=<API checkout at tests/assistant/api-revision> npm run test:e2e:assistant`
+4. `ASSISTANT_API_DIR=<API checkout at tests/assistant/api-revision> npm run test:browser:assistant`
    (fixture API, never a real key). Keep Playwright's package/browser revisions aligned; for local
    concurrent installs use `PLAYWRIGHT_SKIP_BROWSER_GC=1` or an isolated
    `PLAYWRIGHT_BROWSERS_PATH`, and reserve shared ports/cache leases before running. Open the screenshots in `test-results-assistant/screenshots/`
@@ -51,4 +51,4 @@ the API repository, paid model calls, deployment.
 - Not an authorization to enable the assistant, publish an enabled build, use a real OpenAI key
   or change the API repository; each needs the owner's explicit, current approval.
 - Evidence to report: `npm run check`, `npm run check:assistant-disabled`,
-  `npm run test:e2e:assistant` results and the screenshots you inspected.
+  `npm run test:browser:assistant` results and the screenshots you inspected.

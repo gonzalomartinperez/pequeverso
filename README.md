@@ -33,11 +33,11 @@ existing **`/alimentacion-bebe/` redirect to its producer**. Product selection a
 landing or required in-page step. Hotmart owns payment, delivery and refunds. Dashed assistant
 and infrastructure paths describe integration responsibilities, not a running VPS deployment.
 
-The store presents **Grafismo Fonético** and the affiliate **Guía de Alimentación para Bebés**, with their respective format, audience and ownership clearly identified. The optional **Pack Imprime y Juega** remains a post-purchase offer. Product facts come from the [typed registry](src/products), [affiliate registry](config/affiliates.ts) and [commerce configuration](config/commerce.ts); copy never invents prices, guarantees or benefits. Offer pages embed the Hotmart sales-funnel widget; a thank-you URL is not proof of payment and exposes no product files.
+The store presents **Grafismo Fonético** and the affiliate **Guía de Alimentación para Bebés**, with their respective format, audience and ownership clearly identified. The optional **Pack Imprime y Juega** remains a post-purchase offer. Product facts come from the [typed registry](config/products), [affiliate registry](config/affiliates.ts) and [commerce configuration](config/commerce.ts); copy never invents prices, guarantees or benefits. Offer pages embed the Hotmart sales-funnel widget; a thank-you URL is not proof of payment and exposes no product files.
 
 Dependency direction, client/server separation, acyclic runtime imports and negative architecture
 fixtures are enforced by the required CI build. See [engineering standards](docs/engineering-standards.md)
-and run `npm run check:architecture` locally.
+and run `npm run test:architecture` locally.
 
 | Application | Responsibility | Operational boundary |
 |---|---|---|
@@ -109,13 +109,13 @@ npm run check                   # Lint, strict types, unit, export and budgets
 npm run check:skills             # Canonical skill/adaptor consistency
 npm run check:assistant-disabled # Inspect the actual publishable export
 npx playwright install --with-deps chromium firefox webkit
-npm run test:e2e                 # Storefront browser gates against the built export
+npm run test:browser                 # Storefront browser gates against the built export
 ```
 
 For assistant verification, use an **isolated API checkout** at the exact SHA in [tests/assistant/api-revision](tests/assistant/api-revision), run `uv sync --frozen` there, then:
 
 ```bash
-ASSISTANT_API_DIR=/path/to/isolated-api-checkout npm run test:e2e:assistant
+ASSISTANT_API_DIR=/path/to/isolated-api-checkout npm run test:browser:assistant
 ```
 
 This command builds the assistant separately and runs the real session/CSRF/HTTP/SSE flow with the fixture provider. It uses throwaway self-signed HTTPS loopback and an isolated database, never a provider key. Do not publish its output. [Full development commands](docs/development.md).
@@ -136,16 +136,16 @@ Measured runs and screenshots establish what was actually exercised. CI does not
 | Path | Purpose |
 |---|---|
 | `src/app` | Public routes, legal/support pages, metadata and 404 |
-| `src/products`, `config` | Product/commerce facts, budgets, assistant flag and edge rules |
-| `src/components` | Owned UI primitives, server blocks and layout |
+| `config/products`, `config` | Product/commerce facts, budgets, assistant flag and edge rules |
+| `src/shared`, `src/shell`, `src/views` | Named reused capabilities, existing page shell and page composition |
 | `src/features/assistant` | Domain, controller, adapters and native presentation |
 | `contracts/assistant-api` | Pinned API contract artifacts and provenance |
 | `src/features/commerce`, `src/features/tracking` | Existing checkout and consent-gated events |
-| `src/motion` | CSS motion and lazily loaded scene with static fallback |
+| `src/shared/motion` | CSS motion and lazily loaded scene with static fallback |
 | `content/es` | Store and Spanish-only assistant copy |
 | `media/manifest.json`, `tools/media` | Media provenance, rights and build-time pipeline |
 | `scripts`, `tests`, `.github` | Build/publish guards, verification and protected workflow |
-| `.agents/skills`, `.claude/skills` | Canonical skills and checked thin adapters |
+| `.agents/skills`, `.claude/skills` | Canonical .agents procedures and regular thin .claude references |
 
 ## Documentation and contribution
 

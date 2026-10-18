@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
- * E2E runs against the static export served by scripts/serve-static.ts (same
+ * E2E runs against the static export served by tools/serve-static.ts (same
  * trailing-slash and 404 semantics as production) unless E2E_BASE_URL points elsewhere.
  *
  * Project sets are selected with PW_SET:
@@ -90,7 +90,7 @@ if (set === "prod" && !process.env.E2E_BASE_URL) {
 }
 
 export default defineConfig({
-  testDir: "tests/e2e",
+  testDir: "tests/browser",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   // Nightly sweeps two engines × seven widths on shared runners: two retries absorb timing
@@ -115,7 +115,7 @@ export default defineConfig({
     ? {}
     : {
         webServer: {
-          command: "node scripts/serve-static.ts",
+          command: "node tools/serve-static.ts",
           url: `${baseURL}/`,
           reuseExistingServer: !process.env.CI,
           env: { PORT: String(port) },

@@ -40,7 +40,7 @@ build:standalone` is the Node parity build you can run locally).
 optional cached Playwright browser). `deploy.yml` keeps its setup inline because it checks out the
 *requested* tag, which may predate the composite (rollbacks must keep working).
 
-Build-time business values (required by `scripts/check-env.ts`, no inline defaults in the app):
+Build-time business values (required by `tools/check-env.ts`, no inline defaults in the app):
 
 | Workflow | `NEXT_PUBLIC_SITE_URL` | `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO` | `NEXT_PUBLIC_META_PIXEL_ID` |
 |---|---|---|---|
@@ -70,7 +70,7 @@ Manual (`workflow_dispatch`), `production` environment with required approval:
    `check:media -- --strict` (every media item `public-repo-approved`).
 3. Publishes `out/` to `deploy` (static mode) **and** fast-forwards `release` to the source commit
    (Node app mode). Hostinger picks up whichever branch is connected.
-4. Polls `build-info.json` until `sha` equals the built commit, then runs `scripts/smoke.ts`.
+4. Polls `build-info.json` until `sha` equals the built commit, then runs `tools/smoke.ts`.
    An HTTP 200 alone never counts as a verified deployment.
 
 > If hPanel is connected to `main`, Hostinger deploys on every merge and the launch gates above
@@ -96,7 +96,7 @@ Manual (`workflow_dispatch`), `production` environment with required approval:
 
 ## Environment variables (hPanel → Environment variables; GitHub `production` environment)
 
-`npm run build` runs `scripts/check-env.ts` first: it validates formats, never prints values
+`npm run build` runs `tools/check-env.ts` first: it validates formats, never prints values
 and exits 1 on a malformed one.
 `NEXT_PUBLIC_*` values are inlined at build time, so **saving a variable in hPanel triggers a
 redeploy**; there is nothing to reload at runtime. `META_CAPI_ACCESS_TOKEN` is read by the Node
@@ -157,7 +157,7 @@ Future producer-owned hosts need an explicit monitoring-policy review, not a wil
 This check proves the public route and approved handoff, not third-party checkout availability,
 a purchase, affiliate attribution or fulfillment. No checkout/tracking behavior changes.
 
-The production-daily sparse checkout includes `scripts/` and `config/` so it reads the same
+The production-daily sparse checkout includes `tools/` and `config/` so it reads the same
 committed affiliate paths as the edge-rule generator. Nightly remains the separate export
 matrix/visual/clean-clone/Lighthouse ×5/links/bundle gate; a production-daily failure does not imply
 that Nightly failed. Original daily failures remain evidence; rerun both appropriate workflows
