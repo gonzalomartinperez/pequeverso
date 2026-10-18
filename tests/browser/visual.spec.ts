@@ -52,6 +52,11 @@ async function prepareHomeCapture(page: Page) {
     window.scrollTo({ top: 0, behavior: "instant" });
     await renderedFrame();
   });
+  // IntersectionObserver delivery can follow the two rendering frames. Wait for the real
+  // controller to finish returning to the hero before capturing; never hide the mobile bar.
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+  await expect(page.getByTestId("hub-sticky")).toHaveAttribute("data-mode", "hidden");
+  await expect(page.getByTestId("hub-sticky")).not.toBeVisible();
 }
 
 const pages = [
