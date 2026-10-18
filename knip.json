@@ -25,7 +25,8 @@
         "src/**!",
         "config/**!",
         "content/**!",
-        "tools/**/!(serve-static.ts)",
+        "tools/!(serve-static).ts",
+        "tools/*/**",
         "tools/serve-static.ts!",
         "tests/**"
       ]
