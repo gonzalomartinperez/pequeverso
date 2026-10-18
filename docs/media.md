@@ -7,7 +7,19 @@ hard-code `/media/...` paths: they call `getImage(id)` / `getVideo(id)` from `sr
 
 Budget: **5 MB per file, 25 MB for `public/media` in total** (target 16–20 MB), enforced by
 `npm run check:media` (`scripts/check-media-budget.ts`) and by `media-build.ts --check`.
-Current state: 68 items, 229 outputs (223 under `public/media` + the favicon set), 16.6 MB.
+Current state (2026-10-18): 95 items, 322 outputs (317 under `public/media` + the favicon set),
+23.04 MiB under `public/media`.
+
+## Home feeding mockup (2026-10-18)
+
+`home.feeding.overview` is owner-supplied illustrative artwork selected from the mockups
+provided for Home. Its original stays in the private external media archive; set
+`EXTERNAL_OWNER_MEDIA_ROOT` and run `node tools/media/media-build.ts --only home.feeding`
+to reproduce the derivatives. The source hash, permission registration and encoder parameters
+are recorded in the manifest. This illustration changes only the Home chapter's presentation;
+it is not evidence of included PDFs, bonuses, a real course interface or nutrition outcomes.
+The existing course format, third-party affiliate disclosure and canonical catalog images stay
+unchanged. No unrelated third-party license is asserted.
 
 ## Pipeline
 
