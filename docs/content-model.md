@@ -44,8 +44,9 @@ sitemap, footer, 404 and terms derive from the registry.
   only strikethrough is the downsell's "Oferta anterior US$14.99", which is the price actually
   shown in the previous funnel step.
 - Every price is rendered with `formatUsd()` next to the local-currency note from `config/commerce.ts`
-  (`PriceBlock` renders it by default; the sticky bar, header CTA and home card use the short
-  variant). `tools/check-rendered.ts` fails a page that shows `US$` without "moneda local".
+  (the landing buy box and offer price view compose the full note; the sticky bar, header CTA
+  and home card use the short variant). `tools/check-rendered.ts` fails a page that shows `US$`
+  without "moneda local".
 - The guarantee period is a single value (`guaranteeDays`) used by every page. Changing it is a
   business decision that must match the Hotmart product setting (EU sales require Hotmart's
   minimum; see docs/legal-checklist.md).

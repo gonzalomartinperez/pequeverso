@@ -26,7 +26,7 @@ mechanical parts; the rest is review.
 | Google guide | Here |
 |---|---|
 | Named exports, no default exports | Same, **except** where Next.js requires a default export (`page.tsx`, `layout.tsx`, `error.tsx`, `not-found.tsx`, metadata routes, `config/next.ts`) |
-| `lowerCamelCase` file names | **kebab-case** file names (`price-block.tsx`), matching the design system's `data-slot` names and the Next.js route convention |
+| `lowerCamelCase` file names | **kebab-case** file names (`cta-button.tsx`), matching the design system's `data-slot` names and the Next.js route convention |
 | `interface` for object shapes | `type` for props and unions (discriminated unions model states, e.g. the assistant's `Phase`); `interface` only when extension is the point |
 | No `any`; narrow `unknown` | Same; payloads from the network are `unknown` until a runtime validator narrows them (adapters only) |
 | Optional fields | `exactOptionalPropertyTypes` is on: forwarded optional props declare `| undefined` explicitly |

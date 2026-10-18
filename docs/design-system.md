@@ -114,22 +114,26 @@ Server components; props kept compatible with the previous PascalCase primitives
 | `NumberedList` | `items`, `tone?` — short ordered instructions with gold number discs |
 | `IconBadge`, `IconCardList` | `icon`, `size?: 48\|56\|72`, `tone?`, `accent?: auto\|turquoise\|gold\|coral\|navy` (rounded gradient tile), `shape?: square\|circle`, `number?` / `items`, `cols?`, `numbered?`, `tone?`, `variant?` (card surface, default `elevated`; `glass-dark` on navy), `accent?` — cards lift on hover |
 | `MediaFrame`, `MediaImage` | `ratio?: 4/3\|3/4\|16/9\|1/1`, `elevation?: none\|sm\|md\|lg\|float`, `radius?: lg\|xl`, `framed?` (white paper edge), `tilt?`, `as?` / manifest `id`, `sizes`, `priority?`, `alt?` |
-| `PriceBlock` | `kicker`, `price`, `previous?`, `taxNote`, `currencyNote?` (default `localCurrencyNote`, globe icon), `cta`, `ctaNote?`, `tone?`, `surface?: card\|glass\|none` (`none` inside another card), `id?` |
 | `Steps`, `FAQ`, `ResourceGrid`, `Notice` | `steps`, `tone?`, `accent?` (gradient tiles on a dotted line) / `items`, `openFirst?`, `surface?: card\|glass\|lines` (native `<details>`, +/− marker) / `resources`, `compact?`, `total?`, `badges?` (tiles lift and zoom their cover on hover) / `tone?`, `title?`, `role?` |
 | `AssuranceList` | `items: { icon, text }[]`, `layout?: inline\|stack`, `tone?` — payment/access/guarantee facts next to a purchase action (icons in discs) |
 | `ProductBadge` | `label`, `icon?`, `tone?: light\|soft\|gold\|navy`, `as?` — store badge: compact sentence-case pill ("PDF imprimible") |
 | `TrustRow` | `items: { icon, label, detail? }[]`, `layout?: grid\|inline`, `divided?`, `tone?` — compact trust strip under a buy button (2 columns on phones, one divided row from `cq-md`) |
-| `PriceTag` | `price`, `previous?`, `note?`, `size?: md\|lg`, `tone?` — store price line: Fraunces tabular price + compact tax note |
 | `CTAButton` | button-variant props + `href?`, `external?`, `icon?`, `iconAfter?: arrow\|external\|LucideIcon`; external → `target="_blank" rel="noopener"` + external icon |
 | `BrandLogo`, `SocialLinks`, `SkipLink`, `Topbar`, `Icon` | `variant?`, `wordmark?: always\|sm-up`, `priority?` / `tone?`, `size?` / — / `items?`, `tone?` / `name` |
 
-**Store vocabulary (product page, a DTC "PDP" look on the universe identity).** Compose the buy
-column as a `ProductBadge` row → `h1` → `PriceTag` (price + compact tax note) → the checkout link
-with `buttonVariants({ size: "xl" })` (60 px, full width) → `TrustRow` (facts from
-`config/commerce`) → `FAQ surface="lines"` (or `AccordionItem variant="lines"`) for product
-details. Coral stays for the price and the purchase action; badges and trust icons are
-teal/navy/gold. Every shared piece reads `on-navy`/`on-light` from its surface; tone chips,
-buttons and badges switch to their navy look through `.on-navy &:not(.on-light &)`.
+**Product pricing composition.** Pricing belongs to the page views, with amounts and currency
+notes from `config/commerce.ts` and the product registry. The principal landing composes its
+buy column in `src/views/product/core/buy-box.tsx`; offer heroes use `OfferPrice` in
+`src/views/product/offer/offer-price.tsx`, including the actual previous-step price only when
+applicable. The home reading chapter composes its compact registry price and short currency
+note in `src/views/home/reading-chapter.tsx`. There is no shared price renderer.
+
+Reuse shared `ProductBadge`, `FactChip`, `AssuranceList`, `TrustRow`, `CTAButton` and `FAQ`
+where the composition needs them; purchase actions retain the commerce feature's `CheckoutLink`
+and post-purchase decisions retain `DecisionLink`. Coral stays for the landing price and purchase
+action; the home keeps navy product actions. Shared pieces read `on-navy`/`on-light` from their
+surface; tone chips, buttons and badges switch to their navy look through
+`.on-navy &:not(.on-light &)`.
 
 ## Motion
 
@@ -260,7 +264,7 @@ waves and navy bands carry `Universe variant="band"`.
 
 **Offer (`/imprime-y-juega/`, upsell and `?downsell=1`), thanks, legal, soporte, 404** use only
 blocks, primitives and utilities (no CSS Modules). Offer order: `#hero` / `#hero-downsell`
-(reassurance eyebrow, counters, `PriceBlock`, real image / objection cards) → decision band
+(reassurance eyebrow, counters, `OfferPrice`, real image / objection cards) → decision band
 (static sky, one `#hotmart-sales-funnel` inside `#gfp-decision`, reassurance chips; its region
 carries `data-motion="none"`, so `PageMotion` never moves it) → complement → `#incluye` →
 `#paginas` (upsell) → moments → `#preguntas` → `#cierre` → `StickyCTA` (hidden over the heroes,
