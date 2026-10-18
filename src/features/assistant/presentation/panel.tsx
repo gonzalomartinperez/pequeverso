@@ -1,9 +1,10 @@
 "use client";
 import { assistantCopy as t } from "@content/es/assistant";
-import { Maximize2, Minimize2, Minus } from "lucide-react";
+import { ArrowDown, Maximize2, Minimize2, Minus } from "lucide-react";
 import {
   type KeyboardEvent,
   type RefObject,
+  useCallback,
   useEffect,
   useId,
   useMemo,
@@ -137,6 +138,10 @@ export function AssistantPanel({
   const surface = useRef<HTMLElement>(null);
   const titleId = useId();
   const descriptionId = useId();
+  const [jump, setJump] = useState<(() => void) | null>(null);
+  const onJumpChange = useCallback((action: (() => void) | null) => {
+    setJump(() => action);
+  }, []);
 
   useModalBackground(modal, host);
   useVisualViewport(open && phone, surface);
@@ -264,6 +269,11 @@ export function AssistantPanel({
                   </div>
                 </div>
                 <div className="ms-auto flex max-w-full flex-wrap items-center justify-end gap-1">
+                  {jump && !confirming && (
+                    <IconButton label={t.jumpToLatest} onClick={jump}>
+                      <ArrowDown aria-hidden="true" />
+                    </IconButton>
+                  )}
                   {clearTrigger}
                   {!phone && (
                     <IconButton
@@ -286,6 +296,7 @@ export function AssistantPanel({
                 phase={current}
                 field={field}
                 confirming={confirming}
+                onJumpChange={onJumpChange}
               />
             </>
           )}

@@ -1,10 +1,13 @@
 "use client";
 
 import { ExternalLink } from "lucide-react";
-import type { ReactNode } from "react";
+import type { AnchorHTMLAttributes, ReactNode } from "react";
 import { trackAffiliateClick } from "@/features/tracking/track";
 
-type Props = {
+type Props = Pick<
+  AnchorHTMLAttributes<HTMLAnchorElement>,
+  "id" | "style" | "aria-describedby" | "onBlur" | "onClickCapture"
+> & {
   /** Redirect path on pequeverso.com (`/alimentacion-bebe/?src=…`), answered by an edge rule. */
   href: string;
   /** Affiliate product slug (event `product` parameter). */
@@ -12,7 +15,7 @@ type Props = {
   position: string;
   /** Visually hidden note announcing the new tab. */
   newTabLabel: string;
-  className?: string;
+  className?: string | undefined;
   children: ReactNode;
 };
 
@@ -23,9 +26,18 @@ type Props = {
  * for search engines and `noopener` isolates the opener. Emits one PequeversoAffiliateClick per
  * click and never a checkout or purchase event (Hotmart owns those).
  */
-export function AffiliateLink({ href, product, position, newTabLabel, className, children }: Props) {
+export function AffiliateLink({
+  href,
+  product,
+  position,
+  newTabLabel,
+  className,
+  children,
+  ...attributes
+}: Props) {
   return (
     <a
+      {...attributes}
       href={href}
       target="_blank"
       rel="sponsored noopener"

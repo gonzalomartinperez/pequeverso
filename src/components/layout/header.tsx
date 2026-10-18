@@ -54,7 +54,7 @@ const MENU_TRIGGER =
 export function Header({ nav = [], cta, subtitle, overlay = false, products = false }: Props) {
   const items = nav.slice(0, 4);
   const hasMenu = items.length > 0 || products;
-  // The product cards already lead to the chapters: the sheet lists only the other anchors.
+  // Product selection lives in the cards; only explicitly informational anchors belong here.
   const sheetItems = products
     ? items.filter((item) => !hubNeeds.some((need) => need.anchor === item.href))
     : items;

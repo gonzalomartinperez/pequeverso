@@ -106,8 +106,12 @@ export function StickyCTA({ hideWhenVisible, label, note, thumb, children }: Pro
         </span>
         {price ? (
           <span className="flex min-w-0 items-baseline gap-1.5 leading-tight">
-            <span className="font-display text-[1.0625rem] font-bold text-primary tabular-nums">{price}</span>
-            {note ? <span className="truncate text-tiny text-subtle max-[25rem]:hidden">{note}</span> : null}
+            <span className="shrink-0 font-display text-[1.0625rem] font-bold whitespace-nowrap text-primary tabular-nums">
+              {price}
+            </span>
+            {note ? (
+              <span className="min-w-0 truncate text-tiny text-subtle max-[25rem]:hidden">{note}</span>
+            ) : null}
           </span>
         ) : note ? (
           <span className="truncate text-tiny leading-tight text-subtle">{note}</span>

@@ -33,7 +33,7 @@ type Props = {
 const TRACK =
   "flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] focus-visible:outline-3 focus-visible:-outline-offset-3 focus-visible:outline-ring [&::-webkit-scrollbar]:hidden";
 const ARROW =
-  "absolute top-1/2 z-40 hidden size-11 -translate-y-1/2 place-items-center rounded-full border border-white/80 bg-white/80 text-navy shadow-md backdrop-blur-md transition-[background-color,opacity] duration-(--duration-fast) hover:bg-white disabled:pointer-events-none disabled:opacity-0 @min-[30rem]:grid";
+  "absolute top-1/2 z-40 hidden size-11 -translate-y-1/2 place-items-center rounded-full border border-white/80 bg-white/95 text-navy shadow-md transition-[background-color,opacity] duration-(--duration-fast) hover:bg-white disabled:pointer-events-none disabled:opacity-0 @min-[30rem]:grid";
 
 /**
  * Product-page gallery: a scroll-snap track (swipe on touch, arrows and thumbnails from md, dots

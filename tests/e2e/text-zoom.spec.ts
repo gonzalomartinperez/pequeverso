@@ -126,10 +126,19 @@ for (const route of routes) {
   });
 }
 
-test("enlarged text keeps the active floating offer readable and compact", async ({ page }) => {
-  for (const width of widths) {
+// Each viewport starts in its own visitor context: resizing and navigating a second time
+// should not consume the first viewport's assertion budget or carry a pending consent dialog.
+for (const width of widths) {
+  test(`enlarged text keeps the active floating offer readable and compact at ${width}px`, async ({
+    page,
+  }) => {
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/grafismo-fonetico/", { waitUntil: "load" });
+    const consent = page.getByTestId("consent-banner");
+    if (process.env.E2E_EXPECT_CONSENT) {
+      await consent.getByRole("button", { name: "Rechazar", exact: true }).click();
+    }
+    await expect(consent).toHaveCount(0);
     await page.addStyleTag({ content: TEXT_ZOOM_CSS });
     await page.evaluate(() => document.fonts.ready);
     await page.locator("#metodo-title").evaluate((element) => {
@@ -145,6 +154,27 @@ test("enlarged text keeps the active floating offer readable and compact", async
       width: result.clientWidth,
       faults: [],
     });
-    await expect(sticky.getByRole("link")).toBeInViewport();
-  }
-});
+    const action = sticky.getByRole("link");
+    await expect(action).toBeVisible();
+    // Require the whole action, plus an unobstructed center. A one-pixel rounding
+    // allowance matches the text-edge probe above; a partial intersection is insufficient.
+    await expect
+      .poll(() =>
+        action.evaluate((element) => {
+          const rect = element.getBoundingClientRect();
+          const hit = document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2);
+          return {
+            inViewport:
+              rect.width > 0 &&
+              rect.height > 0 &&
+              rect.left >= -1 &&
+              rect.top >= -1 &&
+              rect.right <= innerWidth + 1 &&
+              rect.bottom <= innerHeight + 1,
+            centerReachable: element.contains(hit),
+          };
+        }),
+      )
+      .toEqual({ inViewport: true, centerReachable: true });
+  });
+}

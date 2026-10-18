@@ -72,7 +72,17 @@ test("captures the local assistant preview", async ({ page, context }, info) => 
     .getByRole("list", { name: "Conversación con el asistente" })
     .locator('li > div[lang="es"]')
     .first();
-  await answer.scrollIntoViewIfNeeded();
+  // Frame the short question, complete response and expanded sources together in the real
+  // compact surface; longer content remains available through its normal transcript scroll.
+  await panel
+    .getByRole("list", { name: "Conversación con el asistente" })
+    .locator("..")
+    .evaluate((element) => {
+      element.scrollTop = 0;
+    });
+  await expect(
+    panel.getByText("¿Cómo funciona la garantía de Grafismo Fonético?", { exact: true }),
+  ).toBeInViewport();
   await expect(answer.locator("p").first()).toBeInViewport();
   await expect(sources.locator("summary")).toBeInViewport();
   await expect(sources.getByRole("link").first()).toBeInViewport();
@@ -81,4 +91,11 @@ test("captures the local assistant preview", async ({ page, context }, info) => 
     path: `${SHOTS}/${mobile ? "06-Mobile-Conversacion" : "03-Desktop-Conversacion"}.png`,
     animations: "disabled",
   });
+  if (!mobile) {
+    await panel.getByRole("button", { name: "Ampliar panel" }).click();
+    await expect(panel).toHaveAttribute("data-size", "expanded");
+    await expect(answer.locator("p").first()).toBeInViewport();
+    await expect(sources.getByRole("link").last()).toBeInViewport();
+    await page.screenshot({ path: `${SHOTS}/07-Desktop-Conversacion-Ampliada.png`, animations: "disabled" });
+  }
 });

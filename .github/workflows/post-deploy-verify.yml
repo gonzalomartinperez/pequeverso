@@ -3,7 +3,7 @@ name: Post-deploy verify
 # Once Hostinger is connected to `main`, this workflow waits for its build to reach production,
 # then verifies the deployed revision and runs the smoke suite against the live origin.
 # deploy.yml (after a release) and production-daily.yml reuse it through workflow_call.
-# Owner confirmed no connection yet on 2026-10-10. Enable the repository variable only after setup.
+# Owner confirmed main is connected on 2026-10-17; verify deployed SHA and disabled assistant.
 on:
   push:
     branches: [main]

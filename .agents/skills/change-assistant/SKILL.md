@@ -20,6 +20,9 @@ the API repository, paid model calls, deployment.
   `entry.ts`. The lazy `runtime.tsx` owns one stable controller; presentation receives it and
   imports application types only. Platform waits/deadlines are injected through ports. Check
   `tests/unit/assistant/boundaries.test.ts` and the transitive client graph, not just folder names.
+  New modules must use one of the four layers; only `entry.ts`, `flag.ts`, `mount.tsx`,
+  `runtime.tsx` and `slot.tsx` are named composition exceptions at the assistant root.
+  Placement checks apply even to modules without imports; new exceptions require review.
 - Untrusted input: API payloads are validated in `adapters/`; answers render as text only; every URL
   passes `domain/links.ts`; no HTML, no storage, no `window.open`, no automatic navigation.
 - Contract: copy artifacts with `git show <committed API sha>:contracts/...` into

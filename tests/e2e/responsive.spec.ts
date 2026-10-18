@@ -134,6 +134,7 @@ test("primary CTA labels (checkout and product links) stay on one line from 320 
   ]) {
     await page.setViewportSize({ width, height: height(width) });
     await page.goto(route, { waitUntil: "load" });
+    if (route === "/") await expect(page.locator("main [data-door-action] > span")).toHaveCount(2);
     const wrapped = await page.evaluate(() =>
       [
         ...document.querySelectorAll<HTMLAnchorElement>(
@@ -141,7 +142,12 @@ test("primary CTA labels (checkout and product links) stay on one line from 320 
           'main a[data-checkout]:not([data-position="sticky"]), main a[data-position]:not([data-position="sticky"])',
         ),
       ]
-        .flatMap((link) => [...link.querySelectorAll<HTMLSpanElement>("span")])
+        .flatMap((link) => {
+          // A rich selection card also contains names and descriptions that may wrap.
+          // Its visual CTA has one explicit text label; every other link keeps the original check.
+          const action = link.querySelector<HTMLSpanElement>("[data-door-action] > span");
+          return action ? [action] : [...link.querySelectorAll<HTMLSpanElement>("span")];
+        })
         .filter(
           (span) =>
             span.offsetParent !== null &&

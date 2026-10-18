@@ -1,0 +1,9 @@
+flowchart TB
+  accTitle: Pequeverso storefront product paths and disabled assistant
+  accDescr: Home opens the kit landing or affiliate redirect. The configured affiliate hotlink may open checkout or the producer’s sales page. Visitors choose to purchase through Hotmart. The assistant stays disabled and deployment belongs to vps-ops.
+  Home["Home · typed facts and reviewed build"] --> Kit["Our kit · own landing<br/>/grafismo-fonetico/"]
+  Home --> Course["Affiliate course · HTTP 302 redirect<br/>/alimentacion-bebe/"]
+  Kit -->|Explicit purchase| Hotmart["Hotmart · external commerce<br/>Payment, delivery and refunds"]
+  Course -->|Configured affiliate hotlink| Hotmart
+  Home -. Disabled integration .-> Assistant["Native assistant · OFF<br/>No launcher, runtime or API traffic"]
+  Ops["vps-ops · future API infrastructure<br/>Deployment, HTTPS and proxy"]

@@ -7,7 +7,7 @@ import { cx } from "@/lib/cx";
 type Mode = "hidden" | "doors" | "reading" | "feeding";
 
 type Props = {
-  /** Before the visitor is inside a chapter: the two doors (in-page anchors). */
+  /** Before the visitor is inside a chapter: the two direct product selections. */
   doors: ReactNode;
   /** Inside `#leer`: the kit, its price and the link to its page. */
   reading: ReactNode;
@@ -100,7 +100,7 @@ export function HubStickyBar({ doors, reading, feeding }: Props) {
     if (questions) zoneObserver.observe(questions);
 
     // Header direction: hide after reading down past the hero, show on any way up. An in-page
-    // anchor jump (doors, menus, header links) keeps the header visible: the target lands right
+    // informational anchor jump (header links) keeps the header visible: the target lands right
     // under it (html scroll-padding) instead of under an empty band.
     let last = window.scrollY;
     let frame = 0;

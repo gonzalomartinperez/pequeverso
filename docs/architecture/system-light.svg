@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="880" viewBox="0 0 1040 880" aria-labelledby="title desc"><title id="title">Pequeverso storefront: two product paths, assistant disabled</title><desc id="desc">Home opens the first-party kit landing or the existing affiliate redirect to the external producer. Visitors choose whether to purchase through Hotmart. The native assistant has no launcher, runtime or API traffic while disabled. vps-ops owns future API infrastructure.</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6b8197"/></marker></defs><rect width="1040" height="880" rx="24" fill="#fffaf4"/>
+<text x="32" y="44" fill="#16283f" font-family="Arial, sans-serif" font-size="30" font-weight="700">Pequeverso · Public storefront</text>
+<text x="32" y="75" fill="#41576d" font-family="Arial, sans-serif" font-size="17" font-weight="400">Two clear product paths · native assistant remains disabled</text>
+<rect x="32" y="104" width="976" height="100" rx="16" fill="#ffffff" stroke="#cbd7e2"/>
+<rect x="48" y="121" width="4" height="23" rx="2" fill="#00776c"/>
+<text x="62" y="139" fill="#16283f" font-family="Arial, sans-serif" font-size="20" font-weight="700">Home · choose a product</text>
+<text x="52" y="168" fill="#41576d" font-family="Arial, sans-serif" font-size="16" font-weight="400">Typed product facts · reviewed Next.js build · Pequeverso identity</text>
+<polyline points="269,204 269,246" fill="none" stroke="#6b8197" stroke-width="2" marker-end="url(#arrow)"/>
+<polyline points="770,204 770,246" fill="none" stroke="#6b8197" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="32" y="246" width="475" height="112" rx="16" fill="#ffffff" stroke="#cbd7e2"/>
+<rect x="48" y="263" width="4" height="23" rx="2" fill="#00776c"/>
+<text x="62" y="281" fill="#16283f" font-family="Arial, sans-serif" font-size="20" font-weight="700">Our printable kit</text>
+<text x="52" y="310" fill="#41576d" font-family="Arial, sans-serif" font-size="16" font-weight="400">Grafismo Fonético · own landing</text>
+<text x="52" y="334" fill="#41576d" font-family="Arial, sans-serif" font-size="16" font-weight="400">/grafismo-fonetico/</text>
+<rect x="533" y="246" width="475" height="112" rx="16" fill="#ffffff" stroke="#cbd7e2"/>
+<rect x="549" y="263" width="4" height="23" rx="2" fill="#00776c"/>
+<text x="563" y="281" fill="#16283f" font-family="Arial, sans-serif" font-size="20" font-weight="700">Affiliate course</text>
+<text x="553" y="310" fill="#41576d" font-family="Arial, sans-serif" font-size="16" font-weight="400">Existing redirect · HTTP 302</text>
+<text x="553" y="334" fill="#41576d" font-family="Arial, sans-serif" font-size="16" font-weight="400">/alimentacion-bebe/</text>
+<polyline points="269,358 269,408" fill="none" stroke="#6b8197" stroke-width="2" marker-end="url(#arrow)"/>
+<polyline points="770,358 770,408" fill="none" stroke="#6b8197" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="32" y="408" width="976" height="112" rx="16" fill="#ffffff" stroke="#cbd7e2"/>
+<rect x="48" y="425" width="4" height="23" rx="2" fill="#00776c"/>
+<text x="62" y="443" fill="#16283f" font-family="Arial, sans-serif" font-size="20" font-weight="700">Hotmart · external commerce</text>
+<text x="52" y="472" fill="#41576d" font-family="Arial, sans-serif" font-size="16" font-weight="400">Configured affiliate hotlink: checkout or the producer’s sales page</text>
+<text x="52" y="496" fill="#41576d" font-family="Arial, sans-serif" font-size="16" font-weight="400">Visitor chooses to purchase; Hotmart owns payment, delivery and refunds</text>
+<polyline points="1008,154 1024,154 1024,636 1008,636" fill="none" stroke="#6b8197" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<rect x="32" y="578" width="976" height="116" rx="16" fill="#ffffff" stroke="#cbd7e2"/>
+<rect x="48" y="595" width="4" height="23" rx="2" fill="#9e3b2a"/>
+<text x="62" y="613" fill="#16283f" font-family="Arial, sans-serif" font-size="20" font-weight="700">Native assistant · OFF</text>
+<text x="52" y="642" fill="#41576d" font-family="Arial, sans-serif" font-size="16" font-weight="400">No launcher, runtime chunk or assistant API traffic in publishable builds</text>
+<text x="52" y="666" fill="#41576d" font-family="Arial, sans-serif" font-size="16" font-weight="400">Session, CSRF and SSE integration awaits deployment and explicit activation</text>
+<rect x="32" y="740" width="976" height="78" rx="16" fill="#ffffff" stroke="#6b8197" stroke-dasharray="6 5"/>
+<rect x="48" y="757" width="4" height="23" rx="2" fill="#00776c"/>
+<text x="62" y="775" fill="#16283f" font-family="Arial, sans-serif" font-size="20" font-weight="700">vps-ops · future API infrastructure</text>
+<text x="52" y="804" fill="#41576d" font-family="Arial, sans-serif" font-size="16" font-weight="400">Deployment, HTTPS and proxy belong to the operator; no running VPS is implied</text>
+<text x="32" y="852" fill="#41576d" font-family="Arial, sans-serif" font-size="15" font-weight="400">Solid arrows: explicit visitor flow · Dashed arrow: disabled integration</text>
+</svg>

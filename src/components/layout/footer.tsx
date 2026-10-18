@@ -1,8 +1,10 @@
 import { site } from "@config/site";
+import { hubCopy } from "@content/es/hub";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { BrandLogo } from "@/components/blocks/brand-logo";
 import { SocialLinks } from "@/components/blocks/social-links";
+import { HubProductLink } from "@/features/hub/hub-product-link";
 import { feeding } from "@/features/hub/hub-products";
 import { CookieSettingsLink } from "@/features/tracking/CookieSettingsLink";
 import { coreProducts } from "@/products";
@@ -15,13 +17,6 @@ const productLinks = [
     { href: `${product.path}#preguntas`, label: "Preguntas frecuentes" },
   ]),
 ];
-
-/**
- * Hub pages (home, support, legal, 404) also list the recommended course, through its home
- * chapter where the affiliate disclosure sits next to the button (docs/specs/home-hub.md). The
- * purchase and post-purchase pages keep the single-product column unchanged.
- */
-const hubProductLinks = [...productLinks, { href: `/${feeding.anchor}`, label: feeding.name }];
 
 const helpLinks = [
   { href: "/soporte/", label: "Soporte y contacto" },
@@ -122,7 +117,18 @@ export function Footer({ hub = false }: { hub?: boolean } = {}) {
             </div>
           </div>
           {hub ? (
-            <LinkColumn label="Productos" items={hubProductLinks} />
+            <LinkColumn label="Productos" items={productLinks}>
+              <li>
+                <HubProductLink
+                  need={feeding}
+                  position="home"
+                  className={`${footerLinkClass} inline-flex items-center gap-2`}
+                >
+                  {feeding.name}
+                </HubProductLink>
+                <p className="mt-1 text-tiny text-white/80">{hubCopy.feeding.disclosure}</p>
+              </li>
+            </LinkColumn>
           ) : (
             <LinkColumn label="Producto" items={productLinks} />
           )}

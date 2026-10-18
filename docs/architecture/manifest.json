@@ -1,0 +1,38 @@
+{
+  "format": "authored native SVG; Mermaid preserves semantic relationships, not pixel layout",
+  "committed_architecture_reference": "4c3b1e72b43c0161d96fc1cdd74985298540dd5e",
+  "scope": "Application boundaries; no deployment, activation, capacity or conversion claim",
+  "native_size": [1040, 880],
+  "renderer": {
+    "playwright": "1.64.1",
+    "chromium": "156.0.8078.4",
+    "widths": [1040, 896, 390],
+    "network_requests": 0
+  },
+  "review": {
+    "agent_inspection": "README896px and mobile390px previews inspected. Native1040px exported for independent review; narrow readers use adjacent prose, alt text and full-size links.",
+    "independent_review": "Coordinating agent approved native/mobile previews, source, README and removal of exact generated-SVG lint exceptions. No human review is asserted.",
+    "human_review_claimed": false
+  },
+  "sha256": {
+    "system-light.svg": "0fe3efa066c0135514ba879c14ae5f680bc5f383d09a5371ea20cc5031c76faf",
+    "system-dark.mmd": "6b38e53c28d0ccf6df01e3beddd7fbcee52ea0ffb1db611956a75e7be1ee4cf6",
+    "system-dark.svg": "4f9b1cb553263511fe51022a004a757424223f009099aed56745013588a77e35",
+    "system-light.mmd": "6b38e53c28d0ccf6df01e3beddd7fbcee52ea0ffb1db611956a75e7be1ee4cf6"
+  },
+  "contrast": {
+    "light": {
+      "min_text_ratio": 7.203,
+      "min_connection_ratio": 3.882
+    },
+    "dark": {
+      "min_text_ratio": 8.815,
+      "min_connection_ratio": 6.441
+    }
+  },
+  "semantic_mermaid_validation": {
+    "version": "12.2.0",
+    "engine": "locked local browser bundle",
+    "result": "both theme sources parse as flowchart-v2; no network"
+  }
+}
