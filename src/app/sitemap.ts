@@ -1,6 +1,6 @@
-import { absoluteUrl } from "@config/site";
+import { indexableProducts } from "@config/products/index.ts";
+import { absoluteUrl } from "@config/site.ts";
 import type { MetadataRoute } from "next";
-import { indexableProducts } from "@/products";
 
 export const dynamic = "force-static";
 

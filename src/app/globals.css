@@ -6,16 +6,16 @@
  * 2. Tokens       raw values in :root (`--pv-*` where a Tailwind theme namespace would claim the
  *                 name) and the semantic aliases shadcn/ui primitives read (`--primary`, …)
  * 3. Theme        @theme inline maps tokens to Tailwind utilities (bg-navy, text-h2, text-base, rounded-lg, …)
- * 4. Variants     container-query breakpoints (cq-sm … cq-xl) mirroring src/lib/breakpoints.ts
+ * 4. Variants     container-query breakpoints (cq-sm … cq-xl) mirroring src/shared/styles/breakpoints.ts
  * 5. Base         typography, links, focus, offer mode, reduced-motion kill switch
  * 6. Utilities    project utilities (page-container, section-pad, lead, prose, on-navy, cq, defer-render)
- * 7. Motion       ../motion/motion.css (reveal, hero, flip, orbit, parallax, sticky stack)
+ * 7. Motion       ../shared/motion/motion.css (reveal, hero, flip, orbit, parallax, sticky stack)
  *
  * Breakpoints (min-width): sm 640 · md 768 · lg 1024 · xl 1280 (Tailwind defaults, also used as
  * container thresholds). Contrast pairs are asserted by tests/unit/design-system.test.ts.
  */
 @import "tailwindcss" source("../");
-@import "../motion/motion.css";
+@import "../shared/motion/motion.css";
 
 /* 1. Fonts (public/fonts, preloaded in src/app/layout.tsx) */
 @font-face {

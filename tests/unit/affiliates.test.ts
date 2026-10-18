@@ -9,8 +9,8 @@ import {
 } from "../../config/affiliates.ts";
 import { homeCopy } from "../../content/es/home.ts";
 import { hubCopy } from "../../content/es/hub.ts";
-import { affiliateEnvNames, CHECKOUT_ENV_PATTERN } from "../../scripts/lib/edge-rules.ts";
-import { hasMedia } from "../../src/lib/media.ts";
+import { hasMedia } from "../../src/shared/media/media.ts";
+import { affiliateEnvNames, CHECKOUT_ENV_PATTERN } from "../../tools/lib/edge-rules.ts";
 
 type RawRule = { source: string; destinationEnv?: string; permanent?: boolean };
 const rawRules = (

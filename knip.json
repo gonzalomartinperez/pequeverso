@@ -1,22 +1,40 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "entry": [
-    "src/app/**/{page,layout,error,global-error,not-found}.tsx!",
-    "src/app/**/{sitemap,robots}.ts!",
-    "src/components/ui/*.{ts,tsx}!",
-    "src/components/blocks/*.tsx!",
-    "src/motion/*.{ts,tsx}!",
-    "src/motion/scene/*.{ts,tsx}!",
-    "scripts/*.ts",
-    "scripts/lib/*.ts",
-    "tests/unit/**/*.test.ts",
-    "tests/e2e/**/*.spec.ts",
-    "src/app/**/route.standalone.ts!",
-    "config/next.ts!",
-    "config/cn.ts!"
-  ],
-  "project": ["src/**!", "config/**!", "content/**!", "scripts/**", "server/**", "tests/**"],
   "ignoreExportsUsedInFile": true,
   "tags": ["-internal"],
+  "workspaces": {
+    ".": {
+      "entry": [
+        "src/app/**/{page,layout,error,global-error,not-found}.tsx!",
+        "src/app/**/{sitemap,robots}.ts!",
+        "src/shared/ui/*.{ts,tsx}!",
+        "tools/!(serve-static).ts",
+        "tools/serve-static.ts!",
+        "tools/lib/*.ts",
+        "tests/unit/**/*.test.ts",
+        "tests/browser/**/*.spec.ts",
+        "src/app/**/route.standalone.ts!",
+        "config/next.ts!",
+        "config/cn.ts!",
+        "src/shared/{editorial,identity,media,navigation}/*.{ts,tsx}!",
+        "src/shared/motion/**/*.{ts,tsx}!",
+        "src/shell/*.{ts,tsx}!",
+        "src/views/**/*.{ts,tsx}!"
+      ],
+      "project": [
+        "src/**!",
+        "config/**!",
+        "content/**!",
+        "tools/!(serve-static).ts",
+        "tools/*/**",
+        "tools/serve-static.ts!",
+        "tests/**"
+      ]
+    },
+    "tools/media": {
+      "entry": ["media-build.ts"],
+      "project": ["*.ts"]
+    }
+  },
   "ignoreBinaries": ["openssl"]
 }

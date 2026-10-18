@@ -14,11 +14,11 @@ Business decision and campaign: `pequeverso-marketing` → `decisions/DEC-2026-1
 - `config/edge-rules.json` holds the rule with `destinationEnv` instead of `destination`, and
   `permanent: false`. The repository never contains the affiliate link (AGENTS.md: deployment
   values live in environment variables).
-- `scripts/lib/edge-rules.ts` resolves the variable at build time. Static target:
+- `tools/lib/edge-rules.ts` resolves the variable at build time. Static target:
   `out/.htaccess` gets `RewriteRule ^alimentacion-bebe/?$ <link> [R=302,L,QSA,NE]` (the visitor's
   query, e.g. `?src=facebook`, reaches Hotmart). Node target: `redirects()` in `config/next.ts`.
 - Variable empty → no rule → the path answers 404 (no broken redirect ships). A malformed value
-  (not a plain `https://` URL: spaces, quotes or `$`) fails `scripts/check-env.ts` and the build.
+  (not a plain `https://` URL: spaces, quotes or `$`) fails `tools/check-env.ts` and the build.
 - The golden `docs/generated/htaccess.txt` is always rendered without variables, so it never
   contains the link.
 - 302 (not 301) so browsers and Meta do not cache the destination: the owner can change the link by
@@ -40,7 +40,7 @@ Business decision and campaign: `pequeverso-marketing` → `decisions/DEC-2026-1
    accents, hyphenated Spanish words.
 2. Pass the variable in `.github/workflows/deploy.yml` (build step `env`) and list it in
    `.env.example`, `docs/deployment.md` and the table above.
-3. `node scripts/gen-htaccess.ts`, `npm run check`, PR into `develop`.
+3. `node tools/gen-htaccess.ts`, `npm run check`, PR into `develop`.
 
 ## Site block
 
@@ -54,7 +54,7 @@ phone sticky bar and a card in the close.
 | Product facts (slug, path, variable, name, audience, stage, topics, guarantee days, `src`, media ids) | `config/affiliates.ts` (`alimentacionBebe`), unit-tested in `tests/unit/affiliates.test.ts` |
 | Chapter copy (kicker, title, pain, desire, button label, note, mandatory disclosure, «how it works») | `content/es/home.ts` → `affiliate` |
 | Door/menu/sticky labels and the short disclosure | `content/es/hub.ts` → `feeding` |
-| Components | `src/features/home/feeding-chapter.tsx` (chapter + how), `door.tsx`, `hub-sticky.tsx`, `closing-band.tsx`, `src/features/hub/products-menu.tsx` |
+| Components | `src/views/home/feeding-chapter.tsx` (chapter + how), `door.tsx`, `hub-sticky.tsx`, `closing-band.tsx`, `src/features/hub/presentation/products-menu.tsx` |
 | Link | `src/features/commerce/AffiliateLink` |
 | Legal | `/aviso-legal/#afiliados` (linked from the disclosure), `/terminos/#afiliados`, `/privacidad/` (destinatarios), `/cookies/#afiliados` |
 
@@ -84,7 +84,7 @@ Rules the hub keeps:
   hero door is lazy.
 - Without `NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE` the build warns
   (`check-env: warning: … will 404`): set it before publishing. The internal link crawlers
-  (`scripts/check-links.ts`, `tests/e2e/navigation.spec.ts`) skip edge-redirect paths.
+  (`tools/check-links.ts`, `tests/browser/navigation.spec.ts`) skip edge-redirect paths.
 
 ### Change the product, copy or images
 
@@ -99,7 +99,7 @@ Rules the hub keeps:
    `node tools/media/media-build.ts --check` and `npm run check:media`.
 4. Another affiliate: add the edge rule first (above), then a new `AffiliateProduct` in
    `config/affiliates.ts`, its copy and media, and render the block for it.
-5. `npm run check`, `npm run test:e2e`; the home visual baselines change (nightly
+5. `npm run check`, `npm run test:browser`; the home visual baselines change (nightly
    `update_snapshots`).
 
 ## Producer-copy evidence received 2026-10-18

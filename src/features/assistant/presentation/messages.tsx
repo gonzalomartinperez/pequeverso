@@ -1,8 +1,8 @@
 "use client";
 import { AlertCircle, Check, CircleStop, Copy, RotateCcw, WifiOff, X } from "lucide-react";
 import { memo, type ReactNode, useEffect, useState } from "react";
-import { buttonVariants } from "@/components/ui/button-variants";
-import { cx } from "@/lib/cx";
+import { cx } from "@/shared/styles/cx.ts";
+import { buttonVariants } from "@/shared/ui/button-variants.ts";
 import type { Outcome, Pending } from "../domain/conversation";
 import type { ErrorCode, Message } from "../domain/models";
 import { FollowUps, Links, Notices, Sources } from "./answer-extras";

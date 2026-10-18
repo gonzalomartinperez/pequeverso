@@ -12,12 +12,12 @@ Decision record: `docs/decisions/ADR-0006-shadcn-tailwind-design-system.md`; spe
 | Path | Contents |
 |---|---|
 | `src/app/globals.css` | fonts, tokens (`:root`), `@theme inline` bridge, `cq-*` variants, base layer, project utilities |
-| `src/motion/motion.css` | reveal, hero entrance, orbit, parallax, sticky stack, tilt, details, flip view transition |
-| `src/components/ui/` | shadcn primitives (Base UI) + `button-variants.ts`, `badge-variants.ts` |
-| `src/components/blocks/` | server blocks composed from primitives and tokens |
-| `src/components/layout/` | `page-shell`, `header` (+ `mobile-nav`, `mobile-nav-sheet`), `footer`, `legal-layout` |
-| `src/motion/` | motion components, `page-motion`, `scene/` (lazy three + gsap starfield) |
-| `src/lib/utils.ts` / `src/lib/cx.ts` | `cn` (merge on compiled tables) / `cx` (join, client islands) |
+| `src/shared/motion/motion.css` | reveal, hero entrance, orbit, parallax, sticky stack, tilt, details, flip view transition |
+| `src/shared/ui/` | shadcn primitives (Base UI) + `button-variants.ts`, `badge-variants.ts` |
+| `src/shared/editorial/` | server blocks composed from primitives and tokens |
+| `src/shell/` | `page-shell`, `header` (+ `mobile-nav`, `mobile-nav-sheet`), `footer`, `legal-layout` |
+| `src/shared/motion/` | motion components, `page-motion`, `scene/` (lazy three + gsap starfield) |
+| `src/shared/styles/cn.ts` / `src/shared/styles/cx.ts` | `cn` (merge on compiled tables) / `cx` (join, client islands) |
 
 ## Tokens
 
@@ -65,7 +65,7 @@ elevated, gradient, emphasis, price, resource tiles), `rounded-2xl` 36 (hero/ben
 backdrop filters. Gallery controls use a 95 % white surface. Repeated or overlapping backdrop
 filters stall Linux WebKit 2370; the current design avoids that compositing cost in every
 browser, including the header. Keep these surfaces readable without a blur layer; verify the
-rendered result in `tests/e2e/surfaces.spec.ts`. See the upstream
+rendered result in `tests/browser/surfaces.spec.ts`. See the upstream
 [Playwright regression](https://github.com/microsoft/playwright/issues/43426) and
 [WebKit report](https://bugs.webkit.org/show_bug.cgi?id=327850).
 `text-gradient` (navy → teal) /
@@ -78,7 +78,7 @@ offer card only.
 `--tilt-perspective` 900 px. **Layout:** `--header-height`, `--sticky-bar-height`,
 `--section-overlap`, `--section-intrinsic`, `--wave-height`, `--badge-sm|md|lg`.
 
-## Primitives (`src/components/ui`)
+## Primitives (`src/shared/ui`)
 
 shadcn/ui components on Base UI, restyled with tokens; every root has `data-slot`. Base UI
 composes custom elements with `render` (no `asChild`); for links styled as buttons use
@@ -95,7 +95,7 @@ composes custom elements with `render` (no `asChild`); for links styled as butto
 | `tooltip` | supplementary only, never the only label |
 | `separator`, `skeleton`, `table` | `Separator` is a server component (no client JS); `Table` scrolls horizontally inside its own container and, inside `prose`, is framed, tightened and hyphenated on narrow containers |
 
-## Blocks (`src/components/blocks`)
+## Blocks (`src/shared/editorial`)
 
 Server components; props kept compatible with the previous PascalCase primitives.
 
@@ -138,7 +138,7 @@ staggered by `--i`; an element already in view is at 100 %, nothing flashes), `[
 (h1 and media never animate opacity, so LCP paints at once), Base UI transitions on
 `data-starting-style`/`data-ending-style`, native `<details>` height via `interpolate-size`;
 **(2) React `<ViewTransition>`** (HeroStack, AgeSelector); **(3) gsap, lazily** — `loadGsap()`
-(`src/motion/gsap-loader.ts`) imports gsap in its own async chunk on intent or when a component
+(`src/shared/motion/gsap-loader.ts`) imports gsap in its own async chunk on intent or when a component
 nears the viewport: the FlipPreview turn, the 3D scene (ticker, `quickTo`, scrubbed ScrollTrigger)
 and, only where CSS view timelines are missing (Firefox), `RevealObserver` → `fallback-motion.ts`
 (ScrollTrigger.batch reveals and scrubbed `Parallax`, `gsap.matchMedia` for reduced motion). gsap
@@ -146,7 +146,7 @@ core ≈ 19.5 KB and ScrollTrigger ≈ 17 KB gzip live in the deferred closure (
 in a route's initial JS. The hero entrance stays CSS (it must run before any JavaScript so LCP is
 untouched); **(4) WAAPI** —
 `PageMotion` raises below-the-fold sections 8 px (240 ms, no fill mode, cancelled when reduced
-motion turns on). **3D** is limited to `src/motion/scene`: `SceneStage` keeps the server-rendered
+motion turns on). **3D** is limited to `src/shared/motion/scene`: `SceneStage` keeps the server-rendered
 static layers (`StaticStarfield`: a seeded 320 px SVG pattern tile defined once by the hero and
 reused by bands, the planets marked `data-scene-planet`/`data-scene-depth`, the `Orbit` marked
 `data-scene-orbit`). After `load` + idle it creates a canvas and `await import()`s
@@ -189,7 +189,7 @@ and resource-tile lift, resource cover zoom, FAQ marker turn; `::details-content
 ## Responsive contract
 
 Acceptance criterion for every block and page, 320 → 1920 px, enforced by
-`tests/e2e/responsive.spec.ts` (PR set; Chromium and WebKit nightly) and the overflow check in
+`tests/browser/responsive.spec.ts` (PR set; Chromium and WebKit nightly) and the overflow check in
 `smoke.spec.ts` at every nightly width:
 
 - Content-driven layout: blocks read their container (`cq` + `cq-sm|md|lg|xl`, same thresholds
@@ -205,7 +205,7 @@ Acceptance criterion for every block and page, 320 → 1920 px, enforced by
 - Third-party embeds: the Hotmart iframe (inline `min-width: 320px`) bleeds to the viewport edges
   below 400 px instead of overflowing.
 - Text enlarged to 200 % (WCAG 1.4.4 / 1.4.10) reflows at 320 and 390 px with no horizontal
-  scroll and nothing pushed off-screen, enforced by `tests/e2e/text-zoom.spec.ts` (every route,
+  scroll and nothing pushed off-screen, enforced by `tests/browser/text-zoom.spec.ts` (every route,
   Chromium/Firefox/WebKit 390 projects, including the active floating offer after scrolling). The
   spec doubles the root font size (`html { font-size: 200% }`), which is what the
   browser's font-size setting does to this rem-based system. The rules that keep it true:

@@ -1,4 +1,4 @@
-import { absoluteUrl } from "@config/site";
+import { absoluteUrl } from "@config/site.ts";
 import type { MetadataRoute } from "next";
 
 export const dynamic = "force-static";

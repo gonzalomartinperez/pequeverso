@@ -1,7 +1,7 @@
 /**
  * Copy for /grafismo-fonetico/. One canonical neutral-Spanish version (no runtime overwrite).
  * Claims are limited to what the material contains; see docs/content-model.md for sources.
- * Business facts (prices, counts, media) live in src/products/grafismo-fonetico.ts; the
+ * Business facts (prices, counts, media) live in config/products/grafismo-fonetico.ts; the
  * guarantee period comes from config/commerce.ts.
  */
 import { guaranteeDays } from "../../../../config/commerce.ts";

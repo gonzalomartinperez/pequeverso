@@ -8,7 +8,7 @@ import {
   toHtaccess,
   toNextHeaders,
   toNextRedirects,
-} from "../../scripts/lib/edge-rules.ts";
+} from "../../tools/lib/edge-rules.ts";
 
 // Golden and assertions use no environment values (affiliate links are build-time variables).
 const rules = loadEdgeRules(undefined, {});
@@ -18,7 +18,7 @@ test("edge rules validate and stay in sync with the committed golden .htaccess",
   assert.equal(
     toHtaccess(rules),
     golden,
-    "run `node scripts/gen-htaccess.ts` and commit docs/generated/htaccess.txt",
+    "run `node tools/gen-htaccess.ts` and commit docs/generated/htaccess.txt",
   );
 });
 

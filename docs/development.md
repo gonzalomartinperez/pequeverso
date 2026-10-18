@@ -13,12 +13,12 @@
 |---|---|
 | `npm run dev` | Next dev server (Turbopack) |
 | `npm run build` | `build-info.json` → `next build` (static export to `out/`) → `out/.htaccess` |
-| `npm start` | Serves `out/` with production-like semantics (`scripts/serve-static.ts`), or the standalone server when `.next/standalone` exists; both serve `/api/meta/events/` (`META_CAPI_ACCESS_TOKEN=… npm start` to enable the relay locally) |
+| `npm start` | Serves `out/` with production-like semantics (`tools/serve-static.ts`), or the standalone server when `.next/standalone` exists; both serve `/api/meta/events/` (`META_CAPI_ACCESS_TOKEN=… npm start` to enable the relay locally) |
 | `npm run lint` / `lint:fix` / `format` | Biome |
 | `npm run typecheck` | `next typegen` + `tsc --noEmit` (TypeScript 7) + `tsc -p tsconfig.node.json` (Node-run files under `nodenext`) |
 | `npm run typecheck:media` | `tools/media` project (after `npm ci --prefix tools/media --ignore-scripts`) |
 | `npm test` | Unit tests (`node --test`, TypeScript via Node type stripping) |
-| `npm run test:e2e` | Playwright against `out/` (build first) |
+| `npm run test:browser` | Playwright against `out/` (build first) |
 | `npm run check` | Lint, types, unit tests, production knip, export and media/render/bundle gates; CI also runs skills, media types, production audit, workflow/security scans, parity, browser and fixture-assistant jobs |
 | `npm run check:media` | Media budget and manifest provenance |
 | `npm run check:placeholders[:strict]` | Report / fail on `[[PLACEHOLDER]]` tokens |
@@ -28,7 +28,7 @@
 ## Environment
 
 Copy `.env.example` to `.env.local` before the first build (`cp .env.example .env.local`).
-`NEXT_PUBLIC_*` values are inlined at build time; `scripts/check-env.ts` refuses to build without
+`NEXT_PUBLIC_*` values are inlined at build time; `tools/check-env.ts` refuses to build without
 `NEXT_PUBLIC_SITE_URL` and a checkout URL, and the repository carries no inline defaults for them.
 With the optional variables empty no pixel is injected and the Conversions API relay answers `204`.
 
@@ -40,7 +40,7 @@ With the optional variables empty no pixel is injected and the Conversions API r
 - TypeScript for every new file (ADR-0007). Scripts, server code, unit tests and anything they
   import run under Node's type stripping: erasable syntax only (no `enum`, runtime `namespace`
   or parameter properties), `import type` for types, relative imports with the `.ts` extension,
-  no `paths` aliases for values. Run them with `node scripts/x.ts`; no tsx/ts-node.
+  no `paths` aliases for values. Run them with `node tools/x.ts`; no tsx/ts-node.
 - Path aliases: `@/…` → `src`, `@config/…`, `@content/…`, `@server/…` for bundled code. Pure
   libraries that unit tests import use relative `.ts` imports so Node can run them directly.
 - Optional props that receive forwarded values (`className={styles.x}`) are typed
@@ -67,8 +67,8 @@ first run after this update is a cold cache. See the official
 ```bash
 npm run build
 npx playwright install --with-deps chromium firefox webkit
-npm run test:e2e -- --project=chromium-390 --project=chromium-1440
-npm run test:e2e -- tests/e2e/text-zoom.spec.ts --project=chromium-390 --project=firefox-390 --project=webkit-390
+npm run test:browser -- --project=chromium-390 --project=chromium-1440
+npm run test:browser -- tests/browser/text-zoom.spec.ts --project=chromium-390 --project=firefox-390 --project=webkit-390
 ```
 
 Projects: `chromium-1440`, `chromium-768`, `chromium-390`, `reduced-motion`, plus targeted text-zoom

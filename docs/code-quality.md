@@ -4,14 +4,14 @@
 
 TypeScript everywhere (ADR-0007): application, scripts, server, unit/e2e tests, media tool and
 Next config; files Node runs directly are erasable TypeScript executed by Node's type stripping
-(`node scripts/x.ts`, relative imports with `.ts`, `import type` for types). TypeScript 7 with
+(`node tools/x.ts`, relative imports with `.ts`, `import type` for types). TypeScript 7 with
 `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes` (optional props that receive
 forwarded values declare `| undefined`), `noImplicitReturns`, `noImplicitOverride`,
 `erasableSyntaxOnly`, `verbatimModuleSyntax`; unused code is Biome's job. Server Components by default and client
 islands only where the browser is required; Tailwind utilities over the tokens in
 `src/app/globals.css` (kebab-case files, `data-slot` roots, cva variants; CSS Modules only for
 custom geometry, never with `@apply`; see `docs/design-system.md`); concise JSDoc on exported symbols, no narrative
-comments; no dead code (knip is a gate); business facts come from `config/` and `src/products`.
+comments; no dead code (knip is a gate); business facts come from `config/` and `config/products`.
 
 ## Gates
 
@@ -24,19 +24,19 @@ comments; no dead code (knip is a gate); business facts come from `config/` and 
 | Build | static export; generated golden files committed | PR, develop, main | yes |
 | Media | manifest record per file, ≤ 5 MB/file, total budget, `--strict` rights gate on deploy | PR, develop, main, deploy | yes |
 | Bundle | gzip per route vs `config/budgets.json` (html/js/css) | PR, develop, main | yes |
-| Scene | `scripts/check-scene-budget.ts`: the three + gsap closure is never initial and ≤ `scene.js` (250 KB) | PR, develop, main | yes |
-| Rendered HTML | `scripts/check-rendered.ts`: landmarks, single visible h1, `lang`, canonical, skip link, resolvable anchors, no placeholders or retired text | PR, develop, main | yes |
+| Scene | `tools/check-scene-budget.ts`: the three + gsap closure is never initial and ≤ `scene.js` (250 KB) | PR, develop, main | yes |
+| Rendered HTML | `tools/check-rendered.ts`: landmarks, single visible h1, `lang`, canonical, skip link, resolvable anchors, no placeholders or retired text | PR, develop, main | yes |
 | Placeholders | report on PR; `--strict` on deploy | PR / deploy | deploy |
 | Dependencies | `npm audit --omit=dev --audit-level=high`; Dependabot schedules, cooldowns and native rebase remain enabled. `dependency-policy.yml` now performs read-only metadata assessment: every update requires manual review, current-head CI and a protected merge. No writer, bot approval, PAT or automatic merge. See [the manual profile](dependency-updates.md). Frameworks, majors, security updates, Actions and base images receive explicit review. | PR, develop, main | yes |
 | Workflows | `actionlint` (with shellcheck) + `zizmor` (`.github/zizmor.yml`) on every workflow and composite action | PR, develop, main | yes |
 | Secrets | gitleaks v8.30.1 (digest-pinned) over the full git history via `.github/scripts/secret-scan.sh`; redacted output; fails on findings, shallow checkouts or zero commits scanned; narrow manifest-digest exception in `.github/gitleaks.toml` | PR, develop, main | yes |
 | Assistant (disabled) | `check:assistant-disabled` after the export build in CI and Deploy (required script); CI and Deploy force `NEXT_PUBLIC_ASSISTANT_ENABLED=false` | PR, develop, main, deploy | yes |
-| Assistant (enabled, fixture) | `test:e2e:assistant` against the pinned public API revision in fixture mode (no key, no paid calls); only test reports and source-bound identity receipts uploaded; every native leg rebuilds its own enabled export, which is never uploaded | PR, develop, main | yes |
+| Assistant (enabled, fixture) | `test:browser:assistant` against the pinned public API revision in fixture mode (no key, no paid calls); only test reports and source-bound identity receipts uploaded; every native leg rebuilds its own enabled export, which is never uploaded | PR, develop, main | yes |
 | Hostinger parity | `rockylinux:8` (GLIBC 2.28) container: WASM SWC fallback asserted, `build:standalone`, smoke against `npm start` | PR, develop, main | yes |
 | E2E | Playwright `PW_SET=pr` in four exact-identity shards: six configured projects (Firefox/WebKit 390, Chromium 390/768/1440 + reduced motion) (smoke, axe WCAG 2.2 AA, offer modes, widget lifecycle, commerce, consent, motion, navigation, responsive contract 320–1920 in the 1440 project) | PR, develop, main | yes |
 | Lighthouse | LHCI on the export, 2 runs, mobile emulation; a11y ≥ 0.95 and CLS ≤ 0.1 are errors; report kept as artifact and job summary | PR, develop, main | a11y/CLS |
 | Production | `post-deploy-verify`: revision match, smoke, headers, `PW_SET=prod`, informative Lighthouse | main push, deploy | yes |
-| Nightly | 7 widths × Chromium/WebKit, visual snapshots (`tests/e2e/visual.spec.ts`, Linux baselines under `tests/e2e/__screenshots__`, regenerate with the `update_snapshots` input), clean-clone invariant, knip, LHCI ×5, link check, bundle analysis | nightly | report |
+| Nightly | 7 widths × Chromium/WebKit, visual snapshots (`tests/browser/visual.spec.ts`, Linux baselines under `tests/browser/__screenshots__`, regenerate with the `update_snapshots` input), clean-clone invariant, knip, LHCI ×5, link check, bundle analysis | nightly | report |
 
 ### Development-only advisories (2026-10-05)
 
@@ -108,7 +108,7 @@ Two scheduled workflows, both reporting in their job summary:
    parity lane is not repeated here: it already gates every PR and every push to `main`. Its 14 projects remain distinct from the two six-project core configurations.
 2. **Production daily (09:00 UTC, the live site)** — never builds. Reads the live sha from
    `build-info.json`, reuses `post-deploy-verify.yml` (smoke, headers, `PW_SET=prod`, informative
-   Lighthouse) and runs `scripts/check-live.ts`: TLS certificate ≥ 14 days, header matrix (HSTS,
+   Lighthouse) and runs `tools/check-live.ts`: TLS certificate ≥ 14 days, header matrix (HSTS,
    nosniff, referrer, frame, CSP, HTML `no-cache`, immutable `/_next/static`; `build-info.json`
    `no-store` as a warning), robots and sitemap, Hotmart checkout href on the landing, Conversions
    API relay probe (`POST /api/meta/events/` with `{"events":[]}`: 400 = enabled, 204 = disabled,
@@ -125,8 +125,8 @@ reports 7 (14 nightly), Lighthouse reports 30. Lint the workflows locally with
 ## Local commands
 
 `npm run check` retains the local quality/build checks; it does not reproduce all eight browser
-legs, Hostinger parity, Nightly or the artifact-transfer contract. `npm run test:e2e` runs the PR set; `test:e2e:nightly`,
-`test:e2e:visual` and `test:e2e:prod` (with `E2E_BASE_URL`) select the other sets. `npm run
+legs, Hostinger parity, Nightly or the artifact-transfer contract. `npm run test:browser` runs the PR set; `test:browser:nightly`,
+`test:browser:visual` and `test:browser:prod` (with `E2E_BASE_URL`) select the other sets. `npm run
 analyze` writes bundle reports under `.next/analyze`.
 
 Commits follow Conventional Commits with a body that states what was verified and what was not.

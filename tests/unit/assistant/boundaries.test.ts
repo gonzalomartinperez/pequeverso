@@ -144,7 +144,11 @@ describe("native assistant boundaries", () => {
       imports(file).some((target) => (sourceTarget(file, target) ?? "").startsWith(`${root}/`)),
     );
     assert.deepEqual(users.map(toPosix), ["src/app/layout.tsx"]);
-    assert.ok(imports("src/app/layout.tsx").includes("@/features/assistant/slot"));
+    const appAssistantEntries = imports("src/app/layout.tsx")
+      .map((specifier) => sourceTarget("src/app/layout.tsx", specifier))
+      .filter((target): target is string => target?.startsWith(`${root}/`) ?? false)
+      .map((target) => all.find((file) => file === target || file === `${target}.tsx`));
+    assert.deepEqual(appAssistantEntries, [`${root}/slot.tsx`]);
     const slot = readFileSync(`${root}/slot.tsx`, "utf8");
     // The comparison must stay inline so the bundler folds it and drops the import when disabled.
     assert.match(

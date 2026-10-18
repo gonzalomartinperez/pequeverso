@@ -1,5 +1,5 @@
 import { memo, type ReactNode } from "react";
-import { cx } from "@/lib/cx";
+import { cx } from "@/shared/styles/cx.ts";
 import { type Inline, parseRichText } from "../domain/rich-text";
 
 function inline(nodes: Inline[]): ReactNode[] {

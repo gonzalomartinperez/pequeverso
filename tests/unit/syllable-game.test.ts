@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { homeCopy } from "../../content/es/home.ts";
 import { grafismoCopy } from "../../content/es/products/grafismo-fonetico/copy.ts";
-import { press, slotTexts, tileOrder } from "../../src/features/playground/syllable-game.ts";
+import { press, slotTexts, tileOrder } from "../../src/features/playground/domain/syllable-game.ts";
 
 test("tile order is a deterministic permutation; three or more syllables never show the solved order", () => {
   for (const [count, key] of [

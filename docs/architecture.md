@@ -6,7 +6,7 @@ pequeverso.com is a small commercial site: a homepage (hub), the principal produ
 optional post-purchase offer page with a query-driven downsell mode, a thank-you page, legal and
 support pages, and a real 404. There is no database, CMS or authentication: payments, delivery
 and refunds run on Hotmart. The only server endpoint is the Meta Conversions API relay
-(`POST /api/meta/events/`): core in `server/meta-capi.ts`, served by `scripts/serve-static.ts`
+(`POST /api/meta/events/`): core in `src/features/tracking/adapters/server/meta-capi.ts`, served by `tools/serve-static.ts`
 (export) and by a standalone-only route handler (Node target).
 
 ```mermaid
@@ -29,48 +29,48 @@ flowchart LR
 | Config | `NEXT_OUTPUT=export` (default) | `NEXT_OUTPUT=standalone` |
 | Serving | Hostinger website (LiteSpeed) serving `public_html`, pulled from the `deploy` branch by Hostinger Git | Hostinger Node.js Web App building `release`/`main` (forces `standalone`; auto-detected by `/hbuilds/`) |
 | Redirects/headers | `out/.htaccess` generated from `config/edge-rules.json` | `redirects()`/`headers()` from the same file |
-| Meta CAPI relay | `scripts/serve-static.ts` mounts `server/meta-capi.ts` (Node.js Web App only; the LiteSpeed mode has no relay) | `src/app/api/meta/events/route.standalone.ts`, compiled only when `output === "standalone"` (`pageExtensions` adds `standalone.ts`) |
+| Meta CAPI relay | `tools/serve-static.ts` mounts `src/features/tracking/adapters/server/meta-capi.ts` (Node.js Web App only; the LiteSpeed mode has no relay) | `src/app/api/meta/events/route.standalone.ts`, compiled only when `output === "standalone"` (`pageExtensions` adds `standalone.ts`) |
 | Images | Build-time WebP derivatives (`tools/media`), `images.unoptimized` | same |
 | Status | Supported (Deploy workflow publishes `deploy`) | **Connected to `main` since 2026-10-13** (owner confirmed); Hostinger automatically builds and publishes merges. Post-deploy verification is enabled. On 2026-10-17 the owner confirmed the product page works in a browser; an earlier HEAD probe returned HTTP 403 and remains a probe-specific observation, not a diagnosed hosting outage. Each release still requires its own post-deploy verification |
 
 Rules that keep both targets valid: no `proxy.ts`/middleware, no `cookies()`/`headers()`/request-time
 APIs, no route handlers beyond `sitemap.ts`/`robots.ts`/metadata images (plus `*.standalone.ts`
-handlers, invisible to the export), no runtime image optimizer. Server logic lives in `server/`
+handlers, invisible to the export), no runtime image optimizer. Server logic lives in `src/features/tracking/adapters/server/`
 (transport-agnostic cores with a Node adapter); standalone route handlers are thin wrappers. ADRs: `docs/decisions/ADR-0001-hosting-target.md`, `ADR-0005-conversions-api-relay.md`.
 
 ## Source tree
 
+The [common-site decision](decisions/ADR-0009-common-site-module-spine.md) aligns physical
+responsibilities while retaining Pequeverso's behavior and actual feature ownership.
+
+```text
+config/          site/build inputs and products/{schema,index,<slug>}.ts
+content/es/      reviewed public copy; no private authoring inputs
+contracts/       copied public API schemas/examples and unchanged source provenance
+media/, public/  provenance manifest and stable public assets
+src/app/         framework routes, statically analyzed exports and root composition
+src/views/       home, legal/support and product page composition; metadata/JSON-LD
+src/shell/       existing page shell, site header/footer, mobile navigation and page motion
+src/features/    assistant, commerce, gallery, hub, landing age/gallery state, playground, tracking
+src/shared/      ui, styles, motion, editorial, identity, media and navigation capabilities
+tools/           repository CLI/build/verification tools; tools/media remains its own project
+tests/           unit, browser (including unchanged snapshots), assistant fixtures and helpers
 ```
-config/          site-wide facts: site.ts (brand, URLs), commerce.ts (currency, guarantee, passthrough
-                 allowlist, Hotmart URLs), affiliates.ts (approved affiliate facts and redirect env key),
-                 edge-rules.json, budgets.json
-content/es/      neutral-Spanish copy: home.ts, hub.ts (shared need labels), gracias.ts, legal/,
-                 products/<slug>/{copy,resources,faq}.ts
-src/products/    the product registry (schema.ts, <slug>.ts modules, index.ts, jsonld.ts)
-src/app/         routes: page.tsx (hub), [product]/ (one landing per registry product),
-                 [product]/gracias/ (thank-you of core products), legal/support pages, sitemap, robots
-src/features/    assistant/ (native shopping assistant, compiled out unless enabled), landing/ (CoreLanding,
-                 OfferLanding, ThanksPage templates), home/ (two-product chapters and sticky chooser),
-                 hub/ (shared product needs and menu), commerce/ (client islands), gallery/, tracking/
-src/app/globals.css  design tokens, Tailwind v4 theme bridge, base layer, utilities (docs/design-system.md)
-src/components/  ui/ (shadcn/ui primitives on Base UI + server-safe *-variants.ts), blocks/ (server
-                 blocks: section, grid, split, price-block, cta-button, faq, …), layout/ (page-shell,
-                 header + lazy mobile-nav sheet, footer, legal-layout)
-src/motion/      motion.css, reveal/tilt/counter/flip/parallax/sticky components, page-motion (WAAPI),
-                 scene/ (lazy three + gsap starfield, static SVG fallback, useSceneRuntime)
-src/lib/         media.ts (manifest access), metadata.ts, utils.ts (`cn` on compiled tables), cx.ts
-media/, public/  media manifest and build-time renditions (tools/media)
-server/          meta-capi.ts (Conversions API relay core + Node adapter, erasable TypeScript run by Node); used by
-                 scripts/serve-static.ts and src/app/api/meta/events/route.standalone.ts (alias @server/*)
-```
+
+The hub sticky client bar and landing hero/gallery client components stay in feature presentation;
+server curated hub products live in adapters. Price rendering belongs to commerce and configured
+social links to shell. Header/footer remain inside the existing per-route PageShell, preserving
+mount/cleanup and navigation lifetimes. No empty feature layers or copied product identity exist.
+The relay server adapter has one exact tracking-owned namespace; client closure checks exclude it
+and the build-time catalog through aliases, barrels and dynamic imports.
 
 ## Product registry
 
-`src/products` is the source of core kit and post-purchase-offer facts; the affiliate course
+`config/products` is the source of core kit and post-purchase-offer facts; the affiliate course
 uses the separate configuration described below. Each registry product is a module
-(`src/products/grafismo-fonetico.ts`, `src/products/imprime-y-juega.ts`) declared with
-`satisfies ProductInput` and parsed once, at build time, by `src/products/index.ts` through the Zod
-schema in `src/products/schema.ts` (discriminated union on `kind`):
+(`config/products/grafismo-fonetico.ts`, `config/products/imprime-y-juega.ts`) declared with
+`satisfies ProductInput` and parsed once, at build time, by `config/products/index.ts` through the Zod
+schema in `config/products/schema.ts` (discriminated union on `kind`):
 
 | Field | `core` (principal product) | `post-purchase-offer` |
 |---|---|---|
@@ -89,15 +89,15 @@ checks unique slugs/codes, that `parent`/`postPurchaseOffer` resolve to the righ
 API: `products`, `getProduct(slug)`, `coreProducts()`, `offerProducts()`, `indexableProducts()`,
 `featuredProduct()` (the hub's own kit), `checkoutFallbackPath(product)`. Zod and the media manifest
 stay on the server: client islands (`CheckoutLink`, `ProductInterestLink`, `OfferModeMirror`) receive
-plain props from the templates. `src/products/jsonld.ts` emits a `Product` + single `Offer` (and a
+plain props from the templates. `src/views/product-jsonld.ts` emits a `Product` + single `Offer` (and a
 `BreadcrumbList`) for indexable core products only — never ratings, reviews or merchant-listing fields.
 ADR: `docs/decisions/ADR-0002-product-registry.md`.
 
 ## Home hub and affiliate course
 
-`src/app/page.tsx` composes `src/features/home/`: equal product doors, the reading
+`src/app/page.tsx` composes `src/views/home/`: equal product doors, the reading
 chapter (`#leer`), first-meals chapter (`#bebe`), FAQ, closing choices and contextual
-sticky chooser. `src/features/hub/hub-products.ts` projects the core kit registry
+sticky chooser. `src/features/hub/adapters/hub-products.ts` projects the core kit registry
 and `config/affiliates.ts` into the shared need model used by doors and menus.
 Page copy lives in `content/es/home.ts`; shared labels live in `content/es/hub.ts`.
 `HubProductLink` receives the plain shared need model (with a type-only import),
@@ -110,7 +110,7 @@ The full behavior and ownership map is the [Home hub spec](specs/home-hub.md).
 configuration key; the actual affiliate destination is a deployment value. The
 `/alimentacion-bebe/` redirect is declared in `config/edge-rules.json` (temporary302;
 404 when its destination variable is unset), with no local course landing. This
-course is not a third `src/products` kind and does not inherit the kit's price,
+course is not a third `config/products` kind and does not inherit the kit's price,
 PDF composition or funnel. Home links to the kit landing before its configured
 checkout, while `AffiliateLink` sends an explicitly disclosed recommendation
 through the configured redirect. Post-purchase offers retain their existing
@@ -156,7 +156,7 @@ widget itself is identical in both modes: Hotmart decides the offer from the buy
 `pequeverso-assistant-api` (separate HTTPS origin, credentialed CORS; no endpoint or proxy in this
 repository). `src/app/layout.tsx` renders `AssistantSlot`, which imports the client code only when
 `NEXT_PUBLIC_ASSISTANT_ENABLED === "true"` at build time; the default build emits none of it
-(`scripts/check-assistant-disabled.ts`). Layers: `domain` (pure) → `application` (controller, ports)
+(`tools/check-assistant-disabled.ts`). Layers: `domain` (pure) → `application` (controller, ports)
 → `adapters` (HTTP/SSE, validation) → `presentation` (React), wired only in `entry.ts`
 (`tests/unit/assistant/boundaries.test.ts`). Details and activation: `docs/assistant.md`, ADR-0008.
 
@@ -196,7 +196,7 @@ provider, physical phone keyboard or production VPS cookies/CORS/proxy behavior.
 
 ## Commerce and tracking boundaries
 
-- `src/products` holds prices, composition, checkout and funnel facts per product; `config/commerce.ts`
+- `config/products` holds prices, composition, checkout and funnel facts per product; `config/commerce.ts`
   keeps the shared ones (currency, guarantee, passthrough allowlist, Hotmart URLs).
   `features/commerce/checkout-url.ts` builds checkout URLs (never forwards `off`/`ref`) and the
   per-product `sck=pv-<sckPrefix>-<position>`.
@@ -207,22 +207,22 @@ provider, physical phone keyboard or production VPS cookies/CORS/proxy behavior.
 
 ## Deployment and verification
 
-`scripts/build-info.ts` writes `public/build-info.json` (`sha`, `ref`, `builtAt`) served with
+`tools/build-info.ts` writes `public/build-info.json` (`sha`, `ref`, `builtAt`) served with
 `Cache-Control: no-store`; the deploy workflow compares it with the commit it built and runs
-`scripts/smoke.ts` before declaring success. See `docs/deployment.md`.
+`tools/smoke.ts` before declaring success. See `docs/deployment.md`.
 
 
 ### Enforced dependency contracts
 
 [Engineering standards](engineering-standards.md) document ownership, review and blocking CI rules.
-`npm run check:architecture` parses imports with Oxc, checks runtime cycles and follows client
+`npm run test:architecture` parses imports with Oxc, checks runtime cycles and follows client
 imports transitively through barrels and aliases. Assistant presentation receives a stable
 controller from `runtime.tsx`; only `entry.ts` constructs its HTTP adapter. Domain and application
 receive platform IO through ports, including cancellation deadlines and waits. Presentation uses
 application types only. Biome checks restricted globals semantically, including code after URL
 strings; negative fixtures exercise the actual rules.
 
-The exact `src/lib/cn-tables` module is a generated build artifact owned by `cn/next` in
+The exact `src/shared/styles/cn-tables` module is a generated build artifact owned by `cn/next` in
 `config/next.ts`. Its declaration is tracked and its JavaScript is generated before Next builds.
 When present the checker parses its JavaScript; a clean checkout may omit it until generation.
 The existing public `media/manifest.json` import is explicitly permitted; other asset imports

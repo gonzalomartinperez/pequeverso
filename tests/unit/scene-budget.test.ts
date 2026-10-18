@@ -3,13 +3,13 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { SceneBudgetPlugin, type SceneCompiler } from "../../scripts/scene-budget-plugin.ts";
 import {
   buildStarfield,
   buildStaticLayers,
   DEPTH_LAYERS,
   TILE_STARS,
-} from "../../src/motion/scene/starfield.ts";
+} from "../../src/shared/motion/scene/starfield.ts";
+import { SceneBudgetPlugin, type SceneCompiler } from "../../tools/scene-budget-plugin.ts";
 
 type Stats = Parameters<Parameters<SceneCompiler["hooks"]["done"]["tap"]>[1]>[0];
 type Chunk = Stats["compilation"]["chunks"] extends Iterable<infer C> ? C : never;
@@ -68,7 +68,7 @@ test("scene budget follows extracted vendors and nested asynchronous chunks", ()
     chunks: [scene, vendor],
     childrenIterable: [{ chunks: [nested], childrenIterable: [] }],
   });
-  const report = runPlugin([scene], "C:/repo/src/motion/scene/scene-runtime.ts|app-pages-browser");
+  const report = runPlugin([scene], "C:/repo/src/shared/motion/scene/scene-runtime.ts|app-pages-browser");
   assert.deepEqual(report.files, [
     "static/chunks/nested.js",
     "static/chunks/scene.js",
@@ -80,6 +80,6 @@ test("scene budget follows extracted vendors and nested asynchronous chunks", ()
 
 test("the report marks a scene that leaked into an initial chunk", () => {
   const chunk: Chunk = { files: ["static/chunks/main.js"], groupsIterable: [], canBeInitial: () => true };
-  const report = runPlugin([chunk], "/repo/src/motion/scene/scene-runtime.ts");
+  const report = runPlugin([chunk], "/repo/src/shared/motion/scene/scene-runtime.ts");
   assert.equal(report.initial, true);
 });

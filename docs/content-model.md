@@ -1,7 +1,7 @@
 # Content model
 
 Customer-facing copy is neutral Spanish, typed, and lives in `content/es/`. Business facts live in
-`config/` (site-wide) and `src/products/<slug>.ts` (per product) and are imported by copy and
+`config/` (site-wide) and `config/products/<slug>.ts` (per product) and are imported by copy and
 components — never retyped.
 
 | File | Holds | Source of truth (read 2026-09-12) |
@@ -9,8 +9,8 @@ components — never retyped.
 | `config/site.ts` | brand name, tagline, canonical URL, support email, social profiles, theme colour | brand foundations + `social-profiles.json` (private ops repo); env `NEXT_PUBLIC_SITE_URL` |
 | `config/commerce.ts` | currency, local-currency notes (`localCurrencyNote`, `localCurrencyNoteShort`), guarantee (7 days), passthrough allowlist, Hotmart URLs | product README 2026-08-04, Hotmart docs |
 | `config/affiliates.ts` | recommended third-party products (Hotmart affiliate): slug, redirect path and variable, name, audience, topics, optional attributed course details, guarantee days, `src`, media ids | producer's public Hotmart page, owner decision 2026-10-12 and owner-supplied producer copy 2026-10-18 (docs/affiliates.md) |
-| `src/products/grafismo-fonetico.ts` | price US$14.99, 9 PDF / 414 pp, 3-7 años, checkout env key + offer id + `sck` prefix, thank-you path, post-purchase offer, media ids, SEO title/description | product README 2026-08-04, Hotmart upload manifest 2026-07-24, live landing |
-| `src/products/imprime-y-juega.ts` | upsell US$14.99 / downsell US$7.49, 6 PDF / 384 pp / 9 visible resources, parent product, media ids, SEO (noindex) | Hotmart upload manifest 2026-07-26, live post-purchase page |
+| `config/products/grafismo-fonetico.ts` | price US$14.99, 9 PDF / 414 pp, 3-7 años, checkout env key + offer id + `sck` prefix, thank-you path, post-purchase offer, media ids, SEO title/description | product README 2026-08-04, Hotmart upload manifest 2026-07-24, live landing |
+| `config/products/imprime-y-juega.ts` | upsell US$14.99 / downsell US$7.49, 6 PDF / 384 pp / 9 visible resources, parent product, media ids, SEO (noindex) | Hotmart upload manifest 2026-07-26, live post-purchase page |
 | `content/es/products/index.ts` | shared shapes: `Resource`, `FaqItem`, `CoreLandingCopy`, `OfferLandingCopy` | — |
 | `content/es/products/grafismo-fonetico/{copy,resources,faq}.ts` | landing copy, the 9 resources (names, page counts, descriptions), the 10 FAQ answers | published landing copy and `offer-content.mjs`, reviewed |
 | `content/es/products/imprime-y-juega/{copy,resources,faq}.ts` | upsell/downsell copy, the 9 resources, the 9 FAQ answers | published post-purchase copy, reviewed |
@@ -23,7 +23,7 @@ components — never retyped.
 
 ## Per-product folders
 
-A product is a module in `src/products/` plus a folder in `content/es/products/<slug>/`:
+A product is a module in `config/products/` plus a folder in `content/es/products/<slug>/`:
 
 - `copy.ts` — one typed object (`satisfies CoreLandingCopy` or `OfferLandingCopy`); section keys are
   what the templates in `src/features/landing` render. Counts that appear in copy ("9 PDF",
@@ -32,8 +32,8 @@ A product is a module in `src/products/` plus a folder in `content/es/products/<
   and card media ids; the registry checks that pages sum to `composition.pageCount`.
 - `faq.ts` — `readonly FaqItem[]`, imported by `copy.ts` as `faq.items`.
 
-To add a product: create the folder, write `src/products/<slug>.ts` with `satisfies ProductInput`,
-register it in `src/products/index.ts` and declare its media in `tools/media/sources.json`. Routes,
+To add a product: create the folder, write `config/products/<slug>.ts` with `satisfies ProductInput`,
+register it in `config/products/index.ts` and declare its media in `tools/media/sources.json`. Routes,
 sitemap, footer, 404 and terms derive from the registry.
 
 ## Rules
@@ -45,7 +45,7 @@ sitemap, footer, 404 and terms derive from the registry.
   shown in the previous funnel step.
 - Every price is rendered with `formatUsd()` next to the local-currency note from `config/commerce.ts`
   (`PriceBlock` renders it by default; the sticky bar, header CTA and home card use the short
-  variant). `scripts/check-rendered.ts` fails a page that shows `US$` without "moneda local".
+  variant). `tools/check-rendered.ts` fails a page that shows `US$` without "moneda local".
 - The guarantee period is a single value (`guaranteeDays`) used by every page. Changing it is a
   business decision that must match the Hotmart product setting (EU sales require Hotmart's
   minimum; see docs/legal-checklist.md).
@@ -68,7 +68,7 @@ the rendered HTML). The pack belongs to the Hotmart funnel after payment only.
 ## Adding or changing copy
 
 1. Edit the typed object; keep keys stable (components import them).
-2. If a fact changes (price, count, checkout), change `src/products/<slug>.ts`; the guarantee period
+2. If a fact changes (price, count, checkout), change `config/products/<slug>.ts`; the guarantee period
    lives in `config/commerce.ts`. Never retype facts in copy.
 3. Run `npm run check` — unit tests assert the documented composition and prices.
 4. Record business-facing changes in `CHANGELOG.md` and, if it is a decision, in `docs/decisions/`.

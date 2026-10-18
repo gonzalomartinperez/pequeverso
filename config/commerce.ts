@@ -1,6 +1,6 @@
 /**
  * Commercial facts shared by every product. Per-product facts (prices, composition, checkout,
- * funnel) live in the registry (`src/products/<slug>.ts`). The guarantee period is the
+ * funnel) live in the registry (`config/products/<slug>.ts`). The guarantee period is the
  * documented value as of 2026-09-12; changing it is a business decision that must match the
  * Hotmart product setting (see docs/legal-checklist.md).
  *

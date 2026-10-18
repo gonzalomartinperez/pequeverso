@@ -18,7 +18,7 @@ Order bumps stay inside Hotmart's checkout (nothing on the site references them)
 
 ## 2. How the integration is adapted to Next.js
 
-Hotmart's snippet is three inline tags; on the site it is `src/components/HotmartWidgetSlot`:
+Hotmart's snippet is three inline tags; on the site it is `src/features/commerce/presentation/hotmart-widget-slot.tsx`:
 
 | Hotmart snippet | Site behaviour |
 |---|---|
@@ -44,7 +44,7 @@ click, only on click.
 upsell and downsell need **no** environment variable and no offer id on the site: the Sales Funnel
 widget renders whatever offers are configured for the funnel step in Hotmart, inside the single
 `#hotmart-sales-funnel` container. Prices shown on the page (US$14.99 / US$7.49) come from
-`src/products/imprime-y-juega.ts` and must match the Hotmart offers.
+`config/products/imprime-y-juega.ts` and must match the Hotmart offers.
 
 | Behaviour | How verified |
 |---|---|
@@ -105,7 +105,7 @@ followed by a refund inside the guarantee) — **only with the owner's explicit 
    deduplicated, when `META_CAPI_ACCESS_TOKEN` is set), `InitiateCheckout` and `Purchase` from
    Hotmart only; no duplicated `Purchase`.
 10. Refund the test purchases via `refund.hotmart.com` if real money was used.
-11. Measure the rendered widget height in each mode at ≤ 768 px and ≥ 768 px and replace the estimated `--widget-min-h` (220 px / 180 px from md, set without a purchase session; utilities on the slot in `src/features/commerce/HotmartWidgetSlot/HotmartWidgetSlot.tsx`) with the measured values.
+11. Measure the rendered widget height in each mode at ≤ 768 px and ≥ 768 px and replace the estimated `--widget-min-h` (220 px / 180 px from md, set without a purchase session; utilities on the slot in `src/features/commerce/presentation/hotmart-widget-slot.tsx`) with the measured values.
 
 Record results in `docs/verification/` (date, URLs Hotmart used, screenshots of the widget in
 each mode, transaction ids masked).

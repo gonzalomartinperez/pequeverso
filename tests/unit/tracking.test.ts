@@ -1,8 +1,5 @@
 import assert from "node:assert/strict";
 import { beforeEach, test } from "node:test";
-import { createMetaAdapter } from "../../src/features/tracking/adapters/meta.ts";
-import { createMetaCapiAdapter, META_CAPI_ENDPOINT } from "../../src/features/tracking/adapters/meta-capi.ts";
-import type { TrackedEvent, TrackingAdapter } from "../../src/features/tracking/adapters/types.ts";
 import {
   CONSENT_VERSION,
   type ConsentState,
@@ -10,7 +7,9 @@ import {
   readConsent,
   serializeConsentCookie,
   writeConsent,
-} from "../../src/features/tracking/consent.ts";
+} from "../../src/features/tracking/adapters/consent.ts";
+import { createMetaAdapter } from "../../src/features/tracking/adapters/meta.ts";
+import { createMetaCapiAdapter, META_CAPI_ENDPOINT } from "../../src/features/tracking/adapters/meta-capi.ts";
 import {
   _resetForTests,
   FORBIDDEN_EVENTS,
@@ -18,7 +17,8 @@ import {
   track,
   trackAffiliateClick,
   trackCheckoutIntent,
-} from "../../src/features/tracking/track.ts";
+} from "../../src/features/tracking/adapters/track.ts";
+import type { TrackedEvent, TrackingAdapter } from "../../src/features/tracking/adapters/types.ts";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 

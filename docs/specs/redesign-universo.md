@@ -64,7 +64,7 @@ Radius: md 12, lg 20, xl 28, 2xl 36. Shadows are layered and navy-tinted
 (`--pv-shadow-float`: close contact + wide ambient). Glass surface (`glass`): white 72 % +
 `backdrop-filter: blur(16px) saturate(1.4)` + 1 px white border, with a solid fallback.
 
-## 4. Motion system (additions to `src/motion`)
+## 4. Motion system (additions to `src/shared/motion`)
 
 | Primitive | What it does | Tech | Reduced motion |
 |---|---|---|---|

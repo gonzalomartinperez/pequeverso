@@ -3,8 +3,8 @@
 import { errorCopy as copy } from "@content/es/soporte";
 import Link from "next/link";
 import { useEffect } from "react";
-import { badgeVariants } from "@/components/ui/badge-variants";
-import { buttonVariants } from "@/components/ui/button-variants";
+import { badgeVariants } from "@/shared/ui/badge-variants.ts";
+import { buttonVariants } from "@/shared/ui/button-variants.ts";
 
 type Props = { error: Error & { digest?: string }; reset: () => void };
 

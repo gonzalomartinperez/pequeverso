@@ -2,8 +2,8 @@
 import { formatDay } from "@content/es/assistant";
 import { BookOpen } from "lucide-react";
 import { useId } from "react";
-import { buttonVariants } from "@/components/ui/button-variants";
-import { cx } from "@/lib/cx";
+import { cx } from "@/shared/styles/cx.ts";
+import { buttonVariants } from "@/shared/ui/button-variants.ts";
 import type { Price, Product, Resource } from "../domain/models";
 import styles from "./assistant.module.css";
 import { usePresentation } from "./context";

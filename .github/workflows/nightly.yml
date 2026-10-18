@@ -65,9 +65,9 @@ jobs:
       - name: Verify exported edge rules
         run: cmp out/.htaccess docs/generated/htaccess.txt
       - name: Clean clone retains no banner or cookies
-        run: npx playwright test --project=chromium-1440 tests/e2e/consent.spec.ts tests/e2e/commerce.spec.ts
+        run: npx playwright test --project=chromium-1440 tests/browser/consent.spec.ts tests/browser/commerce.spec.ts
       - name: Bind and stage the no-integration OFF export
-        run: node scripts/ci/artifacts.ts pack-off out .ci-off-artifact
+        run: node tools/ci/artifacts.ts pack-off out .ci-off-artifact
         id: package
         env:
           CI_CANDIDATE_SHA: ${{ needs.prepare.outputs.source_sha }}
@@ -131,7 +131,7 @@ jobs:
           name: off-export-${{ github.run_id }}-${{ github.run_attempt }}
           path: .ci-off-artifact
       - name: Validate complete OFF payload before creating out
-        run: node scripts/ci/artifacts.ts unpack-off out .ci-off-artifact
+        run: node tools/ci/artifacts.ts unpack-off out .ci-off-artifact
         env:
           CI_CANDIDATE_SHA: ${{ needs.quality.outputs.source_sha }}
           CI_MANIFEST_SHA256: ${{ needs.quality.outputs.manifest_sha256 }}
@@ -147,7 +147,7 @@ jobs:
           for part in 1 2 3 4 5 6 7 8; do
             npx playwright test --shard="$part/8" --list --reporter=json > "nightly-evidence/shard-$part.json"
           done
-          node scripts/ci/inventories.ts verify nightly nightly-evidence/full.json nightly-evidence/inventory-receipt.json nightly-evidence/shard-{1,2,3,4,5,6,7,8}.json
+          node tools/ci/inventories.ts verify nightly nightly-evidence/full.json nightly-evidence/inventory-receipt.json nightly-evidence/shard-{1,2,3,4,5,6,7,8}.json
       - name: Playwright (PW_SET=nightly, unchanged projects and limits)
         env:
           PW_SET: nightly
@@ -189,7 +189,7 @@ jobs:
           name: off-export-${{ github.run_id }}-${{ github.run_attempt }}
           path: .ci-off-artifact
       - name: Validate complete OFF payload before creating out
-        run: node scripts/ci/artifacts.ts unpack-off out .ci-off-artifact
+        run: node tools/ci/artifacts.ts unpack-off out .ci-off-artifact
         env:
           CI_CANDIDATE_SHA: ${{ needs.quality.outputs.source_sha }}
           CI_MANIFEST_SHA256: ${{ needs.quality.outputs.manifest_sha256 }}
@@ -197,17 +197,17 @@ jobs:
         run: cmp out/.htaccess docs/generated/htaccess.txt
       - name: Compare with baselines
         if: ${{ !inputs.update_snapshots }}
-        run: npm run test:e2e:visual
+        run: npm run test:browser:visual
       - name: Regenerate baselines
         if: ${{ inputs.update_snapshots }}
-        run: npm run test:e2e:visual -- --update-snapshots
+        run: npm run test:browser:visual -- --update-snapshots
       - name: Upload snapshots and report
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: visual-results
           path: |
-            tests/e2e/__screenshots__
+            tests/browser/__screenshots__
             playwright-report
           retention-days: 14
           if-no-files-found: ignore
@@ -242,14 +242,14 @@ jobs:
           name: off-export-${{ github.run_id }}-${{ github.run_attempt }}
           path: .ci-off-artifact
       - name: Validate complete OFF payload before creating out
-        run: node scripts/ci/artifacts.ts unpack-off out .ci-off-artifact
+        run: node tools/ci/artifacts.ts unpack-off out .ci-off-artifact
         env:
           CI_CANDIDATE_SHA: ${{ needs.quality.outputs.source_sha }}
           CI_MANIFEST_SHA256: ${{ needs.quality.outputs.manifest_sha256 }}
       - name: Verify exported edge rules
         run: cmp out/.htaccess docs/generated/htaccess.txt
       - name: Link check
-        run: node scripts/check-links.ts
+        run: node tools/check-links.ts
   bundle:
     name: Nightly bundle checks
     runs-on: ubuntu-24.04
@@ -271,7 +271,7 @@ jobs:
           name: off-export-${{ github.run_id }}-${{ github.run_attempt }}
           path: .ci-off-artifact
       - name: Validate complete OFF payload before creating out
-        run: node scripts/ci/artifacts.ts unpack-off out .ci-off-artifact
+        run: node tools/ci/artifacts.ts unpack-off out .ci-off-artifact
         env:
           CI_CANDIDATE_SHA: ${{ needs.quality.outputs.source_sha }}
           CI_MANIFEST_SHA256: ${{ needs.quality.outputs.manifest_sha256 }}
@@ -281,15 +281,15 @@ jobs:
         run: npx lhci autorun --collect.numberOfRuns=5
       - name: Summary
         if: always()
-        run: node scripts/lhci-summary.ts >> "$GITHUB_STEP_SUMMARY"
+        run: node tools/lhci-summary.ts >> "$GITHUB_STEP_SUMMARY"
       - name: Bind fresh public metadata for the separate analyzer rebuild
-        run: node scripts/build-info.ts
+        run: node tools/build-info.ts
       - name: Bundle analysis
         run: npm run analyze
       - name: Verify analyzer output is still default-OFF
         run: npm run check:assistant-disabled
       - name: Record the separate analyzer rebuild identity and file manifest
-        run: node scripts/ci/artifacts.ts pack-off out .ci-analyzer-artifact
+        run: node tools/ci/artifacts.ts pack-off out .ci-analyzer-artifact
       - name: Upload Lighthouse and bundle reports
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
@@ -326,7 +326,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       - name: Require successful complete job evidence
-        run: node scripts/ci/acceptance.ts nightly
+        run: node tools/ci/acceptance.ts nightly
         env:
           CI_NEEDS: ${{ toJSON(needs) }}
       - name: Record the visual acceptance mode

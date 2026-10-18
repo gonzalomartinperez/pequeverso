@@ -9,11 +9,11 @@ covers how code is written and checked; it does not repeat the commerce rules.
 nvm use && npm ci
 cp .env.example .env.local        # fake checkout URL; the assistant stays disabled
 npm run check                     # lint, types, unit, knip, export build + budgets, rendered HTML
-npm run test:e2e                  # Playwright PR set (installs: npx playwright install --with-deps)
+npm run test:browser                  # Playwright PR set (installs: npx playwright install --with-deps)
 npm run build:standalone          # Node target parity
 ```
 
-The assistant suite (`npm run test:e2e:assistant`) needs a local checkout of
+The assistant suite (`npm run test:browser:assistant`) needs a local checkout of
 `pequeverso-assistant-api` at the revision in `tests/assistant/api-revision`; see
 `docs/assistant.md`. It never uses a real key.
 
@@ -33,7 +33,7 @@ mechanical parts; the rest is review.
 | Enums | Avoided: `erasableSyntaxOnly` is on (Node runs `.ts` by type stripping). Use `as const` objects and string unions |
 | JSDoc on exported API | Concise JSDoc on exported symbols that are not obvious from their type; no narrative comments |
 | Classes for stateful objects | Closures and plain functions (the assistant controller is a closure-based external store); React components are functions |
-| Imports | `import type` for types; `.ts` extensions in files Node runs directly (`scripts/`, `server/`, unit tests); `@/` alias inside `src/` |
+| Imports | `import type` for types; `.ts` extensions in files Node runs directly (`tools/`, `server/`, unit tests); `@/` alias inside `src/` |
 | Formatting | Biome (2-space indent, 110 columns, double quotes), not clang-format |
 
 ## Architecture boundaries
@@ -42,10 +42,10 @@ mechanical parts; the rest is review.
 - Feature folders split pure `domain/`, framework-free `application/`, `adapters/` (HTTP,
   storage, validation) and `presentation/` (React); composition happens at the entry. The
   assistant's boundaries are checked by `tests/unit/assistant/boundaries.test.ts`.
-- Business facts come from `config/` and `src/products`, never from component copy.
+- Business facts come from `config/` and `config/products`, never from component copy.
 - No new dependency for something the platform or an existing dependency already does.
 
-`npm run check:architecture` runs the same architecture contracts included in `npm test` and
+`npm run test:architecture` runs the same architecture contracts included in `npm test` and
 the required CI build. It parses imports as TypeScript syntax, resolves aliases and relative paths,
 rejects runtime cycles and checks the complete client import graph. Negative fixtures must prove
 that forbidden dependencies fail; a passing scan of the current tree alone is insufficient.
@@ -55,11 +55,11 @@ See [engineering standards](docs/engineering-standards.md) for ownership, review
 
 Conventional Commits; the body says what was verified and what was not. One owner per lockfile
 change; dependency updates are their own PR. PRs target `develop` (squash). Releases to `main`
-follow `.agents/skills/release/SKILL.md` and need the owner's approval each time.
+follow `.claude/skills/prepare-delivery/SKILL.md` and need the owner's approval each time.
 
 ## Agent skills
 
-Canonical skills live in `.agents/skills/<name>/SKILL.md`; `.claude/skills/<name>/SKILL.md` are
-thin adapters with identical frontmatter. `npm run check:skills` (also a unit test) validates
+Canonical site skills live once in `.agents/skills/<name>/SKILL.md`. Regular
+`.claude/skills/<name>/SKILL.md` adapters carry identical frontmatter and only a canonical reference. `npm run check:skills` (also a unit test) validates
 frontmatter, adapter drift, links, scripts, limits and the absence of private paths or secrets.
 A skill is a procedure, never an authorization.

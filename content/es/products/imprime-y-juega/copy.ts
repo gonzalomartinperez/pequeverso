@@ -1,7 +1,7 @@
 /**
  * Copy for /imprime-y-juega/ — the optional post-purchase offer. Both views (upsell and
  * downsell) are rendered; the Hotmart sales-funnel widget is the only decision control.
- * Business facts (prices, counts, media) live in src/products/imprime-y-juega.ts.
+ * Business facts (prices, counts, media) live in config/products/imprime-y-juega.ts.
  */
 import type { OfferLandingCopy } from "../index.ts";
 import { packFaq } from "./faq.ts";

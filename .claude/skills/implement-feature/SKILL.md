@@ -1,0 +1,6 @@
+---
+name: implement-feature
+description: Build or change a page of pequeverso.com following the design system, content model and commerce rules. Not for checkout, Hotmart funnel, tracking or deployment changes.
+---
+
+This adapter points to the canonical skill. Read and follow `.agents/skills/implement-feature/SKILL.md`.

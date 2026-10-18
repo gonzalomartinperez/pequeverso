@@ -40,9 +40,9 @@ except the polyfills chunk; `css` sums the linked stylesheets.
 | `/grafismo-fonetico/` | LCP | 941 ms | 659 ms |
 | `/grafismo-fonetico/` | CLS | 0 | 0 |
 
-Collected with the `lighthouserc.json` settings against `scripts/serve-static.ts`. The LCP element
+Collected with the `lighthouserc.json` settings against `tools/serve-static.ts`. The LCP element
 is the `h1` at 390 px on both routes; the hero `<img data-lcp>` becomes the LCP element on wider
-viewports, which `tests/e2e/lcp.spec.ts` accepts as the only alternative. Intermediate steps on
+viewports, which `tests/browser/lcp.spec.ts` accepts as the only alternative. Intermediate steps on
 `/`: font preload + Georgia/Arial metric fallbacks took LCP to 832 ms and CLS to 0; preloading the
 AVIF hero instead of the WebP srcset took it to 699 ms.
 
@@ -64,7 +64,7 @@ AVIF hero instead of the WebP srcset took it to 699 ms.
   client also inserts that route's hero preload (the same `gf.hero` file for `/` and
   `/grafismo-fonetico/`, so no extra bytes). The e2e test therefore matches the preload by the
   page's own `sizes` value instead of counting links.
-- `tests/e2e/lcp.spec.ts` asserts through `PerformanceObserver` that the LCP element on `/` and
+- `tests/browser/lcp.spec.ts` asserts through `PerformanceObserver` that the LCP element on `/` and
   `/grafismo-fonetico/` is an `h1` or `img[data-lcp]`, that the preload for the page hero exists,
   matches one of the hero's srcsets and carries `fetchpriority="high"`, that the hero's
   `currentSrc` is a hero rendition, and that no preload targets the isotipo. The spec is not in
@@ -155,10 +155,10 @@ HTML budgets without improving LCP).
 ## Design-system JavaScript
 
 `cn` runs on merge tables compiled from the sources (`withCn`, 3.2 KB gzip instead of the full
-13 KB table); client islands outside `src/components/ui` use `cx` or receive class strings from
+13 KB table); client islands outside `src/shared/ui` use `cx` or receive class strings from
 the server, so the always-loaded layout, error boundaries and header ship no variant tables. The
 mobile-nav sheet (Base UI dialog) is a separate chunk loaded on intent. three + gsap load only in
-`src/motion/scene/scene-runtime.ts`, behind `await import()` and motion/Save-Data/viewport gates.
+`src/shared/motion/scene/scene-runtime.ts`, behind `await import()` and motion/Save-Data/viewport gates.
 
 ## Re-measuring
 

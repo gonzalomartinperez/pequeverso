@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { below, breakpoints } from "../../src/lib/breakpoints.ts";
+import { below, breakpoints } from "../../src/shared/styles/breakpoints.ts";
 
 test("breakpoints match the documented scale and ascend", () => {
   assert.deepEqual(breakpoints, { sm: 640, md: 768, lg: 1024, xl: 1280 });

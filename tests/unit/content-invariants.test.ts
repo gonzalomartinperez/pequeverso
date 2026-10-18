@@ -4,7 +4,7 @@ import { join, relative } from "node:path";
 import { test } from "node:test";
 import { formatUsd, guaranteeDays } from "../../config/commerce.ts";
 
-const roots = ["content", "src/app", "src/features/landing", "src/products"];
+const roots = ["content", "src/app", "src/features/landing", "config/products"];
 const forbiddenLiterals = ["Trazos y Sonidos", "[[PLACEHOLDER]]"];
 const forbiddenClaims = [
   /garantiza(mos)?\s+que\s+.*aprend/i,
@@ -49,7 +49,7 @@ test("pre-purchase copy (home, principal landing) never offers paid extras", () 
     "content/es/products/grafismo-fonetico/copy.ts",
     "content/es/products/grafismo-fonetico/faq.ts",
     "src/app/page.tsx",
-    "src/features/landing/CoreLanding.tsx",
+    "src/views/product/core-landing-view.tsx",
   ];
   for (const file of prePurchase) {
     const text = read(file);
