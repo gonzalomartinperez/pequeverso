@@ -318,7 +318,7 @@ test("analyzer rebuild has fresh metadata, its own OFF verification and manifest
   const ci = readFileSync(".github/workflows/ci.yml", "utf8");
   const nightly = readFileSync(".github/workflows/nightly.yml", "utf8");
   assert.match(ci, /max-parallel: 4/);
-  const bundle = nightly.slice(nightly.indexOf("  bundle:"), nightly.indexOf("  checks:"));
+  const bundle = nightly.slice(nightly.indexOf("\n  bundle:\n"), nightly.indexOf("\n  checks:\n"));
   const commands = [
     "npx lhci autorun --collect.numberOfRuns=5",
     "node scripts/build-info.ts",
@@ -338,4 +338,49 @@ test("analyzer rebuild has fresh metadata, its own OFF verification and manifest
     upload,
     /^\s+(?:out\/?|\.ci-analyzer-artifact\/?|\.ci-analyzer-artifact\/payload\/?)$/m,
   );
+});
+
+function requireDiscoveryStdoutAndHiddenEvidence(workflow: string): void {
+  const browser = workflow.slice(workflow.indexOf("\n  browser:\n"), workflow.indexOf("\n  performance:\n"));
+  assert.match(browser, /PLAYWRIGHT_JSON_OUTPUT_NAME: \.ci-evidence\/results\.json/);
+  const discovery = browser.slice(
+    browser.indexOf("      - name: Prove every test belongs"),
+    browser.indexOf("      - name: Build the unpublishable native fixture"),
+  );
+  const listings = discovery.split("\n").filter((line) => line.includes("--list --reporter=json"));
+  assert.equal(listings.length, 2);
+  for (const command of listings) {
+    assert.match(command, /env -u PLAYWRIGHT_JSON_OUTPUT_NAME npx playwright test/);
+  }
+  const upload = browser.slice(browser.indexOf("      - name: Upload bounded verification evidence"));
+  assert.match(upload, /include-hidden-files: true/);
+  assert.match(upload, /^\s+\.ci-evidence\/$/m);
+  assert.doesNotMatch(upload, /^\s+(?:\.|\.assistant-api\/?|out-assistant-fixture\/?|\.env[^\s]*)$/m);
+}
+
+test("global runtime JSON reporter cannot consume discovery stdout or omit hidden evidence", () => {
+  const ci = readFileSync(".github/workflows/ci.yml", "utf8");
+  requireDiscoveryStdoutAndHiddenEvidence(ci);
+  assert.throws(() =>
+    requireDiscoveryStdoutAndHiddenEvidence(ci.replaceAll("env -u PLAYWRIGHT_JSON_OUTPUT_NAME ", "")),
+  );
+  const browserStart = ci.indexOf("\n  browser:\n");
+  const performanceStart = ci.indexOf("\n  performance:\n");
+  assert.throws(() =>
+    requireDiscoveryStdoutAndHiddenEvidence(
+      ci.slice(0, browserStart) +
+        ci.slice(browserStart, performanceStart).replace("          include-hidden-files: true\n", "") +
+        ci.slice(performanceStart),
+    ),
+  );
+});
+
+test("Nightly uploads hidden evidence only within the existing bounded report paths", () => {
+  const nightly = readFileSync(".github/workflows/nightly.yml", "utf8");
+  const browser = nightly.slice(nightly.indexOf("\n  browser:\n"), nightly.indexOf("\n  visual:\n"));
+  assert.doesNotMatch(browser.slice(0, browser.indexOf("\n    steps:")), /PLAYWRIGHT_JSON_OUTPUT_NAME/);
+  const upload = browser.slice(browser.indexOf("      - name: Upload Playwright report"));
+  assert.match(upload, /include-hidden-files: true/);
+  assert.match(upload, /^\s+nightly-evidence$/m);
+  assert.doesNotMatch(upload, /^\s+(?:\.|\.assistant-api\/?|out-assistant-fixture\/?|\.env[^\s]*)$/m);
 });

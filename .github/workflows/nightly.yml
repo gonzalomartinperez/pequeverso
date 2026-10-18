@@ -164,6 +164,7 @@ jobs:
             playwright-report
             test-results
             nightly-evidence
+          include-hidden-files: true
           retention-days: 14
   visual:
     name: Nightly visual checks

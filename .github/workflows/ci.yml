@@ -280,9 +280,9 @@ jobs:
             native) config=(--config=playwright.assistant.config.ts) ;;
             *) echo "Unknown browser configuration" >&2; exit 1 ;;
           esac
-          npx playwright test "${config[@]}" --list --reporter=json > .ci-evidence/full.json
+          env -u PLAYWRIGHT_JSON_OUTPUT_NAME npx playwright test "${config[@]}" --list --reporter=json > .ci-evidence/full.json
           for part in 1 2 3 4; do
-            npx playwright test "${config[@]}" --shard="$part/4" --list --reporter=json > ".ci-evidence/shard-$part.json"
+            env -u PLAYWRIGHT_JSON_OUTPUT_NAME npx playwright test "${config[@]}" --shard="$part/4" --list --reporter=json > ".ci-evidence/shard-$part.json"
           done
           node scripts/ci/inventories.ts verify "$SUITE" .ci-evidence/full.json .ci-evidence/inventory-receipt.json .ci-evidence/shard-{1,2,3,4}.json
         env:
@@ -318,6 +318,7 @@ jobs:
             test-results/
             test-results-assistant/
             .ci-evidence/
+          include-hidden-files: true
           retention-days: 7
           if-no-files-found: warn
         if: always()
