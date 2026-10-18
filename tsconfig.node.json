@@ -8,6 +8,11 @@
     "plugins": [],
     "incremental": false
   },
-  "include": ["scripts/**/*.ts", "server/**/*.ts", "tests/unit/**/*.ts", "config/next.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "tools/**/*.ts",
+    "src/features/tracking/adapters/server/**/*.ts",
+    "tests/unit/**/*.ts",
+    "config/next.ts"
+  ],
+  "exclude": ["node_modules", "tools/media"]
 }

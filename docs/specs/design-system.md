@@ -10,8 +10,8 @@ One place to change colour, type, spacing, radius and motion (`src/app/globals.c
 standard component vocabulary (shadcn/ui primitives + project blocks) and a performant,
 accessible motion stack, so any page can be built or changed without writing new CSS.
 
-In scope: tooling, tokens, primitives (`src/components/ui`), blocks (`src/components/blocks`),
-motion utilities and the 3D scene skeleton (`src/motion`), the shared layout (PageShell, Header
+In scope: tooling, tokens, primitives (`src/shared/ui`), blocks (`src/shared/editorial`),
+motion utilities and the 3D scene skeleton (`src/shared/motion`), the shared layout (PageShell, Header
 with mobile Sheet, Footer, LegalLayout, consent banner styling, StickyCTA, 404, error,
 global-error, `/soporte/`), tests, budgets and docs.
 Out of scope: redesigning home, landing, offer, thanks and legal pages (they keep their CSS
@@ -26,16 +26,16 @@ tracking logic, the Hotmart widget behaviour.
   reduced-motion kill switch. (unit: `design-system.test.ts`)
 - **AC-2 Contrast.** Colours are OKLCH equal to the previous sRGB values; the documented WCAG
   pairs are recomputed from the token source by a unit test.
-- **AC-3 Primitives.** `src/components/ui` holds shadcn/ui (Base UI, `base-vega`) components
+- **AC-3 Primitives.** `src/shared/ui` holds shadcn/ui (Base UI, `base-vega`) components
   adapted to tokens: kebab-case files, `data-slot` roots, cva variants, ≥ 44 px targets,
   visible focus. `buttonVariants`/`badgeVariants` live in server-safe modules.
-- **AC-4 Blocks.** `src/components/blocks` replaces every PascalCase `ui/*` folder with the
+- **AC-4 Blocks.** `src/shared/editorial` replaces every PascalCase `ui/*` folder with the
   same public props, as server components.
 - **AC-5 Motion.** transform/opacity only; CSS first (scroll-driven under `@supports` and
   `prefers-reduced-motion: no-preference`), React `<ViewTransition>` second, WAAPI section
-  entrances third; decorative 3D only in the lazily imported `src/motion/scene` runtime with
+  entrances third; decorative 3D only in the lazily imported `src/shared/motion/scene` runtime with
   a server-rendered static fallback and a pause control (WCAG 2.2.2).
-- **AC-6 Scene budget.** `scripts/check-scene-budget.ts` proves the three + gsap closure is
+- **AC-6 Scene budget.** `tools/check-scene-budget.ts` proves the three + gsap closure is
   never in an initial chunk and ≤ 250 KB gzip; route JS does not count it.
 - **AC-7 Responsive contract.** 320–1920 px: no horizontal overflow, no clipped control text,
   no stretched images, header CTA in the first viewport at ≤ 768 px, no fixed layer covering a
@@ -66,9 +66,9 @@ tracking logic, the Hotmart widget behaviour.
 
 ## File conventions
 
-`src/components/ui/<name>.tsx` (shadcn primitive, may be client), `ui/<name>-variants.ts`
-(server-safe cva), `src/components/blocks/<name>.tsx` (server block), `src/components/layout/`
-(shell), `src/motion/<name>.tsx` + `motion.css`, `src/motion/scene/` (lazy 3D). Exports carry a
+`src/shared/ui/<name>.tsx` (shadcn primitive, may be client), `ui/<name>-variants.ts`
+(server-safe cva), `src/shared/editorial/<name>.tsx` (server block), `src/shell/`
+(shell), `src/shared/motion/<name>.tsx` + `motion.css`, `src/shared/motion/scene/` (lazy 3D). Exports carry a
 one-line JSDoc; no narrative comments. CSS Modules may remain only for custom geometry and
 use `var(--token)` (never `@apply`).
 
@@ -90,6 +90,6 @@ use `var(--token)` (never `@apply`).
 ## Verification
 
 `npm run check` (lint, types, unit, knip, build, media, placeholders, bundle, scene,
-rendered); `PORT=3230 npm run test:e2e`; a build with `NEXT_PUBLIC_META_PIXEL_ID` plus
+rendered); `PORT=3230 npm run test:browser`; a build with `NEXT_PUBLIC_META_PIXEL_ID` plus
 `E2E_EXPECT_CONSENT=1` for `tracking|consent|a11y|responsive`. Visual baselines are
 regenerated on Linux by the nightly workflow (not committed from Windows).

@@ -12,7 +12,7 @@ import {
   type RelayInput,
   type RelayOptions,
   type UpstreamResult,
-} from "../../server/meta-capi.ts";
+} from "../../src/features/tracking/adapters/server/meta-capi.ts";
 
 const SITE = "https://pequeverso.com";
 

@@ -390,7 +390,7 @@ async function buildImage(item: SourceItem, src: string, sourceSha: string): Pro
 }
 
 // 1200x630 Open Graph card: cream background, centered logo, navy band at the bottom.
-// Fixed file names (src/lib/metadata.ts references the PNG); cheap enough to re-render every run,
+// Fixed file names (src/views/metadata.ts references the PNG); cheap enough to re-render every run,
 // and sharp's encoders are deterministic, so unchanged inputs produce byte-identical files.
 async function buildOgCard(item: SourceItem, c: OgCompose, src: string): Promise<OutputRecord[]> {
   const png = join(mediaDir, item.group, `${c.basename}.png`);

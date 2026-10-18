@@ -1,6 +1,6 @@
 /**
  * Build-time switch of the native shopping assistant. Pure (no `process` access), so
- * scripts/check-env.ts and unit tests can run it under Node. The assistant ships DISABLED:
+ * tools/check-env.ts and unit tests can run it under Node. The assistant ships DISABLED:
  * enabling it is a separate owner decision and, for the static export, a rebuild.
  *
  * - `NEXT_PUBLIC_ASSISTANT_ENABLED` absent, empty or `false` → disabled (no launcher, no panel,

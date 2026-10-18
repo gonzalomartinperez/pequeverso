@@ -1,14 +1,14 @@
-import { site } from "@config/site";
+import { site } from "@config/site.ts";
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { preload } from "react-dom";
-import { SkipLink } from "@/components/blocks/skip-link";
-import { buttonVariants } from "@/components/ui/button-variants";
-import { AssistantSlot } from "@/features/assistant/slot";
-import { ConsentBanner } from "@/features/tracking/ConsentBanner";
-import { Analytics } from "@/features/tracking/TrackingScripts";
-import { versionedPublicUrl } from "@/lib/media";
-import { RevealObserver } from "@/motion/reveal-observer";
+import { AssistantSlot } from "@/features/assistant/slot.tsx";
+import { ConsentBanner } from "@/features/tracking/presentation/consent-banner.tsx";
+import { Analytics } from "@/features/tracking/presentation/tracking-scripts.tsx";
+import { versionedPublicUrl } from "@/shared/media/media.ts";
+import { RevealObserver } from "@/shared/motion/reveal-observer.tsx";
+import { SkipLink } from "@/shared/navigation/skip-link.tsx";
+import { buttonVariants } from "@/shared/ui/button-variants.ts";
 import "./globals.css";
 
 const consentClasses = {

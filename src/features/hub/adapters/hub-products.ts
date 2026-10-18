@@ -1,0 +1,70 @@
+import { affiliateHref, alimentacionBebe as course } from "@config/affiliates.ts";
+import { featuredProduct } from "@config/products/index.ts";
+import { hubCopy } from "@content/es/hub";
+
+const kit = featuredProduct();
+
+/** One need the hub answers, with everything a chooser (door, menu card, sticky pill) shows. */
+export type HubNeed = {
+  key: "reading" | "feeding";
+  /** Stable in-page anchor on the home (`#leer`, `#bebe`), for bios, posts and explicit informational navigation. */
+  anchor: `#${string}`;
+  /** Selection goes straight to our landing or the existing affiliate redirect. */
+  destination: string;
+  product: string;
+  /** Accessible outbound-tab note, resolved on the server from shared Spanish copy. */
+  newTabLabel: string;
+  /** The task, never an identity: «Aprender a leer». */
+  need: string;
+  /** Age or stage from config: «3 a 7 años», «6 a 12 meses». */
+  stage: string;
+  line: string;
+  format: string;
+  /** Product name as published (registry / affiliate config). */
+  name: string;
+  /** Door action label («Ver el kit»). */
+  go: string;
+  /** Manifest ids: the door photo and a small thumbnail (menus, sticky bar). */
+  photo: string;
+  thumb: string;
+  /** Third-party product recommended as an affiliate: shows «Recomendado» and the disclosure. */
+  recommended: boolean;
+};
+
+export const reading: HubNeed = {
+  key: "reading",
+  destination: kit.path,
+  product: kit.slug,
+  newTabLabel: "",
+  anchor: `#${hubCopy.reading.anchor}`,
+  need: hubCopy.reading.need,
+  stage: kit.composition.ageRange,
+  line: hubCopy.reading.line,
+  format: hubCopy.reading.format,
+  name: kit.name,
+  go: hubCopy.reading.go,
+  /** Door-sized rendition of the kit's real pages (400/720 px, AVIF + WebP): the hero's LCP image. */
+  photo: "gf.door",
+  thumb: kit.media.cards[0] ?? kit.media.hero,
+  recommended: false,
+};
+
+export const feeding: HubNeed = {
+  key: "feeding",
+  destination: affiliateHref(course),
+  product: course.slug,
+  newTabLabel: hubCopy.feeding.newTab,
+  anchor: `#${hubCopy.feeding.anchor}`,
+  need: hubCopy.feeding.need,
+  stage: course.stage,
+  line: hubCopy.feeding.line,
+  format: hubCopy.feeding.format,
+  name: course.name,
+  go: hubCopy.feeding.go,
+  photo: course.media.photo,
+  thumb: course.media.figure,
+  recommended: true,
+};
+
+/** Both needs in the order every chooser shows them (reading first, as on the home). */
+export const hubNeeds: readonly HubNeed[] = [reading, feeding];

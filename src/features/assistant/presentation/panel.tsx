@@ -12,8 +12,8 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
-import { cx } from "@/lib/cx";
-import { holdPageMotion } from "@/motion/motion-hold";
+import { holdPageMotion } from "@/shared/motion/motion-hold.ts";
+import { cx } from "@/shared/styles/cx.ts";
 import type { Assistant } from "../application/assistant";
 import { phase } from "../domain/conversation";
 import type { LinkPolicy } from "../domain/links";

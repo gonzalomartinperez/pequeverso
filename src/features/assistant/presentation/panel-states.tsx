@@ -1,7 +1,7 @@
 "use client";
 import { CloudOff, LifeBuoy, Loader2, RotateCcw } from "lucide-react";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button-variants";
+import { buttonVariants } from "@/shared/ui/button-variants.ts";
 import type { Availability } from "../domain/models";
 import { usePresentation } from "./context";
 import { Callout } from "./parts";

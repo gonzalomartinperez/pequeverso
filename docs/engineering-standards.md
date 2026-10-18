@@ -48,7 +48,7 @@ server implementations or provider/database SDKs. API credentials remain exclusi
 
 ## Blocking architecture contracts
 
-Run `npm run check:architecture`, or `npm test` for the full unit suite. The required **Build**
+Run `npm run test:architecture`, or `npm test` for the full unit suite. The required **Build**
 job executes these contracts and the required **ci** aggregate fails when that job fails. There is
 no second redundant architecture job, skip flag or baseline of tolerated violations.
 
@@ -61,6 +61,16 @@ no second redundant architecture job, skip flag or baseline of tolerated violati
 | Statically reviewable imports | Unknown dynamic module names fail in protected assistant layers and client graphs |
 | Alias changes | The checker and its fixtures must be reviewed when TypeScript path mappings change |
 | Regressions in the checker itself | Synthetic forbidden imports, barrels, cycles, side effects, type imports, traversal and parser failures are tested without executing fixture modules |
+
+The aggregate classifies every owned module before checking dependencies, including importless,
+alternate-suffix and CSS modules. Source roots are `app`, `views`, `shell`, `features` and `shared`.
+Named shared capabilities are ui/styles/motion/editorial/identity/media/navigation. Features use
+only their implemented layers; the assistant retains its exact composition facades. Shared cannot
+import features or page/shell/framework composition; features cannot import views/shell/app.
+Root `content` and `config` retain their owned inputs; the tracking server adapter is under its
+exact feature namespace and is excluded from transitive client runtime alongside the build-time
+catalog. The generated `src/shared/styles/cn-tables` is an exact generator-owned exception.
+See [ADR-0009](decisions/ADR-0009-common-site-module-spine.md) for the physical cutover and invariants.
 
 The checker uses the maintained Oxc TypeScript AST parser, declared directly as an exact development
 dependency. The same package/version was already locked through Knip: this adds no resolved packages

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { buildOutput, isHostingerNodeBuilder } from "../../scripts/lib/build-target.ts";
+import { buildOutput, isHostingerNodeBuilder } from "../../tools/lib/build-target.ts";
 
 test("Hostinger's Node builder (cwd under /hbuilds/) is standalone even without NEXT_OUTPUT", () => {
   const hostinger = "/home/u1/domains/pequeverso.com/hbuilds/source/repository";

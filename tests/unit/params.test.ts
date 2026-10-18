@@ -5,7 +5,7 @@ import {
   isAllowedParam,
   sckFor,
   withPassthrough,
-} from "../../src/features/commerce/checkout-url.ts";
+} from "../../src/features/commerce/domain/checkout-url.ts";
 
 const base = "https://pay.hotmart.com/TEST0000000?checkoutMode=10";
 

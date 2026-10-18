@@ -1,6 +1,6 @@
 "use client";
 import { type ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { cx } from "@/lib/cx";
+import { cx } from "@/shared/styles/cx.ts";
 import styles from "./assistant.module.css";
 import { usePresentation } from "./context";
 

@@ -132,11 +132,11 @@ jobs:
       - name: Assistant absent from the export (no launcher, chunk or API origin)
         run: npm run check:assistant-disabled
       - name: Bind and stage the OFF-only export
-        run: node scripts/ci/artifacts.ts pack-off out .ci-off-artifact
+        run: node tools/ci/artifacts.ts pack-off out .ci-off-artifact
         id: package
       - name: Publish the fixed complete browser matrix
         run: |-
-          matrix=$(node scripts/ci/inventories.ts matrix core)
+          matrix=$(node tools/ci/inventories.ts matrix core)
           echo "browser_matrix=$matrix" >> "$GITHUB_OUTPUT"
         id: matrix
       - name: Upload bounded verification evidence
@@ -186,10 +186,10 @@ jobs:
       - name: Smoke the standalone server
         run: |
           set -euo pipefail
-          # Docker exports HOSTNAME=<container id>, which scripts/start.ts honours (as the host does).
+          # Docker exports HOSTNAME=<container id>, which tools/start.ts honours (as the host does).
           HOSTNAME=127.0.0.1 PORT=3000 npm start > standalone.log 2>&1 &
           node -e 'const until=Date.now()+30000;(async()=>{while(Date.now()<until){try{if((await fetch("http://localhost:3000/")).ok)process.exit(0)}catch{}await new Promise(r=>setTimeout(r,1000))}console.error("standalone server did not start");process.exit(1)})()'
-          node scripts/smoke.ts http://localhost:3000 "$GITHUB_SHA"
+          node tools/smoke.ts http://localhost:3000 "$GITHUB_SHA"
           kill %1
       - name: Server log
         if: failure()
@@ -236,7 +236,7 @@ jobs:
           path: .ci-off-artifact
         if: matrix.suite == 'functional'
       - name: Validate complete OFF payload before creating out
-        run: node scripts/ci/artifacts.ts unpack-off out .ci-off-artifact
+        run: node tools/ci/artifacts.ts unpack-off out .ci-off-artifact
         env:
           CI_CANDIDATE_SHA: ${{ needs.build.outputs.source_sha }}
           CI_MANIFEST_SHA256: ${{ needs.build.outputs.manifest_sha256 }}
@@ -247,7 +247,7 @@ jobs:
       - name: Require the pinned native fixture contract
         run: |-
           set -euo pipefail
-          node -e 'if (!require("./package.json").scripts["test:e2e:assistant"]) process.exit(1)'
+          node -e 'if (!require("./package.json").scripts["test:browser:assistant"]) process.exit(1)'
           revision="$(tr -d '[:space:]' < tests/assistant/api-revision)"
           [[ "$revision" =~ ^[0-9a-f]{40}$ ]] || { echo "Invalid pinned API revision" >&2; exit 1; }
           echo "api_revision=$revision" >> "$GITHUB_OUTPUT"
@@ -284,14 +284,14 @@ jobs:
           for part in 1 2 3 4; do
             env -u PLAYWRIGHT_JSON_OUTPUT_NAME npx playwright test "${config[@]}" --shard="$part/4" --list --reporter=json > ".ci-evidence/shard-$part.json"
           done
-          node scripts/ci/inventories.ts verify "$SUITE" .ci-evidence/full.json .ci-evidence/inventory-receipt.json .ci-evidence/shard-{1,2,3,4}.json
+          node tools/ci/inventories.ts verify "$SUITE" .ci-evidence/full.json .ci-evidence/inventory-receipt.json .ci-evidence/shard-{1,2,3,4}.json
         env:
           ASSISTANT_API_DIR: ${{ github.workspace }}/.assistant-api
       - name: Build the unpublishable native fixture at this exact candidate
         run: npm run build:assistant-fixture
         if: matrix.suite == 'native'
       - name: Record the native build identity without packaging its export
-        run: node scripts/ci/artifacts.ts attest-native out-assistant-fixture .ci-evidence/native-build-identity.json
+        run: node tools/ci/artifacts.ts attest-native out-assistant-fixture .ci-evidence/native-build-identity.json
         if: matrix.suite == 'native'
         env:
           NEXT_PUBLIC_ASSISTANT_ENABLED: 'true'
@@ -343,7 +343,7 @@ jobs:
           name: off-export-${{ github.run_id }}-${{ github.run_attempt }}
           path: .ci-off-artifact
       - name: Validate complete OFF payload before creating out
-        run: node scripts/ci/artifacts.ts unpack-off out .ci-off-artifact
+        run: node tools/ci/artifacts.ts unpack-off out .ci-off-artifact
         env:
           CI_CANDIDATE_SHA: ${{ needs.build.outputs.source_sha }}
           CI_MANIFEST_SHA256: ${{ needs.build.outputs.manifest_sha256 }}
@@ -353,7 +353,7 @@ jobs:
         run: npx lhci autorun
       - name: Summary
         if: always()
-        run: node scripts/lhci-summary.ts >> "$GITHUB_STEP_SUMMARY"
+        run: node tools/lhci-summary.ts >> "$GITHUB_STEP_SUMMARY"
       - name: Upload Lighthouse reports
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
@@ -388,7 +388,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       - name: Require successful complete job evidence
-        run: node scripts/ci/acceptance.ts core
+        run: node tools/ci/acceptance.ts core
         env:
           CI_NEEDS: ${{ toJSON(needs) }}
   ci:
@@ -417,6 +417,6 @@ jobs:
         with:
           node-version-file: .nvmrc
       - name: Require successful complete job evidence
-        run: node scripts/ci/acceptance.ts bridge
+        run: node tools/ci/acceptance.ts bridge
         env:
           CI_NEEDS: ${{ toJSON(needs) }}

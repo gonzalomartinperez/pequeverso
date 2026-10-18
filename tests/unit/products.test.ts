@@ -1,9 +1,8 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { getImage, getVideo } from "../../src/lib/media.ts";
-import { grafismoFonetico } from "../../src/products/grafismo-fonetico.ts";
-import { imprimeYJuega } from "../../src/products/imprime-y-juega.ts";
+import { grafismoFonetico } from "../../config/products/grafismo-fonetico.ts";
+import { imprimeYJuega } from "../../config/products/imprime-y-juega.ts";
 import {
   checkoutFallbackPath,
   coreProducts,
@@ -12,10 +11,11 @@ import {
   indexableProducts,
   offerProducts,
   products,
-} from "../../src/products/index.ts";
-import { breadcrumbJsonLd, productJsonLd } from "../../src/products/jsonld.ts";
-import type { Product } from "../../src/products/schema.ts";
-import { RegistrySchema } from "../../src/products/schema.ts";
+} from "../../config/products/index.ts";
+import type { Product } from "../../config/products/schema.ts";
+import { RegistrySchema } from "../../config/products/schema.ts";
+import { getImage, getVideo } from "../../src/shared/media/media.ts";
+import { breadcrumbJsonLd, productJsonLd } from "../../src/views/product-jsonld.ts";
 
 const FORBIDDEN_JSONLD = ["aggregateRating", "review", "shippingDetails", "hasMerchantReturnPolicy"];
 
@@ -76,7 +76,7 @@ test("documented prices (README 2026-08-04): 14.99 list, 14.99 upsell, 7.49 down
 });
 
 test("the checkout URL comes only from static env references Next can inline", () => {
-  const source = readFileSync(new URL("../../src/products/grafismo-fonetico.ts", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../../config/products/grafismo-fonetico.ts", import.meta.url), "utf8");
   assert.match(source, /process\.env\.NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO \|\|/);
   assert.match(source, /process\.env\.NEXT_PUBLIC_CHECKOUT_URL \|\| ""/);
   assert.doesNotMatch(source, /pay\.hotmart\.com/);

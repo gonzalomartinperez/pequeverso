@@ -1,10 +1,10 @@
 import bundleAnalyzer from "@next/bundle-analyzer";
 import { withCn } from "cn/next";
 import type { NextConfig } from "next";
-import { buildOutput } from "../scripts/lib/build-target.ts";
-import { loadEdgeRules, toNextHeaders, toNextRedirects } from "../scripts/lib/edge-rules.ts";
-import { SceneBudgetPlugin } from "../scripts/scene-budget-plugin.ts";
 import { parseAssistantEnv } from "../src/features/assistant/flag.ts";
+import { buildOutput } from "../tools/lib/build-target.ts";
+import { loadEdgeRules, toNextHeaders, toNextRedirects } from "../tools/lib/edge-rules.ts";
+import { SceneBudgetPlugin } from "../tools/scene-budget-plugin.ts";
 
 /**
  * Next.js configuration, re-exported by the root `next.config.mjs` (the file name Hostinger's
@@ -15,7 +15,7 @@ import { parseAssistantEnv } from "../src/features/assistant/flag.ts";
  * Build target selection:
  *
  * - Static export (default): `NEXT_OUTPUT` unset or "export". Served from public_html; redirects and
- *   headers come from the generated .htaccess (scripts/gen-htaccess.ts).
+ *   headers come from the generated .htaccess (tools/gen-htaccess.ts).
  * - Node server: `NEXT_OUTPUT=standalone`, or automatically when the build runs inside Hostinger's
  *   Node.js Web App builder (its working directory lives under `/hbuilds/`). Hostinger wraps this
  *   config and forces `output: 'standalone'` itself; here we make sure the same redirects/headers
@@ -25,9 +25,9 @@ import { parseAssistantEnv } from "../src/features/assistant/flag.ts";
  * native SWC/Turbopack bindings cannot load and only the WASM fallback (webpack-compatible) works.
  * See docs/architecture.md and docs/decisions/ADR-0001-hosting-target.md.
  *
- * `withCn` compiles the Tailwind class-merge tables used by `src/lib/utils.ts` from the sources
+ * `withCn` compiles the Tailwind class-merge tables used by `src/shared/styles/cn.ts` from the sources
  * before the compiler starts (dev, build and typegen alike); `SceneBudgetPlugin` records the
- * chunk closure of the deferred 3D scene for `scripts/check-scene-budget.ts`.
+ * chunk closure of the deferred 3D scene for `tools/check-scene-budget.ts`.
  */
 const output = buildOutput();
 const edgeRules = loadEdgeRules();
@@ -80,6 +80,6 @@ const withAnalyzer = bundleAnalyzer({ enabled: process.env.ANALYZE === "1", open
 
 export default withCn(withAnalyzer(nextConfig), {
   content: ["src/**/*.{ts,tsx}"],
-  out: "src/lib/cn-tables.js",
+  out: "src/shared/styles/cn-tables.js",
   config: "config/cn.ts",
 });

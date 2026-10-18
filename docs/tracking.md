@@ -42,7 +42,7 @@ throws in development and no-ops in production. Unit and E2E tests assert they n
 
 Same events, second channel: the `meta-capi` adapter posts every event the pixel received to
 the same-origin endpoint `POST /api/meta/events/` (trailing slash: the standalone target
-308-redirects the slash-less form), and `server/meta-capi.ts` forwards the batch
+308-redirects the slash-less form), and `src/features/tracking/adapters/server/meta-capi.ts` forwards the batch
 to `https://graph.facebook.com/v26.0/<pixelId>/events` from the Node server. ADR:
 `docs/decisions/ADR-0005-conversions-api-relay.md`.
 
@@ -54,10 +54,10 @@ and `fbc` (cookie `_fbc`, or `fb.1.<now ms>.<fbclid>` derived from `?fbclid`), a
 `202` at once and calls Graph API in the background (3 s timeout, one retry on 429/5xx/network
 error, token in the `Authorization: Bearer` header, never logged).
 
-Server: `createMetaCapiRelay()` in `server/meta-capi.ts` is a transport-agnostic core
+Server: `createMetaCapiRelay()` in `src/features/tracking/adapters/server/meta-capi.ts` is a transport-agnostic core
 (`process({ method, bodyText, contentType, origin, host, ip, userAgent }) → { status, headers,
 body? }` plus the background upstream sender). Two thin adapters call it: the Node `req/res`
-handler mounted by `scripts/serve-static.ts` (accepts both `/api/meta/events/` and
+handler mounted by `tools/serve-static.ts` (accepts both `/api/meta/events/` and
 `/api/meta/events`), and the standalone route handler
 `src/app/api/meta/events/route.standalone.ts` (Next's own server on Hostinger; env read at
 request time; IP from `cf-connecting-ip` → first `x-forwarded-for`).
@@ -113,7 +113,7 @@ loading stay queued until `syncConsent()` runs on script load.
 
 Legal note: an opt-out default does not meet the AEPD / ePrivacy prior-consent criteria for
 marketing cookies. Switching to prior consent is a one-line change (`DEFAULT_CHOICE` all false)
-plus the banner copy; the tests in `tests/e2e/tracking.spec.ts` encode the current policy.
+plus the banner copy; the tests in `tests/browser/tracking.spec.ts` encode the current policy.
 
 ## Adding an adapter (TikTok, gtag, ...)
 
@@ -124,13 +124,13 @@ plus the banner copy; the tests in `tests/e2e/tracking.spec.ts` encode the curre
 3. `send(event)` maps standard names to the vendor's standard events, passes `eventId` as the
    vendor's dedup id and returns `false` while the vendor global is not ready.
 4. Register the factory in `env.ts` (`enabledAdapters`), validate its variable in
-   `scripts/check-env.ts`, document it here and in `/cookies/`, block its hosts in
-   `tests/e2e/fixtures.ts` and add a stub in `tests/e2e/tracking.spec.ts`. Two adapters may
+   `tools/check-env.ts`, document it here and in `/cookies/`, block its hosts in
+   `tests/browser/fixtures.ts` and add a stub in `tests/browser/tracking.spec.ts`. Two adapters may
    share a `label` when they are one tool for the visitor (the banner lists labels once).
 
 ## Environment and build gate
 
-`scripts/check-env.ts` runs first in `npm run build` (`npm run check:env` standalone). It loads
+`tools/check-env.ts` runs first in `npm run build` (`npm run check:env` standalone). It loads
 `.env*` with Next.js precedence, validates formats (pixel id 15–16 digits, checkout URLs on
 `https://pay.hotmart.com/`, `META_CAPI_ACCESS_TOKEN` ≥ 32 characters without whitespace when
 present), never prints values, and reports `tracking: meta=on|off capi=on|off`. Variables are
@@ -167,10 +167,10 @@ events remain complete.
 - `tests/unit/meta-capi.test.ts`: server handler against a real `http` server with a fake Graph
   API — validation matrix, disabled → 204, payload shape and bearer header, IP/UA sourcing, retry
   policy and logging, rate limit.
-- `tests/e2e/tracking.spec.ts` (only with `E2E_EXPECT_CONSENT=1`): the pixel runs by default with
+- `tests/browser/tracking.spec.ts` (only with `E2E_EXPECT_CONSENT=1`): the pixel runs by default with
   ids, Aceptar keeps it, Rechazar → revoke and nothing later (pixel and relay), Configurar →
   per-category save, CTA click never emits a forbidden event, version bump re-prompts, the relay
   receives the pixel's event ids with `_fbp`. Third-party hosts are stubbed; `/api/meta/events/`
   is intercepted.
-- `tests/e2e/consent.spec.ts`: no banner on the public build; banner controls and footer reopen
-  when configured. `tests/e2e/smoke.spec.ts`: the relay answers `204` on a build without token.
+- `tests/browser/consent.spec.ts`: no banner on the public build; banner controls and footer reopen
+  when configured. `tests/browser/smoke.spec.ts`: the relay answers `204` on a build without token.

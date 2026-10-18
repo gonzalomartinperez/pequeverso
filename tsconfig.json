@@ -37,9 +37,9 @@
       "@/*": ["./src/*"],
       "@content/*": ["./content/*"],
       "@config/*": ["./config/*"],
-      "@server/*": ["./server/*"]
+      "@server/*": ["./src/features/tracking/adapters/server/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
-  "exclude": ["node_modules", "out", ".next", "tools"]
+  "exclude": ["node_modules", "out", ".next", "tools/media"]
 }

@@ -19,7 +19,7 @@
 - Widths: 1440 / 1280 / 1024 / 768 / 430 / 390 / 360 (+320 reflow) — no horizontal overflow.
 - Keyboard-only path to the primary action; focus visible; targets ≥ 24 px.
 - Contrast from tokens only; reduced motion honoured; CLS ≤ 0.1; LCP element prioritized.
-- Playwright spec(s): `tests/e2e/…`
+- Playwright spec(s): `tests/browser/…`
 
 ## Open decisions
 

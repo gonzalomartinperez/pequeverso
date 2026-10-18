@@ -2,10 +2,10 @@
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
-import { buttonVariants } from "@/components/ui/button-variants";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { cx } from "@/lib/cx";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/styles/cn.ts";
+import { cx } from "@/shared/styles/cx.ts";
+import { buttonVariants } from "@/shared/ui/button-variants.ts";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui/tooltip.tsx";
 import { affiliatePurchasePath, externalUrl, storefrontPath } from "../domain/links";
 import styles from "./assistant.module.css";
 import { usePresentation } from "./context";

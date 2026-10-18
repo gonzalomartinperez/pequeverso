@@ -5,7 +5,7 @@
 ## Verification
 
 - [ ] `npm run check` passes locally
-- [ ] Playwright: `npm run test:e2e` (state which projects ran)
+- [ ] Playwright: `npm run test:browser` (state which projects ran)
 - [ ] Responsive check at 1440 / 1280 / 1024 / 768 / 430 / 390 / 360 (where the change is visual)
 - [ ] Keyboard, focus and reduced-motion reviewed (where the change is interactive)
 

@@ -3,10 +3,10 @@
 Images, video and icons enter the repository only through the build-time pipeline in `tools/media`.
 Every file under `public/media` (and the favicon set at the `public/` root) has a record in
 `media/manifest.json` with its source, provenance, rights and export parameters. Pages never
-hard-code `/media/...` paths: they call `getImage(id)` / `getVideo(id)` from `src/lib/media.ts`.
+hard-code `/media/...` paths: they call `getImage(id)` / `getVideo(id)` from `src/shared/media/media.ts`.
 
 Budget: **5 MB per file, 25 MB for `public/media` in total** (target 16–20 MB), enforced by
-`npm run check:media` (`scripts/check-media-budget.ts`) and by `media-build.ts --check`.
+`npm run check:media` (`tools/check-media-budget.ts`) and by `media-build.ts --check`.
 Current state (2026-10-18): 95 items, 322 outputs (317 under `public/media` + the favicon set),
 23.04 MiB under `public/media`.
 
@@ -34,7 +34,7 @@ external libraries (read-only, outside the repo)      tools/media/sources.json (
               public/media/**   public/favicon.ico …   media/manifest.json
               (webp/avif/mp4)   icon-*.png, webmanifest (provenance + hashes)
                                                               │
-                                              src/lib/media.ts (getImage / getVideo)
+                                              src/shared/media/media.ts (getImage / getVideo)
 ```
 
 ### Setup
@@ -65,7 +65,7 @@ Library roots default to the local workstation layout and can be overridden:
 | `node tools/media/media-build.ts --force` | Re-encode even when the output file exists. |
 | `node tools/media/media-build.ts --check` | Verify `media/manifest.json` against disk (bytes + sha256, orphans, ceilings). Needs no external sources; safe in CI. |
 | `node tools/media/media-build.ts --no-prune` | Keep undeclared files under `public/media` (debugging only). |
-| `node scripts/check-media-budget.ts` | Repository guard: every file declared, per-file and total ceilings, no forbidden formats. |
+| `node tools/check-media-budget.ts` | Repository guard: every file declared, per-file and total ceilings, no forbidden formats. |
 
 ### Roles, widths, quality
 
@@ -78,7 +78,7 @@ Library roots default to the local workstation layout and can be overridden:
 | `thumb` | 240 / 480 | 72 | Reserved. |
 | `brand` | per item (96/192/512 isotipo, 320/640 logo) | 90 (alpha 100) | Transparency preserved. |
 | `poster` | 480 / 720 | 72 | Video posters, frame taken from the master at `posterAt` seconds. |
-| `og` | 1200×630 | PNG (palette) + WebP 90 | Composed with sharp: cream `#fffaf2`, centered logo, navy `#003068` band. Fixed file names (referenced by `src/lib/metadata.ts`). |
+| `og` | 1200×630 | PNG (palette) + WebP 90 | Composed with sharp: cream `#fffaf2`, centered logo, navy `#003068` band. Fixed file names (referenced by `src/views/metadata.ts`). |
 | `icons` | ico 16/32/48, png 192/512, apple 180 | round logo trimmed edge to edge, transparent outside the circle | Browser icons are the full round logo rendered per size (no browser downscaling). No raster-in-SVG icon (it would win over the PNGs and blur on high-DPI) and no maskable icon (Android keeps the round shape). `apple-touch-icon.png` is the mark on navy because iOS fills transparency with black and applies its own rounded mask. |
 | `video` | short side 720 (720×1280 vertical) | H.264 High, yuv420p, 30 fps, crf 26 → 28 → 30 → 32 until ≤ 2.2 MB, `-maxrate 1500k -bufsize 3000k -g 60`, faststart, **audio stripped**, `maxSeconds` per item (default 15) | WebM (VP9, `-b:v 0 -crf 33 → 37 → 41 -row-mt 1 -deadline good`, same scale/fps/GOP) when `video.webm: true`; the first step whose file is not larger than the mp4 is kept, otherwise no WebM. Evaluated on the four `video.gf.*` clips and **disabled** (`webm: false`): VP9 saved only 3–14 % per clip for +5.1 MB of repository size. |
 
@@ -152,13 +152,13 @@ hashes.
 }
 ```
 
-`outputs[].file` is repo-relative with forward slashes, exactly what `scripts/check-media-budget.ts`
+`outputs[].file` is repo-relative with forward slashes, exactly what `tools/check-media-budget.ts`
 expects. Source paths are relative to the library root, never absolute, and no original is copied.
 
 ## Using media in pages
 
 ```ts
-import { getImage, getVideo } from "@/lib/media";
+import { getImage, getVideo } from "@/shared/media/media";
 
 const hero = getImage("gf.hero");      // { src, srcSet, width, height, alt, sources?, renditions }
 const demo = getVideo("video.gf.mapa"); // { mp4, webm?, poster: { src, srcSet }, width, height, title, description }
@@ -184,7 +184,7 @@ const demo = getVideo("video.gf.mapa"); // { mp4, webm?, poster: { src, srcSet }
 | Ids | Role | Formats (widths) | Helper / component | Notes |
 |---|---|---|---|---|
 | `brand.isotipo`, `brand.logo` | `brand` | WebP 96/192/512, 320/640 | `getImage` → `BrandLogo` | Alpha preserved. |
-| `brand.og` | `og` | PNG + WebP 1200×630 | `src/lib/metadata.ts` (fixed names) | |
+| `brand.og` | `og` | PNG + WebP 1200×630 | `src/views/metadata.ts` (fixed names) | |
 | `brand.icons` | `icons` | ico/svg/png at `public/` root | `app` metadata | Outside `public/media`. |
 | `gf.door` | `hero` | WebP + AVIF 400/720 | `MediaImage` (`priority`, the home's reading door) | Door-sized rendition of the `gf.hero` source (the hub's LCP image, docs/specs/home-hub.md). |
 | `gf.hero`, `pack.hero` | `hero` | WebP 480/768/1024/1440 + AVIF 1024/1440 | `MediaImage` (`priority`) | `gf.hero` 1440×1080 (4:3); `pack.hero` clamps to 1024. |
@@ -230,7 +230,7 @@ const demo = getVideo("video.gf.mapa"); // { mp4, webm?, poster: { src, srcSet }
    `outputs` (`widths`, `avif`, `avifQuality`) or `video` (`maxSeconds`, `posterAt`, `posterWidths`, `webm`).
 3. `node tools/media/media-build.ts --only <id>` then a full `node tools/media/media-build.ts`
    (prunes and rewrites the manifest).
-4. `node scripts/check-media-budget.ts` and `node tools/media/media-build.ts --check`.
+4. `node tools/check-media-budget.ts` and `node tools/media/media-build.ts --check`.
 5. Reference it with `getImage("<id>")` / `getVideo("<id>")` and commit outputs + manifest together.
 
 ## Pending owner confirmations

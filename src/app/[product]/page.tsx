@@ -1,10 +1,10 @@
+import { getProduct, products } from "@config/products/index.ts";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CoreLanding } from "@/features/landing/CoreLanding";
-import { OfferLanding } from "@/features/landing/OfferLanding";
-import { getImage } from "@/lib/media";
-import { buildMetadata } from "@/lib/metadata";
-import { getProduct, products } from "@/products";
+import { getImage } from "@/shared/media/media.ts";
+import { buildMetadata } from "@/views/metadata.ts";
+import { CoreLanding } from "@/views/product/core-landing-view.tsx";
+import { OfferLanding } from "@/views/product/offer-landing-view.tsx";
 
 type Props = { params: Promise<{ product: string }> };
 

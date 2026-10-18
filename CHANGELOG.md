@@ -5,6 +5,10 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
 ## [Unreleased]
 
 ### Changed
+- Affiliate-course copy describes six video modules, four bonuses, BLW and nutrition using
+  producer-supplied evidence received on 2026-10-18, with Citlalli Moctezuma attributed in the
+  existing FAQ. Qualifications and health outcomes are not presented as verified facts;
+  product destinations, affiliate disclosures and the disabled assistant remain unchanged.
 - Home product chooser identifies both canonical product names on phones, gives both actions
   the same width and distinguishes the Pequeverso kit from the affiliate course. First-meals
   copy describes the guidance without promising an absence of fear or time in the kitchen.
@@ -13,6 +17,8 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
   Playwright remains on the current 1.64.1 release; browser assertions and timeouts are unchanged.
 
 ### Fixed
+- Home informational anchors keep the header visible until scrolling finishes. Browsers without
+  `scrollend` release after actual scrolling becomes idle; manual scrolling cancels the hold.
 - The floating offer keeps its price on one line while its explanatory note yields space
   and truncates within the available width.
 

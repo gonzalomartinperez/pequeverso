@@ -1,9 +1,9 @@
+import { coreProducts, getProduct } from "@config/products/index.ts";
 import { graciasCopy } from "@content/es/gracias";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ThanksPage } from "@/features/landing/ThanksPage";
-import { buildMetadata } from "@/lib/metadata";
-import { coreProducts, getProduct } from "@/products";
+import { buildMetadata } from "@/views/metadata.ts";
+import { ThanksPage } from "@/views/product/thanks-view.tsx";
 
 type Props = { params: Promise<{ product: string }> };
 

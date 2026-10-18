@@ -8,7 +8,7 @@ import { defineConfig, devices } from "@playwright/test";
  * sides run over HTTPS loopback with a throwaway self-signed certificate (accepted only here), so
  * the API issues its production-shaped Secure, HttpOnly `__Host-` cookie and the browser exercises
  * credentialed CORS, CSRF and SSE across two origins exactly as in production. The storefront is
- * the unpublishable verification export in out-assistant-fixture/ (scripts/build-assistant-fixture.ts).
+ * the unpublishable verification export in out-assistant-fixture/ (tools/build-assistant-fixture.ts).
  * ASSISTANT_API_DIR must be a checkout of the API at tests/assistant/api-revision (`uv sync --frozen`).
  */
 const apiDir = process.env.ASSISTANT_API_DIR ?? "";
@@ -78,7 +78,7 @@ export default defineConfig({
       },
     },
     {
-      command: "node scripts/serve-static.ts",
+      command: "node tools/serve-static.ts",
       url: `${store}/`,
       ignoreHTTPSErrors: true,
       reuseExistingServer: false,

@@ -84,7 +84,7 @@ Status: ✅ done · ⚠️ done with a caveat · ❌ gap (owner action) · — n
   República Argentina.
   - The owner's Hotmart-account mailbox `seller.legalEmail` is a secondary contact on the six legal
     routes only.
-  - Enforcement: `tests/unit/legal-email.test.ts` and `scripts/check-rendered.ts`.
+  - Enforcement: `tests/unit/legal-email.test.ts` and `tools/check-rendered.ts`.
 - **Spanish anchoring removed.** No LSSI, no AEPD as authority, no RDL 1/2007 as governing law. The
   EU and Spain appear only as buyer markets.
 - **Privacy** is re-anchored to Ley 25.326, Decreto 1558/2001 and the AAIP.
@@ -230,7 +230,7 @@ Data-protection law names:
    link "a simple vista, en lugar destacado y en el primer acceso". The footer link is on every
    page, but it is below the fold.
    - Add a link labelled "Botón de arrepentimiento" to `/arrepentimiento/` in the header or top bar.
-   - This belongs to the landing/header work: `src/components/layout/header.tsx` or the landing
+   - This belongs to the landing/header work: `src/shell/site-header.tsx` or the landing
      `Topbar`.
 2. **Set the guarantee to at least 15 days.**
    - Today the Hotmart guarantee (7 days) is shorter than the Argentine revocation (10 días corridos).
@@ -264,7 +264,7 @@ Data-protection law names:
 7. **Consent model.** The pixel runs by default with an opt-out banner (owner decision,
    2026-09-14).
    - Ley 25.326 art. 5 asks for free, express and informed consent. The EU requires prior consent.
-   - Switching `DEFAULT_CHOICE` in `src/features/tracking/consent.ts` to opt-in removes this risk.
+   - Switching `DEFAULT_CHOICE` in `src/features/tracking/adapters/consent.ts` to opt-in removes this risk.
 8. **Legal review.** This is research, not legal advice. Before launch, a lawyer in the provincia de
    Buenos Aires should review:
    - the jurisdiction clause;

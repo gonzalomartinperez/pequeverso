@@ -105,7 +105,7 @@ not measured evidence of higher conversion.
 7. **Copy by need.** Each chapter opens with the family's pain and then its desire. Reading: «Que
    aprenda a leer, sin presión» (one sheet and ten minutes, no classroom at home). First meals: «Sus
    primeras comidas, sin miedo ni horas en la cocina» (when and how to start, quantities, a 4-week
-   menu, recipes for the whole family). Facts come from `src/products/grafismo-fonetico.ts`,
+   menu, recipes for the whole family). Facts come from `config/products/grafismo-fonetico.ts`,
    `config/commerce.ts` and `config/affiliates.ts`. Copy lives in `content/es/home.ts` (page) and
    `content/es/hub.ts` (labels shared by doors, menus, sticky bar, footer and 404). There are no
    testimonials and no invented numbers.
