@@ -146,6 +146,85 @@ test("an anchor jump keeps the header visible and lands the chapter right under 
     .toBeLessThan(64);
 });
 
+// Drive the real mounted controller through a long anchor scroll with a controlled clock.
+// Suppressing only native scrollend lets the fixture decide when this continuous scroll ends;
+// it does not stub the component, its scroll listener, or its data-hidden mutation.
+for (const nativeScrollEnd of [true, false]) {
+  test(`anchor header follows scroll completion (${nativeScrollEnd ? "native" : "fallback"})`, async ({
+    page,
+  }) => {
+    // Install before application timers, then pause only after hydration and normal scrolling.
+    await page.clock.install({ time: new Date("2026-10-18T12:00:00Z") });
+    if (!nativeScrollEnd) {
+      await page.addInitScript(() => {
+        let prototype: object | null = document;
+        while (prototype) {
+          if (Object.hasOwn(prototype, "onscrollend")) Reflect.deleteProperty(prototype, "onscrollend");
+          prototype = Object.getPrototypeOf(prototype);
+        }
+      });
+    }
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    // This existing classification is installed only by the real controller's effect.
+    // Network idle alone can precede hydration and initialize its last position after our scroll.
+    await expect(page.locator("#leer")).toHaveAttribute("data-zone", "reading");
+    const header = page.locator('[data-slot="header"]');
+    const scrollDocument = async (top: number) => {
+      await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), top);
+      await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(top);
+      // The clock controls rAF/timers, not delivery of the UA's queued scroll event.
+      // Deliver the position change explicitly to the real controller before advancing time.
+      await page.evaluate(() => window.dispatchEvent(new Event("scroll")));
+    };
+    // Prove the controller is mounted and reacts normally before testing its held state.
+    await scrollDocument(400);
+    await expect(header).toHaveAttribute("data-hidden", "");
+    await scrollDocument(0);
+    await expect(header).not.toHaveAttribute("data-hidden", "");
+    await page.clock.pauseAt(new Date("2026-10-18T12:05:00Z"));
+    await page.evaluate((native) => {
+      if ("onscrollend" in document !== native) throw new Error("Unexpected scrollend fixture support");
+      document.addEventListener(
+        "scrollend",
+        (event) => {
+          if (event.isTrusted) event.stopImmediatePropagation();
+        },
+        true,
+      );
+      const anchor = document.querySelector<HTMLAnchorElement>('header a[href="#preguntas"]');
+      if (!anchor) throw new Error("Missing informational anchor");
+      anchor.addEventListener("click", (event) => event.preventDefault(), { once: true });
+      anchor.click();
+      // A nested scrolling surface finishing must not end the document's anchor scroll.
+      document.body.dispatchEvent(new Event("scrollend", { bubbles: true }));
+    }, nativeScrollEnd);
+    for (const top of [400, 600, 800, 1000]) {
+      await scrollDocument(top);
+      const before = await page.evaluate(() => Date.now());
+      await page.clock.runFor(700);
+      expect(await page.evaluate(() => Date.now())).toBe(before + 700);
+      await expect(header).not.toHaveAttribute("data-hidden", "");
+    }
+    // A real completed scroll releases the native lifecycle. The fallback waits for quiet.
+    if (nativeScrollEnd) await page.evaluate(() => document.dispatchEvent(new Event("scrollend")));
+    else await page.clock.runFor(1300);
+    await scrollDocument(1200);
+    await page.clock.runFor(100);
+    await expect(header).toHaveAttribute("data-hidden", "");
+    // User intent cancels a new hold immediately, including a zero-distance anchor click.
+    await page.evaluate(() => {
+      const anchor = document.querySelector<HTMLAnchorElement>('header a[href="#preguntas"]');
+      anchor?.addEventListener("click", (event) => event.preventDefault(), { once: true });
+      anchor?.click();
+      window.dispatchEvent(new WheelEvent("wheel", { deltaY: 100 }));
+    });
+    await scrollDocument(1400);
+    await page.clock.runFor(100);
+    await expect(header).toHaveAttribute("data-hidden", "");
+  });
+}
+
 test("purchase and post-purchase footers keep the single-product column", async ({ page }) => {
   for (const route of ["/grafismo-fonetico/", "/imprime-y-juega/", "/grafismo-fonetico/gracias/"]) {
     await page.goto(route);

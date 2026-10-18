@@ -17,6 +17,8 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
   Playwright remains on the current 1.64.1 release; browser assertions and timeouts are unchanged.
 
 ### Fixed
+- Home informational anchors keep the header visible until scrolling finishes. Browsers without
+  `scrollend` release after actual scrolling becomes idle; manual scrolling cancels the hold.
 - The floating offer keeps its price on one line while its explanatory note yields space
   and truncates within the available width.
 
