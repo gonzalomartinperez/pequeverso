@@ -30,27 +30,57 @@ async function prepareHomeCapture(page: Page) {
   await page.evaluate(async () => {
     const renderedFrame = () =>
       new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+    // Trace-only progress uses geometry and image state, never URLs or page content.
+    const progress = (phase: string, images: HTMLImageElement[] = []) =>
+      console.debug("pv-visual-capture", {
+        phase,
+        top: window.scrollY,
+        height: document.documentElement.scrollHeight,
+        viewport: window.innerHeight,
+        visibility: document.visibilityState,
+        images: images.map((image, index) => ({
+          index,
+          loading: image.loading,
+          complete: image.complete,
+          naturalWidth: image.naturalWidth,
+        })),
+      });
     // Each band is visited as a visitor scrolls it; the current document height bounds the walk.
     for (let top = 0; top < document.documentElement.scrollHeight; top += window.innerHeight) {
+      progress("walk");
       window.scrollTo({ top, behavior: "instant" });
       await renderedFrame();
     }
+    progress("fonts");
     await document.fonts.ready;
+    const images = [...document.images].filter((image) => {
+      const box = image.getBoundingClientRect();
+      return (
+        box.width > 0 &&
+        box.height > 0 &&
+        getComputedStyle(image).visibility === "visible" &&
+        !image.closest("[inert]")
+      );
+    });
+    progress("images-before-materialization", images);
+    // A lazy image above the final scroll position can still be awaiting intersection.
+    // Full-page capture already materializes deferred bands; request those same rendered images
+    // eagerly here so decode cannot wait for another visit. Production loading stays unchanged.
+    for (const image of images) image.loading = "eager";
     await Promise.all(
-      [...document.images]
-        .filter((image) => {
-          const box = image.getBoundingClientRect();
-          return (
-            box.width > 0 &&
-            box.height > 0 &&
-            getComputedStyle(image).visibility === "visible" &&
-            !image.closest("[inert]")
-          );
-        })
-        .map((image) => image.decode()),
+      images.map(async (image, index) => {
+        try {
+          await image.decode();
+        } catch {
+          throw new Error(`Full-page capture image ${index} failed to decode`);
+        }
+      }),
     );
+    progress("images-decoded", images);
     window.scrollTo({ top: 0, behavior: "instant" });
+    progress("final-frame");
     await renderedFrame();
+    progress("complete");
   });
   // IntersectionObserver delivery can follow the two rendering frames. Wait for the real
   // controller to finish returning to the hero before capturing; never hide the mobile bar.

@@ -33,3 +33,22 @@ does not make the failed run green. A fresh complete comparison is required; reg
 alone is not acceptance. All other reference PNGs retain their original bytes. Local focused
 comparisons, repository checks, protected CI and an integrated full nightly remain pending
 at this source freeze. No production activation or paid provider call is part of this change.
+
+
+## First local complete comparison and subsequent capture preparation
+
+Source `91257194e37c60ceead379b28530c71d0b39e1e7` passed the complete repository check
+in88.791s (251unit tests,127default-OFF text files,14rendered pages). The12visual cases
+ran with one worker and zero retries:11passed, while Home390 exceeded its existing30s
+budget inside the original materialization evaluation, before reaching the new controller-state
+assertions or screenshot. That failed run, trace and all outputs remain preserved.
+
+The trace's last paint is partway through the feeding chapter. Fourteen observed media
+requests returned200 in12–245ms; this does not establish that every lazy image was requested,
+that the scroll walk finished, or that decoding caused the timeout. Subsequent capture-only
+preparation records named walk/fonts/images/frame phases and image state by index, without
+URLs or page content. It requests the same visible, non-inert images eagerly before decoding,
+so offscreen lazy intersection is not a prerequisite for full-page reference materialization.
+Decode failures remain failures with an image index. Production loading, masks, deadlines,
+retry policy and content stay unchanged. Source review passes; a new complete runtime
+comparison remains required and no single cause is claimed from the first timeout.
