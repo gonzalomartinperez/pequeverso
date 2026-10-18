@@ -60,8 +60,8 @@ public build configuration and committed Next/edge configuration hashes, lockfil
 identity. The complete regular-file set, size and SHA256 of every member must match. Unknown
 fields/files, absolute/traversal/backslash paths, duplicate/prefix-conflicting members, linked
 files/directories, hardlinks, devices/FIFOs, sensitive-file extensions, enabled markers and
-missing required files fail closed before creating `out/`. No source values, secrets or credentials
-are hashed into this public configuration binding.
+missing required files fail closed before creating `out/`. Only selected public configuration values and committed configuration/lock bytes enter these hashes;
+raw environment values and provider credentials are not serialized.
 
 Limits are 4,096 files, 8 MiB per file and 64 MiB expanded payload; depth/directory count are
 bounded too. This conservative envelope allows room above the committed 25 MiB media budget;
