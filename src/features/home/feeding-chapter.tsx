@@ -5,15 +5,14 @@ import Link from "next/link";
 import { Icon } from "@/components/blocks/icon";
 import { MediaImage } from "@/components/blocks/media-image";
 import { AffiliateLink } from "@/features/commerce/AffiliateLink/AffiliateLink";
-import { Float } from "@/motion/float";
 import { LINK_NAVY } from "./home-ui";
 import { HowBand } from "./how-band";
 import { ProductStory, StoryStage } from "./product-story";
 
 /**
  * Chapter `#bebe` (alias `#alimentacion-bebe`): the recommended course from the first-meals need,
- * with the same structure and weight as `#leer`, mirrored. The story (mother and baby, the course
- * on a tablet and a phone, pain → desire, the syllabus from config, the Hotmart guarantee, one navy
+ * with the same structure and weight as `#leer`, mirrored. The story (an illustrative topic mockup,
+ * pain → desire, the syllabus from config, the Hotmart guarantee, one navy
  * link to the affiliate redirect with the mandatory disclosure right under it) and «Mira ·
  * Organiza · Cocina» with the menu. No price, reviews, results or health promises. Facts come from
  * `config/affiliates.ts`.
@@ -79,24 +78,17 @@ export function FeedingChapter() {
   );
 }
 
-/** Mother and baby on the peach stage, the course on a tablet and a phone floating beside them. */
+/** Owner-supplied topic illustration; course format and facts remain in the adjacent copy. */
 function FeedingStage() {
   return (
-    <StoryStage need="feeding" caption={copy.illustrativePlural}>
-      <div className="absolute right-[2%] bottom-0 w-[76%]">
+    <StoryStage need="feeding" caption={copy.illustrative}>
+      <div className="absolute inset-4">
         <MediaImage
-          id={course.media.figure}
-          sizes="(min-width: 1024px) 430px, 72vw"
-          className="h-auto w-full drop-shadow-[0_24px_30px_oklch(0.3175_0.1094_256.25/22%)]"
+          id="home.feeding.overview"
+          sizes="(min-width: 1024px) 540px, 90vw"
+          className="size-full object-contain"
         />
       </div>
-      <Float delay={2} range={10} rotate={-5} className="absolute bottom-[6%] left-[3%] w-[44%]">
-        <MediaImage
-          id={course.media.device}
-          sizes="(min-width: 1024px) 250px, 42vw"
-          className="h-auto w-full object-contain drop-shadow-[0_22px_28px_oklch(0.3175_0.1094_256.25/30%)]"
-        />
-      </Float>
     </StoryStage>
   );
 }

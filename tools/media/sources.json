@@ -1,6 +1,6 @@
 {
   "$schemaVersion": 1,
-  "$comment": "Declarative source list for tools/media/media-build.ts. Paths are relative to the library root resolved from EXTERNAL_ASSETS_ROOT / EXTERNAL_OPS_ROOT / EXTERNAL_STUDIO_ROOT. Nothing referenced here is ever copied into the repository; only the derived outputs under public/ are.",
+  "$comment": "Declarative source list for tools/media/media-build.ts. Paths are relative to the library root resolved from EXTERNAL_ASSETS_ROOT / EXTERNAL_OPS_ROOT / EXTERNAL_STUDIO_ROOT / EXTERNAL_OWNER_MEDIA_ROOT. Nothing referenced here is ever copied into the repository; only the derived outputs under public/ are.",
   "libraries": {
     "ai-business-assets": {
       "env": "EXTERNAL_ASSETS_ROOT",
@@ -13,6 +13,10 @@
     "pequeverso-content-studio": {
       "env": "EXTERNAL_STUDIO_ROOT",
       "default": "D:/07-proyectos/business/pequeverso-content-studio"
+    },
+    "owner-supplied": {
+      "env": "EXTERNAL_OWNER_MEDIA_ROOT",
+      "default": "../pequeverso-owner-media"
     }
   },
   "roles": {
@@ -1686,6 +1690,39 @@
       "outputs": {
         "widths": [240, 480],
         "avif": [480]
+      }
+    },
+    {
+      "id": "home.feeding.overview",
+      "role": "cutout",
+      "page": "home",
+      "group": "afiliados",
+      "source": {
+        "library": "owner-supplied",
+        "path": "feeding-overview-20261017.png"
+      },
+      "provenance": {
+        "origin": "owner-supplied",
+        "tool": "ChatGPT-labelled image export supplied by the site owner; original generation settings not supplied",
+        "date": "2026-10-17",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a",
+        "notes": "Owner supplied this illustrative mockup and requested its use on Home on 2026-10-18. Illustration only: not a photograph of the delivered course, a verified course interface, or evidence of included PDFs, bonuses or nutrition outcomes. This selection has no bundle counts, expert endorsement, price or guarantee badge."
+      },
+      "rights": {
+        "owner": "User-supplied Pequeverso artwork; underlying rights remain with their holders",
+        "license": "owner-authorized-publication",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-10-18T03:23:38Z",
+        "basis": "Owner permission registered at approvedAt. The site owner explicitly supplied these mockups, requested copies and authorized suitable artwork for Home. Permission covers optimized website/repository derivatives; no unrelated third-party license is asserted."
+      },
+      "alt": {
+        "es": "Mockup ilustrativo de una tableta con un bebé y tarjetas sobre primeras comidas, texturas, menús y recetas."
+      },
+      "outputs": {
+        "quality": 80,
+        "alphaQuality": 100
       }
     }
   ]

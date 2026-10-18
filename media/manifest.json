@@ -1,6 +1,6 @@
 {
   "$schemaVersion": 1,
-  "generatedAt": "2026-10-13T03:57:50.021Z",
+  "generatedAt": "2026-10-18T03:33:13.732Z",
   "generator": "tools/media/media-build.ts v1 (sharp 0.35.5, libvips 8.18.7)",
   "extras": [
     "public/manifest.webmanifest"
@@ -6111,6 +6111,77 @@
           "sha256": "19f2d1709e6b1070f90cdf6397de8ed721580347dd4a305b548df4698c2931ba",
           "width": 480,
           "height": 480,
+          "format": "avif",
+          "quality": 55
+        }
+      ]
+    },
+    {
+      "id": "home.feeding.overview",
+      "role": "cutout",
+      "page": "home",
+      "kind": "image",
+      "source": {
+        "library": "owner-supplied",
+        "path": "feeding-overview-20261017.png",
+        "sha256": "9f768b72ce5bbaf95ef59c3110b6d14ca1b2b8e9f61f900dbf38c674666813fb",
+        "bytes": 1749877,
+        "width": 1254,
+        "height": 1254
+      },
+      "provenance": {
+        "origin": "owner-supplied",
+        "tool": "ChatGPT-labelled image export supplied by the site owner; original generation settings not supplied",
+        "date": "2026-10-17",
+        "people": "synthetic",
+        "minors": "synthetic",
+        "release": "n/a",
+        "notes": "Owner supplied this illustrative mockup and requested its use on Home on 2026-10-18. Illustration only: not a photograph of the delivered course, a verified course interface, or evidence of included PDFs, bonuses or nutrition outcomes. This selection has no bundle counts, expert endorsement, price or guarantee badge."
+      },
+      "rights": {
+        "owner": "User-supplied Pequeverso artwork; underlying rights remain with their holders",
+        "license": "owner-authorized-publication",
+        "redistribution": "public-repo-approved",
+        "approvedAt": "2026-10-18T03:23:38Z",
+        "basis": "Owner permission registered at approvedAt. The site owner explicitly supplied these mockups, requested copies and authorized suitable artwork for Home. Permission covers optimized website/repository derivatives; no unrelated third-party license is asserted."
+      },
+      "alt": {
+        "es": "Mockup ilustrativo de una tableta con un bebé y tarjetas sobre primeras comidas, texturas, menús y recetas."
+      },
+      "outputs": [
+        {
+          "file": "public/media/afiliados/home-feeding-overview-w480-8c90fde6.webp",
+          "bytes": 57260,
+          "sha256": "46464f26471f542c88ee027bccbc26c1b87dde9d81ef274a1b3945e931c3893c",
+          "width": 480,
+          "height": 480,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/afiliados/home-feeding-overview-w768-22bf9763.webp",
+          "bytes": 108634,
+          "sha256": "cb15ec73c1fdf0cf1380092ffa534ac6e36c5ad77d2157453d9f5e3e22cc1829",
+          "width": 768,
+          "height": 768,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/afiliados/home-feeding-overview-w1024-12325879.webp",
+          "bytes": 163576,
+          "sha256": "0e04a777fc7d071a26614bc39d8ad931808079d19e364a8a7ee89d47715d1a25",
+          "width": 1024,
+          "height": 1024,
+          "format": "webp",
+          "quality": 80
+        },
+        {
+          "file": "public/media/afiliados/home-feeding-overview-w1024-ffbbbd7f.avif",
+          "bytes": 83464,
+          "sha256": "0f67a747c45e8af007f2891bf1fcf3f17ddf7c50b7ba3fb2c4a03d43f1eb8333",
+          "width": 1024,
+          "height": 1024,
           "format": "avif",
           "quality": 55
         }
