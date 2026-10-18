@@ -28,7 +28,7 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
-      pull-requests: read
+      pull-requests: read # Read PR identity/commits and dependency metadata; advisory only, no write/merge authority.
     steps:
       - name: Read update metadata
         id: meta
