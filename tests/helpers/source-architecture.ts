@@ -18,6 +18,7 @@ export const posixPath = (path: string) => path.replaceAll("\\", "/");
 
 export function sourceFiles(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    if (entry.isDirectory() && entry.name === "node_modules") return [];
     const file = join(directory, entry.name);
     return entry.isDirectory()
       ? sourceFiles(file)

@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { describe, it } from "node:test";
 import {
   clientBoundaryViolations,
@@ -19,6 +21,26 @@ const modules = new Map(
 );
 
 describe("store architecture", () => {
+  it("excludes installed packages at every depth while retaining owned tool modules", () => {
+    const root = mkdtempSync(join(tmpdir(), "pv-architecture-owned-"));
+    try {
+      const owned = ["tools/media/cli.ts", "tools/custom/unchecked.ts", "src/shared/ui/button.tsx"];
+      const dependencies = [
+        "node_modules/vendor/index.ts",
+        "tools/media/node_modules/vendor/index.ts",
+        "tools/media/node_modules/vendor/node_modules/nested/index.js",
+      ];
+      for (const file of [...owned, ...dependencies]) {
+        const target = join(root, file);
+        mkdirSync(join(target, ".."), { recursive: true });
+        writeFileSync(target, "export const value = 1;\n");
+      }
+      assert.deepEqual(sourceFiles(root).sort(), owned.map((file) => join(root, file)).sort());
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
   it("resolves all owned server, CLI, source and test imports, rejecting malformed relay paths", () => {
     const all = new Map(
       ["src", "content", "config", "tools", "tests"].flatMap((directory) =>
