@@ -164,6 +164,9 @@ for (const nativeScrollEnd of [true, false]) {
     }
     await page.goto("/");
     await page.waitForLoadState("networkidle");
+    // This existing classification is installed only by the real controller's effect.
+    // Network idle alone can precede hydration and initialize its last position after our scroll.
+    await expect(page.locator("#leer")).toHaveAttribute("data-zone", "reading");
     const header = page.locator('[data-slot="header"]');
     const scrollDocument = async (top: number) => {
       await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), top);
