@@ -60,8 +60,15 @@ tiles, list strips), `rounded-lg` 20 (cards, FAQ, media), `rounded-xl` 28 (redes
 elevated, gradient, emphasis, price, resource tiles), `rounded-2xl` 36 (hero/bento), `rounded-pill`
 (every button, chip and badge). **Elevation:** `shadow-sm|md|lg` (navy-tinted), `shadow-float`
 (layered contact + ambient: floating cards, open FAQ, hover lift), `shadow-glow`, `shadow-cta` /
-`shadow-cta-hover` (coral). **Surfaces:** `glass` (white 72 % + blur, solid fallback) and
-`glass-dark` (white 8 % on navy) are the only backdrop blurs; `text-gradient` (navy → teal) /
+`shadow-cta-hover` (coral). **Surfaces:** `glass` (white 94 %) and
+`glass-dark` (white 8 % on navy) use painted translucency, borders and elevation instead of
+backdrop filters. Gallery controls use a 95 % white surface. Repeated or overlapping backdrop
+filters stall Linux WebKit 2370; the current design avoids that compositing cost in every
+browser, including the header. Keep these surfaces readable without a blur layer; verify the
+rendered result in `tests/e2e/surfaces.spec.ts`. See the upstream
+[Playwright regression](https://github.com/microsoft/playwright/issues/43426) and
+[WebKit report](https://bugs.webkit.org/show_bug.cgi?id=327850).
+`text-gradient` (navy → teal) /
 `text-gradient-sky` (turquoise → gold) mark one accent phrase per heading; `border-glow` rings the
 offer card only.
 

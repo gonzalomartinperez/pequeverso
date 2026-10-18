@@ -8,6 +8,13 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
 - Home product chooser identifies both canonical product names on phones, gives both actions
   the same width and distinguishes the Pequeverso kit from the affiliate course. First-meals
   copy describes the guidance without promising an absence of fear or time in the kitchen.
+- Glass surfaces use painted translucency instead of repeated backdrop filters, preserving
+  brand colors, borders and elevation while avoiding the WebKit 2370 rendering regression.
+  Playwright remains on the current 1.64.1 release; browser assertions and timeouts are unchanged.
+
+### Fixed
+- The floating offer keeps its price on one line while its explanatory note yields space
+  and truncates within the available width.
 
 ## [1.0.0] — 2026-10-13
 
