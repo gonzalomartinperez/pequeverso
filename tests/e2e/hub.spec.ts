@@ -164,6 +164,19 @@ for (const nativeScrollEnd of [true, false]) {
     }
     await page.goto("/");
     await page.waitForLoadState("networkidle");
+    const header = page.locator('[data-slot="header"]');
+    const scrollDocument = async (top: number) => {
+      await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), top);
+      await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(top);
+      // The clock controls rAF/timers, not delivery of the UA's queued scroll event.
+      // Deliver the position change explicitly to the real controller before advancing time.
+      await page.evaluate(() => window.dispatchEvent(new Event("scroll")));
+    };
+    // Prove the controller is mounted and reacts normally before testing its held state.
+    await scrollDocument(400);
+    await expect(header).toHaveAttribute("data-hidden", "");
+    await scrollDocument(0);
+    await expect(header).not.toHaveAttribute("data-hidden", "");
     await page.clock.install();
     await page.evaluate((native) => {
       if ("onscrollend" in document !== native) throw new Error("Unexpected scrollend fixture support");
@@ -181,16 +194,15 @@ for (const nativeScrollEnd of [true, false]) {
       // A nested scrolling surface finishing must not end the document's anchor scroll.
       document.body.dispatchEvent(new Event("scrollend", { bubbles: true }));
     }, nativeScrollEnd);
-    const header = page.locator('[data-slot="header"]');
     for (const top of [400, 600, 800, 1000]) {
-      await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), top);
+      await scrollDocument(top);
       await page.clock.runFor(700);
       await expect(header).not.toHaveAttribute("data-hidden", "");
     }
     // A real completed scroll releases the native lifecycle. The fallback waits for quiet.
     if (nativeScrollEnd) await page.evaluate(() => document.dispatchEvent(new Event("scrollend")));
     else await page.clock.runFor(1300);
-    await page.evaluate(() => window.scrollTo({ top: 1200, behavior: "instant" }));
+    await scrollDocument(1200);
     await page.clock.runFor(100);
     await expect(header).toHaveAttribute("data-hidden", "");
     // User intent cancels a new hold immediately, including a zero-distance anchor click.
@@ -199,8 +211,8 @@ for (const nativeScrollEnd of [true, false]) {
       anchor?.addEventListener("click", (event) => event.preventDefault(), { once: true });
       anchor?.click();
       window.dispatchEvent(new WheelEvent("wheel", { deltaY: 100 }));
-      window.scrollTo({ top: 1400, behavior: "instant" });
     });
+    await scrollDocument(1400);
     await page.clock.runFor(100);
     await expect(header).toHaveAttribute("data-hidden", "");
   });
