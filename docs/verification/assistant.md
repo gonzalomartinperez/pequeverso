@@ -1,4 +1,16 @@
-# Native assistant verification (2026-10-10)
+# Native assistant verification
+
+## Current local preview (2026-10-18)
+
+The [current seven-image gallery](assistant/2026-10-18/README.md) records exact Store and fixture
+producer revisions, image hashes and agent visual review. The isolated enabled build completed
+in 53.700 s; two native Chromium preview cases passed in 28.461 s without skips or retries.
+These are fixture-only previews. Production remains disabled; the normal publishable build must
+pass `npm run check:assistant-disabled`. They do not replace full browser CI, real-model semantic
+review or the VPS activation checklist. The original failed and historical runs below are retained.
+
+## Historical verification (2026-10-10 onward)
+
 
 This dated report preserves the earlier bilingual implementation and its exact fixtures. It is
 historical evidence; the current Spanish-only interface requires a separate exact-source

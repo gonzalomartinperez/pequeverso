@@ -9,13 +9,15 @@ description: Build or change a page of pequeverso.com following the design syste
    blocks, motion, responsive contract) and `docs/content-model.md`.
 2. Copy lives in `content/es/<page>.ts` (typed), facts in `config/`. Components are Server
    Components unless they need browser APIs; keep client islands small (`"use client"` at the leaf).
-3. Compose from `src/shared/editorial` (Section, SectionHeading, Stack, Grid, Split, PriceBlock,
+3. Compose from `src/shared/editorial` (Section, SectionHeading, Stack, Grid, Split,
    CTAButton, FAQ, …) and `src/shared/ui` (shadcn/ui on Base UI). Style with Tailwind
    utilities over the roles in `src/app/globals.css` (`text-heading`, `text-body`, `bg-navy`,
    `text-h2`, `rounded-lg`, `shadow-md`, `cq-md:grid-cols-2`); never hard-code colours, sizes or
    media queries. Navy bands get `Section tone="navy"` (roles re-scope via `on-navy`; light cards
    inside use `on-light`). Links styled as buttons use `CTAButton` or `buttonVariants()`; coral
    `primary` is only for the purchase action. New files are kebab-case with `data-slot` roots.
+   Pricing stays composed in the product/home views from configured amounts and currency notes;
+   reuse the existing buy box or offer price view when applicable, not a new shared price renderer.
    A CSS Module is allowed only for custom geometry and uses `var(--token)`, never `@apply`.
 4. Motion: `data-reveal` + `--i`, `data-hero-enter`, motion components from `src/shared/motion`; 3D only
    through `src/shared/motion/scene` (lazy, static fallback, pause control, `npm run check:scene`).

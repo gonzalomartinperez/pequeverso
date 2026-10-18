@@ -79,19 +79,22 @@ Messages are rendered safely as text and supported formatting, with validated li
 
 ### See the actual interface
 
-These are original-resolution photographs of the **2026-10-17 local fixture build**,
-showing the final reading polish and aligned controls. They are not an activated production assistant.
+These are original-resolution screenshots of the **2026-10-18 local fixture build**.
+They show the actual compact Spanish interface; production remains disabled.
 
 | Compact welcome and questions | Answer and sources |
 |---|---|
-| <a href="docs/verification/assistant/2026-10-17/desktop-welcome.png"><img src="docs/verification/assistant/2026-10-17/desktop-welcome.png" width="408" alt="Actual Spanish compact panel with suggested questions and input"></a> | <a href="docs/verification/assistant/2026-10-17/desktop-answer-sources.png"><img src="docs/verification/assistant/2026-10-17/desktop-answer-sources.png" width="408" alt="Complete fixture guarantee answer with two expanded source links and input"></a> |
+| <a href="docs/verification/assistant/2026-10-18/02-Desktop-Bienvenida.png"><img src="docs/verification/assistant/2026-10-18/02-Desktop-Bienvenida.png" width="408" alt="Actual Spanish compact panel with suggested questions and input"></a> | <a href="docs/verification/assistant/2026-10-18/03-Desktop-Conversacion.png"><img src="docs/verification/assistant/2026-10-18/03-Desktop-Conversacion.png" width="408" alt="Local fixture guarantee answer with expanded source links"></a> |
 
-[Mobile conversation](docs/verification/assistant/2026-10-17/mobile-conversation.png) ·
-[Expanded desktop](docs/verification/assistant/2026-10-17/desktop-expanded.png) ·
-[Gallery, exact revisions and hashes](docs/verification/assistant/2026-10-17/README.md).
-The fixture API validates the local transport flow; these images do not validate real-model
-commercial correctness. [Earlier 2026-10-12 states](docs/verification/assistant/2026-10-12/README.md)
+[Mobile conversation](docs/verification/assistant/2026-10-18/06-Mobile-Conversacion.png) ·
+[Waiting and cancellation control](docs/verification/assistant/2026-10-18/04-Desktop-Espera.png) ·
+[Complete gallery, exact revisions and hashes](docs/verification/assistant/2026-10-18/README.md).
+These images validate a local fixture preview, not real-model commercial correctness or VPS
+readiness. All seven were inspected by the implementing agent; an independent agent inspected
+six. No human review is claimed. [Earlier 2026-10-17 photographs](docs/verification/assistant/2026-10-17/README.md)
 retain their original provenance.
+
+[Latest audited nightly results and retained warnings](docs/verification/2026-10-18-nightly.md).
 
 ## Clean checkout
 
