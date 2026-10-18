@@ -103,10 +103,9 @@ export const homeCopy = {
     kicker: "Recomendado por Pequeverso",
     title: { before: "Sus primeras comidas, ", accent: "paso a paso", after: "." },
     pain: "Llega el momento de empezar a comer y aparecen las preguntas: cuándo, cuánto, qué preparar. Y el miedo a equivocarte.",
-    desire:
-      "Este curso ordena la alimentación complementaria paso a paso, con un menú para las primeras semanas y recetas que sirven para el bebé y para toda la familia.",
+    desire: `Un recorrido de ${course.details.modules.length} módulos en video sobre alimentación complementaria, BLW y nutrición, con un menú de cuatro semanas y recetas para el bebé y la familia.`,
     topicsLabel: "Qué enseña el curso",
-    kind: "Curso en video, en línea",
+    kind: `Curso en video · ${course.details.modules.length} módulos + ${course.details.bonuses.length} bonos`,
     /** Followed by the guarantee days from config: "Garantía de 7 días de Hotmart". */
     guaranteeBefore: "Garantía de",
     guaranteeAfter: "días de Hotmart",
@@ -120,9 +119,13 @@ export const homeCopy = {
     how: {
       kicker: "Cómo funciona · el curso",
       title: "Mira\u00a0· Organiza\u00a0· Cocina",
-      lead: "Un curso en video para seguir a tu ritmo, desde el celular, la tableta o la computadora.",
+      lead: "Un recorrido en video, con un menú y bonos sobre la transición al método, la silla para comer y los utensilios.",
       steps: [
-        { icon: "play", title: "Mira", text: "Las clases en video, cuando tengas un rato." },
+        {
+          icon: "play",
+          title: "Mira",
+          text: `${course.details.modules.length} módulos sobre el inicio, BLW y nutrición.`,
+        },
         { icon: "calendar", title: "Organiza", text: "Cuándo empezar, cantidades y frecuencias." },
         { icon: "utensils", title: "Cocina", text: "El menú de 4 semanas y recetas para todos." },
       ],
@@ -158,7 +161,7 @@ export const homeCopy = {
       {
         about: "feeding",
         q: "¿La guía de alimentación es de Pequeverso?",
-        a: "No. Es un curso en video de un tercero que se vende en Hotmart. Pequeverso lo recomienda con un enlace de afiliado: si compras, recibimos una comisión.",
+        a: `No. Según la información de su productora, ${course.details.producerName}, el curso incluye ${course.details.modules.length} módulos en video y ${course.details.bonuses.length} bonos. Pequeverso lo recomienda con un enlace de afiliado: si compras, recibimos una comisión.`,
       },
       {
         about: "feeding",

@@ -92,3 +92,31 @@ test("affiliate copy: disclosure, no price, reviews or health promises", () => {
   ])
     assert.doesNotMatch(text, forbidden);
 });
+
+test("producer-supplied course details stay attributed, bounded and separate from the kit", () => {
+  const details = alimentacionBebe.details;
+  assert.equal(details.producerName, "Citlalli Moctezuma");
+  assert.equal(details.modules.length, 6);
+  assert.equal(details.bonuses.length, 4);
+  assert.deepEqual(details.evidence, {
+    kind: "owner-supplied-producer-copy",
+    receivedOn: "2026-10-18",
+    independentlyVerified: false,
+  });
+  assert.match(alimentacionBebe.topics.join(" "), /Baby Led Weaning \(BLW\)/);
+  assert.match(alimentacionBebe.topics.join(" "), /Nutrición/);
+  assert.match(homeCopy.affiliate.kind, /6 módulos \+ 4 bonos/);
+  assert.match(homeCopy.affiliate.desire, /6 módulos en video/);
+  const origin = homeCopy.faq.items.find((item) => item.q === "¿La guía de alimentación es de Pequeverso?");
+  assert.ok(origin);
+  assert.match(origin.a, /Según la información de su productora, Citlalli Moctezuma/);
+  assert.match(origin.a, /6 módulos en video y 4 bonos/);
+  const courseText = JSON.stringify([details, homeCopy.affiliate, origin]);
+  assert.doesNotMatch(courseText, /certificad|avalad|profesional acreditad|Lamaze|Health Coach|IIN|99%/i);
+  assert.doesNotMatch(
+    courseText,
+    /garantiza|cura|previene|elimina alergias|sin atragantamientos|sí com[ae]/i,
+  );
+  assert.doesNotMatch(homeCopy.affiliate.how.lead, /celular|tableta|computadora|compatible/i);
+  assert.equal(affiliateHref(alimentacionBebe), "/alimentacion-bebe/?src=sitio-home");
+});
