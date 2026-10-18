@@ -25,7 +25,7 @@ const desktopSafari = devices["Desktop Safari"];
 const desktopFirefox = devices["Desktop Firefox"];
 const specs = {
   functional:
-    /(hub|playground|smoke|a11y|offer-mode|widget|commerce|consent|legal|motion|navigation|tracking|lcp|responsive|text-zoom|assistant-disabled)\.spec\.ts/,
+    /(hub|playground|smoke|a11y|offer-mode|widget|commerce|consent|legal|motion|surfaces|navigation|tracking|lcp|responsive|text-zoom|assistant-disabled)\.spec\.ts/,
   visual: /visual\.spec\.ts/,
   prod: /smoke\.spec\.ts/,
 };
@@ -35,12 +35,12 @@ const projectSets = {
     {
       name: "firefox-390",
       use: { ...desktopFirefox, viewport: viewport(390) },
-      testMatch: /text-zoom\.spec\.ts/,
+      testMatch: /(text-zoom|surfaces)\.spec\.ts/,
     },
     {
       name: "webkit-390",
       use: { ...desktopSafari, viewport: viewport(390) },
-      testMatch: /text-zoom\.spec\.ts/,
+      testMatch: /(text-zoom|surfaces)\.spec\.ts/,
     },
     {
       name: "chromium-1440",

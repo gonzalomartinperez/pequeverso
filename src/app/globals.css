@@ -870,23 +870,16 @@
     linear-gradient(165deg, oklch(0.215 0.075 256) 0%, var(--pv-navy-deep) 45%, var(--pv-navy) 100%);
 }
 
-/* Frosted surface over gradients and photos; solid fallback where backdrop-filter is missing. */
+/* Painted glass keeps repeated cards responsive without backdrop compositing. */
 @utility glass {
   background: oklch(1 0 0 / 94%);
   border: 1px solid oklch(1 0 0 / 90%);
-  @supports (backdrop-filter: blur(1px)) {
-    background: oklch(1 0 0 / 72%);
-    backdrop-filter: blur(16px) saturate(1.4);
-  }
 }
 
-/* Frosted surface on navy. */
+/* Translucent painted surface on navy; no nested backdrop-filter layers. */
 @utility glass-dark {
   background: oklch(1 0 0 / 8%);
   border: 1px solid oklch(1 0 0 / 16%);
-  @supports (backdrop-filter: blur(1px)) {
-    backdrop-filter: blur(14px);
-  }
 }
 
 /* Accent phrase inside a heading: navy → teal on light, turquoise → gold inside on-navy. */
