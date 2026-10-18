@@ -101,3 +101,28 @@ Rules the hub keeps:
    `config/affiliates.ts`, its copy and media, and render the block for it.
 5. `npm run check`, `npm run test:e2e`; the home visual baselines change (nightly
    `update_snapshots`).
+
+## Producer-copy evidence received 2026-10-18
+
+The owner supplied selected text from the producer's course landing in the current conversation.
+`config/affiliates.ts` records the attributed producer name **Citlalli Moctezuma**, six descriptive
+module summaries and four bonus topics, with `independentlyVerified: false`. The public summary
+covers starting complementary feeding, BLW, nutrition, a four-week menu and recipes. Module
+summaries are neutral paraphrases, not a verbatim syllabus or proof of medical competence.
+The four bonuses concern transition to the method, a feeding chair, kitchen utensils, and
+plates/cups. Home uses the shared counts and attributes the producer in its existing FAQ.
+
+This is commercial source attribution, not independent credential, authorship or medical
+verification. Professional credentials and a certificate mentioned in the producer copy are
+not presented as a verified qualification or official professional title. Claims about making
+a child eat, curing a problem, guaranteed results, avoiding allergies/choking, or a percentage
+of mothers are excluded. The course remains educational and does not replace qualified care.
+Prices, live availability, downloads, device compatibility and access duration are not added.
+The existing redirect, disclosure, guarantee and kit landing remain unchanged. No new local
+course landing or checkout/tracking behavior is introduced. Third-party course content retains
+its own rights; no original course materials or full sales copy are stored in this repository.
+
+The API catalog is a separate versioned artifact. Its current exporter reads `topics` but not
+the optional `details` block or Home FAQ: a later catalog synchronization can carry the new
+BLW/nutrition topics, while producer/module/bonus facts require an explicit compatible exporter
+extension. Do not mutate an API catalog frozen for a live evaluation.

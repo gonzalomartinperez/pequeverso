@@ -5,6 +5,10 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
 ## [Unreleased]
 
 ### Changed
+- Affiliate-course copy describes six video modules, four bonuses, BLW and nutrition using
+  producer-supplied evidence received on 2026-10-18, with Citlalli Moctezuma attributed in the
+  existing FAQ. Qualifications and health outcomes are not presented as verified facts;
+  product destinations, affiliate disclosures and the disabled assistant remain unchanged.
 - Home product chooser identifies both canonical product names on phones, gives both actions
   the same width and distinguishes the Pequeverso kit from the affiliate course. First-meals
   copy describes the guidance without promising an absence of fear or time in the kitchen.

@@ -4,7 +4,8 @@
  * (`destinationEnv`), which sends the visitor to the owner's affiliate link. The link itself is
  * a deployment value and never lives in the repository.
  *
- * Facts come from the producer's public Hotmart page and the owner's decision
+ * Facts come from the producer's public Hotmart page, owner-supplied producer copy
+ * (2026-10-18), and the owner's decision
  * (pequeverso-marketing `decisions/DEC-2026-10-12-afiliado-alimentacion-bebes.md`). No price,
  * reviews, ratings or health outcomes: only what the course covers.
  */
@@ -27,6 +28,17 @@ export type AffiliateProduct = {
   guaranteeDays: number;
   /** What the course teaches (3–4 short points, no promises). */
   topics: readonly string[];
+  /** Optional course facts attributed to producer copy, not an independent credential check. */
+  details?: {
+    producerName: string;
+    modules: readonly string[];
+    bonuses: readonly string[];
+    evidence: {
+      kind: "owner-supplied-producer-copy";
+      receivedOn: string;
+      independentlyVerified: false;
+    };
+  };
   /** `src` value appended to the redirect path so Hotmart reports show the placement. */
   source: string;
   /**
@@ -46,11 +58,33 @@ export const alimentacionBebe = {
   platform: "Hotmart",
   guaranteeDays: 7,
   topics: [
-    "Cuándo y cómo empezar la alimentación complementaria.",
-    "Cantidades y frecuencias de las comidas.",
+    "Alimentación complementaria y Baby Led Weaning (BLW).",
+    "Nutrición, cantidades y frecuencias de las comidas.",
     "Un menú para las primeras 4 semanas.",
     "Recetas fáciles para el bebé y toda la familia.",
   ],
+  details: {
+    producerName: "Citlalli Moctezuma",
+    modules: [
+      "Bienvenida y presentación del programa",
+      "Cuándo iniciar la alimentación complementaria",
+      "Baby Led Weaning (BLW)",
+      "Nutrición por grupos de alimentos",
+      "Preparaciones sencillas y menú de cuatro semanas",
+      "Preguntas frecuentes y recetas",
+    ],
+    bonuses: [
+      "Transición al método en tres pasos",
+      "Cómo elegir una silla para comer",
+      "Utensilios de cocina",
+      "Cómo elegir platos y vasos",
+    ],
+    evidence: {
+      kind: "owner-supplied-producer-copy",
+      receivedOn: "2026-10-18",
+      independentlyVerified: false,
+    },
+  },
   source: "sitio-home",
   media: {
     figure: "bebe.cutout.mama-brazos",
