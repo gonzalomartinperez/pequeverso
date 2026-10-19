@@ -15,7 +15,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "node tools/check-env.ts && node tools/build-info.ts && next build --webpack && node tools/gen-htaccess.ts && node tools/check-assistant-disabled.ts --allow-enabled",
+    "build": "node tools/check-env.ts && node tools/build-info.ts && next build --webpack && node tools/gen-htaccess.ts && node tools/check-assistant-disabled.ts --allow-enabled && node tools/check-site-analytics-disabled.ts --allow-enabled",
     "build:standalone": "cross-env NEXT_OUTPUT=standalone npm run build",
     "start": "node tools/start.ts",
     "typegen": "next typegen",
@@ -43,6 +43,7 @@
     "check:scene": "node tools/check-scene-budget.ts",
     "analyze": "cross-env ANALYZE=1 next build --webpack",
     "check:rendered": "node tools/check-rendered.ts",
+    "check:site-analytics-disabled": "node tools/check-site-analytics-disabled.ts",
     "check:assistant-disabled": "node tools/check-assistant-disabled.ts",
     "build:assistant-fixture": "node tools/build-assistant-fixture.ts",
     "test:browser:assistant": "node tools/build-assistant-fixture.ts && playwright test -c playwright.assistant.config.ts",

@@ -32,6 +32,7 @@ const info = {
   builtAt: new Date().toISOString(),
   // Same detection as config/next.ts: Hostinger's builder is standalone without NEXT_OUTPUT.
   output: buildOutput(),
+  site_analytics: process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" ? "enabled" : "disabled",
   assistant: (process.env.NEXT_PUBLIC_ASSISTANT_ENABLED ?? "").trim() === "true" ? "enabled" : "disabled",
 };
 

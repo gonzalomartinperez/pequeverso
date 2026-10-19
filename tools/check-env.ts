@@ -4,6 +4,7 @@
 import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseAnalyticsEnv } from "../config/site-analytics-env.ts";
 import { parseAssistantEnv } from "../src/features/assistant/flag.ts";
 import { affiliateEnvNames, affiliateSources, isAffiliateUrl } from "./lib/edge-rules.ts";
 
@@ -66,6 +67,15 @@ function validate(): string[] {
   const assistant = assistantFlag();
   if (!assistant.ok) errors.push(...assistant.errors);
 
+  try {
+    parseAnalyticsEnv({
+      enabled: process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED,
+      apiOrigin: process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_API_ORIGIN,
+      localTestBuild: process.env.PRODUCT_ANALYTICS_LOCAL_TEST_BUILD,
+    });
+  } catch {
+    errors.push("Product analytics requires a valid flag and bare API origin");
+  }
   return errors;
 }
 

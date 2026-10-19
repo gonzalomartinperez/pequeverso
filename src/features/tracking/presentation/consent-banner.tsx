@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useId, useState } from "react";
+import { explicitGrant } from "@/features/site-analytics/domain/consent.ts";
 import {
   type ConsentCategory,
   type ConsentChoice,
@@ -17,6 +18,7 @@ type CategoryInfo = {
   title: string;
   purpose: string;
   tools: string[];
+  explicitChoice: boolean;
 };
 
 const CATEGORY_ORDER: readonly ConsentCategory[] = ["analytics", "marketing"];
@@ -25,12 +27,17 @@ const CATEGORY_COPY: Record<ConsentCategory, Pick<CategoryInfo, "title" | "purpo
   marketing: { title: "Marketing", purpose: "medir nuestras campañas y el interés en el producto" },
 };
 
-function gatedCategories(adapters: TrackingAdapter[]): CategoryInfo[] {
+function gatedCategories(adapters: TrackingAdapter[], additionalAnalyticsTool: boolean): CategoryInfo[] {
   return CATEGORY_ORDER.flatMap((id) => {
     const tools = [
-      ...new Set(adapters.filter((adapter) => adapter.category === id).map((adapter) => adapter.label)),
+      ...new Set([
+        ...adapters.filter((adapter) => adapter.category === id).map((adapter) => adapter.label),
+        ...(id === "analytics" && additionalAnalyticsTool ? ["Analítica del sitio Pequeverso"] : []),
+      ]),
     ];
-    return tools.length > 0 ? [{ id, ...CATEGORY_COPY[id], tools }] : [];
+    return tools.length > 0
+      ? [{ id, ...CATEGORY_COPY[id], tools, explicitChoice: id === "analytics" && additionalAnalyticsTool }]
+      : [];
   });
 }
 
@@ -82,7 +89,10 @@ function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
             <strong>
               {category.title} ({category.tools.join(", ")}):
             </strong>{" "}
-            {category.purpose}. Activa salvo que la desmarques.
+            {category.purpose}.{" "}
+            {category.explicitChoice
+              ? "Se activa al aceptar o guardar tu selección."
+              : "Activa salvo que la desmarques."}
           </label>
         </li>
       ))}
@@ -93,6 +103,7 @@ function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
 type Props = {
   /** Button classes computed on the server (`buttonVariants`), keeping variant tables out of the layout chunk. */
   classes: { primary: string; secondary: string };
+  additionalAnalyticsTool?: boolean;
 };
 
 /**
@@ -102,8 +113,8 @@ type Props = {
  * category; `CookieSettingsLink` reopens it (pv:consent:open). With no gated integration it
  * opens on request as a notice that only necessary cookies are used.
  */
-export function ConsentBanner({ classes }: Props) {
-  const [categories] = useState(() => gatedCategories(enabledAdapters()));
+export function ConsentBanner({ classes, additionalAnalyticsTool = false }: Props) {
+  const [categories] = useState(() => gatedCategories(enabledAdapters(), additionalAnalyticsTool));
   const [open, setOpen] = useState(false);
   const [configuring, setConfiguring] = useState(false);
   const [selection, setSelection] = useState<ConsentChoice>(() => choiceFor(categories, true));
@@ -111,7 +122,13 @@ export function ConsentBanner({ classes }: Props) {
   const descId = useId();
 
   useEffect(() => {
-    if (categories.length > 0) setOpen(readConsent() === null);
+    if (categories.length > 0) {
+      const stored = readConsent();
+      setOpen(
+        stored === null ||
+          (additionalAnalyticsTool && stored.analytics && !explicitGrant(stored, Date.now())),
+      );
+    }
     const reopen = () => {
       const current = readConsent();
       if (current) setSelection({ analytics: current.analytics, marketing: current.marketing });
@@ -126,7 +143,14 @@ export function ConsentBanner({ classes }: Props) {
       window.removeEventListener("pv:consent:open", reopen);
       unsubscribe();
     };
-  }, [categories]);
+  }, [categories, additionalAnalyticsTool]);
+
+  function persist(choice: ConsentChoice) {
+    // Withdraw this channel BEFORE a potentially failing storage write. Vendor behavior is unchanged.
+    if (additionalAnalyticsTool && !choice.analytics)
+      window.dispatchEvent(new Event("pv:site-analytics:withdraw"));
+    writeConsent(choice);
+  }
 
   if (!open) return null;
 
@@ -190,19 +214,19 @@ export function ConsentBanner({ classes }: Props) {
           <button
             type="button"
             className={classes.primary}
-            onClick={() => writeConsent(choiceFor(categories, true))}
+            onClick={() => persist(choiceFor(categories, true))}
           >
             Aceptar
           </button>
           <button
             type="button"
             className={classes.primary}
-            onClick={() => writeConsent(choiceFor(categories, false))}
+            onClick={() => persist(choiceFor(categories, false))}
           >
             Rechazar
           </button>
           {configuring ? (
-            <button type="button" className={classes.secondary} onClick={() => writeConsent(selection)}>
+            <button type="button" className={classes.secondary} onClick={() => persist(selection)}>
               Guardar selección
             </button>
           ) : (

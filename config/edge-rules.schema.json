@@ -39,6 +39,7 @@
         "type": "object",
         "required": ["id", "source", "headers"],
         "properties": {
+          "productAnalyticsConnectOrigin": { "type": "boolean" },
           "id": { "type": "string" },
           "source": { "type": "string", "pattern": "^/" },
           "headers": { "type": "object", "additionalProperties": { "type": "string" } }

@@ -96,6 +96,16 @@ retain their original provenance.
 
 [Latest audited nightly results and retained warnings](docs/verification/2026-10-18-nightly.md).
 
+## Optional site analytics
+
+The separate [site analytics channel](docs/site-analytics.md) is **disabled by default** and requires
+an explicit, fresh stored analytics choice. It sends only approved public section events and coarse
+click cells directly to the API; the private backoffice displays received aggregates, not visitors,
+purchases or conversion rates. Existing Meta/CAPI and checkout behavior stay independent.
+`build-info.json` records `site_analytics: disabled`; CI rejects collection transport in publishable
+artifacts. Country attribution additionally requires infrastructure verification; no VPS readiness
+or production collection follows from these local tests.
+
 ## Clean checkout
 
 ```bash
@@ -111,6 +121,7 @@ The site origin and checkout URL are required build-time configuration. The exam
 npm run check                   # Lint, strict types, unit, export and budgets
 npm run check:skills             # Canonical skill/adaptor consistency
 npm run check:assistant-disabled # Inspect the actual publishable export
+npm run check:site-analytics-disabled # Confirm collection is compiled out
 npx playwright install --with-deps chromium firefox webkit
 npm run test:browser                 # Storefront browser gates against the built export
 ```

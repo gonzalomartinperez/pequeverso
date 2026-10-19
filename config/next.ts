@@ -5,6 +5,7 @@ import { parseAssistantEnv } from "../src/features/assistant/flag.ts";
 import { buildOutput } from "../tools/lib/build-target.ts";
 import { loadEdgeRules, toNextHeaders, toNextRedirects } from "../tools/lib/edge-rules.ts";
 import { SceneBudgetPlugin } from "../tools/scene-budget-plugin.ts";
+import { parseAnalyticsEnv } from "./site-analytics-env.ts";
 
 /**
  * Next.js configuration, re-exported by the root `next.config.mjs` (the file name Hostinger's
@@ -48,9 +49,21 @@ const assistantEnv = assistant.flag.enabled
   ? { NEXT_PUBLIC_ASSISTANT_ENABLED: "true", NEXT_PUBLIC_ASSISTANT_API_ORIGIN: assistant.flag.apiOrigin }
   : { NEXT_PUBLIC_ASSISTANT_ENABLED: "false", NEXT_PUBLIC_ASSISTANT_API_ORIGIN: "" };
 
+const productAnalytics = parseAnalyticsEnv({
+  enabled: process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED,
+  apiOrigin: process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_API_ORIGIN,
+  localTestBuild: process.env.PRODUCT_ANALYTICS_LOCAL_TEST_BUILD,
+});
+
 const nextConfig: NextConfig = {
   output,
-  env: assistantEnv,
+  env: {
+    ...assistantEnv,
+    NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED: productAnalytics.enabled ? "true" : "false",
+    NEXT_PUBLIC_PRODUCT_ANALYTICS_API_ORIGIN: productAnalytics.enabled
+      ? new URL(productAnalytics.endpoint).origin
+      : "",
+  },
   // Route handlers live only in the standalone build: `*.standalone.ts` is a page extension there
   // and plain `route.standalone.ts` files are ignored by the static export (a POST handler breaks
   // `output: "export"`). See docs/decisions/ADR-0005-conversions-api-relay.md.

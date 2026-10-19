@@ -40,6 +40,7 @@ export function sourcePlacementViolations(modules: ReadonlyMap<string, SourceMod
     landing: new Set(["presentation"]),
     playground: new Set(["domain", "presentation"]),
     tracking: new Set(["adapters", "presentation"]),
+    "site-analytics": new Set(["domain", "application", "adapters", "presentation"]),
   };
   return [...modules.keys()].filter((file) => {
     const parts = posixPath(file).split("/");
@@ -48,6 +49,14 @@ export function sourcePlacementViolations(modules: ReadonlyMap<string, SourceMod
     if (parts[0] !== "src" || parts.length < 3 || !roots.has(parts[1] ?? "")) return true;
     if (parts[1] === "shared") return parts.length < 4 || !shared.has(parts[2] ?? "");
     if (parts[1] === "features") {
+      if (
+        [
+          "src/features/site-analytics/entry.ts",
+          "src/features/site-analytics/slot.tsx",
+          "src/features/site-analytics/mount.tsx",
+        ].includes(file)
+      )
+        return false;
       if (parts[2] === "assistant") return !assistantSourcePlacementAllowed(file);
       return parts.length < 5 || !layers[parts[2] ?? ""]?.has(parts[3] ?? "");
     }

@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { preload } from "react-dom";
 import { AssistantSlot } from "@/features/assistant/slot.tsx";
+import { SiteAnalyticsSlot } from "@/features/site-analytics/slot.tsx";
 import { ConsentBanner } from "@/features/tracking/presentation/consent-banner.tsx";
 import { Analytics } from "@/features/tracking/presentation/tracking-scripts.tsx";
 import { versionedPublicUrl } from "@/shared/media/media.ts";
@@ -51,7 +52,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <SkipLink />
         {children}
         <AssistantSlot />
-        <ConsentBanner classes={consentClasses} />
+        <SiteAnalyticsSlot />
+        <ConsentBanner
+          classes={consentClasses}
+          additionalAnalyticsTool={process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true"}
+        />
         <Analytics />
         <RevealObserver />
       </body>

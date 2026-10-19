@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseAnalyticsEnv } from "../../config/site-analytics-env.ts";
 
 const here = dirname(fileURLToPath(import.meta.url));
 export const EDGE_RULES_PATH = resolve(here, "../../config/edge-rules.json");
@@ -19,7 +20,12 @@ type RedirectRule = {
   gone?: boolean;
   description?: string;
 };
-type HeaderRule = { id: string; source: string; headers: Record<string, string> };
+type HeaderRule = {
+  id: string;
+  source: string;
+  headers: Record<string, string>;
+  productAnalyticsConnectOrigin?: boolean;
+};
 
 /** Shape of config/edge-rules.json. */
 export type EdgeRules = {
@@ -100,7 +106,30 @@ export function resolveEdgeRules(rules: EdgeRules, env: Env): EdgeRules {
       );
     redirects.push({ ...rule, destination: value });
   }
-  return { ...rules, redirects };
+  const analytics = parseAnalyticsEnv({
+    enabled: env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED,
+    apiOrigin: env.NEXT_PUBLIC_PRODUCT_ANALYTICS_API_ORIGIN,
+    localTestBuild: env.PRODUCT_ANALYTICS_LOCAL_TEST_BUILD,
+  });
+  // Preserve default headers byte-for-byte. Both hosting targets resolve the same opt-in origin.
+  const headers = !analytics.enabled
+    ? rules.headers
+    : rules.headers.map((rule) => ({
+        ...rule,
+        headers: Object.fromEntries(
+          Object.entries(rule.headers).map(([name, value]) => [
+            name,
+            rule.productAnalyticsConnectOrigin === true &&
+            /^content-security-policy(?:-report-only)?$/i.test(name)
+              ? value.replace(
+                  /connect-src([^;]*);/,
+                  (_, sources: string) => `connect-src${sources} ${new URL(analytics.endpoint).origin};`,
+                )
+              : value,
+          ]),
+        ),
+      }));
+  return { ...rules, redirects, headers };
 }
 
 export function validateEdgeRules(rules: EdgeRules): void {
