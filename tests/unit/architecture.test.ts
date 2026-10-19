@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, it } from "node:test";
+import { pathToFileURL } from "node:url";
 import {
   clientBoundaryViolations,
   firstRuntimeCycle,
@@ -12,6 +14,7 @@ import {
   sourceFiles,
   sourceModule,
   sourcePlacementViolations,
+  sourceTarget,
 } from "../helpers/source-architecture.ts";
 
 const modules = new Map(
@@ -21,6 +24,95 @@ const modules = new Map(
 );
 
 describe("store architecture", () => {
+  it("keeps the daily sparse checkout executable with its transitive tools and edge config", async () => {
+    const workflow = readFileSync(".github/workflows/production-daily.yml", "utf8");
+    const live = workflow.slice(workflow.indexOf("\n  live:\n"), workflow.indexOf("\n  report:\n"));
+    const entry = live.match(/run: node (tools\/[^\s]+\.ts) /)?.[1];
+    assert.ok(entry, "daily live job must expose its tracked Node entry");
+    const lines = live.split("\n");
+    const index = lines.findIndex((line) => /^\s+sparse-checkout: \|\s*$/.test(line));
+    assert.notEqual(index, -1, "daily live job must declare its sparse checkout");
+    const indentation = lines[index]?.match(/^ */)?.[0].length ?? 0;
+    const cones: string[] = [];
+    for (const line of lines.slice(index + 1)) {
+      if (!line.trim()) continue;
+      if ((line.match(/^ */)?.[0].length ?? 0) <= indentation) break;
+      cones.push(line.trim());
+    }
+    const files = new Set([entry, "config/edge-rules.json", ".nvmrc", "package.json"]);
+    const visit = (file: string): void => {
+      for (const { specifier, typeOnly } of sourceModule(file).imports) {
+        if (typeOnly || specifier?.startsWith("node:")) continue;
+        assert.ok(specifier, `${file}: nonliteral daily dependency needs explicit review`);
+        const target = sourceTarget(file, specifier);
+        assert.ok(target && existsSync(target), `${file}: unresolved daily dependency ${specifier}`);
+        if (!files.has(target)) {
+          files.add(target);
+          visit(target);
+        }
+      }
+    };
+    visit(entry);
+    assert.deepEqual(
+      execFileSync("git", ["ls-files", "-z", "--", ...files], { encoding: "utf8", timeout: 5_000 })
+        .split("\0")
+        .filter(Boolean)
+        .sort(),
+      [...files].sort(),
+      "daily dependencies must be committed",
+    );
+    const root = mkdtempSync(join(tmpdir(), "pv-daily-sparse-"));
+    const git = (...args: string[]) =>
+      execFileSync("git", args, { cwd: root, stdio: "pipe", timeout: 5_000 });
+    try {
+      for (const file of files) {
+        mkdirSync(join(root, file, ".."), { recursive: true });
+        writeFileSync(join(root, file), readFileSync(file));
+      }
+      git("init", "--quiet");
+      git("add", ".");
+      git(
+        "-c",
+        "user.name=Sparse fixture",
+        "-c",
+        "user.email=fixture@invalid.test",
+        "-c",
+        "commit.gpgsign=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "commit",
+        "--quiet",
+        "-m",
+        "fixture",
+      );
+      git("sparse-checkout", "init", "--cone");
+      const select = (directories: string[]) => git("sparse-checkout", "set", "--", ...directories);
+      // Actual Git cone semantics, rather than a test-only approximation of directory inclusion.
+      select(cones);
+      assert.deepEqual(
+        [...files].filter((file) => !existsSync(join(root, file))),
+        [],
+      );
+      const edgeRules = await import(pathToFileURL(join(root, "tools/lib/edge-rules.ts")).href);
+      assert.deepEqual(
+        edgeRules.affiliateSources(),
+        JSON.parse(readFileSync("config/edge-rules.json", "utf8"))
+          .redirects.filter((rule: { destinationEnv?: string }) => rule.destinationEnv)
+          .map((rule: { source: string }) => rule.source),
+      );
+      select(["scripts", "config"]);
+      assert.equal(existsSync(join(root, entry)), false, "old cone must reproduce the missing entry");
+      select(["tools"]);
+      assert.throws(
+        () => edgeRules.affiliateSources(),
+        /ENOENT/,
+        "tool-only cone must reject missing edge config",
+      );
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
   it("excludes installed packages at every depth while retaining owned tool modules", () => {
     const root = mkdtempSync(join(tmpdir(), "pv-architecture-owned-"));
     try {
