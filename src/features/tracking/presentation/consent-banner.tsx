@@ -18,7 +18,6 @@ type CategoryInfo = {
   title: string;
   purpose: string;
   tools: string[];
-  explicitChoice: boolean;
 };
 
 const CATEGORY_ORDER: readonly ConsentCategory[] = ["analytics", "marketing"];
@@ -27,17 +26,17 @@ const CATEGORY_COPY: Record<ConsentCategory, Pick<CategoryInfo, "title" | "purpo
   marketing: { title: "Marketing", purpose: "medir nuestras campañas y el interés en el producto" },
 };
 
-function gatedCategories(adapters: TrackingAdapter[], additionalAnalyticsTool: boolean): CategoryInfo[] {
+function gatedCategories(adapters: TrackingAdapter[]): CategoryInfo[] {
   return CATEGORY_ORDER.flatMap((id) => {
     const tools = [
       ...new Set([
         ...adapters.filter((adapter) => adapter.category === id).map((adapter) => adapter.label),
-        ...(id === "analytics" && additionalAnalyticsTool ? ["Analítica del sitio Pequeverso"] : []),
+        ...(process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" && id === "analytics"
+          ? ["Analítica del sitio Pequeverso"]
+          : []),
       ]),
     ];
-    return tools.length > 0
-      ? [{ id, ...CATEGORY_COPY[id], tools, explicitChoice: id === "analytics" && additionalAnalyticsTool }]
-      : [];
+    return tools.length > 0 ? [{ id, ...CATEGORY_COPY[id], tools }] : [];
   });
 }
 
@@ -90,7 +89,7 @@ function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
               {category.title} ({category.tools.join(", ")}):
             </strong>{" "}
             {category.purpose}.{" "}
-            {category.explicitChoice
+            {process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" && category.id === "analytics"
               ? "Se activa al aceptar o guardar tu selección."
               : "Activa salvo que la desmarques."}
           </label>
@@ -103,7 +102,6 @@ function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
 type Props = {
   /** Button classes computed on the server (`buttonVariants`), keeping variant tables out of the layout chunk. */
   classes: { primary: string; secondary: string };
-  additionalAnalyticsTool?: boolean;
 };
 
 /**
@@ -113,8 +111,8 @@ type Props = {
  * category; `CookieSettingsLink` reopens it (pv:consent:open). With no gated integration it
  * opens on request as a notice that only necessary cookies are used.
  */
-export function ConsentBanner({ classes, additionalAnalyticsTool = false }: Props) {
-  const [categories] = useState(() => gatedCategories(enabledAdapters(), additionalAnalyticsTool));
+export function ConsentBanner({ classes }: Props) {
+  const [categories] = useState(() => gatedCategories(enabledAdapters()));
   const [open, setOpen] = useState(false);
   const [configuring, setConfiguring] = useState(false);
   const [selection, setSelection] = useState<ConsentChoice>(() => choiceFor(categories, true));
@@ -126,7 +124,9 @@ export function ConsentBanner({ classes, additionalAnalyticsTool = false }: Prop
       const stored = readConsent();
       setOpen(
         stored === null ||
-          (additionalAnalyticsTool && stored.analytics && !explicitGrant(stored, Date.now())),
+          (process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" &&
+            stored.analytics &&
+            !explicitGrant(stored, Date.now())),
       );
     }
     const reopen = () => {
@@ -143,11 +143,11 @@ export function ConsentBanner({ classes, additionalAnalyticsTool = false }: Prop
       window.removeEventListener("pv:consent:open", reopen);
       unsubscribe();
     };
-  }, [categories, additionalAnalyticsTool]);
+  }, [categories]);
 
   function persist(choice: ConsentChoice) {
     // Withdraw this channel BEFORE a potentially failing storage write. Vendor behavior is unchanged.
-    if (additionalAnalyticsTool && !choice.analytics)
+    if (process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" && !choice.analytics)
       window.dispatchEvent(new Event("pv:site-analytics:withdraw"));
     writeConsent(choice);
   }

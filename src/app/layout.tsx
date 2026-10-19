@@ -53,10 +53,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         {children}
         <AssistantSlot />
         <SiteAnalyticsSlot />
-        <ConsentBanner
-          classes={consentClasses}
-          additionalAnalyticsTool={process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true"}
-        />
+        <ConsentBanner classes={consentClasses} />
         <Analytics />
         <RevealObserver />
       </body>

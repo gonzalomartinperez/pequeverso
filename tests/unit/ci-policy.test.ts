@@ -226,9 +226,15 @@ test("build identity distinguishes disabled exports from enabled fixtures", () =
     builtAt: "2026-10-18T00:00:00Z",
     output: "export",
     assistant: "disabled",
+    site_analytics: "disabled",
   };
   const bytes = Buffer.from(JSON.stringify(info));
   assert.equal(buildIdentity(bytes, binding, "disabled"), digest(bytes));
+  for (const site_analytics of [undefined, "enabled", "false", false, null]) {
+    assert.throws(() =>
+      buildIdentity(Buffer.from(JSON.stringify({ ...info, site_analytics })), binding, "disabled"),
+    );
+  }
   assert.throws(() => buildIdentity(bytes, binding, "enabled"));
   assert.throws(() =>
     buildIdentity(Buffer.from(JSON.stringify({ ...info, sha: "f".repeat(40) })), binding, "disabled"),
@@ -275,6 +281,7 @@ test("quarantine validates before destination writes and rejects real symlinks/h
         builtAt: "2026-10-18T00:00:00Z",
         output: "export",
         assistant: "disabled",
+        site_analytics: "disabled",
       }),
     );
     writeFileSync(join(payload, "index.html"), "synthetic OFF");
@@ -285,6 +292,22 @@ test("quarantine validates before destination writes and rejects real symlinks/h
     validateOffArtifact(artifact, binding, digest(serialized));
     assert.equal(existsSync(destination), false);
     assert.equal(readFileSync(join(artifact, "manifest.json"), "utf8"), serialized);
+    // Even internally consistent hashes cannot attest an enabled collector as an OFF export.
+    const enabledInfo = Buffer.from(
+      JSON.stringify({ ...JSON.parse(info.toString("utf8")), site_analytics: "enabled" }),
+    );
+    writeFileSync(join(payload, "build-info.json"), enabledInfo);
+    const enabledManifest = JSON.stringify({
+      ...manifest,
+      build_id: digest(enabledInfo),
+      files: payloadInventory(payload),
+    });
+    writeFileSync(join(artifact, "manifest.json"), enabledManifest);
+    assert.throws(() => validateOffArtifact(artifact, binding, digest(enabledManifest)));
+    assert.equal(existsSync(destination), false);
+    writeFileSync(join(payload, "build-info.json"), info);
+    writeFileSync(join(artifact, "manifest.json"), serialized);
+    validateOffArtifact(artifact, binding, digest(serialized));
     const reject = () => {
       assert.throws(() => validateOffArtifact(artifact, binding, digest(serialized)));
       assert.equal(existsSync(destination), false);
