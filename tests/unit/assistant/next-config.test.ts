@@ -25,6 +25,8 @@ describe("next config defines the assistant switch", () => {
       assert.deepEqual(configEnv(env), {
         NEXT_PUBLIC_ASSISTANT_ENABLED: "false",
         NEXT_PUBLIC_ASSISTANT_API_ORIGIN: "",
+        NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED: "false",
+        NEXT_PUBLIC_PRODUCT_ANALYTICS_API_ORIGIN: "",
       });
   });
 
@@ -34,7 +36,34 @@ describe("next config defines the assistant switch", () => {
         NEXT_PUBLIC_ASSISTANT_ENABLED: " true ",
         NEXT_PUBLIC_ASSISTANT_API_ORIGIN: "https://api.example/",
       }),
-      { NEXT_PUBLIC_ASSISTANT_ENABLED: "true", NEXT_PUBLIC_ASSISTANT_API_ORIGIN: "https://api.example" },
+      {
+        NEXT_PUBLIC_ASSISTANT_ENABLED: "true",
+        NEXT_PUBLIC_ASSISTANT_API_ORIGIN: "https://api.example",
+        NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED: "false",
+        NEXT_PUBLIC_PRODUCT_ANALYTICS_API_ORIGIN: "",
+      },
+    );
+  });
+
+  it("enables analytics independently while keeping the assistant disabled", () => {
+    assert.deepEqual(
+      configEnv({
+        NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED: "true",
+        NEXT_PUBLIC_PRODUCT_ANALYTICS_API_ORIGIN: "https://analytics.example/",
+      }),
+      {
+        NEXT_PUBLIC_ASSISTANT_ENABLED: "false",
+        NEXT_PUBLIC_ASSISTANT_API_ORIGIN: "",
+        NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED: "true",
+        NEXT_PUBLIC_PRODUCT_ANALYTICS_API_ORIGIN: "https://analytics.example",
+      },
+    );
+    assert.throws(() => configEnv({ NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED: "yes" }));
+    assert.throws(() =>
+      configEnv({
+        NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED: "true",
+        NEXT_PUBLIC_PRODUCT_ANALYTICS_API_ORIGIN: "http://untrusted.example",
+      }),
     );
   });
 

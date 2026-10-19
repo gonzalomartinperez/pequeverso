@@ -96,10 +96,12 @@ export function buildIdentity(
     "builtAt",
     "output",
     "assistant",
+    "site_analytics",
   ]);
   if (
     info.sha !== expected.source_sha ||
     info.assistant !== assistant ||
+    info.site_analytics !== "disabled" ||
     info.output !== "export" ||
     typeof info.ref !== "string" ||
     !info.ref.trim() ||

@@ -63,6 +63,14 @@ export default function CookiesPage() {
         tecnologías equivalentes, como el almacenamiento local del navegador y los píxeles de medición.
       </p>
 
+      {process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" ? (
+        <p>
+          La analítica del sitio Pequeverso solo se activa cuando aceptas la categoría Analítica. Cuenta
+          visitas a páginas, exposición de secciones públicas y clics en una cuadrícula aproximada, sin
+          guardar identificadores de visitantes, texto de formularios ni conversaciones. Los totales se
+          conservan hasta 93 días. Puedes retirarla desde el pie de página.
+        </p>
+      ) : null}
       <SectionHeading sections={sections} id="cuales" />
       <Table>
         <TableHeader>

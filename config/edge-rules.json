@@ -71,6 +71,7 @@
   "headers": [
     {
       "id": "security",
+      "productAnalyticsConnectOrigin": true,
       "source": "/:path*",
       "headers": {
         "X-Content-Type-Options": "nosniff",
