@@ -174,3 +174,10 @@ events remain complete.
   is intercepted.
 - `tests/browser/consent.spec.ts`: no banner on the public build; banner controls and footer reopen
   when configured. `tests/browser/smoke.spec.ts`: the relay answers `204` on a build without token.
+
+## Separate opt-in site aggregates
+
+[Optional site analytics](site-analytics.md) uses an independent default-off build switch and requires
+an explicit stored analytics grant. It does not inherit the Meta opt-out default described above,
+use the vendor queue, or emit purchase/checkout events. Both integrations retain the existing
+preference storage; the additional analytics category is visible only in a configured build.

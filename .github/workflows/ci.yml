@@ -130,7 +130,7 @@ jobs:
       - name: Rendered HTML invariants
         run: npm run check:rendered
       - name: Assistant absent from the export (no launcher, chunk or API origin)
-        run: npm run check:assistant-disabled
+        run: npm run check:assistant-disabled && npm run check:site-analytics-disabled
       - name: Bind and stage the OFF-only export
         run: node tools/ci/artifacts.ts pack-off out .ci-off-artifact
         id: package

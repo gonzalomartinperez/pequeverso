@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useId, useState } from "react";
+import { explicitGrant } from "@/features/site-analytics/domain/consent.ts";
 import {
   type ConsentCategory,
   type ConsentChoice,
@@ -28,7 +29,12 @@ const CATEGORY_COPY: Record<ConsentCategory, Pick<CategoryInfo, "title" | "purpo
 function gatedCategories(adapters: TrackingAdapter[]): CategoryInfo[] {
   return CATEGORY_ORDER.flatMap((id) => {
     const tools = [
-      ...new Set(adapters.filter((adapter) => adapter.category === id).map((adapter) => adapter.label)),
+      ...new Set([
+        ...adapters.filter((adapter) => adapter.category === id).map((adapter) => adapter.label),
+        ...(process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" && id === "analytics"
+          ? ["Analítica del sitio Pequeverso"]
+          : []),
+      ]),
     ];
     return tools.length > 0 ? [{ id, ...CATEGORY_COPY[id], tools }] : [];
   });
@@ -82,7 +88,10 @@ function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
             <strong>
               {category.title} ({category.tools.join(", ")}):
             </strong>{" "}
-            {category.purpose}. Activa salvo que la desmarques.
+            {category.purpose}.{" "}
+            {process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" && category.id === "analytics"
+              ? "Se activa al aceptar o guardar tu selección."
+              : "Activa salvo que la desmarques."}
           </label>
         </li>
       ))}
@@ -111,7 +120,15 @@ export function ConsentBanner({ classes }: Props) {
   const descId = useId();
 
   useEffect(() => {
-    if (categories.length > 0) setOpen(readConsent() === null);
+    if (categories.length > 0) {
+      const stored = readConsent();
+      setOpen(
+        stored === null ||
+          (process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" &&
+            stored.analytics &&
+            !explicitGrant(stored, Date.now())),
+      );
+    }
     const reopen = () => {
       const current = readConsent();
       if (current) setSelection({ analytics: current.analytics, marketing: current.marketing });
@@ -127,6 +144,13 @@ export function ConsentBanner({ classes }: Props) {
       unsubscribe();
     };
   }, [categories]);
+
+  function persist(choice: ConsentChoice) {
+    // Withdraw this channel BEFORE a potentially failing storage write. Vendor behavior is unchanged.
+    if (process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" && !choice.analytics)
+      window.dispatchEvent(new Event("pv:site-analytics:withdraw"));
+    writeConsent(choice);
+  }
 
   if (!open) return null;
 
@@ -190,19 +214,19 @@ export function ConsentBanner({ classes }: Props) {
           <button
             type="button"
             className={classes.primary}
-            onClick={() => writeConsent(choiceFor(categories, true))}
+            onClick={() => persist(choiceFor(categories, true))}
           >
             Aceptar
           </button>
           <button
             type="button"
             className={classes.primary}
-            onClick={() => writeConsent(choiceFor(categories, false))}
+            onClick={() => persist(choiceFor(categories, false))}
           >
             Rechazar
           </button>
           {configuring ? (
-            <button type="button" className={classes.secondary} onClick={() => writeConsent(selection)}>
+            <button type="button" className={classes.secondary} onClick={() => persist(selection)}>
               Guardar selección
             </button>
           ) : (
