@@ -1,0 +1,6 @@
+
+> pequeverso@1.0.0 typecheck
+> next typegen && tsc --noEmit && tsc -p tsconfig.node.json
+
+Generating route types...
+✓ Types generated successfully

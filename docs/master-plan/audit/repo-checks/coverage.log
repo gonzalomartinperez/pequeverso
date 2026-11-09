@@ -1,0 +1,433 @@
+✔ the recommended course keeps its documented facts (7.08199ms)
+✔ every affiliate path is a 302 edge redirect read from a checkout variable (0.941499ms)
+✔ affiliate media exist, are approved for the public repo and declared as AI-generated (0.379499ms)
+✔ affiliate copy: disclosure, no price, reviews or health promises (2.066597ms)
+▶ store architecture
+  ✔ keeps the daily sparse checkout executable with its transitive tools and edge config (111.405244ms)
+  ✔ excludes installed packages at every depth while retaining owned tool modules (5.274892ms)
+  ✔ resolves all owned server, CLI, source and test imports, rejecting malformed relay paths (979.84553ms)
+  ✔ enforces named shared and feature dependency directions (14.06848ms)
+  ✔ rejects relocated catalog and server glue through client barrels and dynamic imports (2.509197ms)
+  ✔ classifies every source module using the existing store topology (1.217699ms)
+  ✔ rejects importless modules outside declared roots and component or feature groups (4.729493ms)
+  ✔ preserves existing route, component, feature, generated and public-content placements (2.081697ms)
+  ✔ keeps runtime dependencies acyclic across source, public content, config and server (34.502752ms)
+  ✔ keeps the entire client import graph away from server code, credentials and the build-time registry (57.271719ms)
+  ✔ fails for indirect server imports, alias barrels, dynamic imports and runtime cycles (2.112597ms)
+  ✔ preserves erased type imports without treating comments or ordinary strings as a client directive (0.736699ms)
+  ✔ requires explicit review when TypeScript path aliases change (0.4279ms)
+✔ store architecture (1219.594394ms)
+▶ affiliate product metadata is additive and validated
+  ✔ consumes the pinned API's actual affiliate SSE example without an additional generation (220.277292ms)
+  ✔ keeps older product payloads compatible without inferring affiliation (0.416599ms)
+  ✔ preserves unknown price and the published course format and disclosure (2.190496ms)
+  ✔ rejects malformed consumed metadata instead of downgrading it to a core offer (15.271279ms)
+✔ affiliate product metadata is additive and validated (255.120244ms)
+▶ affiliate actions use only the configured clean redirect
+  ✔ allows a visitor click on the exact same-origin path without a deployment hotlink (0.389ms)
+  ✔ rejects a foreign host, secrets, tracking, fragments and unregistered redirects (1.443397ms)
+  ✔ does not require affiliate redirect permission for existing core product actions (0.3161ms)
+✔ affiliate actions use only the configured clean redirect (2.479397ms)
+▶ assistant controller
+  ✔ opens the session once even when started repeatedly (reopen without duplicate requests) (24.515966ms)
+  ✔ sends one question at a time with a fresh idempotency key and the host page (15.535378ms)
+  ✔ changes the interface locale for the next question without reopening or clearing history (9.025888ms)
+  ✔ refuses empty and over-limit questions locally (13.472682ms)
+  ✔ stop forwards cancellation for a known run and settles as cancelled (8.511689ms)
+  ✔ stop before the run id is known aborts the request (6.694691ms)
+  ✔ uses the injected cancellation clock before releasing an unresponsive stream (9.684986ms)
+  ✔ marks EOF without a terminal event as interrupted and retries with the same key (9.423087ms)
+  ✔ preserves an authoritative answer and allows another question after eof without a terminal event (4.557793ms)
+  ✔ preserves an authoritative answer and allows another question after error without a terminal event (4.717993ms)
+  ✔ replays an interrupted request with its original locale and page after host changes (5.444293ms)
+  ✔ falls back to a fresh key when the interrupted run failed server-side (7.205989ms)
+  ✔ reopens the session after session_expired and returns the question to the composer (5.052793ms)
+  ✔ drops late events after dispose (unmount) and does not publish (4.834993ms)
+  ✔ clears the conversation by deleting the session and opening a new one (2.583097ms)
+  ✔ reports an unreachable API as a failed session with a reconnect path (4.780393ms)
+✔ assistant controller (148.637493ms)
+▶ native assistant boundaries
+  ✔ checks source placement even when a module has no imports (28.41116ms)
+  ✔ rejects imports from assistant modules outside the declared layers and composition files (0.4582ms)
+  ✔ keeps domain pure, application framework-free and adapters out of presentation (122.701428ms)
+  ✔ wires adapters only in the composition entry (101.218258ms)
+  ✔ uses no browser globals or platform deadlines in domain and application (256.095642ms)
+  ✔ rejects globals after URL strings without mistaking object properties for globals (1245.826458ms)
+  ✔ never renders HTML, stores credentials in the browser or opens windows by itself (20.129772ms)
+  ✔ is reachable from the app only through the build-time slot (1082.710186ms)
+  ✔ rejects traversal, directory and alias imports that used to evade the layer checks (2.190997ms)
+  ✔ checks side effects, re-exports, dynamic imports, require and import types as syntax (1.700497ms)
+✔ native assistant boundaries (2865.600493ms)
+▶ pinned API contract
+  ✔ matches the manifest recorded from a committed API revision (13.468281ms)
+✔ pinned API contract (15.556678ms)
+▶ contract v1.3 visitor hints are negotiated from the existing revision
+  ✔ omits context for old or unknown revisions and sends it only to compatible v1.3+ APIs (145.941696ms)
+✔ contract v1.3 visitor hints are negotiated from the existing revision (146.151996ms)
+▶ contract v1.1 additions are optional and forward compatible
+  ✔ defaults language and starters for a v1.0 API and does not send the locale hint (8.868088ms)
+  ✔ reads starters, contract revision and per-message language from a v1.1 API (4.306294ms)
+  ✔ sends the locale hint only after the API advertises v1.1 (1.213498ms)
+  ✔ calls the configured API origin with credentials (cross-origin storefront) (9.921786ms)
+✔ contract v1.1 additions are optional and forward compatible (24.901666ms)
+▶ committed v1.1 stream examples
+  ✔ parses the English and language-unsupported examples (24.588666ms)
+✔ committed v1.1 stream examples (24.765765ms)
+▶ explicit phases
+  ✔ walks initializing → ready → submitting → streaming → completed (1.660297ms)
+  ✔ reports early EOF as a recoverable interruption, never as completed (4.577294ms)
+  ✔ reports unavailability and expiry (0.280399ms)
+✔ explicit phases (6.93539ms)
+▶ announcements
+  ✔ announce only outcomes of a question just sent, never restored history (0.2531ms)
+✔ announcements (0.366ms)
+▶ lifecycle and stream edge cases
+  ✔ a stale open settling after dispose/start does not clear the new single-flight open (89.541775ms)
+  ✔ treats a stream ending inside a UTF-8 sequence as a protocol error (6.99389ms)
+✔ lifecycle and stream edge cases (96.955164ms)
+▶ native Spanish profile requires the additive v1.4 contract
+  ✔ rejects missing, old, malformed and other-major APIs before any message request (138.807206ms)
+  ✔ captures the response policy immutably and preserves it in same-key replay (51.908728ms)
+  ✔ keeps the generic adapter legacy-compatible when no native profile is configured (2.644796ms)
+✔ native Spanish profile requires the additive v1.4 contract (198.207923ms)
+▶ conversation reducer
+  ✔ streams, then replaces the draft with the authoritative answer (12.727982ms)
+  ✔ ignores events from a different (stale) turn key (0.269799ms)
+  ✔ allows only one pending turn (rapid double submit is a no-op) (0.262ms)
+  ✔ returns a refused question to the composer and removes the optimistic bubble (3.209195ms)
+  ✔ keeps partial text on interruption and offers retry with the same turn (0.792399ms)
+  ✔ does not duplicate the question bubble on retry (1.993397ms)
+  ✔ treats a missing terminal event after the answer as complete (7.672689ms)
+  ✔ run.completed without an answer is an interruption, not a success (0.2824ms)
+  ✔ budget exhaustion makes the assistant unavailable for new questions (0.339399ms)
+  ✔ ignores deltas after stop was requested (0.2089ms)
+  ✔ marks an expired reopen and clears history (0.2339ms)
+✔ conversation reducer (38.532546ms)
+▶ assistant flag (disabled by default)
+  ✔ is disabled when unset, empty or false, whatever the origin says (3.951795ms)
+  ✔ fails closed on ambiguous values without echoing them (0.737599ms)
+  ✔ requires a bare https origin when enabled (15.695578ms)
+  ✔ allows loopback origins only for explicit local test builds (0.509399ms)
+✔ assistant flag (disabled by default) (45.048237ms)
+▶ URL policy
+  ✔ accepts only the exact storefront origin for product actions (5.089793ms)
+  ✔ allows informational links only to the storefront or allowlisted https hosts (0.851299ms)
+  ✔ drops products whose page or purchase URL fails, and foreign images (1.974497ms)
+✔ URL policy (9.951486ms)
+▶ rich text
+  ✔ parses paragraphs, bold and bullet/numbered lists; markup stays literal text (2.499696ms)
+  ✔ never auto-links: URLs and [label](url) stay plain text (API handoff rule) (0.3082ms)
+  ✔ stays linear on adversarial input (1.607498ms)
+✔ rich text (5.109192ms)
+▶ storefront URLs cannot become protocol-relative links
+  ✔ rejects double-slash paths, backslashes and control characters (0.429499ms)
+  ✔ keeps encoded slashes inert and returns single-slash paths (0.3161ms)
+✔ storefront URLs cannot become protocol-relative links (0.977699ms)
+✔ allows only the three exact canonical official articles without granting their host (18.057974ms)
+✔ drops unsafe official citations without changing distinct source identities (18.267775ms)
+▶ next config defines the assistant switch
+  ✔ normalizes an absent, empty or false value to false (2498.799706ms)
+  ✔ normalizes an enabled value and its origin (848.247316ms)
+  ✔ enables analytics independently while keeping the assistant disabled (1496.511519ms)
+  ✔ refuses an ambiguous value (414.663323ms)
+✔ next config defines the assistant switch (5265.553655ms)
+▶ SSE reader
+  ✔ accepts every example stream the API publishes, in 1-byte and 7-byte chunks (864.409491ms)
+  ✔ maps the recommendation example to a verified product with purchase URL (30.984957ms)
+  ✔ keeps price null when the API cannot confirm it (16.772576ms)
+  ✔ ignores keep-alive comments and handles split UTF-8 code points (191.397233ms)
+  ✔ ignores additive fields without forwarding them (contract v1 is additive) (5.257493ms)
+  ✔ rejects out-of-order sequences, run id changes, missing fields and unknown types (10.697385ms)
+  ✔ stops at the terminal event: trailing frames are never delivered (3.774795ms)
+  ✔ reports EOF without a terminal event as not terminal (2.144597ms)
+  ✔ fails a stalled stream after the idle window instead of waiting forever (51.875028ms)
+  ✔ stops reading when aborted (0.809499ms)
+✔ SSE reader (1182.223847ms)
+▶ HTTP transport
+  ✔ opens the session with credentials and no-store, then sends the CSRF token on mutations (137.643508ms)
+  ✔ maps the API error envelope to typed errors (6.64189ms)
+  ✔ falls back to status mapping for non-JSON errors and marks network failures (1.011299ms)
+  ✔ rejects a malformed session and a non-SSE stream response as protocol errors (3.085995ms)
+✔ HTTP transport (148.814092ms)
+▶ untrusted assistant visitor context
+  ✔ canonicalizes only reviewed public paths (6.016492ms)
+  ✔ never forwards query, fragment, encoding, identifiers, origin or post-purchase routes (0.602799ms)
+  ✔ copies only allowed hints and drops unknown presentation modes (1.394598ms)
+✔ untrusted assistant visitor context (12.349283ms)
+✔ breakpoints match the documented scale and ascend (11.123985ms)
+✔ below() builds an exclusive max-width query (0.304799ms)
+✔ Hostinger's Node builder (cwd under /hbuilds/) is standalone even without NEXT_OUTPUT (2.463597ms)
+✔ local and CI builds follow NEXT_OUTPUT (export by default) (2.947496ms)
+✔ core requires every exact prerequisite (3.907295ms)
+✔ core rejects failure prerequisites (0.480899ms)
+✔ core rejects cancelled prerequisites (0.2445ms)
+✔ core rejects pending prerequisites (0.309799ms)
+✔ core rejects skipped prerequisites (1.153599ms)
+✔ core rejects unknown prerequisites (0.176699ms)
+✔ core rejects empty prerequisites (0.5477ms)
+✔ nightly requires every exact prerequisite (0.348ms)
+✔ nightly rejects failure prerequisites (0.604799ms)
+✔ nightly rejects cancelled prerequisites (0.391699ms)
+✔ nightly rejects pending prerequisites (0.2202ms)
+✔ nightly rejects skipped prerequisites (0.1169ms)
+✔ nightly rejects unknown prerequisites (0.1076ms)
+✔ nightly rejects empty prerequisites (0.0911ms)
+✔ bridge requires every exact prerequisite (0.3654ms)
+✔ bridge rejects failure prerequisites (0.1073ms)
+✔ bridge rejects cancelled prerequisites (0.093599ms)
+✔ bridge rejects pending prerequisites (0.09ms)
+✔ bridge rejects skipped prerequisites (0.0861ms)
+✔ bridge rejects unknown prerequisites (0.0851ms)
+✔ bridge rejects empty prerequisites (0.0924ms)
+✔ core matrix retains separate six-project functional and native configurations (3.316395ms)
+✔ functional rejects incomplete project catalogues and foreign configurations (1.360798ms)
+✔ native rejects incomplete project catalogues and foreign configurations (0.303499ms)
+✔ nightly rejects incomplete project catalogues and foreign configurations (0.2643ms)
+✔ identities preserve config, project, source location, nested titles and parameter identities (0.420099ms)
+✔ partition coverage rejects overlap, missing, extra and duplicate cases (0.42ms)
+✔ OFF manifests bind the exact complete payload, source, workflow, run, config and lock (23.431167ms)
+✔ unsafe artifact path rejected: "../x" (0.1713ms)
+✔ unsafe artifact path rejected: "/absolute" (0.102ms)
+✔ unsafe artifact path rejected: "C:/windows" (0.0972ms)
+✔ unsafe artifact path rejected: "a\\b" (0.0865ms)
+✔ unsafe artifact path rejected: "a//b" (0.292499ms)
+✔ unsafe artifact path rejected: "a/./b" (1.236699ms)
+✔ unsafe artifact path rejected: "x\u0000y" (0.136899ms)
+✔ unsafe artifact path rejected: ".env" (0.1087ms)
+✔ unsafe artifact path rejected: "a/.env.local" (0.1557ms)
+✔ unsafe artifact path rejected: ".git/config" (0.1043ms)
+✔ unsafe artifact path rejected: "private.key" (1.986497ms)
+✔ unsafe artifact path rejected: "data.sqlite" (0.301599ms)
+✔ unsafe artifact path rejected: "dump.bak" (0.1101ms)
+✔ OFF inventory rejects duplicates, prefix conflicts, unknown fields, enabled markers and size bombs (2.127797ms)
+✔ linked, FIFO/device and unbounded files cannot enter the payload (0.456099ms)
+✔ build identity distinguishes disabled exports from enabled fixtures (2.725896ms)
+✔ workflow transfer and aggregate wiring never uploads enabled exports or weakens the ci bridge (1.174099ms)
+✔ quarantine validates before destination writes and rejects real symlinks/hardlinks/drift (8.869887ms)
+✔ analyzer rebuild has fresh metadata, its own OFF verification and manifest-only evidence (1.025999ms)
+✔ global runtime JSON reporter cannot consume discovery stdout or omit hidden evidence (1.899597ms)
+✔ Nightly uploads hidden evidence only within the existing bounded report paths (7.859789ms)
+✔ shared commercial facts (guarantee and currency) (1.737997ms)
+✔ USD formatting uses the Spanish decimal comma (0.2967ms)
+✔ off and ref are not in the passthrough allowlist (0.2907ms)
+✔ every consumer-rights entry links an https authority page (2.454696ms)
+✔ every stated withdrawal period cites an https source (0.2645ms)
+✔ countries are unique and sorted alphabetically (Spanish collation) (18.497174ms)
+✔ pre-purchase copy (home, principal landing) never offers paid extras (4.801693ms)
+✔ customer-facing sources never use the retired product name or generic placeholders (8.108188ms)
+✔ no trace of the retired operator brand in code, content or config (53.133926ms)
+✔ copy never promises learning outcomes (102.312257ms)
+✔ owner placeholders live only in the legal seller module (2.834696ms)
+✔ guarantee days in copy match the configured value (3.111095ms)
+✔ price literals in copy use the shared formatter (1.507898ms)
+✔ price literals never use a decimal point (customer-facing prices read US$14,99) (1.367598ms)
+✔ Dependabot assessment cannot acquire a write token or perform a merge (2.087097ms)
+✔ CSS Modules never use @apply (15.195379ms)
+✔ nothing imports retired source roots or PascalCase shared folders (90.300774ms)
+✔ primitives, blocks and layout are kebab-case; primitives tag their root with data-slot (6.057592ms)
+✔ light theme only; !important only in the annotated reduced-motion kill switch (7.82229ms)
+✔ documented WCAG 2.2 AA contrast pairs hold for the OKLCH tokens (2.046898ms)
+✔ cn keeps the project's font sizes and shadows next to colours (config/cn.ts) (42.582041ms)
+✔ edge rules validate and stay in sync with the committed golden .htaccess (5.561392ms)
+✔ apache regexes never carry a leading slash (per-directory context) (0.466599ms)
+✔ static headers include cache policy for media, fonts and build-info (0.321299ms)
+✔ standalone target receives the same rules (2.240897ms)
+✔ affiliate redirects resolve from the build environment, never from the repository (1.233598ms)
+✔ affiliate destinations must be plain https links (Hotmart or the producer's page) (1.114099ms)
+✔ the personal email literal lives only in the seller module (10.544585ms)
+✔ only legal routes and their exact legal views render seller.legalEmail (10.167886ms)
+✔ nonlegal views, shell and unlisted legal views cannot render the personal mailbox (3.142596ms)
+✔ validates affiliate HEAD handoff without requesting an external merchant that could return 401 (71.7787ms)
+✔ retains a manual GET fallback for origin HEAD 405 only (1.904398ms)
+✔ keeps real storefront 4xx/5xx failures visible without GET bypass or retries (3.321795ms)
+✔ ordinary internal pages and bounded same-origin redirects still resolve (3.766095ms)
+✔ a configured affiliate must actually hand off; a 200 or internal dead end is not success (0.978899ms)
+✔ rejects arbitrary external destinations and merchant redirects from undeclared paths (3.713095ms)
+✔ rejects missing Location, permanent external handoffs and redirect loops (0.588699ms)
+✔ limits internal redirect hops without weakening or following to an unknown external host (0.674999ms)
+✔ site-wide media ids exist in the manifest (product ids are checked by the registry) (1.669497ms)
+✔ images expose explicit dimensions and a srcset; videos expose poster and text alternative (1.329599ms)
+✔ unknown ids throw at build time (0.907099ms)
+✔ other paths return false so the caller continues; only POST on the relay path (with or without slash) (147.235695ms)
+✔ disabled (no token or no pixel) answers 204 and never calls Meta (44.958637ms)
+✔ validation matrix: bad JSON, forbidden event, unknown param, oversized body, bad ids and urls (121.922331ms)
+✔ the affiliate click is relayed as its own custom event (18.533675ms)
+✔ valid batch: 202 at once, then Graph API payload with bearer token, ids, ip and user agent (11.489484ms)
+✔ client ip falls back to the first x-forwarded-for entry, then the socket; host origin accepted (15.482879ms)
+✔ retries once on 429/5xx and on network errors, never on other 4xx; failures are logged without the token (48.514432ms)
+✔ rate limit: a client ip gets 429 once its events per window are spent, refilling over time (25.016265ms)
+✔ options from the environment trim values and never invent a site url (1.274498ms)
+✔ core: process() describes every response without a transport (3.525395ms)
+✔ core: disabled relay answers 204 for a POST before looking at the body, 405 otherwise (0.824698ms)
+✔ pickClientIp takes the first valid address, splitting x-forwarded-for lists (0.1918ms)
+✔ holds stack, release is idempotent and the root flag mirrors them (12.474983ms)
+✔ forwards allowlisted acquisition params and keeps checkoutMode (3.865294ms)
+✔ never forwards off or ref (visitor-controlled offer selection) (0.355ms)
+✔ extra params are added only when absent (0.3009ms)
+✔ empty base yields empty string (public clone without checkout URL) (0.1926ms)
+✔ internal passthrough keeps only allowlisted params (2.739496ms)
+✔ sck carries the product prefix, is sanitized and capped at 30 characters (1.098198ms)
+✔ the registry parses and exposes both products with canonical paths (6.055392ms)
+✔ every media id of every product exists in the manifest with the right kind (13.543981ms)
+✔ resources sum to the documented page counts (1.593198ms)
+✔ documented prices (README 2026-08-04): 14.99 list, 14.99 upsell, 7.49 downsell (0.2639ms)
+✔ the checkout URL comes only from static env references Next can inline (2.052197ms)
+✔ registry refinements reject broken registries (51.776328ms)
+✔ Product JSON-LD carries one Offer and never ratings, reviews or merchant-listing fields (1.105598ms)
+✔ the seeded starfield and its static tile are deterministic and complete (13.360181ms)
+✔ scene budget follows extracted vendors and nested asynchronous chunks (1.712498ms)
+✔ the report marks a scene that leaked into an initial chunk (21.50047ms)
+✔ OFF ignores an unrelated origin; enabled input rejects unsafe origins without echoing them (9.365587ms)
+✔ only approved routes, sections and coarse cells; never browser URLs or off-grid values (1.162899ms)
+✔ no default collection; explicit choice, minimised wire, route isolation and revocation (3.024395ms)
+✔ finite document and minute admission; no replay after a rejected event (1.406698ms)
+✔ publisher bounds requests, strips credentials and aborts without retry (24.387966ms)
+✔ both deployment headers add exactly the enabled origin; OFF is unchanged (4.387894ms)
+✔ site analytics preserves layer direction and closed composition ownership (75.983194ms)
+✔ analytics grant expires independently; failed writes cannot reactivate a revoked document (9.905386ms)
+✔ disabled consent compilation excludes the independent analytics tool and withdrawal branch (49.211631ms)
+✔ enabled consent compilation retains opt-in freshness, withdrawal and existing consent actions (8.732688ms)
+✔ enabled banner reopens stale opt-in while OFF preserves existing marketing consent (34.732652ms)
+✔ enabled rejection withdraws before failed persistence; OFF keeps the original writer behavior (36.30475ms)
+✔ publication gate rejects enabled metadata and emitted collection on both build targets (1438.585499ms)
+✔ the committed skill catalog is valid (23.407768ms)
+✔ adapter drift is detected (131.450317ms)
+✔ a skill without limits or exclusions is rejected (99.758661ms)
+✔ private paths, secrets, unknown scripts and placeholders are rejected (122.15963ms)
+✔ a skill present in only one catalog is rejected (111.371745ms)
+✔ Claude adapters cannot duplicate procedural instructions (96.019367ms)
+✔ skill frontmatter naming and canonical references remain enforced (143.265401ms)
+✔ broken and outside canonical references are rejected (135.165512ms)
+✔ duplicate frontmatter fields are rejected (75.354195ms)
+✔ skill entry links and escaped resource realpaths are rejected (113.537842ms)
+✔ skill catalogs keep real directories while confined resource links stay valid (110.547146ms)
+✔ tile order is a deterministic permutation; three or more syllables never show the solved order (4.408494ms)
+✔ both published demo catalogs mix ordered and reversed pairs deterministically (0.7067ms)
+✔ slot texts follow the printed word, accents included (0.3854ms)
+✔ press: right syllable advances, the last one completes, misses and repeats are handled (0.305099ms)
+✔ forbidden events throw in development and are dropped in production (4.505694ms)
+✔ every event gets a UUID id and is mirrored to dataLayer with undefined params dropped (20.522971ms)
+✔ affiliate clicks are their own custom event, never a checkout or purchase (1.861198ms)
+✔ measurement is on by default: events reach a gated adapter before any decision (4.827393ms)
+✔ rejecting revokes the adapter, drops its queue and stops every later event (0.963698ms)
+✔ events stay queued while the vendor script is not ready and flush once it is (0.4609ms)
+✔ an adapter in category none ignores a rejection (0.376799ms)
+✔ consent v2 cookie format and re-prompt on version bump (5.133593ms)
+✔ meta adapter inits active, revokes on rejection (expiring _fbp/_fbc) and passes eventID (2.553497ms)
+✔ meta-capi adapter relays batched events with the pixel's event ids, _fbp and _fbc (97.046165ms)
+✔ meta-capi adapter derives fbc from ?fbclid when the cookie is missing and omits absent ids (42.572741ms)
+✔ meta-capi adapter sends nothing after Rechazar: buffered events dropped, later events never relayed (65.962308ms)
+✔ meta-capi adapter flushes on pagehide with sendBeacon when available (27.175062ms)
+✔ meta-capi adapter waits briefly for fbevents.js to write _fbp, then relays with it (162.128574ms)
+ℹ tests 277
+ℹ suites 22
+ℹ pass 277
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11606.863905
+ℹ start of coverage report
+ℹ ---------------------------------------------------------------------------------------------------------------
+ℹ file                                  | line % | branch % | funcs % | uncovered lines
+ℹ ---------------------------------------------------------------------------------------------------------------
+ℹ config                                |        |          |         | 
+ℹ  affiliates.ts                        | 100.00 |   100.00 |  100.00 | 
+ℹ  assistant.ts                         | 100.00 |   100.00 |  100.00 | 
+ℹ  cn.ts                                | 100.00 |   100.00 |  100.00 | 
+ℹ  commerce.ts                          | 100.00 |   100.00 |  100.00 | 
+ℹ  next.ts                              |  94.90 |    33.33 |    0.00 | 81-82 86-88
+ℹ  products                             |        |          |         | 
+ℹ   grafismo-fonetico.ts                | 100.00 |    50.00 |  100.00 | 
+ℹ   imprime-y-juega.ts                  | 100.00 |   100.00 |  100.00 | 
+ℹ   index.ts                            | 100.00 |    92.31 |  100.00 | 
+ℹ   schema.ts                           | 100.00 |   100.00 |   90.91 | 
+ℹ  site-analytics-env.ts                | 100.00 |    95.65 |  100.00 | 
+ℹ  site.ts                              | 100.00 |    50.00 |  100.00 | 
+ℹ content                               |        |          |         | 
+ℹ  es                                   |        |          |         | 
+ℹ   home.ts                             | 100.00 |   100.00 |  100.00 | 
+ℹ   hub.ts                              | 100.00 |   100.00 |  100.00 | 
+ℹ   legal                               |        |          |         | 
+ℹ    consumer-rights.ts                 | 100.00 |   100.00 |  100.00 | 
+ℹ    seller.ts                          | 100.00 |   100.00 |  100.00 | 
+ℹ   products                            |        |          |         | 
+ℹ    grafismo-fonetico                  |        |          |         | 
+ℹ     copy.ts                           | 100.00 |   100.00 |  100.00 | 
+ℹ     faq.ts                            | 100.00 |   100.00 |  100.00 | 
+ℹ     resources.ts                      | 100.00 |   100.00 |  100.00 | 
+ℹ    imprime-y-juega                    |        |          |         | 
+ℹ     copy.ts                           | 100.00 |   100.00 |  100.00 | 
+ℹ     faq.ts                            | 100.00 |   100.00 |  100.00 | 
+ℹ     resources.ts                      | 100.00 |   100.00 |  100.00 | 
+ℹ src                                   |        |          |         | 
+ℹ  features                             |        |          |         | 
+ℹ   assistant                           |        |          |         | 
+ℹ    adapters                           |        |          |         | 
+ℹ     http.ts                           |  90.38 |    85.00 |   75.00 | 31 45 47 115-117 143-147 150-153
+ℹ     sse.ts                            | 100.00 |    82.86 |   86.67 | 
+ℹ     validate.ts                       |  98.73 |    85.37 |   96.43 | 192-194
+ℹ    application                        |        |          |         | 
+ℹ     assistant.ts                      |  96.12 |    75.86 |   92.31 | 121-123 185-186 254-259 272
+ℹ     ports.ts                          | 100.00 |   100.00 |  100.00 | 
+ℹ    domain                             |        |          |         | 
+ℹ     conversation.ts                   |  98.79 |    86.44 |  100.00 | 121-122 267 329
+ℹ     links.ts                          | 100.00 |   100.00 |   91.67 | 
+ℹ     models.ts                         | 100.00 |   100.00 |  100.00 | 
+ℹ     rich-text.ts                      | 100.00 |    91.30 |  100.00 | 
+ℹ     visitor-context.ts                | 100.00 |   100.00 |  100.00 | 
+ℹ    flag.ts                            | 100.00 |   100.00 |  100.00 | 
+ℹ   commerce                            |        |          |         | 
+ℹ    domain                             |        |          |         | 
+ℹ     checkout-url.ts                   | 100.00 |    95.65 |  100.00 | 
+ℹ   playground                          |        |          |         | 
+ℹ    domain                             |        |          |         | 
+ℹ     syllable-game.ts                  | 100.00 |    96.67 |  100.00 | 
+ℹ   site-analytics                      |        |          |         | 
+ℹ    adapters                           |        |          |         | 
+ℹ     http.ts                           |  97.62 |    91.67 |   75.00 | 30
+ℹ    application                        |        |          |         | 
+ℹ     collection.ts                     |  98.08 |    92.00 |  100.00 | 41-42
+ℹ    domain                             |        |          |         | 
+ℹ     consent.ts                        | 100.00 |    90.91 |  100.00 | 
+ℹ     profile.ts                        | 100.00 |   100.00 |  100.00 | 
+ℹ   tracking                            |        |          |         | 
+ℹ    adapters                           |        |          |         | 
+ℹ     consent.ts                        |  95.65 |    74.19 |   90.00 | 53-54 71-72
+ℹ     env.ts                            | 100.00 |    75.00 |  100.00 | 
+ℹ     meta-capi.ts                      | 100.00 |    87.50 |   94.44 | 
+ℹ     meta.ts                           | 100.00 |    84.62 |  100.00 | 
+ℹ     server                            |        |          |         | 
+ℹ      meta-capi.ts                     |  97.26 |    91.46 |   93.75 | 198-200 310-311 371-374 429-431
+ℹ     track.ts                          |  83.51 |    89.36 |   76.19 | 28-29 33 106-109 128-129 132-144 147-156
+ℹ  shared                               |        |          |         | 
+ℹ   media                               |        |          |         | 
+ℹ    media.ts                           |  96.98 |    74.47 |   95.65 | 100-101 196-199
+ℹ   motion                              |        |          |         | 
+ℹ    motion-hold.ts                     | 100.00 |   100.00 |  100.00 | 
+ℹ    scene                              |        |          |         | 
+ℹ     starfield.ts                      |  96.15 |    70.59 |   83.33 | 55-57
+ℹ   styles                              |        |          |         | 
+ℹ    breakpoints.ts                     | 100.00 |   100.00 |  100.00 | 
+ℹ    cn-tables.js                       | 100.00 |   100.00 |  100.00 | 
+ℹ  views                                |        |          |         | 
+ℹ   product-jsonld.ts                   | 100.00 |   100.00 |  100.00 | 
+ℹ tests                                 |        |          |         | 
+ℹ  helpers                              |        |          |         | 
+ℹ   source-architecture.ts              | 100.00 |    92.27 |  100.00 | 
+ℹ tools                                 |        |          |         | 
+ℹ  check-site-analytics-disabled.ts     | 100.00 |    66.67 |  100.00 | 
+ℹ  check-skills.ts                      |  93.15 |    78.82 |  100.00 | 17-19 67-68 142-146
+ℹ  ci                                   |        |          |         | 
+ℹ   acceptance.ts                       |  71.43 |    92.86 |  100.00 | 31-42
+ℹ   artifacts.ts                        |  72.50 |    88.60 |   95.24 | 165-166 205-206 262-263 266-297 300-360
+ℹ   inventories.ts                      |  79.05 |    83.93 |   86.67 | 118-148
+ℹ  lib                                  |        |          |         | 
+ℹ   build-target.ts                     | 100.00 |   100.00 |  100.00 | 
+ℹ   edge-rules.ts                       |  96.83 |    83.75 |   90.91 | 61-63 77-78 146-147 155-156
+ℹ   live-links.ts                       | 100.00 |    97.14 |  100.00 | 
+ℹ  scene-budget-plugin.ts               | 100.00 |    84.62 |  100.00 | 
+ℹ ---------------------------------------------------------------------------------------------------------------
+ℹ all files                             |  96.19 |    88.11 |   92.78 | 
+ℹ ---------------------------------------------------------------------------------------------------------------
+ℹ end of coverage report
