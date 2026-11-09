@@ -1,55 +1,35 @@
 version: 2
-updates:
-  # Version updates target develop (the default and integration branch); security updates are
-  # raised by GitHub against the default branch and are never auto-merged.
-  - package-ecosystem: npm
-    directory: /
-    target-branch: develop
+
+# One weekly PR for every ecosystem (owner rule, ecosystem.md section 5): the multi-ecosystem group
+# `weekly-all` carries the schedule and target; each entry below joins it. Version updates target
+# develop (the integration branch); Hostinger builds main, so nothing deploys from these PRs.
+# Security-update PRs are disabled in repository settings; alerts stay on and ride the weekly PR.
+multi-ecosystem-groups:
+  weekly-all:
     schedule:
       interval: weekly
       day: monday
-    # Two grouped minor/patch PRs per week: `frameworks` (always human review, see
-    # dependency-policy.yml REVIEW_REQUIRED; keep both lists in sync) and `npm-minor-patch`
-    # (everything else, manual review after required checks). Majors come alone.
-    open-pull-requests-limit: 4
+      time: "09:00"
+      timezone: America/Argentina/Buenos_Aires
+    target-branch: develop
+    labels:
+      - dependencies
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    multi-ecosystem-group: weekly-all
+    patterns: ["*"]
+    open-pull-requests-limit: 1
     cooldown:
       default-days: 7
-      semver-major-days: 21
-    groups:
-      frameworks:
-        patterns:
-          - next
-          - "@next/bundle-analyzer"
-          - react
-          - react-dom
-          - "@types/react"
-          - "@types/react-dom"
-          - typescript
-          - tailwindcss
-          - "@tailwindcss/postcss"
-          - "@base-ui/react"
-          - zod
-          - "@playwright/test"
-        update-types: [minor, patch]
-      npm-minor-patch:
-        patterns: ["*"]
-        exclude-patterns:
-          - next
-          - "@next/bundle-analyzer"
-          - react
-          - react-dom
-          - "@types/react"
-          - "@types/react-dom"
-          - typescript
-          - tailwindcss
-          - "@tailwindcss/postcss"
-          - "@base-ui/react"
-          - zod
-          - "@playwright/test"
-        update-types: [minor, patch]
+      semver-major-days: 14
+      semver-patch-days: 3
     ignore:
+      # Types follow the Node LTS in .nvmrc (Hostinger builds on it); Current lines are skipped.
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
+      # Framework majors are planned migrations, not weekly bumps.
       - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]
       - dependency-name: "next"
@@ -66,24 +46,21 @@ updates:
         versions: ["1.64.0"]
   - package-ecosystem: npm
     directory: /tools/media
-    target-branch: develop
-    schedule:
-      interval: weekly
+    multi-ecosystem-group: weekly-all
+    patterns: ["*"]
+    open-pull-requests-limit: 1
     cooldown:
       default-days: 7
+      semver-major-days: 14
+      semver-patch-days: 3
     ignore:
-      # Types follow the Node LTS in .nvmrc (Hostinger builds on it); Current lines are skipped.
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     # `/` covers .github/workflows; the glob covers composite actions under .github/actions.
     directories: ["/", "/.github/actions/*"]
-    target-branch: develop
-    schedule:
-      interval: weekly
-      day: monday
+    multi-ecosystem-group: weekly-all
+    patterns: ["*"]
+    open-pull-requests-limit: 1
     cooldown:
       default-days: 7
-    groups:
-      actions:
-        patterns: ["*"]
