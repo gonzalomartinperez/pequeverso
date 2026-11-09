@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  # Keep in sync with the `frameworks` group in .github/dependabot.yml.
+  # Packages that always need explicit review (the weekly Dependabot PR is a single group, so this list is advisory metadata only).
   REVIEW_REQUIRED: >-
     next @next/bundle-analyzer react react-dom @types/react @types/react-dom typescript
     tailwindcss @tailwindcss/postcss @base-ui/react zod @playwright/test
