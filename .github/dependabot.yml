@@ -12,6 +12,7 @@ multi-ecosystem-groups:
       time: "09:00"
       timezone: America/Argentina/Buenos_Aires
     target-branch: develop
+    open-pull-requests-limit: 1
     labels:
       - dependencies
 
@@ -20,7 +21,6 @@ updates:
     directory: /
     multi-ecosystem-group: weekly-all
     patterns: ["*"]
-    open-pull-requests-limit: 1
     cooldown:
       default-days: 7
       semver-major-days: 14
@@ -48,7 +48,6 @@ updates:
     directory: /tools/media
     multi-ecosystem-group: weekly-all
     patterns: ["*"]
-    open-pull-requests-limit: 1
     cooldown:
       default-days: 7
       semver-major-days: 14
@@ -61,6 +60,5 @@ updates:
     directories: ["/", "/.github/actions/*"]
     multi-ecosystem-group: weekly-all
     patterns: ["*"]
-    open-pull-requests-limit: 1
     cooldown:
       default-days: 7
