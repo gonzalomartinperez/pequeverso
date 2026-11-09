@@ -1,0 +1,1170 @@
+{
+  "overflow": [
+    {
+      "route": "/",
+      "width": 320,
+      "sw": 320,
+      "cw": 320,
+      "h": 11803,
+      "overflow": false
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "sw": 390,
+      "cw": 390,
+      "h": 11198,
+      "overflow": false
+    },
+    {
+      "route": "/",
+      "width": 768,
+      "sw": 768,
+      "cw": 768,
+      "h": 10916,
+      "overflow": false
+    },
+    {
+      "route": "/",
+      "width": 1024,
+      "sw": 1024,
+      "cw": 1024,
+      "h": 9303,
+      "overflow": false
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "sw": 1440,
+      "cw": 1440,
+      "h": 8823,
+      "overflow": false
+    },
+    {
+      "route": "/",
+      "width": 1920,
+      "sw": 1920,
+      "cw": 1920,
+      "h": 8972,
+      "overflow": false
+    },
+    {
+      "route": "/grafismo-fonetico/",
+      "width": 320,
+      "sw": 320,
+      "cw": 320,
+      "h": 19322,
+      "overflow": false
+    },
+    {
+      "route": "/grafismo-fonetico/",
+      "width": 390,
+      "sw": 390,
+      "cw": 390,
+      "h": 18094,
+      "overflow": false
+    },
+    {
+      "route": "/grafismo-fonetico/",
+      "width": 768,
+      "sw": 768,
+      "cw": 768,
+      "h": 19255,
+      "overflow": false
+    },
+    {
+      "route": "/grafismo-fonetico/",
+      "width": 1024,
+      "sw": 1024,
+      "cw": 1024,
+      "h": 18505,
+      "overflow": false
+    },
+    {
+      "route": "/grafismo-fonetico/",
+      "width": 1440,
+      "sw": 1440,
+      "cw": 1440,
+      "h": 14886,
+      "overflow": false
+    },
+    {
+      "route": "/grafismo-fonetico/",
+      "width": 1920,
+      "sw": 1920,
+      "cw": 1920,
+      "h": 15131,
+      "overflow": false
+    },
+    {
+      "route": "/imprime-y-juega/",
+      "width": 320,
+      "sw": 320,
+      "cw": 320,
+      "h": 8460,
+      "overflow": false
+    },
+    {
+      "route": "/imprime-y-juega/",
+      "width": 390,
+      "sw": 390,
+      "cw": 390,
+      "h": 8157,
+      "overflow": false
+    },
+    {
+      "route": "/imprime-y-juega/",
+      "width": 768,
+      "sw": 768,
+      "cw": 768,
+      "h": 7918,
+      "overflow": false
+    },
+    {
+      "route": "/imprime-y-juega/",
+      "width": 1024,
+      "sw": 1024,
+      "cw": 1024,
+      "h": 7301,
+      "overflow": false
+    },
+    {
+      "route": "/imprime-y-juega/",
+      "width": 1440,
+      "sw": 1440,
+      "cw": 1440,
+      "h": 7109,
+      "overflow": false
+    },
+    {
+      "route": "/imprime-y-juega/",
+      "width": 1920,
+      "sw": 1920,
+      "cw": 1920,
+      "h": 7307,
+      "overflow": false
+    },
+    {
+      "route": "/grafismo-fonetico/gracias/",
+      "width": 320,
+      "sw": 320,
+      "cw": 320,
+      "h": 6814,
+      "overflow": false
+    },
+    {
+      "route": "/grafismo-fonetico/gracias/",
+      "width": 390,
+      "sw": 390,
+      "cw": 390,
+      "h": 6571,
+      "overflow": false
+    },
+    {
+      "route": "/grafismo-fonetico/gracias/",
+      "width": 768,
+      "sw": 768,
+      "cw": 768,
+      "h": 6530,
+      "overflow": false
+    },
+    {
+      "route": "/grafismo-fonetico/gracias/",
+      "width": 1024,
+      "sw": 1024,
+      "cw": 1024,
+      "h": 5877,
+      "overflow": false
+    },
+    {
+      "route": "/grafismo-fonetico/gracias/",
+      "width": 1440,
+      "sw": 1440,
+      "cw": 1440,
+      "h": 5609,
+      "overflow": false
+    },
+    {
+      "route": "/grafismo-fonetico/gracias/",
+      "width": 1920,
+      "sw": 1920,
+      "cw": 1920,
+      "h": 5766,
+      "overflow": false
+    },
+    {
+      "route": "/terminos/",
+      "width": 320,
+      "sw": 320,
+      "cw": 320,
+      "h": 14274,
+      "overflow": false
+    },
+    {
+      "route": "/terminos/",
+      "width": 390,
+      "sw": 390,
+      "cw": 390,
+      "h": 11558,
+      "overflow": false
+    },
+    {
+      "route": "/terminos/",
+      "width": 768,
+      "sw": 768,
+      "cw": 768,
+      "h": 7932,
+      "overflow": false
+    },
+    {
+      "route": "/terminos/",
+      "width": 1024,
+      "sw": 1024,
+      "cw": 1024,
+      "h": 8431,
+      "overflow": false
+    },
+    {
+      "route": "/terminos/",
+      "width": 1440,
+      "sw": 1440,
+      "cw": 1440,
+      "h": 7580,
+      "overflow": false
+    },
+    {
+      "route": "/terminos/",
+      "width": 1920,
+      "sw": 1920,
+      "cw": 1920,
+      "h": 7597,
+      "overflow": false
+    },
+    {
+      "route": "/soporte/",
+      "width": 320,
+      "sw": 320,
+      "cw": 320,
+      "h": 4685,
+      "overflow": false
+    },
+    {
+      "route": "/soporte/",
+      "width": 390,
+      "sw": 390,
+      "cw": 390,
+      "h": 4259,
+      "overflow": false
+    },
+    {
+      "route": "/soporte/",
+      "width": 768,
+      "sw": 768,
+      "cw": 768,
+      "h": 3340,
+      "overflow": false
+    },
+    {
+      "route": "/soporte/",
+      "width": 1024,
+      "sw": 1024,
+      "cw": 1024,
+      "h": 3300,
+      "overflow": false
+    },
+    {
+      "route": "/soporte/",
+      "width": 1440,
+      "sw": 1440,
+      "cw": 1440,
+      "h": 2867,
+      "overflow": false
+    },
+    {
+      "route": "/soporte/",
+      "width": 1920,
+      "sw": 1920,
+      "cw": 1920,
+      "h": 2939,
+      "overflow": false
+    }
+  ],
+  "axe": [
+    {
+      "route": "/",
+      "vp": "mobile",
+      "byImpact": {},
+      "total": 0,
+      "items": []
+    },
+    {
+      "route": "/",
+      "vp": "desktop",
+      "byImpact": {},
+      "total": 0,
+      "items": []
+    },
+    {
+      "route": "/grafismo-fonetico/",
+      "vp": "mobile",
+      "byImpact": {},
+      "total": 0,
+      "items": []
+    },
+    {
+      "route": "/grafismo-fonetico/",
+      "vp": "desktop",
+      "byImpact": {},
+      "total": 0,
+      "items": []
+    },
+    {
+      "route": "/imprime-y-juega/",
+      "vp": "mobile",
+      "byImpact": {
+        "serious": 2
+      },
+      "total": 2,
+      "items": [
+        {
+          "id": "frame-title",
+          "impact": "serious",
+          "nodes": 1,
+          "help": "Frames must have an accessible name",
+          "sample": ["iframe"]
+        },
+        {
+          "id": "link-name",
+          "impact": "serious",
+          "nodes": 1,
+          "help": "Links must have discernible text",
+          "sample": ["iframe", "a"]
+        }
+      ]
+    },
+    {
+      "route": "/imprime-y-juega/",
+      "vp": "desktop",
+      "byImpact": {
+        "serious": 2
+      },
+      "total": 2,
+      "items": [
+        {
+          "id": "frame-title",
+          "impact": "serious",
+          "nodes": 1,
+          "help": "Frames must have an accessible name",
+          "sample": ["iframe"]
+        },
+        {
+          "id": "link-name",
+          "impact": "serious",
+          "nodes": 1,
+          "help": "Links must have discernible text",
+          "sample": ["iframe", "a"]
+        }
+      ]
+    },
+    {
+      "route": "/grafismo-fonetico/gracias/",
+      "vp": "mobile",
+      "byImpact": {},
+      "total": 0,
+      "items": []
+    },
+    {
+      "route": "/grafismo-fonetico/gracias/",
+      "vp": "desktop",
+      "byImpact": {},
+      "total": 0,
+      "items": []
+    },
+    {
+      "route": "/terminos/",
+      "vp": "mobile",
+      "byImpact": {},
+      "total": 0,
+      "items": []
+    },
+    {
+      "route": "/terminos/",
+      "vp": "desktop",
+      "byImpact": {},
+      "total": 0,
+      "items": []
+    },
+    {
+      "route": "/soporte/",
+      "vp": "mobile",
+      "byImpact": {},
+      "total": 0,
+      "items": []
+    },
+    {
+      "route": "/soporte/",
+      "vp": "desktop",
+      "byImpact": {},
+      "total": 0,
+      "items": []
+    }
+  ],
+  "keyboard": [
+    {
+      "route": "/",
+      "vp": "desktop",
+      "tabsToHotmartCTA": null,
+      "tabsRecorded": 59,
+      "noVisibleIndicator": 0,
+      "first12": [
+        {
+          "tag": "A",
+          "txt": "Saltar al contenido",
+          "href": "#contenido",
+          "outline": true,
+          "shadow": false,
+          "w": 185,
+          "h": 51,
+          "i": 1
+        },
+        {
+          "tag": "A",
+          "txt": "Botón de arrepentimiento",
+          "href": "/arrepentimiento/",
+          "outline": true,
+          "shadow": false,
+          "w": 193,
+          "h": 24,
+          "i": 2
+        },
+        {
+          "tag": "A",
+          "txt": "pequeverso",
+          "href": "/",
+          "outline": true,
+          "shadow": false,
+          "w": 188,
+          "h": 44,
+          "i": 3
+        },
+        {
+          "tag": "A",
+          "txt": "Preguntas",
+          "href": "#preguntas",
+          "outline": true,
+          "shadow": false,
+          "w": 104,
+          "h": 44,
+          "i": 4
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "Productos",
+          "href": "",
+          "outline": true,
+          "shadow": true,
+          "w": 143,
+          "h": 44,
+          "i": 5
+        },
+        {
+          "tag": "A",
+          "txt": "Kit de Pequeverso\n3 a 7 años\nAprender a ",
+          "href": "/grafismo-fonetico/",
+          "outline": true,
+          "shadow": true,
+          "w": 530,
+          "h": 339,
+          "i": 6
+        },
+        {
+          "tag": "A",
+          "txt": "Curso afiliado\n6 a 12 meses\nPrimeras com",
+          "href": "/alimentacion-bebe/?src=sitio-home",
+          "outline": true,
+          "shadow": true,
+          "w": 530,
+          "h": 339,
+          "i": 7
+        },
+        {
+          "tag": "A",
+          "txt": "Quiero el kit · US$14,99",
+          "href": "/grafismo-fonetico/",
+          "outline": true,
+          "shadow": true,
+          "w": 323,
+          "h": 64,
+          "i": 8
+        },
+        {
+          "tag": "A",
+          "txt": "Ver qué incluye",
+          "href": "/grafismo-fonetico/#incluye",
+          "outline": true,
+          "shadow": false,
+          "w": 147,
+          "h": 44,
+          "i": 9
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "GA",
+          "href": "",
+          "outline": true,
+          "shadow": true,
+          "w": 112,
+          "h": 112,
+          "i": 10
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "TO",
+          "href": "",
+          "outline": true,
+          "shadow": true,
+          "w": 112,
+          "h": 112,
+          "i": 11
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "GATO",
+          "href": "",
+          "outline": true,
+          "shadow": true,
+          "w": 78,
+          "h": 44,
+          "i": 12
+        }
+      ]
+    },
+    {
+      "route": "/",
+      "vp": "mobile",
+      "tabsToHotmartCTA": null,
+      "tabsRecorded": 59,
+      "noVisibleIndicator": 0,
+      "first12": [
+        {
+          "tag": "A",
+          "txt": "Saltar al contenido",
+          "href": "#contenido",
+          "outline": true,
+          "shadow": false,
+          "w": 177,
+          "h": 50,
+          "i": 1
+        },
+        {
+          "tag": "A",
+          "txt": "Botón de arrepentimiento",
+          "href": "/arrepentimiento/",
+          "outline": true,
+          "shadow": false,
+          "w": 193,
+          "h": 24,
+          "i": 2
+        },
+        {
+          "tag": "A",
+          "txt": "Pequeverso, ir al inicio",
+          "href": "/",
+          "outline": true,
+          "shadow": false,
+          "w": 44,
+          "h": 44,
+          "i": 3
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "Productos",
+          "href": "",
+          "outline": true,
+          "shadow": true,
+          "w": 143,
+          "h": 44,
+          "i": 4
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "Abrir el menú",
+          "href": "",
+          "outline": true,
+          "shadow": false,
+          "w": 44,
+          "h": 44,
+          "i": 5
+        },
+        {
+          "tag": "A",
+          "txt": "Kit de Pequeverso\n3 a 7 años\nAprender a ",
+          "href": "/grafismo-fonetico/",
+          "outline": true,
+          "shadow": true,
+          "w": 169,
+          "h": 394,
+          "i": 6
+        },
+        {
+          "tag": "A",
+          "txt": "Curso afiliado\n6 a 12 meses\nPrimeras com",
+          "href": "/alimentacion-bebe/?src=sitio-home",
+          "outline": true,
+          "shadow": true,
+          "w": 169,
+          "h": 394,
+          "i": 7
+        },
+        {
+          "tag": "A",
+          "txt": "Quiero el kit · US$14,99",
+          "href": "/grafismo-fonetico/",
+          "outline": true,
+          "shadow": true,
+          "w": 350,
+          "h": 64,
+          "i": 8
+        },
+        {
+          "tag": "A",
+          "txt": "Ver qué incluye",
+          "href": "/grafismo-fonetico/#incluye",
+          "outline": true,
+          "shadow": false,
+          "w": 143,
+          "h": 44,
+          "i": 9
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "GA",
+          "href": "",
+          "outline": true,
+          "shadow": true,
+          "w": 88,
+          "h": 88,
+          "i": 10
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "TO",
+          "href": "",
+          "outline": true,
+          "shadow": true,
+          "w": 88,
+          "h": 88,
+          "i": 11
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "GATO",
+          "href": "",
+          "outline": true,
+          "shadow": true,
+          "w": 78,
+          "h": 44,
+          "i": 12
+        }
+      ]
+    },
+    {
+      "route": "/grafismo-fonetico/",
+      "vp": "desktop",
+      "tabsToHotmartCTA": 8,
+      "tabsRecorded": 60,
+      "noVisibleIndicator": 0,
+      "first12": [
+        {
+          "tag": "A",
+          "txt": "Saltar al contenido",
+          "href": "#contenido",
+          "outline": true,
+          "shadow": false,
+          "w": 185,
+          "h": 51,
+          "i": 1
+        },
+        {
+          "tag": "A",
+          "txt": "Botón de arrepentimiento",
+          "href": "/arrepentimiento/",
+          "outline": true,
+          "shadow": false,
+          "w": 193,
+          "h": 24,
+          "i": 2
+        },
+        {
+          "tag": "A",
+          "txt": "pequeverso\nKit imprimible paso a paso",
+          "href": "/",
+          "outline": true,
+          "shadow": false,
+          "w": 372,
+          "h": 44,
+          "i": 3
+        },
+        {
+          "tag": "A",
+          "txt": "Cómo funciona",
+          "href": "#metodo",
+          "outline": true,
+          "shadow": false,
+          "w": 137,
+          "h": 44,
+          "i": 4
+        },
+        {
+          "tag": "A",
+          "txt": "Páginas reales",
+          "href": "#paginas",
+          "outline": true,
+          "shadow": false,
+          "w": 133,
+          "h": 44,
+          "i": 5
+        },
+        {
+          "tag": "A",
+          "txt": "Qué incluye",
+          "href": "#incluye",
+          "outline": true,
+          "shadow": false,
+          "w": 115,
+          "h": 44,
+          "i": 6
+        },
+        {
+          "tag": "A",
+          "txt": "Preguntas",
+          "href": "#preguntas",
+          "outline": true,
+          "shadow": false,
+          "w": 104,
+          "h": 44,
+          "i": 7
+        },
+        {
+          "tag": "A",
+          "txt": "Comprar · US$14,99",
+          "href": "https://pay.hotmart.com/D106959604R?checkoutMode=10&sck=pv-gf-header",
+          "outline": true,
+          "shadow": true,
+          "w": 250,
+          "h": 44,
+          "i": 8
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "Pausar la animación",
+          "href": "",
+          "outline": true,
+          "shadow": false,
+          "w": 44,
+          "h": 44,
+          "i": 9
+        },
+        {
+          "tag": "A",
+          "txt": "Inicio",
+          "href": "/",
+          "outline": true,
+          "shadow": false,
+          "w": 35,
+          "h": 44,
+          "i": 10
+        },
+        {
+          "tag": "DIV",
+          "txt": "Hoja para 5 años\nGA\nTO\nImagen ilustrativ",
+          "href": "",
+          "outline": true,
+          "shadow": false,
+          "w": 616,
+          "h": 616,
+          "i": 11
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "Imagen siguiente",
+          "href": "",
+          "outline": true,
+          "shadow": true,
+          "w": 44,
+          "h": 44,
+          "i": 12
+        }
+      ]
+    },
+    {
+      "route": "/grafismo-fonetico/",
+      "vp": "mobile",
+      "tabsToHotmartCTA": 4,
+      "tabsRecorded": 60,
+      "noVisibleIndicator": 0,
+      "first12": [
+        {
+          "tag": "A",
+          "txt": "Saltar al contenido",
+          "href": "#contenido",
+          "outline": true,
+          "shadow": false,
+          "w": 177,
+          "h": 50,
+          "i": 1
+        },
+        {
+          "tag": "A",
+          "txt": "Botón de arrepentimiento",
+          "href": "/arrepentimiento/",
+          "outline": true,
+          "shadow": false,
+          "w": 193,
+          "h": 24,
+          "i": 2
+        },
+        {
+          "tag": "A",
+          "txt": "Pequeverso, ir al inicio",
+          "href": "/",
+          "outline": true,
+          "shadow": false,
+          "w": 44,
+          "h": 44,
+          "i": 3
+        },
+        {
+          "tag": "A",
+          "txt": "Comprar · US$14,99",
+          "href": "https://pay.hotmart.com/D106959604R?checkoutMode=10&sck=pv-gf-header",
+          "outline": true,
+          "shadow": true,
+          "w": 179,
+          "h": 44,
+          "i": 4
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "Abrir el menú",
+          "href": "",
+          "outline": true,
+          "shadow": false,
+          "w": 44,
+          "h": 44,
+          "i": 5
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "Pausar la animación",
+          "href": "",
+          "outline": true,
+          "shadow": false,
+          "w": 44,
+          "h": 44,
+          "i": 6
+        },
+        {
+          "tag": "A",
+          "txt": "Inicio",
+          "href": "/",
+          "outline": true,
+          "shadow": false,
+          "w": 35,
+          "h": 44,
+          "i": 7
+        },
+        {
+          "tag": "DIV",
+          "txt": "Hoja para 5 años\nGA\nTO\nImagen ilustrativ",
+          "href": "",
+          "outline": true,
+          "shadow": false,
+          "w": 348,
+          "h": 313,
+          "i": 8
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "Ver imagen 1: El kit con hojas reales pa",
+          "href": "",
+          "outline": true,
+          "shadow": false,
+          "w": 24,
+          "h": 24,
+          "i": 9
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "Ver imagen 2: Práctica en casa con el ki",
+          "href": "",
+          "outline": true,
+          "shadow": false,
+          "w": 24,
+          "h": 24,
+          "i": 10
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "Ver imagen 3: El kit completo con sus bo",
+          "href": "",
+          "outline": true,
+          "shadow": false,
+          "w": 24,
+          "h": 24,
+          "i": 11
+        },
+        {
+          "tag": "BUTTON",
+          "txt": "Ver imagen 4: Página real: GATO",
+          "href": "",
+          "outline": true,
+          "shadow": false,
+          "w": 24,
+          "h": 24,
+          "i": 12
+        }
+      ]
+    }
+  ],
+  "cro": [
+    {
+      "route": "/",
+      "vp": "mobile",
+      "h1": "Un pequeño universo\n para cada etapa.",
+      "links": [],
+      "fixed": [
+        {
+          "tag": "DIV",
+          "txt": ""
+        },
+        {
+          "tag": "SECTION",
+          "txt": "Cookies y medición\n\nUsamos cookies necesarias y Meta Pixel p"
+        }
+      ],
+      "aboveFold": [
+        "Botón de arrepentimiento",
+        "Productos",
+        "Abrir el menú",
+        "RECURSOS PARA FAMILIAS",
+        "Un pequeño universo para cada etapa.",
+        "Primeras letras o primeras comidas. Encuentra el recurso para su etapa.",
+        "¿QUÉ NECESITAS HOY?",
+        "Kit de Pequeverso 3 a 7 años Aprender a leer Grafismo Fonético PDF para imprimir Ver el ki",
+        "Curso afiliado 6 a 12 meses Primeras comidas de tu bebé Guía de Alimentación para Bebés Cu",
+        "Guía de Alimentación para Bebés · Enlace de afiliado: si compras, Pequeverso recibe una co",
+        "Cookies y medición",
+        "Usamos cookies necesarias y Meta Pixel para medir nuestras campañas y el interés en el pro",
+        "Más información",
+        "Aceptar",
+        "Rechazar",
+        "Configurar"
+      ],
+      "price": ["US$14,99", "US$14,99"],
+      "guarantee": true,
+      "faq": 7,
+      "reviews": false,
+      "bodyLen": 5322,
+      "thirdPartyHosts": ["static.cloudflareinsights.com", "connect.facebook.net"]
+    },
+    {
+      "route": "/",
+      "vp": "desktop",
+      "h1": "Un pequeño universo\n para cada etapa.",
+      "links": [],
+      "fixed": [
+        {
+          "tag": "SECTION",
+          "txt": "Cookies y medición\n\nUsamos cookies necesarias y Meta Pixel p"
+        }
+      ],
+      "aboveFold": [
+        "Botón de arrepentimiento",
+        "pequeverso",
+        "Preguntas",
+        "Productos",
+        "RECURSOS PARA FAMILIAS",
+        "Un pequeño universo para cada etapa.",
+        "Primeras letras o primeras comidas. Encuentra el recurso para su etapa.",
+        "¿QUÉ NECESITAS HOY?",
+        "Kit de Pequeverso 3 a 7 años Aprender a leer Por sílabas, sin presión y a su ritmo. Grafis",
+        "Curso afiliado 6 a 12 meses Primeras comidas de tu bebé Una guía para organizar sus primer",
+        "Guía de Alimentación para Bebés · Enlace de afiliado: si compras, Pequeverso recibe una co",
+        "Cookies y medición",
+        "Usamos cookies necesarias y Meta Pixel para medir nuestras campañas y el interés en el pro",
+        "Más información",
+        "Aceptar",
+        "Rechazar",
+        "Configurar"
+      ],
+      "price": ["US$14,99", "US$14,99"],
+      "guarantee": true,
+      "faq": 7,
+      "reviews": false,
+      "bodyLen": 5426,
+      "thirdPartyHosts": ["static.cloudflareinsights.com", "connect.facebook.net"]
+    },
+    {
+      "route": "/grafismo-fonetico/",
+      "vp": "mobile",
+      "h1": "Kit Grafismo Fonético",
+      "links": [
+        {
+          "t": "Comprar · US$14,99",
+          "aboveFold": true,
+          "pos": "relative"
+        },
+        {
+          "t": "Quiero el kit completo",
+          "aboveFold": false,
+          "pos": "relative"
+        },
+        {
+          "t": "Quiero el kit",
+          "aboveFold": false,
+          "pos": "relative"
+        },
+        {
+          "t": "Quiero el kit completo",
+          "aboveFold": false,
+          "pos": "relative"
+        },
+        {
+          "t": "",
+          "aboveFold": false,
+          "pos": "relative"
+        }
+      ],
+      "fixed": [
+        {
+          "tag": "DIV",
+          "txt": ""
+        },
+        {
+          "tag": "SECTION",
+          "txt": "Cookies y medición\n\nUsamos cookies necesarias y Meta Pixel p"
+        }
+      ],
+      "aboveFold": [
+        "Botón de arrepentimiento",
+        "Comprar · US$14,99",
+        "Abrir el menú",
+        "Pausar la animación",
+        "Inicio",
+        "/",
+        "Grafismo Fonético",
+        "PEQUEVERSO · KIT IMPRIMIBLE",
+        "Kit Grafismo Fonético",
+        "De las letras a las primeras palabras, un paso por día.",
+        "9 PDF",
+        "414 páginas",
+        "3 a 7 años",
+        "Descarga inmediata",
+        "Cookies y medición",
+        "Usamos cookies necesarias y Meta Pixel para medir nuestras campañas y el interés en el pro",
+        "Más información",
+        "Aceptar",
+        "Rechazar",
+        "Configurar"
+      ],
+      "price": ["US$14,99", "US$14,99", "US$14,99", "US$14,99.", "US$14,99", "US$14,99"],
+      "guarantee": true,
+      "faq": 15,
+      "reviews": false,
+      "bodyLen": 10099,
+      "thirdPartyHosts": ["static.cloudflareinsights.com", "connect.facebook.net"]
+    },
+    {
+      "route": "/grafismo-fonetico/",
+      "vp": "desktop",
+      "h1": "Kit Grafismo Fonético",
+      "links": [
+        {
+          "t": "Comprar · US$14,99",
+          "aboveFold": true,
+          "pos": "relative"
+        },
+        {
+          "t": "Quiero el kit completo",
+          "aboveFold": false,
+          "pos": "relative"
+        },
+        {
+          "t": "Quiero el kit",
+          "aboveFold": false,
+          "pos": "relative"
+        },
+        {
+          "t": "Quiero el kit completo",
+          "aboveFold": false,
+          "pos": "relative"
+        },
+        {
+          "t": "Quiero el kit",
+          "aboveFold": false,
+          "pos": "relative"
+        }
+      ],
+      "fixed": [
+        {
+          "tag": "SECTION",
+          "txt": "Cookies y medición\n\nUsamos cookies necesarias y Meta Pixel p"
+        }
+      ],
+      "aboveFold": [
+        "Botón de arrepentimiento",
+        "pequeverso Kit imprimible paso a paso",
+        "Cómo funciona",
+        "Páginas reales",
+        "Qué incluye",
+        "Preguntas",
+        "Comprar · US$14,99",
+        "Pausar la animación",
+        "Inicio",
+        "/",
+        "Grafismo Fonético",
+        "PEQUEVERSO · KIT IMPRIMIBLE",
+        "Kit Grafismo Fonético",
+        "De las letras a las primeras palabras, un paso por día.",
+        "9 PDF",
+        "414 páginas",
+        "3 a 7 años",
+        "Descarga inmediata",
+        "Precio: US$14,99",
+        "+ impuestos aplicables según el país",
+        "Precio de referencia en dólares (USD). Hotmart lo convierte a tu moneda local y muestra el",
+        "Sílabas grandes con imagen y la primera palabra para unir.",
+        "Cookies y medición",
+        "Usamos cookies necesarias y Meta Pixel para medir nuestras campañas y el interés en el pro",
+        "Más información"
+      ],
+      "price": ["US$14,99", "US$14,99", "US$14,99", "US$14,99.", "US$14,99", "US$14,99"],
+      "guarantee": true,
+      "faq": 15,
+      "reviews": false,
+      "bodyLen": 11005,
+      "thirdPartyHosts": ["static.cloudflareinsights.com", "connect.facebook.net"]
+    }
+  ],
+  "browsers": [
+    {
+      "name": "webkit-iphone15",
+      "error": "Error: page.screenshot: Cannot take screenshot larger than 32767 pixels on any dimension\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[2"
+    },
+    {
+      "name": "firefox-390",
+      "route": "/",
+      "sw": 390,
+      "cw": 390,
+      "overflow": false
+    },
+    {
+      "name": "firefox-390",
+      "route": "/grafismo-fonetico/",
+      "sw": 390,
+      "cw": 390,
+      "overflow": false
+    }
+  ]
+}

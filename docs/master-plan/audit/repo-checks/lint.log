@@ -1,0 +1,44 @@
+
+> pequeverso@1.0.0 lint
+> biome ci --error-on-warnings .
+
+[0mbiome.json[0m[0m:[0m[0m2[0m[0m:[0m[0m14[0m[0m [0m[0mdeserialize[0m[0m [0m[0m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[0m
+
+[0m[0m  [0m[0m[1m[34mℹ[0m[0m [0m[0m[33mThe configuration schema version does not match the CLI version 2.5.15[0m[0m
+[0m[0m  [0m[0m
+[0m[0m  [0m[0m  [0m[0m[1m1 │ [0m[0m{[0m[0m
+[0m[0m  [0m[0m[1m[31m>[0m[0m [0m[0m[1m2 │ [0m[0m [0m[0m [0m[0m"[0m[0m$[0m[0ms[0m[0mc[0m[0mh[0m[0me[0m[0mm[0m[0ma[0m[0m"[0m[0m:[0m[0m [0m[0m"[0m[0mh[0m[0mt[0m[0mt[0m[0mp[0m[0ms[0m[0m:[0m[0m/[0m[0m/[0m[0mb[0m[0mi[0m[0mo[0m[0mm[0m[0me[0m[0mj[0m[0ms[0m[0m.[0m[0md[0m[0me[0m[0mv[0m[0m/[0m[0ms[0m[0mc[0m[0mh[0m[0me[0m[0mm[0m[0ma[0m[0ms[0m[0m/[0m[0m2[0m[0m.[0m[0m5[0m[0m.[0m[0m1[0m[0m4[0m[0m/[0m[0ms[0m[0mc[0m[0mh[0m[0me[0m[0mm[0m[0ma[0m[0m.[0m[0mj[0m[0ms[0m[0mo[0m[0mn[0m[0m"[0m[0m,[0m[0m
+[0m[0m  [0m[0m [0m[0m[1m   │ [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m[1m[31m^[0m[0m
+[0m[0m  [0m[0m  [0m[0m[1m3 │ [0m[0m [0m[0m [0m[0m"[0m[0mv[0m[0mc[0m[0ms[0m[0m"[0m[0m:[0m[0m [0m[0m{[0m[0m
+[0m[0m  [0m[0m  [0m[0m[1m4 │ [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m"[0m[0me[0m[0mn[0m[0ma[0m[0mb[0m[0ml[0m[0me[0m[0md[0m[0m"[0m[0m:[0m[0m [0m[0mt[0m[0mr[0m[0mu[0m[0me[0m[0m,[0m[0m
+[0m[0m  [0m[0m
+[0m[0m  [0m[0m[1m[34mℹ[0m[0m [0m[0m[34m  Expected:                     2.5.15
+[0m[0m  [0m[0m  [0m[0m[34m  Found:                        2.5.14
+[0m[0m  [0m[0m
+[0m[0m  [0m[0m
+[0m[0m  [0m[0m[1m[34mℹ[0m[0m [0m[0m[34mRun the command [0m[0m[1m[34mbiome migrate[0m[0m[34m to migrate the configuration file.[0m[0m
+[0m[0m  [0m[0m
+[0m
+[0mbiome.json[0m[0m:[0m[0m50[0m[0m:[0m[0m13[0m[0m [0m[0mdeserialize[0m[0m [0m[0m[30m[47m DEPRECATED [0m[0m [0m[0m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[0m
+
+[0m[0m  [0m[0m[1m[34mℹ[0m[0m [0m[0m[34mThe use of the recommended field has been deprecated, and will removed in the next major version of Biome. Use preset instead.[0m[0m
+[0m[0m  [0m[0m
+[0m[0m  [0m[0m  [0m[0m[1m48 │ [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m}[0m[0m
+[0m[0m  [0m[0m  [0m[0m[1m49 │ [0m[0m [0m[0m [0m[0m}[0m[0m,[0m[0m
+[0m[0m  [0m[0m[1m[31m>[0m[0m [0m[0m[1m50 │ [0m[0m [0m[0m [0m[0m"[0m[0ml[0m[0mi[0m[0mn[0m[0mt[0m[0me[0m[0mr[0m[0m"[0m[0m:[0m[0m [0m[0m{[0m[0m
+[0m[0m  [0m[0m [0m[0m [0m[0m[1m   │ [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m[1m[31m^[0m[0m
+[0m[0m  [0m[0m[1m[31m>[0m[0m [0m[0m[1m51 │ [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m"[0m[0me[0m[0mn[0m[0ma[0m[0mb[0m[0ml[0m[0me[0m[0md[0m[0m"[0m[0m:[0m[0m [0m[0mt[0m[0mr[0m[0mu[0m[0me[0m[0m,[0m[0m
+[0m[0m  [0m[0m [0m[0m [0m[0m[1m    ...
+[0m[0m  [0m[0m[1m[31m>[0m[0m [0m[0m[1m78 │ [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m}[0m[0m
+[0m[0m  [0m[0m[1m[31m>[0m[0m [0m[0m[1m79 │ [0m[0m [0m[0m [0m[0m}[0m[0m,[0m[0m
+[0m[0m  [0m[0m [0m[0m [0m[0m[1m   │ [0m[0m [0m[0m [0m[0m[1m[31m^[0m[0m
+[0m[0m  [0m[0m  [0m[0m[1m80 │ [0m[0m [0m[0m [0m[0m"[0m[0ma[0m[0ms[0m[0ms[0m[0mi[0m[0ms[0m[0mt[0m[0m"[0m[0m:[0m[0m [0m[0m{[0m[0m
+[0m[0m  [0m[0m  [0m[0m[1m81 │ [0m[0m [0m[0m [0m[0m [0m[0m [0m[0m"[0m[0ma[0m[0mc[0m[0mt[0m[0mi[0m[0mo[0m[0mn[0m[0ms[0m[0m"[0m[0m:[0m[0m [0m[0m{[0m[0m
+[0m[0m  [0m[0m
+[0m[0m  [0m[0m[1m[34mℹ[0m[0m [0m[0m[34mMigrate the configuration with the proper command[0m[0m
+[0m[0m  [0m[0m
+[0m[0m  [0m[0m[1m$[0m[0m [0m[0mbiome migrate[0m[0m
+[0m[0m  [0m[0m
+[0m
+[0m[34mChecked 371 files in 1254[0m[0m[2m[34mms[0m[0m[34m.[0m[0m[34m No fixes applied.[0m[0m
+[0m[0m[34mFound [0m[0m[34m2[0m[0m[34m infos.[0m

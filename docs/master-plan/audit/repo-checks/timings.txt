@@ -1,0 +1,10 @@
+lint rc=0 seconds=1
+typecheck rc=0 seconds=8
+test-coverage rc=1 seconds=10
+knip rc=0 seconds=5
+knip-production rc=0 seconds=4
+build rc=1 seconds=0
+check-bundle rc=1 seconds=1
+check-media rc=0 seconds=1
+check-scene rc=1 seconds=0
+ALLDONE

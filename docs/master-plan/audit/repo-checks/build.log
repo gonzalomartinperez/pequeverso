@@ -1,0 +1,50 @@
+
+> pequeverso@1.0.0 build
+> node tools/check-env.ts && node tools/build-info.ts && next build --webpack && node tools/gen-htaccess.ts && node tools/check-assistant-disabled.ts --allow-enabled && node tools/check-site-analytics-disabled.ts --allow-enabled
+
+tracking: meta=off capi=off
+assistant: disabled
+affiliate redirects: 0
+check-env: warning: NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE empty: /alimentacion-bebe/ will 404 (set it for a publishable build; docs/affiliates.md)
+build-info: 640a1b43f60a (main, export, assistant disabled)
+▲ Next.js 16.4.2 (webpack)
+✓ Running next.config.mjs took 365ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 27.2s
+  Running TypeScript ...
+  Finished TypeScript in 6.3s ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/15) ...
+  Generating static pages using 3 workers (3/15) 
+  Generating static pages using 3 workers (7/15) 
+  Generating static pages using 3 workers (11/15) 
+✓ Generating static pages using 3 workers (15/15) in 3.4s
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├   /[product]
+│ ├ ● /grafismo-fonetico
+│ └ ● /imprime-y-juega
+├   /[product]/gracias
+│ └ ● /grafismo-fonetico/gracias
+├ ○ /arrepentimiento
+├ ○ /aviso-legal
+├ ○ /compras-y-reembolsos
+├ ○ /cookies
+├ ○ /privacidad
+├ ○ /robots.txt
+├ ○ /sitemap.xml
+├ ○ /soporte
+└ ○ /terminos
+
+
+○  (Static)  prerendered as static content
+●  (SSG)     prerendered as static HTML (uses generateStaticParams)
+
+gen-htaccess: wrote out/.htaccess
+check-assistant-disabled: 127 files in out carry no assistant code
+check-site-analytics-disabled: 121 emitted text files, no collection transport

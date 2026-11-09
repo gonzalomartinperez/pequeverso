@@ -1,0 +1,31 @@
+
+> pequeverso@1.0.0 check:bundle
+> node tools/check-bundle-budget.ts
+
+| Route | Metric | Measured (gzip) | Budget | |
+|---|---|---|---|---|
+| / | html | 49.1 KB | 57.6 KB | ✅ |
+| / | js | 156.3 KB | 156.5 KB | ✅ |
+| / | css | 34.4 KB | 36.5 KB | ✅ |
+| /grafismo-fonetico/ | html | 79.9 KB | 86.7 KB | ✅ |
+| /grafismo-fonetico/ | js | 174.5 KB | 187.9 KB | ✅ |
+| /grafismo-fonetico/ | css | 34.4 KB | 36.5 KB | ✅ |
+| /imprime-y-juega/ | html | 45.2 KB | 49.1 KB | ✅ |
+| /imprime-y-juega/ | js | 174.5 KB | 187.9 KB | ✅ |
+| /imprime-y-juega/ | css | 34.4 KB | 36.5 KB | ✅ |
+| /grafismo-fonetico/gracias/ | html | 29.5 KB | 31.9 KB | ✅ |
+| /grafismo-fonetico/gracias/ | js | 150.4 KB | 154.0 KB | ✅ |
+| /grafismo-fonetico/gracias/ | css | 32.7 KB | 36.5 KB | ✅ |
+| /soporte/ | html | 22.2 KB | 23.7 KB | ✅ |
+| /soporte/ | js | 149.5 KB | 152.5 KB | ✅ |
+| /soporte/ | css | 32.7 KB | 36.5 KB | ✅ |
+| /terminos/ | html | 28.2 KB | 29.0 KB | ✅ |
+| /terminos/ | js | 149.5 KB | 152.5 KB | ✅ |
+| /terminos/ | css | 32.7 KB | 36.5 KB | ✅ |
+| /privacidad/ | html | 28.0 KB | 28.6 KB | ✅ |
+| /privacidad/ | js | 149.5 KB | 152.5 KB | ✅ |
+| /privacidad/ | css | 32.7 KB | 36.5 KB | ✅ |
+| /arrepentimiento/ | html | 27.8 KB | 29.8 KB | ✅ |
+| /arrepentimiento/ | js | 149.5 KB | 152.5 KB | ✅ |
+| /arrepentimiento/ | css | 32.7 KB | 36.5 KB | ✅ |
+check-bundle: all routes within budget

@@ -108,3 +108,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Master plan (2026-11)
+
+The excellence refactor is planned in [`docs/master-plan/`](docs/master-plan/README.md). Before
+acting on anything it covers, read
+[`docs/master-plan/owner-decisions.md`](docs/master-plan/owner-decisions.md) (binding owner
+decisions) and, to continue the work from any session,
+[`docs/master-plan/RESUME.md`](docs/master-plan/RESUME.md).

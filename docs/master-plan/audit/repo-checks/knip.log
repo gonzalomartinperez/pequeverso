@@ -1,0 +1,12 @@
+
+> pequeverso@1.0.0 knip
+> knip --no-progress
+
+Configuration hints (4)
+tools/serve-static.ts!               knip.json  Remove redundant entry pattern                               
+media-build.ts          tools/media  knip.json  Remove redundant entry pattern                               
+tools/serve-static.ts!               knip.json  Remove redundant project pattern                             
+.css                                 knip.json  Compiled extension excluded by project (imports not followed)
+Tag hints (2)
+Unused tag in content/es/legal/seller.ts: legalRoutes → @internal
+Unused tag in src/features/tracking/adapters/track.ts: _resetForTests → @internal

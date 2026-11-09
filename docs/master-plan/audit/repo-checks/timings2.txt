@@ -1,0 +1,5 @@
+test-coverage rc=0 seconds=11
+build rc=0 seconds=61
+check-bundle rc=0 seconds=2
+check-scene rc=0 seconds=0
+ALLDONE

@@ -1,0 +1,6 @@
+
+> pequeverso@1.0.0 check:media
+> node tools/check-media-budget.ts
+
+check-media: 317 files, 23.04 MB, 322 manifest outputs
+check-media: groups — gf 8.34 MB, video 5.80 MB, gf-pages 2.73 MB, pack-pages 1.95 MB, pack-cards 1.56 MB, gf-cards 1.18 MB, afiliados 0.87 MB, pack 0.44 MB, brand 0.16 MB
