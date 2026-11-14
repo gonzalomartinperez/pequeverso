@@ -18,5 +18,6 @@ contiguous (ADR-0018 follows the numbering of the ecosystem plan).
 | [ADR-0008](ADR-0008-native-assistant.md) | Native shopping assistant, disabled by default, on a separate API origin | accepted |
 | [ADR-0009](ADR-0009-common-site-module-spine.md) | Common public-site module spine | accepted |
 | [ADR-0010](ADR-0010-standalone-production-target.md) | Production target is the Hostinger Node.js Web App (standalone) | accepted |
+| [ADR-0012](ADR-0012-design-tokens-dtcg.md) | Design tokens in DTCG with a generated theme; dark-ready, light-only | accepted |
 | [ADR-0015](ADR-0015-mutation-tooling.md) | Mutation testing with StrykerJS on node:test (E7 spike outcome) | accepted |
 | [ADR-0018](ADR-0018-release-automation-version-pr.md) | Release automation by version-bump PR and a tagging workflow | accepted |

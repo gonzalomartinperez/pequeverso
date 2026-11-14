@@ -3,8 +3,8 @@
  * elevation, motion and layout (docs/design-system.md, docs/specs/design-system.md).
  *
  * 1. Fonts        self-hosted @font-face with metric-matched fallbacks (docs/performance.md)
- * 2. Tokens       raw values in :root (`--pv-*` where a Tailwind theme namespace would claim the
- *                 name) and the semantic aliases shadcn/ui primitives read (`--primary`, …)
+ * 2. Tokens       generated :root from design/tokens/pequeverso.tokens.json via
+ *                 src/shared/tokens/theme.css (`--pv-*` raw values, semantic roles through light-dark())
  * 3. Theme        @theme inline maps tokens to Tailwind utilities (bg-navy, text-h2, text-base, rounded-lg, …)
  * 4. Variants     container-query breakpoints (cq-sm … cq-xl) mirroring src/shared/styles/breakpoints.ts
  * 5. Base         typography, links, focus, offer mode, reduced-motion kill switch
@@ -12,9 +12,10 @@
  * 7. Motion       ../shared/motion/motion.css (reveal, hero, flip, orbit, parallax, sticky stack)
  *
  * Breakpoints (min-width): sm 640 · md 768 · lg 1024 · xl 1280 (Tailwind defaults, also used as
- * container thresholds). Contrast pairs are asserted by tests/unit/design-system.test.ts.
+ * container thresholds). Contrast pairs live in the token JSON and are asserted by tests/unit/design-system.test.ts.
  */
 @import "tailwindcss" source("../");
+@import "../shared/tokens/theme.css";
 @import "../shared/motion/motion.css";
 
 /* 1. Fonts (public/fonts, preloaded in src/app/layout.tsx) */
@@ -80,165 +81,7 @@
   line-gap-override: 0%;
 }
 
-/* 2. Tokens */
-:root {
-  color-scheme: light;
-
-  /* Brand palette (OKLCH; sRGB equivalents and contrast in docs/design-system.md) */
-  --pv-navy: oklch(0.3175 0.1094 256.25); /* #003068 · white on navy 12.9:1 */
-  --pv-navy-deep: oklch(0.2619 0.0887 255.79); /* #00234e · footer, closing bands */
-  --pv-teal: oklch(0.5324 0.0917 190.84); /* #007d79 · icons; white on teal 5.0:1 */
-  --pv-teal-text: oklch(
-    0.4352 0.0749 190.98
-  ); /* #005e5b · links and small labels, 7.6:1 on white */
-  --pv-coral: oklch(0.5623 0.1722 28.49); /* #c64035 · CTA and price only; white on coral 5.0:1 */
-  --pv-coral-hover: oklch(0.4929 0.1566 28.11); /* #a83129 · 6.7:1 */
-  --pv-gold: oklch(
-    0.8908 0.1645 93.89
-  ); /* #ffd840 · accents, chips; ink on gold 11.9:1, never gold text on light */
-  --pv-turquoise: oklch(0.8521 0.0956 187.2); /* #7fe3d9 · accent on navy only, 8.6:1 */
-  --pv-hero-top: var(--pv-navy-deep);
-  --pv-hero-bottom: var(--pv-navy);
-  --pv-on-navy: oklch(1 0 0 / 86%); /* body text on navy 9.9:1 */
-  --pv-on-navy-chip: oklch(1 0 0 / 12%);
-
-  /* "Pequeño universo" planets: highlight and shade stops shared by the CSS spheres and WebGL */
-  --pv-planet-teal-hi: oklch(0.7 0.1 190);
-  --pv-planet-teal-lo: oklch(0.38 0.07 190);
-  --pv-planet-gold-hi: oklch(0.93 0.12 95);
-  --pv-planet-gold-lo: oklch(0.72 0.14 90);
-  --pv-planet-turquoise-hi: oklch(0.96 0.04 187);
-  --pv-planet-turquoise-lo: oklch(0.5 0.09 191);
-
-  /* Neutrals */
-  --pv-cream: oklch(0.9868 0.0118 79.79); /* #fffaf2 */
-  --pv-white: oklch(1 0 0);
-  --pv-ink: oklch(0.2393 0.0581 256.66); /* #0b1f3a · 15.9:1 on cream */
-  --pv-body: oklch(0.4336 0.0403 255.38); /* #425267 · 7.7:1 on cream */
-  --pv-muted: oklch(0.524 0.0374 258.36); /* #5d6b80 · 5.2:1 on cream */
-  --pv-line: oklch(0.3175 0.1094 256.25 / 14%);
-  --pv-line-strong: oklch(0.3175 0.1094 256.25 / 28%);
-
-  /* Soft section bands (at most one soft band between two neutral bands) */
-  --pv-mint: oklch(0.9616 0.0201 189.22); /* #e4f7f5 */
-  --pv-sky: oklch(0.9594 0.02 250.38); /* #e8f3ff */
-  --pv-lemon: oklch(0.965 0.0699 98.77); /* #fff5bf */
-  --pv-rose: oklch(0.9656 0.0176 39.4); /* #fff0eb */
-
-  /* Gradient stops for the light "aurora" surfaces (never text colours) */
-  --pv-celeste: oklch(0.9425 0.0305 244.5); /* #dcefff */
-  --pv-blue-soft: oklch(0.9013 0.0458 264.2); /* #cfe0ff */
-  --pv-peach: oklch(0.9483 0.0301 55.6); /* #ffe9dc */
-
-  /* Semantic surface and text roles (shadcn/ui names). The `on-navy` utility re-scopes them. */
-  --background: var(--pv-cream);
-  --foreground: var(--pv-ink);
-  --card: var(--pv-white);
-  --card-foreground: var(--pv-ink);
-  --popover: var(--pv-white);
-  --popover-foreground: var(--pv-ink);
-  --primary: var(--pv-coral);
-  --primary-foreground: var(--pv-white);
-  --primary-hover: var(--pv-coral-hover);
-  --secondary: var(--pv-navy);
-  --secondary-foreground: var(--pv-white);
-  --secondary-hover: var(--pv-navy-deep);
-  --muted: var(--pv-sky);
-  --muted-foreground: var(--pv-muted);
-  --accent: var(--pv-teal);
-  --accent-foreground: var(--pv-white);
-  --destructive: var(--pv-coral-hover);
-  --border: var(--pv-line);
-  --input: var(--pv-line-strong);
-  --ring: var(--pv-navy);
-  --heading: var(--pv-ink);
-  --body: var(--pv-body);
-  --link: var(--pv-teal-text);
-  --link-hover: var(--pv-navy);
-  --chip: var(--pv-mint);
-  --chip-foreground: var(--pv-navy);
-  --icon: var(--pv-teal);
-  --surface-veil: oklch(0.9868 0.0118 79.79 / 96%); /* header and sticky bar over content */
-
-  /* Type: Fraunces for display, Nunito Sans for everything else; fluid sizes via clamp() */
-  --pv-font-display: "Fraunces", "Fraunces Fallback", Georgia, "Times New Roman", serif;
-  --pv-font-sans: "Nunito Sans", "Nunito Sans Fallback", system-ui, "Segoe UI", Roboto, sans-serif;
-  --pv-text-display: clamp(2.375rem, 1.5rem + 3.4vw, 4.5rem); /* 38 → 72 */
-  --pv-text-h2: clamp(2rem, 1.45rem + 2vw, 3.25rem); /* 32 → 52 */
-  --pv-text-h3: clamp(1.25rem, 1.2rem + 0.2vw, 1.375rem); /* 20 → 22 */
-  --pv-text-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem); /* 17 → 19 */
-  --pv-text-body: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem); /* 16 → 17 */
-  --pv-text-small: 0.875rem;
-  --pv-text-tiny: 0.8125rem;
-  --pv-text-price: clamp(2.375rem, 2rem + 1.2vw, 2.75rem); /* 38 → 44 */
-  --pv-leading-display: 1.02;
-  --pv-leading-heading: 1.08;
-  --pv-tracking-display: -0.022em;
-  --pv-leading-body: 1.6;
-
-  /* Spacing (4-pt; Tailwind's `--spacing` of 0.25rem gives the same steps: p-4 = --space-4) */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4rem;
-  --space-9: 6rem;
-  --section-pad: clamp(3.5rem, 2.5rem + 3vw, 6rem);
-  /* The floor is capped at 6.25vw (20 px at 320 px) so enlarged text does not double the gutter on phones. */
-  --gutter: clamp(min(1.25rem, 6.25vw), 4vw, 1.5rem);
-  --page-max: 1200px;
-
-  /* Radius */
-  --radius: 0.5rem; /* shadcn base; the scale below is explicit */
-  --pv-radius-sm: 4px;
-  --pv-radius-chip: 6px;
-  --pv-radius-md: 12px; /* buttons, media, small cards */
-  --pv-radius-lg: 20px; /* large cards, dialogs */
-  --pv-radius-xl: 28px;
-  --pv-radius-2xl: 36px; /* hero cards, bento tiles */
-  --pv-radius-pill: 999px; /* primary CTA and chips */
-
-  /* Elevation (navy-tinted) and the coral CTA glow */
-  --pv-shadow-sm: 0 4px 12px oklch(0.3175 0.1094 256.25 / 8%);
-  --pv-shadow-md: 0 12px 32px oklch(0.3175 0.1094 256.25 / 12%);
-  --pv-shadow-lg: 0 24px 56px oklch(0.3175 0.1094 256.25 / 16%);
-  --pv-shadow-cta: 0 10px 24px oklch(0.5623 0.1722 28.49 / 24%);
-  --pv-shadow-cta-hover: 0 16px 32px oklch(0.5623 0.1722 28.49 / 32%);
-  --pv-shadow-float:
-    0 1px 2px oklch(0.3175 0.1094 256.25 / 6%), 0 8px 20px -6px oklch(0.3175 0.1094 256.25 / 10%),
-    0 32px 64px -16px oklch(0.3175 0.1094 256.25 / 18%);
-  --pv-shadow-glow:
-    0 0 0 1px oklch(1 0 0 / 60%), 0 24px 80px -20px oklch(0.5324 0.0917 190.84 / 40%);
-
-  /* Motion */
-  --pv-ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
-  --pv-ease-emphasis: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --duration-fast: 150ms;
-  --duration: 220ms;
-  --duration-reveal: 480ms;
-  --duration-hero: 600ms;
-  --duration-orbit: 48s;
-  --duration-float: 7s;
-  --duration-marquee: 40s;
-  --stagger: 60ms;
-  --reveal-y: 16px;
-  --parallax-range: 20px;
-  --tilt-max: 6deg;
-  --tilt-perspective: 900px;
-
-  /* Layout */
-  --header-height: 5rem; /* floating pill (3.75rem) + its 0.625rem top/bottom offset */
-  --sticky-bar-height: 4.5rem;
-  --section-overlap: var(--space-8);
-  --section-intrinsic: 640px; /* contain-intrinsic-size for deferred sections */
-  --wave-height: clamp(2rem, 6vw, 4.5rem);
-  --badge-sm: 3rem;
-  --badge-md: 3.5rem;
-  --badge-lg: 4.5rem;
-}
+/* 2. Tokens: generated from design/tokens/pequeverso.tokens.json (ADR-0012), imported above */
 
 /* 3. Theme: utilities read the tokens above (inline, so scoped overrides resolve at use site) */
 @theme inline {

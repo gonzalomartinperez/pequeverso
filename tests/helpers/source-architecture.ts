@@ -34,6 +34,7 @@ export function sourcePlacementViolations(modules: ReadonlyMap<string, SourceMod
   const shared = new Set([
     "ui",
     "styles",
+    "tokens",
     "motion",
     "editorial",
     "identity",
