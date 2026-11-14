@@ -15,8 +15,11 @@ export function missingIssueReferences(file: string, source: string): string[] {
     );
   } else comments = parseSync(file, source).comments.map((comment) => comment.value);
   return comments.flatMap((comment) => {
-    const match = comment.trim().match(/^biome-ignore\s+([^:]+):\s*(.*)$/s);
-    if (!match) return /^biome-ignore\b/.test(comment.trim()) ? [`${file} malformed`] : [];
+    const text = comment.trim();
+    // `-end` closes a range and carries no reason, so it has no place for an issue.
+    if (/^biome-ignore-end\b/.test(text)) return [];
+    const match = text.match(/^biome-ignore(?:-all|-start)?\s+([^:]+):\s*(.*)$/s);
+    if (!match) return /^biome-ignore\b/.test(text) ? [`${file} malformed`] : [];
     const valid = /\S.*\s(?:#\d+|https:\/\/github\.com\/[^/\s]+\/[^/\s]+\/issues\/\d+)\s*$/.test(
       match[2] ?? "",
     );

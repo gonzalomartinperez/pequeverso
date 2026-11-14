@@ -356,6 +356,18 @@ it("guards environment, external scripts, adapter boundaries and HTML sinks", as
   for (const [rule, source] of [
     ["env", "const value = process.env.KEY;"],
     ["env", 'const value = process["env"].KEY;'],
+    ["env", "const { env } = process;"],
+    ["env", "const value = globalThis.process.env.KEY;"],
+    ["env", 'import { env } from "node:process";'],
+    ["env", 'import { env as e } from "process";'],
+    ["env", 'import p from "node:process"; const v = p.env.KEY;'],
+    ["script-host", '<script src="HTTPS://vendor.invalid/a.js" />;'],
+    ["script-host", '<script src="http://vendor.invalid/a.js" />;'],
+    ["script-host", '<script src="//vendor.invalid/a.js" />;'],
+    ["script-host", '<script src="relative.js" />;'],
+    ["script-host", "<script {...props} />;"],
+    ["script-host", 'const s = other.createElement("script");'],
+    ["script-host", "const s = document.createElement(`script`);"],
     ["script-host", '<script src="https://vendor.invalid/a.js" />;'],
     [
       "script-host",
@@ -383,7 +395,6 @@ it("guards environment, external scripts, adapter boundaries and HTML sinks", as
       "src/features/commerce/presentation/hotmart-widget-slot.tsx",
       '<script src="https://vendor.invalid/a.js" />;',
     ],
-    ["src/views/seo/json-ld.tsx", '<script dangerouslySetInnerHTML={{ __html: "escaped" }} />;'],
     [
       "src/features/commerce/presentation/offer-mode-root.tsx",
       '<script dangerouslySetInnerHTML={{ __html: "constant" }} />;',
@@ -391,6 +402,32 @@ it("guards environment, external scripts, adapter boundaries and HTML sinks", as
     ["src/views/fixture.tsx", '<script src="/local.js" />; // process.env.KEY'],
   ])
     assert.deepEqual(guardFindings(file ?? "", source ?? ""), []);
-  for (const file of sourceFiles("src").filter((name) => /\.tsx?$/.test(name)))
-    assert.deepEqual(guardFindings(file, readFileSync(file, "utf8")), [], file);
+  const raw: Record<string, Set<string>> = {};
+  for (const file of sourceFiles("src").filter((name) => /\.tsx?$/.test(name))) {
+    const source = readFileSync(file, "utf8");
+    assert.deepEqual(guardFindings(file, source), [], file);
+    for (const item of guardFindings(file, source, true)) {
+      const files = raw[item.rule] ?? new Set<string>();
+      raw[item.rule] = files.add(file);
+    }
+  }
+  // Exceptions are exact: each excused file still produces the finding it excuses.
+  const { ADAPTER_IMPORT_EXCEPTIONS, ENV_EXCEPTIONS, HTML_EXCEPTIONS, SCRIPT_EXCEPTIONS } =
+    await import("../helpers/source-guards.ts");
+  const pinned = {
+    env: [ENV_EXCEPTIONS, 7],
+    "unsafe-html": [HTML_EXCEPTIONS, 3],
+    "script-host": [SCRIPT_EXCEPTIONS, 2],
+    "adapter-import": [ADAPTER_IMPORT_EXCEPTIONS, 1],
+  } as const;
+  for (const [rule, [map, size]] of Object.entries(pinned)) {
+    const files = [...(raw[rule] ?? [])]
+      .filter(
+        (file) => rule !== "script-host" || !file.startsWith("src/features/tracking/adapters/"),
+      )
+      .sort();
+    assert.deepEqual(files, Object.keys(map).sort(), `${rule}: stale or missing exception`);
+    assert.equal(Object.keys(map).length, size, `${rule}: exception list changed`);
+    for (const reason of Object.values(map)) assert.ok(reason.trim());
+  }
 });

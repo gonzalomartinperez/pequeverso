@@ -36,19 +36,19 @@
     },
     {
       "key": "legacy-exceptions:coral",
-      "value": 10,
+      "value": 14,
       "unit": "values",
       "direction": "max"
     },
     {
       "key": "legacy-exceptions:color-literal",
-      "value": 65,
+      "value": 61,
       "unit": "values",
       "direction": "max"
     },
     {
       "key": "legacy-exceptions:spacing-radius",
-      "value": 17,
+      "value": 185,
       "unit": "values",
       "direction": "max"
     },

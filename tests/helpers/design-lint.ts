@@ -12,70 +12,130 @@ export const ALLOWED_LITERAL_FILES = [
   "src/app/theme.css",
   "src/shared/styles/theme.css",
 ];
-const prices = [
+const PRICE_FILES = [
   "src/views/product/core/buy-box.tsx",
   "src/views/product/core/includes.tsx",
   "src/views/product/offer/offer-price.tsx",
   "src/features/assistant/presentation/products.tsx",
 ];
-const color = /#[\da-f]{3,8}\b|\b(?:oklch|rgba?|hsla?)\(/gi;
-const coral =
-  /(?:^|:)(?:[\w-]*coral[\w/-]*|(?:bg|text|border|from|via|to|ring|shadow|fill|stroke)-primary(?:[\w/-]*))\b|--(?:primary(?:-[\w-]+)?|pv-coral[\w-]*)\b/;
-const spacing =
-  /(?:^|:)-?(?:p[xytrblse]?|m[xytrblse]?|gap(?:-[xy])?|space-[xy]|rounded(?:-[\w]+)?)-\[[^\]]*\d(?:\.\d+)?px[^\]]*\]/;
+const COLOR_FN = /(?<![\w-])(?:oklch|oklab|lab|lch|hwb|rgba?|hsla?|color-mix|color)\(/gi;
+// Hex colours only: not part of an identifier or URL fragment, and not a four-letter word anchor.
+const HEX = /(?<![\w#&/-])#(?:[\da-f]{8}|[\da-f]{6}|[\da-f]{4}|[\da-f]{3})(?![\w-])/gi;
+const CORAL_VAR = /(?:var\(\s*|\()--(?:primary|pv-coral|destructive)\b/;
+const CORAL_UTILITY = /(?:^|-)(?:coral|primary|destructive)(?:-(?:foreground|hover))?(?:\/\S+)?$/;
+const SPACING =
+  /^-?(?:[pm][xytrblse]?|gap(?:-[xy])?|space-[xy]|inset(?:-[xy])?|top|right|bottom|left|start|end|[wh]|size|min-[wh]|max-[wh]|rounded(?:-[a-z]{1,2})?|scroll-[mp][xytrblse]?)-\[[^\]]*\d(?:px|rem|em)\b[^\]]*\]$/;
+const LENGTH = /\d(?:px|rem|em)\b/;
+const SPACING_PROP =
+  /^(?:padding|margin|gap|row-gap|column-gap|border(?:-[a-z]+)*-radius)(?:-[a-z]+)?$/;
+const SPACING_KEY =
+  /^(?:padding|margin)(?:Top|Right|Bottom|Left|Inline|Block)?(?:Start|End)?$|^(?:gap|rowGap|columnGap)$|^border(?:\w*)Radius$/;
+const COLOR_FILES = ALLOWED_LITERAL_FILES;
 
-/** Parse strings rather than comments; includes CVA tables, templates and inline styles. */
-export function strings(file: string, source: string): string[] {
-  const parsed = parseSync(file, source);
-  if (parsed.errors.length) throw new Error(`${file}: invalid scanner input`);
-  const values: string[] = [];
-  new Visitor({
-    Literal(node) {
-      if (typeof node.value === "string") values.push(node.value);
-    },
-    TemplateElement(node) {
-      values.push(node.value.cooked ?? node.value.raw);
-    },
-  }).visit(parsed.program);
-  return values;
+/** Full colour literals: function expressions are balanced to their closing parenthesis. */
+function colorLiterals(text: string): string[] {
+  const out = [...text.matchAll(HEX)]
+    .map((m) => m[0])
+    .filter((hex) => hex.length !== 5 || /\d/.test(hex));
+  for (const m of text.matchAll(COLOR_FN)) {
+    let depth = 0;
+    let end = m.index;
+    for (; end < text.length; end++) {
+      if (text[end] === "(") depth++;
+      else if (text[end] === ")" && --depth === 0) break;
+    }
+    out.push(text.slice(m.index, end + 1));
+  }
+  return out;
+}
+
+/** Split a Tailwind token into its utility, ignoring variants and important markers. */
+function utility(token: string): string {
+  let depth = 0;
+  let start = 0;
+  for (let i = 0; i < token.length; i++) {
+    if ("[(".includes(token[i] ?? "")) depth++;
+    else if ("])".includes(token[i] ?? "")) depth--;
+    else if (token[i] === ":" && depth === 0) start = i + 1;
+  }
+  return token.slice(start).replace(/^!|!$/g, "");
 }
 
 const flat = (value: string) => value.replace(/\s+/g, " ");
-function allowedProperty(property: string): boolean {
-  return ["transform", "opacity", "none"].includes(property);
+const ANIMATABLE = ["transform", "opacity", "none"];
+
+/** Transition value (CSS, inline style or arbitrary utility) to the rules it breaks. */
+function transitionRules(value: string): string[] {
+  const rules: string[] = [];
+  for (const part of postcss.list.comma(value.replaceAll("_", " "))) {
+    const property = part.trim().split(/\s+/)[0] ?? "all";
+    // An omitted property defaults to all, including duration-only shorthand.
+    const actual = /^(?:[\d.]|var\(|ease|linear)/.test(property) ? "all" : property;
+    if (actual === "all") rules.push("transition-all");
+    else if (!ANIMATABLE.includes(actual)) rules.push("animated-property");
+  }
+  return rules;
+}
+
+type Add = (rule: string, value: string) => void;
+
+/** Class strings (JSX, CVA tables, templates and CSS `@apply`): every rule applies per token. */
+function scanClasses(file: string, text: string, add: Add): void {
+  if (!COLOR_FILES.includes(file))
+    for (const literal of colorLiterals(text)) add("color-literal", literal);
+  const coralOwner =
+    COLOR_FILES.includes(file) ||
+    /^src\/shared\/ui\/button[^/]*\.[tj]sx?$/.test(file) ||
+    file.startsWith("src/features/commerce/presentation/") ||
+    PRICE_FILES.includes(file) ||
+    // The state gallery names every button and badge variant, coral included, by design (M2-11).
+    file === "src/views/design-gallery-view.tsx";
+  for (const token of text.split(/\s+/)) {
+    const u = utility(token);
+    if (!coralOwner && (CORAL_UTILITY.test(u) || CORAL_VAR.test(token) || /coral/.test(u)))
+      add("coral", token);
+    if (SPACING.test(u)) add("spacing-radius", token);
+    const arbitrary = u.match(/^\[(?:-webkit-)?transition(?:-property)?:(.*)\]$/);
+    const named = u.match(/^transition(?:-(.+))?$/);
+    if (arbitrary) for (const rule of transitionRules(arbitrary[1] ?? "")) add(rule, token);
+    else if (named) {
+      const property = named[1];
+      if (property === "all") add("transition-all", token);
+      else if (
+        property &&
+        property !== "none" &&
+        !/^\[?(?:transform|opacity)(?:,(?:transform|opacity))*\]?$/.test(property)
+      )
+        add("animated-property", token);
+      else if (!property) add("animated-property", token);
+    }
+  }
 }
 
 /** Pure design scanner. CSS uses PostCSS so nested keyframes and multiline declarations count. */
 export function designFindings(file: string, source: string): Finding[] {
   const found: Finding[] = [];
-  const add = (rule: string, value: string) => found.push({ rule, file, value });
+  const add: Add = (rule, value) => found.push({ rule, file, value });
+  const allowed = COLOR_FILES.includes(file);
   if (file.endsWith(".css")) {
     const root = postcss.parse(source);
-    if (!ALLOWED_LITERAL_FILES.includes(file))
-      root.walkDecls((decl) => {
-        if (color.test(decl.value)) add("color-literal", `${decl.prop}: ${flat(decl.value)}`);
-        color.lastIndex = 0;
-      });
+    root.walkAtRules("apply", (rule) => scanClasses(file, rule.params, add));
     root.walkDecls((decl) => {
-      if (/^transition(?:-property)?$/.test(decl.prop)) {
-        for (const part of postcss.list.comma(decl.value)) {
-          const property = part.trim().split(/\s+/)[0] ?? "all";
-          // An omitted property defaults to all, including duration-only shorthand.
-          const actual = /^(?:[\d.]|var\(|ease|linear)/.test(property) ? "all" : property;
-          if (actual === "all") add("transition-all", `${decl.prop}: ${flat(decl.value)}`);
-          else if (!allowedProperty(actual))
-            add("animated-property", `${decl.prop}: ${flat(decl.value)}`);
-        }
+      const text = `${decl.prop}: ${flat(decl.value)}`;
+      if (!allowed) {
+        if (colorLiterals(decl.value).length) add("color-literal", text);
+        if (CORAL_VAR.test(decl.value) || /^--(?:primary|pv-coral|destructive)/.test(decl.prop))
+          add("coral", text);
+        if (SPACING_PROP.test(decl.prop) && LENGTH.test(decl.value)) add("spacing-radius", text);
       }
+      if (/^(?:-webkit-)?transition(?:-property)?$/.test(decl.prop))
+        for (const rule of transitionRules(decl.value)) add(rule, text);
       let parent: postcss.Container | postcss.Document | undefined = decl.parent;
       while (parent) {
         const rule = parent as postcss.AtRule;
         if (rule.type === "atrule" && /keyframes$/.test(rule.name)) {
-          if (!allowedProperty(decl.prop) && decl.prop !== "animation-timing-function")
-            add(
-              "animated-property",
-              `@${rule.name} ${rule.params}: ${decl.prop}: ${flat(decl.value)}`,
-            );
+          if (!ANIMATABLE.includes(decl.prop) && decl.prop !== "animation-timing-function")
+            add("animated-property", `@${rule.name} ${rule.params}: ${text}`);
           break;
         }
         parent = parent.parent as typeof parent;
@@ -83,30 +143,27 @@ export function designFindings(file: string, source: string): Finding[] {
     });
     return found;
   }
-  for (const value of strings(file, source)) {
-    if (!ALLOWED_LITERAL_FILES.includes(file))
-      for (const match of value.matchAll(color)) add("color-literal", match[0]);
-    for (const token of value.split(/\s+/)) {
+  const parsed = parseSync(file, source);
+  if (parsed.errors.length) throw new Error(`${file}: invalid scanner input`);
+  new Visitor({
+    Literal(node) {
+      if (typeof node.value === "string") scanClasses(file, node.value, add);
+    },
+    TemplateElement(node) {
+      scanClasses(file, node.value.cooked ?? node.value.raw, add);
+    },
+    Property(node) {
+      const key = node.key.type === "Identifier" ? node.key.name : null;
+      const value = node.value.type === "Literal" ? node.value.value : null;
+      if (!key || value === null) return;
       if (
-        coral.test(token) &&
-        !/^src\/shared\/ui\/button[^/]*\.[tj]sx?$/.test(file) &&
-        !file.startsWith("src/features/commerce/presentation/") &&
-        !prices.includes(file)
+        SPACING_KEY.test(key) &&
+        (typeof value === "number" ? value !== 0 : LENGTH.test(String(value)))
       )
-        add("coral", token);
-      if (spacing.test(token)) add("spacing-radius", token);
-      const transition = token.match(/(?:^|:)transition(?:-([^\s]+))?$/);
-      if (!transition) continue;
-      const property = transition[1];
-      if (property === "all") add("transition-all", token);
-      else if (!property || !["none", "transform", "opacity"].includes(property)) {
-        const properties = property?.startsWith("[")
-          ? property.slice(1, -1).split(",")
-          : [property];
-        if (properties.some((item) => !item || !allowedProperty(item)))
-          add("animated-property", token);
-      }
-    }
-  }
+        add("spacing-radius", `${key}: ${value}`);
+      if (/^transition(?:Property)?$/.test(key) || key === "WebkitTransition")
+        for (const rule of transitionRules(String(value))) add(rule, `${key}: ${value}`);
+    },
+  }).visit(parsed.program);
   return found;
 }

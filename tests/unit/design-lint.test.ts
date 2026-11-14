@@ -14,6 +14,9 @@ const fixtures: Record<string, string[]> = {
     '"bg-primary hover:text-primary/50 border-primary from-primary to-primary-hover"',
     '"shadow-coral bg-coral text-coral-hover"',
     '"bg-(--primary) text-(--pv-coral-hover)"',
+    '"!bg-destructive ring-offset-primary decoration-coral outline-primary/50"',
+    '"accent-primary caret-primary divide-primary border-t-primary hover:!text-destructive"',
+    '"bg-[var(--primary)] text-[var(--pv-coral-hover)]"',
   ],
   "color-literal": [
     '"bg-[#fff]"',
@@ -22,10 +25,33 @@ const fixtures: Record<string, string[]> = {
     '"rgb(1,2,3)"',
     '"rgba(1,2,3,.5)"',
     '"hsl(0,0%,0%)"',
+    '"lab(50% 40 59)"',
+    '"lch(50% 40 59)"',
+    '"oklab(0.5 0.1 0.1)"',
+    '"hwb(12 0% 0%)"',
+    '"color(display-p3 1 0 0)"',
+    '"color-mix(in oklch, red, blue)"',
   ],
-  "spacing-radius": ['"p-[13px]"', '"hover:rounded-[7px]"', '"gap-[12px]"'],
-  "transition-all": ['"hover:transition-all"'],
-  "animated-property": ['"transition-[width]"', '"transition-colors"', '"transition"'],
+  "spacing-radius": [
+    '"p-[13px]"',
+    '"hover:rounded-[7px]"',
+    '"gap-[12px]"',
+    '"!p-[1rem]"',
+    '"top-[0.5em] -left-[3px] w-[10rem] h-[2px] size-[20px] inset-x-[4px]"',
+    '"scroll-mt-[5rem] min-w-[3rem] gap-x-[2px]"',
+  ],
+  "transition-all": [
+    '"hover:transition-all"',
+    '"[transition:all_1s]"',
+    '"[transition-property:all]"',
+  ],
+  "animated-property": [
+    '"transition-[width]"',
+    '"transition-colors"',
+    '"transition"',
+    '"[transition:width_1s]"',
+    '"[-webkit-transition:height_1s]"',
+  ],
 };
 for (const [rule, sources] of Object.entries(fixtures))
   test(`${rule}: negative strings and templates`, () => {
@@ -42,6 +68,34 @@ for (const [rule, sources] of Object.entries(fixtures))
       );
     }
   });
+
+test("CSS, inline styles, @apply and literal fingerprints", () => {
+  const css = (source: string) => designFindings("src/x.css", source).map((item) => item.rule);
+  assert.ok(css(".a { color: var(--primary); }").includes("coral"));
+  assert.ok(css(".a { color: var(--pv-coral-hover); }").includes("coral"));
+  assert.ok(css(".a { background: var(--destructive); }").includes("coral"));
+  assert.ok(css(".a { padding: 4px 1rem; }").includes("spacing-radius"));
+  assert.ok(css(".a { border-radius: 0.5em; }").includes("spacing-radius"));
+  assert.ok(css(".a { -webkit-transition: all 1s; }").includes("transition-all"));
+  assert.ok(css(".a { @apply bg-primary p-[3px] transition-all; }").includes("coral"));
+  assert.ok(css(".a { @apply p-[3px]; }").includes("spacing-radius"));
+  assert.ok(css(".a { @apply transition-colors; }").includes("animated-property"));
+  assert.ok(css(".a { @apply bg-[#fff]; }").includes("color-literal"));
+  assert.deepEqual(css(".a { padding: var(--space-4); border-radius: 0; }"), []);
+  const style = (source: string) =>
+    designFindings(component, `const s = { style: ${source} };`).map((item) => item.rule);
+  assert.ok(style("{ padding: 8 }").includes("spacing-radius"));
+  assert.ok(style('{ borderRadius: "4px" }').includes("spacing-radius"));
+  assert.ok(style('{ marginTop: "1rem" }').includes("spacing-radius"));
+  assert.ok(style('{ transition: "all 1s" }').includes("transition-all"));
+  assert.ok(style('{ transitionProperty: "height" }').includes("animated-property"));
+  assert.deepEqual(style("{ padding: 0, opacity: 1 }"), []);
+  const value = (source: string) => designFindings(component, source)[0]?.value;
+  assert.equal(value('const a = "oklch(0.5 0.2 40)";'), "oklch(0.5 0.2 40)");
+  assert.notEqual(value('const a = "oklch(0.1 0.2 40)";'), value('const a = "oklch(0.5 0.2 40)";'));
+  for (const text of ['"#bebe"', '"/page#abc123def"', '"https://x.test/#fff-x"', '"id#fade"'])
+    assert.deepEqual(designFindings(component, `const a = ${text};`), [], text);
+});
 
 test("allowed semantic utilities, price blocks, buttons and commerce pass", () => {
   assert.deepEqual(
@@ -129,6 +183,8 @@ test("biome-ignore requires a trailing real issue reference after its reason", (
     "// biome-ignore lint/a: reason",
     "// biome-ignore lint/a: #42 reason",
     "// biome-ignore lint/a",
+    "// biome-ignore-all lint/a: reason",
+    "// biome-ignore-start lint/a: reason",
   ])
     assert.equal(missingIssueReferences("fixture.ts", source).length, 1);
   for (const issue of ["#42", "https://github.com/owner/repo/issues/42"])
@@ -138,13 +194,15 @@ test("biome-ignore requires a trailing real issue reference after its reason", (
       ["fixture.json", `/* biome-ignore lint/a: reason ${issue} */ {}`],
     ])
       assert.deepEqual(missingIssueReferences(file ?? "", source ?? ""), []);
+  assert.deepEqual(missingIssueReferences("fixture.ts", "// biome-ignore-all lint/a: r #1"), []);
+  assert.deepEqual(missingIssueReferences("fixture.ts", "// biome-ignore-end lint/a"), []);
   assert.deepEqual(
     missingIssueReferences("fixture.ts", 'const text = "biome-ignore lint/a: missing";'),
     [],
   );
   const files = execFileSync("git", ["ls-files", "-z"], { encoding: "utf8" }).split("\0");
   const missing = files
-    .filter((name) => /\.(?:tsx?|css|json)$/.test(name) && existsSync(name))
+    .filter((name) => /\.(?:[cm]?[tj]sx?|css|json)$/.test(name) && existsSync(name))
     .flatMap((file) => missingIssueReferences(file, readFileSync(file, "utf8")));
   assert.deepEqual(missing, [], "every biome-ignore needs an issue reference");
 });
