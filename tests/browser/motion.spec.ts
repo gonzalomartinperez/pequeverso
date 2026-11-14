@@ -167,7 +167,7 @@ test("sticky bar stays hidden while the gallery zoom dialog is open", async ({ p
   await page.keyboard.press("Escape");
 });
 
-test("hero scene: WebGL canvas mounts after load, is absent under reduced motion, and pauses", async ({
+test("hero scene: WebGL canvas mounts after the first interaction on desktop, is absent under reduced motion, and pauses", async ({
   page,
 }) => {
   await page.goto("/grafismo-fonetico/");
@@ -185,6 +185,19 @@ test("hero scene: WebGL canvas mounts after load, is absent under reduced motion
   }
   const webgl = await page.evaluate(() => !!document.createElement("canvas").getContext("webgl2"));
   test.skip(!webgl, "no WebGL in this browser; the static layers are the finished fallback");
+  const eligible = await page.evaluate(
+    () => window.matchMedia("(pointer: fine) and (min-width: 1024px)").matches,
+  );
+  if (!eligible) {
+    // ADR-0017: phones, coarse pointers and narrow windows keep the static starfield.
+    await page.mouse.wheel(0, 120);
+    await page.waitForTimeout(2_500);
+    await expect(stage.locator("canvas")).toHaveCount(0);
+    await expect(stage).toHaveAttribute("data-mode", "static");
+    return;
+  }
+  await expect(stage.locator("canvas")).toHaveCount(0);
+  await page.mouse.wheel(0, 120);
   await expect(stage.locator("canvas")).toHaveCount(1, { timeout: 10_000 });
   await expect(stage).toHaveAttribute("data-mode", "running", { timeout: 10_000 });
   expect(

@@ -2,6 +2,7 @@
 
 import { type RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { isPageMotionHeld, subscribePageMotionHold } from "../motion-hold";
+import { afterFirstInteraction, SCENE_MEDIA, sceneAllowed } from "./scene-gate";
 import type { SceneOptions, SceneRuntime } from "./scene-runtime";
 
 /** `static`: the server-rendered layers are showing; `running`: the WebGL scene animates; `paused`: all motion stopped. */
@@ -49,9 +50,11 @@ function whenIdle(callback: () => void): () => void {
 }
 
 /**
- * Mounts a scene runtime lazily: after the page is idle it creates a canvas inside `layerRef`,
- * `await import()`s the runtime (never part of the initial bundle) and mounts it, unless reduced
- * motion, a short viewport or Save-Data says otherwise (then no canvas exists at all). A lost
+ * Mounts a scene runtime lazily (ADR-0017): only on a fine pointer at least 1024 px wide, and only
+ * after the first interaction and an idle moment, it creates a canvas inside `layerRef`,
+ * `await import()`s the runtime (never part of the initial bundle) and mounts it. Phones, coarse
+ * pointers, narrow windows, reduced motion, a short viewport and Save-Data keep the static layers
+ * and never request the chunk (no canvas exists at all). A lost
  * WebGL context falls back to the static layers until the context is restored. `controls` is true
  * whenever motion may play, so the pause toggle (WCAG 2.2.2) also stops the CSS orbit fallback.
  */
@@ -75,6 +78,7 @@ export function useSceneRuntime(
     if (!host || !layer) return;
     const reduced = matchMedia(REDUCED);
     const short = matchMedia(SHORT);
+    const wide = matchMedia(SCENE_MEDIA);
     let canvas: HTMLCanvasElement | null = null;
     let cancelIdle: (() => void) | null = null;
     let generation = 0;
@@ -114,7 +118,15 @@ export function useSceneRuntime(
       removeCanvas();
       setControls(!reduced.matches);
       const saveData = (navigator as ConnectionNavigator).connection?.saveData === true;
-      if (reduced.matches || short.matches || saveData) return;
+      if (
+        !sceneAllowed({
+          fineWide: wide.matches,
+          reducedMotion: reduced.matches,
+          short: short.matches,
+          saveData,
+        })
+      )
+        return;
       const create = () => {
         if (token !== generation) return;
         // A covering surface holds page motion: a cold WebGL start waits until it is released.
@@ -138,7 +150,14 @@ export function useSceneRuntime(
         layer.append(canvas);
         void mount(token);
       };
-      cancelIdle = whenIdle(create);
+      let cancelIdleWait: (() => void) | null = null;
+      const cancelInteraction = afterFirstInteraction(() => {
+        cancelIdleWait = whenIdle(create);
+      });
+      cancelIdle = () => {
+        cancelInteraction();
+        cancelIdleWait?.();
+      };
     };
     // A hold pauses the running scene; releasing it restores the visitor's own choice.
     const unsubscribeHold = subscribePageMotionHold(() => {
@@ -146,6 +165,7 @@ export function useSceneRuntime(
     });
     reduced.addEventListener("change", initialize);
     short.addEventListener("change", initialize);
+    wide.addEventListener("change", initialize);
     initialize();
     return () => {
       generation += 1;
@@ -153,6 +173,7 @@ export function useSceneRuntime(
       cancelIdle?.();
       reduced.removeEventListener("change", initialize);
       short.removeEventListener("change", initialize);
+      wide.removeEventListener("change", initialize);
       runtime.current?.dispose();
       runtime.current = null;
       removeCanvas();
