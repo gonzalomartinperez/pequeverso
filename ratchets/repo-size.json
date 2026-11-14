@@ -1,0 +1,27 @@
+{
+  "$comment": "Bytes of every tracked file at the commit (`git ls-files` + stat). The visual baselines dominate (largest 7.3 MB PNG; M2-5 replaces them with region baselines).",
+  "metric": "repo-size",
+  "measuredAt": "2026-11-14",
+  "commit": "a317051",
+  "source": "git ls-files -z | xargs -0 stat -c %s",
+  "values": [
+    {
+      "key": "tracked bytes",
+      "value": 83693948,
+      "unit": "bytes",
+      "direction": "max"
+    },
+    {
+      "key": "largest tracked file",
+      "value": 7259671,
+      "unit": "bytes",
+      "direction": "max"
+    },
+    {
+      "key": "public/media",
+      "value": 24,
+      "unit": "MB",
+      "direction": "max"
+    }
+  ]
+}

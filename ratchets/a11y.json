@@ -1,0 +1,21 @@
+{
+  "$comment": "axe serious + critical violations on the live site, 6 routes x mobile and desktop. The 2 on /imprime-y-juega/ come from the Hotmart iframe (frame-title, link-name; finding F-06, task M3-4).",
+  "metric": "a11y",
+  "measuredAt": "2026-11-09",
+  "commit": "cf61f20",
+  "source": "docs/master-plan/audit/playwright-results.json",
+  "values": [
+    {
+      "key": "serious+critical (all routes)",
+      "value": 2,
+      "unit": "violations",
+      "direction": "max"
+    },
+    {
+      "key": "/imprime-y-juega/ serious+critical",
+      "value": 2,
+      "unit": "violations",
+      "direction": "max"
+    }
+  ]
+}

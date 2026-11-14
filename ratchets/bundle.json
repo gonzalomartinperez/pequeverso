@@ -1,0 +1,105 @@
+{
+  "$comment": "First-load gzip size per route and asset class from `npm run check:bundle` on the export build. Ceilings: may only fall (M3-3 targets: product page js <= 170, hub js <= 165).",
+  "metric": "bundle",
+  "measuredAt": "2026-11-09",
+  "commit": "cbf519c",
+  "source": "docs/master-plan/audit/repo-checks/check-bundle.log",
+  "values": [
+    {
+      "key": "/ html",
+      "value": 49.1,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/ js",
+      "value": 156.3,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/ css",
+      "value": 34.4,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/ html",
+      "value": 79.9,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/ js",
+      "value": 174.5,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/ css",
+      "value": 34.4,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/imprime-y-juega/ html",
+      "value": 45.2,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/imprime-y-juega/ js",
+      "value": 174.5,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/imprime-y-juega/ css",
+      "value": 34.4,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/gracias/ html",
+      "value": 29.5,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/gracias/ js",
+      "value": 150.4,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/gracias/ css",
+      "value": 32.7,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/soporte/ js",
+      "value": 149.5,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/terminos/ js",
+      "value": 149.5,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/privacidad/ js",
+      "value": 149.5,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/arrepentimiento/ js",
+      "value": 149.5,
+      "unit": "KB gzip",
+      "direction": "max"
+    }
+  ]
+}
