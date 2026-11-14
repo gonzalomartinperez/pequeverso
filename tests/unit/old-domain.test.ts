@@ -15,7 +15,10 @@ const allowlist = ["docs/master-plan/", "tests/unit/old-domain.test.ts", fixture
 const isAllowed = (path: string): boolean =>
   allowlist.some((entry) => (entry.endsWith("/") ? path.startsWith(entry) : path === entry));
 
-/** Tracked and untracked (not ignored) files, so a new file fails before it is committed. */
+/**
+ * Tracked and untracked (not ignored) files, so a new file fails before it is committed. Needs a
+ * git checkout, like `architecture.test.ts`; CI and local work always have one.
+ */
 function repositoryFiles(): string[] {
   const listed = execFileSync("git", ["ls-files", "-z", "--cached", "--others", "--exclude-standard"], {
     encoding: "utf8",
@@ -25,28 +28,47 @@ function repositoryFiles(): string[] {
   return [...new Set(listed.split("\0").filter(Boolean))];
 }
 
-function mentionsOldDomain(path: string): boolean {
-  let bytes: Buffer;
+type Reader = (path: string) => Buffer | undefined;
+
+const readTracked: Reader = (path) => {
   try {
-    bytes = readFileSync(path);
+    return readFileSync(path);
   } catch {
-    return false; // deleted in the working tree, or a symlinked directory
+    return undefined; // deleted in the working tree, or a symlinked directory
   }
-  if (bytes.subarray(0, 8000).includes(0)) return false; // binary (images, fonts, video)
+};
+
+/** Binary files (images, fonts, video) are skipped; UTF-16 text would be skipped too (none exists). */
+function mentionsOldDomain(bytes: Buffer | undefined): boolean {
+  if (!bytes || bytes.subarray(0, 8000).includes(0)) return false;
   return oldDomain.test(bytes.toString("utf8"));
+}
+
+function findOffenders(files: readonly string[], read: Reader): string[] {
+  return files.filter((path) => !isAllowed(path) && mentionsOldDomain(read(path)));
 }
 
 test("no file outside the allowlist mentions the retired domain (OD-53)", () => {
   const files = repositoryFiles();
   assert.ok(files.length > 100, "expected the repository file list");
-  const offenders = files.filter((path) => !isAllowed(path) && mentionsOldDomain(path));
-  assert.deepEqual(offenders, [], "replace the retired domain with pequeverso.com");
+  assert.deepEqual(findOffenders(files, readTracked), [], "replace the retired domain with pequeverso.com");
 });
 
-test("the scan detects the retired domain in the negative fixture", () => {
-  assert.ok(repositoryFiles().includes(fixture), "negative fixture must stay in the repository");
-  assert.equal(mentionsOldDomain(fixture), true);
-  assert.equal(isAllowed(fixture), true);
-  assert.equal(isAllowed("SECURITY.md"), false);
-  assert.equal(isAllowed("docs/master-plan-copy/notes.md"), false);
+test("the scan flags the negative fixture content outside the allowlist and skips binaries", () => {
+  const files = repositoryFiles();
+  assert.ok(files.includes(fixture), "negative fixture must stay in the repository");
+  const content = readTracked(fixture);
+  assert.equal(mentionsOldDomain(content), true);
+  const fake = new Map<string, Buffer | undefined>([
+    [fixture, content],
+    ["SECURITY.md", content],
+    ["docs/master-plan-copy/notes.md", content],
+    ["docs/master-plan/audit.md", content],
+    ["public/logo.png", Buffer.concat([Buffer.from([0x89, 0x00]), content ?? Buffer.alloc(0)])],
+    ["README.md", Buffer.from("https://pequeverso.com/")],
+  ]);
+  assert.deepEqual(
+    findOffenders([...fake.keys()], (path) => fake.get(path)),
+    ["SECURITY.md", "docs/master-plan-copy/notes.md"],
+  );
 });

@@ -11,8 +11,8 @@ description: Cut a tagged release of pequeverso.com and run the gated deploy wit
    `production`). The `production` environment requires approval. The workflow publishes `out/` to
    the `deploy` branch, waits for Hostinger Git to pull it, verifies `build-info.json` matches the
    commit and runs `tools/smoke.ts`.
-4. After production: run the curl matrix in `docs/deployment.md`, check Search Console and Hotmart
-   test purchase items in `docs/migration.md`.
+4. After production: run the curl matrix in `docs/deployment.md`, check Search Console
+   (`docs/migration.md`) and the Hotmart purchase checklist in `docs/hotmart-funnel.md`.
 5. Rollback: re-run Deploy with the previous tag (or redeploy the previous `deploy` commit in hPanel → Git).
 
 ## Limits

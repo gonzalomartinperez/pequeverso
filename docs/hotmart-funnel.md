@@ -60,7 +60,7 @@ widget renders whatever offers are configured for the funnel step in Hotmart, in
 | Thank-you: no `.pdf` links, no purchase markers, links to `consumer.hotmart.com` | Playwright `widget.spec.ts` |
 | Legacy paths redirect with the query intact: `/pequeverso/imprime-y-juega/?downsell=1&…`, `/products/kit-imprime-y-juega/?offer=downsell`, `/pequeverso/grafismo-fonetico/gracias/`, `/products/grafismo-fonetico-gracias/`, `/pequeverso/grafismo-fonetico/`, `/products/grafismo-fonetico/` (308) | curl on the standalone server (2026-09-24) and `tests/unit/edge-rules.test.ts` |
 
-## 4. Hotmart dashboard settings (done; owner confirmed 2026-11-09)
+## 4. Hotmart dashboard settings (URLs confirmed by the owner 2026-11-09)
 
 Deploying the pages does **not** move the funnel; these settings live in the Hotmart producer
 area for the principal product (Grafismo Fonético; its offer code is the one in the checkout URL
@@ -72,8 +72,8 @@ set in `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO`). Re-check them after any UR
 | Sales Funnel → upsell step → page URL | `https://pequeverso.com/imprime-y-juega/` |
 | Sales Funnel → downsell step → page URL | `https://pequeverso.com/imprime-y-juega/?downsell=1` |
 | Post-sale → external thank-you URLs (approved / awaiting payment / under analysis) | `https://pequeverso.com/grafismo-fonetico/gracias/` |
-| Sales Funnel → offers for the upsell (US$14.99) and downsell (US$7.49) steps | exist and are active; never reuse legacy offer ids (the end-to-end check in section 5 is owner input PV-D10) |
-| Meta Pixel integration | Purchase (Web+API) and checkout page visits on; "Hotmart product page visits" off (site owns ViewContent) |
+| Sales Funnel → offers for the upsell (US$14.99) and downsell (US$7.49) steps | not verified by the repository: confirm they exist and are active (never reuse legacy offer ids) during the end-to-end check in section 5 (owner input PV-D10) |
+| Meta Pixel integration | intended: Purchase (Web+API) and checkout page visits on, "Hotmart product page visits" off (site owns ViewContent); not verified by the repository |
 
 The previous operator domain is not renewed and not redirected (OD-53).
 

@@ -9,7 +9,8 @@ proxy). The cutover is finished:
 - The previous operator domain is **not renewed and not redirected** (owner decision OD-53,
   DR-14 in `docs/master-plan/owner-decisions.md`): no `.htaccess` block, no forward, no hotfix.
   The old redirect block and the cutover runbook stay in git history (removed in task M1-10).
-- Support runs on the mailbox in `config/site.ts` (`supportEmail`); no page shows another one.
+- Support runs on the mailbox in `config/site.ts` (`supportEmail`); no page shows the old-domain
+  mailbox (legal pages also show the seller's contact from `content/es/legal/`).
 - `tests/unit/old-domain.test.ts` fails if any tracked file outside the allowlist mentions the old
   domain again.
 
@@ -28,7 +29,9 @@ intact, so old links and calendar entries keep working. The rules live in
 | `/pequeverso/grafismo-fonetico/gracias/`, `/products/grafismo-fonetico-gracias/` | `/grafismo-fonetico/gracias/` | permanent redirect |
 | `/shop-2/*` (URLs of the domain's previous owner, still indexed by Google) | — | 410 |
 
-Site policy: trailing-slash canonical, `www`→apex and `http`→`https` in one hop. Post-purchase
+Site policy: trailing-slash canonical, `www`→apex and `http`→`https` in one hop. HSTS stays at
+`max-age=300` until apex and www have served valid HTTPS for a week, then rises to one year
+(`config/edge-rules.json`, roadmap task M3-5). Post-purchase
 and legal pages are `noindex`; the sitemap lists the indexable routes.
 
 ## External references (all point at pequeverso.com)
