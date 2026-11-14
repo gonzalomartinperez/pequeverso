@@ -1,0 +1,3 @@
+# Files a new git worktree copies from the main checkout. Intentionally empty:
+# dependencies are installed per worktree (`npm ci`), and environment files (.env*) are never
+# copied between checkouts. See AGENTS.md.

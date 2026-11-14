@@ -16,7 +16,7 @@ function broken(mutate: (dir: string) => void): string[] {
   const dir = mkdtempSync(path.join(tmpdir(), "pv-skills-"));
   try {
     for (const entry of [".agents", ".claude", "CLAUDE.md", "package.json", "docs", "tools", "config", "src"])
-      cpSync(path.join(root, entry), path.join(dir, entry), { recursive: true });
+      cpSync(path.join(root, entry), path.join(dir, entry), { recursive: true, verbatimSymlinks: true });
     mkdirSync(path.join(dir, "tests"));
     for (const entry of ["helpers", "unit"])
       cpSync(path.join(root, "tests", entry), path.join(dir, "tests", entry), { recursive: true });
@@ -29,21 +29,11 @@ function broken(mutate: (dir: string) => void): string[] {
 const edit = (file: string, change: (text: string) => string) =>
   writeFileSync(file, change(readFileSync(file, "utf8")));
 
-test("adapter drift is detected", () => {
-  const problems = broken((dir) =>
-    edit(path.join(dir, ".claude/skills/prepare-delivery/SKILL.md"), (t) =>
-      t.replace("Cut a tagged", "Cut any"),
-    ),
-  );
-  assert.ok(problems.some((p) => p.includes("prepare-delivery: adapter frontmatter drifted")));
-});
-
 test("a skill without limits or exclusions is rejected", () => {
   const problems = broken((dir) => {
-    for (const base of [".agents", ".claude"])
-      edit(path.join(dir, base, "skills/prepare-delivery/SKILL.md"), (t) =>
-        t.replace(" Not an authorization to release or deploy.", "").replace(/## Limits[\s\S]*$/, ""),
-      );
+    edit(path.join(dir, ".agents/skills/prepare-delivery/SKILL.md"), (t) =>
+      t.replace(" Not an authorization to release or deploy.", "").replace(/## Limits[\s\S]*$/, ""),
+    );
   });
   assert.ok(problems.some((p) => p.includes('prepare-delivery: missing "## Limits" section')));
   assert.ok(
@@ -70,23 +60,6 @@ test("private paths, secrets, unknown scripts and placeholders are rejected", ()
     );
 });
 
-test("a skill present in only one catalog is rejected", () => {
-  const problems = broken((dir) =>
-    rmSync(path.join(dir, ".claude/skills/prepare-delivery"), { recursive: true }),
-  );
-  assert.ok(problems.some((p) => p.includes("catalogs differ")));
-});
-
-test("Claude adapters cannot duplicate procedural instructions", () => {
-  const problems = broken((dir) =>
-    edit(
-      path.join(dir, ".claude/skills/prepare-delivery/SKILL.md"),
-      (text) => `${text}\nRun a release directly.\n`,
-    ),
-  );
-  assert.ok(problems.some((problem) => problem.includes("only the canonical skill reference")));
-});
-
 test("skill frontmatter naming and canonical references remain enforced", () => {
   const named = broken((dir) =>
     edit(path.join(dir, ".agents/skills/prepare-delivery/SKILL.md"), (text) =>
@@ -94,12 +67,6 @@ test("skill frontmatter naming and canonical references remain enforced", () => 
     ),
   );
   assert.ok(named.some((problem) => problem.includes("name must match its folder")));
-  const referenced = broken((dir) =>
-    edit(path.join(dir, ".claude/skills/prepare-delivery/SKILL.md"), (text) =>
-      text.replace("skills/prepare-delivery/SKILL.md", "skills/missing/SKILL.md"),
-    ),
-  );
-  assert.ok(referenced.some((problem) => problem.includes("only the canonical skill reference")));
 });
 
 test("broken and outside canonical references are rejected", () => {
@@ -126,13 +93,52 @@ test("duplicate frontmatter fields are rejected", () => {
   assert.ok(problems.some((problem) => problem.includes("duplicate frontmatter field name")));
 });
 
-test("skill entry links and escaped resource realpaths are rejected", () => {
-  const linked = broken((dir) => {
-    const adapter = path.join(dir, ".claude/skills/prepare-delivery/SKILL.md");
-    rmSync(adapter);
-    symlinkSync("../../../.agents/skills/prepare-delivery/SKILL.md", adapter);
+const link = ".claude/skills/prepare-delivery";
+
+test("a missing Claude symlink is rejected", () => {
+  const problems = broken((dir) => rmSync(path.join(dir, link)));
+  assert.ok(problems.some((p) => p.includes("prepare-delivery: missing .claude/skills symlink")));
+});
+
+test("a Claude adapter that is a regular directory is rejected", () => {
+  const problems = broken((dir) => {
+    rmSync(path.join(dir, link));
+    mkdirSync(path.join(dir, link));
+    writeFileSync(path.join(dir, link, "SKILL.md"), "---\nname: prepare-delivery\n---\n");
   });
-  assert.ok(linked.some((problem) => problem.includes("entries must be regular files")));
+  assert.ok(problems.some((p) => p.includes("prepare-delivery: .claude/skills entry must be a symlink")));
+});
+
+test("a Claude symlink pointing elsewhere or with an absolute target is rejected", () => {
+  for (const target of [
+    "../../.agents/skills/review-change",
+    path.join(root, ".agents/skills/prepare-delivery"),
+  ]) {
+    const problems = broken((dir) => {
+      rmSync(path.join(dir, link));
+      symlinkSync(target, path.join(dir, link), "dir");
+    });
+    assert.ok(problems.some((p) => p.includes("link must be exactly ../../.agents/skills/prepare-delivery")));
+  }
+});
+
+test("a stale repo link and a regular extra entry are rejected, external links are ignored", () => {
+  const problems = broken((dir) => {
+    symlinkSync("../../.agents/skills/ghost", path.join(dir, ".claude/skills/ghost"), "dir");
+    mkdirSync(path.join(dir, ".claude/skills/stray"));
+  });
+  assert.ok(problems.some((p) => p.includes("ghost: .claude/skills link targets a missing canonical skill")));
+  assert.ok(problems.some((p) => p.includes("stray: .claude/skills entry has no canonical")));
+  assert.deepEqual(
+    broken((dir) => {
+      symlinkSync("/tmp", path.join(dir, ".claude/skills/external"), "dir");
+      symlinkSync("/tmp", path.join(dir, ".agents/skills/external"), "dir");
+    }),
+    [],
+  );
+});
+
+test("escaped resource realpaths are rejected", () => {
   const escaped = broken((dir) => {
     const reference = path.join(dir, ".agents/skills/prepare-delivery/references");
     mkdirSync(reference);

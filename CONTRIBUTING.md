@@ -59,7 +59,7 @@ follow `.claude/skills/prepare-delivery/SKILL.md` and need the owner's approval 
 
 ## Agent skills
 
-Canonical site skills live once in `.agents/skills/<name>/SKILL.md`. Regular
-`.claude/skills/<name>/SKILL.md` adapters carry identical frontmatter and only a canonical reference. `npm run check:skills` (also a unit test) validates
-frontmatter, adapter drift, links, scripts, limits and the absence of private paths or secrets.
+Canonical site skills live once in `.agents/skills/<name>/SKILL.md`. `.claude/skills/<name>` are
+relative symlinks to the canonical `../../.agents/skills/<name>`. `npm run check:skills` (also a unit
+test) validates the symlinks, frontmatter, links, scripts, limits and the absence of private paths or secrets.
 A skill is a procedure, never an authorization.

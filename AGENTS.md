@@ -91,7 +91,7 @@ component mount/cleanup lifetimes, tracking/consent/checkout and disabled-assist
 No forwarding barrels, duplicated implementation, changed deadlines/retries/budgets or new authority
 follow from a relocation. Historical receipts, copied contract provenance and scanner fingerprints
 retain their original source attribution. The public-site pair keeps one canonical procedure in `.agents/skills/<name>/SKILL.md` and
-a regular `.claude/skills/<name>/SKILL.md` adapter with identical frontmatter and one source reference.
+a relative directory symlink `.claude/skills/<name>` -> `../../.agents/skills/<name>`.
 Do not duplicate the procedure or infer API/backoffice discovery changes from this site convention.
 
 ## Boundaries
