@@ -12,10 +12,8 @@ import { SkipLink } from "@/shared/navigation/skip-link.tsx";
 import { buttonVariants } from "@/shared/ui/button-variants.ts";
 import "./globals.css";
 
-const consentClasses = {
-  primary: buttonVariants({ variant: "secondary", size: "sm" }),
-  secondary: buttonVariants({ variant: "ghost", size: "sm" }),
-};
+// One class for every consent action: Aceptar, Rechazar and Configurar stay equally prominent.
+const consentClasses = { primary: buttonVariants({ variant: "secondary", size: "sm" }) };
 
 const fonts = [
   "/fonts/fraunces-latin-wght-7f9d191d.woff2",

@@ -1,5 +1,5 @@
-/** Bumping this re-prompts every visitor (a policy or category change). */
-export const CONSENT_VERSION = 2;
+/** Bumping this re-prompts every visitor (a policy or category change). 3 = prior opt-in (ADR-0011). */
+export const CONSENT_VERSION = 3;
 export const CONSENT_KEY = "pv_consent";
 export const CONSENT_EVENT = "pv:consent";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 180;
@@ -10,10 +10,10 @@ export type ConsentCategory = "analytics" | "marketing";
 export type ConsentChoice = Record<ConsentCategory, boolean>;
 
 /**
- * Policy before the visitor decides: measurement is on and the banner offers an equal
- * "Rechazar" that withdraws it (opt-out). A stored choice always wins over this default.
+ * Policy before the visitor decides: nothing gated runs (prior opt-in, ADR-0011). Only a
+ * stored choice of the current version grants a category.
  */
-export const DEFAULT_CHOICE: Readonly<ConsentChoice> = { analytics: true, marketing: true };
+export const DEFAULT_CHOICE: Readonly<ConsentChoice> = { analytics: false, marketing: false };
 
 export type ConsentState = ConsentChoice & {
   version: typeof CONSENT_VERSION;
