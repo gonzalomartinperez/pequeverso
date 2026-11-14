@@ -4,6 +4,10 @@
  * support, privacy and withdrawal ("arrepentimiento") requests. Pages read every fact from here;
  * none of them retypes a value.
  */
+
+import { supportResponseTime } from "../../../config/commerce.ts";
+import { site } from "../../../config/site.ts";
+
 export const seller = {
   brand: "Pequeverso",
   /** The Titular: a natural person ("persona humana") who sells under the Pequeverso brand. */
@@ -17,8 +21,8 @@ export const seller = {
   /** Courts named in the jurisdiction clause; never displaces the consumer's own forum. */
   jurisdiction:
     "los tribunales ordinarios del Departamento Judicial de Bahía Blanca, provincia de Buenos Aires",
-  supportEmail: "somospequeverso@gmail.com",
-  privacyEmail: "somospequeverso@gmail.com",
+  supportEmail: site.supportEmail,
+  privacyEmail: site.supportEmail,
   /**
    * The Titular's own mailbox, registered in the seller's Hotmart account (Hotmart forwards buyer
    * contacts there). Secondary channel shown on the legal pages only (`legalRoutes`); commercial
@@ -26,7 +30,7 @@ export const seller = {
    */
   legalEmail: "gonzalomartinperez2002@gmail.com",
   legalEmailLabel: "Correo del titular (cuenta de Hotmart)",
-  responseTime: "48 horas hábiles",
+  responseTime: supportResponseTime,
   updatedAt: "12 de octubre de 2026",
 } as const;
 

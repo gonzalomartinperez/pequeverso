@@ -3,14 +3,15 @@
  * jurisdiction clause. Sources and the date they were read (2026-09-24) are listed in
  * docs/legal-checklist.md; change a value here only together with that list.
  */
+import { withdrawalRequestCodeHours, withdrawalWindow } from "../../../config/commerce.ts";
 import { seller } from "./seller.ts";
 
 /** Consumer-law periods the pages quote. */
 export const consumerLaw = {
   /** Ley 24.240 art. 34 and CCyC art. 1110: revocation of distance sales, calendar days. */
-  revocationDays: 10,
+  revocationDays: withdrawalWindow("Argentina").days,
   /** Disposición SSDCyLC 954/2025 art. 5: request code within 24 hours, by the same channel. */
-  revocationCodeHours: 24,
+  revocationCodeHours: withdrawalRequestCodeHours,
 } as const;
 
 /** National consumer-protection complaint entry point (Ventanilla Federal Única de Reclamos). */

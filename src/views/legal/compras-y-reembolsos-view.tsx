@@ -3,6 +3,7 @@ import { offerProducts } from "@config/products/index.ts";
 import { consumerLaw } from "@content/es/legal/argentina";
 import { hotmartFacts } from "@content/es/legal/hotmart";
 import { seller } from "@content/es/legal/seller";
+import { withdrawalCopy } from "@content/es/legal/withdrawal";
 import Link from "next/link";
 import { Notice } from "@/shared/editorial/notice.tsx";
 import {
@@ -14,6 +15,7 @@ import {
   TableRow,
 } from "@/shared/ui/table.tsx";
 import { LegalLayout, type Section, SectionHeading } from "@/views/legal/legal-layout.tsx";
+import { WithdrawalWindowsTable } from "@/views/legal/withdrawal-windows.tsx";
 
 const sections: readonly Section[] = [
   { id: "resumen", title: "En resumen" },
@@ -23,6 +25,7 @@ const sections: readonly Section[] = [
   { id: "ofertas", title: "Ofertas opcionales" },
   { id: "reembolso", title: "Cómo pedir un reembolso" },
   { id: "garantia-y-ley", title: "Garantía y derechos legales" },
+  { id: "por-correo", title: withdrawalCopy.title },
   { id: "plazos", title: "Plazos" },
   { id: "contacto", title: "Canales de contacto" },
   { id: "preguntas", title: "Preguntas frecuentes" },
@@ -47,7 +50,7 @@ const deadlines = [
   },
   {
     step: "Devolución del dinero",
-    period: `Por el mismo medio de pago: ${hotmartFacts.refundTiming}.`,
+    period: `Dentro de la garantía, Hotmart devuelve el importe por el mismo medio de pago: ${hotmartFacts.refundTiming}. Fuera de ella, lo gestionamos nosotros y te confirmamos por correo cómo y cuándo.`,
   },
   { step: "Soporte por correo", period: `Respuesta normalmente en ${seller.responseTime}.` },
 ];
@@ -182,8 +185,15 @@ export default function ComprasPage() {
       <p>
         Escribe a <a href={`mailto:${seller.supportEmail}`}>{seller.supportEmail}</a> (o a{" "}
         <a href={`mailto:${seller.legalEmail}`}>{seller.legalEmail}</a>, el correo del titular en
-        Hotmart) con el correo de la compra y el código HP, y gestionamos la solicitud contigo. El
-        reembolso siempre lo ejecuta Hotmart, por el mismo medio de pago; después, Hotmart retira el
+        Hotmart) y gestionamos la solicitud contigo:
+      </p>
+      <ol>
+        {withdrawalCopy.steps.map((step) => (
+          <li key={step}>{step}</li>
+        ))}
+      </ol>
+      <p>
+        {withdrawalCopy.hotmartRefund} {withdrawalCopy.manualRefund} Tras el reembolso se retira el
         acceso a los archivos.
       </p>
 
@@ -222,6 +232,17 @@ export default function ComprasPage() {
           {consumerLaw.revocationCodeHours} horas.
         </p>
       </Notice>
+
+      <SectionHeading sections={sections} id="por-correo" />
+      <p>{withdrawalCopy.summary}</p>
+      <WithdrawalWindowsTable />
+      <p>{withdrawalCopy.answerTime}</p>
+      <p>{withdrawalCopy.argentinaCode}</p>
+      <p>
+        Cómo pedirlo por correo y cómo se devuelve el dinero: ver “Por correo” en{" "}
+        <a href="#reembolso">Cómo pedir un reembolso</a>. Más detalle por país en la{" "}
+        <Link href="/arrepentimiento/#paises">referencia por país</Link>.
+      </p>
 
       <SectionHeading sections={sections} id="plazos" />
       <Table>

@@ -140,6 +140,24 @@ export default function SoportePage() {
               <Link href="/compras-y-reembolsos/">{copy.contact.moreLink}</Link>.
             </p>
           </div>
+          <div className="on-light glass grid grid-cols-1 content-start gap-4 rounded-2xl p-6 shadow-float sm:p-8 md:col-span-2">
+            <h2 id="soporte-arrepentimiento" className="font-display text-[1.5rem] leading-tight">
+              {copy.withdrawal.title}
+            </h2>
+            <p id="soporte-plazos-lead" className="font-bold">
+              {copy.withdrawal.windowsLead}
+            </p>
+            <ul aria-labelledby="soporte-plazos-lead" className="grid gap-1 sm:grid-cols-2">
+              {copy.withdrawal.windows.map((window) => (
+                <li key={window.country}>
+                  {window.country}: <strong>{window.period}</strong>
+                </li>
+              ))}
+            </ul>
+            <p>
+              <Link href="/arrepentimiento/#por-correo">{copy.withdrawal.link}</Link>
+            </p>
+          </div>
         </div>
       </section>
 

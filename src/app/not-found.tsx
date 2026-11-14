@@ -1,4 +1,4 @@
-import { notFoundCopy as copy } from "@content/es/soporte";
+import { notFoundCopy as copy } from "@content/es/errors";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
