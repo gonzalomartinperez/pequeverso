@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import {
   existsSync,
   linkSync,
@@ -10,7 +11,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { test } from "node:test";
 import { prerequisites, requireSuccessfulJobs } from "../../tools/ci/acceptance.ts";
 import {
@@ -88,20 +89,41 @@ function report(suite: Suite, selected: readonly string[] = projects[suite]) {
   };
 }
 
-test("core matrix retains separate six-project functional and native configurations", () => {
+test("core matrix retains separate functional and native configurations", () => {
   assert.equal(coreMatrix.include.length, 8);
   assert.deepEqual(
     coreMatrix.include.map((row) => row.index),
     [1, 2, 3, 4, 5, 6, 7, 8],
   );
-  assert.equal(projects.functional.length, 6);
+  assert.equal(projects.functional.length, 7);
   assert.equal(projects.native.length, 6);
-  assert.equal(projects.nightly.length, 14);
+  assert.equal(projects.nightly.length, 16);
   assert.deepEqual(
     nightlyMatrix.include.map((row) => `${row.shard}/${row.shards}`),
     ["1/8", "2/8", "3/8", "4/8", "5/8", "6/8", "7/8", "8/8"],
   );
 });
+const root = resolve(import.meta.dirname, "../..");
+
+/** Project names of playwright.config.ts for a PW_SET, read from the real config. */
+function configProjects(set: string): string[] {
+  const out = execFileSync(
+    process.execPath,
+    [
+      "--input-type=module",
+      "-e",
+      "import('./playwright.config.ts').then((m) => console.log(JSON.stringify(m.default.projects.map((p) => p.name))))",
+    ],
+    { cwd: root, encoding: "utf8", env: { ...process.env, PW_SET: set } },
+  );
+  return JSON.parse(out) as string[];
+}
+
+test("the project catalogues equal the projects of playwright.config.ts", () => {
+  assert.deepEqual([...projects.functional].sort(), configProjects("pr").sort());
+  assert.deepEqual([...projects.nightly].sort(), configProjects("nightly").sort());
+});
+
 for (const suite of Object.keys(projects) as Suite[]) {
   test(`${suite} rejects incomplete project catalogues and foreign configurations`, () => {
     assert.equal(testIdentities(report(suite), suite, true).length, projects[suite].length);

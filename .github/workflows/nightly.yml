@@ -140,7 +140,7 @@ jobs:
           CI_MANIFEST_SHA256: ${{ needs.quality.outputs.manifest_sha256 }}
       - name: Verify exported edge rules
         run: cmp out/.htaccess docs/generated/htaccess.txt
-      - name: Verify the full 14-project configuration has eight disjoint complete test shards
+      - name: Verify the full 16-project configuration has eight disjoint complete test shards
         env:
           PW_SET: nightly
         run: |-
