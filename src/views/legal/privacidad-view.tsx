@@ -32,7 +32,7 @@ const purposes = [
   {
     purpose: "Medir las campañas publicitarias y el interés en los productos (Meta Pixel)",
     basis:
-      "Información previa en el banner y oposición en cualquier momento: “Rechazar” en el banner o “Configurar cookies” en el pie de página",
+      "Tu consentimiento previo: “Aceptar” o “Configurar” en el banner. Puedes retirarlo en cualquier momento desde “Configurar cookies” en el pie de página",
   },
   {
     purpose: "Atender consultas, soporte posventa, reembolsos y pedidos de arrepentimiento",
@@ -77,7 +77,7 @@ const recipients = [
   },
   {
     name: "Meta Platforms Ireland Ltd.",
-    text: "Medición de campañas mediante el píxel de Meta, salvo que te opongas.",
+    text: "Medición de campañas mediante el píxel de Meta, solo si la aceptas.",
   },
   {
     name: "Hostinger International Ltd.",
@@ -107,8 +107,8 @@ const rights = [
     text: "pedir que se eliminen tus datos cuando no exista una obligación legal o contractual de conservarlos, dentro de los 5 días hábiles (art. 16).",
   },
   {
-    name: "Oposición a la medición publicitaria",
-    text: "retirar la medición de Meta en cualquier momento desde el banner o el pie de página, sin necesidad de escribir.",
+    name: "Retiro del consentimiento a la medición publicitaria",
+    text: "retirar en cualquier momento tu consentimiento a la medición de Meta desde “Configurar cookies” en el pie de página, sin necesidad de escribir.",
   },
 ];
 
@@ -168,14 +168,14 @@ export default function PrivacidadPage() {
       <dl>
         <dt>Navegación</dt>
         <dd>
-          Salvo que te opongas, Meta recibe identificadores de navegación (cookies <code>_fbp</code>{" "}
-          y <code>_fbc</code>, dirección IP, agente de usuario) y eventos del Sitio: página vista,
-          interés en el producto, clic hacia la página de pago y clic en un producto recomendado de
-          terceros, tanto desde tu navegador como, para que la medición sea fiable, a través del
-          servidor del Sitio (API de conversiones de Meta) con los mismos datos. Si te opones, la
-          medición se desactiva por ambas vías y no se carga ningún script de Meta en tus próximas
-          visitas. No se envían a Meta tu nombre, tu correo ni datos de compra. Detalle en la{" "}
-          <Link href="/cookies/">Política de cookies</Link>.
+          Solo si aceptas la medición, Meta recibe identificadores de navegación (cookies{" "}
+          <code>_fbp</code> y <code>_fbc</code>, dirección IP, agente de usuario) y eventos del
+          Sitio: página vista, interés en el producto, clic hacia la página de pago y clic en un
+          producto recomendado de terceros, tanto desde tu navegador como, para que la medición sea
+          fiable, a través del servidor del Sitio (API de conversiones de Meta) con los mismos
+          datos. Si no la aceptas o la retiras, la medición queda desactivada por ambas vías y no se
+          carga ningún script de Meta. No se envían a Meta tu nombre, tu correo ni datos de compra.
+          Detalle en la <Link href="/cookies/">Política de cookies</Link>.
         </dd>
         <dt>Compra</dt>
         <dd>
