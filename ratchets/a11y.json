@@ -1,0 +1,27 @@
+{
+  "$comment": "axe serious + critical violations on the live site, 6 routes x mobile and desktop, counted per route and viewport (one count per rule instance). The 4 on /imprime-y-juega/ (frame-title and link-name on both viewports) come from the Hotmart iframe (finding F-06, task M3-4).",
+  "metric": "a11y",
+  "measuredAt": "2026-11-09",
+  "commit": "cf61f20",
+  "source": "docs/master-plan/audit/playwright-results.json",
+  "values": [
+    {
+      "key": "serious+critical (all routes, both viewports)",
+      "value": 4,
+      "unit": "violations",
+      "direction": "max"
+    },
+    {
+      "key": "/imprime-y-juega/ mobile",
+      "value": 2,
+      "unit": "violations",
+      "direction": "max"
+    },
+    {
+      "key": "/imprime-y-juega/ desktop",
+      "value": 2,
+      "unit": "violations",
+      "direction": "max"
+    }
+  ]
+}

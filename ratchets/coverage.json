@@ -1,0 +1,27 @@
+{
+  "$comment": "Unit-test coverage of `npm test` with --experimental-test-coverage. Floors: may only rise.",
+  "metric": "coverage",
+  "measuredAt": "2026-11-09",
+  "commit": "cbf519c",
+  "source": "docs/master-plan/audit/repo-checks/coverage.log",
+  "values": [
+    {
+      "key": "lines",
+      "value": 96.19,
+      "unit": "%",
+      "direction": "min"
+    },
+    {
+      "key": "branches",
+      "value": 88.11,
+      "unit": "%",
+      "direction": "min"
+    },
+    {
+      "key": "functions",
+      "value": 92.78,
+      "unit": "%",
+      "direction": "min"
+    }
+  ]
+}
