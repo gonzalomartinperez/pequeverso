@@ -1,0 +1,5 @@
+# Mechanical formatting commits, skipped by `git blame` (git config blame.ignoreRevsFile .git-blame-ignore-revs).
+# GitHub uses this file automatically. Merge such PRs with a merge commit so these SHAs land on develop.
+
+# style(m1-8): format the codebase at 100 columns
+9e2359bd1456491bf49db8e474b5d76566b84bd4

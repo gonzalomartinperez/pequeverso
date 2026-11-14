@@ -36,7 +36,7 @@ mechanical parts; the rest is review.
 | JSDoc on exported API | Concise JSDoc on exported symbols that are not obvious from their type; no narrative comments |
 | Classes for stateful objects | Closures and plain functions (the assistant controller is a closure-based external store); React components are functions |
 | Imports | `import type` for types; `.ts` extensions in files Node runs directly (`tools/`, `server/`, unit tests); `@/` alias inside `src/` |
-| Formatting | Biome (2-space indent, 110 columns, double quotes), not clang-format |
+| Formatting | Biome (2-space indent, 100 columns, double quotes), not clang-format; mechanical reformat commits go in `.git-blame-ignore-revs` |
 
 ## Architecture boundaries
 
