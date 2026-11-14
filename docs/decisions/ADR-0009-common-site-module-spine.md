@@ -51,7 +51,8 @@ the media pipeline to production analysis or site dependencies.
 The public-site pair retains canonical `.agents/skills` procedures and regular thin `.claude`
 adapters. Shared names are specify-feature, implement-feature, review-change, prepare-delivery
 and the actual product-specific change-assistant procedure. Each adapter has identical
-frontmatter and only a reference to the canonical procedure. This is the sites' explicit
+frontmatter and only a reference to the canonical procedure. (Amended in M1-7: the adapters became relative directory symlinks
+`.claude/skills/<name>` -> `../../.agents/skills/<name>`.) This is the sites' explicit
 workflow convention, distinct from the APIs/backoffices; it does not claim one canonical
 implementation for every repository category. Existing automatic descriptions and authorization
 limits remain binding. Validators reject mismatched frontmatter, invalid references and duplicated

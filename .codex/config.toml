@@ -1,0 +1,7 @@
+# Codex project configuration. Repository rules live in AGENTS.md; read it first.
+# No secrets belong here: credentials stay in the environment, never in the repository.
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+[sandbox_workspace_write]
+network_access = false
