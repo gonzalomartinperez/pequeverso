@@ -4,6 +4,7 @@
  * ratings or reviews (the site has no reviews and invents no social proof).
  */
 
+import { currency } from "../../config/commerce.ts";
 import type { CoreProduct, Product } from "../../config/products/schema.ts";
 import { absoluteUrl, site } from "../../config/site.ts";
 import { getImage } from "../shared/media/media.ts";
@@ -16,6 +17,7 @@ export function productJsonLd(product: CoreProduct): JsonLd | null {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
+    url: absoluteUrl(product.path),
     description: product.seo.description,
     image: absoluteUrl(getImage(product.media.og ?? product.media.hero).src),
     sku: product.slug,
@@ -23,7 +25,7 @@ export function productJsonLd(product: CoreProduct): JsonLd | null {
     offers: {
       "@type": "Offer",
       price: product.pricing.list.toFixed(2),
-      priceCurrency: "USD",
+      priceCurrency: currency,
       availability: "https://schema.org/InStock",
       url: absoluteUrl(product.path),
     },

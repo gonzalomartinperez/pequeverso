@@ -36,6 +36,12 @@ To add a product: create the folder, write `config/products/<slug>.ts` with `sat
 register it in `config/products/index.ts` and declare its media in `tools/media/sources.json`. Routes,
 sitemap, footer, 404 and terms derive from the registry.
 
+Sitemap `lastModified` is a content review date, never build time: `seo.lastReviewed` per product
+and `config/content-dates.ts` for home and support (`git log -1 --format=%cs -- <content files>`;
+bump it when the page content changes). Every JSON-LD block goes through `jsonLd()` /
+`JsonLdScript` in `src/shared/seo/` (escapes `<`); structured data: `src/views/site-jsonld.ts`
+(`Organization`, `WebSite`, no `SearchAction`) and `src/views/product-jsonld.ts` (`Product` + `Offer`).
+
 ## Rules
 
 - No testimonials, ratings, results, learning guarantees or "as seen in" claims. Content describes

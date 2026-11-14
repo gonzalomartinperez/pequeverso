@@ -18,6 +18,9 @@ export const MediaId = z.string().refine(hasMedia, {
     `unknown media id "${String(issue.input)}" (declare it in tools/media/sources.json)`,
 });
 
+/** A real calendar date `YYYY-MM-DD`. */
+const IsoDate = z.iso.date();
+
 const Price = z.number().positive().multipleOf(0.01);
 
 const Composition = z.object({
@@ -35,12 +38,17 @@ const Media = z.object({
   cards: z.array(MediaId).min(1),
 });
 
-const Seo = z.object({
-  index: z.boolean(),
+const SeoBase = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   priority: z.number().min(0).max(1),
 });
+
+/** Indexable pages must carry the review date that feeds the sitemap `lastModified`. */
+const Seo = z.discriminatedUnion("index", [
+  SeoBase.extend({ index: z.literal(true), lastReviewed: IsoDate }),
+  SeoBase.extend({ index: z.literal(false), lastReviewed: IsoDate.optional() }),
+]);
 
 const Resource = z.object({
   id: z.string().regex(SLUG),

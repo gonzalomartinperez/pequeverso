@@ -28,6 +28,7 @@ export const grafismoFonetico = {
     description:
       "Kit imprimible de 9 PDF y 414 páginas para practicar letras, sonidos, sílabas, palabras y trazos en casa, 10 minutos por día. Para niños de 3 a 7 años. Acceso digital inmediato.",
     priority: 0.9,
+    lastReviewed: "2026-11-14",
   },
   pricing: { list: 14.99 },
   checkout: {
