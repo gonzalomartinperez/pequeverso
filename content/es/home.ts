@@ -29,7 +29,8 @@ export const homeCopy = {
   hero: {
     kicker: "Recursos para familias",
     title: { before: "Un pequeño ", accent: "universo", after: " para cada etapa." },
-    lead: "Primeras letras o primeras comidas. Encuentra el recurso para su etapa.",
+    /** design-playbook section 10 "Hub lead (new, concrete)"; ages from the registry and config. */
+    lead: `Hojas imprimibles para practicar letras, sílabas y trazos (${grafismoFonetico.composition.ageRange}) y una guía recomendada para las primeras comidas de tu bebé (${course.stage}).`,
     doors: "¿Qué necesitas hoy?",
     origins: { reading: "Kit de Pequeverso", feeding: "Curso afiliado" },
   },
