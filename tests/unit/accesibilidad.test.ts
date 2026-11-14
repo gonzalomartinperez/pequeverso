@@ -21,7 +21,6 @@ test("accessibility statement facts come from config, not from the copy", () => 
   assert.equal(copy.responseTime, supportResponseTime);
   assert.equal(copy.reviewedAt, longDate(pageReviewed.accessibility));
   assert.equal(longDate("2026-11-14"), "14 de noviembre de 2026");
-  assert.match(copy.reviewLine(copy.reviewedAt), new RegExp(copy.reviewedAt));
 });
 
 test("accessibility statement invents no periods, counts or conformance claims", () => {
@@ -32,6 +31,7 @@ test("accessibility statement invents no periods, counts or conformance claims",
   assert.doesNotMatch(strings, /\b(cumple|conforme|certificad[oa]) (totalmente|plenamente)\b/i);
   assert.match(copy.commitment.join(" "), /no declaramos que el sitio cumpla/);
   assert.doesNotMatch(copy.eaa, /\b(estamos exentos|no nos alcanza|nos alcanza plenamente)\b/i);
+  assert.doesNotMatch(copy.eaa, /\bel titular\b/i);
 });
 
 test("accessibility statement uses tú and the shared copy rules", () => {
@@ -42,10 +42,26 @@ test("accessibility statement uses tú and the shared copy rules", () => {
   assert.match(strings, /\bTodavía no\b/);
 });
 
+// checks[i] -> the spec that backs it and a pattern proving the check exists there.
+const backing: ReadonlyArray<readonly [string, RegExp]> = [
+  ["tests/browser/a11y.spec.ts", /wcag22aa/],
+  ["tests/browser/a11y.spec.ts", /a\[data-checkout\]/],
+  ["tests/browser/text-zoom.spec.ts", /font-size: 200% !important/],
+  ["tests/browser/responsive.spec.ts", /widths = \[320, 390, 768, 1024, 1440, 1920\]/],
+  ["tests/browser/smoke.spec.ts", /one h1 and complete landmarks/],
+  ["tests/browser/motion.spec.ts", /reveal elements are visible immediately under reduced motion/],
+];
+// Specs whose route list must include the statement (the others are not route-based).
+const routeSpecs = [
+  "tests/browser/a11y.spec.ts",
+  "tests/browser/text-zoom.spec.ts",
+  "tests/browser/responsive.spec.ts",
+  "tests/browser/smoke.spec.ts",
+];
+
 test("accessibility statement cites only checks that exist in tests/browser", () => {
-  const a11y = readFileSync("tests/browser/a11y.spec.ts", "utf8");
-  assert.match(a11y, /\/accesibilidad\//);
-  assert.match(a11y, /wcag22aa/);
-  assert.match(readFileSync("tests/browser/text-zoom.spec.ts", "utf8"), /200 %/);
-  assert.match(readFileSync("tests/browser/responsive.spec.ts", "utf8"), /320/);
+  assert.equal(backing.length, copy.verification.checks.length);
+  for (const [file, pattern] of backing) assert.match(readFileSync(file, "utf8"), pattern, file);
+  for (const file of routeSpecs)
+    assert.match(readFileSync(file, "utf8"), /"\/accesibilidad\/"/, file);
 });

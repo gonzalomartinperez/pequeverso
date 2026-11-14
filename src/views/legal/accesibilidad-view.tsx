@@ -20,7 +20,9 @@ export default function AccesibilidadPage() {
       <p>{copy.verification.lead}</p>
       <ul>
         {copy.verification.checks.map((check) => (
-          <li key={check}>{check}</li>
+          <li key={check.strong}>
+            <strong>{check.strong}</strong> {check.text}
+          </li>
         ))}
       </ul>
       <p>{copy.verification.manual}</p>
@@ -41,9 +43,6 @@ export default function AccesibilidadPage() {
 
       <SectionHeading sections={sections} id="eaa" />
       <p>{copy.eaa}</p>
-
-      <SectionHeading sections={sections} id="revision" />
-      <p>{copy.reviewLine(copy.reviewedAt)}</p>
     </LegalLayout>
   );
 }

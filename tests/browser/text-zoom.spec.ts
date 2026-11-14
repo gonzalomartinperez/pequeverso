@@ -32,6 +32,7 @@ const routes = [
   "/compras-y-reembolsos/",
   "/terminos/",
   "/aviso-legal/",
+  "/accesibilidad/",
   "/arrepentimiento/",
   "/esta-no-existe/",
 ];

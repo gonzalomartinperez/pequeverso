@@ -20,8 +20,10 @@ const routes = [
   "/grafismo-fonetico/gracias/",
   "/soporte/",
   "/privacidad/",
-  "/accesibilidad/",
 ];
+// Not in production until the M7 promotion (the daily run would fail): local runs only.
+// Move into `routes` at M7.
+if (/^https?:\/\/(localhost|127\.0\.0\.1)(:|$)/.test(base)) routes.push("/accesibilidad/");
 for (const route of routes) {
   const res = await head(route);
   expect(res.status === 200, `${route} → ${res.status}, expected 200`);

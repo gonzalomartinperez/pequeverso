@@ -73,7 +73,7 @@ test("/accesibilidad/ states the target, the limits, the contact and the review 
   await expect(main).toContainText("Hotmart");
   await expect(main).toContainText("PDF");
   await expect(main.locator(`a[href^="mailto:${seller.supportEmail}"]`).first()).toBeVisible();
-  await expect(main).toContainText("Última revisión");
+  await expect(main).toContainText("Última actualización");
   await expect(page.locator('meta[name="robots"]')).not.toHaveAttribute("content", /noindex/);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/accesibilidad\/$/);
   const footer = page.getByRole("contentinfo");
