@@ -199,7 +199,12 @@ export function ConsentBanner({ classes }: Props) {
       setOpen(true);
     };
     window.addEventListener("pv:consent:open", reopen);
-    const unsubscribe = onConsentChange(() => {
+    const unsubscribe = onConsentChange((state) => {
+      // Storage cleared elsewhere (no valid choice): keep or reopen the banner, never dismiss it.
+      if (state === null) {
+        if (categories.length > 0) setOpen(true);
+        return;
+      }
       setOpen(false);
       setConfiguring(false);
       restoreFocus(opener.current);

@@ -118,6 +118,16 @@ function watchThirdPartyRequests(page: Page, origin: string): string[] {
   return urls;
 }
 
+/** Every request to the relay path, whatever its method or body (an empty batch still counts). */
+function watchRelayRequests(page: Page): string[] {
+  const seen: string[] = [];
+  page.on("request", (request) => {
+    if (new URL(request.url()).pathname.replace(/\/$/, "") === "/api/meta/events")
+      seen.push(`${request.method()} ${request.postData() ?? ""}`);
+  });
+  return seen;
+}
+
 /** `requestIdleCallback` with the timeout fallback product code uses (WebKit may lack it). */
 async function afterIdle(page: Page): Promise<void> {
   await page.evaluate(
@@ -174,7 +184,7 @@ for (const route of PUBLIC_ROUTES) {
       page,
       new URL(baseURL ?? "http://localhost").origin,
     );
-    const relayed = await captureRelay(page);
+    const relayRequests = watchRelayRequests(page);
     await page.goto(route);
     await page.waitForLoadState("load");
     // Tracking is configured in this build: the banner must appear, so a pass is never vacuous.
@@ -183,7 +193,7 @@ for (const route of PUBLIC_ROUTES) {
     await afterIdle(page);
     await page.waitForTimeout(500);
     expect(crossOrigin).toEqual([]);
-    expect(relayed).toEqual([]);
+    expect(relayRequests).toEqual([]);
     await expect(page.locator(PIXEL_SCRIPT)).toHaveCount(0);
     expect(await page.evaluate(() => typeof (window as unknown as { fbq?: unknown }).fbq)).toBe(
       "undefined",
@@ -195,7 +205,7 @@ for (const route of PUBLIC_ROUTES) {
 test("first visit: banner after first paint with three equal actions, nothing stored, no events", async ({
   page,
 }) => {
-  const relayed = await captureRelay(page);
+  const relayed = watchRelayRequests(page);
   await page.goto("/grafismo-fonetico/");
   const banner = page.getByTestId("consent-banner");
   // The banner opens after two frames plus idle (up to 2.5 s), so allow for it.
@@ -248,7 +258,7 @@ test("Rechazar keeps third-party requests at zero, stores the choice and sends n
   page,
 }) => {
   const meta = watchMetaRequests(page);
-  const relayed = await captureRelay(page);
+  const relayed = watchRelayRequests(page);
   await page.goto("/grafismo-fonetico/");
   const banner = page.getByTestId("consent-banner");
   await banner.getByRole("button", { name: "Rechazar" }).click();
@@ -436,6 +446,20 @@ test("a second tab's rejection cancels the first tab's pending idle pixel load",
   await first.waitForTimeout(7000);
   expect(meta).toEqual([]);
   await expect(first.locator(PIXEL_SCRIPT)).toHaveCount(0);
+});
+
+test("another tab clearing storage never dismisses a banner that has no choice yet", async ({
+  context,
+}) => {
+  const first = await context.newPage();
+  await first.goto("/grafismo-fonetico/");
+  const banner = first.getByTestId("consent-banner");
+  await expect(banner).toBeVisible({ timeout: 15_000 });
+  const second = await context.newPage();
+  await second.goto("/soporte/");
+  await second.evaluate(() => localStorage.clear());
+  await first.waitForTimeout(1000);
+  await expect(banner).toBeVisible();
 });
 
 test("the banner returns focus when it closes: to main, or to the footer control that opened it", async ({

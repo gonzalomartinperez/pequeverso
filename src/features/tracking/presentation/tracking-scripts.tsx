@@ -10,6 +10,7 @@ import {
   readConsent,
 } from "@/features/tracking/adapters/consent.ts";
 import { enabledAdapters } from "@/features/tracking/adapters/env.ts";
+import { loadWhenIdle } from "@/features/tracking/adapters/idle-script.ts";
 import {
   isTrackingConfigured,
   syncConsent,
@@ -17,37 +18,31 @@ import {
 } from "@/features/tracking/adapters/track.ts";
 import type { ScriptSpec } from "@/features/tracking/adapters/types.ts";
 
-const IDLE_TIMEOUT_MS = 2000;
-
-/**
- * True once the browser is idle (`requestIdleCallback`, with a timeout fallback) and
- * `stillGranted()` confirms the stored choice at that moment. Unmounting (withdrawal) cancels
- * the pending callback or timer.
- */
-function useIdle(wait: boolean, stillGranted: () => boolean): boolean {
-  const [idle, setIdle] = useState(!wait);
-  const check = useRef(stillGranted);
-  check.current = stillGranted;
-  useEffect(() => {
-    if (!wait) return;
-    const open = () => {
-      if (check.current()) setIdle(true);
-    };
-    if ("requestIdleCallback" in window) {
-      const id = window.requestIdleCallback(open, { timeout: IDLE_TIMEOUT_MS });
-      return () => window.cancelIdleCallback(id);
-    }
-    const timer = setTimeout(open, IDLE_TIMEOUT_MS / 4);
-    return () => clearTimeout(timer);
-  }, [wait]);
-  return idle;
-}
-
 type ScriptProps = { spec: ScriptSpec; onLoad: () => void; stillGranted: () => boolean };
 
-function AdapterScript({ spec, onLoad, stillGranted }: ScriptProps) {
-  const ready = useIdle(spec.idle === true, stillGranted);
-  if (!ready) return null;
+/** Vendor loader: no `next/script` (it may preload during render); injected imperatively when idle. */
+function IdleLoader({ spec, onLoad, stillGranted }: ScriptProps) {
+  const latest = useRef({ onLoad, stillGranted });
+  latest.current = { onLoad, stillGranted };
+  const { id, src } = spec;
+  // The spec object is rebuilt every render; its identity is `id` and `src`.
+  useEffect(
+    () =>
+      loadWhenIdle(
+        { id, ...(src ? { src } : {}) },
+        {
+          onLoad: () => latest.current.onLoad(),
+          stillGranted: () => latest.current.stillGranted(),
+        },
+      ),
+    [id, src],
+  );
+  return null;
+}
+
+function AdapterScript(props: ScriptProps) {
+  const { spec, onLoad } = props;
+  if (spec.idle) return <IdleLoader {...props} />;
   if (spec.src) {
     return (
       <Script
