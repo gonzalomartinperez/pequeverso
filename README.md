@@ -163,7 +163,7 @@ Measured runs and screenshots establish what was actually exercised. CI does not
 
 ## Documentation and contribution
 
-Start with [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md). Task branches originate from `develop`; task PRs squash into `develop`. An authorized `develop`→`main` release uses a merge commit with required checks and no protection bypass.
+Start with [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md). Community files: [Support](SUPPORT.md) · [Security policy](SECURITY.md) · [Code of conduct](CODE_OF_CONDUCT.md). Task branches originate from `develop`; task PRs squash into `develop`. An authorized `develop`→`main` release uses a merge commit with required checks and no protection bypass.
 
 | Read | For |
 |---|---|

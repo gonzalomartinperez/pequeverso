@@ -20,7 +20,8 @@ Updated on every task merge (task ID, branch, PR, status as in `roadmap.md`). RE
 
 | Task ID | Branch | PR | Status | Last update |
 |---|---|---|---|---|
-| M1-10 | `docs/M1-10-old-domain-sweep` | #161 | done (repo docs and `SECURITY.md` on `develop` no longer mention the old domain; `tests/unit/old-domain.test.ts` guards it; interim: support contact is the `config/site.ts` mailbox until a pequeverso.com mailbox exists) | 2026-11-14 |
+| M1-10 | `docs/m1-10-old-domain-sweep` | #161 | done (repo docs and `SECURITY.md` on `develop` no longer mention the old domain; `tests/unit/old-domain.test.ts` guards it; interim: support contact is the `config/site.ts` mailbox until a pequeverso.com mailbox exists) | 2026-11-14 |
+| M1-4 | `docs/m1-4-community-files` | #162 | done (security.txt, issue forms, PR template, SUPPORT, CODE_OF_CONDUCT, CODEOWNERS; private vulnerability reporting enabled) | 2026-11-14 |
 
 ## Scorecard snapshot (planner baseline 2026-11-09; first independent re-score at M3)
 
