@@ -265,7 +265,7 @@ test("meta adapter inits active, revokes on rejection (expiring _fbp/_fbc) and p
 
 function installCapiPage({ href = "https://pequeverso.com/grafismo-fonetico/", cookie = "" } = {}) {
   setGlobal(window, "location", { href, search: new URL(href).search });
-  // biome-ignore lint/suspicious/noDocumentCookie: fake document in the unit-test window
+  // biome-ignore lint/suspicious/noDocumentCookie: fake document in the unit-test window #177
   document.cookie = cookie;
   const requests: CapiRequest[] = [];
   const fetchImpl = async (url: string | URL | Request, init?: RequestInit): Promise<Response> => {
@@ -433,7 +433,7 @@ test("meta-capi adapter waits briefly for fbevents.js to write _fbp, then relays
   const id = track("PageView");
   await tick(30);
   assert.equal(page.requests.length, 0, "held back while _fbp is missing");
-  // biome-ignore lint/suspicious/noDocumentCookie: fake document in the unit-test window
+  // biome-ignore lint/suspicious/noDocumentCookie: fake document in the unit-test window #177
   document.cookie = "_fbp=fb.1.1.late";
   await tick(30);
   assert.equal(page.requests.length, 1);

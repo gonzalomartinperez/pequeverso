@@ -45,7 +45,7 @@ export default function HomePage() {
     <PageShell overlay nav={copy.nav} products hub>
       <script
         type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD built from config
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD built from config #177
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
       <HomeHero />

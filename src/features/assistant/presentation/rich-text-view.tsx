@@ -4,7 +4,7 @@ import { type Inline, parseRichText } from "../domain/rich-text";
 
 function inline(nodes: Inline[]): ReactNode[] {
   return nodes.map((node, index) =>
-    // biome-ignore lint/suspicious/noArrayIndexKey: positional segments of an immutable text have no other identity
+    // biome-ignore lint/suspicious/noArrayIndexKey: positional segments of an immutable text have no other identity #177
     node.kind === "strong" ? <strong key={index}>{node.text}</strong> : node.text,
   );
 }
@@ -25,10 +25,10 @@ export const RichTextView = memo(function RichTextView({
       {blocks.map((block, index) => {
         if (block.kind === "paragraph")
           return (
-            // biome-ignore lint/suspicious/noArrayIndexKey: positional segments of an immutable text have no other identity
+            // biome-ignore lint/suspicious/noArrayIndexKey: positional segments of an immutable text have no other identity #177
             <p key={index}>
               {block.lines.map((line, lineIndex) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: positional segments of an immutable text have no other identity
+                // biome-ignore lint/suspicious/noArrayIndexKey: positional segments of an immutable text have no other identity #177
                 <span key={lineIndex}>
                   {lineIndex > 0 && <br />}
                   {inline(line)}
@@ -39,7 +39,7 @@ export const RichTextView = memo(function RichTextView({
         const List = block.ordered ? "ol" : "ul";
         return (
           <List
-            // biome-ignore lint/suspicious/noArrayIndexKey: positional segments of an immutable text have no other identity
+            // biome-ignore lint/suspicious/noArrayIndexKey: positional segments of an immutable text have no other identity #177
             key={index}
             className={cx(
               "flex flex-col gap-1.5 ps-5",
@@ -47,7 +47,7 @@ export const RichTextView = memo(function RichTextView({
             )}
           >
             {block.items.map((item, itemIndex) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: positional segments of an immutable text have no other identity
+              // biome-ignore lint/suspicious/noArrayIndexKey: positional segments of an immutable text have no other identity #177
               <li key={itemIndex} className="ps-1">
                 {inline(item)}
               </li>

@@ -192,7 +192,7 @@ export function GalleryCarousel({
         aria-label={label}
       >
         <div className="relative rounded-xl bg-white/70 p-2 shadow-float border border-white sm:p-3">
-          {/* biome-ignore lint/a11y/noStaticElementInteractions: keyboard navigation for the carousel viewport (roving focus lives on the controls) */}
+          {/* biome-ignore lint/a11y/noStaticElementInteractions: keyboard navigation for the carousel viewport (roving focus lives on the controls) #177 */}
           <div
             className="overflow-hidden rounded-lg"
             ref={emblaRef}

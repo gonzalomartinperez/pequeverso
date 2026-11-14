@@ -350,3 +350,47 @@ describe("store architecture", () => {
     });
   });
 });
+
+it("guards environment, external scripts, adapter boundaries and HTML sinks", async () => {
+  const { guardFindings } = await import("../helpers/source-guards.ts");
+  for (const [rule, source] of [
+    ["env", "const value = process.env.KEY;"],
+    ["env", 'const value = process["env"].KEY;'],
+    ["script-host", '<script src="https://vendor.invalid/a.js" />;'],
+    [
+      "script-host",
+      'import Vendor from "next/script"; <Vendor src="https://vendor.invalid/a.js" />;',
+    ],
+    [
+      "script-host",
+      'const url = "https://vendor.invalid/a.js"; const s = document.createElement("script"); s.src = url;',
+    ],
+    ["adapter-import", 'import "@/features/tracking/adapters/meta";'],
+    ["adapter-import", 'export * from "@/features/assistant/adapters/sse";'],
+    ["adapter-import", 'import("../features/tracking/adapters/meta");'],
+    ["adapter-import", 'import "../features/tracking/adapters/server/meta-capi";'],
+    ["unsafe-html", '<div dangerouslySetInnerHTML={{ __html: "unsafe" }} />;'],
+  ])
+    assert.ok(
+      guardFindings("src/views/fixture.tsx", source ?? "").some((item) => item.rule === rule),
+      source,
+    );
+  for (const [file, source] of [
+    ["config/fixture.ts", "const value = process.env.KEY;"],
+    ["tools/fixture.ts", "const value = process.env.KEY;"],
+    ["src/features/tracking/adapters/vendor.tsx", '<script src="https://vendor.invalid/a.js" />;'],
+    [
+      "src/features/commerce/presentation/hotmart-widget-slot.tsx",
+      '<script src="https://vendor.invalid/a.js" />;',
+    ],
+    ["src/views/seo/json-ld.tsx", '<script dangerouslySetInnerHTML={{ __html: "escaped" }} />;'],
+    [
+      "src/features/commerce/presentation/offer-mode-root.tsx",
+      '<script dangerouslySetInnerHTML={{ __html: "constant" }} />;',
+    ],
+    ["src/views/fixture.tsx", '<script src="/local.js" />; // process.env.KEY'],
+  ])
+    assert.deepEqual(guardFindings(file ?? "", source ?? ""), []);
+  for (const file of sourceFiles("src").filter((name) => /\.tsx?$/.test(name)))
+    assert.deepEqual(guardFindings(file, readFileSync(file, "utf8")), [], file);
+});

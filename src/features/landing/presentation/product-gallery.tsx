@@ -96,7 +96,7 @@ export function ProductGallery({
       aria-label={label}
     >
       <div className={cx("relative overflow-hidden", frameClassName)}>
-        {/* biome-ignore lint/a11y/noNoninteractiveTabindex: a scrollable region must be keyboard reachable (arrow keys scroll it) */}
+        {/* biome-ignore lint/a11y/noNoninteractiveTabindex: a scrollable region must be keyboard reachable (arrow keys scroll it) #177 */}
         <div ref={track} className={TRACK} tabIndex={0}>
           {slides.map((slide, index) => (
             <figure

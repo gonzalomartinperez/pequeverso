@@ -190,7 +190,7 @@ export function PlaygroundGame({ words, pages, title, hint, doneLabel }: Props) 
           <div className="absolute top-4 left-1/2 flex -translate-x-1/2 gap-1.5" aria-hidden="true">
             {syllables.map((syllable, index) => (
               <span
-                // biome-ignore lint/suspicious/noArrayIndexKey: one pill per syllable, fixed order
+                // biome-ignore lint/suspicious/noArrayIndexKey: one pill per syllable, fixed order #177
                 key={`${syllable}-${index}`}
                 className={cx(
                   "h-1.5 rounded-full transition-all duration-(--duration) ease-out",
@@ -202,7 +202,7 @@ export function PlaygroundGame({ words, pages, title, hint, doneLabel }: Props) 
           <div className="grid place-items-center *:[grid-area:1/1]" aria-hidden="true">
             <div className={cx(styles.slots, "flex items-end justify-center gap-x-1")}>
               {texts.map((text, index) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: syllables repeat ("pa", "pa") and never reorder
+                // biome-ignore lint/suspicious/noArrayIndexKey: syllables repeat ("pa", "pa") and never reorder #177
                 <span key={`${round}-${index}`} className="flex items-end">
                   {index > 0 ? (
                     <span className="mb-5 size-2 shrink-0 rounded-full bg-teal/50 cq-sm:mb-7" />
@@ -350,7 +350,7 @@ export function PlaygroundGame({ words, pages, title, hint, doneLabel }: Props) 
           )}
         >
           {pages.map((page, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: pages follow the fixed order of `words`
+            // biome-ignore lint/suspicious/noArrayIndexKey: pages follow the fixed order of `words` #177
             <div key={index} hidden={index !== current}>
               {page}
             </div>

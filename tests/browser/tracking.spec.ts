@@ -217,7 +217,7 @@ test("a choice stored under a previous version re-prompts and falls back to the 
       "pv_consent",
       JSON.stringify({ version: 1, marketing: false, updatedAt: "" }),
     );
-    // biome-ignore lint/suspicious/noDocumentCookie: legacy cookie written the way v1 wrote it
+    // biome-ignore lint/suspicious/noDocumentCookie: legacy cookie written the way v1 wrote it #177
     document.cookie = "pv_consent=none.v1; Path=/";
   });
   await page.goto("/grafismo-fonetico/");

@@ -17,7 +17,7 @@ export function PageMotion({ children }: { children: ReactNode }) {
   const container = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: re-observe the new route's sections after client navigation
+  // biome-ignore lint/correctness/useExhaustiveDependencies: re-observe the new route's sections after client navigation #177
   useEffect(() => {
     const root = container.current;
     const preference = matchMedia("(prefers-reduced-motion: reduce)");

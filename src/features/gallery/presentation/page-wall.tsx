@@ -35,7 +35,7 @@ function Lap({ ids, hidden }: { ids: readonly string[]; hidden?: boolean }) {
     <div className={styles.lap} aria-hidden={hidden ? "true" : undefined}>
       {ids.map((id, index) => (
         <div
-          // biome-ignore lint/suspicious/noArrayIndexKey: a lap repeats pages; order is fixed
+          // biome-ignore lint/suspicious/noArrayIndexKey: a lap repeats pages; order is fixed #177
           key={`${id}-${index}`}
           className={cn(
             styles.card,
@@ -77,7 +77,7 @@ export function PageWall({ ids, label, rows = 2, className }: Props) {
           const cards = lap(row);
           return (
             <div
-              // biome-ignore lint/suspicious/noArrayIndexKey: at most two fixed rows
+              // biome-ignore lint/suspicious/noArrayIndexKey: at most two fixed rows #177
               key={index}
               className={styles.row}
               data-direction={index % 2 === 1 ? "reverse" : "forward"}

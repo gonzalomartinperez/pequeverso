@@ -66,7 +66,7 @@ export function writeConsent(choice: ConsentChoice): ConsentState {
   if (!isBrowser()) return state;
   try {
     window.localStorage.setItem(CONSENT_KEY, JSON.stringify(state));
-    // biome-ignore lint/suspicious/noDocumentCookie: cookieStore is not available in all target browsers
+    // biome-ignore lint/suspicious/noDocumentCookie: cookieStore is not available in all target browsers #177
     document.cookie = `${CONSENT_KEY}=${serializeConsentCookie(state)}; Max-Age=${COOKIE_MAX_AGE}; Path=/; SameSite=Lax; Secure`;
   } catch {
     return state;

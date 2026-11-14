@@ -1,0 +1,68 @@
+{
+  "metric": "design-lint",
+  "measuredAt": "2026-11-14",
+  "commit": "edfb878",
+  "source": "tests/unit/design-lint.test.ts; new findings are 0, the frozen legacy list may only shrink",
+  "values": [
+    {
+      "key": "coral",
+      "value": 0,
+      "unit": "findings",
+      "direction": "max"
+    },
+    {
+      "key": "color-literal",
+      "value": 0,
+      "unit": "findings",
+      "direction": "max"
+    },
+    {
+      "key": "spacing-radius",
+      "value": 0,
+      "unit": "findings",
+      "direction": "max"
+    },
+    {
+      "key": "transition-all",
+      "value": 0,
+      "unit": "findings",
+      "direction": "max"
+    },
+    {
+      "key": "animated-property",
+      "value": 0,
+      "unit": "findings",
+      "direction": "max"
+    },
+    {
+      "key": "legacy-exceptions:coral",
+      "value": 10,
+      "unit": "values",
+      "direction": "max"
+    },
+    {
+      "key": "legacy-exceptions:color-literal",
+      "value": 65,
+      "unit": "values",
+      "direction": "max"
+    },
+    {
+      "key": "legacy-exceptions:spacing-radius",
+      "value": 17,
+      "unit": "values",
+      "direction": "max"
+    },
+    {
+      "key": "legacy-exceptions:transition-all",
+      "value": 4,
+      "unit": "values",
+      "direction": "max"
+    },
+    {
+      "key": "legacy-exceptions:animated-property",
+      "value": 82,
+      "unit": "values",
+      "direction": "max"
+    }
+  ]
+}

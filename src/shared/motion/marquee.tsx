@@ -48,13 +48,13 @@ export function Marquee({
       <div className="pv-marquee-track">
         <ul className={LIST} aria-label={label}>
           {items.map((item, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: static decorative list, never reordered
+            // biome-ignore lint/suspicious/noArrayIndexKey: static decorative list, never reordered #177
             <li key={index}>{item}</li>
           ))}
         </ul>
         <ul className={`${LIST} motion-reduce:hidden`} aria-hidden="true">
           {items.map((item, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: duplicate lap of the list above
+            // biome-ignore lint/suspicious/noArrayIndexKey: duplicate lap of the list above #177
             <li key={index}>{item}</li>
           ))}
         </ul>

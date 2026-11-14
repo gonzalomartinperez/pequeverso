@@ -289,3 +289,25 @@ sticky `toc` index, `Separator`), tables through `Table`, `dl` as ruled rows.
 **Class merging.** `cn` compiles its tables with `config/cn.ts`, which registers the
 theme's font sizes (`text-price`, `text-h3`, `text-small`…) and shadows; without it a text colour
 next to a custom size dropped the size.
+
+## Design lint
+
+`tests/unit/design-lint.test.ts` guards coral ownership (purchase buttons, commerce presentation
+and named price blocks), raw colours outside the documented token files, arbitrary pixel spacing
+and radii, `transition: all`, and animated properties other than transform/opacity. CSS keyframes
+and Tailwind utilities are scanned. Every rule has failing and passing in-memory fixtures.
+
+The baseline of NEW findings is empty (`ratchets/design-lint.json`, one key per rule, value 0).
+Existing violations live in a frozen list, `LEGACY_EXCEPTIONS` in
+`tests/helpers/design-lint-exceptions.ts`: per rule one reason and, per file, the exact values with
+multiplicity, so any addition fails. Its size is ratcheted per rule (`legacy-exceptions:<rule>`,
+direction `max`: it may only fall). The list is migration debt, never a permission; M4 (tokens) and
+M5 (design build) retire it, and stale entries must be removed as violations are fixed. There is no
+gate in warn mode.
+
+Architecture guards (`tests/helpers/source-guards.ts`, exercised in `architecture.test.ts`)
+restrict `process.env` to `config/`, `tools/` and listed files, script injection to the tracking
+adapters and the Hotmart widget slot, adapter imports from `app`/`views`/`shell`, and
+`dangerouslySetInnerHTML`; each exception list is exact and carries reasons. Every `biome-ignore`
+must end its reason with an issue reference (`#<number>` or a GitHub issue URL); existing ones
+point to #177.

@@ -57,7 +57,7 @@ function expirePixelCookies(): void {
     domains.push(labels.slice(index).join("."));
   for (const name of PIXEL_COOKIES) {
     for (const domain of domains) {
-      // biome-ignore lint/suspicious/noDocumentCookie: cookieStore is not available in all target browsers
+      // biome-ignore lint/suspicious/noDocumentCookie: cookieStore is not available in all target browsers #177
       document.cookie = `${name}=; Max-Age=0; Path=/${domain ? `; Domain=${domain}` : ""}`;
     }
   }
