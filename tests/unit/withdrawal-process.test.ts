@@ -83,32 +83,49 @@ test("soporte, compras-y-reembolsos and arrepentimiento render the withdrawal wi
 // `${...}` and has no digits, so it never matches. Each claim is checked against its own context:
 // guarantee claims against `guaranteeDays`, claims after a country name against that country's
 // window (days and unit), the rest against any configured number of days.
-const WORDS: Record<string, number> = {
-  un: 1,
-  una: 1,
-  uno: 1,
-  dos: 2,
-  tres: 3,
-  cuatro: 4,
-  cinco: 5,
-  seis: 6,
-  siete: 7,
-  ocho: 8,
-  nueve: 9,
-  diez: 10,
-  once: 11,
-  doce: 12,
-  trece: 13,
-  catorce: 14,
-  quince: 15,
-  veinte: 20,
-  treinta: 30,
-  cuarenta: 40,
-  sesenta: 60,
-  noventa: 90,
-};
+const UNITS = ["", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"];
+const TEENS = [
+  "diez",
+  "once",
+  "doce",
+  "trece",
+  "catorce",
+  "quince",
+  "dieciséis",
+  "diecisiete",
+  "dieciocho",
+  "diecinueve",
+];
+const WORDS: Record<string, number> = { un: 1, una: 1, veintiún: 21, veintiuna: 21 };
+UNITS.forEach((word, i) => {
+  if (i > 0) WORDS[word] = i;
+});
+TEENS.forEach((word, i) => {
+  WORDS[word] = 10 + i;
+});
+WORDS.veinte = 20;
+for (const [i, word] of [
+  "veintiuno",
+  "veintidós",
+  "veintitrés",
+  "veinticuatro",
+  "veinticinco",
+  "veintiséis",
+  "veintisiete",
+  "veintiocho",
+  "veintinueve",
+].entries())
+  WORDS[word] = 21 + i;
+WORDS.treinta = 30;
+WORDS["treinta y uno"] = 31;
+for (const [word, value] of Object.entries({ cuarenta: 40, sesenta: 60, noventa: 90 }))
+  WORDS[word] = value;
+// Longest first so "treinta y uno" wins over "treinta".
+const wordPattern = Object.keys(WORDS)
+  .sort((a, b) => b.length - a.length)
+  .join("|");
 const periodClaim = new RegExp(
-  `\\b(\\d+|${Object.keys(WORDS).join("|")})\\s+(d[ií]as?(?:\\s+(?:h[aá]biles|corridos|naturales))?|semanas?|mes(?:es)?)\\b`,
+  `\\b(\\d+|${wordPattern})\\s+(d[ií]as?(?:\\s+(?:h[aá]biles|corridos|naturales))?|semanas?|mes(?:es)?)\\b`,
   "giu",
 );
 const keyword =
@@ -173,6 +190,19 @@ test("no copy states a guarantee or withdrawal period that config does not back"
 test("negative fixtures: every kind of unbacked period is caught", () => {
   for (const text of [
     "Tienes 30 días de garantía",
+    "quince días de garantía",
+    "Dieciséis días de garantía",
+    "diecinueve días de garantía",
+    "Veinte días de garantía",
+    "veintiún días de garantía",
+    "veintiuno días de garantía",
+    "veinticinco días de garantía",
+    "treinta y un días de garantía",
+    "treinta y uno días de garantía",
+    "arrepentimiento: dos meses",
+    "dos meses de garantía",
+    "un mes de garantía",
+    "una semana de garantía",
     "La garantía es de 30 días",
     "La garantía es de 14 días",
     "Tienes treinta días de garantía",
@@ -190,6 +220,11 @@ test("negative fixtures: every kind of unbacked period is caught", () => {
     "<strong>30 días</strong> de garantía",
   ])
     assert.ok(unbackedPeriods(text).length > 0, text);
+});
+
+test("the number-word table covers 1 to 31", () => {
+  const values = new Set(Object.values(WORDS));
+  for (let n = 1; n <= 31; n++) assert.ok(values.has(n), `no number word for ${n}`);
 });
 
 test("backed periods and reviewed statements pass", () => {
