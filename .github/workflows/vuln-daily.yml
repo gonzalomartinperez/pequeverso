@@ -1,0 +1,23 @@
+name: Vulnerability scan
+
+# Daily vulnerability job (ecosystem 5.5 as amended by OD-75), from engineering-standards:
+# osv-scanner over every lockfile plus a compromise watch of workflow actions. It never opens a PR
+# or a second issue and never mentions anyone: it edits ONE `vuln` tracking issue in place, and only
+# the Monday run (America/Argentina/Buenos_Aires) adds the weekly summary comment.
+on:
+  schedule:
+    - cron: "30 14 * * *" # daily 11:30 ART, after Monday's Dependabot PR (09:00) and guard (10:30)
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: vuln-daily
+  cancel-in-progress: false
+
+jobs:
+  vuln:
+    uses: gonzalomartinperez/engineering-standards/.github/workflows/vuln-daily.yml@1f33be46bcb95f42f550f74608bc679cae5575ad # v1.0.0
+    permissions:
+      contents: read
+      issues: write # edit the single tracking issue
