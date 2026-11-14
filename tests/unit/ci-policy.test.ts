@@ -35,7 +35,7 @@ import {
   testIdentities,
 } from "../../tools/ci/inventories.ts";
 
-for (const profile of ["core", "nightly", "bridge"] as const) {
+for (const profile of ["nightly"] as const) {
   const success = Object.fromEntries(prerequisites[profile].map((name) => [name, { result: "success" }]));
   test(`${profile} requires every exact prerequisite`, () => {
     requireSuccessfulJobs(success, profile);
@@ -258,7 +258,25 @@ test("workflow transfer and aggregate wiring never uploads enabled exports or we
     assert.doesNotMatch(source, /contents: write|pull-requests: write|tar -xf/);
     assert.doesNotMatch(source, /path: out-assistant-fixture/);
   }
-  assert.match(ci, /acceptance\.ts bridge/);
+  // PR and push CI: one fail-closed gate fed by every job, and the temporary `ci` alias needs it.
+  const gate = ci.slice(ci.indexOf("\n  ci-gate:"), ci.indexOf("\n  ci:\n"));
+  for (const job of [
+    "classify",
+    "workflows",
+    "secrets",
+    "docs",
+    "quality",
+    "build",
+    "hosting",
+    "browser",
+    "performance",
+  ]) {
+    assert.match(gate, new RegExp(`\\n      - ${job}\\n`), `ci-gate must need ${job}`);
+  }
+  assert.match(gate, /if: always\(\)/);
+  assert.match(gate, /engineering-standards\/actions\/ci-gate@[0-9a-f]{40}/);
+  assert.match(gate, /expected: \$\{\{ needs\.classify\.outputs\.jobs/);
+  assert.match(ci, /\n {2}ci:\n[\s\S]*needs:\n {6}- ci-gate\n[\s\S]*test "\$GATE" = success/);
   assert.match(ci, /attest-native out-assistant-fixture/);
   assert.match(ci, /rockylinux:8@sha256:/);
   assert.match(ci, /wasm bindings loaded/);

@@ -1,10 +1,11 @@
-/** Fail-closed result evaluation shared by the real CI and Nightly aggregate steps. */
+/**
+ * Fail-closed result evaluation for the Nightly aggregate step. PR and push CI use the
+ * engineering-standards `ci-gate` action instead (profile-aware; docs/ci-profile.md).
+ */
 import { pathToFileURL } from "node:url";
 
 export const prerequisites = {
-  core: ["workflows", "secrets", "quality", "build", "hosting", "browser", "performance"],
   nightly: ["prepare", "quality", "browser", "visual", "links", "bundle"],
-  bridge: ["workflows", "secrets", "quality", "build", "hosting", "browser", "performance", "checks"],
 } as const;
 
 export function requireSuccessfulJobs(value: unknown, profile: keyof typeof prerequisites): void {
@@ -30,7 +31,7 @@ export function requireSuccessfulJobs(value: unknown, profile: keyof typeof prer
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   try {
     const profile = process.argv[2];
-    if (profile !== "core" && profile !== "nightly" && profile !== "bridge") {
+    if (profile !== "nightly") {
       throw new Error("Unknown required-check profile");
     }
     requireSuccessfulJobs(JSON.parse(process.env.CI_NEEDS ?? "null"), profile);
