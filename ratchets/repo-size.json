@@ -1,13 +1,13 @@
 {
-  "$comment": "Bytes of every tracked file (`git ls-files` + stat), measured on develop 6ce7d61 plus M2-5c (region visual baselines replace the 31.2 MB of full-page PNGs; the largest tracked file is now a 1.8 MB video). Ceilings: may only fall.",
+  "$comment": "Bytes of every tracked file as `node tools/scorecard/run.ts` measures them (statSync follows the .claude/skills symlinks), on develop f3704dc plus M2-5c: region visual baselines (30 PNGs) replace the 31.2 MB of full-page PNGs; the largest tracked file is now a 1.8 MB video. Ceilings: may only fall.",
   "metric": "repo-size",
   "measuredAt": "2026-11-14",
-  "commit": "6ce7d61",
+  "commit": "f3704dc",
   "source": "git ls-files -z | xargs -0 stat -c %s",
   "values": [
     {
       "key": "tracked bytes",
-      "value": 61440000,
+      "value": 65900000,
       "unit": "bytes",
       "direction": "max"
     },

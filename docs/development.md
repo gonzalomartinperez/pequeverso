@@ -150,9 +150,17 @@ visual change, from the repository root with a fresh export in `out/`:
 
 ```bash
 NEXT_OUTPUT=export npm run build
-docker run --rm --ipc=host -v "$PWD:$PWD" -w "$PWD" -e HOME=/tmp -e PW_SET=visual \
-  mcr.microsoft.com/playwright:v1.64.1-noble npx playwright test --update-snapshots
-sudo chown -R "$USER:" tests/browser/__screenshots__ test-results playwright-report 2>/dev/null || true
+docker run --rm --ipc=host --user "$(id -u):$(id -g)" -v "$PWD:$PWD" -w "$PWD" -e HOME=/tmp -e PW_SET=visual \
+  mcr.microsoft.com/playwright:v1.64.1-noble@sha256:2f05f8a734509a7b3f26a912639488ee08f58a7b292d14d62271bcff9038768f \
+  npx playwright test --update-snapshots
 ```
+
+The image is pinned by digest (`docker inspect --format '{{index .RepoDigests 0}}' mcr.microsoft.com/playwright:v1.64.1-noble` prints it);
+bump tag and digest together with Playwright.
+
+Visual coverage today: hub (hero, closing), kit (hero, buy box, offer), upsell and downsell, thanks,
+support, one legal page, 404, footer, and the header and sticky bar, at 390 and 1440. Deferred (not
+in this slice): consent banner (the visual export has no pixel id, so no banner opens; needs a
+pixel build), assistant-disabled state, state gallery, and a reduced-motion variant pair.
 
 Review the changed PNGs, and keep `ratchets/repo-size.json` from rising (`git ls-files -z | xargs -0 stat -c %s`).

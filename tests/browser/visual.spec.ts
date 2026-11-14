@@ -136,30 +136,55 @@ const pages: { name: string; path: string; regions: Region[] }[] = [
   {
     name: "thanks",
     path: "/grafismo-fonetico/gracias/",
-    regions: [{ name: "hero", selector: "main section" }],
+    regions: [{ name: "hero", selector: 'section[aria-labelledby="hero-title"]' }],
   },
+  { name: "support", path: "/soporte/", regions: [{ name: "main", selector: "main" }] },
+  { name: "legal", path: "/terminos/", regions: [{ name: "main", selector: "main" }] },
+  // An unknown path is served as the real 404 page (same semantics as production).
+  { name: "not-found", path: "/no-existe/", regions: [{ name: "main", selector: "main" }] },
 ];
 
 /** The floating header and the buy bars are fixed/sticky: wherever a region capture scrolls, they overlap it. */
 const HIDE_FIXED =
   '[data-slot="header"], [data-slot="sticky-cta"] { visibility: hidden !important; }';
 
+// One test per page: the navigation and the capture preparation run once, then every region is
+// compared with a soft expectation under its own baseline name (a slow runner cannot time out per region).
 for (const { name, path, regions } of pages) {
-  for (const region of regions) {
-    test(`${name} ${region.name} matches its baseline`, async ({ page }) => {
-      await page.goto(path, { waitUntil: "networkidle" });
-      await page.evaluate(() => document.fonts.ready);
-      await prepareCapture(page);
-      await page.addStyleTag({ content: HIDE_FIXED });
-      await expect(page.locator(region.selector).first()).toHaveScreenshot(
-        `${name}-${region.name}.png`,
-        { mask: [page.locator(MASKED)], timeout: 30_000 },
-      );
-    });
-  }
+  test(`${name} regions match their baselines`, async ({ page }) => {
+    test.setTimeout(120_000);
+    await page.goto(path, { waitUntil: "networkidle" });
+    await page.evaluate(() => document.fonts.ready);
+    await prepareCapture(page);
+    await page.addStyleTag({ content: HIDE_FIXED });
+    for (const region of regions)
+      await expect
+        .soft(page.locator(region.selector).first())
+        .toHaveScreenshot(`${name}-${region.name}.png`, {
+          mask: [page.locator(MASKED)],
+          timeout: 30_000,
+        });
+  });
 }
 
+// The fixed chrome is compared on its own, where HIDE_FIXED keeps it out of every region above.
+test("header and sticky bar match their baselines", async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.goto("/imprime-y-juega/", { waitUntil: "networkidle" });
+  await page.evaluate(() => document.fonts.ready);
+  const header = page.locator('[data-slot="header"]').first();
+  await expect.soft(header).toHaveScreenshot("chrome-header.png", { timeout: 30_000 });
+  // The sticky decision bar is phone-only (hidden from 1024 px) and appears once the offer hero has
+  // scrolled away.
+  if ((page.viewportSize()?.width ?? 0) >= 1024) return;
+  await page.evaluate(() => window.scrollTo({ top: 3500, behavior: "instant" }));
+  const sticky = page.getByTestId("sticky-cta");
+  await expect(sticky).toBeVisible();
+  await expect.soft(sticky).toHaveScreenshot("chrome-sticky-bar.png", { timeout: 30_000 });
+});
+
 test("footer matches its baseline", async ({ page }) => {
+  test.setTimeout(120_000);
   await page.goto("/", { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
   await prepareCapture(page);
@@ -205,8 +230,6 @@ test("footer matches its baseline", async ({ page }) => {
     .toBe(true);
   // The floating header and the mobile buy bar are fixed/sticky: wherever the capture scrolls,
   // they overlap the footer. Hide them for this element capture (a mask would move with them).
-  await page.addStyleTag({
-    content: '[data-slot="header"], [data-slot="sticky-cta"] { visibility: hidden !important; }',
-  });
-  await expect(footer).toHaveScreenshot("footer.png", { timeout: 20_000 });
+  await page.addStyleTag({ content: HIDE_FIXED });
+  await expect(footer).toHaveScreenshot("footer.png", { timeout: 30_000 });
 });

@@ -172,10 +172,10 @@ jobs:
   visual:
     name: Nightly visual checks
     runs-on: ubuntu-24.04
-    # The pinned Playwright image (same tag as the installed @playwright/test, asserted by
+    # The pinned Playwright image (same tag as the installed @playwright/test, pinned by digest, asserted by
     # tests/unit/visual-image.test.ts) is also how baselines are regenerated locally (docs/development.md).
     container:
-      image: mcr.microsoft.com/playwright:v1.64.1-noble
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:2f05f8a734509a7b3f26a912639488ee08f58a7b292d14d62271bcff9038768f
       options: --ipc=host
     timeout-minutes: 30
     needs:
