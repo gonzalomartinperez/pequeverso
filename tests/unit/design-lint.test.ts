@@ -20,6 +20,8 @@ const fixtures: Record<string, string[]> = {
   ],
   "color-literal": [
     '"bg-[#fff]"',
+    '"bg-[#ffff]"',
+    '"border-[#abcd] text-[#beef]"',
     '"#11223344"',
     '"oklch(0.5 0.2 40)"',
     '"rgb(1,2,3)"',
@@ -39,6 +41,7 @@ const fixtures: Record<string, string[]> = {
     '"!p-[1rem]"',
     '"top-[0.5em] -left-[3px] w-[10rem] h-[2px] size-[20px] inset-x-[4px]"',
     '"scroll-mt-[5rem] min-w-[3rem] gap-x-[2px]"',
+    '"[padding:13px] hover:[margin:-8px] [border-radius:7px]"',
   ],
   "transition-all": [
     '"hover:transition-all"',
@@ -53,6 +56,26 @@ const fixtures: Record<string, string[]> = {
     '"[-webkit-transition:height_1s]"',
   ],
 };
+test("inline styles: quoted keys and signed numbers are checked", () => {
+  for (const source of [
+    'const x = { style: { "padding": 8 } };',
+    "const x = { style: { marginTop: -8 } };",
+    'const x = { style: { "margin-top": "-8px" } };',
+  ])
+    assert.ok(
+      designFindings(component, source).some((item) => item.rule === "spacing-radius"),
+      source,
+    );
+  assert.deepEqual(
+    designFindings(component, "const x = { style: { padding: 0, marginTop: -0 } };"),
+    [],
+  );
+});
+
+test("a bare four-letter fragment is not a colour", () => {
+  assert.deepEqual(designFindings(component, 'const x = <a href="#cafe" />;'), []);
+});
+
 for (const [rule, sources] of Object.entries(fixtures))
   test(`${rule}: negative strings and templates`, () => {
     for (const source of sources) {

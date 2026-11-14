@@ -19,7 +19,8 @@ const PRICE_FILES = [
   "src/features/assistant/presentation/products.tsx",
 ];
 const COLOR_FN = /(?<![\w-])(?:oklch|oklab|lab|lch|hwb|rgba?|hsla?|color-mix|color)\(/gi;
-// Hex colours only: not part of an identifier or URL fragment, and not a four-letter word anchor.
+// Hex colours only: not part of an identifier or URL fragment. A bare letters-only four-character
+// string (`href="#cafe"`) is a fragment; the same digits inside a utility or value are a colour.
 const HEX = /(?<![\w#&/-])#(?:[\da-f]{8}|[\da-f]{6}|[\da-f]{4}|[\da-f]{3})(?![\w-])/gi;
 const CORAL_VAR = /(?:var\(\s*|\()--(?:primary|pv-coral|destructive)\b/;
 const CORAL_UTILITY = /(?:^|-)(?:coral|primary|destructive)(?:-(?:foreground|hover))?(?:\/\S+)?$/;
@@ -35,8 +36,8 @@ const COLOR_FILES = ALLOWED_LITERAL_FILES;
 /** Full colour literals: function expressions are balanced to their closing parenthesis. */
 function colorLiterals(text: string): string[] {
   const out = [...text.matchAll(HEX)]
-    .map((m) => m[0])
-    .filter((hex) => hex.length !== 5 || /\d/.test(hex));
+    .filter((m) => !(m[0].length === 5 && !/\d/.test(m[0]) && text.trim() === m[0]))
+    .map((m) => m[0]);
   for (const m of text.matchAll(COLOR_FN)) {
     let depth = 0;
     let end = m.index;
@@ -97,6 +98,13 @@ function scanClasses(file: string, text: string, add: Add): void {
     if (SPACING.test(u)) add("spacing-radius", token);
     const arbitrary = u.match(/^\[(?:-webkit-)?transition(?:-property)?:(.*)\]$/);
     const named = u.match(/^transition(?:-(.+))?$/);
+    const arbitraryProperty = u.match(/^\[([a-z-]+):(.*)\]$/);
+    if (
+      arbitraryProperty &&
+      SPACING_PROP.test(arbitraryProperty[1] ?? "") &&
+      LENGTH.test(arbitraryProperty[2] ?? "")
+    )
+      add("spacing-radius", token);
     if (arbitrary) for (const rule of transitionRules(arbitrary[1] ?? "")) add(rule, token);
     else if (named) {
       const property = named[1];
@@ -153,11 +161,24 @@ export function designFindings(file: string, source: string): Finding[] {
       scanClasses(file, node.value.cooked ?? node.value.raw, add);
     },
     Property(node) {
-      const key = node.key.type === "Identifier" ? node.key.name : null;
-      const value = node.value.type === "Literal" ? node.value.value : null;
+      const key =
+        node.key.type === "Identifier"
+          ? node.key.name
+          : node.key.type === "Literal" && typeof node.key.value === "string"
+            ? node.key.value
+            : null;
+      const camel = key?.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
+      const signed = node.value.type === "UnaryExpression" ? node.value : null;
+      const inner = signed?.operator === "-" || signed?.operator === "+" ? signed.argument : null;
+      const value =
+        node.value.type === "Literal"
+          ? node.value.value
+          : inner?.type === "Literal" && typeof inner.value === "number"
+            ? (signed?.operator === "-" ? -1 : 1) * inner.value
+            : null;
       if (!key || value === null) return;
       if (
-        SPACING_KEY.test(key) &&
+        SPACING_KEY.test(camel ?? key) &&
         (typeof value === "number" ? value !== 0 : LENGTH.test(String(value)))
       )
         add("spacing-radius", `${key}: ${value}`);
