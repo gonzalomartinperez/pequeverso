@@ -46,7 +46,12 @@ export const soporteCopy = {
     hotmartLabel: "Tus compras en Hotmart:",
     hotmartLink: "consumer.hotmart.com",
   },
-  withdrawal: { ...withdrawalCopy, windows: withdrawalWindowList },
+  withdrawal: {
+    title: withdrawalCopy.title,
+    windowsLead: withdrawalCopy.windowsLead,
+    windows: withdrawalWindowList,
+    link: "Cómo pedirlo por correo y qué pasa después",
+  },
   limits: {
     title: "Lo que no podemos hacer",
     items: ["Ver o modificar datos de pago.", "Cambiar el correo de una compra."],

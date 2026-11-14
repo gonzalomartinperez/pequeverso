@@ -19,19 +19,20 @@ export const withdrawalWindowList = withdrawalWindows.map((window) => ({
 }));
 
 export const withdrawalCopy = {
-  title: "Si la ley de tu país te da más tiempo",
-  summary: `Con la garantía de Hotmart tienes ${guaranteeDays} días para pedir el reembolso en Hotmart, en cualquier país. Si la ley de tu país te da un plazo de arrepentimiento mayor, escríbenos por correo dentro de ese plazo y gestionamos el reembolso nosotros.`,
-  windowsLead: "Plazos legales que gestionamos por correo, por país:",
+  title: "Plazos legales de arrepentimiento por país",
+  summary: `La garantía de Hotmart te da ${guaranteeDays} días para pedir el reembolso en Hotmart, en cualquier país. Además, la ley de algunos países fija su propio plazo de arrepentimiento: esos plazos los gestionamos por correo.`,
+  windowsLead: "Plazo legal de arrepentimiento, por país:",
   windowsNote:
-    "Se cuentan como indica la ley de cada país. Si tu país no figura, vale la garantía de Hotmart y la ley local que te corresponda.",
-  /** What to write in the email. */
+    "Se cuenta como indica la ley de cada país. Si tu país no figura, vale la garantía de Hotmart y la ley local que te corresponda.",
+  windowsCaption: { country: "País", period: "Plazo" },
+  /** What to write in the email; shared by every "Por correo" block. */
   steps: [
-    "Escríbenos desde el correo con el que compraste.",
-    "Indica tu nombre, tu país y que quieres ejercer tu derecho de arrepentimiento.",
-    "Incluye el código de transacción de Hotmart (empieza con HP) o el número de pedido; si no lo encuentras, dinos el correo y la fecha de la compra.",
-    "No hace falta explicar el motivo.",
+    "Indica tu nombre, tu país y el correo con el que compraste.",
+    "Incluye el código de transacción de Hotmart de tu compra (empieza con HP; está en el correo de confirmación).",
+    "Di que quieres ejercer tu derecho de arrepentimiento. No hace falta explicar el motivo.",
   ],
   answerTime: `Te respondemos normalmente en ${supportResponseTime} y siempre dentro del plazo legal de tu país.`,
   argentinaCode: `Si compraste desde Argentina, te enviamos por el mismo correo un código de identificación de tu pedido dentro de las ${withdrawalRequestCodeHours} horas.`,
-  manualRefund: `Fuera de los ${guaranteeDays} días de la garantía de Hotmart, el reembolso no se hace en Hotmart: lo gestionamos nosotros de forma manual, por el mismo medio de pago o el que acordemos contigo, y te avisamos por correo cuando esté hecho.`,
+  hotmartRefund: `Dentro de los ${guaranteeDays} días de la garantía, Hotmart ejecuta el reembolso.`,
+  manualRefund: `Fuera de los ${guaranteeDays} días y dentro del plazo legal de tu país, la solicitud va por correo y lo gestionamos nosotros de forma manual: te confirmamos por correo cómo y cuándo se hace la devolución.`,
 } as const;

@@ -7,7 +7,7 @@ import {
 import { consumerRights } from "@content/es/legal/consumer-rights";
 import { hotmartFacts } from "@content/es/legal/hotmart";
 import { seller } from "@content/es/legal/seller";
-import { withdrawalCopy, withdrawalWindowList } from "@content/es/legal/withdrawal";
+import { withdrawalCopy } from "@content/es/legal/withdrawal";
 import { Mail, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { CTAButton } from "@/shared/editorial/cta-button.tsx";
@@ -21,6 +21,7 @@ import {
   TableRow,
 } from "@/shared/ui/table.tsx";
 import { LegalLayout, type Section, SectionHeading } from "@/views/legal/legal-layout.tsx";
+import { WithdrawalWindowsTable } from "@/views/legal/withdrawal-windows.tsx";
 
 const sections: readonly Section[] = [
   { id: "derecho", title: "Tu derecho a arrepentirte" },
@@ -50,7 +51,7 @@ const deadlines = [
   },
   {
     step: "Devolución del dinero",
-    period: `La ejecuta Hotmart por el mismo medio de pago: ${hotmartFacts.refundTiming}.`,
+    period: `Dentro de la garantía la ejecuta Hotmart: ${hotmartFacts.refundTiming}. Fuera de ella, la gestionamos nosotros y te confirmamos por correo cómo y cuándo.`,
   },
 ];
 
@@ -113,12 +114,9 @@ export default function ArrepentimientoPage() {
           También se acepta el correo del titular registrado en Hotmart:{" "}
           <a href={`mailto:${seller.legalEmail}`}>{seller.legalEmail}</a>.
         </li>
-        <li>
-          Indica tu nombre, el correo electrónico con el que compraste y, si lo tienes, el código de
-          transacción de Hotmart (empieza con HP; está en el correo de confirmación y en “Mis
-          compras”).
-        </li>
-        <li>No hace falta explicar el motivo.</li>
+        {withdrawalCopy.steps.map((step) => (
+          <li key={step}>{step}</li>
+        ))}
       </ol>
       <h3>En Hotmart</h3>
       <ol>
@@ -140,8 +138,8 @@ export default function ArrepentimientoPage() {
           Guárdalo: sirve para seguir el trámite y para cualquier reclamo posterior.
         </li>
         <li>
-          Gestionamos el reembolso en Hotmart, que devuelve el importe por el mismo medio de pago
-          que usaste. Tras el reembolso, Hotmart retira el acceso a los archivos.
+          {withdrawalCopy.hotmartRefund} {withdrawalCopy.manualRefund} Tras el reembolso se retira
+          el acceso a los archivos.
         </li>
         <li>
           Si pediste la revocación directamente en Hotmart, el número de la solicitud que te envía
@@ -150,9 +148,9 @@ export default function ArrepentimientoPage() {
       </ol>
       <Notice title="Importante">
         <p>
-          El reembolso siempre lo ejecuta Hotmart, que procesó tu pago. El Titular no ve ni guarda
-          los datos de tu tarjeta o cuenta. Más detalle en{" "}
-          <Link href="/compras-y-reembolsos/">Compras y reembolsos</Link>.
+          Dentro de la garantía, el reembolso lo ejecuta Hotmart, que procesó tu pago; fuera de ella
+          lo gestionamos de forma manual. El Titular no ve ni guarda los datos de tu tarjeta o
+          cuenta. Más detalle en <Link href="/compras-y-reembolsos/">Compras y reembolsos</Link>.
         </p>
       </Notice>
 
@@ -176,24 +174,10 @@ export default function ArrepentimientoPage() {
 
       <SectionHeading sections={sections} id="por-correo" />
       <p>{withdrawalCopy.summary}</p>
-      <p>
-        <strong>{withdrawalCopy.windowsLead}</strong>
-      </p>
-      <ul>
-        {withdrawalWindowList.map((window) => (
-          <li key={window.country}>
-            {window.country}: <strong>{window.period}</strong>
-          </li>
-        ))}
-      </ul>
-      <p>{withdrawalCopy.windowsNote}</p>
-      <ol>
-        {withdrawalCopy.steps.map((step) => (
-          <li key={step}>{step}</li>
-        ))}
-      </ol>
+      <WithdrawalWindowsTable />
       <p>{withdrawalCopy.answerTime}</p>
       <p>{withdrawalCopy.argentinaCode}</p>
+      <p>{withdrawalCopy.hotmartRefund}</p>
       <p>{withdrawalCopy.manualRefund}</p>
 
       <SectionHeading sections={sections} id="paises" />

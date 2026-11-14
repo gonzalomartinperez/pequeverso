@@ -6,8 +6,6 @@
  *
  * Hotmart is the merchant of record for payment, taxes, delivery and refunds.
  */
-import { site } from "./site.ts";
-
 export const currency = "USD" as const;
 
 /** Days to request a refund through Hotmart, as promised on the current landings. */
@@ -53,15 +51,8 @@ export function withdrawalWindow(country: string): WithdrawalWindow {
  * the same channel the buyer used. The code's own numbering scheme is an owner input. */
 export const withdrawalRequestCodeHours = 24;
 
-/** Support mailbox (one inbox for support, privacy and withdrawal requests). */
-export const supportEmail = site.supportEmail;
-
 /** Normal support reply time (previously `seller.responseTime`). */
 export const supportResponseTime = "48 horas hábiles";
-
-/** Copy placeholders of design-playbook section 10, with the values the current copy already uses. */
-export const paperFormat = "A4";
-export const practiceMinutes = 10;
 
 /** Query parameters forwarded from the landing URL to the Hotmart checkout. `off` and
  * `ref` are deliberately excluded: a visitor-controlled `off` selects an arbitrary offer. */
@@ -86,12 +77,6 @@ export const hotmart = {
   salesFunnelScript: "https://checkout.hotmart.com/lib/hotmart-checkout-elements.js",
   salesFunnelContainerId: "hotmart-sales-funnel",
 } as const;
-
-/** Where buyers open their purchases (`{hotmart_consumer_url}` in the thanks page copy). */
-export const hotmartConsumerUrl = hotmart.consumerArea;
-
-/** Short phrase used inside sentences, e.g. "Pagas en Hotmart, en tu moneda local." */
-export const currencyNote = "en tu moneda local";
 
 /**
  * Local-currency explanation shown next to every USD price: Hotmart converts the reference

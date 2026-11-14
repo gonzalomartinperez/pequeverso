@@ -22,7 +22,7 @@ export const seller = {
   jurisdiction:
     "los tribunales ordinarios del Departamento Judicial de Bahía Blanca, provincia de Buenos Aires",
   supportEmail: site.supportEmail,
-  privacyEmail: "somospequeverso@gmail.com",
+  privacyEmail: site.supportEmail,
   /**
    * The Titular's own mailbox, registered in the seller's Hotmart account (Hotmart forwards buyer
    * contacts there). Secondary channel shown on the legal pages only (`legalRoutes`); commercial
