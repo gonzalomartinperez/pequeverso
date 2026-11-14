@@ -7,6 +7,13 @@ may only fall. `measuredAt`, `commit` and `source` say where the baseline comes 
 - `tools/scorecard/ratchets.ts` loads and validates the files (`node tools/scorecard/ratchets.ts`).
 - `tests/unit/ratchets.test.ts` fails when a file is invalid or when a baseline is loosened against
   the merge base with `origin/develop`. Tightening is a normal change; loosening needs an ADR.
+- Optional `mode` (`warn` or `enforce`, absent means enforce), `expires` and `calibrated`: a `warn`
+  ratchet is a time-boxed soft gate for gates that cannot be green yet. `expires` (YYYY-MM-DD) is
+  the last day it only warns, at most 14 days after `measuredAt`; it enforces from 00:00 UTC the
+  next day (`ratchetPhase`, which fails closed on a missing, malformed or too-distant `expires`).
+  A ratchet with a `mode` must set `calibrated: true` (values taken from real CI runs, not
+  placeholders) once it enforces, and a unit test fails otherwise. Postponing `expires`, going
+  enforce to warn or withdrawing `calibrated` counts as loosening.
 - Baselines today: `mutation` (M2-3, scoped modules, no collector in the scorecard yet), `coverage`, `bundle`, `lighthouse` (live, mobile), `lighthouse-lab` (production-config export, CI gate `tools/lhci-assert.ts`), `a11y`, `repo-size` and
   `complexity` (first run). The plan adds more files as their gates land (`ci-duration`, `mutation`,
   `design-lint`, `scorecard-axes`, ...); the nightly scorecard (M2-9) compares measurements with
