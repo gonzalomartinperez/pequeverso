@@ -1,0 +1,94 @@
+[
+  {
+    "source": "/:path*",
+    "headers": [
+      {
+        "key": "Strict-Transport-Security",
+        "value": "max-age=300"
+      }
+    ]
+  },
+  {
+    "source": "/:path*",
+    "headers": [
+      {
+        "key": "X-Content-Type-Options",
+        "value": "nosniff"
+      },
+      {
+        "key": "Referrer-Policy",
+        "value": "strict-origin-when-cross-origin"
+      },
+      {
+        "key": "Permissions-Policy",
+        "value": "camera=(), microphone=(), geolocation=(), payment=(), browsing-topics=()"
+      },
+      {
+        "key": "X-Frame-Options",
+        "value": "SAMEORIGIN"
+      },
+      {
+        "key": "Content-Security-Policy-Report-Only",
+        "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://checkout.hotmart.com https://*.hotmart.com https://connect.facebook.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.hotmart.com https://www.facebook.com https://connect.facebook.net https://cloud.umami.is https://api-gateway.umami.dev; frame-src https://*.hotmart.com https://www.facebook.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://*.hotmart.com; frame-ancestors 'self'"
+      },
+      {
+        "key": "Cache-Control",
+        "value": "no-cache"
+      }
+    ]
+  },
+  {
+    "source": "/:path*.html",
+    "headers": [
+      {
+        "key": "Cache-Control",
+        "value": "no-cache"
+      }
+    ]
+  },
+  {
+    "source": "/build-info.json",
+    "headers": [
+      {
+        "key": "Cache-Control",
+        "value": "no-store"
+      }
+    ]
+  },
+  {
+    "source": "/api/:path*",
+    "headers": [
+      {
+        "key": "Cache-Control",
+        "value": "no-store"
+      }
+    ]
+  },
+  {
+    "source": "/media/:path*",
+    "headers": [
+      {
+        "key": "Cache-Control",
+        "value": "public, max-age=31536000, immutable"
+      }
+    ]
+  },
+  {
+    "source": "/fonts/:path*",
+    "headers": [
+      {
+        "key": "Cache-Control",
+        "value": "public, max-age=31536000, immutable"
+      }
+    ]
+  },
+  {
+    "source": "/_next/static/:path*",
+    "headers": [
+      {
+        "key": "Cache-Control",
+        "value": "public, max-age=31536000, immutable"
+      }
+    ]
+  }
+]
