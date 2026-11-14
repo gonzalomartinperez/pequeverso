@@ -70,5 +70,8 @@ test("release.yml triggers only on push to main and does not touch deploy.yml", 
   assert.equal(on, "  push:\n    branches:\n      - main\n");
   assert.match(workflow, /^permissions: \{\}$/m);
   assert.doesNotMatch(workflow, /workflow_dispatch|pull_request|tags:/);
-  assert.match(workflow, /uses: actions\/\w+@[0-9a-f]{40} /g);
+  const uses = [...workflow.matchAll(/^\s*(?:- )?uses: (\S+)/gm)].map((match) => match[1]);
+  assert.ok(uses.length > 0);
+  for (const action of uses) assert.match(action ?? "", /^[\w.-]+\/[\w.-]+@[0-9a-f]{40}$/);
+  assert.doesNotMatch(workflow.replace(/^\s*#.*$/gm, ""), /npm (ci|run)|deploy|hostinger/i);
 });

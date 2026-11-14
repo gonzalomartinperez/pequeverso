@@ -7,7 +7,7 @@
 // section exists but is empty; a missing section is reported through `has_section=false`.
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const SEMVER = /^\d+\.\d+\.\d+$/;
 
@@ -64,6 +64,9 @@ function main(argv: string[]): number {
   }
 }
 
-if (process.argv[1] !== undefined && import.meta.url === `file://${resolve(process.argv[1])}`) {
+if (
+  process.argv[1] !== undefined &&
+  import.meta.url === pathToFileURL(resolve(process.argv[1])).href
+) {
   process.exitCode = main(process.argv.slice(2));
 }
