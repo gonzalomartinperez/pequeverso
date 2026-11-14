@@ -54,10 +54,13 @@ With the optional variables empty no pixel is injected and the Conversions API r
   `1234567890123456`, fake `TEST0000000` offer, real third-party hosts) for home, kit,
   `/imprime-y-juega/` (upsell) and the kit thanks page.
   - `tools/lhci-assert.ts` asserts at `error` level the median of the runs for performance, LCP, TBT,
-    CLS and script transfer KB against `ratchets/lighthouse-lab.json` (the only copy of those
+    CLS and first-party script transfer KB (`js-kb`, same-origin scripts) against `ratchets/lighthouse-lab.json` (the only copy of those
     thresholds). It is strict: every key must be checked, a route with fewer runs than expected, a
     `runtimeError` run or a missing or non-finite value fails, and an unknown metric in a key throws.
-    The ratchet may only tighten (`tests/unit/ratchets.test.ts`).
+    The ratchet may only tighten (`tests/unit/ratchets.test.ts`). `third-party-js-kb` (Meta, the Hotmart
+    funnel; it varies between runs) is recorded and reported at WARN, never failing; revisit in M3-3.
+    The step prints a route | metric | median | limit | status table. Starting values come from CI run
+    43592256267.
   - lhci itself asserts accessibility at `error`; best-practices, SEO and the image (1.1 MB) and total
     (1.5 MB) byte budgets stay at `warn` (home and kit only).
 - **No events reach Meta**: `connect.facebook.net` loads, so `fbevents.js` counts toward TBT and JS KB,
@@ -78,7 +81,8 @@ With the optional variables empty no pixel is injected and the Conversions API r
   pass.
 - **Tightening**: after the first CI runs on develop, download the `.lighthouseci` artifact and run
   `node tools/lhci-assert.ts ratchets/lighthouse-lab.json --suggest > /tmp/lab.json`; it prints the
-  ratchet with 10% headroom, never looser than today. Review and copy it over the file.
+  ratchet with 10% headroom (at least 0.25 s, 5 KB or 5 points), never looser than today. `--dir` accepts a
+  downloaded artifact. Review and copy it over the file.
 
 ## Conventions
 

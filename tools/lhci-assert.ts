@@ -2,19 +2,24 @@
 // Usage: node tools/lhci-assert.ts <ratchet.json> [--dir=.lighthouseci] [--config=lighthouserc.json]
 //   [--runs=N] [--tolerance=0.15] [--allow-missing-paths] [--suggest]
 // Ratchet keys are "<pathname> <metric>"; metrics: performance, accessibility, best-practices, seo
-// (score 0-100), lcp, tbt (s or ms), cls, js-kb (script transfer KB). Strict by default: every key
+// (score 0-100), lcp, tbt (s or ms), cls, js-kb (FIRST-PARTY script transfer KB: same-origin Script
+// requests of the network-requests audit) and third-party-js-kb (the other Script requests). Hotmart
+// and Meta bytes vary run to run, so third-party-js-kb is reported at WARN level and never fails
+// (revisit in M3-3). Strict by default: every key
 // must be checked, every route needs the expected number of error-free runs (--runs, else
 // ci.collect.numberOfRuns of --config) and every run must carry a finite value. Unknown metrics and
 // malformed keys throw. `--allow-missing-paths` (live lane, which covers a subset of the routes)
 // skips keys whose route was not collected. `--tolerance` (0 to 0.5) widens the limit by a
 // fraction; CLS gets 0.01 absolute slack on a ratchet of 0. `--suggest` prints a tighter ratchet
-// JSON (10% headroom, never looser than the current values) instead of asserting.
+// JSON (10% headroom with a small absolute minimum, never looser than the current values) instead of asserting.
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { RatchetValue } from "./scorecard/ratchets.ts";
 
 export type Lhr = {
+  finalUrl?: string;
+  requestedUrl?: string;
   runtimeError?: { code?: string; message?: string };
   categories: Record<string, { score?: number | null } | undefined>;
   audits: Record<
@@ -23,10 +28,19 @@ export type Lhr = {
   >;
 };
 export type Failure = { key: string; reason: string };
+export type Row = {
+  key: string;
+  measured?: number;
+  limit?: number;
+  status: "ok" | "FAIL" | "WARN";
+  note?: string;
+};
 export type Options = { tolerance?: number; expectedRuns?: number; allowMissingPaths?: boolean };
 
 const categories = ["performance", "accessibility", "best-practices", "seo"];
-const metrics = [...categories, "lcp", "tbt", "cls", "js-kb"];
+const metrics = [...categories, "lcp", "tbt", "cls", "js-kb", "third-party-js-kb"];
+/** Recorded and reported, never failing. Expiry: revisit in M3-3 (third-party budget). */
+const warnMetrics = ["third-party-js-kb"];
 
 /** Splits "<pathname> <metric>"; throws on anything else, so a typo cannot silently un-gate. */
 export function parseKey(key: string): { pathname: string; metric: string } {
@@ -50,9 +64,23 @@ export function metricOf(lhr: Lhr, metric: string, unit: string): number | undef
   if (metric === "lcp") return seconds(audit("largest-contentful-paint"));
   if (metric === "tbt") return seconds(audit("total-blocking-time"));
   if (metric === "cls") return audit("cumulative-layout-shift");
-  const items = lhr.audits["resource-summary"]?.details?.items ?? [];
-  const bytes = items.find((item) => item.resourceType === "script")?.transferSize;
-  return typeof bytes === "number" ? bytes / 1000 : undefined;
+  return scriptKb(lhr, metric === "js-kb");
+}
+
+/** Script transfer KB from network-requests: same-origin (first party) or every other origin. */
+function scriptKb(lhr: Lhr, firstParty: boolean): number | undefined {
+  const base = lhr.finalUrl ?? lhr.requestedUrl;
+  const items = lhr.audits["network-requests"]?.details?.items;
+  if (!base || !items) return undefined;
+  const origin = new URL(base).origin;
+  let bytes = 0;
+  for (const item of items) {
+    if (item.resourceType !== "Script") continue;
+    const size = item.transferSize;
+    if (typeof size !== "number") return undefined;
+    if ((new URL(String(item.url)).origin === origin) === firstParty) bytes += size;
+  }
+  return bytes / 1000;
 }
 
 export function median(values: number[]): number {
@@ -115,21 +143,43 @@ export function assertRatchet(
   values: RatchetValue[],
   runsByPath: Map<string, Lhr[]>,
   options: Options = {},
-): { failures: Failure[]; checked: number } {
+): { failures: Failure[]; checked: number; rows: Row[] } {
   const tolerance = options.tolerance ?? 0;
   checkTolerance(tolerance);
   const { collected, failures } = collect(values, runsByPath, options);
+  const rows: Row[] = failures.map((f) => ({ key: f.key, status: "FAIL", note: f.reason }));
   for (const { key, item, samples } of collected) {
     const measured = median(samples);
     const slack = item.value === 0 && item.unit === "" ? 0.01 : Math.abs(item.value) * tolerance;
     const limit = item.direction === "max" ? item.value + slack : item.value - slack;
-    if (item.direction === "max" ? measured > limit : measured < limit)
+    const over = item.direction === "max" ? measured > limit : measured < limit;
+    const warn = warnMetrics.includes(parseKey(key).metric);
+    rows.push({ key, measured, limit, status: over ? (warn ? "WARN" : "FAIL") : "ok" });
+    if (over && !warn)
       failures.push({
         key,
         reason: `median ${measured.toFixed(2)} ${item.unit} vs limit ${limit.toFixed(2)}`,
       });
   }
-  return { failures, checked: collected.length };
+  return { failures, checked: collected.length, rows };
+}
+
+/** Plain-text table: route | metric | median | limit | status. */
+export function formatRows(rows: Row[]): string {
+  const cells = rows.map((row) => {
+    const { pathname, metric } = parseKey(row.key);
+    return [
+      pathname,
+      metric,
+      row.measured === undefined ? "-" : row.measured.toFixed(2),
+      row.limit === undefined ? "-" : row.limit.toFixed(2),
+      row.note ? `${row.status} (${row.note})` : row.status,
+    ];
+  });
+  const head = ["route", "metric", "median", "limit", "status"];
+  const all = [head, ...cells];
+  const widths = head.map((_, i) => Math.max(...all.map((r) => (r[i] as string).length)));
+  return all.map((r) => r.map((c, i) => c.padEnd(widths[i] as number)).join(" | ")).join("\n");
 }
 
 /** Ratchet values from the medians with headroom, clamped so they can only tighten. */
@@ -142,10 +192,14 @@ export function suggestRatchet(
   if (failures.length) throw new Error(failures.map((f) => `${f.key}: ${f.reason}`).join("; "));
   return collected.map(({ item, samples }) => {
     const measured = median(samples);
+    // At least a small absolute margin, so a median of 0 s TBT does not become a ceiling of 0.
+    const minimum = { s: 0.25, KB: 5, score: 5 }[item.unit] ?? 0;
+    const up = Math.max(measured * (1 + headroom), measured + minimum);
+    const down = Math.min(measured * (1 - headroom), measured - minimum);
     const suggested =
       item.direction === "max"
-        ? Math.ceil(Number((measured * (1 + headroom) * 100).toFixed(6))) / 100
-        : Math.floor(Number((measured * (1 - headroom)).toFixed(6)));
+        ? Math.ceil(Number((up * 100).toFixed(6))) / 100
+        : Math.floor(Number(down.toFixed(6)));
     const value =
       item.direction === "max" ? Math.min(item.value, suggested) : Math.max(item.value, suggested);
     return { ...item, value };
@@ -156,15 +210,20 @@ function runsFromDir(dir: string): Map<string, Lhr[]> {
   const manifest = resolve(dir, "manifest.json");
   if (!existsSync(manifest)) throw new Error(`No Lighthouse manifest at ${manifest}`);
   const byPath = new Map<string, Lhr[]>();
-  for (const run of JSON.parse(readFileSync(manifest, "utf8")) as {
-    url: string;
-    jsonPath: string;
-  }[]) {
-    const pathname = new URL(run.url).pathname;
-    byPath.set(pathname, [
-      ...(byPath.get(pathname) ?? []),
-      JSON.parse(readFileSync(run.jsonPath, "utf8")) as Lhr,
-    ]);
+  const add = (url: string, lhr: Lhr) => {
+    const pathname = new URL(url).pathname;
+    byPath.set(pathname, [...(byPath.get(pathname) ?? []), lhr]);
+  };
+  const entries = JSON.parse(readFileSync(manifest, "utf8")) as { url: string; jsonPath: string }[];
+  if (entries.every((run) => existsSync(run.jsonPath))) {
+    for (const run of entries) add(run.url, JSON.parse(readFileSync(run.jsonPath, "utf8")) as Lhr);
+    return byPath;
+  }
+  // A downloaded artifact keeps the runner's absolute paths; read the lhr-*.json files instead.
+  for (const name of readdirSync(dir).filter((n) => /^lhr-.*\.json$/.test(n))) {
+    const lhr = JSON.parse(readFileSync(resolve(dir, name), "utf8")) as Lhr;
+    const url = lhr.finalUrl ?? lhr.requestedUrl;
+    if (url) add(url, lhr);
   }
   return byPath;
 }
@@ -224,7 +283,7 @@ if (import.meta.main) {
     );
     process.exit(0);
   }
-  const { failures, checked } = assertRatchet(ratchet.values, runs, {
+  const { failures, checked, rows } = assertRatchet(ratchet.values, runs, {
     tolerance,
     allowMissingPaths: args.includes("--allow-missing-paths"),
     ...(expectedRuns === undefined ? {} : { expectedRuns }),
@@ -232,6 +291,7 @@ if (import.meta.main) {
   console.log(
     `Ratchet ${file}: ${checked}/${ratchet.values.length} values checked, tolerance ${tolerance * 100}%`,
   );
+  console.log(formatRows(rows));
   for (const f of failures) console.error(`FAIL ${f.key}: ${f.reason}`);
   process.exit(failures.length || checked === 0 ? 1 : 0);
 }

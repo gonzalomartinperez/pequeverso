@@ -35,7 +35,7 @@ hidden: `repo-size` is exceeded until M2-5 shrinks the visual baselines, and `co
 below its floor on develop (lines about 96.05 against 96.19, branches about 87.46 against 88.11;
 M2-5 owns the coverage gate). Do not loosen either baseline.
 
-`lighthouse-lab` starts from one local run under heavy load, so its TBT ceilings are loose. After the
-first CI runs on develop, tighten it once: collect the `.lighthouseci` artifact and run
-`node tools/lhci-assert.ts ratchets/lighthouse-lab.json --suggest` (10% headroom over the medians,
+`lighthouse-lab` starts from the medians of CI run 43592256267 (first-party `js-kb` gated, `third-party-js-kb`
+reported at WARN only, revisit in M3-3). To tighten it later, download the `lighthouse` artifact and run
+`node tools/lhci-assert.ts ratchets/lighthouse-lab.json --suggest --dir=<artifact dir>` (10% headroom,
 never looser than the current values), review the output and commit it over the file.

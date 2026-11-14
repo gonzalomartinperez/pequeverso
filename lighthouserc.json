@@ -71,7 +71,7 @@
           }
         }
       ],
-      "_note": "Performance, LCP, TBT, CLS and script KB are asserted at error level by tools/lhci-assert.ts against ratchets/lighthouse-lab.json (M2-1), so those thresholds live in one file. Accessibility is an error here; best-practices, SEO and the image and total byte budgets stay at warn."
+      "_note": "Performance, LCP, TBT, CLS and first-party script KB are asserted at error level by tools/lhci-assert.ts against ratchets/lighthouse-lab.json (M2-1), so those thresholds live in one file. Accessibility is an error here; best-practices, SEO and the image and total byte budgets stay at warn."
     },
     "upload": {
       "target": "filesystem",

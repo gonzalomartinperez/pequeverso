@@ -7,6 +7,7 @@ import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import {
   assertRatchet,
+  formatRows,
   type Lhr,
   median,
   parseKey,
@@ -15,14 +16,28 @@ import {
 import type { RatchetValue } from "../../tools/scorecard/ratchets.ts";
 import { loadRatchets } from "../../tools/scorecard/ratchets.ts";
 
-const run = (lcp: number, tbt: number, cls: number, scriptBytes: number, perf: number): Lhr => ({
+const run = (
+  lcp: number,
+  tbt: number,
+  cls: number,
+  scriptBytes: number,
+  perf: number,
+  thirdBytes = 0,
+): Lhr => ({
+  finalUrl: "http://localhost:3000/",
   categories: { performance: { score: perf } },
   audits: {
     "largest-contentful-paint": { numericValue: lcp },
     "total-blocking-time": { numericValue: tbt },
     "cumulative-layout-shift": { numericValue: cls },
-    "resource-summary": {
-      details: { items: [{ resourceType: "script", transferSize: scriptBytes }] },
+    "network-requests": {
+      details: {
+        items: [
+          { resourceType: "Script", url: "http://localhost:3000/a.js", transferSize: scriptBytes },
+          { resourceType: "Script", url: "https://example.com/b.js", transferSize: thirdBytes },
+          { resourceType: "Image", url: "http://localhost:3000/c.png", transferSize: 9_999_999 },
+        ],
+      },
     },
   },
 });
@@ -156,7 +171,7 @@ test("suggest only tightens, with headroom, flooring minimums", () => {
   const runs = new Map([["/", [run(2000, 1500, 0.2, 1, 0.8), run(2000, 1500, 0.2, 1, 0.8)]]]);
   const out = suggestRatchet(current, runs, 0.1);
   const byKey = Object.fromEntries(out.map((v) => [v.key, v.value]));
-  assert.equal(byKey["/ lcp"], 2.2);
+  assert.equal(byKey["/ lcp"], 2.25);
   assert.equal(byKey["/ tbt"], 1);
   assert.equal(byKey["/ performance"], 72);
   assert.equal(byKey["/ cls"], 0);
@@ -194,4 +209,29 @@ test("the CLI exits 1 on a missing route, 0 when complete, 2 on bad tolerance", 
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test("js-kb counts same-origin scripts only; third-party-js-kb is WARN and never fails", () => {
+  const values: RatchetValue[] = [
+    { key: "/ js-kb", value: 200, unit: "KB", direction: "max" },
+    { key: "/ third-party-js-kb", value: 100, unit: "KB", direction: "max" },
+  ];
+  const runs = new Map([["/", [run(1, 1, 0, 150_000, 1, 900_000)]]]);
+  const result = assertRatchet(values, runs);
+  assert.deepEqual(result.failures, []);
+  assert.equal(result.checked, 2);
+  assert.deepEqual(
+    result.rows.map((r) => [r.key, r.measured, r.status]),
+    [
+      ["/ js-kb", 150, "ok"],
+      ["/ third-party-js-kb", 900, "WARN"],
+    ],
+  );
+  const over = assertRatchet(values, new Map([["/", [run(1, 1, 0, 250_000, 1, 0)]]]));
+  assert.deepEqual(
+    over.failures.map((f) => f.key),
+    ["/ js-kb"],
+  );
+  assert.match(formatRows(result.rows), /route\s+\| metric\s+\| median\s+\| limit\s+\| status/);
+  assert.match(formatRows(result.rows), /third-party-js-kb \|\s+900\.00 \|\s+100\.00 \| WARN/);
 });
