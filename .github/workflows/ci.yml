@@ -1,6 +1,6 @@
 # Validation only. The ci bridge preserves existing protection until an owner-approved transition.
 name: CI
-'on':
+"on":
   pull_request:
     branches:
       - develop
@@ -15,13 +15,13 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 env:
-  NEXT_TELEMETRY_DISABLED: '1'
+  NEXT_TELEMETRY_DISABLED: "1"
   NEXT_PUBLIC_SITE_URL: https://pequeverso.com
   NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO: https://pay.hotmart.com/TEST0000000?checkoutMode=10
-  NEXT_PUBLIC_META_PIXEL_ID: '1234567890123456'
-  E2E_EXPECT_CONSENT: '1'
-  NEXT_PUBLIC_ASSISTANT_ENABLED: 'false'
-  NEXT_PUBLIC_ASSISTANT_API_ORIGIN: ''
+  NEXT_PUBLIC_META_PIXEL_ID: "1234567890123456"
+  E2E_EXPECT_CONSENT: "1"
+  NEXT_PUBLIC_ASSISTANT_ENABLED: "false"
+  NEXT_PUBLIC_ASSISTANT_API_ORIGIN: ""
   NEXT_OUTPUT: export
 jobs:
   workflows:
@@ -213,10 +213,10 @@ jobs:
     env:
       SUITE: ${{ matrix.suite }}
       SHARD: ${{ matrix.shard }}
-      SHARDS: '4'
+      SHARDS: "4"
       AI_PROVIDER: fixture
-      ALLOW_PAID_AI: 'false'
-      OPENAI_API_KEY: ''
+      ALLOW_PAID_AI: "false"
+      OPENAI_API_KEY: ""
       CI_CANDIDATE_SHA: ${{ needs.build.outputs.source_sha }}
       PLAYWRIGHT_JSON_OUTPUT_NAME: .ci-evidence/results.json
       PLAYWRIGHT_HTML_OUTPUT_DIR: ${{ matrix.suite == 'native' && 'playwright-report-assistant' || 'playwright-report' }}
@@ -294,9 +294,9 @@ jobs:
         run: node tools/ci/artifacts.ts attest-native out-assistant-fixture .ci-evidence/native-build-identity.json
         if: matrix.suite == 'native'
         env:
-          NEXT_PUBLIC_ASSISTANT_ENABLED: 'true'
+          NEXT_PUBLIC_ASSISTANT_ENABLED: "true"
           NEXT_PUBLIC_ASSISTANT_API_ORIGIN: https://127.0.0.1:8217
-          NEXT_PUBLIC_META_PIXEL_ID: '1234567890123456'
+          NEXT_PUBLIC_META_PIXEL_ID: "1234567890123456"
       - name: Run the unchanged functional or native assertions
         run: |-
           set -euo pipefail
