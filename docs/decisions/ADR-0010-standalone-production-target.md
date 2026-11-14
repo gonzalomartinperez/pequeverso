@@ -25,9 +25,9 @@ export is retired at M4 (DR-08, PV-D3 in `docs/master-plan/owner-decisions.md` a
    performance, header and functional claim refers to this target.
 2. The static export (`out/`, `.htaccess` from `config/edge-rules.json`, `tools/serve-static.ts`,
    the `deploy` branch) is a **parity build only** until M4: it keeps the code free of request-time
-   APIs, but nothing serves it to users. CI moves the export build out of the PR path into the
-   nightly workflow (roadmap M1-5 with the M1-1 CI profiles); the PR path builds and tests the
-   standalone artifact.
+   APIs, but the production host does not serve it. CI will move the export build out of the PR
+   path into the nightly workflow (roadmap M1-5, delivered with the M1-1 CI profiles); the PR path
+   will then build and test the standalone artifact.
 3. The "both build targets must keep working" rule in `AGENTS.md` stays in force until M4-2, which
    removes the export path (`serve-static.ts`, `gen-htaccess.ts`, htaccess artifacts, `deploy`
    branch publishing, the `pageExtensions` trick) and renames `route.standalone.ts` to `route.ts`.
@@ -36,14 +36,18 @@ export is retired at M4 (DR-08, PV-D3 in `docs/master-plan/owner-decisions.md` a
 
 ## Consequences
 
-- AGENTS.md, `docs/architecture.md` and `docs/deployment.md` describe standalone as production and
-  the export as a parity build.
+- AGENTS.md, README, `docs/architecture.md`, `docs/deployment.md`, `docs/development.md` and the
+  `config/next.ts` header describe standalone as production and the export as a parity build.
+  Other mentions of the export (Playwright and CI docs) are updated with the M1-1 CI change or
+  removed at M4-2.
 - Hostinger builds on its own image; a merged PR and green CI do not prove deployment.
   `post-deploy-verify.yml` waits for `https://pequeverso.com/build-info.json` to report the merge
   SHA. Rollback is a revert PR on `main` (Hostinger has no rollback UI).
-- Provenance cannot cover Hostinger's build. The compensating controls are the `main` ruleset, a
-  `v*` tag ruleset (added in M1-6), the `build-info.json` check against the merge SHA, long Dependabot cooldowns and
-  a post-build scan of the output for forbidden strings (ecosystem section 7).
+- Provenance cannot cover Hostinger's build. The required compensating controls
+  (`docs/master-plan/ecosystem.md` section 7) are the `main` ruleset and the `build-info.json` check
+  against the merge SHA (both in place), long Dependabot cooldowns (in place), a `v*` tag ruleset
+  (planned, M1-6) and a post-build scan of the output for forbidden strings (today only the small
+  list in `tools/check-rendered.ts`; to be extended).
 - Until M4-2 the export stays buildable, so the request-time API restrictions still apply.
 
 ## Alternatives considered

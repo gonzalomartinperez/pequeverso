@@ -31,7 +31,7 @@ flowchart LR
 | Redirects/headers | `out/.htaccess` generated from `config/edge-rules.json` | `redirects()`/`headers()` from the same file |
 | Meta CAPI relay | `tools/serve-static.ts` mounts `src/features/tracking/adapters/server/meta-capi.ts` (Node.js Web App only; the LiteSpeed mode has no relay) | `src/app/api/meta/events/route.standalone.ts`, compiled only when `output === "standalone"` (`pageExtensions` adds `standalone.ts`) |
 | Images | Build-time WebP derivatives (`tools/media`), `images.unoptimized` | same |
-| Status | Parity build; the Deploy workflow can still publish `deploy`, but no host serves it (retired at M4-2) | **Connected to `main` since 2026-10-13** (owner confirmed); Hostinger automatically builds and publishes merges. Post-deploy verification is enabled. On 2026-10-17 the owner confirmed the product page works in a browser; an earlier HEAD probe returned HTTP 403 and remains a probe-specific observation, not a diagnosed hosting outage. Each release still requires its own post-deploy verification |
+| Status | Parity build; the Deploy workflow can still publish `deploy`, but the production host does not serve it (retired at M4-2) | **Connected to `main` since 2026-10-13** (owner confirmed); Hostinger automatically builds and publishes merges. Post-deploy verification is enabled. On 2026-10-17 the owner confirmed the product page works in a browser; an earlier HEAD probe returned HTTP 403 and remains a probe-specific observation, not a diagnosed hosting outage. Each release still requires its own post-deploy verification |
 
 Rules that keep both targets valid: no `proxy.ts`/middleware, no `cookies()`/`headers()`/request-time
 APIs, no route handlers beyond `sitemap.ts`/`robots.ts`/metadata images (plus `*.standalone.ts`

@@ -1,7 +1,8 @@
 # Agent guide — pequeverso
 
-Public repository for the Pequeverso commercial website (Next.js 16 App Router; production is the
-Hostinger Node.js Web App building `main` with `output: "standalone"`, ADR-0010; Hotmart checkout). Engineering language is English; customer-facing copy is neutral
+Public repository for the Pequeverso commercial website (Next.js 16 App Router; production is
+the Hostinger Node.js Web App building `main` with `output: "standalone"`, ADR-0010; Hotmart
+checkout). Engineering language is English; customer-facing copy is neutral
 Spanish. Read this file first, then the doc that matches your task.
 
 ## Start here
