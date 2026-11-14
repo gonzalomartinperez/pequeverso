@@ -71,6 +71,7 @@ export function GalleryZoomButton({ label, children }: { label: string; children
       className={ZOOM}
       onClick={onClick}
       onPointerEnter={preloadZoom}
+      onFocus={preloadZoom}
       aria-label={label}
     >
       {children}
@@ -295,7 +296,9 @@ export function GalleryCarousel({
         )}
         {zoomHint ? <p className="text-center text-tiny text-subtle">{zoomHint}</p> : null}
         {zoom ? (
-          <Suspense fallback={null}>
+          <Suspense
+            fallback={<div className="fixed inset-0 z-70 bg-navy-deep/80" aria-hidden="true" />}
+          >
             <ZoomDialog
               open={zoomOpen}
               zoom={zoom}

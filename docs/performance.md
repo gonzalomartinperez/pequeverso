@@ -134,7 +134,7 @@ poster button for `<video controls>` on demand, taking the poster URL from the p
 |---|---|---|
 | `4bd1b696-*.js` | 61.7 KB | `react-dom-client.production.js` (61.6 KB) |
 | `794-*.js` | 64.1 KB | `react-server-dom-webpack-client` 7.3 KB, `segment-cache/cache.js` 7.0 KB, `router-reducer/ppr-navigations.js` 4.1 KB, `segment-cache/scheduler.js` 3.8 KB, `react.production.js` 2.9 KB |
-| `19-*.js` | 8.6 KB | `embla-carousel` 6.6 KB, `lucide-react` runtime 0.7 KB + icons |
+| `19-*.js` | 8.6 KB | `embla-carousel` 6.6 KB (removed in M3-3), `lucide-react` runtime 0.7 KB + icons |
 | `500-*.js` | 3.5 KB | `next/link` 1.6 KB, `shared/lib/utils.js` 1.1 KB |
 | `app/layout-*.js` | 4.5 KB | `next/script` 1.5 KB, consent + tracking 2.7 KB |
 
@@ -159,6 +159,12 @@ HTML budgets without improving LCP).
 the server, so the always-loaded layout, error boundaries and header ship no variant tables. The
 mobile-nav sheet (Base UI dialog) is a separate chunk loaded on intent. three + gsap load only in
 `src/shared/motion/scene/scene-runtime.ts`, behind `await import()`, the ADR-0017 gate (fine pointer, at least 1024 px, first interaction) and motion/Save-Data/viewport gates.
+
+The page gallery (`src/features/gallery`) is a native CSS scroll-snap scroller (no carousel
+dependency; M3-3 removed `embla-carousel-react`, product first-load JS 174.2 to 167.3 KB gzip). The
+active slide comes from an `IntersectionObserver`, `scroll-behavior` is `auto` under reduced motion.
+The zoom dialog (Base UI) is a `React.lazy` chunk fetched on first pointer, focus or click on a slide,
+with a backdrop placeholder while it loads. Base UI is imported per component subpath only.
 
 ## Re-measuring
 
