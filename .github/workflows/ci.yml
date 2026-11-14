@@ -109,9 +109,10 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Checkout
+      - name: Checkout (full history for the diff coverage merge base)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Setup
         uses: ./.github/actions/setup
@@ -123,8 +124,22 @@ jobs:
         run: |
           npm ci --prefix tools/media --ignore-scripts --no-audit --no-fund
           npm run typecheck:media
-      - name: Unit tests and architecture contracts (including negative fixtures)
-        run: npm test
+      - name: Unit tests and architecture contracts (including negative fixtures), with lcov coverage
+        run: |-
+          set -euo pipefail
+          mkdir -p coverage
+          node --env-file-if-exists=.env.example --test --experimental-test-coverage \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=lcov --test-reporter-destination=coverage/lcov.info \
+            "tests/unit/**/*.test.ts"
+      - name: Diff coverage (changed executable lines against the base branch, floor in ratchets/diff-coverage.json)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |-
+          set -euo pipefail
+          git fetch --no-tags origin "$BASE_REF:refs/remotes/origin/$BASE_REF"
+          node tools/ci/diff-coverage.ts --base "origin/$BASE_REF"
       - name: Dead code (production and full, as the nightly runs it)
         run: npm run knip:production && npm run knip
       - name: Audit production dependencies

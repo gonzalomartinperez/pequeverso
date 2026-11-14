@@ -30,6 +30,7 @@ const required = [
   "coverage",
   "design-lint",
   "interaction",
+  "diff-coverage",
   "lighthouse",
   "lighthouse-lab",
   "repo-size",

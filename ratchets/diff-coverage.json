@@ -1,0 +1,15 @@
+{
+  "$comment": "Share of changed executable lines (node lcov DA records) that unit tests execute, per pull request (`node tools/ci/diff-coverage.ts`, roadmap M2-5). Floor: may only rise.",
+  "metric": "diff-coverage",
+  "measuredAt": "2026-11-14",
+  "commit": "6ce7d61",
+  "source": "docs/master-plan/testing.md section 1 (diff coverage at least 85%)",
+  "values": [
+    {
+      "key": "changed lines",
+      "value": 85,
+      "unit": "%",
+      "direction": "min"
+    }
+  ]
+}
