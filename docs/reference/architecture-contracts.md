@@ -1,4 +1,4 @@
-# Engineering standards
+# Architecture contracts
 
 These standards preserve Pequeverso's commercial behavior while making changes testable and
 reviewable. `AGENTS.md`, contract compatibility and the existing activation rules remain binding.

@@ -54,15 +54,27 @@ const REPO_ROOTS = [
   "server",
 ];
 
+/** Backticked repository paths cited by an ADR that do not exist. */
+function missingPaths(text: string): string[] {
+  return [...text.matchAll(/`([^`\s]+)`/g)]
+    .map((m) => m[1] ?? "")
+    .filter((p) => REPO_ROOTS.includes(p.split("/")[0] ?? "") && p.includes("/"))
+    .filter((p) => !/[*<>{}]/.test(p))
+    .filter((p) => !existsSync(new URL(p, root)));
+}
+
 test("non-superseded ADRs cite existing paths, or carry a Path note", () => {
   for (const name of adrFiles) {
     const text = adr(name);
     if (statusOf(text) === "superseded" || text.includes("> Path note:")) continue;
-    const cited = [...text.matchAll(/`([^`\s]+)`/g)]
-      .map((m) => m[1] ?? "")
-      .filter((p) => REPO_ROOTS.includes(p.split("/")[0] ?? "") && p.includes("/"))
-      .filter((p) => !/[*<>{}]/.test(p));
-    for (const path of cited)
-      assert.ok(existsSync(new URL(path, root)), `${name}: ${path} does not exist`);
+    assert.deepEqual(missingPaths(text), [], `${name} cites missing paths`);
+  }
+});
+
+test("a Path note appears only in ADRs that cite at least one missing path", () => {
+  for (const name of adrFiles) {
+    const text = adr(name);
+    if (!text.includes("> Path note:")) continue;
+    assert.ok(missingPaths(text).length > 0, `${name} has a Path note but no missing path`);
   }
 });

@@ -4,7 +4,7 @@
   <h1>Pequeverso</h1>
   <p>Printable learning kits and curated courses for families, with a fast, honest Hotmart checkout.</p>
   <a href="https://github.com/gonzalomartinperez/pequeverso/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/gonzalomartinperez/pequeverso/actions/workflows/ci.yml/badge.svg?branch=main"></a>
-  <a href="https://github.com/gonzalomartinperez/pequeverso/releases"><img alt="Release" src="https://img.shields.io/github/v/release/gonzalomartinperez/pequeverso"></a>
+  <a href="https://github.com/gonzalomartinperez/pequeverso/releases"><img alt="Release" src="https://img.shields.io/github/v/tag/gonzalomartinperez/pequeverso"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-blue"></a>
 </div>
 
@@ -48,11 +48,11 @@ business facts come from `config/` and reviewed copy from `content/`. Both are e
 ```bash
 nvm use && npm ci                # Node 24 from .nvmrc; exact lockfile
 cp .env.example .env.local       # sample configuration; assistant stays disabled
-npm run check                    # mirrors CI: lint, types, tests, build and budgets
+npm run check                    # local lint, types, unit, build and budget checks
 npm run dev                      # local development
 ```
 
-Requirements: Node 24 LTS (`.nvmrc`). The site origin and checkout URL are required build-time
+The browser and performance gates run in CI only; see the [CI profile](docs/reference/ci-profile.md). Requirements: Node 24 LTS (`.nvmrc`). The site origin and checkout URL are required build-time
 variables; see [.env.example](.env.example) and [docs/development.md](docs/development.md).
 
 ## Usage

@@ -214,7 +214,7 @@ provider, physical phone keyboard or production VPS cookies/CORS/proxy behavior.
 
 ### Enforced dependency contracts
 
-[Engineering standards](reference/architecture-contracts.md) document ownership, review and blocking CI rules.
+[Architecture contracts](reference/architecture-contracts.md) document ownership, review and blocking CI rules.
 `npm run test:architecture` parses imports with Oxc, checks runtime cycles and follows client
 imports transitively through barrels and aliases. Assistant presentation receives a stable
 controller from `runtime.tsx`; only `entry.ts` constructs its HTTP adapter. Domain and application

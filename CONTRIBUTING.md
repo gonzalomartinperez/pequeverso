@@ -51,7 +51,7 @@ mechanical parts; the rest is review.
 the required CI build. It parses imports as TypeScript syntax, resolves aliases and relative paths,
 rejects runtime cycles and checks the complete client import graph. Negative fixtures must prove
 that forbidden dependencies fail; a passing scan of the current tree alone is insufficient.
-See [engineering standards](docs/reference/architecture-contracts.md) for ownership, review and maintenance.
+See [architecture contracts](docs/reference/architecture-contracts.md) for ownership, review and maintenance.
 
 ## Commits and pull requests
 
