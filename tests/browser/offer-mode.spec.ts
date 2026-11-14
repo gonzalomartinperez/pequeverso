@@ -99,7 +99,11 @@ test("sticky decision bar stays hidden over the offer hero and appears after it"
   await page.goto("/imprime-y-juega/");
   const bar = page.getByTestId("sticky-cta");
   await expect(bar).not.toHaveAttribute("data-visible", "");
-  await page.locator("#complemento-title").scrollIntoViewIfNeeded();
-  await page.mouse.wheel(0, 400);
+  // Scroll to a heading that sits past every element hiding the bar (hero, #gfp-decision, final
+  // offer, footer). The old target, #complemento-title, directly follows the tall #gfp-decision
+  // band, which could still intersect the viewport (threshold 5%) while the wheel step or the
+  // section heights settled, so the bar legitimately stayed hidden.
+  await page.locator("#incluye-title").scrollIntoViewIfNeeded();
   await expect(bar).toHaveAttribute("data-visible", "");
+  await expect(bar).toBeVisible();
 });
