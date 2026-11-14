@@ -47,5 +47,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "out", ".next", "tools/media"]
+  "exclude": ["node_modules", "out", ".next", "tools/media", ".stryker-tmp", "reports"]
 }

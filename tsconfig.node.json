@@ -14,5 +14,5 @@
     "tests/unit/**/*.ts",
     "config/next.ts"
   ],
-  "exclude": ["node_modules", "tools/media"]
+  "exclude": ["node_modules", "tools/media", ".stryker-tmp", "reports"]
 }

@@ -45,3 +45,4 @@ src/shared/styles/cn-tables.js
 .assistant-api/
 reports/
 .stryker-tmp/
+stryker.pr.config.json

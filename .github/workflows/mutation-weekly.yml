@@ -26,6 +26,9 @@ jobs:
         uses: ./.github/actions/setup
       - name: Full mutation run (breaks below 60; target 75-80)
         run: npm run test:mutation
+        timeout-minutes: 28
+      - name: Global score against ratchets/mutation.json (nothing is updated automatically)
+        run: node tools/ci/mutation-gate.ts --global
       - name: Save the incremental baseline for pull requests
         if: always()
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
