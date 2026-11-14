@@ -66,7 +66,7 @@ jobs:
           set -euo pipefail
           mkdir -p sbom
           npm sbom --sbom-format cyclonedx --omit dev --package-lock-only > sbom/pequeverso.cdx.json
-          node -e 'const s=require("./sbom/pequeverso.cdx.json"); if (s.bomFormat !== "CycloneDX" || !Array.isArray(s.components) || s.components.length === 0) { console.error("SBOM is empty or not CycloneDX"); process.exit(1) } console.log(`CycloneDX ${s.specVersion}: ${s.components.length} components`)'
+          node -e 'const s=require("./sbom/pequeverso.cdx.json"); if (s.bomFormat !== "CycloneDX" || !Array.isArray(s.components) || s.components.length === 0) { console.error("SBOM is empty or not CycloneDX"); process.exit(1) } console.log("CycloneDX " + s.specVersion + ": " + s.components.length + " components")'
       - name: Upload the SBOM
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
