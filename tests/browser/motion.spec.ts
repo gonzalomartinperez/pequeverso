@@ -118,8 +118,6 @@ test("page gallery: arrows, dots, keyboard and zoom dialog", async ({ page, brow
   await expect(gallery.getByText("2 de 20")).toBeVisible();
   await gallery.getByRole("tab", { name: "Ir a la página 5" }).click();
   await expect(gallery.getByText("5 de 20")).toBeVisible();
-  // Embla swallows clicks that land during the snap animation.
-  await expect(gallery.locator("[data-state='settled']")).toHaveCount(1);
   await gallery.locator("button[aria-label^='Ampliar']").nth(4).click();
   const dialog = page.getByRole("dialog", { name: /Página real/ });
   await expect(dialog).toBeVisible();

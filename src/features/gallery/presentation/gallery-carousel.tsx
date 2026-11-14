@@ -1,6 +1,5 @@
 "use client";
 
-import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import {
   Children,
@@ -97,8 +96,8 @@ function zoomFrom(image: HTMLImageElement): Zoom {
 }
 
 /**
- * Product-page style gallery of real worksheet pages: one large page on a framed stage (drag/swipe,
- * glass arrows, keyboard), a counter pill, the caption, a scroll-snap strip of thumbnails (dots
+ * Product-page style gallery of real worksheet pages: one large page on a framed stage (swipe on a CSS scroll-snap
+ * scroller, glass arrows, keyboard), a counter pill, the caption, a scroll-snap strip of thumbnails (dots
  * when no thumbnails are given) and a zoom on the Base UI dialog, loaded on first use.
  */
 export function GalleryCarousel({
@@ -110,19 +109,11 @@ export function GalleryCarousel({
   zoomTitle,
   meta,
 }: Props) {
-  const [emblaRef, embla] = useEmblaCarousel({
-    // No loop: the looper re-translates slides on every frame, and WebKit never reports the zoom
-    // button as stable under it; a product gallery reads better with a clear first and last page.
-    loop: false,
-    align: "center",
-    skipSnaps: false,
-    dragFree: false,
-  });
   const [selected, setSelected] = useState(0);
-  const [settled, setSettled] = useState(true);
   const [zoom, setZoom] = useState<Zoom | null>(null);
   const [zoomOpen, setZoomOpen] = useState(false);
   const strip = useRef<HTMLDivElement>(null);
+  const track = useRef<HTMLUListElement>(null);
   const open = useCallback((image: HTMLImageElement) => {
     setZoom(zoomFrom(image));
     setZoomOpen(true);
@@ -135,33 +126,31 @@ export function GalleryCarousel({
   const position = (index: number) => `${itemLabel ? `${itemLabel} ` : ""}${index + 1} de ${total}`;
   const thumbs = meta && meta.length === slides.length ? meta : undefined;
 
-  const onSelect = useCallback(() => {
-    if (!embla) return;
-    setSelected(embla.selectedScrollSnap());
-  }, [embla]);
-
+  // The scroller is the source of truth: the slide that is mostly in view is the selected one.
+  // An IntersectionObserver reports it without reading layout on scroll.
   useEffect(() => {
-    if (!embla) return;
-    const onScroll = () => setSettled(false);
-    const onSettle = () => setSettled(true);
-    // A new selection starts a snap animation: mark it in motion at once, not on the first scroll
-    // frame, so nothing sees "settled" while the slide still travels (Safari eases longer).
-    const onPick = () => {
-      onSelect();
-      setSettled(false);
-    };
-    onSelect();
-    embla.on("select", onPick);
-    embla.on("reInit", onSelect);
-    embla.on("scroll", onScroll);
-    embla.on("settle", onSettle);
-    return () => {
-      embla.off("select", onPick);
-      embla.off("reInit", onSelect);
-      embla.off("scroll", onScroll);
-      embla.off("settle", onSettle);
-    };
-  }, [embla, onSelect]);
+    const root = track.current;
+    if (!root) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting)
+            setSelected(Number((entry.target as HTMLElement).dataset.index));
+        }
+      },
+      { root, threshold: 0.6 },
+    );
+    for (const item of root.children) observer.observe(item);
+    return () => observer.disconnect();
+  }, []);
+
+  // `behavior` is left to the CSS `scroll-behavior` (smooth, `auto` under reduced motion).
+  const scrollToSlide = useCallback((index: number) => {
+    const root = track.current;
+    const item = root?.children[index] as HTMLElement | undefined;
+    if (!root || !item) return;
+    root.scrollTo({ left: item.offsetLeft - (root.clientWidth - item.offsetWidth) / 2 });
+  }, []);
 
   // Keep the selected thumbnail centred in its strip (horizontal scroll only, never the page).
   useEffect(() => {
@@ -173,13 +162,13 @@ export function GalleryCarousel({
     el.scrollTo({ left, behavior: smooth ? "smooth" : "auto" });
   }, [selected]);
 
-  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+  const onKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      embla?.scrollNext();
+      scrollToSlide(Math.min(selected + 1, slides.length - 1));
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
-      embla?.scrollPrev();
+      scrollToSlide(Math.max(selected - 1, 0));
     }
   };
 
@@ -192,27 +181,28 @@ export function GalleryCarousel({
         aria-label={label}
       >
         <div className="relative rounded-xl bg-white/70 p-2 shadow-float border border-white sm:p-3">
-          {/* biome-ignore lint/a11y/noStaticElementInteractions: keyboard navigation for the carousel viewport (roving focus lives on the controls) #177 */}
-          <div
-            className="overflow-hidden rounded-lg"
-            ref={emblaRef}
+          <ul
+            ref={track}
+            // biome-ignore lint/a11y/noNoninteractiveTabindex: a keyboard-focusable scroller (arrow keys page through the slides) #177
+            tabIndex={0}
+            role="list"
+            aria-label={label}
             onKeyDown={onKeyDown}
-            data-state={settled ? "settled" : "scrolling"}
+            className="relative flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain scroll-smooth rounded-lg [scrollbar-width:none] motion-reduce:scroll-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy [&::-webkit-scrollbar]:hidden"
           >
-            <ul className="-ml-3 flex touch-pan-y touch-pinch-zoom" role="list">
-              {slides.map((slide, index) => (
-                <li
-                  key={slide.key}
-                  className="min-w-0 flex-[0_0_100%] pl-3"
-                  data-active={index === selected ? "" : undefined}
-                  aria-roledescription="diapositiva"
-                  aria-label={position(index)}
-                >
-                  {slide.node}
-                </li>
-              ))}
-            </ul>
-          </div>
+            {slides.map((slide, index) => (
+              <li
+                key={slide.key}
+                className="min-w-0 flex-[0_0_100%] snap-center snap-always"
+                data-index={index}
+                data-active={index === selected ? "" : undefined}
+                aria-roledescription="diapositiva"
+                aria-label={position(index)}
+              >
+                {slide.node}
+              </li>
+            ))}
+          </ul>
           <p
             className="pointer-events-none absolute top-5 left-5 rounded-pill bg-navy/88 px-3 py-1.5 text-tiny font-extrabold text-white tabular-nums shadow-md sm:top-6 sm:left-6 sm:text-small"
             aria-live="polite"
@@ -223,7 +213,7 @@ export function GalleryCarousel({
             <button
               type="button"
               className={ARROW}
-              onClick={() => embla?.scrollPrev()}
+              onClick={() => scrollToSlide(selected - 1)}
               disabled={selected === 0}
               aria-label="Página anterior"
             >
@@ -232,7 +222,7 @@ export function GalleryCarousel({
             <button
               type="button"
               className={ARROW}
-              onClick={() => embla?.scrollNext()}
+              onClick={() => scrollToSlide(selected + 1)}
               disabled={selected === slides.length - 1}
               aria-label="Página siguiente"
             >
@@ -268,7 +258,7 @@ export function GalleryCarousel({
                     index === 0 && "ml-4",
                     index === slides.length - 1 && "mr-4",
                   )}
-                  onClick={() => embla?.scrollTo(index)}
+                  onClick={() => scrollToSlide(index)}
                 >
                   {item ? (
                     <img
@@ -298,7 +288,7 @@ export function GalleryCarousel({
                 aria-selected={index === selected}
                 aria-label={`Ir a la página ${index + 1}`}
                 className={DOT}
-                onClick={() => embla?.scrollTo(index)}
+                onClick={() => scrollToSlide(index)}
               />
             ))}
           </div>
