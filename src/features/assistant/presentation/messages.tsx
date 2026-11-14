@@ -183,8 +183,10 @@ export function StreamingAnswer({ pending }: { pending: Pending }) {
 }
 
 function outcomeCopy(outcome: Outcome, t: ReturnType<typeof usePresentation>["t"]) {
-  if (outcome.kind === "cancelled") return { title: t.cancelledTitle, detail: null, Icon: CircleStop };
-  if (outcome.kind === "interrupted") return { title: t.interruptedTitle, detail: null, Icon: WifiOff };
+  if (outcome.kind === "cancelled")
+    return { title: t.cancelledTitle, detail: null, Icon: CircleStop };
+  if (outcome.kind === "interrupted")
+    return { title: t.interruptedTitle, detail: null, Icon: WifiOff };
   return { title: t.failedTitle, detail: t.errors[outcome.code], Icon: AlertCircle };
 }
 
@@ -207,7 +209,10 @@ export function OutcomeView({
       {outcome.partial && (
         <div className="flex flex-col gap-2">
           <p className={labelClass}>{t.partialLabel}</p>
-          <RichTextView text={outcome.partial} className="border-s-2 border-line-strong ps-3 opacity-80" />
+          <RichTextView
+            text={outcome.partial}
+            className="border-s-2 border-line-strong ps-3 opacity-80"
+          />
         </div>
       )}
       <Callout tone={outcome.kind === "cancelled" ? "info" : "danger"}>
@@ -253,7 +258,10 @@ export function RefusalView({ code, onDismiss }: { code: ErrorCode; onDismiss: (
           type="button"
           aria-label={t.dismiss}
           onClick={onDismiss}
-          className={cx(buttonVariants({ variant: "ghost", size: "icon" }), "-my-2 -me-2 border-transparent")}
+          className={cx(
+            buttonVariants({ variant: "ghost", size: "icon" }),
+            "-my-2 -me-2 border-transparent",
+          )}
         >
           <X aria-hidden="true" />
         </button>

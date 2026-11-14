@@ -21,11 +21,15 @@ function PriceLine({ price }: { price: Price | null }) {
   return (
     <div className="flex flex-col gap-0.5">
       <p className="flex flex-wrap items-baseline gap-x-2">
-        <span className="font-display text-lead font-bold text-primary tabular-nums">{price.display}</span>
+        <span className="font-display text-lead font-bold text-primary tabular-nums">
+          {price.display}
+        </span>
         <span className="text-tiny text-subtle">{price.taxNote}</span>
       </p>
       <p className="text-tiny text-subtle">{price.note}</p>
-      <p className="text-tiny text-subtle">{t.priceReferenceDate(formatDay(price.verifiedAt, locale))}</p>
+      <p className="text-tiny text-subtle">
+        {t.priceReferenceDate(formatDay(price.verifiedAt, locale))}
+      </p>
     </div>
   );
 }
@@ -71,13 +75,20 @@ function ProductCard({ product, resources }: { product: Product; resources: Reso
         <div className="flex min-w-0 items-start gap-3">
           <Thumb product={product} />
           <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-            <h3 id={headingId} className={cx(styles.productTitle, "font-sans font-bold text-heading")}>
+            <h3
+              id={headingId}
+              className={cx(styles.productTitle, "font-sans font-bold text-heading")}
+            >
               {product.name}
             </h3>
             <p className="flex flex-wrap gap-1.5 text-tiny font-bold">
-              <span className="rounded-pill bg-mint px-2.5 py-1 text-teal-text">{product.ageRange}</span>
+              <span className="rounded-pill bg-mint px-2.5 py-1 text-teal-text">
+                {product.ageRange}
+              </span>
               {affiliate && (
-                <span className="rounded-pill bg-sky px-2.5 py-1 text-navy">{t.affiliateLabel}</span>
+                <span className="rounded-pill bg-sky px-2.5 py-1 text-navy">
+                  {t.affiliateLabel}
+                </span>
               )}
               {resources.length > 0 && (
                 <span className="rounded-pill bg-sky px-2.5 py-1 text-navy">
@@ -98,21 +109,30 @@ function ProductCard({ product, resources }: { product: Product; resources: Reso
           <div className="flex flex-wrap gap-2">
             <SafeLink
               href={product.url}
-              className={cx(buttonVariants({ variant: "outline", size: "sm" }), styles.productAction)}
+              className={cx(
+                buttonVariants({ variant: "outline", size: "sm" }),
+                styles.productAction,
+              )}
             >
               {affiliate ? t.affiliateInfo : t.viewProduct}
             </SafeLink>
             {affiliate ? (
               <AffiliateLink
                 href={product.purchaseUrl}
-                className={cx(buttonVariants({ variant: "secondary", size: "sm" }), styles.productAction)}
+                className={cx(
+                  buttonVariants({ variant: "secondary", size: "sm" }),
+                  styles.productAction,
+                )}
               >
                 {t.affiliateAction}
               </AffiliateLink>
             ) : (
               <SafeLink
                 href={product.purchaseUrl}
-                className={cx(buttonVariants({ variant: "primary", size: "sm" }), styles.productAction)}
+                className={cx(
+                  buttonVariants({ variant: "primary", size: "sm" }),
+                  styles.productAction,
+                )}
               >
                 {t.purchaseOptions}
               </SafeLink>
@@ -185,7 +205,11 @@ function Comparison({ products, resources }: { products: Product[]; resources: R
       label: t.resourcesLabel,
       cell: (product) => {
         const count = resources.filter((resource) => resource.productId === product.id).length;
-        return count ? t.resourceCount(count) : product.kind === "affiliate" ? t.affiliateResources : "—";
+        return count
+          ? t.resourceCount(count)
+          : product.kind === "affiliate"
+            ? t.affiliateResources
+            : "—";
       },
     },
   ];
@@ -202,7 +226,11 @@ function Comparison({ products, resources }: { products: Product[]; resources: R
           <tr>
             <td className="w-32" />
             {products.map((product) => (
-              <th key={product.id} scope="col" className="px-3 py-2 text-left font-extrabold text-heading">
+              <th
+                key={product.id}
+                scope="col"
+                className="px-3 py-2 text-left font-extrabold text-heading"
+              >
                 {product.name}
               </th>
             ))}
@@ -227,7 +255,13 @@ function Comparison({ products, resources }: { products: Product[]; resources: R
   );
 }
 
-export function ProductSection({ products, resources }: { products: Product[]; resources: Resource[] }) {
+export function ProductSection({
+  products,
+  resources,
+}: {
+  products: Product[];
+  resources: Resource[];
+}) {
   const { t } = usePresentation();
   if (!products.length) return <ResourceList resources={resources} />;
   const loose = resources.filter(

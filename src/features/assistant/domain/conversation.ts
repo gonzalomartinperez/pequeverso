@@ -304,8 +304,10 @@ export function phase(state: ConversationState): Phase {
     return { kind: "failed", code: state.sessionError ?? "network", retryable: true };
   const outcome = state.outcome;
   if (outcome?.kind === "cancelled") return { kind: "cancelled" };
-  if (outcome?.kind === "interrupted") return { kind: "failed", code: "interrupted", retryable: true };
-  if (outcome?.kind === "failed") return { kind: "failed", code: outcome.code, retryable: outcome.retryable };
+  if (outcome?.kind === "interrupted")
+    return { kind: "failed", code: "interrupted", retryable: true };
+  if (outcome?.kind === "failed")
+    return { kind: "failed", code: outcome.code, retryable: outcome.retryable };
   if (state.refusal) return { kind: "failed", code: state.refusal, retryable: true };
   if (state.notice === "expired") return { kind: "expired" };
   if (state.messages.at(-1)?.role === "assistant") return { kind: "completed" };
@@ -323,7 +325,8 @@ export function announcement(before: Phase["kind"], current: Phase): Announcemen
   const answering = before === "submitting" || before === "streaming";
   if (current.kind === "submitting") return "thinking";
   if (current.kind === "cancelled") return answering ? "stopped" : null;
-  if (current.kind === "failed" && current.code === "interrupted") return answering ? "interrupted" : null;
+  if (current.kind === "failed" && current.code === "interrupted")
+    return answering ? "interrupted" : null;
   if (current.kind === "failed") return answering ? "failed" : null;
   if (current.kind === "completed") return answering ? "ready" : null;
   return null;

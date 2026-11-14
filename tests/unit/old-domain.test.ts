@@ -20,11 +20,15 @@ const isAllowed = (path: string): boolean =>
  * git checkout, like `architecture.test.ts`; CI and local work always have one.
  */
 function repositoryFiles(): string[] {
-  const listed = execFileSync("git", ["ls-files", "-z", "--cached", "--others", "--exclude-standard"], {
-    encoding: "utf8",
-    maxBuffer: 16 * 1024 * 1024,
-    timeout: 10_000,
-  });
+  const listed = execFileSync(
+    "git",
+    ["ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+    {
+      encoding: "utf8",
+      maxBuffer: 16 * 1024 * 1024,
+      timeout: 10_000,
+    },
+  );
   return [...new Set(listed.split("\0").filter(Boolean))];
 }
 
@@ -51,7 +55,11 @@ function findOffenders(files: readonly string[], read: Reader): string[] {
 test("no file outside the allowlist mentions the retired domain (OD-53)", () => {
   const files = repositoryFiles();
   assert.ok(files.length > 100, "expected the repository file list");
-  assert.deepEqual(findOffenders(files, readTracked), [], "replace the retired domain with pequeverso.com");
+  assert.deepEqual(
+    findOffenders(files, readTracked),
+    [],
+    "replace the retired domain with pequeverso.com",
+  );
 });
 
 test("the scan flags the negative fixture content outside the allowlist and skips binaries", () => {

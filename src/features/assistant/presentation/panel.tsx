@@ -65,7 +65,9 @@ function useMedia(query: string): boolean {
 function useModalBackground(active: boolean, host: RefObject<HTMLElement | null>) {
   useEffect(() => {
     if (!active) return;
-    const siblings = Array.from(document.body.children).filter((element) => !element.contains(host.current));
+    const siblings = Array.from(document.body.children).filter(
+      (element) => !element.contains(host.current),
+    );
     const previous = siblings.map((element) => element.hasAttribute("inert"));
     for (const element of siblings) element.setAttribute("inert", "");
     const overflow = document.body.style.overflow;
@@ -205,12 +207,15 @@ export function AssistantPanel({
       return;
     }
     if (event.key !== "Tab" || !modal) return;
-    const controls = Array.from(surface.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []).filter(
-      (element) => element.getClientRects().length > 0 && !element.closest("[inert]"),
-    );
+    const controls = Array.from(
+      surface.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [],
+    ).filter((element) => element.getClientRects().length > 0 && !element.closest("[inert]"));
     const first = controls[0];
     const final = controls.at(-1);
-    if (event.shiftKey && (document.activeElement === first || document.activeElement === surface.current)) {
+    if (
+      event.shiftKey &&
+      (document.activeElement === first || document.activeElement === surface.current)
+    ) {
       event.preventDefault();
       final?.focus();
     } else if (!event.shiftKey && document.activeElement === final) {
@@ -236,10 +241,15 @@ export function AssistantPanel({
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
         onKeyDown={onKeyDown}
-        className={cx(styles.panel, "on-light bg-cream shadow-float ring-1 ring-navy/15 outline-none")}
+        className={cx(
+          styles.panel,
+          "on-light bg-cream shadow-float ring-1 ring-navy/15 outline-none",
+        )}
       >
         <ClearControl
-          disabled={state.session !== "open" || state.pending !== null || state.messages.length === 0}
+          disabled={
+            state.session !== "open" || state.pending !== null || state.messages.length === 0
+          }
           clearing={state.clearing}
           onConfirm={() => void assistant.clear()}
         >
@@ -260,7 +270,10 @@ export function AssistantPanel({
                     className={cx(styles.headerMark, "rounded-full bg-white")}
                   />
                   <div className="min-w-0 [overflow-wrap:anywhere]">
-                    <h2 id={titleId} className={cx(styles.headerTitle, "m-0 font-sans font-bold text-white")}>
+                    <h2
+                      id={titleId}
+                      className={cx(styles.headerTitle, "m-0 font-sans font-bold text-white")}
+                    >
                       {t.name}
                     </h2>
                     <p id={descriptionId} className="sr-only">
@@ -281,7 +294,11 @@ export function AssistantPanel({
                       aria-pressed={expanded}
                       onClick={() => setExpanded((value) => !value)}
                     >
-                      {expanded ? <Minimize2 aria-hidden="true" /> : <Maximize2 aria-hidden="true" />}
+                      {expanded ? (
+                        <Minimize2 aria-hidden="true" />
+                      ) : (
+                        <Maximize2 aria-hidden="true" />
+                      )}
                     </IconButton>
                   )}
                   <IconButton label={t.minimize} onClick={onMinimize}>

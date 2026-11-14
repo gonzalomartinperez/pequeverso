@@ -28,9 +28,11 @@ const ICON_SIZE: Record<Size, number> = { 48: 22, 56: 26, 72: 32 };
 
 const ACCENT: Record<IconBadgeAccent, string> = {
   auto: "bg-card bg-linear-145 from-accent/35 to-accent/6 text-accent shadow-sm inset-ring inset-ring-accent/20",
-  turquoise: "bg-linear-145 from-turquoise to-mint text-navy shadow-sm inset-ring inset-ring-white/60",
+  turquoise:
+    "bg-linear-145 from-turquoise to-mint text-navy shadow-sm inset-ring inset-ring-white/60",
   gold: "bg-linear-145 from-gold to-lemon text-ink shadow-sm inset-ring inset-ring-white/60",
-  coral: "bg-linear-145 from-peach to-rose text-coral-hover shadow-sm inset-ring inset-ring-white/60",
+  coral:
+    "bg-linear-145 from-peach to-rose text-coral-hover shadow-sm inset-ring inset-ring-white/60",
   navy: "bg-linear-145 from-navy to-navy-deep text-gold shadow-md inset-ring inset-ring-white/12",
 };
 

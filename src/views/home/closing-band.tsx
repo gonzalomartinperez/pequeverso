@@ -34,10 +34,17 @@ export function ClosingBand() {
       defer
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        <Float range={12} className="absolute top-[4%] -left-[6%] hidden w-[22rem] opacity-90 cq-lg:block">
+        <Float
+          range={12}
+          className="absolute top-[4%] -left-[6%] hidden w-[22rem] opacity-90 cq-lg:block"
+        >
           <MediaImage id="gf.cutout.elementos" sizes="352px" alt="" className="h-auto w-full" />
         </Float>
-        <Float delay={3} range={12} className="absolute top-[6%] -right-[4%] hidden w-[17rem] cq-lg:block">
+        <Float
+          delay={3}
+          range={12}
+          className="absolute top-[6%] -right-[4%] hidden w-[17rem] cq-lg:block"
+        >
           <MediaImage id={course.media.planet} sizes="272px" alt="" className="h-auto w-full" />
         </Float>
       </div>
@@ -80,7 +87,15 @@ export function ClosingBand() {
   );
 }
 
-function ClosingDoor({ need, note, children }: { need: HubNeed; note: string; children: ReactNode }) {
+function ClosingDoor({
+  need,
+  note,
+  children,
+}: {
+  need: HubNeed;
+  note: string;
+  children: ReactNode;
+}) {
   const tone = NEED_TONE[need.key];
   return (
     <div
@@ -94,7 +109,9 @@ function ClosingDoor({ need, note, children }: { need: HubNeed; note: string; ch
             "grid size-16 place-items-center overflow-hidden rounded-lg",
             tone.stage,
             "[&_img]:size-full",
-            need.recommended ? "[&_img]:object-contain [&_img]:object-bottom" : "[&_img]:object-cover",
+            need.recommended
+              ? "[&_img]:object-contain [&_img]:object-bottom"
+              : "[&_img]:object-cover",
           )}
         >
           <MediaImage id={need.thumb} sizes="64px" alt="" />
@@ -103,9 +120,13 @@ function ClosingDoor({ need, note, children }: { need: HubNeed; note: string; ch
           <span className="flex flex-wrap items-center gap-2 text-tiny font-extrabold text-gold">
             <Icon name={tone.icon} size={14} strokeWidth={2.6} />
             {need.stage}
-            {need.recommended ? <span className="text-white/80">· {hubCopy.feeding.recommended}</span> : null}
+            {need.recommended ? (
+              <span className="text-white/80">· {hubCopy.feeding.recommended}</span>
+            ) : null}
           </span>
-          <span className="font-display text-[1.6rem] leading-tight font-bold text-white">{need.need}</span>
+          <span className="font-display text-[1.6rem] leading-tight font-bold text-white">
+            {need.need}
+          </span>
           <span className="text-small text-body">
             {need.name} · {need.format}
           </span>

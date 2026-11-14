@@ -14,7 +14,10 @@ import {
 const rules = loadEdgeRules(undefined, {});
 
 test("edge rules validate and stay in sync with the committed golden .htaccess", () => {
-  const golden = readFileSync(new URL("../../docs/generated/htaccess.txt", import.meta.url), "utf8");
+  const golden = readFileSync(
+    new URL("../../docs/generated/htaccess.txt", import.meta.url),
+    "utf8",
+  );
   assert.equal(
     toHtaccess(rules),
     golden,
@@ -50,10 +53,15 @@ test("standalone target receives the same rules", () => {
 const HOTLINK = "https://go.hotmart.com/A00000000B";
 
 test("affiliate redirects resolve from the build environment, never from the repository", () => {
-  assert.ok(!rules.redirects.some((r) => r.id === "affiliate-alimentacion-bebe"), "skipped without variable");
+  assert.ok(
+    !rules.redirects.some((r) => r.id === "affiliate-alimentacion-bebe"),
+    "skipped without variable",
+  );
   assert.doesNotMatch(toHtaccess(rules), /hotmart\.com\/[A-Z0-9]/);
 
-  const withLink = loadEdgeRules(undefined, { NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE: HOTLINK });
+  const withLink = loadEdgeRules(undefined, {
+    NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE: HOTLINK,
+  });
   const rule = withLink.redirects.find((r) => r.id === "affiliate-alimentacion-bebe");
   assert.equal(rule?.destination, HOTLINK);
   assert.match(
@@ -74,7 +82,10 @@ test("affiliate destinations must be plain https links (Hotmart or the producer'
   assert.ok(!isAffiliateUrl("https://go.hotmart.com/A1$1"));
   assert.ok(!isAffiliateUrl("https://go.hotmart.com/a b"));
   assert.throws(
-    () => loadEdgeRules(undefined, { NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE: "javascript:alert(1)" }),
+    () =>
+      loadEdgeRules(undefined, {
+        NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE: "javascript:alert(1)",
+      }),
     /must be a plain https:\/\/ affiliate link/,
   );
   const escaped = toHtaccess(

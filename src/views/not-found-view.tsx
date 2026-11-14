@@ -38,7 +38,12 @@ export default function NotFound() {
                   {copy.home}
                 </CTAButton>
                 {coreProducts().map((product) => (
-                  <CTAButton key={product.slug} href={product.path} variant="outline" iconAfter="arrow">
+                  <CTAButton
+                    key={product.slug}
+                    href={product.path}
+                    variant="outline"
+                    iconAfter="arrow"
+                  >
                     {copy.product} {product.name}
                   </CTAButton>
                 ))}

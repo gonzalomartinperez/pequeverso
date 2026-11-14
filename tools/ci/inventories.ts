@@ -29,12 +29,15 @@ export const projects = {
     "webkit-desktop",
     "webkit-mobile",
   ],
-  nightly: ["chromium", "webkit"].flatMap((browser) => widths.map((width) => `${browser}-${width}`)),
+  nightly: ["chromium", "webkit"].flatMap((browser) =>
+    widths.map((width) => `${browser}-${width}`),
+  ),
 } as const;
 export type Suite = keyof typeof projects;
 
 function object(value: unknown): Record<string, unknown> {
-  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("Invalid test inventory");
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    throw new Error("Invalid test inventory");
   return value as Record<string, unknown>;
 }
 function list(value: unknown): unknown[] {
@@ -48,7 +51,8 @@ function text(value: unknown): string {
 
 export function testIdentities(value: unknown, suite: Suite, complete = false): string[] {
   const report = object(value);
-  if (report.errors !== undefined && list(report.errors).length) throw new Error("Inventory contains errors");
+  if (report.errors !== undefined && list(report.errors).length)
+    throw new Error("Inventory contains errors");
   const identities: string[] = [];
   const observed = new Set<string>();
   function visit(value: unknown, parents: string[]): void {
@@ -71,7 +75,8 @@ export function testIdentities(value: unknown, suite: Suite, complete = false): 
         if (!(projects[suite] as readonly string[]).includes(project))
           throw new Error("Unexpected project/configuration");
         observed.add(project);
-        if (spec.id !== undefined && typeof spec.id !== "string") throw new Error("Invalid spec identity");
+        if (spec.id !== undefined && typeof spec.id !== "string")
+          throw new Error("Invalid spec identity");
         if (
           test.repeatEachIndex !== undefined &&
           (!Number.isInteger(test.repeatEachIndex) || Number(test.repeatEachIndex) < 0)
@@ -109,7 +114,10 @@ export function requirePartition(full: string[], parts: string[][]): void {
   if (parts.some((part) => !part.length || new Set(part).size !== part.length))
     throw new Error("Invalid partition");
   const union = parts.flat().sort();
-  if (new Set(union).size !== union.length || JSON.stringify(union) !== JSON.stringify([...full].sort())) {
+  if (
+    new Set(union).size !== union.length ||
+    JSON.stringify(union) !== JSON.stringify([...full].sort())
+  ) {
     throw new Error("Partitions must be disjoint and cover every test exactly");
   }
 }
@@ -121,12 +129,20 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       if (suite !== "core" && suite !== "nightly") throw new Error("Unknown matrix");
       console.log(JSON.stringify(suite === "core" ? coreMatrix : nightlyMatrix));
     } else {
-      if (mode !== "verify" || !suite || !Object.hasOwn(projects, suite) || !fullPath || !outputPath) {
+      if (
+        mode !== "verify" ||
+        !suite ||
+        !Object.hasOwn(projects, suite) ||
+        !fullPath ||
+        !outputPath
+      ) {
         throw new Error("Explicit inventory/configuration paths are required");
       }
       const kind = suite as Suite;
       const full = testIdentities(JSON.parse(readFileSync(fullPath, "utf8")), kind, true);
-      const parts = partPaths.map((path) => testIdentities(JSON.parse(readFileSync(path, "utf8")), kind));
+      const parts = partPaths.map((path) =>
+        testIdentities(JSON.parse(readFileSync(path, "utf8")), kind),
+      );
       const expectedParts = kind === "functional" || kind === "native" ? 4 : 8;
       if (parts.length !== expectedParts) throw new Error("Unexpected partition count");
       requirePartition(full, parts);

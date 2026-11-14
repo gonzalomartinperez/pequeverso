@@ -185,7 +185,9 @@ export function HubStickyBar({ doors, reading, feeding }: Props) {
       className={cx(
         "pv-sticky fixed inset-x-3 bottom-[calc(var(--space-3)+env(safe-area-inset-bottom))] z-60 mx-auto hidden max-w-xl rounded-[2rem] bg-white p-[min(0.5rem,8px)] shadow-float ring-1 ring-navy/12 transition-[translate,opacity,visibility] duration-(--duration) ease-emphasis max-lg:block",
         "[body:has(dialog[open],[role=dialog][data-open])_&]:invisible [body:has(dialog[open],[role=dialog][data-open])_&]:translate-y-[calc(100%+2rem)] [body:has(dialog[open],[role=dialog][data-open])_&]:opacity-0",
-        visible ? "visible translate-y-0 opacity-100" : "invisible translate-y-[calc(100%+2rem)] opacity-0",
+        visible
+          ? "visible translate-y-0 opacity-100"
+          : "invisible translate-y-[calc(100%+2rem)] opacity-0",
       )}
     >
       <div key={mode === "hidden" ? "doors" : mode} className="pv-swap">

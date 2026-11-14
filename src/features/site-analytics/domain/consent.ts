@@ -2,7 +2,8 @@
 export function explicitGrant(value: unknown, now: number): boolean {
   if (!value || typeof value !== "object" || !Number.isFinite(now)) return false;
   const state = value as Record<string, unknown>;
-  if (state.version !== 2 || state.analytics !== true || typeof state.updatedAt !== "string") return false;
+  if (state.version !== 2 || state.analytics !== true || typeof state.updatedAt !== "string")
+    return false;
   const updated = Date.parse(state.updatedAt);
   return (
     Number.isFinite(updated) &&
@@ -25,7 +26,10 @@ export function createConsentGate() {
     persisted(value: unknown, stored: unknown, now: number) {
       if (!explicitGrant(value, now) || !explicitGrant(stored, now)) return;
       const timestamp = Reflect.get(value as object, "updatedAt");
-      if (timestamp === Reflect.get(stored as object, "updatedAt") && timestamp !== revokedTimestamp)
+      if (
+        timestamp === Reflect.get(stored as object, "updatedAt") &&
+        timestamp !== revokedTimestamp
+      )
         withdrawn = false;
     },
     allows(value: unknown, now: number) {

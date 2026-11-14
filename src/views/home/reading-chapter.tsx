@@ -85,7 +85,9 @@ function ReadingBox() {
   return (
     <div className="grid gap-4 rounded-xl bg-white p-5 shadow-sm ring-1 ring-line">
       <div className="grid min-w-0 gap-2">
-        <p className="font-display text-[1.5rem] leading-tight font-bold text-heading">{product.name}</p>
+        <p className="font-display text-[1.5rem] leading-tight font-bold text-heading">
+          {product.name}
+        </p>
         <p className="text-small font-bold text-subtle">
           {r.kind} · {composition.pdfCount} {r.units.pdf} · {composition.pageCount} {r.units.pages}
         </p>

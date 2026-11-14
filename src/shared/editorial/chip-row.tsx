@@ -1,7 +1,11 @@
 import type { ReactNode } from "react";
 import { cn } from "@/shared/styles/cn.ts";
 
-type Props = { align?: "start" | "center" | undefined; className?: string | undefined; children: ReactNode };
+type Props = {
+  align?: "start" | "center" | undefined;
+  className?: string | undefined;
+  children: ReactNode;
+};
 
 /** Wrapping row of chips (FactChip, Eyebrow, Badge) with a consistent gap. */
 export function ChipRow({ align = "start", className, children }: Props) {

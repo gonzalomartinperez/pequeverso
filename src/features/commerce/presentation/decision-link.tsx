@@ -6,7 +6,13 @@ import { type ButtonVariantProps, buttonVariants } from "@/shared/ui/button-vari
 type Props = ButtonVariantProps & { className?: string; children: ReactNode };
 
 /** In-page link to the Hotmart decision block (`#gfp-decision`), never a checkout URL. */
-export function DecisionLink({ variant = "primary", size = "default", block, className, children }: Props) {
+export function DecisionLink({
+  variant = "primary",
+  size = "default",
+  block,
+  className,
+  children,
+}: Props) {
   return (
     <a
       href="#gfp-decision"

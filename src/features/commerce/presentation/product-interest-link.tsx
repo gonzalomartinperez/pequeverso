@@ -22,7 +22,14 @@ type Props = Pick<
  * Hub → product link. Keeps allowlisted acquisition params across the internal navigation
  * and emits PequeversoProductInterest once per click.
  */
-export function ProductInterestLink({ href, product, position, children, className, ...attributes }: Props) {
+export function ProductInterestLink({
+  href,
+  product,
+  position,
+  children,
+  className,
+  ...attributes
+}: Props) {
   const [target, setTarget] = useState(href);
 
   useEffect(() => {
@@ -38,7 +45,13 @@ export function ProductInterestLink({ href, product, position, children, classNa
       onClick={() => trackProductInterest({ product, position, destination: href })}
     >
       <span>{children}</span>
-      <ArrowRight aria-hidden="true" focusable="false" size={18} strokeWidth={2.4} data-icon="inline-end" />
+      <ArrowRight
+        aria-hidden="true"
+        focusable="false"
+        size={18}
+        strokeWidth={2.4}
+        data-icon="inline-end"
+      />
     </Link>
   );
 }

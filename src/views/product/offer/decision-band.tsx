@@ -57,7 +57,11 @@ export function DecisionBand({ product }: Props) {
                 key={label}
                 className="glass-dark flex min-h-12 items-center gap-3 rounded-lg px-4 py-3 font-bold text-white"
               >
-                <NoteIcon aria-hidden="true" className="size-5 shrink-0 text-gold" strokeWidth={2.2} />
+                <NoteIcon
+                  aria-hidden="true"
+                  className="size-5 shrink-0 text-gold"
+                  strokeWidth={2.2}
+                />
                 <span>{label}</span>
               </li>
             ))}

@@ -4,10 +4,15 @@ import { checkInternalLink, type LiveFetch } from "../../tools/lib/live-links.ts
 
 const base = "https://store.example.test";
 const affiliates = new Set(["/alimentacion-bebe/"]);
-const redirect = (location: string, status = 302) => new Response(null, { status, headers: { location } });
+const redirect = (location: string, status = 302) =>
+  new Response(null, { status, headers: { location } });
 
 function fixture(responses: Response[]) {
-  const calls: { url: string; method: string | undefined; redirect: RequestRedirect | undefined }[] = [];
+  const calls: {
+    url: string;
+    method: string | undefined;
+    redirect: RequestRedirect | undefined;
+  }[] = [];
   const fetcher: LiveFetch = async (url, options) => {
     calls.push({ url: url.href, method: options.method, redirect: options.redirect });
     assert.equal(url.origin, base, "the monitor must never request the external merchant");
@@ -21,8 +26,15 @@ function fixture(responses: Response[]) {
 
 test("validates affiliate HEAD handoff without requesting an external merchant that could return 401", async () => {
   for (const status of [302, 307]) {
-    const { fetcher, calls } = fixture([redirect("https://go.hotmart.com/EXAMPLE?src=sitio-home", status)]);
-    const result = await checkInternalLink(base, "/alimentacion-bebe/?src=sitio-home", affiliates, fetcher);
+    const { fetcher, calls } = fixture([
+      redirect("https://go.hotmart.com/EXAMPLE?src=sitio-home", status),
+    ]);
+    const result = await checkInternalLink(
+      base,
+      "/alimentacion-bebe/?src=sitio-home",
+      affiliates,
+      fetcher,
+    );
     assert.equal(result.ok, true);
     assert.equal(result.affiliateRedirect, true);
     assert.match(result.detail, /external response not probed/);
@@ -36,7 +48,10 @@ test("retains a manual GET fallback for origin HEAD 405 only", async () => {
     new Response(null, { status: 405 }),
     redirect("https://pay.hotmart.com/EXAMPLE"),
   ]);
-  assert.equal((await checkInternalLink(base, "/alimentacion-bebe/", affiliates, fetcher)).ok, true);
+  assert.equal(
+    (await checkInternalLink(base, "/alimentacion-bebe/", affiliates, fetcher)).ok,
+    true,
+  );
   assert.deepEqual(
     calls.map((call) => call.method),
     ["HEAD", "GET"],
@@ -59,12 +74,21 @@ test("ordinary internal pages and bounded same-origin redirects still resolve", 
   assert.equal(result.ok, true);
   assert.equal(result.affiliateRedirect, false);
   assert.equal(calls.length, 2);
-  const alias = fixture([redirect("/alimentacion-bebe/", 308), redirect("https://hotmart.com/EXAMPLE", 307)]);
-  assert.equal((await checkInternalLink(base, "/alimentacion-bebe", affiliates, alias.fetcher)).ok, true);
+  const alias = fixture([
+    redirect("/alimentacion-bebe/", 308),
+    redirect("https://hotmart.com/EXAMPLE", 307),
+  ]);
+  assert.equal(
+    (await checkInternalLink(base, "/alimentacion-bebe", affiliates, alias.fetcher)).ok,
+    true,
+  );
 });
 
 test("a configured affiliate must actually hand off; a 200 or internal dead end is not success", async () => {
-  for (const responses of [[new Response("wrong page")], [redirect("/about/"), new Response("wrong page")]]) {
+  for (const responses of [
+    [new Response("wrong page")],
+    [redirect("/about/"), new Response("wrong page")],
+  ]) {
     const { fetcher } = fixture(responses);
     const result = await checkInternalLink(base, "/alimentacion-bebe/", affiliates, fetcher);
     assert.equal(result.ok, false);
@@ -83,7 +107,10 @@ test("rejects arbitrary external destinations and merchant redirects from undecl
     "https://[invalid",
   ]) {
     const { fetcher, calls } = fixture([redirect(location)]);
-    assert.equal((await checkInternalLink(base, "/alimentacion-bebe/", affiliates, fetcher)).ok, false);
+    assert.equal(
+      (await checkInternalLink(base, "/alimentacion-bebe/", affiliates, fetcher)).ok,
+      false,
+    );
     assert.equal(calls.length, 1);
   }
   const { fetcher } = fixture([redirect("https://go.hotmart.com/EXAMPLE")]);
@@ -98,13 +125,18 @@ test("rejects missing Location, permanent external handoffs and redirect loops",
     redirect("/alimentacion-bebe/"),
   ]) {
     const { fetcher, calls } = fixture([response]);
-    assert.equal((await checkInternalLink(base, "/alimentacion-bebe/", affiliates, fetcher)).ok, false);
+    assert.equal(
+      (await checkInternalLink(base, "/alimentacion-bebe/", affiliates, fetcher)).ok,
+      false,
+    );
     assert.equal(calls.length, 1);
   }
 });
 
 test("limits internal redirect hops without weakening or following to an unknown external host", async () => {
-  const { fetcher, calls } = fixture(Array.from({ length: 9 }, (_, i) => redirect(`/hop-${i + 1}/`)));
+  const { fetcher, calls } = fixture(
+    Array.from({ length: 9 }, (_, i) => redirect(`/hop-${i + 1}/`)),
+  );
   const result = await checkInternalLink(base, "/start/", affiliates, fetcher);
   assert.equal(result.ok, false);
   assert.match(result.detail, /more than 8/);

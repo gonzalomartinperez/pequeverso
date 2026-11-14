@@ -8,7 +8,11 @@ import type { SceneOptions, SceneRuntime } from "./scene-runtime";
 export type SceneMode = "static" | "running" | "paused";
 
 type Loader = () => Promise<{
-  mountScene: (host: HTMLElement, canvas: HTMLCanvasElement, options?: SceneOptions) => SceneRuntime;
+  mountScene: (
+    host: HTMLElement,
+    canvas: HTMLCanvasElement,
+    options?: SceneOptions,
+  ) => SceneRuntime;
 }>;
 
 const REDUCED = "(prefers-reduced-motion: reduce)";

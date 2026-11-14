@@ -2,9 +2,16 @@ import { cellOf, profile, type Route, sectionAllowed } from "../domain/profile.t
 
 const excluded =
   'form,input,textarea,select,label,canvas,dialog,[contenteditable],[role="textbox"],[role="dialog"],[data-assistant-host],[data-analytics-private],[data-analytics-exclude],[inert],[hidden]';
-type Receiver = { exposure(section: string): void; click(section: string, x: number, y: number): void };
+type Receiver = {
+  exposure(section: string): void;
+  click(section: string, x: number, y: number): void;
+};
 /** Only reviewed public sections and their heading sentinels. Never read text, forms or URLs. */
-export function observePublicSections(view: Window & typeof globalThis, route: Route, receiver: Receiver) {
+export function observePublicSections(
+  view: Window & typeof globalThis,
+  route: Route,
+  receiver: Receiver,
+) {
   const document = view.document,
     pending = new Map<Element, number>(),
     qualified = new Set<Element>();
@@ -45,8 +52,14 @@ export function observePublicSections(view: Window & typeof globalThis, route: R
                 return;
               const style = view.getComputedStyle(target),
                 bounds = target.getBoundingClientRect();
-              const width = Math.max(0, Math.min(bounds.right, view.innerWidth) - Math.max(bounds.left, 0));
-              const height = Math.max(0, Math.min(bounds.bottom, view.innerHeight) - Math.max(bounds.top, 0));
+              const width = Math.max(
+                0,
+                Math.min(bounds.right, view.innerWidth) - Math.max(bounds.left, 0),
+              );
+              const height = Math.max(
+                0,
+                Math.min(bounds.bottom, view.innerHeight) - Math.max(bounds.top, 0),
+              );
               if (
                 style.visibility === "hidden" ||
                 style.display === "none" ||
@@ -86,7 +99,8 @@ export function observePublicSections(view: Window & typeof globalThis, route: R
       event
         .composedPath()
         .some(
-          (node) => node instanceof view.Element && (node.matches(excluded) || node.tagName.includes("-")),
+          (node) =>
+            node instanceof view.Element && (node.matches(excluded) || node.tagName.includes("-")),
         )
     )
       return;

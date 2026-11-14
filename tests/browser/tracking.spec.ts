@@ -32,7 +32,9 @@ type RelayEvent = {
 };
 
 async function dataLayer(page: Page): Promise<DataLayerEvent[]> {
-  return page.evaluate(() => (window as unknown as { dataLayer?: DataLayerEvent[] }).dataLayer ?? []);
+  return page.evaluate(
+    () => (window as unknown as { dataLayer?: DataLayerEvent[] }).dataLayer ?? [],
+  );
 }
 
 async function fbqCalls(page: Page): Promise<FbqCall[] | undefined> {
@@ -99,15 +101,22 @@ test("the pixel runs by default: init, PageView and ViewContent with event ids, 
   // Meta's automatic events are switched off before init (no event id, never deduplicated).
   const init = calls.findIndex((call) => call[0] === "init");
   expect(calls[init]).toEqual(["init", PIXEL_ID]);
-  expect(calls.findIndex((call) => call[0] === "set" && call[1] === "autoConfig")).toBeLessThan(init);
+  expect(calls.findIndex((call) => call[0] === "set" && call[1] === "autoConfig")).toBeLessThan(
+    init,
+  );
   expect(calls).not.toContainEqual(["consent", "revoke"]);
   const tracked = calls.filter((call) => call[0] === "track");
-  expect(tracked.map((call) => call[1])).toEqual(expect.arrayContaining(["PageView", "ViewContent"]));
-  for (const call of tracked) expect(call[3]).toEqual({ eventID: expect.stringMatching(/^[0-9a-f-]{36}$/) });
+  expect(tracked.map((call) => call[1])).toEqual(
+    expect.arrayContaining(["PageView", "ViewContent"]),
+  );
+  for (const call of tracked)
+    expect(call[3]).toEqual({ eventID: expect.stringMatching(/^[0-9a-f-]{36}$/) });
 
   const events = await dataLayer(page);
   expect(events.map((e) => e.event)).toEqual(expect.arrayContaining(["PageView", "ViewContent"]));
-  expect(events.every((e) => typeof e.event_id === "string" && e.event_id.length === 36)).toBe(true);
+  expect(events.every((e) => typeof e.event_id === "string" && e.event_id.length === 36)).toBe(
+    true,
+  );
   expect(await page.evaluate(() => localStorage.getItem("pv_consent"))).toBeNull();
 });
 
@@ -117,13 +126,17 @@ test("Aceptar keeps the pixel active and stores the choice", async ({ page }) =>
   await banner.getByRole("button", { name: "Aceptar" }).click();
   await expect(banner).toHaveCount(0);
   await expect.poll(async () => fbqCalls(page)).toContainEqual(["consent", "grant"]);
-  expect(await page.evaluate(() => localStorage.getItem("pv_consent"))).toContain('"marketing":true');
+  expect(await page.evaluate(() => localStorage.getItem("pv_consent"))).toContain(
+    '"marketing":true',
+  );
   await preventNavigation(page, "a[data-checkout]");
   await page.locator('a[data-checkout][data-position="hero"]').click();
   await expect.poll(() => trackedNames(page)).toContain("CheckoutIntent");
 });
 
-test("Rechazar revokes the pixel: consent revoke, no later events, choice stored", async ({ page }) => {
+test("Rechazar revokes the pixel: consent revoke, no later events, choice stored", async ({
+  page,
+}) => {
   await page.goto("/grafismo-fonetico/");
   const banner = page.getByTestId("consent-banner");
   await expect.poll(() => trackedNames(page)).toContain("ViewContent");
@@ -133,25 +146,37 @@ test("Rechazar revokes the pixel: consent revoke, no later events, choice stored
   const before = (await trackedNames(page)).length;
   await preventNavigation(page, "a[data-checkout]");
   await page.locator('a[data-checkout][data-position="hero"]').click();
-  await expect.poll(async () => (await dataLayer(page)).some((e) => e.event === "CheckoutIntent")).toBe(true);
+  await expect
+    .poll(async () => (await dataLayer(page)).some((e) => e.event === "CheckoutIntent"))
+    .toBe(true);
   await page.waitForTimeout(300);
   expect((await trackedNames(page)).length).toBe(before);
-  expect(await page.evaluate(() => localStorage.getItem("pv_consent"))).toContain('"marketing":false');
+  expect(await page.evaluate(() => localStorage.getItem("pv_consent"))).toContain(
+    '"marketing":false',
+  );
   expect(await thirdPartyCookies(page)).toEqual([]);
 });
 
-test("a stored rejection loads nothing on the next visit: no script, no fbq, no banner", async ({ page }) => {
+test("a stored rejection loads nothing on the next visit: no script, no fbq, no banner", async ({
+  page,
+}) => {
   await page.addInitScript((stored) => localStorage.setItem("pv_consent", stored), REJECTED);
   await page.goto("/grafismo-fonetico/");
-  await expect.poll(async () => (await dataLayer(page)).some((e) => e.event === "ViewContent")).toBe(true);
+  await expect
+    .poll(async () => (await dataLayer(page)).some((e) => e.event === "ViewContent"))
+    .toBe(true);
   await page.waitForTimeout(300);
   await expect(page.getByTestId("consent-banner")).toHaveCount(0);
   await expect(page.locator(PIXEL_SCRIPT)).toHaveCount(0);
-  expect(await page.evaluate(() => typeof (window as unknown as { fbq?: unknown }).fbq)).toBe("undefined");
+  expect(await page.evaluate(() => typeof (window as unknown as { fbq?: unknown }).fbq)).toBe(
+    "undefined",
+  );
   expect(await thirdPartyCookies(page)).toEqual([]);
 });
 
-test("Configurar shows marketing active by default; unchecking it revokes the pixel", async ({ page }) => {
+test("Configurar shows marketing active by default; unchecking it revokes the pixel", async ({
+  page,
+}) => {
   await page.goto("/");
   const banner = page.getByTestId("consent-banner");
   await banner.getByRole("button", { name: "Configurar" }).click();
@@ -162,7 +187,9 @@ test("Configurar shows marketing active by default; unchecking it revokes the pi
   await banner.getByRole("button", { name: "Guardar selección" }).click();
   await expect(banner).toHaveCount(0);
   await expect.poll(async () => fbqCalls(page)).toContainEqual(["consent", "revoke"]);
-  expect(await page.evaluate(() => localStorage.getItem("pv_consent"))).toContain('"marketing":false');
+  expect(await page.evaluate(() => localStorage.getItem("pv_consent"))).toContain(
+    '"marketing":false',
+  );
 });
 
 test("a checkout CTA click never emits a Hotmart-owned event", async ({ page }) => {
@@ -186,7 +213,10 @@ test("a choice stored under a previous version re-prompts and falls back to the 
   page,
 }) => {
   await page.addInitScript(() => {
-    localStorage.setItem("pv_consent", JSON.stringify({ version: 1, marketing: false, updatedAt: "" }));
+    localStorage.setItem(
+      "pv_consent",
+      JSON.stringify({ version: 1, marketing: false, updatedAt: "" }),
+    );
     // biome-ignore lint/suspicious/noDocumentCookie: legacy cookie written the way v1 wrote it
     document.cookie = "pv_consent=none.v1; Path=/";
   });
@@ -196,7 +226,9 @@ test("a choice stored under a previous version re-prompts and falls back to the 
   await expect.poll(() => trackedNames(page)).toContain("ViewContent");
 });
 
-test("the Conversions API relay receives the same event ids as the pixel, with _fbp", async ({ page }) => {
+test("the Conversions API relay receives the same event ids as the pixel, with _fbp", async ({
+  page,
+}) => {
   const relayed = await captureRelay(page);
   await page.goto("/grafismo-fonetico/");
   await expect
@@ -227,11 +259,15 @@ test("Rechazar stops the relay too: no POST after the rejection", async ({ page 
   const before = relayed.length;
   await preventNavigation(page, "a[data-checkout]");
   await page.locator('a[data-checkout][data-position="hero"]').click();
-  await expect.poll(async () => (await dataLayer(page)).some((e) => e.event === "CheckoutIntent")).toBe(true);
+  await expect
+    .poll(async () => (await dataLayer(page)).some((e) => e.event === "CheckoutIntent"))
+    .toBe(true);
   await page.waitForTimeout(1000);
   expect(relayed.length).toBe(before);
   await page.goto("/");
-  await expect.poll(async () => (await dataLayer(page)).some((e) => e.event === "PageView")).toBe(true);
+  await expect
+    .poll(async () => (await dataLayer(page)).some((e) => e.event === "PageView"))
+    .toBe(true);
   await page.waitForTimeout(1000);
   expect(relayed.length).toBe(before);
 });

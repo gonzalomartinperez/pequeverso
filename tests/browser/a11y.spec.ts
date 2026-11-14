@@ -29,7 +29,9 @@ for (const route of routes) {
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"])
       .exclude("#hotmart-sales-funnel")
       .analyze();
-    const serious = results.violations.filter((v) => v.impact === "serious" || v.impact === "critical");
+    const serious = results.violations.filter(
+      (v) => v.impact === "serious" || v.impact === "critical",
+    );
     expect(
       serious,
       JSON.stringify(
@@ -55,7 +57,9 @@ test("focus is visible and not obscured on the landing CTA path", async ({ page 
   let reached = false;
   for (let i = 0; i < 40 && !reached; i++) {
     await page.keyboard.press("Tab");
-    reached = await page.evaluate(() => document.activeElement?.matches("a[data-checkout]") ?? false);
+    reached = await page.evaluate(
+      () => document.activeElement?.matches("a[data-checkout]") ?? false,
+    );
   }
   expect(reached, "a checkout CTA must be reachable by keyboard within 40 tabs").toBe(true);
   const box = await page.evaluate(() => {

@@ -40,20 +40,29 @@ for (const query of ["?downsell=1", "?offer=downsell", "?downsell=1&utm_source=x
   });
 }
 
-test("canonical and robots for the downsell variant point to the base page and noindex", async ({ page }) => {
+test("canonical and robots for the downsell variant point to the base page and noindex", async ({
+  page,
+}) => {
   await page.goto("/imprime-y-juega/?downsell=1");
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/imprime-y-juega\/$/);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    /\/imprime-y-juega\/$/,
+  );
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
 });
 
-test("editorial CTAs move focus to the widget slot and no direct checkout link exists", async ({ page }) => {
+test("editorial CTAs move focus to the widget slot and no direct checkout link exists", async ({
+  page,
+}) => {
   await page.goto("/imprime-y-juega/");
   await page.locator("header a[data-decision-link]").click();
   await expect(page.locator("#gfp-decision")).toBeFocused();
   await expect(page.locator("a[href*='checkout'], a[href*='pay.hotmart']")).toHaveCount(0);
 });
 
-test("the composition counters ship their final numbers in the server HTML", async ({ request }) => {
+test("the composition counters ship their final numbers in the server HTML", async ({
+  request,
+}) => {
   const html = await (await request.get("/imprime-y-juega/")).text();
   expect(html).toMatch(/<span[^>]*>384<\/span>/);
   expect(html).toMatch(/<span[^>]*>6<\/span>/);
@@ -64,14 +73,18 @@ for (const [query, visible, hidden, price] of [
   ["", ".only-upsell", ".only-downsell", "US$14,99"],
   ["?downsell=1", ".only-downsell", ".only-upsell", "US$7,49"],
 ] as const) {
-  test(`sticky decision link shows the ${visible} label for /imprime-y-juega/${query}`, async ({ page }) => {
+  test(`sticky decision link shows the ${visible} label for /imprime-y-juega/${query}`, async ({
+    page,
+  }) => {
     await page.goto(`/imprime-y-juega/${query}`);
     const link = page.locator("[data-testid='sticky-cta'] a[data-decision-link]");
     await expect(link).toHaveAttribute("href", "#gfp-decision");
     await expect(link.locator(visible)).toContainText(price);
     const displays = await link.evaluate(
       (el, selectors) =>
-        selectors.map((selector) => getComputedStyle(el.querySelector(selector) as Element).display),
+        selectors.map(
+          (selector) => getComputedStyle(el.querySelector(selector) as Element).display,
+        ),
       [visible, hidden] as [string, string],
     );
     expect(displays[0]).not.toBe("none");
@@ -79,7 +92,9 @@ for (const [query, visible, hidden, price] of [
   });
 }
 
-test("sticky decision bar stays hidden over the offer hero and appears after it", async ({ page }) => {
+test("sticky decision bar stays hidden over the offer hero and appears after it", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/imprime-y-juega/");
   const bar = page.getByTestId("sticky-cta");

@@ -13,7 +13,10 @@ import { expect, test } from "./fixtures";
  * Sweeps its own widths, so it runs in the 390 project only.
  */
 test.beforeEach(() => {
-  test.skip(!test.info().project.name.endsWith("-390"), "sweeps its own widths; runs in the 390 project");
+  test.skip(
+    !test.info().project.name.endsWith("-390"),
+    "sweeps its own widths; runs in the 390 project",
+  );
 });
 
 const widths = [320, 390] as const;
@@ -32,7 +35,8 @@ const routes = [
   "/arrepentimiento/",
   "/esta-no-existe/",
 ];
-const TEXT_ZOOM_CSS = "html { font-size: 200% !important; } * { content-visibility: visible !important; }";
+const TEXT_ZOOM_CSS =
+  "html { font-size: 200% !important; } * { content-visibility: visible !important; }";
 
 /**
  * Page overflow, the outermost boxes that reach past the viewport edges (fixed layers included),
@@ -54,9 +58,15 @@ async function reflowFaults(page: Page) {
       return rect.width > 0 && rect.height > 0 && (rect.right > width + 0.5 || rect.left < -0.5);
     };
     const scrolls = (el: Element) => {
-      for (let node: Element | null = el; node && node !== document.body; node = node.parentElement) {
+      for (
+        let node: Element | null = el;
+        node && node !== document.body;
+        node = node.parentElement
+      ) {
         if (["auto", "scroll"].includes(getComputedStyle(node).overflowX)) return true;
-        if (node.matches("[aria-roledescription='diapositiva']:not([data-active]), .pv-marquee-track"))
+        if (
+          node.matches("[aria-roledescription='diapositiva']:not([data-active]), .pv-marquee-track")
+        )
           return true;
       }
       return false;
@@ -70,7 +80,10 @@ async function reflowFaults(page: Page) {
     };
     const boxes = [...document.querySelectorAll("body *")]
       .filter((el) => outside(el) && !contained(el) && !scrolls(el))
-      .filter((el) => !(el.parentElement && el.parentElement !== document.body && outside(el.parentElement)))
+      .filter(
+        (el) =>
+          !(el.parentElement && el.parentElement !== document.body && outside(el.parentElement)),
+      )
       .map((el) => {
         const rect = el.getBoundingClientRect();
         return `box ${describeBox(el, rect.left, rect.right)}`;
@@ -80,7 +93,8 @@ async function reflowFaults(page: Page) {
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       const el = node.parentElement;
       if (!el || !node.textContent?.trim()) continue;
-      if (el.closest("[aria-hidden='true'], .sr-only, [inert], script, style, noscript, template")) continue;
+      if (el.closest("[aria-hidden='true'], .sr-only, [inert], script, style, noscript, template"))
+        continue;
       if (!el.checkVisibility() || scrolls(el)) continue;
       const range = document.createRange();
       range.selectNodeContents(node);
@@ -89,12 +103,18 @@ async function reflowFaults(page: Page) {
       );
       if (line) text.push(`text ${describeBox(el, line.left, line.right)}`);
     }
-    return { scrollWidth: root.scrollWidth, clientWidth: width, faults: [...boxes, ...text].slice(0, 15) };
+    return {
+      scrollWidth: root.scrollWidth,
+      clientWidth: width,
+      faults: [...boxes, ...text].slice(0, 15),
+    };
   });
 }
 
 for (const route of routes) {
-  test(`200 % text reflows without horizontal scroll or clipped text: ${route}`, async ({ page }) => {
+  test(`200 % text reflows without horizontal scroll or clipped text: ${route}`, async ({
+    page,
+  }) => {
     test.setTimeout(60_000);
     for (const width of widths) {
       await page.setViewportSize({ width, height: 844 });
@@ -120,7 +140,10 @@ for (const route of routes) {
       }
       const result = await reflowFaults(page);
       expect
-        .soft({ width: result.scrollWidth, faults: result.faults }, `${route} @${width} with 200 % text`)
+        .soft(
+          { width: result.scrollWidth, faults: result.faults },
+          `${route} @${width} with 200 % text`,
+        )
         .toEqual({ width: result.clientWidth, faults: [] });
     }
   });

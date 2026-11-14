@@ -61,7 +61,12 @@ export function ResourceGrid({ resources, compact = false, total, badges, classN
                   </span>
                 )}
               </div>
-              <div className={cn("grid content-start gap-2", compact ? "p-3 cq-sm:p-4" : "px-6 pt-5 pb-6")}>
+              <div
+                className={cn(
+                  "grid content-start gap-2",
+                  compact ? "p-3 cq-sm:p-4" : "px-6 pt-5 pb-6",
+                )}
+              >
                 <p className="inline-flex items-center gap-1.5 text-tiny font-extrabold tracking-[0.06em] text-teal-text uppercase before:size-1.5 before:rounded-full before:bg-teal before:content-['']">
                   {resource.pagesLabel}
                 </p>

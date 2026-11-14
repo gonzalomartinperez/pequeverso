@@ -3,7 +3,14 @@
 // is parsed without a YAML dependency. Usage: `node tools/check-skills.ts` (exit 1 on problems).
 
 import { execFileSync } from "node:child_process";
-import { existsSync, lstatSync, readdirSync, readFileSync, readlinkSync, realpathSync } from "node:fs";
+import {
+  existsSync,
+  lstatSync,
+  readdirSync,
+  readFileSync,
+  readlinkSync,
+  realpathSync,
+} from "node:fs";
 import path from "node:path";
 
 type Parsed = { meta: Record<string, string>; body: string };
@@ -23,7 +30,8 @@ function parse(file: string, problems: string[]): Parsed | undefined {
   for (const line of (match[1] ?? "").split("\n")) {
     const field = line.match(/^([a-z]+): (.+)$/);
     if (!field?.[1] || !field[2]) problems.push(`${file}: unsupported frontmatter line "${line}"`);
-    else if (Object.hasOwn(meta, field[1])) problems.push(`${file}: duplicate frontmatter field ${field[1]}`);
+    else if (Object.hasOwn(meta, field[1]))
+      problems.push(`${file}: duplicate frontmatter field ${field[1]}`);
     else meta[field[1]] = field[2];
   }
   return { meta, body: match[2] ?? "" };
@@ -171,7 +179,8 @@ export function checkSkills(root: string): string[] {
       if (destination !== rootPath && !destination.startsWith(`${rootPath}${path.sep}`))
         problems.push(`${name}: reference outside repository ${target}`);
       else if (!existsSync(destination)) problems.push(`${name}: broken link ${target}`);
-      else if (!confined(destination)) problems.push(`${name}: reference outside repository ${target}`);
+      else if (!confined(destination))
+        problems.push(`${name}: reference outside repository ${target}`);
     }
     for (const [, script = ""] of skill.body.matchAll(/npm run ([a-z0-9:-]+)/g))
       if (!scripts[script]) problems.push(`${name}: unknown npm script ${script}`);

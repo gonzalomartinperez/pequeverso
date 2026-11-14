@@ -33,7 +33,9 @@ export function visitorContext(value: VisitorContext | null): VisitorContext | n
     opened_path: publicPath(value.opened_path),
     current_path: publicPath(value.current_path),
     presentation:
-      value.presentation === "compact" || value.presentation === "expanded" ? value.presentation : null,
+      value.presentation === "compact" || value.presentation === "expanded"
+        ? value.presentation
+        : null,
   };
   return context.opened_path || context.current_path || context.presentation ? context : null;
 }

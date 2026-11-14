@@ -29,7 +29,8 @@ function parseState(raw: string): ConsentState | null {
   if (typeof parsed !== "object" || parsed === null) return null;
   const candidate = parsed as Partial<ConsentState>;
   if (candidate.version !== CONSENT_VERSION) return null;
-  if (typeof candidate.analytics !== "boolean" || typeof candidate.marketing !== "boolean") return null;
+  if (typeof candidate.analytics !== "boolean" || typeof candidate.marketing !== "boolean")
+    return null;
   return {
     version: CONSENT_VERSION,
     analytics: candidate.analytics,

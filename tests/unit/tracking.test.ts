@@ -9,7 +9,10 @@ import {
   writeConsent,
 } from "../../src/features/tracking/adapters/consent.ts";
 import { createMetaAdapter } from "../../src/features/tracking/adapters/meta.ts";
-import { createMetaCapiAdapter, META_CAPI_ENDPOINT } from "../../src/features/tracking/adapters/meta-capi.ts";
+import {
+  createMetaCapiAdapter,
+  META_CAPI_ENDPOINT,
+} from "../../src/features/tracking/adapters/meta-capi.ts";
 import {
   _resetForTests,
   FORBIDDEN_EVENTS,
@@ -24,7 +27,11 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 type RelayedEvent = { name: string; eventId: string; fbp?: string; fbc?: string };
 type CapiRequest = { url: string; init: RequestInit; body: { events: RelayedEvent[] } };
-type FakeAdapter = TrackingAdapter & { ready: boolean; sent: TrackedEvent[]; consents: ConsentState[] };
+type FakeAdapter = TrackingAdapter & {
+  ready: boolean;
+  sent: TrackedEvent[];
+  consents: ConsentState[];
+};
 
 /** Node has no browser globals: the code under test gets minimal fakes (typed as the real ones). */
 function setGlobal(target: object, name: string, value: object): void {
@@ -84,7 +91,8 @@ test("forbidden events throw in development and are dropped in production", () =
   const adapter = fakeAdapter();
   _resetForTests([adapter]);
   writeConsent({ analytics: false, marketing: true });
-  for (const name of FORBIDDEN_EVENTS) assert.throws(() => trackUnchecked(name), /owned by Hotmart/);
+  for (const name of FORBIDDEN_EVENTS)
+    assert.throws(() => trackUnchecked(name), /owned by Hotmart/);
   setNodeEnv("production");
   for (const name of FORBIDDEN_EVENTS) assert.equal(trackUnchecked(name), "");
   assert.equal(window.dataLayer, undefined);
@@ -94,13 +102,22 @@ test("forbidden events throw in development and are dropped in production", () =
 test("every event gets a UUID id and is mirrored to dataLayer with undefined params dropped", () => {
   const adapter = fakeAdapter();
   _resetForTests([adapter]);
-  const id = trackCheckoutIntent({ product: "gf", offer: "main", position: "hero", offerMode: undefined });
+  const id = trackCheckoutIntent({
+    product: "gf",
+    offer: "main",
+    position: "hero",
+    offerMode: undefined,
+  });
   assert.match(id, UUID);
   assert.deepEqual(window.dataLayer, [
     { event: "CheckoutIntent", event_id: id, product: "gf", offer: "main", cta_position: "hero" },
   ]);
   assert.deepEqual(adapter.sent, [
-    { name: "CheckoutIntent", params: { product: "gf", offer: "main", cta_position: "hero" }, eventId: id },
+    {
+      name: "CheckoutIntent",
+      params: { product: "gf", offer: "main", cta_position: "hero" },
+      eventId: id,
+    },
   ]);
 });
 
@@ -125,7 +142,8 @@ test("affiliate clicks are their own custom event, never a checkout or purchase"
     },
   ]);
   const names = adapter.sent.map((event) => event.name as string);
-  for (const forbidden of [...FORBIDDEN_EVENTS, "CheckoutIntent"]) assert.ok(!names.includes(forbidden));
+  for (const forbidden of [...FORBIDDEN_EVENTS, "CheckoutIntent"])
+    assert.ok(!names.includes(forbidden));
 });
 
 test("measurement is on by default: events reach a gated adapter before any decision", () => {
@@ -272,7 +290,9 @@ function firstEvent(requests: readonly CapiRequest[]): RelayedEvent {
 const tick = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 test("meta-capi adapter relays batched events with the pixel's event ids, _fbp and _fbc", async () => {
-  const page = installCapiPage({ cookie: "_fbp=fb.1.1700000000000.123; _fbc=fb.1.1700000000000.click" });
+  const page = installCapiPage({
+    cookie: "_fbp=fb.1.1700000000000.123; _fbc=fb.1.1700000000000.click",
+  });
   const pixel = createMetaAdapter("1234567890123456");
   const capi = createMetaCapiAdapter("1234567890123456", {
     fetch: page.fetchImpl,
@@ -387,7 +407,10 @@ test("meta-capi adapter flushes on pagehide with sendBeacon when available", asy
     return true;
   };
   try {
-    const capi = createMetaCapiAdapter("1234567890123456", { fetch: page.fetchImpl, flushDelayMs: 1000 });
+    const capi = createMetaCapiAdapter("1234567890123456", {
+      fetch: page.fetchImpl,
+      flushDelayMs: 1000,
+    });
     _resetForTests([capi]);
     track("PageView");
     window.dispatchEvent(new Event("pagehide"));

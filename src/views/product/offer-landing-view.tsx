@@ -131,7 +131,11 @@ export function OfferLanding({ product }: Props) {
             className="aurora-cream defer-render relative section-pad"
           >
             <div className="page-container">
-              <Heading id="momentos-title" kicker={copy.moments.kicker} title={copy.moments.title} />
+              <Heading
+                id="momentos-title"
+                kicker={copy.moments.kicker}
+                title={copy.moments.title}
+              />
               <MomentsBento items={copy.moments.items} pageId={momentPage} />
             </div>
           </section>
@@ -152,7 +156,10 @@ export function OfferLanding({ product }: Props) {
                   {copy.close.cta}
                 </DecisionLink>
                 {media.cards[0] ? (
-                  <div aria-hidden="true" className="relative mt-8 hidden w-[80%] max-w-80 lg:block">
+                  <div
+                    aria-hidden="true"
+                    className="relative mt-8 hidden w-[80%] max-w-80 lg:block"
+                  >
                     <div className="absolute -inset-6 rounded-full bg-turquoise/20 blur-2xl" />
                     <span className="relative block -rotate-4 overflow-hidden rounded-xl border-4 border-white shadow-float [&_img]:block [&_img]:h-auto [&_img]:w-full [&_img]:object-cover">
                       <MediaImage id={media.cards[0]} alt="" sizes="320px" />

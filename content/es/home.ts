@@ -13,7 +13,8 @@ import { grafismoFonetico } from "../../config/products/grafismo-fonetico.ts";
 import { hubCopy } from "./hub.ts";
 
 /** "3 a 7 años" → "entre los 3 y los 7 años" (ages read from the registry and config). */
-const between = (range: string): string => range.replace(/^(\d+) a (\d+) (.+)$/, "entre los $1 y los $2 $3");
+const between = (range: string): string =>
+  range.replace(/^(\d+) a (\d+) (.+)$/, "entre los $1 y los $2 $3");
 
 export const homeCopy = {
   meta: {
@@ -36,15 +37,28 @@ export const homeCopy = {
   trust: {
     label: "Cómo compras en Pequeverso",
     items: [
-      { icon: "shield", title: "Pago seguro por Hotmart", text: "Hotmart cobra y entrega los dos." },
+      {
+        icon: "shield",
+        title: "Pago seguro por Hotmart",
+        text: "Hotmart cobra y entrega los dos.",
+      },
       /** `days`: the title is preceded by the shared guarantee days from config ("7 días de garantía"). */
-      { icon: "refresh", title: "días de garantía", text: "Pides el reembolso en Hotmart.", days: true },
+      {
+        icon: "refresh",
+        title: "días de garantía",
+        text: "Pides el reembolso en Hotmart.",
+        days: true,
+      },
       {
         icon: "download",
         title: "Acceso digital",
         text: "El acceso llega a tu correo al confirmar el pago.",
       },
-      { icon: "globe", title: "Kit en tu moneda", text: "Grafismo Fonético se cobra en tu moneda local." },
+      {
+        icon: "globe",
+        title: "Kit en tu moneda",
+        text: "Grafismo Fonético se cobra en tu moneda local.",
+      },
     ],
   },
   /** Chapter 1: Grafismo Fonético, from the reading need. */
@@ -130,7 +144,8 @@ export const homeCopy = {
         { icon: "utensils", title: "Cocina", text: "El menú de 4 semanas y recetas para todos." },
       ],
       menuTitle: "Un menú para las primeras 4 semanas",
-      menuText: "El curso incluye un menú para las primeras 4 semanas de la alimentación complementaria.",
+      menuText:
+        "El curso incluye un menú para las primeras 4 semanas de la alimentación complementaria.",
     },
   },
   faq: {

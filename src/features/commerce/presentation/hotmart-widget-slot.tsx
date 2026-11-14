@@ -91,7 +91,9 @@ export function HotmartWidgetSlot({
   // Editorial CTAs (data-decision-link) scroll to the slot and move focus into it.
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
-      const link = (event.target as HTMLElement).closest<HTMLAnchorElement>("a[data-decision-link]");
+      const link = (event.target as HTMLElement).closest<HTMLAnchorElement>(
+        "a[data-decision-link]",
+      );
       if (!link) return;
       const slot = document.getElementById(DECISION_ANCHOR);
       if (!slot) return;

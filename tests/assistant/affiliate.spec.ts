@@ -9,7 +9,12 @@ test.beforeEach(async ({ context }) => {
   await context.addInitScript(() => {
     window.localStorage.setItem(
       "pv_consent",
-      JSON.stringify({ version: 2, analytics: false, marketing: false, updatedAt: "2026-10-17T00:00:00Z" }),
+      JSON.stringify({
+        version: 2,
+        analytics: false,
+        marketing: false,
+        updatedAt: "2026-10-17T00:00:00Z",
+      }),
     );
   });
   await context.route(/^https:\/\/([a-z0-9-]+\.)*facebook\.(com|net)\//, (route) => route.abort());
@@ -36,7 +41,9 @@ test("affiliate course has its own card, disclosure and safe action, and survive
   await expect(card).toBeVisible();
   await expect(card.getByText("Recomendación de afiliado", { exact: true })).toBeVisible();
   await expect(card.getByText("Curso en video", { exact: true })).toBeVisible();
-  await expect(card.getByText("Consulta el precio vigente en Hotmart.", { exact: true })).toBeVisible();
+  await expect(
+    card.getByText("Consulta el precio vigente en Hotmart.", { exact: true }),
+  ).toBeVisible();
   await expect(card.getByText(/Pequeverso recibe una comisión/)).toBeVisible();
   await expect(card).not.toContainText("US$");
   await expect(card).not.toContainText(/\d+ destacados?/);
@@ -46,15 +53,22 @@ test("affiliate course has its own card, disclosure and safe action, and survive
   await expect(action).toHaveAttribute("rel", "sponsored noopener");
   await expect(action).toHaveAccessibleName(/se abre en una pestaña nueva/);
   await card.scrollIntoViewIfNeeded();
-  await page.screenshot({ path: `${SHOTS}/${info.project.name}-affiliate-card.png`, animations: "disabled" });
+  await page.screenshot({
+    path: `${SHOTS}/${info.project.name}-affiliate-card.png`,
+    animations: "disabled",
+  });
   await page.reload();
   await page.getByTestId("assistant-launcher").click();
   await expect(panel).toHaveAttribute("data-phase", "completed");
-  await expect(panel.getByRole("article", { name: "Guía de Alimentación para Bebés" })).toHaveCount(1);
+  await expect(panel.getByRole("article", { name: "Guía de Alimentación para Bebés" })).toHaveCount(
+    1,
+  );
   expect(generations).toBe(1);
 });
 
-test("comparison distinguishes course, printable kit and unknown affiliate price", async ({ page }, info) => {
+test("comparison distinguishes course, printable kit and unknown affiliate price", async ({
+  page,
+}, info) => {
   // Match the existing suite: software WebKit exercises this same runtime on /soporte/,
   // where decorative Home rendering does not starve its actionability checks.
   await page.goto(info.project.name.startsWith("webkit") ? "/soporte/" : "/");
@@ -65,8 +79,12 @@ test("comparison distinguishes course, printable kit and unknown affiliate price
   await input.fill("Compara Grafismo Fonético con la Guía de Alimentación para Bebés.");
   await input.press("Enter");
   await expect(panel).toHaveAttribute("data-phase", "completed");
-  await expect(panel.getByRole("article", { name: "Grafismo Fonético", exact: true })).toHaveCount(1);
-  await expect(panel.getByRole("article", { name: "Guía de Alimentación para Bebés" })).toHaveCount(1);
+  await expect(panel.getByRole("article", { name: "Grafismo Fonético", exact: true })).toHaveCount(
+    1,
+  );
+  await expect(panel.getByRole("article", { name: "Guía de Alimentación para Bebés" })).toHaveCount(
+    1,
+  );
   const comparison = panel.getByRole("table", { name: "Comparación", exact: true });
   await expect(comparison.getByRole("rowheader", { name: "Formato", exact: true })).toBeVisible();
   await expect(comparison.getByRole("cell", { name: "Curso en video", exact: true })).toBeVisible();
@@ -77,7 +95,9 @@ test("comparison distinguishes course, printable kit and unknown affiliate price
     comparison.getByRole("cell", { name: "Consulta el precio vigente en Hotmart.", exact: true }),
   ).toBeVisible();
   await expect(input).toBeInViewport();
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+    true,
+  );
   // Narrow panels scroll the comparison itself rather than squeezing words into single letters.
   const widths = await comparison
     .locator("thead th")
@@ -88,5 +108,8 @@ test("comparison distinguishes course, printable kit and unknown affiliate price
     await expect(panel).toHaveAttribute("data-size", "expanded");
   }
   await comparison.scrollIntoViewIfNeeded();
-  await page.screenshot({ path: `${SHOTS}/${info.project.name}-comparison.png`, animations: "disabled" });
+  await page.screenshot({
+    path: `${SHOTS}/${info.project.name}-comparison.png`,
+    animations: "disabled",
+  });
 });

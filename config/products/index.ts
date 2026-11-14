@@ -12,9 +12,10 @@ function withPath<T extends { slug: string }>(product: T): T & { path: string } 
 }
 
 /** Every product, in funnel order (core products first, then their offers). */
-export const products: readonly Product[] = RegistrySchema.parse([grafismoFonetico, imprimeYJuega]).map(
-  withPath,
-);
+export const products: readonly Product[] = RegistrySchema.parse([
+  grafismoFonetico,
+  imprimeYJuega,
+]).map(withPath);
 
 export function getProduct(slug: string): Product | undefined {
   return products.find((product) => product.slug === slug);
@@ -25,7 +26,9 @@ export function coreProducts(): CoreProduct[] {
 }
 
 export function offerProducts(): OfferProduct[] {
-  return products.filter((product): product is OfferProduct => product.kind === "post-purchase-offer");
+  return products.filter(
+    (product): product is OfferProduct => product.kind === "post-purchase-offer",
+  );
 }
 
 export function indexableProducts(): Product[] {

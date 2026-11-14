@@ -30,7 +30,11 @@ function metaOf(children: ReactNode): SlideMeta[] | undefined {
   for (const node of Children.toArray(children)) {
     if (!isValidElement<SlideProps>(node) || node.type !== GallerySlide) return undefined;
     const image = getImage(node.props.id);
-    const thumb = image.renditions[0] ?? { src: image.src, width: image.width, height: image.height };
+    const thumb = image.renditions[0] ?? {
+      src: image.src,
+      width: image.width,
+      height: image.height,
+    };
     meta.push({
       thumb: thumb.src,
       width: thumb.width,
@@ -45,10 +49,20 @@ function metaOf(children: ReactNode): SlideMeta[] | undefined {
  * Server entry for the worksheet-page gallery: resolves slides on the server and hands
  * `GalleryCarousel` (client) the rendered slides, the thumbnails/captions and the labels.
  */
-export function PageGallery({ label, zoomHint, sizes, children, count, items, itemLabel, zoomTitle }: Props) {
+export function PageGallery({
+  label,
+  zoomHint,
+  sizes,
+  children,
+  count,
+  items,
+  itemLabel,
+  zoomTitle,
+}: Props) {
   const slides =
-    items?.map((item) => <GallerySlide key={item.id} id={item.id} caption={item.caption} sizes={sizes} />) ??
-    children;
+    items?.map((item) => (
+      <GallerySlide key={item.id} id={item.id} caption={item.caption} sizes={sizes} />
+    )) ?? children;
   return (
     <GalleryCarousel
       label={label}

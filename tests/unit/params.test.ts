@@ -10,7 +10,9 @@ import {
 const base = "https://pay.hotmart.com/TEST0000000?checkoutMode=10";
 
 test("forwards allowlisted acquisition params and keeps checkoutMode", () => {
-  const url = new URL(buildCheckoutUrl(base, "?utm_source=tiktok&utm_medium=social&a=aff1&sck=pv-gf-hero"));
+  const url = new URL(
+    buildCheckoutUrl(base, "?utm_source=tiktok&utm_medium=social&a=aff1&sck=pv-gf-hero"),
+  );
   assert.equal(url.searchParams.get("checkoutMode"), "10");
   assert.equal(url.searchParams.get("utm_source"), "tiktok");
   assert.equal(url.searchParams.get("a"), "aff1");

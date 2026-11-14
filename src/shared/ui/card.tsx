@@ -80,12 +80,18 @@ function CardTitle({
   ...props
 }: ComponentProps<"h3"> & { as?: "h2" | "h3" | "h4" | "p" }) {
   return (
-    <Tag data-slot="card-title" className={cn("text-h3 font-extrabold text-heading", className)} {...props} />
+    <Tag
+      data-slot="card-title"
+      className={cn("text-h3 font-extrabold text-heading", className)}
+      {...props}
+    />
   );
 }
 
 function CardDescription({ className, ...props }: ComponentProps<"p">) {
-  return <p data-slot="card-description" className={cn("text-small text-body", className)} {...props} />;
+  return (
+    <p data-slot="card-description" className={cn("text-small text-body", className)} {...props} />
+  );
 }
 
 function CardContent({ className, ...props }: ComponentProps<"div">) {
@@ -94,7 +100,11 @@ function CardContent({ className, ...props }: ComponentProps<"div">) {
 
 function CardFooter({ className, ...props }: ComponentProps<"div">) {
   return (
-    <div data-slot="card-footer" className={cn("flex flex-wrap items-center gap-3", className)} {...props} />
+    <div
+      data-slot="card-footer"
+      className={cn("flex flex-wrap items-center gap-3", className)}
+      {...props}
+    />
   );
 }
 

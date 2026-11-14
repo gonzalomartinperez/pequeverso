@@ -28,8 +28,10 @@ const scene = JSON.parse(readFileSync(report, "utf8")) as {
   files: string[];
 };
 const failures: string[] = [];
-if (scene.roots === 0) failures.push(`scene entry ${scene.entry} is missing from the client compilation`);
-if (scene.initial) failures.push("scene chunks can be initial: the loader must `await import()` the runtime");
+if (scene.roots === 0)
+  failures.push(`scene entry ${scene.entry} is missing from the client compilation`);
+if (scene.initial)
+  failures.push("scene chunks can be initial: the loader must `await import()` the runtime");
 if (scene.files.length === 0) failures.push("scene closure lists no JavaScript files");
 
 const size = scene.files.reduce(

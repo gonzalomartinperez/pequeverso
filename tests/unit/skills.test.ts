@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import {
+  cpSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { test } from "node:test";
@@ -16,8 +24,20 @@ test("the committed skill catalog is valid", () => {
 function broken(mutate: (dir: string) => void): string[] {
   const dir = mkdtempSync(path.join(tmpdir(), "pv-skills-"));
   try {
-    for (const entry of [".agents", ".claude", "CLAUDE.md", "package.json", "docs", "tools", "config", "src"])
-      cpSync(path.join(root, entry), path.join(dir, entry), { recursive: true, verbatimSymlinks: true });
+    for (const entry of [
+      ".agents",
+      ".claude",
+      "CLAUDE.md",
+      "package.json",
+      "docs",
+      "tools",
+      "config",
+      "src",
+    ])
+      cpSync(path.join(root, entry), path.join(dir, entry), {
+        recursive: true,
+        verbatimSymlinks: true,
+      });
     mkdirSync(path.join(dir, "tests"));
     for (const entry of ["helpers", "unit"])
       cpSync(path.join(root, "tests", entry), path.join(dir, "tests", entry), { recursive: true });
@@ -38,7 +58,9 @@ test("a skill without limits or exclusions is rejected", () => {
   });
   assert.ok(problems.some((p) => p.includes('prepare-delivery: missing "## Limits" section')));
   assert.ok(
-    problems.some((p) => p.includes("prepare-delivery: description must state what the skill is not for")),
+    problems.some((p) =>
+      p.includes("prepare-delivery: description must state what the skill is not for"),
+    ),
   );
 });
 
@@ -107,7 +129,9 @@ test("a Claude adapter that is a regular directory is rejected", () => {
     mkdirSync(path.join(dir, link));
     writeFileSync(path.join(dir, link, "SKILL.md"), "---\nname: prepare-delivery\n---\n");
   });
-  assert.ok(problems.some((p) => p.includes("prepare-delivery: .claude/skills entry must be a symlink")));
+  assert.ok(
+    problems.some((p) => p.includes("prepare-delivery: .claude/skills entry must be a symlink")),
+  );
 });
 
 test("a Claude symlink pointing elsewhere or with an absolute target is rejected", () => {
@@ -119,7 +143,11 @@ test("a Claude symlink pointing elsewhere or with an absolute target is rejected
       rmSync(path.join(dir, link));
       symlinkSync(target, path.join(dir, link), "dir");
     });
-    assert.ok(problems.some((p) => p.includes("link must be exactly ../../.agents/skills/prepare-delivery")));
+    assert.ok(
+      problems.some((p) =>
+        p.includes("link must be exactly ../../.agents/skills/prepare-delivery"),
+      ),
+    );
   }
 });
 
@@ -128,7 +156,11 @@ test("a stale repo link and a regular extra entry are rejected, external links a
     symlinkSync("../../.agents/skills/ghost", path.join(dir, ".claude/skills/ghost"), "dir");
     mkdirSync(path.join(dir, ".claude/skills/stray"));
   });
-  assert.ok(problems.some((p) => p.includes("ghost: .claude/skills link targets a missing canonical skill")));
+  assert.ok(
+    problems.some((p) =>
+      p.includes("ghost: .claude/skills link targets a missing canonical skill"),
+    ),
+  );
   assert.ok(problems.some((p) => p.includes("stray: .claude/skills entry has no canonical")));
   assert.deepEqual(
     broken((dir) => {
@@ -182,7 +214,8 @@ const hasGit = (() => {
 
 test("a tracked external-looking skill link fails closed", { skip: !hasGit }, () => {
   const problems = broken((dir) => {
-    const git = (...args: string[]) => execFileSync("git", ["-C", dir, ...args], { stdio: "ignore" });
+    const git = (...args: string[]) =>
+      execFileSync("git", ["-C", dir, ...args], { stdio: "ignore" });
     git("init", "-q");
     symlinkSync("/tmp", path.join(dir, ".claude/skills/external"), "dir");
     symlinkSync("/tmp", path.join(dir, ".agents/skills/external"), "dir");

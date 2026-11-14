@@ -97,7 +97,9 @@ function lookup(id: MediaId, kind: ManifestItem["kind"]): ManifestItem {
     );
   }
   if (item.kind !== kind) {
-    throw new Error(`media: "${id}" is a ${item.kind}, use ${kind === "video" ? "getVideo" : "getImage"}().`);
+    throw new Error(
+      `media: "${id}" is a ${item.kind}, use ${kind === "video" ? "getVideo" : "getImage"}().`,
+    );
   }
   return item;
 }
@@ -139,7 +141,8 @@ export function getImage(id: MediaId): ImageAsset {
   for (const format of FORMAT_ORDER) {
     if (format === primaryFormat) continue;
     const group = imageOutputs.filter((o) => o.format === format);
-    if (group.length) sources.push({ type: MIME[format] ?? `image/${format}`, srcSet: srcSetOf(group) });
+    if (group.length)
+      sources.push({ type: MIME[format] ?? `image/${format}`, srcSet: srcSetOf(group) });
   }
   return {
     id,

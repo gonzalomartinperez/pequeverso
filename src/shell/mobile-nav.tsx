@@ -52,7 +52,13 @@ export function MobileNav({ items, className, children, cta, products }: Props) 
       </button>
       {mounted ? (
         <Suspense fallback={null}>
-          <NavSheet items={items} cta={cta} products={products} open={open} onOpenChange={setOpen} />
+          <NavSheet
+            items={items}
+            cta={cta}
+            products={products}
+            open={open}
+            onOpenChange={setOpen}
+          />
         </Suspense>
       ) : null}
     </>

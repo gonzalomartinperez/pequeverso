@@ -36,7 +36,10 @@ export function HomeFaq() {
             </div>
           ))}
         </div>
-        <div className="mx-auto grid w-full max-w-[52rem] content-start gap-4" data-faq-group="both">
+        <div
+          className="mx-auto grid w-full max-w-[52rem] content-start gap-4"
+          data-faq-group="both"
+        >
           <h3 className="text-center text-h3 font-extrabold text-ink">{f.groups.both}</h3>
           <FAQ items={pick("both")} openFirst={false} />
         </div>

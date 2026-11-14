@@ -42,7 +42,8 @@ export function tileOrder(count: number, key: string): number[] {
     const swap = Math.floor(next() * (index + 1));
     [order[index], order[swap]] = [order[swap] as number, order[index] as number];
   }
-  if (count > 2 && order.every((value, index) => value === index)) order.push(order.shift() as number);
+  if (count > 2 && order.every((value, index) => value === index))
+    order.push(order.shift() as number);
   return order;
 }
 
@@ -72,7 +73,8 @@ export function press(
   index: number,
   used: ReadonlySet<number> = new Set(),
 ): Outcome {
-  if (placed >= syllables.length || used.has(index) || syllables[index] === undefined) return "ignored";
+  if (placed >= syllables.length || used.has(index) || syllables[index] === undefined)
+    return "ignored";
   if (syllables[index] !== syllables[placed]) return "wrong";
   return placed + 1 === syllables.length ? "done" : "correct";
 }

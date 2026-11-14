@@ -14,15 +14,23 @@ import {
 
 const read = (path: string) =>
   readFileSync(new URL(`../../../contracts/assistant-api/${path}`, import.meta.url));
-const session = JSON.parse(read("examples/session.created.json").toString("utf8")) as Record<string, unknown>;
+const session = JSON.parse(read("examples/session.created.json").toString("utf8")) as Record<
+  string,
+  unknown
+>;
 const json = (body: unknown) =>
-  new Response(JSON.stringify(body), { status: 200, headers: { "content-type": "application/json" } });
+  new Response(JSON.stringify(body), {
+    status: 200,
+    headers: { "content-type": "application/json" },
+  });
 
 describe("pinned API contract", () => {
   it("matches the manifest recorded from a committed API revision", () => {
     const sha = (bytes: Buffer) => createHash("sha256").update(bytes).digest("hex");
     const manifestBytes = read("manifest.json");
-    const manifest = JSON.parse(manifestBytes.toString("utf8")) as { artifacts: Record<string, string> };
+    const manifest = JSON.parse(manifestBytes.toString("utf8")) as {
+      artifacts: Record<string, string>;
+    };
     const source = JSON.parse(read("source.json").toString("utf8")) as {
       api_commit: string;
       api_manifest_sha256: string;
@@ -68,7 +76,10 @@ describe("contract v1.3 visitor hints are negotiated from the existing revision"
         .catch(() => {});
       const compatible = revision === "1.3" || revision === "1.10";
       assert.deepEqual(bodies[1]?.context, compatible ? context : undefined, String(revision));
-      assert.equal(parseSession({ ...session, contract_revision: revision }).acceptsContext, compatible);
+      assert.equal(
+        parseSession({ ...session, contract_revision: revision }).acceptsContext,
+        compatible,
+      );
     }
   });
 });
@@ -98,7 +109,11 @@ describe("contract v1.1 additions are optional and forward compatible", () => {
   });
 
   it("reads starters, contract revision and per-message language from a v1.1 API", async () => {
-    const v11 = { ...session, contract_revision: "1.1", starters: ["¿Qué incluye?", "", "x".repeat(200)] };
+    const v11 = {
+      ...session,
+      contract_revision: "1.1",
+      starters: ["¿Qué incluye?", "", "x".repeat(200)],
+    };
     assert.throws(() => parseSession(v11)); // an empty or oversized starter is a protocol error
     const ok = parseSession({ ...v11, starters: ["¿Qué incluye?", "¿Para qué edades?"] });
     assert.deepEqual(ok.starters, ["¿Qué incluye?", "¿Para qué edades?"]);
@@ -107,9 +122,10 @@ describe("contract v1.1 additions are optional and forward compatible", () => {
     assert.equal(parseMessage({ ...base, language: "en" }).language, "en");
     assert.equal(parseMessage(base).language, "es");
     assert.equal(parseMessage({ ...base, language: "pt" }).language, null);
-    assert.deepEqual(parseMessage({ ...base, notices: ["language_unsupported", "future_notice"] }).notices, [
-      "language_unsupported",
-    ]);
+    assert.deepEqual(
+      parseMessage({ ...base, notices: ["language_unsupported", "future_notice"] }).notices,
+      ["language_unsupported"],
+    );
   });
 
   it("sends the locale hint only after the API advertises v1.1", async () => {
@@ -137,7 +153,10 @@ describe("contract v1.1 additions are optional and forward compatible", () => {
       calls.push({ url: String(input), init });
       return json(session);
     };
-    await createHttpTransport("https://api.example", fetcher).openSession(new AbortController().signal, "es");
+    await createHttpTransport("https://api.example", fetcher).openSession(
+      new AbortController().signal,
+      "es",
+    );
     assert.equal(calls[0]?.url, "https://api.example/api/v1/session");
     assert.equal(calls[0]?.init.credentials, "include");
     assert.equal(calls[0]?.init.cache, "no-store");
@@ -233,14 +252,19 @@ describe("announcements", () => {
       announcement("streaming", { kind: "failed", code: "interrupted", retryable: true }),
       "interrupted",
     );
-    assert.equal(announcement("submitting", { kind: "failed", code: "busy", retryable: true }), "failed");
+    assert.equal(
+      announcement("submitting", { kind: "failed", code: "busy", retryable: true }),
+      "failed",
+    );
     assert.equal(announcement("completed", { kind: "completed" }), null);
   });
 });
 
 describe("lifecycle and stream edge cases", () => {
   it("a stale open settling after dispose/start does not clear the new single-flight open", async () => {
-    const { createAssistant } = await import("../../../src/features/assistant/application/assistant.ts");
+    const { createAssistant } = await import(
+      "../../../src/features/assistant/application/assistant.ts"
+    );
     const resolvers: (() => void)[] = [];
     let opens = 0;
     const snapshot = parseSession(session);
@@ -277,8 +301,11 @@ describe("lifecycle and stream edge cases", () => {
   });
 
   it("treats a stream ending inside a UTF-8 sequence as a protocol error", async () => {
-    const { readSse, StreamProtocolError } = await import("../../../src/features/assistant/adapters/sse.ts");
-    const started = read("examples/stream.recommendation.sse").toString("utf8").split("\n\n")[0] ?? "";
+    const { readSse, StreamProtocolError } = await import(
+      "../../../src/features/assistant/adapters/sse.ts"
+    );
+    const started =
+      read("examples/stream.recommendation.sse").toString("utf8").split("\n\n")[0] ?? "";
     const bytes = new Uint8Array([...new TextEncoder().encode(`${started}\n\n`), 0xe2, 0x82]);
     const stream = new ReadableStream<Uint8Array>({
       start(controller) {

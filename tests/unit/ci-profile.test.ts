@@ -10,12 +10,19 @@ import { test } from "node:test";
  * reaches `ci-gate`.
  */
 type Profile = { paths?: string[]; adds?: string[]; trigger?: string; all?: boolean };
-type ProfileMap = { version: number; base: string[]; profiles: Record<string, Profile>; required: string };
+type ProfileMap = {
+  version: number;
+  base: string[];
+  profiles: Record<string, Profile>;
+  required: string;
+};
 
 const map = JSON.parse(readFileSync(".github/ci-profile.json", "utf8")) as ProfileMap;
 const ci = readFileSync(".github/workflows/ci.yml", "utf8");
 const jobsSection = ci.slice(ci.indexOf("\njobs:\n"));
-const jobIds = [...jobsSection.matchAll(/^ {2}([a-z][a-z0-9-]*):$/gm)].map((match) => match[1] ?? "");
+const jobIds = [...jobsSection.matchAll(/^ {2}([a-z][a-z0-9-]*):$/gm)].map(
+  (match) => match[1] ?? "",
+);
 const gateOnly = new Set(["classify", "ci-gate", "ci"]);
 const gatedJobs = jobIds.filter((job) => !gateOnly.has(job));
 
@@ -46,7 +53,9 @@ function globToRegex(pattern: string): RegExp {
 const pathProfiles = Object.entries(map.profiles).filter(([, profile]) => profile.paths?.length);
 const profilesFor = (file: string): string[] =>
   pathProfiles
-    .filter(([, profile]) => (profile.paths ?? []).some((pattern) => globToRegex(pattern).test(file)))
+    .filter(([, profile]) =>
+      (profile.paths ?? []).some((pattern) => globToRegex(pattern).test(file)),
+    )
     .map(([name]) => name);
 
 test("every tracked file belongs to at least one path profile (no silent fail-closed runs)", () => {
@@ -67,7 +76,11 @@ test("files that lint, typecheck or build never ride the docs-only fast path", (
     .filter(Boolean);
   const docsOnlyCode = files.filter((file) => {
     const hit = profilesFor(file);
-    return hit.length === 1 && hit[0] === "docs" && /\.(ts|tsx|js|mjs|cjs|json|jsonc|css|ya?ml)$/.test(file);
+    return (
+      hit.length === 1 &&
+      hit[0] === "docs" &&
+      /\.(ts|tsx|js|mjs|cjs|json|jsonc|css|ya?ml)$/.test(file)
+    );
   });
   assert.deepEqual(docsOnlyCode, [], "route these files to the code profile");
   assert.ok(profilesFor("docs/verification/assistant/capture.spec.ts").includes("code"));
@@ -118,6 +131,10 @@ test("every gated job runs only when classify selects it, and ci-gate needs all 
       `${job} must be gated on classify`,
     );
   }
-  const gate = jobsSection.slice(jobsSection.indexOf("\n  ci-gate:\n"), jobsSection.indexOf("\n  ci:\n"));
-  for (const job of ["classify", ...gatedJobs]) assert.match(gate, new RegExp(`\\n {6}- ${job}\\n`), job);
+  const gate = jobsSection.slice(
+    jobsSection.indexOf("\n  ci-gate:\n"),
+    jobsSection.indexOf("\n  ci:\n"),
+  );
+  for (const job of ["classify", ...gatedJobs])
+    assert.match(gate, new RegExp(`\\n {6}- ${job}\\n`), job);
 });

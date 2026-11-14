@@ -62,13 +62,24 @@ test("scene budget follows extracted vendors and nested asynchronous chunks", ()
     groupsIterable: groups,
     canBeInitial: () => false,
   };
-  const vendor: Chunk = { files: ["static/chunks/three.js"], groupsIterable: [], canBeInitial: () => false };
-  const nested: Chunk = { files: ["static/chunks/nested.js"], groupsIterable: [], canBeInitial: () => false };
+  const vendor: Chunk = {
+    files: ["static/chunks/three.js"],
+    groupsIterable: [],
+    canBeInitial: () => false,
+  };
+  const nested: Chunk = {
+    files: ["static/chunks/nested.js"],
+    groupsIterable: [],
+    canBeInitial: () => false,
+  };
   groups.push({
     chunks: [scene, vendor],
     childrenIterable: [{ chunks: [nested], childrenIterable: [] }],
   });
-  const report = runPlugin([scene], "C:/repo/src/shared/motion/scene/scene-runtime.ts|app-pages-browser");
+  const report = runPlugin(
+    [scene],
+    "C:/repo/src/shared/motion/scene/scene-runtime.ts|app-pages-browser",
+  );
   assert.deepEqual(report.files, [
     "static/chunks/nested.js",
     "static/chunks/scene.js",
@@ -79,7 +90,11 @@ test("scene budget follows extracted vendors and nested asynchronous chunks", ()
 });
 
 test("the report marks a scene that leaked into an initial chunk", () => {
-  const chunk: Chunk = { files: ["static/chunks/main.js"], groupsIterable: [], canBeInitial: () => true };
+  const chunk: Chunk = {
+    files: ["static/chunks/main.js"],
+    groupsIterable: [],
+    canBeInitial: () => true,
+  };
   const report = runPlugin([chunk], "/repo/src/shared/motion/scene/scene-runtime.ts");
   assert.equal(report.initial, true);
 });

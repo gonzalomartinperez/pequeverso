@@ -59,7 +59,11 @@ function DialogContent({
           <DialogPrimitive.Close
             data-slot="dialog-close"
             render={
-              <Button variant="ghost" size="icon" className="absolute top-3 right-3 border-transparent" />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-3 right-3 border-transparent"
+              />
             }
           >
             <XIcon aria-hidden="true" focusable="false" />

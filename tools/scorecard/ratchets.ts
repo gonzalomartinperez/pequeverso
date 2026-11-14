@@ -50,7 +50,9 @@ export function validateRatchet(data: unknown, file: string): string[] {
   if (!Array.isArray(data.values) || data.values.length === 0)
     return [...problems, `${file}: values must be a non-empty array`];
   const keys = data.values.map((item) => (isRecord(item) ? item.key : undefined));
-  const duplicates = keys.filter((key, index) => typeof key === "string" && keys.indexOf(key) !== index);
+  const duplicates = keys.filter(
+    (key, index) => typeof key === "string" && keys.indexOf(key) !== index,
+  );
   for (const key of new Set(duplicates)) problems.push(`${file}: duplicate key "${String(key)}"`);
   return [...problems, ...data.values.flatMap((item) => valueProblems(item, file))];
 }

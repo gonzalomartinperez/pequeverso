@@ -30,7 +30,9 @@ export function OfferPrice({ kicker, price, previous, taxNote, cta, hint, classN
     >
       <div className="relative z-1 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
         <div className="grid gap-1">
-          <p className="text-tiny font-extrabold tracking-[0.08em] text-teal-text uppercase">{kicker}</p>
+          <p className="text-tiny font-extrabold tracking-[0.08em] text-teal-text uppercase">
+            {kicker}
+          </p>
           <p className="font-display text-price font-bold text-coral tabular-nums">
             <span className="sr-only">Precio: </span>
             {formatUsd(price)}
@@ -46,13 +48,21 @@ export function OfferPrice({ kicker, price, previous, taxNote, cta, hint, classN
       <div className="relative z-1 grid gap-1.5 text-small text-subtle">
         <p>{taxNote}</p>
         <p className="flex items-start gap-2 text-pretty">
-          <Globe aria-hidden="true" className="mt-[0.2em] size-4 shrink-0 text-teal-text" strokeWidth={2.2} />
+          <Globe
+            aria-hidden="true"
+            className="mt-[0.2em] size-4 shrink-0 text-teal-text"
+            strokeWidth={2.2}
+          />
           <span>{localCurrencyNote}</span>
         </p>
       </div>
       <div className="relative z-1 grid [&>*]:w-full">{cta}</div>
       <p className="relative z-1 flex items-start gap-2 text-small font-bold text-teal-text">
-        <ShieldCheck aria-hidden="true" className="mt-[0.1em] size-[18px] shrink-0" strokeWidth={2.2} />
+        <ShieldCheck
+          aria-hidden="true"
+          className="mt-[0.1em] size-[18px] shrink-0"
+          strokeWidth={2.2}
+        />
         <span>{hint}</span>
       </p>
     </div>

@@ -14,7 +14,12 @@ test("captures the local assistant preview", async ({ page, context }, info) => 
   await context.addInitScript(() => {
     window.localStorage.setItem(
       "pv_consent",
-      JSON.stringify({ version: 2, analytics: false, marketing: false, updatedAt: "2026-10-10T00:00:00Z" }),
+      JSON.stringify({
+        version: 2,
+        analytics: false,
+        marketing: false,
+        updatedAt: "2026-10-10T00:00:00Z",
+      }),
     );
   });
   const mobile = info.project.name === "chromium-mobile";
@@ -22,7 +27,8 @@ test("captures the local assistant preview", async ({ page, context }, info) => 
   await page.goto("/soporte/");
   const launcher = page.getByTestId("assistant-launcher");
   await expect(launcher).toBeVisible();
-  if (!mobile) await page.screenshot({ path: `${SHOTS}/01-Desktop-Boton.png`, animations: "disabled" });
+  if (!mobile)
+    await page.screenshot({ path: `${SHOTS}/01-Desktop-Boton.png`, animations: "disabled" });
   await launcher.click();
   const panel = page.getByTestId("assistant-panel");
   await expect(panel).toHaveAttribute("data-phase", "ready");
@@ -30,7 +36,9 @@ test("captures the local assistant preview", async ({ page, context }, info) => 
     await expect(panel).toHaveAttribute("data-size", "compact");
     await expect(panel).toHaveAttribute("role", "region");
   }
-  await expect(panel.getByRole("heading", { name: "Asistente de Pequeverso", exact: true })).toBeVisible();
+  await expect(
+    panel.getByRole("heading", { name: "Asistente de Pequeverso", exact: true }),
+  ).toBeVisible();
   await expect(panel.locator("select")).toHaveCount(0);
   const starters = panel.getByRole("region", { name: "Preguntas para empezar" });
   await expect(starters).toBeVisible();
@@ -52,7 +60,8 @@ test("captures the local assistant preview", async ({ page, context }, info) => 
   await field.fill("¿Cómo funciona la garantía de Grafismo Fonético?");
   await field.press("Enter");
   await expect(panel.getByRole("list").getByText("Pensando…", { exact: true })).toBeVisible();
-  if (!mobile) await page.screenshot({ path: `${SHOTS}/04-Desktop-Espera.png`, animations: "disabled" });
+  if (!mobile)
+    await page.screenshot({ path: `${SHOTS}/04-Desktop-Espera.png`, animations: "disabled" });
   release();
   await expect(panel).toHaveAttribute("data-phase", "completed");
   // This is a fresh two-product fixture preview; the API owns any selected resource cards.
@@ -96,6 +105,9 @@ test("captures the local assistant preview", async ({ page, context }, info) => 
     await expect(panel).toHaveAttribute("data-size", "expanded");
     await expect(answer.locator("p").first()).toBeInViewport();
     await expect(sources.getByRole("link").last()).toBeInViewport();
-    await page.screenshot({ path: `${SHOTS}/07-Desktop-Conversacion-Ampliada.png`, animations: "disabled" });
+    await page.screenshot({
+      path: `${SHOTS}/07-Desktop-Conversacion-Ampliada.png`,
+      animations: "disabled",
+    });
   }
 });

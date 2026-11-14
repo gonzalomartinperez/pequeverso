@@ -3,7 +3,12 @@ import { enabledAdapters, trackingEnv } from "./env.ts";
 import type { EventParams, TrackedEvent, TrackingAdapter } from "./types.ts";
 
 /** Events owned by Hotmart's checkout; the site must never emit them (see docs/tracking.md). */
-export const FORBIDDEN_EVENTS = ["InitiateCheckout", "Purchase", "PlaceAnOrder", "begin_checkout"] as const;
+export const FORBIDDEN_EVENTS = [
+  "InitiateCheckout",
+  "Purchase",
+  "PlaceAnOrder",
+  "begin_checkout",
+] as const;
 
 type ForbiddenEvent = (typeof FORBIDDEN_EVENTS)[number];
 type StandardEvent = "PageView" | "ViewContent";

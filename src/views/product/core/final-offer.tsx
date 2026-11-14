@@ -36,7 +36,10 @@ export function FinalOffer({
     <div className="grid items-center gap-10 cq-lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
       <div className="grid content-center justify-items-start gap-6" data-reveal="blur">
         <Eyebrow>{kicker}</Eyebrow>
-        <h2 id={titleId} className="max-w-[16ch] text-[clamp(2.375rem,1.6rem+3vw,4.5rem)] leading-[1.02]">
+        <h2
+          id={titleId}
+          className="max-w-[16ch] text-[clamp(2.375rem,1.6rem+3vw,4.5rem)] leading-[1.02]"
+        >
           <Accent text={title} accent={titleAccent} tone="sky" />
         </h2>
         <ul className="grid gap-2.5" role="list">

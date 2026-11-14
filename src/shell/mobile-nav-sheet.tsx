@@ -47,7 +47,10 @@ export function MobileNavSheet({ items, cta, products, open, onOpenChange }: Pro
         className="group/sheet on-light gap-0 overflow-y-auto overscroll-contain border-white/80 data-[side=right]:bg-cream data-[side=right]:w-full data-[side=right]:sm:max-w-md data-[side=right]:sm:rounded-l-2xl data-[side=right]:sm:shadow-float motion-safe:duration-500 motion-safe:ease-emphasis data-[side=right]:data-ending-style:translate-x-full data-[side=right]:data-starting-style:translate-x-full [&>[data-slot=sheet-close]]:top-3 [&>[data-slot=sheet-close]]:right-3 [&>[data-slot=sheet-close]]:size-11 [&>[data-slot=sheet-close]]:rounded-full [&>[data-slot=sheet-close]]:border-navy/14 [&>[data-slot=sheet-close]]:bg-white/80"
       >
         {/* Soft aurora glows behind the content (decorative). */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-1 overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-1 overflow-hidden"
+        >
           <div className="absolute -top-24 -right-20 size-96 rounded-full bg-[radial-gradient(closest-side,oklch(0.8521_0.0956_187.2/35%),transparent)]" />
           <div className="absolute bottom-10 -left-24 size-96 rounded-full bg-[radial-gradient(closest-side,var(--pv-peach),transparent)]" />
           <div className="absolute top-1/3 right-1/4 size-64 rounded-full bg-[radial-gradient(closest-side,var(--pv-celeste),transparent)]" />

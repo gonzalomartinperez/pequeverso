@@ -106,7 +106,8 @@ export function applyLinkPolicy(message: Message, policy: LinkPolicy): Message {
     const url = storefrontUrl(product.url, policy);
     const purchaseUrl =
       product.kind === "affiliate"
-        ? affiliatePurchasePath(product.purchaseUrl, policy) && storefrontUrl(product.purchaseUrl, policy)
+        ? affiliatePurchasePath(product.purchaseUrl, policy) &&
+          storefrontUrl(product.purchaseUrl, policy)
         : storefrontUrl(product.purchaseUrl, policy);
     if (url && purchaseUrl) products.push(safeImage({ ...product, url, purchaseUrl }, policy));
   }

@@ -123,7 +123,8 @@ export const grafismoCopy = {
   ],
   problem: {
     kicker: "Para adultos que acompañan",
-    title: "Acompañar sus primeros pasos hacia la lectura no debería obligarte a improvisar cada día.",
+    title:
+      "Acompañar sus primeros pasos hacia la lectura no debería obligarte a improvisar cada día.",
     titleAccent: "improvisar",
     paragraphs: [
       "Muchas familias quieren practicar en casa, pero no saben por dónde empezar, cuánto tiempo dedicar ni qué hoja elegir. Terminan buscando fichas sueltas que no siguen ningún orden.",
@@ -143,8 +144,16 @@ export const grafismoCopy = {
     lead: "Cada página sigue la misma secuencia para que el niño la reconozca y la haga suya.",
     steps: [
       { icon: "eye", title: "Mira", text: "Observa la sílaba grande y la imagen que la acompaña." },
-      { icon: "ear", title: "Di", text: "Pronuncia el sonido en voz alta, primero contigo y luego solo." },
-      { icon: "pen", title: "Traza", text: "Sigue la palabra punteada con el dedo y después con el lápiz." },
+      {
+        icon: "ear",
+        title: "Di",
+        text: "Pronuncia el sonido en voz alta, primero contigo y luego solo.",
+      },
+      {
+        icon: "pen",
+        title: "Traza",
+        text: "Sigue la palabra punteada con el dedo y después con el lápiz.",
+      },
       { icon: "link", title: "Une", text: "Junta las sílabas y descubre la palabra completa." },
     ],
   },

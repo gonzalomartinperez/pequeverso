@@ -43,7 +43,10 @@ export function Transcript({
     const element = scroller.current;
     if (!element || emptyRef.current) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    element.scrollTo({ top: element.scrollHeight, behavior: smooth && !reduce ? "smooth" : "auto" });
+    element.scrollTo({
+      top: element.scrollHeight,
+      behavior: smooth && !reduce ? "smooth" : "auto",
+    });
     // Scroll events can be coalesced: remember the actual programmatic position immediately.
     lastTop.current = element.scrollTop;
   }, []);
@@ -112,7 +115,11 @@ export function Transcript({
 
   return (
     <div inert={inactive} className="relative min-h-0 flex-1">
-      <div ref={scroller} tabIndex={-1} className={cx("cq h-full overflow-y-auto", styles.transcript)}>
+      <div
+        ref={scroller}
+        tabIndex={-1}
+        className={cx("cq h-full overflow-y-auto", styles.transcript)}
+      >
         <ol
           ref={content}
           aria-label={t.transcriptLabel}

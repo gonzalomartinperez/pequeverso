@@ -10,13 +10,23 @@ import {
   readConsent,
 } from "@/features/tracking/adapters/consent.ts";
 import { enabledAdapters } from "@/features/tracking/adapters/env.ts";
-import { isTrackingConfigured, syncConsent, trackPageView } from "@/features/tracking/adapters/track.ts";
+import {
+  isTrackingConfigured,
+  syncConsent,
+  trackPageView,
+} from "@/features/tracking/adapters/track.ts";
 import type { ScriptSpec } from "@/features/tracking/adapters/types.ts";
 
 function AdapterScript({ spec, onLoad }: { spec: ScriptSpec; onLoad: () => void }) {
   if (spec.src) {
     return (
-      <Script id={spec.id} src={spec.src} strategy={spec.strategy} onLoad={onLoad} {...spec.attributes} />
+      <Script
+        id={spec.id}
+        src={spec.src}
+        strategy={spec.strategy}
+        onLoad={onLoad}
+        {...spec.attributes}
+      />
     );
   }
   return (

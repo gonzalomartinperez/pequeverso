@@ -20,7 +20,8 @@ for (const route of ["/", "/grafismo-fonetico/", "/soporte/"]) {
       .evaluateAll((nodes) => nodes.map((node) => (node as HTMLScriptElement).src));
     for (const src of scripts) {
       const body = await (await request.get(src)).text();
-      for (const marker of MARKERS) expect(body.includes(marker), `${src} contains ${marker}`).toBe(false);
+      for (const marker of MARKERS)
+        expect(body.includes(marker), `${src} contains ${marker}`).toBe(false);
     }
     expect(await page.content()).not.toContain("Asistente Pequeverso");
   });

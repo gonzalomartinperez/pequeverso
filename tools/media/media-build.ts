@@ -17,7 +17,15 @@
 // when enabled, <id-slug>-vp9-crf<crf>-<hash8>.webm.
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import ffmpegPath from "ffmpeg-static";
@@ -200,7 +208,8 @@ function checkManifest(): void {
       const stat = statSync(abs);
       if (stat.size !== out.bytes)
         errors.push(`${item.id}: ${out.file} is ${stat.size} bytes, manifest says ${out.bytes}`);
-      if (sha256File(abs) !== out.sha256) errors.push(`${item.id}: ${out.file} sha256 differs from manifest`);
+      if (sha256File(abs) !== out.sha256)
+        errors.push(`${item.id}: ${out.file} sha256 differs from manifest`);
       if (stat.size > MAX_FILE_BYTES) errors.push(`${item.id}: ${out.file} exceeds 5 MB`);
       if (out.file.startsWith("public/media/")) total += stat.size;
     }
@@ -208,14 +217,16 @@ function checkManifest(): void {
       const mp4 = item.outputs.find((o) => o.format === "mp4");
       if (!mp4) errors.push(`${item.id}: video without mp4 output`);
       else if (mp4.bytes > MAX_VIDEO_BYTES) errors.push(`${item.id}: mp4 exceeds ${MAX_VIDEO_MB}`);
-      if (!item.outputs.some((o) => o.format === "webp")) errors.push(`${item.id}: video without poster`);
+      if (!item.outputs.some((o) => o.format === "webp"))
+        errors.push(`${item.id}: video without poster`);
     }
   }
   for (const file of walk(mediaDir)) {
     const rel = relRepo(file);
     if (!declared.has(rel)) errors.push(`orphan file not in manifest: ${rel}`);
   }
-  if (total > MAX_TOTAL_BYTES) errors.push(`public/media total ${mb(total)} exceeds ${mb(MAX_TOTAL_BYTES)}`);
+  if (total > MAX_TOTAL_BYTES)
+    errors.push(`public/media total ${mb(total)} exceeds ${mb(MAX_TOTAL_BYTES)}`);
   log(
     `media-build --check: ${manifest.items.length} items, ${declared.size} outputs, public/media ${mb(total)}`,
   );
@@ -239,7 +250,8 @@ const ffprobePath = ffprobeStatic.path;
 if (!ffmpegPath || !existsSync(ffmpegPath))
   fail("ffmpeg-static binary not found; run `npm install` inside tools/media");
 const ffmpegBin: string = ffmpegPath ?? "";
-if (!existsSync(ffprobePath)) fail("ffprobe-static binary not found; run `npm install` inside tools/media");
+if (!existsSync(ffprobePath))
+  fail("ffprobe-static binary not found; run `npm install` inside tools/media");
 
 const libraryRoots: Record<string, string | undefined> = Object.fromEntries(
   Object.entries(sources.libraries).map(([name, cfg]) => [
@@ -251,12 +263,14 @@ const libraryRoots: Record<string, string | undefined> = Object.fromEntries(
 function sourceAbs(source: SourceRef): string {
   const root = libraryRoots[source.library] ?? fail(`unknown library "${source.library}"`);
   const abs = resolve(root, source.path);
-  if (!existsSync(abs)) fail(`source not found: ${abs} (set ${sources.libraries[source.library]?.env})`);
+  if (!existsSync(abs))
+    fail(`source not found: ${abs} (set ${sources.libraries[source.library]?.env})`);
   return abs;
 }
 
 function resolveProvenance(item: SourceItem): Record<string, unknown> {
-  const base = typeof item.provenance === "string" ? sources.provenanceProfiles[item.provenance] : {};
+  const base =
+    typeof item.provenance === "string" ? sources.provenanceProfiles[item.provenance] : {};
   if (typeof item.provenance === "string" && !base)
     fail(`${item.id}: unknown provenance profile ${item.provenance}`);
   return { ...base, ...(typeof item.provenance === "object" ? item.provenance : {}) };
@@ -335,7 +349,12 @@ async function imageDims(abs: string): Promise<{ width: number; height: number }
 function encoderFor(pipeline: Sharp, spec: ImageEncodeSpec): Sharp {
   const { format, quality, alphaQuality } = spec;
   if (format === "webp") {
-    return pipeline.webp({ quality, effort: 6, smartSubsample: true, alphaQuality: alphaQuality ?? 100 });
+    return pipeline.webp({
+      quality,
+      effort: 6,
+      smartSubsample: true,
+      alphaQuality: alphaQuality ?? 100,
+    });
   }
   if (format === "avif") return pipeline.avif({ quality, effort: 6 });
   return fail(`unsupported image format ${format}`);
@@ -349,7 +368,13 @@ async function encodeImage(
   spec: ImageEncodeSpec,
 ): Promise<OutputRecord> {
   const { width, format, quality, sharpen, alphaQuality } = spec;
-  const params = { width, format, quality, sharpen: Boolean(sharpen), alphaQuality: alphaQuality ?? null };
+  const params = {
+    width,
+    format,
+    quality,
+    sharpen: Boolean(sharpen),
+    alphaQuality: alphaQuality ?? null,
+  };
   const hash = paramsHash(sourceSha, params);
   const file = join(mediaDir, item.group, `${slug(item.id)}-w${width}-${hash}.${format}`);
   if (!existsSync(file) || FORCE) {
@@ -370,7 +395,11 @@ function imageSpec(item: SourceItem): RoleSpec & { avif: number[]; avifQuality: 
   return { avif: [], avifQuality: AVIF_QUALITY, ...role, ...(item.outputs || {}) };
 }
 
-async function buildImage(item: SourceItem, src: string, sourceSha: string): Promise<OutputRecord[]> {
+async function buildImage(
+  item: SourceItem,
+  src: string,
+  sourceSha: string,
+): Promise<OutputRecord[]> {
   const spec = imageSpec(item);
   // Never enlarge: widths above the source width collapse to the source width (deduplicated).
   const meta = await sharp(src).metadata();
@@ -383,7 +412,12 @@ async function buildImage(item: SourceItem, src: string, sourceSha: string): Pro
   const { alphaQuality: _alphaQuality, ...avif } = spec;
   for (const width of effective(spec.avif)) {
     outputs.push(
-      await encodeImage(item, src, sourceSha, { ...avif, quality: spec.avifQuality, width, format: "avif" }),
+      await encodeImage(item, src, sourceSha, {
+        ...avif,
+        quality: spec.avifQuality,
+        width,
+        format: "avif",
+      }),
     );
   }
   return outputs;
@@ -396,7 +430,10 @@ async function buildOgCard(item: SourceItem, c: OgCompose, src: string): Promise
   const png = join(mediaDir, item.group, `${c.basename}.png`);
   const webp = join(mediaDir, item.group, `${c.basename}.webp`);
   ensureDir(png);
-  const logo = await sharp(src).resize({ width: c.logoWidth, withoutEnlargement: true }).png().toBuffer();
+  const logo = await sharp(src)
+    .resize({ width: c.logoWidth, withoutEnlargement: true })
+    .png()
+    .toBuffer();
   const logoMeta = await sharp(logo).metadata();
   const area = c.height - c.bandHeight;
   const band = await sharp({
@@ -417,7 +454,9 @@ async function buildOgCard(item: SourceItem, c: OgCompose, src: string): Promise
     ])
     .png()
     .toBuffer();
-  await sharp(composed).png({ compressionLevel: 9, palette: true, quality: 90, effort: 10 }).toFile(png);
+  await sharp(composed)
+    .png({ compressionLevel: 9, palette: true, quality: 90, effort: 10 })
+    .toFile(png);
   await sharp(composed).webp({ quality: 90, effort: 6 }).toFile(webp);
   return [
     await outputRecord(png, { ...(await imageDims(png)), format: "png", quality: 90 }),
@@ -505,7 +544,14 @@ async function buildFavicons(c: FaviconCompose, src: string): Promise<OutputReco
       .png()
       .toBuffer();
   const transparent = async (size: number): Promise<Buffer> =>
-    sharp({ create: { width: size, height: size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    sharp({
+      create: {
+        width: size,
+        height: size,
+        channels: 4,
+        background: { r: 0, g: 0, b: 0, alpha: 0 },
+      },
+    })
       .composite([{ input: await fitted(browserMark, size, c.inset ?? 0), gravity: "centre" }])
       .png({ compressionLevel: 9 })
       .toBuffer();
@@ -526,7 +572,9 @@ async function buildFavicons(c: FaviconCompose, src: string): Promise<OutputReco
     writeFileSync(abs, buffer);
     files.push(await outputRecord(abs, { ...dims, format, quality: null }));
   };
-  const ico = await Promise.all([16, 32, 48].map(async (size) => ({ size, png: await transparent(size) })));
+  const ico = await Promise.all(
+    [16, 32, 48].map(async (size) => ({ size, png: await transparent(size) })),
+  );
   await write("favicon.ico", icoFromPngs(ico), { width: 48, height: 48 }, "ico");
   await write("favicon.png", await transparent(512), { width: 512, height: 512 }, "png");
   await write("apple-touch-icon.png", await onBackground(180), { width: 180, height: 180 }, "png");
@@ -549,7 +597,10 @@ async function buildFavicons(c: FaviconCompose, src: string): Promise<OutputReco
       { src: versioned("/icon-512.png"), sizes: "512x512", type: "image/png", purpose: "any" },
     ],
   };
-  writeFileSync(join(publicDir, "manifest.webmanifest"), `${JSON.stringify(webmanifest, null, 2)}\n`);
+  writeFileSync(
+    join(publicDir, "manifest.webmanifest"),
+    `${JSON.stringify(webmanifest, null, 2)}\n`,
+  );
   return files;
 }
 
@@ -566,7 +617,16 @@ function ffmpegArgs(src: string, encode: VideoEncode, codecArgs: string[], out: 
 function mp4Args(encode: VideoEncode, crf: number): string[] {
   const gop = String(encode.gop);
   const rate = ["-maxrate", encode.maxrate, "-bufsize", encode.bufsize];
-  const keyframes = ["-g", gop, "-keyint_min", gop, "-sc_threshold", "0", "-movflags", "+faststart"];
+  const keyframes = [
+    "-g",
+    gop,
+    "-keyint_min",
+    gop,
+    "-sc_threshold",
+    "0",
+    "-movflags",
+    "+faststart",
+  ];
   return [
     "-c:v",
     "libx264",
@@ -704,7 +764,11 @@ async function buildPosters(
         .toFile(file);
     }
     outputs.push(
-      await outputRecord(file, { ...(await imageDims(file)), format: "webp", quality: posterRole.quality }),
+      await outputRecord(file, {
+        ...(await imageDims(file)),
+        format: "webp",
+        quality: posterRole.quality,
+      }),
     );
   }
   return outputs;
@@ -737,14 +801,19 @@ async function buildVideo(
     audio: "stripped",
     maxSeconds: v.maxSeconds,
   };
-  const mp4 = encodeMp4(item, src, sourceSha, encode) ?? fail(`${item.id}: mp4 still above ${MAX_VIDEO_MB}`);
+  const mp4 =
+    encodeMp4(item, src, sourceSha, encode) ?? fail(`${item.id}: mp4 still above ${MAX_VIDEO_MB}`);
   const dims = ffprobe(mp4.file);
   const size = { width: dims.width, height: dims.height };
-  const outputs = [await outputRecord(mp4.file, { ...size, format: "mp4", quality: `crf${mp4.crf}` })];
+  const outputs = [
+    await outputRecord(mp4.file, { ...size, format: "mp4", quality: `crf${mp4.crf}` }),
+  ];
   if (!v.webm) pruneWebm(item);
   const webm = v.webm ? encodeWebm(item, src, sourceSha, encode, mp4.file) : undefined;
   if (webm)
-    outputs.push(await outputRecord(webm.file, { ...size, format: "webm", quality: `crf${webm.crf}` }));
+    outputs.push(
+      await outputRecord(webm.file, { ...size, format: "webm", quality: `crf${webm.crf}` }),
+    );
   outputs.push(...(await buildPosters(item, src, sourceSha, v)));
   return {
     outputs,
@@ -787,7 +856,8 @@ async function buildItem(item: SourceItem): Promise<ManifestItem> {
   };
   if (item.text) record.text = item.text;
   if (item.compose?.kind === "og-card") record.outputs = await buildOgCard(item, item.compose, src);
-  else if (item.compose?.kind === "favicons") record.outputs = await buildFavicons(item.compose, src);
+  else if (item.compose?.kind === "favicons")
+    record.outputs = await buildFavicons(item.compose, src);
   else if (kind === "video") {
     const built = await buildVideo(item, src, sourceSha);
     record.outputs = built.outputs;
@@ -797,7 +867,9 @@ async function buildItem(item: SourceItem): Promise<ManifestItem> {
 }
 
 async function main(): Promise<void> {
-  const previous: Manifest = existsSync(manifestPath) ? readJson<Manifest>(manifestPath) : { items: [] };
+  const previous: Manifest = existsSync(manifestPath)
+    ? readJson<Manifest>(manifestPath)
+    : { items: [] };
   const previousById = new Map(previous.items.map((i) => [i.id, i]));
   const ids = new Set<string>();
   const items: ManifestItem[] = [];
@@ -819,7 +891,9 @@ async function main(): Promise<void> {
     items.push(record);
   }
   if (ONLY && items.length !== sources.items.length) {
-    log("note: partial build (--only) without previous records for the other ids; manifest is incomplete");
+    log(
+      "note: partial build (--only) without previous records for the other ids; manifest is incomplete",
+    );
   }
 
   const declared = new Set(items.flatMap((i) => i.outputs.map((o) => o.file)));

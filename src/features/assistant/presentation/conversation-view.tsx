@@ -3,12 +3,23 @@ import { Info } from "lucide-react";
 import Link from "next/link";
 import { type RefObject, useCallback, useEffect, useRef, useState } from "react";
 import type { Assistant } from "../application/assistant";
-import { announcement, type ConversationState, canSubmit, type Phase } from "../domain/conversation";
+import {
+  announcement,
+  type ConversationState,
+  canSubmit,
+  type Phase,
+} from "../domain/conversation";
 import styles from "./assistant.module.css";
 import { Composer } from "./composer";
 import { usePresentation } from "./context";
 import { EmptyState } from "./empty-state";
-import { MessageList, OutcomeView, PendingQuestion, RefusalView, StreamingAnswer } from "./messages";
+import {
+  MessageList,
+  OutcomeView,
+  PendingQuestion,
+  RefusalView,
+  StreamingAnswer,
+} from "./messages";
 import { Connecting, Offline, Unavailable } from "./panel-states";
 import { Callout } from "./parts";
 import { Announcer, Transcript } from "./transcript";
@@ -77,7 +88,8 @@ export function ConversationView({
     if (
       wasClearing.current &&
       !state.clearing &&
-      (document.activeElement === document.body || document.activeElement?.id === "pv-assistant-panel")
+      (document.activeElement === document.body ||
+        document.activeElement?.id === "pv-assistant-panel")
     )
       setFocus((value) => value + 1);
     wasClearing.current = state.clearing;
@@ -126,9 +138,14 @@ export function ConversationView({
             onDismiss={assistant.dismiss}
           />
         )}
-        {state.refusal && !pending && <RefusalView code={state.refusal} onDismiss={assistant.dismiss} />}
+        {state.refusal && !pending && (
+          <RefusalView code={state.refusal} onDismiss={assistant.dismiss} />
+        )}
       </Transcript>
-      <div hidden={confirming} className={`border-t border-line bg-cream px-3 pt-2 ${styles.composer}`}>
+      <div
+        hidden={confirming}
+        className={`border-t border-line bg-cream px-3 pt-2 ${styles.composer}`}
+      >
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-1.5">
           {state.availability.status === "unavailable" ? (
             <Unavailable availability={state.availability} />

@@ -30,5 +30,7 @@ if (info.site_analytics === "enabled" && allowEnabled) {
     scan(root);
   }
   if (!scanned) throw new Error("Build output empty");
-  console.log(`check-site-analytics-disabled: ${scanned} emitted text files, no collection transport`);
+  console.log(
+    `check-site-analytics-disabled: ${scanned} emitted text files, no collection transport`,
+  );
 }

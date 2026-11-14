@@ -144,12 +144,16 @@ describe("storefront URLs cannot become protocol-relative links", () => {
   });
 
   it("keeps encoded slashes inert and returns single-slash paths", () => {
-    assert.equal(storefrontPath("https://pequeverso.com/%2F%2Fevil.com", policy), "/%2F%2Fevil.com");
+    assert.equal(
+      storefrontPath("https://pequeverso.com/%2F%2Fevil.com", policy),
+      "/%2F%2Fevil.com",
+    );
     assert.equal(
       storefrontPath("https://pequeverso.com/grafismo-fonetico/?a=1#comprar", policy),
       "/grafismo-fonetico/?a=1#comprar",
     );
-    for (const path of ["/grafismo-fonetico/", "/%2F%2Fevil.com"]) assert.ok(/^\/(?!\/)/.test(path));
+    for (const path of ["/grafismo-fonetico/", "/%2F%2Fevil.com"])
+      assert.ok(/^\/(?!\/)/.test(path));
   });
 });
 
@@ -164,7 +168,11 @@ it("allows only the three exact canonical official articles without granting the
   assert.deepEqual(exact.linkHosts, ["consumer.hotmart.com", "refund.hotmart.com"]);
   for (const url of exact.approvedSourceUrls) {
     assert.equal(externalUrl(url, exact), url);
-    assert.equal(externalUrl(url, policy), null, "legacy policy remains closed to official articles");
+    assert.equal(
+      externalUrl(url, policy),
+      null,
+      "legacy policy remains closed to official articles",
+    );
     for (const bad of [
       `${url}?next=https://evil.example`,
       `${url}#fragment`,
@@ -190,9 +198,15 @@ it("allows only the three exact canonical official articles without granting the
   }
   assert.equal(externalUrl("https://help.hotmart.com/es/article/123/unknown", exact), null);
   assert.equal(externalUrl("https://help.hotmart.com/redirect", exact), null);
-  assert.equal(externalUrl("https://consumer.hotmart.com/", exact), "https://consumer.hotmart.com/");
+  assert.equal(
+    externalUrl("https://consumer.hotmart.com/", exact),
+    "https://consumer.hotmart.com/",
+  );
   assert.equal(externalUrl("https://refund.hotmart.com/", exact), "https://refund.hotmart.com/");
-  assert.equal(externalUrl("https://pequeverso.com/soporte/", exact), "https://pequeverso.com/soporte/");
+  assert.equal(
+    externalUrl("https://pequeverso.com/soporte/", exact),
+    "https://pequeverso.com/soporte/",
+  );
 });
 
 it("drops unsafe official citations without changing distinct source identities", async () => {
@@ -220,5 +234,8 @@ it("drops unsafe official citations without changing distinct source identities"
   const first = sources[0];
   if (!first) throw new Error("An approved reference must exist");
   const distinctDocuments = [first, { ...first, id: "another-document" }];
-  assert.deepEqual(applyLinkPolicy(answer({ sources: distinctDocuments }), exact).sources, distinctDocuments);
+  assert.deepEqual(
+    applyLinkPolicy(answer({ sources: distinctDocuments }), exact).sources,
+    distinctDocuments,
+  );
 });

@@ -42,13 +42,28 @@ export function HeroComposition({ cutout, stack, sizes }: Props) {
       <div className="absolute bottom-0 left-[23%] z-20 w-[58%] [&_img]:h-auto [&_img]:w-full [&_picture]:contents">
         <MediaImage id={cutout} sizes={sizes} priority />
       </div>
-      <SyllableTile tone="gold" size="md" delay={1.5} rotate={-8} className="top-[4%] left-[35%] z-30">
+      <SyllableTile
+        tone="gold"
+        size="md"
+        delay={1.5}
+        rotate={-8}
+        className="top-[4%] left-[35%] z-30"
+      >
         GA
       </SyllableTile>
-      <SyllableTile tone="white" size="md" delay={3} rotate={7} className="right-[4%] bottom-[30%] z-30">
+      <SyllableTile
+        tone="white"
+        size="md"
+        delay={3}
+        rotate={7}
+        className="right-[4%] bottom-[30%] z-30"
+      >
         TO
       </SyllableTile>
-      <GoldStar delay={2} className="top-[5%] right-[27%] z-30 size-[clamp(1.75rem,6cqw,2.75rem)]" />
+      <GoldStar
+        delay={2}
+        className="top-[5%] right-[27%] z-30 size-[clamp(1.75rem,6cqw,2.75rem)]"
+      />
     </div>
   );
 }

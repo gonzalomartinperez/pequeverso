@@ -27,7 +27,12 @@ export function StaticStarfield({ pattern = "define", className }: Props) {
     >
       {pattern === "define" ? (
         <defs>
-          <pattern id={PATTERN_ID} width={TILE_SIZE} height={TILE_SIZE} patternUnits="userSpaceOnUse">
+          <pattern
+            id={PATTERN_ID}
+            width={TILE_SIZE}
+            height={TILE_SIZE}
+            patternUnits="userSpaceOnUse"
+          >
             {buildStaticLayers().map((layer) => (
               <path
                 key={`${layer.depth}-${layer.tint}`}

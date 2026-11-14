@@ -47,7 +47,10 @@ export function ResourceBento({ resources, total }: Props) {
               "relative mx-auto w-full max-w-[26rem] rotate-[-1.5deg] border-4 border-white/90 shadow-lg",
             )}
           >
-            <MediaImage id={lead.card} sizes="(min-width: 1024px) 520px, (min-width: 640px) 80vw, 90vw" />
+            <MediaImage
+              id={lead.card}
+              sizes="(min-width: 1024px) 520px, (min-width: 640px) 80vw, 90vw"
+            />
           </div>
           {embedded.length > 0 ? (
             <ul className="relative grid gap-3" role="list">

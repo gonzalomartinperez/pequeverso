@@ -17,7 +17,8 @@ const isMobile = (name: string) => name.includes("mobile");
  * 2026-10-05), which starves Playwright's stability checks. WebKit therefore exercises the assistant
  * on /soporte/, which is also an assistant route; Chromium and Firefox cover the hub and landing.
  */
-const start = (project: string, path: string) => (project.startsWith("webkit") ? "/soporte/" : path);
+const start = (project: string, path: string) =>
+  project.startsWith("webkit") ? "/soporte/" : path;
 
 function apiCalls(page: Page): Request[] {
   const calls: Request[] = [];
@@ -50,7 +51,12 @@ test.beforeEach(async ({ context }, info) => {
   await context.addInitScript(() => {
     window.localStorage.setItem(
       "pv_consent",
-      JSON.stringify({ version: 2, analytics: false, marketing: false, updatedAt: "2026-10-05T00:00:00Z" }),
+      JSON.stringify({
+        version: 2,
+        analytics: false,
+        marketing: false,
+        updatedAt: "2026-10-05T00:00:00Z",
+      }),
     );
   });
 });
@@ -65,17 +71,23 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     ["/privacidad/", false],
     ["/terminos/", false],
   ] as const) {
-    test(`stays idle before opening on ${path} (${visible ? "eligible" : "excluded"})`, async ({ page }) => {
+    test(`stays idle before opening on ${path} (${visible ? "eligible" : "excluded"})`, async ({
+      page,
+    }) => {
       const calls = apiCalls(page);
       await page.goto(path);
       if (visible) await expect(launcher(page)).toBeVisible();
       else await expect(launcher(page)).toBeHidden();
       await page.waitForTimeout(500);
-      expect(calls, "no session or API call before the visitor opens the assistant").toHaveLength(0);
+      expect(calls, "no session or API call before the visitor opens the assistant").toHaveLength(
+        0,
+      );
     });
   }
 
-  test("launcher is a named star-only control with a supplementary tooltip", async ({ page }, info) => {
+  test("launcher is a named star-only control with a supplementary tooltip", async ({
+    page,
+  }, info) => {
     const calls = apiCalls(page);
     await page.goto(start(info.project.name, "/"));
     const control = launcher(page);
@@ -101,7 +113,10 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     }) => {
       const extra = grafismoResources.find((resource) => resource.id === "silabas-en-tus-manos");
       if (!extra) throw new Error("The regression needs an actual published kit resource");
-      const sample = readFileSync("contracts/assistant-api/examples/stream.recommendation.sse", "utf8");
+      const sample = readFileSync(
+        "contracts/assistant-api/examples/stream.recommendation.sse",
+        "utf8",
+      );
       // This is a deterministic presentation fixture, not a backend/model/persistence claim.
       const body = sample
         .split("\n")
@@ -111,7 +126,8 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
           if (event.type !== "message.completed") return line;
           const message = event.message as Record<string, unknown>;
           const selected = message.resources as unknown[];
-          if (selected.length !== 2) throw new Error("Review the pinned recommendation example selection");
+          if (selected.length !== 2)
+            throw new Error("Review the pinned recommendation example selection");
           return `data: ${JSON.stringify({
             ...event,
             message: {
@@ -152,8 +168,13 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
       await badge.scrollIntoViewIfNeeded();
       await expect(badge).toBeInViewport();
       await expect(product.getByText("3 recursos", { exact: true })).toHaveCount(0);
-      const selection = panel(page).getByRole("region", { name: "Materiales destacados", exact: true });
-      await expect(selection.getByText("Selección para esta respuesta", { exact: true })).toHaveCount(1);
+      const selection = panel(page).getByRole("region", {
+        name: "Materiales destacados",
+        exact: true,
+      });
+      await expect(
+        selection.getByText("Selección para esta respuesta", { exact: true }),
+      ).toHaveCount(1);
       await expect(selection.getByRole("listitem")).toHaveCount(3);
       await selection.getByRole("heading").scrollIntoViewIfNeeded();
       await expect(selection.getByRole("heading")).toBeInViewport();
@@ -190,7 +211,11 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
           )
             failures.push(node.textContent.trim());
         }
-        return { width: document.documentElement.scrollWidth, viewport: window.innerWidth, failures };
+        return {
+          width: document.documentElement.scrollWidth,
+          viewport: window.innerWidth,
+          failures,
+        };
       });
       expect(faults).toEqual({ width, viewport: width, failures: [] });
       await page.screenshot({
@@ -258,8 +283,8 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
           const observe = this.observe.bind(this);
           this.observe = (target, options) => {
             if (target.matches("ol[aria-label]") && target.closest("#pv-assistant-panel")) {
-              (window as Window & { notifyTranscriptResize?: () => void }).notifyTranscriptResize = () =>
-                callback([], this);
+              (window as Window & { notifyTranscriptResize?: () => void }).notifyTranscriptResize =
+                () => callback([], this);
             }
             observe(target, options);
           };
@@ -278,7 +303,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
       .getByRole("listitem")
       .filter({ has: page.getByRole("heading", { name: "Asistente" }) })
       .last();
-    expect(((await answer.locator("p").first().textContent()) ?? "").trim().length).toBeGreaterThan(20);
+    expect(((await answer.locator("p").first().textContent()) ?? "").trim().length).toBeGreaterThan(
+      20,
+    );
     const purchase = panel(page).getByRole("link", { name: "Ver opciones de compra" }).first();
     if (await purchase.count())
       await expect(purchase).toHaveAttribute("href", /^\/grafismo-fonetico\/#comprar$/);
@@ -289,7 +316,8 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     const withheld = await panel(page)
       .getByText("Consulta el precio vigente en la página del material")
       .count();
-    if (await panel(page).getByRole("article").count()) expect(referenced + withheld).toBeGreaterThan(0);
+    if (await panel(page).getByRole("article").count())
+      expect(referenced + withheld).toBeGreaterThan(0);
     await expect(panel(page).getByText(/Precio confirmado/)).toHaveCount(0);
     const message = calls.find((c) => c.url().endsWith("/api/v1/messages"));
     expect(message?.headers()["idempotency-key"]).toMatch(/^[A-Za-z0-9_-]{8,128}$/);
@@ -319,7 +347,11 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
           while (scroller && getComputedStyle(scroller).overflowY !== "auto")
             scroller = scroller.parentElement;
           if (!scroller) throw new Error("Transcript scroller was not found");
-          return { top: scroller.scrollTop, height: scroller.scrollHeight, client: scroller.clientHeight };
+          return {
+            top: scroller.scrollTop,
+            height: scroller.scrollHeight,
+            client: scroller.clientHeight,
+          };
         });
         const stable =
           previousGeometry?.top === geometry.top &&
@@ -349,14 +381,16 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     expect(initialPadding.end).toBe(initialPadding.start);
     const reader = await paragraph.evaluate((element) => {
       let scroller = element.parentElement;
-      while (scroller && getComputedStyle(scroller).overflowY !== "auto") scroller = scroller.parentElement;
+      while (scroller && getComputedStyle(scroller).overflowY !== "auto")
+        scroller = scroller.parentElement;
       if (!scroller) throw new Error("Transcript scroller was not found");
       const before = scroller.scrollTop;
       scroller.scrollTop = 0;
       const after = scroller.scrollTop;
       // The reader has already moved; force resize before the scroll event is delivered.
       if (!(after < before)) throw new Error(`Reader did not move upward: ${before} → ${after}`);
-      const notify = (window as Window & { notifyTranscriptResize?: () => void }).notifyTranscriptResize;
+      const notify = (window as Window & { notifyTranscriptResize?: () => void })
+        .notifyTranscriptResize;
       if (!notify) throw new Error("Transcript resize observer was not captured");
       notify();
       return { before, after, afterResize: scroller.scrollTop };
@@ -391,12 +425,16 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
       .poll(() =>
         jumpTooltip.evaluate((tooltip) => {
           const bounds = tooltip.getBoundingClientRect();
-          const hit = document.elementFromPoint(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+          const hit = document.elementFromPoint(
+            bounds.x + bounds.width / 2,
+            bounds.y + bounds.height / 2,
+          );
           return hit === tooltip || (hit !== null && tooltip.contains(hit));
         }),
       )
       .toBe(true);
-    if (isMobile(info.project.name)) await shot(page, info.project.name, "final-answer-text-visible");
+    if (isMobile(info.project.name))
+      await shot(page, info.project.name, "final-answer-text-visible");
     await jump.click();
     await expect(jump).toBeHidden();
     await expect(
@@ -430,7 +468,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await shot(page, info.project.name, "cancelled");
   });
 
-  test("minimizing keeps the conversation and lets an authorized answer finish", async ({ page }, info) => {
+  test("minimizing keeps the conversation and lets an authorized answer finish", async ({
+    page,
+  }, info) => {
     await page.goto(start(info.project.name, "/"));
     await openPanel(page);
     await ask(page, "¿Para qué edades es?");
@@ -477,8 +517,12 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await page.goto(start(info.project.name, "/"));
     await openPanel(page);
     await composer(page).evaluate((field) => {
-      field.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", isComposing: true, bubbles: true }));
-      field.dispatchEvent(new KeyboardEvent("keydown", { key: "Process", keyCode: 229, bubbles: true }));
+      field.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", isComposing: true, bubbles: true }),
+      );
+      field.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Process", keyCode: 229, bubbles: true }),
+      );
     });
     await expect(panel(page)).toBeVisible();
     await composer(page).press("Escape");
@@ -491,9 +535,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await openPanel(page);
     // Compact: a named, non-modal region; the page stays usable and its motion keeps running.
     await expect(page.getByRole("region", { name: "Asistente de Pequeverso" })).toBeVisible();
-    expect(await page.evaluate(() => Boolean(document.querySelector("main")?.closest("[inert]")))).toBe(
-      false,
-    );
+    expect(
+      await page.evaluate(() => Boolean(document.querySelector("main")?.closest("[inert]"))),
+    ).toBe(false);
     await expect(page.locator("html")).not.toHaveAttribute("data-motion-hold", "");
     const compact = await panel(page).boundingBox();
     expect(compact?.width ?? 0).toBeLessThanOrEqual(416);
@@ -501,7 +545,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     const starterButtons = panel(page)
       .getByRole("region", { name: "Preguntas para empezar" })
       .getByRole("button");
-    const composer = await panel(page).getByRole("textbox", { name: "Escribe tu pregunta" }).boundingBox();
+    const composer = await panel(page)
+      .getByRole("textbox", { name: "Escribe tu pregunta" })
+      .boundingBox();
     for (const starter of await starterButtons.all()) {
       const bounds = await starter.boundingBox();
       expect(bounds).not.toBeNull();
@@ -511,7 +557,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
       expect(
         await starter.evaluate((button) => {
           const box = button.getBoundingClientRect();
-          return button.contains(document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2));
+          return button.contains(
+            document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2),
+          );
         }),
       ).toBe(true);
     }
@@ -523,7 +571,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
       "aria-modal",
       "true",
     );
-    expect(await page.evaluate(() => Boolean(document.querySelector("main")?.closest("[inert]")))).toBe(true);
+    expect(
+      await page.evaluate(() => Boolean(document.querySelector("main")?.closest("[inert]"))),
+    ).toBe(true);
     await expect(page.locator("html")).toHaveAttribute("data-motion-hold", "");
     for (let i = 0; i < 12; i++) {
       await page.keyboard.press("Tab");
@@ -540,13 +590,15 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await shot(page, info.project.name, "expanded");
     await panel(page).getByRole("button", { name: "Reducir panel" }).click();
     await expect(panel(page)).toHaveAttribute("data-size", "compact");
-    expect(await page.evaluate(() => Boolean(document.querySelector("main")?.closest("[inert]")))).toBe(
-      false,
-    );
+    expect(
+      await page.evaluate(() => Boolean(document.querySelector("main")?.closest("[inert]"))),
+    ).toBe(false);
     await expect(page.locator("html")).not.toHaveAttribute("data-motion-hold", "");
   });
 
-  test("uses a near-full-screen surface on phones, portrait and landscape", async ({ page }, info) => {
+  test("uses a near-full-screen surface on phones, portrait and landscape", async ({
+    page,
+  }, info) => {
     test.skip(!isMobile(info.project.name), "phone geometry");
     const calls = apiCalls(page);
     await page.goto(start(info.project.name, "/grafismo-fonetico/"));
@@ -578,16 +630,18 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
       height: visualViewport?.height ?? innerHeight,
     }));
     expect(fieldBox?.y ?? -1).toBeGreaterThanOrEqual(visual.top);
-    expect((fieldBox?.y ?? 0) + (fieldBox?.height ?? 0)).toBeLessThanOrEqual(visual.top + visual.height + 1);
+    expect((fieldBox?.y ?? 0) + (fieldBox?.height ?? 0)).toBeLessThanOrEqual(
+      visual.top + visual.height + 1,
+    );
     await expect(field).toHaveValue("Borrador que debe conservarse al cambiar de tamaño");
     const landscape = await panel(page).boundingBox();
     expect(landscape?.height ?? 0).toBeGreaterThan((viewport?.width ?? 0) * 0.85);
     await shot(page, info.project.name, "landscape");
     await panel(page).getByRole("button", { name: "Minimizar asistente" }).click();
     await expect(page.locator("html")).not.toHaveAttribute("data-motion-hold", "");
-    expect(await page.evaluate(() => Boolean(document.querySelector("main")?.closest("[inert]")))).toBe(
-      false,
-    );
+    expect(
+      await page.evaluate(() => Boolean(document.querySelector("main")?.closest("[inert]"))),
+    ).toBe(false);
     await expect(launcher(page)).toBeFocused();
   });
 
@@ -674,17 +728,18 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await expect(
       panel(page).getByRole("heading", { name: "Asistente de Pequeverso", exact: true }),
     ).toBeVisible();
-    await expect(panel(page).getByRole("heading", { name: "Asistente Pequeverso", exact: true })).toHaveCount(
-      0,
-    );
+    await expect(
+      panel(page).getByRole("heading", { name: "Asistente Pequeverso", exact: true }),
+    ).toHaveCount(0);
     await expect(panel(page).locator("header").getByText("IA", { exact: true })).toHaveCount(0);
     await expect(panel(page).getByRole("combobox")).toHaveCount(0);
     await expect(panel(page).locator("select")).toHaveCount(0);
-    await expect(panel(page).getByText("No escribas datos personales ni de tus hijos.")).toHaveCount(0);
-    await expect(panel(page).getByRole("link", { name: "Cómo tratamos tus mensajes" })).toHaveAttribute(
-      "href",
-      "/privacidad/",
-    );
+    await expect(
+      panel(page).getByText("No escribas datos personales ni de tus hijos."),
+    ).toHaveCount(0);
+    await expect(
+      panel(page).getByRole("link", { name: "Cómo tratamos tus mensajes" }),
+    ).toHaveAttribute("href", "/privacidad/");
     await ask(page, "¿Qué incluye el kit?");
     await expect(panel(page)).toHaveAttribute("data-phase", "completed");
     await composer(page).fill("Mi borrador sin enviar");
@@ -704,7 +759,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await expect(panel(page).getByText("¿Qué incluye el kit?", { exact: true })).toBeVisible();
     await expect(panel(page).getByRole("combobox")).toHaveCount(0);
     expect(calls.filter((call) => call.url().endsWith("/api/v1/session"))).toHaveLength(1);
-    const sends = calls.filter((call) => call.url().endsWith("/api/v1/messages") && call.method() === "POST");
+    const sends = calls.filter(
+      (call) => call.url().endsWith("/api/v1/messages") && call.method() === "POST",
+    );
     expect(sends).toHaveLength(1);
     expect(sends[0]?.postDataJSON().locale).toBe("es");
     expect(sends[0]?.postDataJSON().response_language).toBe("es");
@@ -737,7 +794,10 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
   test("old API revision refuses native Spanish generation with a safe connection state", async ({
     page,
   }, info) => {
-    test.skip(info.project.name !== "chromium-desktop", "revision negotiation is engine-independent");
+    test.skip(
+      info.project.name !== "chromium-desktop",
+      "revision negotiation is engine-independent",
+    );
     const calls = apiCalls(page);
     await page.route(`${API}/api/v1/session`, async (route) => {
       const response = await route.fetch();
@@ -759,8 +819,13 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     expect(calls.filter((call) => call.url().endsWith("/api/v1/messages"))).toHaveLength(0);
   });
 
-  test("explicit requests for other response languages stay Spanish-only", async ({ page }, info) => {
-    test.skip(info.project.name !== "chromium-desktop", "Spanish response policy uses the real fixture API");
+  test("explicit requests for other response languages stay Spanish-only", async ({
+    page,
+  }, info) => {
+    test.skip(
+      info.project.name !== "chromium-desktop",
+      "Spanish response policy uses the real fixture API",
+    );
     const calls = apiCalls(page);
     await page.goto("/soporte/");
     await openPanel(page);
@@ -774,7 +839,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     }
     const messages = panel(page).getByRole("list", { name: "Conversación con el asistente" });
     await expect(messages.locator('[lang="en"]')).toHaveCount(0);
-    await expect(messages.getByText("Por ahora respondo solo en español.", { exact: true })).toHaveCount(3);
+    await expect(
+      messages.getByText("Por ahora respondo solo en español.", { exact: true }),
+    ).toHaveCount(3);
     const requests = calls.filter((call) => call.url().endsWith("/api/v1/messages"));
     expect(requests).toHaveLength(3);
     for (const request of requests) expect(request.postDataJSON().response_language).toBe("es");
@@ -794,7 +861,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await panel(page).getByRole("button", { name: "Nueva conversación" }).click();
     await panel(page).getByRole("button", { name: "Borrar" }).click();
     await expect(panel(page).getByRole("region", { name: "Preguntas para empezar" })).toBeVisible();
-    expect(await panel(page).evaluate((element) => element.contains(document.activeElement))).toBe(true);
+    expect(await panel(page).evaluate((element) => element.contains(document.activeElement))).toBe(
+      true,
+    );
     const greeting = panel(page).getByRole("list", { name: "Conversación con el asistente" });
     const greetingWidth = await greeting.evaluate((element) => {
       const style = getComputedStyle(element);
@@ -810,11 +879,17 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
       element.scrollTop = 0;
       element.dispatchEvent(new Event("scroll"));
     });
-    await expect(panel(page).getByRole("button", { name: "Ir a la última respuesta" })).toHaveCount(0);
-    expect(calls.some((c) => c.method() === "DELETE" && c.url().endsWith("/api/v1/session"))).toBe(true);
+    await expect(panel(page).getByRole("button", { name: "Ir a la última respuesta" })).toHaveCount(
+      0,
+    );
+    expect(calls.some((c) => c.method() === "DELETE" && c.url().endsWith("/api/v1/session"))).toBe(
+      true,
+    );
   });
 
-  test("clear confirmation preserves draft and consumes Escape from header controls", async ({ page }) => {
+  test("clear confirmation preserves draft and consumes Escape from header controls", async ({
+    page,
+  }) => {
     await page.goto("/soporte/");
     await openPanel(page);
     await ask(page, "¿Para qué edades es?");
@@ -833,7 +908,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await expect(panel(page).locator("[inert]")).toHaveCount(0);
   });
 
-  test("confirmed clear keeps focus stable without stealing a visitor's later focus", async ({ page }) => {
+  test("confirmed clear keeps focus stable without stealing a visitor's later focus", async ({
+    page,
+  }) => {
     await page.goto("/soporte/");
     await openPanel(page);
     await ask(page, "¿Para qué edades es?");
@@ -1018,7 +1095,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
           }),
         )
         .toBe(true);
-      const clipped = await panel(page).evaluate((element) => element.scrollWidth > element.clientWidth + 1);
+      const clipped = await panel(page).evaluate(
+        (element) => element.scrollWidth > element.clientWidth + 1,
+      );
       expect(clipped).toBe(false);
       await shot(page, info.project.name, `reduced-viewport-${width}`);
     }
@@ -1068,7 +1147,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
       }
 
       const box = await panel(page).boundingBox();
-      expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual((page.viewportSize()?.width ?? 0) + 1);
+      expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(
+        (page.viewportSize()?.width ?? 0) + 1,
+      );
       const answerText = panel(page)
         .getByRole("listitem")
         .filter({ has: page.getByRole("heading", { name: "Asistente" }) })
@@ -1077,9 +1158,11 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         .first();
       const readingPosition = await answerText.evaluate((paragraph) => {
         let scroller = paragraph.parentElement;
-        while (scroller && getComputedStyle(scroller).overflowY !== "auto") scroller = scroller.parentElement;
+        while (scroller && getComputedStyle(scroller).overflowY !== "auto")
+          scroller = scroller.parentElement;
         if (!scroller) throw new Error("Transcript scroller was not found");
-        scroller.scrollTop += paragraph.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
+        scroller.scrollTop +=
+          paragraph.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
         return {
           top: scroller.scrollTop,
           offset: paragraph.getBoundingClientRect().top - scroller.getBoundingClientRect().top,
@@ -1114,7 +1197,8 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         .toBeLessThanOrEqual(1);
       const reading = await answerText.evaluate((paragraph) => {
         let scroller = paragraph.parentElement;
-        while (scroller && getComputedStyle(scroller).overflowY !== "auto") scroller = scroller.parentElement;
+        while (scroller && getComputedStyle(scroller).overflowY !== "auto")
+          scroller = scroller.parentElement;
         if (!scroller) throw new Error("Transcript scroller was not found");
         const jump = document.querySelector<HTMLButtonElement>(
           'button[aria-label="Ir a la última respuesta"]',
@@ -1174,7 +1258,10 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
         .poll(() =>
           tooltip.evaluate((element) => {
             const bounds = element.getBoundingClientRect();
-            const hit = document.elementFromPoint(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+            const hit = document.elementFromPoint(
+              bounds.x + bounds.width / 2,
+              bounds.y + bounds.height / 2,
+            );
             return {
               contained:
                 bounds.left >= -1 &&
@@ -1201,7 +1288,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     }
   });
 
-  test("an unreachable API leaves the store working and recovers on request", async ({ page }, info) => {
+  test("an unreachable API leaves the store working and recovers on request", async ({
+    page,
+  }, info) => {
     await page.route(`${API}/**`, (route) => route.abort());
     await page.goto(start(info.project.name, "/grafismo-fonetico/"));
     await launcher(page).click();
@@ -1219,7 +1308,9 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     await shot(page, info.project.name, "connection-recovered");
   });
 
-  test("an open panel is never covered by the consent banner, which stays usable", async ({ page }, info) => {
+  test("an open panel is never covered by the consent banner, which stays usable", async ({
+    page,
+  }, info) => {
     await page.goto(start(info.project.name, "/"));
     const banner = page.getByTestId("consent-banner");
     await expect(banner).toBeVisible();
@@ -1231,7 +1322,8 @@ test.describe("native assistant (enabled verification build, fixture API)", () =
     expect(box).not.toBeNull();
     if (box) {
       const top = await page.evaluate(
-        ([x, y]) => document.elementFromPoint(x ?? 0, y ?? 0)?.closest("#pv-assistant-panel") !== null,
+        ([x, y]) =>
+          document.elementFromPoint(x ?? 0, y ?? 0)?.closest("#pv-assistant-panel") !== null,
         [box.x + box.width / 2, box.y + box.height / 2],
       );
       expect(top, "the composer is the topmost element at its centre").toBe(true);

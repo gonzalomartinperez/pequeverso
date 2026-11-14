@@ -44,7 +44,10 @@ test("complete internal navigation: no dead links", async ({ page, request }) =>
   expect(seen.size).toBeGreaterThanOrEqual(9);
 });
 
-test("sitemap lists only indexable routes and pages carry a self canonical", async ({ page, request }) => {
+test("sitemap lists only indexable routes and pages carry a self canonical", async ({
+  page,
+  request,
+}) => {
   const sitemap = await (await request.get("/sitemap.xml")).text();
   expect(sitemap).toContain("https://pequeverso.com/grafismo-fonetico/");
   expect(sitemap).not.toContain("/imprime-y-juega/");
@@ -63,10 +66,13 @@ test("sitemap lists only indexable routes and pages carry a self canonical", asy
   }
 });
 
-test("media requests resolve and the LCP worksheet image has explicit dimensions", async ({ page }) => {
+test("media requests resolve and the LCP worksheet image has explicit dimensions", async ({
+  page,
+}) => {
   const failed: string[] = [];
   page.on("response", (res) => {
-    if (res.url().includes("/media/") && res.status() >= 400) failed.push(`${res.status()} ${res.url()}`);
+    if (res.url().includes("/media/") && res.status() >= 400)
+      failed.push(`${res.status()} ${res.url()}`);
   });
   await page.goto("/grafismo-fonetico/");
   const hero = page.locator("main img[data-lcp]").first();

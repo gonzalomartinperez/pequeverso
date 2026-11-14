@@ -25,7 +25,8 @@ export async function checkInternalLink(
     seen.add(url.href);
     affiliateRoute ||= affiliatePaths.has(url.pathname);
     let response = await fetcher(url, { method: "HEAD", redirect: "manual" });
-    if (response.status === 405) response = await fetcher(url, { method: "GET", redirect: "manual" });
+    if (response.status === 405)
+      response = await fetcher(url, { method: "GET", redirect: "manual" });
     if (!REDIRECTS.has(response.status)) {
       if (affiliateRoute && response.ok)
         return failed(`affiliate route returned ${response.status} without a merchant redirect`);

@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, type ReactNode, startTransition, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  type ReactNode,
+  startTransition,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 
 type AgeState = {
   /** Index of the selected age option, or null when no selector is mounted. */

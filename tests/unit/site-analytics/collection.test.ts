@@ -16,7 +16,9 @@ import { loadEdgeRules, toHtaccess, toNextHeaders } from "../../../tools/lib/edg
 
 test("OFF ignores an unrelated origin; enabled input rejects unsafe origins without echoing them", () => {
   assert.deepEqual(parseAnalyticsEnv({ apiOrigin: "secret" }), { enabled: false });
-  assert.deepEqual(parseAnalyticsEnv({ enabled: "false", apiOrigin: "secret" }), { enabled: false });
+  assert.deepEqual(parseAnalyticsEnv({ enabled: "false", apiOrigin: "secret" }), {
+    enabled: false,
+  });
   for (const apiOrigin of [
     "https://user:private@example.com",
     "https://example.com/path",
@@ -31,17 +33,25 @@ test("OFF ignores an unrelated origin; enabled input rejects unsafe origins with
     assert.throws(
       () => parseAnalyticsEnv({ enabled: "true", apiOrigin }),
       (error) =>
-        error instanceof Error && !error.message.includes(apiOrigin) && !error.message.includes("private"),
+        error instanceof Error &&
+        !error.message.includes(apiOrigin) &&
+        !error.message.includes("private"),
     );
   }
   assert.throws(() => parseAnalyticsEnv({ enabled: "TRUE" }));
-  assert.deepEqual(parseAnalyticsEnv({ enabled: "true", apiOrigin: "https://analytics.example.com" }), {
-    enabled: true,
-    endpoint: "https://analytics.example.com/api/v1/analytics/events",
-  });
+  assert.deepEqual(
+    parseAnalyticsEnv({ enabled: "true", apiOrigin: "https://analytics.example.com" }),
+    {
+      enabled: true,
+      endpoint: "https://analytics.example.com/api/v1/analytics/events",
+    },
+  );
   assert.equal(
-    parseAnalyticsEnv({ enabled: "true", apiOrigin: "http://127.0.0.1:49000", localTestBuild: "true" })
-      .enabled,
+    parseAnalyticsEnv({
+      enabled: "true",
+      apiOrigin: "http://127.0.0.1:49000",
+      localTestBuild: "true",
+    }).enabled,
     true,
   );
 });
@@ -162,7 +172,10 @@ test("publisher bounds requests, strips credentials and aborts without retry", a
       init?.signal?.addEventListener("abort", () => reject(new Error("aborted"))),
     );
   };
-  const publisher = createPublisher("https://analytics.example.com/api/v1/analytics/events", fetcher);
+  const publisher = createPublisher(
+    "https://analytics.example.com/api/v1/analytics/events",
+    fetcher,
+  );
   const f = fixture();
   f.controller.navigate("/");
   f.controller.consent(true);
@@ -202,7 +215,9 @@ test("both deployment headers add exactly the enabled origin; OFF is unchanged",
 });
 
 test("site analytics preserves layer direction and closed composition ownership", async () => {
-  const { sourceFiles, sourceModule, sourceTarget } = await import("../../helpers/source-architecture.ts");
+  const { sourceFiles, sourceModule, sourceTarget } = await import(
+    "../../helpers/source-architecture.ts"
+  );
   const root = "src/features/site-analytics/";
   for (const file of sourceFiles(root)) {
     const layer = file.slice(root.length).split("/")[0];
@@ -211,7 +226,10 @@ test("site analytics preserves layer direction and closed composition ownership"
       const target = sourceTarget(file, specifier);
       if (layer === "domain") assert.ok(target?.startsWith(`${root}domain/`), file);
       if (layer === "application")
-        assert.ok(target?.startsWith(`${root}domain/`) || target?.startsWith(`${root}application/`), file);
+        assert.ok(
+          target?.startsWith(`${root}domain/`) || target?.startsWith(`${root}application/`),
+          file,
+        );
       if (layer === "adapters")
         assert.ok(
           ["domain/", "application/", "adapters/"].some((part) => target?.startsWith(root + part)),

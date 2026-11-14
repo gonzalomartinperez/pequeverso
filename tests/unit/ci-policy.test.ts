@@ -36,11 +36,15 @@ import {
 } from "../../tools/ci/inventories.ts";
 
 for (const profile of ["nightly"] as const) {
-  const success = Object.fromEntries(prerequisites[profile].map((name) => [name, { result: "success" }]));
+  const success = Object.fromEntries(
+    prerequisites[profile].map((name) => [name, { result: "success" }]),
+  );
   test(`${profile} requires every exact prerequisite`, () => {
     requireSuccessfulJobs(success, profile);
     assert.throws(() => requireSuccessfulJobs(null, profile));
-    assert.throws(() => requireSuccessfulJobs({ ...success, unexpected: { result: "success" } }, profile));
+    assert.throws(() =>
+      requireSuccessfulJobs({ ...success, unexpected: { result: "success" } }, profile),
+    );
     const incomplete = { ...success };
     delete incomplete[prerequisites[profile][0]];
     assert.throws(() => requireSuccessfulJobs(incomplete, profile));
@@ -105,7 +109,9 @@ for (const suite of Object.keys(projects) as Suite[]) {
     assert.ok(first);
     assert.throws(() => testIdentities(report(suite, [first]), suite, true));
     assert.throws(() => testIdentities(report(suite, ["foreign-project"]), suite));
-    assert.throws(() => testIdentities({ ...report(suite), errors: [{ message: "load failed" }] }, suite));
+    assert.throws(() =>
+      testIdentities({ ...report(suite), errors: [{ message: "load failed" }] }, suite),
+    );
     assert.throws(() => testIdentities({ suites: [] }, suite));
   });
 }
@@ -166,7 +172,10 @@ test("OFF manifests bind the exact complete payload, source, workflow, run, conf
   assert.throws(() => requireManifest({ ...manifest, variant: "enabled" }, binding, members));
   assert.throws(() => requireManifest(manifest, binding, members.slice(1)));
   assert.throws(() =>
-    requireManifest(manifest, binding, [...members, { path: "extra.html", size: 0, sha256: digest("") }]),
+    requireManifest(manifest, binding, [
+      ...members,
+      { path: "extra.html", size: 0, sha256: digest("") },
+    ]),
   );
   assert.throws(() => requireBinding(binding, { ...binding, repository: "foreign/repository" }));
   assert.throws(() => requireBinding(binding, { ...binding, source_sha: "unknown" }));
@@ -186,7 +195,8 @@ for (const path of [
   "data.sqlite",
   "dump.bak",
 ]) {
-  test(`unsafe artifact path rejected: ${JSON.stringify(path)}`, () => assert.throws(() => safeMember(path)));
+  test(`unsafe artifact path rejected: ${JSON.stringify(path)}`, () =>
+    assert.throws(() => safeMember(path)));
 }
 test("OFF inventory rejects duplicates, prefix conflicts, unknown fields, enabled markers and size bombs", () => {
   const extra = { path: "asset", size: 1, sha256: digest("asset") };
@@ -237,15 +247,29 @@ test("build identity distinguishes disabled exports from enabled fixtures", () =
   }
   assert.throws(() => buildIdentity(bytes, binding, "enabled"));
   assert.throws(() =>
-    buildIdentity(Buffer.from(JSON.stringify({ ...info, sha: "f".repeat(40) })), binding, "disabled"),
+    buildIdentity(
+      Buffer.from(JSON.stringify({ ...info, sha: "f".repeat(40) })),
+      binding,
+      "disabled",
+    ),
   );
   assert.throws(() =>
-    buildIdentity(Buffer.from(JSON.stringify({ ...info, output: "standalone" })), binding, "disabled"),
+    buildIdentity(
+      Buffer.from(JSON.stringify({ ...info, output: "standalone" })),
+      binding,
+      "disabled",
+    ),
   );
   assert.throws(() =>
-    buildIdentity(Buffer.from(JSON.stringify({ ...info, extra: "unexpected" })), binding, "disabled"),
+    buildIdentity(
+      Buffer.from(JSON.stringify({ ...info, extra: "unexpected" })),
+      binding,
+      "disabled",
+    ),
   );
-  assert.throws(() => buildIdentity(Buffer.from(JSON.stringify({ ...info, ref: {} })), binding, "disabled"));
+  assert.throws(() =>
+    buildIdentity(Buffer.from(JSON.stringify({ ...info, ref: {} })), binding, "disabled"),
+  );
 });
 test("workflow transfer and aggregate wiring never uploads enabled exports or weakens the ci bridge", () => {
   const ci = readFileSync(".github/workflows/ci.yml", "utf8");
@@ -370,7 +394,10 @@ test("analyzer rebuild has fresh metadata, its own OFF verification and manifest
   let previous = -1;
   for (const command of commands) {
     const index = bundle.indexOf(command);
-    assert.ok(index > previous, `Required analyzer provenance step missing/out of order: ${command}`);
+    assert.ok(
+      index > previous,
+      `Required analyzer provenance step missing/out of order: ${command}`,
+    );
     previous = index;
   }
   const upload = bundle.slice(bundle.indexOf("      - name: Upload Lighthouse and bundle reports"));
@@ -382,7 +409,10 @@ test("analyzer rebuild has fresh metadata, its own OFF verification and manifest
 });
 
 function requireDiscoveryStdoutAndHiddenEvidence(workflow: string): void {
-  const browser = workflow.slice(workflow.indexOf("\n  browser:\n"), workflow.indexOf("\n  performance:\n"));
+  const browser = workflow.slice(
+    workflow.indexOf("\n  browser:\n"),
+    workflow.indexOf("\n  performance:\n"),
+  );
   assert.match(browser, /PLAYWRIGHT_JSON_OUTPUT_NAME: \.ci-evidence\/results\.json/);
   const discovery = browser.slice(
     browser.indexOf("      - name: Prove every test belongs"),
@@ -393,24 +423,33 @@ function requireDiscoveryStdoutAndHiddenEvidence(workflow: string): void {
   for (const command of listings) {
     assert.match(command, /env -u PLAYWRIGHT_JSON_OUTPUT_NAME npx playwright test/);
   }
-  const upload = browser.slice(browser.indexOf("      - name: Upload bounded verification evidence"));
+  const upload = browser.slice(
+    browser.indexOf("      - name: Upload bounded verification evidence"),
+  );
   assert.match(upload, /include-hidden-files: true/);
   assert.match(upload, /^\s+\.ci-evidence\/$/m);
-  assert.doesNotMatch(upload, /^\s+(?:\.|\.assistant-api\/?|out-assistant-fixture\/?|\.env[^\s]*)$/m);
+  assert.doesNotMatch(
+    upload,
+    /^\s+(?:\.|\.assistant-api\/?|out-assistant-fixture\/?|\.env[^\s]*)$/m,
+  );
 }
 
 test("global runtime JSON reporter cannot consume discovery stdout or omit hidden evidence", () => {
   const ci = readFileSync(".github/workflows/ci.yml", "utf8");
   requireDiscoveryStdoutAndHiddenEvidence(ci);
   assert.throws(() =>
-    requireDiscoveryStdoutAndHiddenEvidence(ci.replaceAll("env -u PLAYWRIGHT_JSON_OUTPUT_NAME ", "")),
+    requireDiscoveryStdoutAndHiddenEvidence(
+      ci.replaceAll("env -u PLAYWRIGHT_JSON_OUTPUT_NAME ", ""),
+    ),
   );
   const browserStart = ci.indexOf("\n  browser:\n");
   const performanceStart = ci.indexOf("\n  performance:\n");
   assert.throws(() =>
     requireDiscoveryStdoutAndHiddenEvidence(
       ci.slice(0, browserStart) +
-        ci.slice(browserStart, performanceStart).replace("          include-hidden-files: true\n", "") +
+        ci
+          .slice(browserStart, performanceStart)
+          .replace("          include-hidden-files: true\n", "") +
         ci.slice(performanceStart),
     ),
   );
@@ -418,10 +457,19 @@ test("global runtime JSON reporter cannot consume discovery stdout or omit hidde
 
 test("Nightly uploads hidden evidence only within the existing bounded report paths", () => {
   const nightly = readFileSync(".github/workflows/nightly.yml", "utf8");
-  const browser = nightly.slice(nightly.indexOf("\n  browser:\n"), nightly.indexOf("\n  visual:\n"));
-  assert.doesNotMatch(browser.slice(0, browser.indexOf("\n    steps:")), /PLAYWRIGHT_JSON_OUTPUT_NAME/);
+  const browser = nightly.slice(
+    nightly.indexOf("\n  browser:\n"),
+    nightly.indexOf("\n  visual:\n"),
+  );
+  assert.doesNotMatch(
+    browser.slice(0, browser.indexOf("\n    steps:")),
+    /PLAYWRIGHT_JSON_OUTPUT_NAME/,
+  );
   const upload = browser.slice(browser.indexOf("      - name: Upload Playwright report"));
   assert.match(upload, /include-hidden-files: true/);
   assert.match(upload, /^\s+nightly-evidence$/m);
-  assert.doesNotMatch(upload, /^\s+(?:\.|\.assistant-api\/?|out-assistant-fixture\/?|\.env[^\s]*)$/m);
+  assert.doesNotMatch(
+    upload,
+    /^\s+(?:\.|\.assistant-api\/?|out-assistant-fixture\/?|\.env[^\s]*)$/m,
+  );
 });

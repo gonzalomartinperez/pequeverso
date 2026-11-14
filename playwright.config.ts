@@ -47,7 +47,11 @@ const projectSets = {
       use: { ...desktopChrome, viewport: viewport(1440) },
       testMatch: specs.functional,
     },
-    { name: "chromium-768", use: { ...desktopChrome, viewport: viewport(768) }, testMatch: specs.functional },
+    {
+      name: "chromium-768",
+      use: { ...desktopChrome, viewport: viewport(768) },
+      testMatch: specs.functional,
+    },
     {
       name: "chromium-390",
       use: { ...devices["Pixel 7"], viewport: viewport(390) },

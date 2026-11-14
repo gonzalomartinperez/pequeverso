@@ -12,10 +12,13 @@ isolatedBuild(
   {
     NEXT_OUTPUT: "export",
     NEXT_PUBLIC_SITE_URL: "https://pequeverso.com",
-    NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO: "https://pay.hotmart.com/TEST0000000?checkoutMode=10",
+    NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO:
+      "https://pay.hotmart.com/TEST0000000?checkoutMode=10",
   },
   (out) => {
-    execFileSync("node", [resolve(root, "tools/check-assistant-disabled.ts"), out], { stdio: "inherit" });
+    execFileSync("node", [resolve(root, "tools/check-assistant-disabled.ts"), out], {
+      stdio: "inherit",
+    });
   },
 );
 console.log(

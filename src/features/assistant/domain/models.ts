@@ -72,7 +72,9 @@ export type Message = {
 export type Page = "home" | "product" | "support";
 
 export type UnavailableReason = "assistant_disabled" | "catalog_unavailable" | "budget_exhausted";
-export type Availability = { status: "available" } | { status: "unavailable"; reason: UnavailableReason };
+export type Availability =
+  | { status: "available" }
+  | { status: "unavailable"; reason: UnavailableReason };
 
 export type Limits = { maxMessageChars: number; messagesPerDay: number };
 

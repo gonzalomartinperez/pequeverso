@@ -65,7 +65,12 @@ export function PackVisual({ variant, hero, cards, caption, priority = false, cl
             </Float>
           ) : null}
           {second ? (
-            <Float delay={3.4} rotate={7} range={10} className="absolute top-[22%] right-[0%] w-[36%]">
+            <Float
+              delay={3.4}
+              rotate={7}
+              range={10}
+              className="absolute top-[22%] right-[0%] w-[36%]"
+            >
               <span className={COVER}>
                 <MediaImage id={second} alt="" sizes="(min-width: 1024px) 200px, 36vw" />
               </span>

@@ -31,7 +31,9 @@ test("isolated analytics DOM: real exposure/pointer; no private/synthetic clicks
   await page.locator("#public").click();
   await page.locator("#private").click();
   await page.locator("#private-button").click();
-  await page.locator("#public").dispatchEvent("click", { button: 0, detail: 1, clientX: 50, clientY: 50 });
+  await page
+    .locator("#public")
+    .dispatchEvent("click", { button: 0, detail: 1, clientX: 50, clientY: 50 });
   await page.locator("#public").focus();
   await page.keyboard.press("Enter");
   expect(await results()).toEqual([

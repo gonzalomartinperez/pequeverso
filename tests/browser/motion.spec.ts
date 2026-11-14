@@ -11,7 +11,9 @@ const WEBKIT_SOFTWARE_RENDERING =
 
 test("reveal elements are visible immediately under reduced motion", async ({ page }) => {
   await page.goto("/");
-  const reduced = await page.evaluate(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const reduced = await page.evaluate(
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
   test.skip(!reduced, "only meaningful in the reduced-motion project");
   const hidden = await page.evaluate(
     () =>
@@ -22,7 +24,9 @@ test("reveal elements are visible immediately under reduced motion", async ({ pa
   expect(hidden).toBe(0);
 });
 
-test("no reveal element inside the first viewport is transparent right after load", async ({ page }) => {
+test("no reveal element inside the first viewport is transparent right after load", async ({
+  page,
+}) => {
   await page.goto("/");
   const transparent = await page.evaluate(() => {
     const fold = window.innerHeight;
@@ -37,7 +41,9 @@ test("no reveal element inside the first viewport is transparent right after loa
   expect(transparent).toEqual([]);
 });
 
-test("fallback path marks only elements below the fold and reveals them on scroll", async ({ page }) => {
+test("fallback path marks only elements below the fold and reveals them on scroll", async ({
+  page,
+}) => {
   await page.addInitScript(() => {
     const supports = CSS.supports.bind(CSS);
     CSS.supports = ((condition: string, value?: string) =>
@@ -49,7 +55,9 @@ test("fallback path marks only elements below the fold and reveals them on scrol
   });
   await page.goto("/");
   await page.waitForLoadState("networkidle");
-  const reduced = await page.evaluate(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const reduced = await page.evaluate(
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
   const count = (selector: string) => page.locator(selector).count();
   if (reduced) {
     await page.waitForTimeout(500);
@@ -64,7 +72,10 @@ test("fallback path marks only elements below the fold and reveals them on scrol
     ).length;
   });
   expect(pendingAboveFold).toBe(0);
-  const last = await page.locator("[data-reveal][data-reveal-state='pending']").last().elementHandle();
+  const last = await page
+    .locator("[data-reveal][data-reveal-state='pending']")
+    .last()
+    .elementHandle();
   if (!last) throw new Error("expected a pending element");
   // Deferred sections (content-visibility) grow as they render, so keep centring it until it is in
   // view; WebKit's minimal scrollIntoViewIfNeeded leaves it inside the observer's bottom margin.
@@ -74,7 +85,9 @@ test("fallback path marks only elements below the fold and reveals them on scrol
       return last.getAttribute("data-reveal-state");
     })
     .toBe("visible");
-  await expect.poll(() => last.evaluate((el) => getComputedStyle(el).opacity), { timeout: 3_000 }).toBe("1");
+  await expect
+    .poll(() => last.evaluate((el) => getComputedStyle(el).opacity), { timeout: 3_000 })
+    .toBe("1");
 });
 
 test("no autoplaying video anywhere on the landing", async ({ page }) => {
@@ -114,7 +127,10 @@ test("page gallery: arrows, dots, keyboard and zoom dialog", async ({ page, brow
   await expect(dialog).toHaveCount(0);
 });
 
-test("age selector swaps the featured worksheet and keeps a single h1", async ({ page, browserName }) => {
+test("age selector swaps the featured worksheet and keeps a single h1", async ({
+  page,
+  browserName,
+}) => {
   // Headless WebKit on the runners has no GPU: the swap's view transition paints at a few frames per
   // second and times out intermittently. Chromium covers the swap at every width; the pill's checked
   // state (the real Safari bug) is fixed in AgeSelector.
@@ -156,7 +172,9 @@ test("hero scene: WebGL canvas mounts after load, is absent under reduced motion
 }) => {
   await page.goto("/grafismo-fonetico/");
   const stage = page.locator('#hero [data-slot="scene-stage"]');
-  const reduced = await page.evaluate(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const reduced = await page.evaluate(
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
   if (reduced) {
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1_000);
@@ -169,9 +187,9 @@ test("hero scene: WebGL canvas mounts after load, is absent under reduced motion
   test.skip(!webgl, "no WebGL in this browser; the static layers are the finished fallback");
   await expect(stage.locator("canvas")).toHaveCount(1, { timeout: 10_000 });
   await expect(stage).toHaveAttribute("data-mode", "running", { timeout: 10_000 });
-  expect(await stage.locator("canvas").evaluate((el) => el.closest("[aria-hidden='true']") !== null)).toBe(
-    true,
-  );
+  expect(
+    await stage.locator("canvas").evaluate((el) => el.closest("[aria-hidden='true']") !== null),
+  ).toBe(true);
   const pause = stage.getByRole("button", { name: "Pausar la animación" });
   const box = await pause.boundingBox();
   expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
@@ -185,7 +203,10 @@ test("hero scene: WebGL canvas mounts after load, is absent under reduced motion
   await expect(stage).toHaveAttribute("data-mode", "running");
 });
 
-test("gallery zoom dialog is centred in the viewport and traps focus", async ({ page, browserName }) => {
+test("gallery zoom dialog is centred in the viewport and traps focus", async ({
+  page,
+  browserName,
+}) => {
   test.skip(browserName === "webkit", WEBKIT_SOFTWARE_RENDERING);
   // WebKit only moves focus to buttons and links with Alt+Tab (Safari's default).
   const tab = browserName === "webkit" ? "Alt+Tab" : "Tab";
@@ -210,8 +231,12 @@ test("gallery zoom dialog is centred in the viewport and traps focus", async ({ 
       )
       .toBeLessThanOrEqual(2);
     const box = await dialog.boundingBox();
-    expect(box && box.width <= width && box.height <= height, `@${width}: fits the viewport`).toBe(true);
-    await expect.poll(() => dialog.evaluate((el) => el.contains(document.activeElement))).toBe(true);
+    expect(box && box.width <= width && box.height <= height, `@${width}: fits the viewport`).toBe(
+      true,
+    );
+    await expect
+      .poll(() => dialog.evaluate((el) => el.contains(document.activeElement)))
+      .toBe(true);
     await page.keyboard.press(tab);
     expect(await dialog.evaluate((el) => el.contains(document.activeElement))).toBe(true);
     await page.keyboard.press("Escape");

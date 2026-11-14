@@ -4,7 +4,10 @@ import { test } from "node:test";
 
 test("Dependabot assessment cannot acquire a write token or perform a merge", () => {
   const workflow = readFileSync(".github/workflows/dependency-policy.yml", "utf8");
-  assert.doesNotMatch(workflow, /(?:^|[\s{,])["']?[\w-]+["']?\s*:\s*["']?write(?:-all)?["']?(?=$|[\s,}])/m);
+  assert.doesNotMatch(
+    workflow,
+    /(?:^|[\s{,])["']?[\w-]+["']?\s*:\s*["']?write(?:-all)?["']?(?=$|[\s,}])/m,
+  );
   assert.doesNotMatch(workflow, /gh\s+pr\s+merge|enablePullRequestAutoMerge/);
   assert.match(workflow, /pull-requests: read/);
 });
@@ -16,7 +19,10 @@ test("Dependabot assessment cannot acquire a write token or perform a merge", ()
  */
 test("Dependabot config is one weekly group on Monday 09:00 ART targeting develop", () => {
   const config = readFileSync(".github/dependabot.yml", "utf8");
-  const groups = config.slice(config.indexOf("multi-ecosystem-groups:"), config.indexOf("\nupdates:"));
+  const groups = config.slice(
+    config.indexOf("multi-ecosystem-groups:"),
+    config.indexOf("\nupdates:"),
+  );
   assert.equal((groups.match(/^ {2}[a-z][\w-]*:$/gm) ?? []).length, 1, "exactly one group");
   assert.match(groups, /interval: weekly/);
   assert.match(groups, /day: monday/);
@@ -33,13 +39,25 @@ test("Dependabot config is one weekly group on Monday 09:00 ART targeting develo
   assert.ok(entries.length >= 3, "npm (root and tools/media) and github-actions");
   for (const entry of entries) {
     const ecosystem = entry.split("\n")[0]?.trim() ?? "";
-    assert.match(entry, new RegExp(`multi-ecosystem-group: ${group}\\n`), `${ecosystem} joins the group`);
+    assert.match(
+      entry,
+      new RegExp(`multi-ecosystem-group: ${group}\\n`),
+      `${ecosystem} joins the group`,
+    );
     assert.match(entry, /patterns: \["\*"\]/, `${ecosystem} groups every dependency`);
     for (const key of ["open-pull-requests-limit", "commit-message", "schedule", "target-branch"])
-      assert.doesNotMatch(entry, new RegExp(`\\n {4}${key}:`), `${ecosystem}: ${key} belongs on the group`);
+      assert.doesNotMatch(
+        entry,
+        new RegExp(`\\n {4}${key}:`),
+        `${ecosystem}: ${key} belongs on the group`,
+      );
     assert.match(entry, /cooldown:\n {6}default-days: 7/, `${ecosystem} keeps the 7-day cooldown`);
     if (ecosystem !== "npm" && ecosystem !== "uv" && ecosystem !== "pip")
-      assert.doesNotMatch(entry, /semver-(major|minor|patch)-days/, `${ecosystem} rejects semver cooldowns`);
+      assert.doesNotMatch(
+        entry,
+        /semver-(major|minor|patch)-days/,
+        `${ecosystem} rejects semver cooldowns`,
+      );
   }
 });
 

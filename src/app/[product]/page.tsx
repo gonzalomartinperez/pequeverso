@@ -32,5 +32,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProductPage({ params }: Props) {
   const product = getProduct((await params).product);
   if (!product) notFound();
-  return product.kind === "core" ? <CoreLanding product={product} /> : <OfferLanding product={product} />;
+  return product.kind === "core" ? (
+    <CoreLanding product={product} />
+  ) : (
+    <OfferLanding product={product} />
+  );
 }

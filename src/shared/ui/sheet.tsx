@@ -69,7 +69,11 @@ function SheetContent({
           <SheetPrimitive.Close
             data-slot="sheet-close"
             render={
-              <Button variant="ghost" size="icon" className="absolute top-3 right-3 border-transparent" />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-3 right-3 border-transparent"
+              />
             }
           >
             <XIcon aria-hidden="true" focusable="false" />
@@ -86,7 +90,9 @@ function SheetHeader({ className, ...props }: ComponentProps<"div">) {
 }
 
 function SheetFooter({ className, ...props }: ComponentProps<"div">) {
-  return <div data-slot="sheet-footer" className={cn("mt-auto grid gap-2 p-6", className)} {...props} />;
+  return (
+    <div data-slot="sheet-footer" className={cn("mt-auto grid gap-2 p-6", className)} {...props} />
+  );
 }
 
 function SheetTitle({ className, ...props }: SheetPrimitive.Title.Props) {

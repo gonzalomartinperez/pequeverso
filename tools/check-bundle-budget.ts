@@ -30,7 +30,13 @@ function measureRoute(route: string): Record<Metric, number> & { route: string; 
   const styles = [...new Set(source.match(/\/_next\/static\/css\/[^"']+\.css/g) ?? [])];
   const sum = (files: string[]): number =>
     files.reduce((total, file) => total + gzipBytes(join(outDir, decodeURIComponent(file))), 0);
-  return { route, html: gzipBytes(html), js: sum(scripts), css: sum(styles), scripts: scripts.length };
+  return {
+    route,
+    html: gzipBytes(html),
+    js: sum(scripts),
+    css: sum(styles),
+    scripts: scripts.length,
+  };
 }
 
 const kb = (bytes: number): string => `${(bytes / 1024).toFixed(1)} KB`;
@@ -43,13 +49,17 @@ for (const [route, limits] of Object.entries(budgets.routes)) {
     const limit = limits[metric] ?? budgets.default[metric];
     const over = measured[metric] > limit;
     if (over) failures.push(`${route} ${metric} ${kb(measured[metric])} > ${kb(limit)}`);
-    rows.push(`| ${route} | ${metric} | ${kb(measured[metric])} | ${kb(limit)} | ${over ? "❌" : "✅"} |`);
+    rows.push(
+      `| ${route} | ${metric} | ${kb(measured[metric])} | ${kb(limit)} | ${over ? "❌" : "✅"} |`,
+    );
   }
 }
 
-const table = ["| Route | Metric | Measured (gzip) | Budget | |", "|---|---|---|---|---|", ...rows].join(
-  "\n",
-);
+const table = [
+  "| Route | Metric | Measured (gzip) | Budget | |",
+  "|---|---|---|---|---|",
+  ...rows,
+].join("\n");
 console.log(table);
 if (process.env.GITHUB_STEP_SUMMARY)
   appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## Bundle budget\n\n${table}\n`);

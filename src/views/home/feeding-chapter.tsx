@@ -98,7 +98,9 @@ function FeedingBox() {
   const a = copy.affiliate;
   return (
     <div className="grid gap-2 rounded-xl bg-white p-5 shadow-sm ring-1 ring-line">
-      <p className="font-display text-[1.5rem] leading-tight font-bold text-heading">{course.name}</p>
+      <p className="font-display text-[1.5rem] leading-tight font-bold text-heading">
+        {course.name}
+      </p>
       <p className="text-small font-bold text-subtle">
         {a.kind} · {course.audience}
       </p>
@@ -119,7 +121,9 @@ function FeedingHow() {
       title={h.title}
       lead={h.lead}
       steps={h.steps}
-      cutout={<MediaImage id={course.media.detail} sizes="(min-width: 1024px) 480px, 240px" alt="" />}
+      cutout={
+        <MediaImage id={course.media.detail} sizes="(min-width: 1024px) 480px, 240px" alt="" />
+      }
       caption={copy.illustrative}
       extra={
         <figure className="on-light grid overflow-hidden rounded-2xl bg-[linear-gradient(160deg,var(--pv-cream),var(--pv-peach))] shadow-float cq-md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">

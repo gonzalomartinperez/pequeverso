@@ -62,7 +62,11 @@ export function createHttpTransport(
   let acceptsContext = false;
   let acceptsResponseLanguage = false;
 
-  async function request(path: string, signal: AbortSignal, init: RequestInit = {}): Promise<Response> {
+  async function request(
+    path: string,
+    signal: AbortSignal,
+    init: RequestInit = {},
+  ): Promise<Response> {
     let response: Response;
     try {
       response = await fetcher(`${base}${path}`, {
@@ -100,7 +104,8 @@ export function createHttpTransport(
       });
       try {
         const session = parseSession(await response.json());
-        if (responseLanguage && !session.acceptsResponseLanguage) throw new AssistantError("protocol");
+        if (responseLanguage && !session.acceptsResponseLanguage)
+          throw new AssistantError("protocol");
         csrf = session.csrfToken;
         acceptsLocale = session.acceptsLocale;
         acceptsContext = session.acceptsContext === true;
@@ -132,12 +137,19 @@ export function createHttpTransport(
         headers: { "Idempotency-Key": key },
         body: JSON.stringify(body),
       });
-      if (!response.body || !response.headers.get("content-type")?.startsWith("text/event-stream")) {
+      if (
+        !response.body ||
+        !response.headers.get("content-type")?.startsWith("text/event-stream")
+      ) {
         await response.body?.cancel().catch(() => {});
         throw new AssistantError("protocol");
       }
       try {
-        const terminal = await readSse(response.body, (event) => onEvent(toRunEvent(event)), signal);
+        const terminal = await readSse(
+          response.body,
+          (event) => onEvent(toRunEvent(event)),
+          signal,
+        );
         return terminal ? "terminal" : "eof";
       } catch (error) {
         if (signal.aborted) throw error;

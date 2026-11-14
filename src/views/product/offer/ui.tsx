@@ -43,12 +43,19 @@ export function splitAccent(text: string): [lead: string, accent: string] {
 }
 
 /** Heading text with the gradient accent on its final clause (navy → teal, or turquoise → gold on navy). */
-export function AccentText({ text, tone = "light" }: { text: string; tone?: "light" | "dark" | undefined }) {
+export function AccentText({
+  text,
+  tone = "light",
+}: {
+  text: string;
+  tone?: "light" | "dark" | undefined;
+}) {
   const [lead, accent] = splitAccent(text);
   if (!accent) return <>{text}</>;
   return (
     <>
-      {lead} <span className={tone === "dark" ? "text-gradient-sky" : "text-gradient"}>{accent}</span>
+      {lead}{" "}
+      <span className={tone === "dark" ? "text-gradient-sky" : "text-gradient"}>{accent}</span>
     </>
   );
 }

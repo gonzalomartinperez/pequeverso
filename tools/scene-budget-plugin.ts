@@ -8,7 +8,10 @@ import path from "node:path";
 // Structural subset of the webpack 5 API this plugin reads. Next.js bundles webpack and types its
 // `webpack` export as `any`, so the shapes are declared here (and satisfied by the unit test fakes).
 type SceneModule = { identifier(): string; modules?: Iterable<SceneModule> };
-type SceneChunkGroup = { chunks: Iterable<SceneChunk>; childrenIterable: Iterable<SceneChunkGroup> };
+type SceneChunkGroup = {
+  chunks: Iterable<SceneChunk>;
+  childrenIterable: Iterable<SceneChunkGroup>;
+};
 type SceneChunk = {
   files: Iterable<string>;
   groupsIterable: Iterable<SceneChunkGroup>;
@@ -21,7 +24,9 @@ type SceneCompilation = {
 /** The part of a webpack `Compiler` the plugin uses. */
 export type SceneCompiler = {
   context: string;
-  hooks: { done: { tap(name: string, fn: (stats: { compilation: SceneCompilation }) => void): void } };
+  hooks: {
+    done: { tap(name: string, fn: (stats: { compilation: SceneCompilation }) => void): void };
+  };
 };
 
 export const SCENE_ENTRY = "src/shared/motion/scene/scene-runtime.ts";

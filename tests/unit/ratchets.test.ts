@@ -25,7 +25,8 @@ const required = ["a11y", "bundle", "complexity", "coverage", "lighthouse", "rep
 
 test("every committed ratchet file is valid and the M1-9 baselines exist", () => {
   const metrics = loadRatchets(ratchetsDir).map((ratchet) => ratchet.metric);
-  for (const metric of required) assert.ok(metrics.includes(metric), `missing ratchets/${metric}.json`);
+  for (const metric of required)
+    assert.ok(metrics.includes(metric), `missing ratchets/${metric}.json`);
   const coverage = loadRatchets(ratchetsDir).find((ratchet) => ratchet.metric === "coverage");
   assert.equal(coverage?.values.find((item) => item.key === "branches")?.value, 88.11);
 });
@@ -36,7 +37,13 @@ function developTip(): string | undefined {
     return git("rev-parse", "--verify", "--quiet", "origin/develop").trim();
   } catch {
     if (!process.env.CI) return undefined;
-    git("fetch", "--no-tags", "--depth=1", "origin", "+refs/heads/develop:refs/remotes/origin/develop");
+    git(
+      "fetch",
+      "--no-tags",
+      "--depth=1",
+      "origin",
+      "+refs/heads/develop:refs/remotes/origin/develop",
+    );
     return git("rev-parse", "--verify", "origin/develop").trim();
   }
 }
@@ -90,7 +97,11 @@ test("floors may only rise and ceilings may only fall", () => {
     ],
   };
   assert.deepEqual(loosened(sample, looser), ["branches", "bytes"]);
-  assert.deepEqual(loosened(sample, { ...sample, values: [floor] }), ["bytes"], "removing a key loosens");
+  assert.deepEqual(
+    loosened(sample, { ...sample, values: [floor] }),
+    ["bytes"],
+    "removing a key loosens",
+  );
   const flipped = { ...sample, values: [{ ...floor, direction: "max" as const }, ceiling] };
   assert.deepEqual(loosened(sample, flipped), ["branches"]);
   const relabelled = { ...sample, values: [floor, { ...ceiling, unit: "KB" }] };
