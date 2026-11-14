@@ -559,6 +559,12 @@ test("core: events without a stored marketing grant are dropped and never forwar
     "pv_consent=a1m0.v3",
     "pv_consent=a1m1.v2",
     "xpv_consent=a1m1.v3",
+    // Duplicates: exactly one pv_consent cookie may exist, whatever the order.
+    "pv_consent=a0m0.v3; pv_consent=a1m1.v3",
+    "pv_consent=a1m1.v3; pv_consent=a0m0.v3",
+    "pv_consent=a1m1.v3; pv_consent=a1m1.v3",
+    "pv_consent=a1m1.v3x",
+    "pv_consent=a1m1.v3;pv_consent=a1m1.v2",
   ];
   for (const cookie of denied) {
     assert.equal(relay.process(relayInput({ cookie })).status, 204, String(cookie));

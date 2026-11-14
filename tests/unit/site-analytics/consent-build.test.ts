@@ -81,6 +81,7 @@ function render(enabled: boolean, stored: unknown, open: boolean, failWrite: boo
     "next/link": () => null,
     react: {
       useId: () => "consent-test",
+      useRef: (initial: unknown) => ({ current: initial }),
       useEffect: (effect: () => unknown) => effects.push(effect),
       useState: (initial: unknown) => {
         const current = slot++;

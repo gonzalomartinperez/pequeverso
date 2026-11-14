@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { explicitGrant } from "@/features/site-analytics/domain/consent.ts";
 import {
   type ConsentCategory,
@@ -85,12 +85,30 @@ function afterFirstPaint(callback: () => void): () => void {
 }
 
 const BANNER =
-  "fixed inset-x-3 bottom-[calc(var(--space-3)+env(safe-area-inset-bottom))] z-90 border border-white bg-card mx-auto max-h-[60dvh] max-w-3xl overflow-y-auto overscroll-contain rounded-xl p-5 shadow-float ring-1 ring-navy/10 sm:p-6";
-const INNER = "on-light grid w-full gap-3";
-const TITLE = "font-sans text-h3 font-extrabold text-heading";
-const TEXT = "max-w-[70ch] text-small";
-const ACTIONS = "flex flex-wrap gap-2 pt-1 [&>button]:rounded-pill";
+  "fixed inset-x-2 bottom-[calc(var(--space-2)+env(safe-area-inset-bottom))] z-90 border border-white bg-card mx-auto max-h-[60dvh] max-w-3xl overflow-y-auto overscroll-contain rounded-xl p-3 shadow-float ring-1 ring-navy/10 sm:p-4 md:max-w-6xl md:p-3";
+const INNER = "on-light grid w-full gap-2 md:grid-cols-[1fr_auto] md:items-center md:gap-x-6";
+const TITLE =
+  "font-sans text-[1.0625rem] font-extrabold leading-tight text-heading md:mr-2 md:inline md:text-base";
+// Slightly smaller on mobile so the paragraph stays below the hero heading in LCP size.
+const TEXT =
+  "max-w-[70ch] text-[0.8125rem] leading-[1.3] md:inline md:max-w-none md:text-small md:leading-normal";
+// One row of three equal-width buttons on mobile; a right-aligned group on wide screens.
+const ACTIONS =
+  "grid grid-cols-3 gap-2 [&>button]:min-h-10 [&>button]:w-full [&>button]:rounded-pill [&>button]:px-2 md:col-start-2 md:row-start-1 md:flex md:[&>button]:w-auto md:[&>button]:px-4";
+const COPY = "grid gap-1 md:col-start-1 md:row-start-1 md:block";
 const CHECKBOX = "mt-0.5 size-5 shrink-0 accent-navy";
+
+/** Moves focus out of a closing banner: the control that opened it, else the main landmark. */
+function restoreFocus(opener: HTMLElement | null): void {
+  requestAnimationFrame(() => {
+    if (document.activeElement && document.activeElement !== document.body) return;
+    const target = opener?.isConnected ? opener : document.getElementById("contenido");
+    if (!target) return;
+    if (!target.hasAttribute("tabindex") && !(target instanceof HTMLButtonElement))
+      target.tabIndex = -1;
+    target.focus({ preventScroll: true });
+  });
+}
 
 type OptionsProps = {
   categories: CategoryInfo[];
@@ -101,7 +119,7 @@ type OptionsProps = {
 function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
   const prefix = useId();
   return (
-    <ul className="grid gap-2 text-small text-body">
+    <ul className="grid gap-2 text-small text-body md:col-span-2 md:row-start-2">
       <li className="flex items-start gap-2">
         <input
           type="checkbox"
@@ -157,6 +175,7 @@ export function ConsentBanner({ classes }: Props) {
   const [open, setOpen] = useState(false);
   const [configuring, setConfiguring] = useState(false);
   const [selection, setSelection] = useState<ConsentChoice>(() => choiceFor(categories, false));
+  const opener = useRef<HTMLElement | null>(null);
   const headingId = useId();
   const descId = useId();
 
@@ -173,6 +192,8 @@ export function ConsentBanner({ classes }: Props) {
       if (needsChoice) cancelFirstVisit = afterFirstPaint(() => setOpen(true));
     }
     const reopen = () => {
+      const active = document.activeElement;
+      opener.current = active instanceof HTMLElement && active !== document.body ? active : null;
       const current = readConsent();
       if (current) setSelection({ analytics: current.analytics, marketing: current.marketing });
       setOpen(true);
@@ -181,6 +202,8 @@ export function ConsentBanner({ classes }: Props) {
     const unsubscribe = onConsentChange(() => {
       setOpen(false);
       setConfiguring(false);
+      restoreFocus(opener.current);
+      opener.current = null;
     });
     return () => {
       cancelFirstVisit();
@@ -210,16 +233,26 @@ export function ConsentBanner({ classes }: Props) {
         data-mode="notice"
       >
         <div className={INNER}>
-          <h2 id={headingId} className={TITLE}>
-            Cookies
-          </h2>
-          <p id={descId} className={TEXT}>
-            Este sitio solo usa cookies propias necesarias para funcionar y no requieren tu permiso.
-            No hay integraciones de medición ni de marketing activas, así que no hay nada que
-            configurar. <Link href="/cookies/">Más información</Link>
-          </p>
+          <div className={COPY}>
+            <h2 id={headingId} className={TITLE}>
+              Cookies
+            </h2>
+            <p id={descId} className={TEXT}>
+              Este sitio solo usa cookies propias necesarias para funcionar y no requieren tu
+              permiso. No hay integraciones de medición ni de marketing activas, así que no hay nada
+              que configurar. <Link href="/cookies/">Más información</Link>
+            </p>
+          </div>
           <div className={ACTIONS}>
-            <button type="button" className={classes.primary} onClick={() => setOpen(false)}>
+            <button
+              type="button"
+              className={classes.primary}
+              onClick={() => {
+                setOpen(false);
+                restoreFocus(opener.current);
+                opener.current = null;
+              }}
+            >
               Entendido
             </button>
           </div>
@@ -238,15 +271,17 @@ export function ConsentBanner({ classes }: Props) {
       data-testid="consent-banner"
     >
       <div className={INNER}>
-        <h2 id={headingId} className={TITLE}>
-          Tu privacidad, tu elección
-        </h2>
-        <p id={descId} className={TEXT}>
-          Usamos solo lo necesario para que el sitio funcione. Si aceptas, también usamos{" "}
-          {joinSpanish(categories.flatMap((category) => category.tools))} para{" "}
-          {joinSpanish(categories.map((category) => category.purpose))}. Puedes cambiarlo cuando
-          quieras. <Link href="/cookies/">Más información</Link>
-        </p>
+        <div className={COPY}>
+          <h2 id={headingId} className={TITLE}>
+            Tu privacidad, tu elección
+          </h2>
+          <p id={descId} className={TEXT}>
+            Usamos solo lo necesario para que el sitio funcione. Si aceptas, también usamos{" "}
+            {joinSpanish(categories.flatMap((category) => category.tools))} para{" "}
+            {joinSpanish(categories.map((category) => category.purpose))}. Puedes cambiarlo cuando
+            quieras. <Link href="/cookies/">Más información</Link>
+          </p>
+        </div>
         {configuring ? (
           <CategoryOptions
             categories={categories}

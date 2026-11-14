@@ -5,6 +5,7 @@ import {
   type ConsentState,
   DEFAULT_CHOICE,
   hasConsent,
+  onConsentChange,
   readConsent,
   serializeConsentCookie,
   writeConsent,
@@ -176,15 +177,20 @@ test("prior opt-in: nothing reaches a gated adapter before a grant, then events 
 test("rejecting revokes the adapter, drops its queue and stops every later event", () => {
   const adapter = fakeAdapter({ ready: false });
   _resetForTests([adapter]);
-  track("PageView");
+  grantMarketing();
+  // Granted but the vendor is not ready: the event sits in the adapter queue.
+  const queued = track("PageView");
+  assert.equal(adapter.sent.length, 0);
   const state = writeConsent({ analytics: false, marketing: false });
   assert.deepEqual(adapter.consents, [state]);
   adapter.ready = true;
   flush();
   track("ViewContent");
   assert.equal(adapter.sent.length, 0);
+  // Re-granting must not resurrect the queued event.
   writeConsent({ analytics: false, marketing: true });
   assert.equal(adapter.sent.length, 0);
+  assert.ok(!adapter.sent.some((event) => event.eventId === queued));
   const id = track("CheckoutIntent");
   assert.deepEqual(
     adapter.sent.map((event) => event.eventId),
@@ -474,4 +480,45 @@ test("meta-capi adapter waits briefly for fbevents.js to write _fbp, then relays
   await tick(100);
   assert.equal(never.requests.length, 1, "sent without fbp once the wait expires");
   assert.equal("fbp" in firstEvent(never.requests), false);
+});
+
+test("consent change events are invalidation signals: payloads never authorize", () => {
+  const seen: (ConsentState | null)[] = [];
+  const stop = onConsentChange((state) => seen.push(state));
+  const forged = { version: 3, analytics: true, marketing: true, updatedAt: "" };
+  window.dispatchEvent(new CustomEvent("pv:consent", { detail: forged }));
+  assert.deepEqual(seen, [null]);
+  window.localStorage.setItem("pv_consent", JSON.stringify({ ...forged, version: 2 }));
+  window.dispatchEvent(new CustomEvent("pv:consent", { detail: forged }));
+  assert.deepEqual(seen, [null, null]);
+  stop();
+});
+
+test("another tab's storage event re-reads validated storage, ignoring other keys", () => {
+  const seen: (ConsentState | null)[] = [];
+  const stop = onConsentChange((state) => seen.push(state));
+  grantMarketing();
+  window.dispatchEvent(Object.assign(new Event("storage"), { key: "other" }));
+  assert.equal(seen.length, 0);
+  window.dispatchEvent(Object.assign(new Event("storage"), { key: "pv_consent" }));
+  assert.equal(seen[0]?.marketing, true);
+  window.localStorage.removeItem("pv_consent");
+  window.dispatchEvent(Object.assign(new Event("storage"), { key: null }));
+  assert.equal(seen[1], null);
+  stop();
+});
+
+test("a withdrawal in another tab stops the tracker without a pv:consent event", () => {
+  const adapter = fakeAdapter();
+  _resetForTests([adapter]);
+  grantMarketing();
+  track("PageView");
+  assert.equal(adapter.sent.length, 1);
+  window.localStorage.setItem(
+    "pv_consent",
+    JSON.stringify({ version: CONSENT_VERSION, analytics: false, marketing: false, updatedAt: "" }),
+  );
+  window.dispatchEvent(Object.assign(new Event("storage"), { key: "pv_consent" }));
+  track("ViewContent");
+  assert.equal(adapter.sent.length, 1);
 });

@@ -26,8 +26,19 @@ volume drops (`docs/master-plan/README.md` section 7).
 - The Conversions API relay (`/api/meta/events/`) is gated server-side: it forwards an event only
   when the request carries the `pv_consent` cookie of the current version with marketing granted
   (`a?m1.v3`); anything else answers `204` and is dropped.
-- Invariant: `third_party_requests_before_consent == 0` on every public route, asserted by the
-  browser tests (`tests/browser/tracking.spec.ts`).
+- Invariant: `third_party_requests_before_consent == 0` means no cross-origin request at all on
+  any public route (derived from the product registry and legal route table) before a choice,
+  and no request to the same-origin relay before a grant. Asserted by
+  `tests/browser/tracking.spec.ts`, which also requires the banner to be visible so the check
+  cannot pass on a build without tracking.
+- Functional exception: the Hotmart purchase widget and the hosts it loads (`*.hotmart.com`) are
+  allowed before a choice. They are strictly necessary for the purchase service the visitor
+  explicitly requests, they carry no measurement or advertising purpose of ours, and Hotmart owns
+  payment and delivery. No other host is exempt.
+- Consent is always re-read from validated storage: `pv:consent` and cross-tab `storage` events
+  only signal that storage changed, the pending idle load re-checks storage before injecting and
+  is cancelled on a withdrawal in any tab, and the relay requires exactly one `pv_consent`
+  cookie with a valid v3 marketing grant.
 - Unchanged: the site never emits `InitiateCheckout` or `Purchase`; Hotmart owns the checkout.
 
 ## Consequences

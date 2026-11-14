@@ -84,10 +84,22 @@ export function hasConsent(
   return state ? state[category] : DEFAULT_CHOICE[category];
 }
 
-/** Subscribe to consent changes; returns an unsubscribe function. */
-export function onConsentChange(listener: (state: ConsentState) => void): () => void {
+/**
+ * Subscribe to consent changes (same-tab `pv:consent`, other-tab `storage`); returns an
+ * unsubscribe function. Both are only invalidation signals: the listener always gets the
+ * validated stored choice (`null` when nothing valid is stored), never an event payload.
+ */
+export function onConsentChange(listener: (state: ConsentState | null) => void): () => void {
   if (!isBrowser()) return () => {};
-  const handler = (event: Event) => listener((event as CustomEvent<ConsentState>).detail);
-  window.addEventListener(CONSENT_EVENT, handler);
-  return () => window.removeEventListener(CONSENT_EVENT, handler);
+  const changed = () => listener(readConsent());
+  const storage = (event: Event) => {
+    const key = (event as StorageEvent).key;
+    if (key === CONSENT_KEY || key === null) changed();
+  };
+  window.addEventListener(CONSENT_EVENT, changed);
+  window.addEventListener("storage", storage);
+  return () => {
+    window.removeEventListener(CONSENT_EVENT, changed);
+    window.removeEventListener("storage", storage);
+  };
 }

@@ -116,7 +116,8 @@ choice are dropped, not queued; events raised while the script loads stay queued
 `syncConsent()` runs on script load. The relay (`/api/meta/events/`) answers `204` and forwards
 nothing unless the request cookie carries `a?m1.v3`.
 
-Invariant: `third_party_requests_before_consent == 0` on every public route.
+Invariant: `third_party_requests_before_consent == 0`: no cross-origin request on any public route
+before a choice (only the Hotmart purchase widget host is exempt, see ADR-0011).
 
 ## Adding an adapter (TikTok, gtag, ...)
 

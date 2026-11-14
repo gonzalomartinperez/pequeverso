@@ -222,11 +222,18 @@ export function pickClientIp(candidates: ReadonlyArray<string | undefined | null
   return "";
 }
 
-/** Consent cookie value is `a<0|1>m<0|1>.v3` (see `serializeConsentCookie`); only `m1` of the current version grants. */
-const MARKETING_GRANT = /(?:^|;\s*)pv_consent=a[01]m1\.v3(?:;|$)/;
+/** Consent cookie value of a marketing grant under the current policy (`serializeConsentCookie`). */
+const MARKETING_GRANT_VALUE = /^a[01]m1\.v3$/;
 
+/** True only with exactly one `pv_consent` cookie whose value is a valid v3 marketing grant. */
 function hasMarketingGrant(cookie: string | undefined): boolean {
-  return MARKETING_GRANT.test(cookie || "");
+  const values: string[] = [];
+  for (const pair of (cookie || "").split(";")) {
+    const at = pair.indexOf("=");
+    if (at > 0 && pair.slice(0, at).trim() === "pv_consent") values.push(pair.slice(at + 1).trim());
+  }
+  const [only] = values;
+  return values.length === 1 && only !== undefined && MARKETING_GRANT_VALUE.test(only);
 }
 
 function allowedOrigins(host: string | undefined, siteOrigin: string | null): Set<string> {

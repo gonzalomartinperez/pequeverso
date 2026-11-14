@@ -31,7 +31,7 @@ Never use this exception in a publishable build. Missing configuration fails clo
 ## Consent and minimisation
 
 Collection requires a stored current-version analytics grant with a valid canonical timestamp less than 180 days old. A missing, invalid or expired stored choice
-never inherits the existing Meta opt-out default. Existing Meta/CAPI events, consent schema/version,
+follows the same prior opt-in policy as Meta (no stored grant, no collection; ADR-0011). Existing Meta/CAPI events, consent schema/version,
 checkout and attribution remain unchanged. The optional tool is listed in the existing banner;
 accept/reject/save continue to use the existing storage and footer preference controls.
 
