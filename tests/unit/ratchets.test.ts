@@ -21,7 +21,15 @@ const git = (...args: string[]): string =>
     stdio: ["ignore", "pipe", "pipe"],
     timeout: 30_000,
   });
-const required = ["a11y", "bundle", "complexity", "coverage", "lighthouse", "repo-size"];
+const required = [
+  "a11y",
+  "bundle",
+  "complexity",
+  "coverage",
+  "design-lint",
+  "lighthouse",
+  "repo-size",
+];
 
 test("every committed ratchet file is valid and the M1-9 baselines exist", () => {
   const metrics = loadRatchets(ratchetsDir).map((ratchet) => ratchet.metric);

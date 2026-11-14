@@ -216,7 +216,7 @@ function Comparison({ products, resources }: { products: Product[]; resources: R
   return (
     <section
       aria-label={t.compareLabel}
-      // biome-ignore lint/a11y/noNoninteractiveTabindex: a horizontally scrollable region must be keyboard-scrollable (WCAG 2.1.1)
+      // biome-ignore lint/a11y/noNoninteractiveTabindex: a horizontally scrollable region must be keyboard-scrollable (WCAG 2.1.1) #177
       tabIndex={0}
       className="overflow-x-auto rounded-md border border-line"
     >

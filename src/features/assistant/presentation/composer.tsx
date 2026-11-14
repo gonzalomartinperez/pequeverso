@@ -58,7 +58,7 @@ export function Composer({
     field.current?.focus({ preventScroll: true });
   }, [focusSignal, visible, field]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: re-measure whenever the text changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: re-measure whenever the text changes #177
   useLayoutEffect(() => {
     const element = field.current;
     if (!element) return;

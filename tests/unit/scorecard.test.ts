@@ -261,6 +261,7 @@ test("the committed ratchets load and every one is compared", () => {
     "bundle",
     "complexity",
     "coverage",
+    "design-lint",
     "lighthouse",
     "repo-size",
   ]);

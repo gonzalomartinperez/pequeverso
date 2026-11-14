@@ -69,7 +69,7 @@ export function VideoPlayer({ id, mp4, webm, width, height, title, children }: P
   };
   if (group.active === id) {
     return (
-      // biome-ignore lint/a11y/useMediaCaption: the demos are silent; the figcaption title + description is the text alternative (WCAG 1.2.1)
+      // biome-ignore lint/a11y/useMediaCaption: the demos are silent; the figcaption title + description is the text alternative (WCAG 1.2.1) #177
       <video
         ref={(el) => group.register(id, el)}
         controls

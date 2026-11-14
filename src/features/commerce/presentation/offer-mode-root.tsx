@@ -12,7 +12,7 @@ const script = `(function(){try{var q=new URLSearchParams(location.search);var d
 export function OfferModeRoot({ children }: { children: ReactNode }) {
   return (
     <main id="contenido" data-offer-root data-offer="upsell" suppressHydrationWarning>
-      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static, constant pre-hydration script (see docs/architecture.md) */}
+      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static, constant pre-hydration script (see docs/architecture.md) #177 */}
       <script dangerouslySetInnerHTML={{ __html: script }} />
       {children}
     </main>

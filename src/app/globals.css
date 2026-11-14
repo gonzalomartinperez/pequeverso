@@ -541,13 +541,13 @@
     *,
     *::before,
     *::after {
-      /* biome-ignore lint/complexity/noImportantStyles: reduced-motion kill switch must override every component */
+      /* biome-ignore lint/complexity/noImportantStyles: reduced-motion kill switch must override every component #177 */
       animation-duration: 0.01ms !important;
-      /* biome-ignore lint/complexity/noImportantStyles: see above */
+      /* biome-ignore lint/complexity/noImportantStyles: see above #177 */
       animation-iteration-count: 1 !important;
-      /* biome-ignore lint/complexity/noImportantStyles: see above */
+      /* biome-ignore lint/complexity/noImportantStyles: see above #177 */
       transition-duration: 0.01ms !important;
-      /* biome-ignore lint/complexity/noImportantStyles: see above */
+      /* biome-ignore lint/complexity/noImportantStyles: see above #177 */
       scroll-behavior: auto !important;
     }
   }

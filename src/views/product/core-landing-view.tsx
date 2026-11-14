@@ -97,7 +97,7 @@ function jsonLdScript(data: Record<string, unknown> | null) {
   return (
     <script
       type="application/ld+json"
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD built from the registry
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD built from the registry #177
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
     />
   );
