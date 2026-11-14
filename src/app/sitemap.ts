@@ -12,6 +12,11 @@ type Route = {
   changeFrequency: "weekly" | "monthly";
 };
 
+function reviewedOf(date: string | undefined, path: string): string {
+  if (!date) throw new Error(`indexable product ${path} has no seo.lastReviewed`);
+  return date;
+}
+
 /** Indexable routes only; post-purchase and pure legal pages are noindex and excluded. */
 function indexableRoutes(): Route[] {
   return [
@@ -20,7 +25,7 @@ function indexableRoutes(): Route[] {
       (product): Route => ({
         path: product.path,
         priority: product.seo.priority,
-        reviewed: product.seo.lastReviewed,
+        reviewed: reviewedOf(product.seo.lastReviewed, product.path),
         changeFrequency: "monthly",
       }),
     ),

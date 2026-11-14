@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { globSync, readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { test } from "node:test";
 import { currency } from "../../config/commerce.ts";
 import { coreProducts } from "../../config/products/index.ts";
@@ -31,7 +31,7 @@ test("home graph has Organization and WebSite without SearchAction, ratings or r
   assert.ok(org && web);
   assert.equal(org.name, site.name);
   assert.equal(org.url, absoluteUrl("/"));
-  assert.match(String(org.logo), /^https:\/\/pequeverso\.com\/media\/brand\//);
+  assert.ok(String(org.logo).startsWith(absoluteUrl("/media/brand/")));
   assert.deepEqual(org.sameAs, Object.values(site.social));
   assert.equal(web.url, absoluteUrl("/"));
   assert.equal(web.inLanguage, "es");
@@ -60,9 +60,13 @@ test("Product and Offer values equal the registry config", () => {
 });
 
 test("only the shared JsonLdScript emits ld+json, always through jsonLd()", () => {
-  const found = execFileSync("grep", ["-rl", "ld+json", "src"], { encoding: "utf8" })
-    .split("\n")
-    .filter(Boolean);
+  const root = resolve(import.meta.dirname, "../..");
+  const found = globSync("src/**/*.{ts,tsx}", { cwd: root })
+    .filter((file) => readFileSync(resolve(root, file), "utf8").includes("ld+json"))
+    .map((file) => file.replaceAll("\\", "/"));
   assert.deepEqual(found, ["src/shared/seo/json-ld-script.tsx"]);
-  assert.match(readFileSync(found[0] as string, "utf8"), /__html: jsonLd\(data\)/);
+  assert.match(
+    readFileSync(resolve(root, "src/shared/seo/json-ld-script.tsx"), "utf8"),
+    /__html: jsonLd\(data\)/,
+  );
 });

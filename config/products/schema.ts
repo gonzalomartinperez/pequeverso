@@ -38,14 +38,17 @@ const Media = z.object({
   cards: z.array(MediaId).min(1),
 });
 
-const Seo = z.object({
-  index: z.boolean(),
+const SeoBase = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   priority: z.number().min(0).max(1),
-  /** Last review date of the page content (ISO date), feeds the sitemap `lastModified`. */
-  lastReviewed: IsoDate,
 });
+
+/** Indexable pages must carry the review date that feeds the sitemap `lastModified`. */
+const Seo = z.discriminatedUnion("index", [
+  SeoBase.extend({ index: z.literal(true), lastReviewed: IsoDate }),
+  SeoBase.extend({ index: z.literal(false), lastReviewed: IsoDate.optional() }),
+]);
 
 const Resource = z.object({
   id: z.string().regex(SLUG),

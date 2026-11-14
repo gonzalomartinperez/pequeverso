@@ -26,7 +26,6 @@ export const imprimeYJuega = {
     description:
       "Seis PDF con 384 páginas y nueve recursos para casa, viajes, esperas, creatividad, observación, valores y juego. Oferta opcional después de comprar Grafismo Fonético.",
     priority: 0,
-    lastReviewed: "2026-10-18",
   },
   pricing: { upsell: 14.99, downsell: 7.49 },
   parent: "grafismo-fonetico",

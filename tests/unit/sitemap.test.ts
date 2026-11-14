@@ -56,7 +56,7 @@ test("sitemap lastModified comes from content review dates, not build time", asy
     ["/soporte/", pageReviewed.support],
     ...indexableProducts().map((product): [string, string] => [
       product.path,
-      product.seo.lastReviewed,
+      String(product.seo.lastReviewed),
     ]),
   ]);
   for (const entry of entries) {

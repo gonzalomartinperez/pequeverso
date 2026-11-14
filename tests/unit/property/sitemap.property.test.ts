@@ -41,6 +41,7 @@ test("sitemap stays absolute, unique, canonical and date-stable across generatio
         assert.equal(url.search, "");
         assert.equal(url.hash, "");
         // lastModified is the content review date, never the generation time.
+        assert.ok(Number.isFinite(Number(entry.lastModified)));
         assert.equal(Number(entry.lastModified), stable[index]);
       }
     }),
