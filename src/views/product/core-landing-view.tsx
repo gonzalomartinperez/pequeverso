@@ -31,6 +31,7 @@ import { Universe } from "@/shared/identity/universe.tsx";
 import { getImage, getVideo } from "@/shared/media/media.ts";
 import { MediaImage } from "@/shared/media/media-image.tsx";
 import { Marquee } from "@/shared/motion/marquee.tsx";
+import { JsonLdScript } from "@/shared/seo/json-ld-script.tsx";
 import { buttonVariants } from "@/shared/ui/button-variants.ts";
 import { PageShell } from "@/shell/page-shell.tsx";
 import { AudienceCards } from "@/views/product/core/audience-cards.tsx";
@@ -90,17 +91,6 @@ function checkoutTarget(product: CoreProduct): CheckoutTarget {
     sckPrefix: product.checkout.sckPrefix,
     fallbackPath: checkoutFallbackPath(product),
   };
-}
-
-function jsonLdScript(data: Record<string, unknown> | null) {
-  if (!data) return null;
-  return (
-    <script
-      type="application/ld+json"
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD built from the registry #177
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  );
 }
 
 /** Full CTA label, or the sticky bar's short one when the enclosing container is narrow. */
@@ -341,8 +331,8 @@ export function CoreLanding({ product }: Props) {
       subtitle={copy.subtitle}
       overlay
     >
-      {jsonLdScript(productJsonLd(product))}
-      {jsonLdScript(breadcrumbJsonLd(product))}
+      <JsonLdScript data={productJsonLd(product)} />
+      <JsonLdScript data={breadcrumbJsonLd(product)} />
       <ViewContentOnMount product={product.slug} name={product.name} value={price} />
 
       <AgeProvider initial={defaultAge}>

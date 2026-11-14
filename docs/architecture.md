@@ -52,7 +52,7 @@ src/app/         framework routes, statically analyzed exports and root composit
 src/views/       home, legal/support and product page composition; metadata/JSON-LD
 src/shell/       existing page shell, site header/footer, mobile navigation and page motion
 src/features/    assistant, commerce, gallery, hub, landing age/gallery state, playground, tracking
-src/shared/      ui, styles, motion, editorial, identity, media and navigation capabilities
+src/shared/      ui, styles, motion, editorial, identity, media, navigation and seo (JSON-LD) capabilities
 tools/           repository CLI/build/verification tools; tools/media remains its own project
 tests/           unit, browser (including unchanged snapshots), assistant fixtures and helpers
 ```

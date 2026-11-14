@@ -39,6 +39,7 @@ export function sourcePlacementViolations(modules: ReadonlyMap<string, SourceMod
     "identity",
     "media",
     "navigation",
+    "seo",
   ]);
   const layers: Record<string, ReadonlySet<string>> = {
     assistant: new Set(["domain", "application", "adapters", "presentation"]),

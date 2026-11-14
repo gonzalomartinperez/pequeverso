@@ -12,7 +12,7 @@ consumer references, without changing product behavior or dependency/runtime pin
 Use `src/app` for framework routes and statically analyzed exports, `src/views` for page
 composition, `src/shell` for navigation and the existing page shell, `src/features/<capability>`
 for actual domain/application/adapters/presentation responsibilities, and named `src/shared`
-capabilities for reused UI, styles, motion, media, identity, navigation and editorial components.
+capabilities for reused UI, styles, motion, media, identity, navigation, seo and editorial components.
 Root `config`, `content`, `contracts`, `media` and `tools` retain explicit owners; browser tests
 and their unchanged screenshot baselines move together to `tests/browser`. No empty layers,
 forwarding barrels, duplicated code or unused infrastructure are introduced.

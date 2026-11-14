@@ -18,6 +18,9 @@ export const MediaId = z.string().refine(hasMedia, {
     `unknown media id "${String(issue.input)}" (declare it in tools/media/sources.json)`,
 });
 
+/** A real calendar date `YYYY-MM-DD`. */
+const IsoDate = z.iso.date();
+
 const Price = z.number().positive().multipleOf(0.01);
 
 const Composition = z.object({
@@ -40,6 +43,8 @@ const Seo = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   priority: z.number().min(0).max(1),
+  /** Last review date of the page content (ISO date), feeds the sitemap `lastModified`. */
+  lastReviewed: IsoDate,
 });
 
 const Resource = z.object({

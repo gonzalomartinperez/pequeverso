@@ -20,8 +20,10 @@ const hooks = registerHooks({
 const { default: sitemap } = await import("../../../src/app/sitemap.ts");
 hooks.deregister();
 
-test("sitemap stays absolute, unique and canonical across generation dates", (t) => {
+test("sitemap stays absolute, unique, canonical and date-stable across generation dates", (t) => {
   t.mock.timers.enable({ apis: ["Date"] });
+  t.mock.timers.setTime(0);
+  const stable = sitemap().map((entry) => Number(entry.lastModified));
   fc.assert(
     fc.property(fc.integer({ min: 0, max: 4_000_000_000_000 }), (now) => {
       t.mock.timers.setTime(now);
@@ -31,14 +33,15 @@ test("sitemap stays absolute, unique and canonical across generation dates", (t)
         entries.map((entry) => new URL(entry.url).pathname),
         ["/", ...indexableProducts().map((product) => product.path), "/soporte/"],
       );
-      for (const entry of entries) {
+      for (const [index, entry] of entries.entries()) {
         const url = new URL(entry.url);
         assert.equal(url.origin, new URL(site.url).origin);
         assert.ok(url.pathname.endsWith("/"));
         assert.ok(!url.pathname.includes("//"));
         assert.equal(url.search, "");
         assert.equal(url.hash, "");
-        assert.equal(Number(entry.lastModified), now);
+        // lastModified is the content review date, never the generation time.
+        assert.equal(Number(entry.lastModified), stable[index]);
       }
     }),
     { numRuns, ...(seed === undefined ? {} : { seed }) },
