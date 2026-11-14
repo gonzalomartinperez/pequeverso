@@ -262,6 +262,7 @@ test("the committed ratchets load and every one is compared", () => {
     "complexity",
     "coverage",
     "design-lint",
+    "diff-coverage",
     "interaction",
     "lighthouse",
     "lighthouse-lab",
