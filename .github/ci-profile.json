@@ -38,6 +38,7 @@
         "config/**",
         "content/**",
         "contracts/**",
+        "design/**",
         "public/**",
         "media/**",
         "tools/**",

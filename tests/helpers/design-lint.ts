@@ -11,6 +11,7 @@ export const ALLOWED_LITERAL_FILES = [
   "src/app/globals.css",
   "src/app/theme.css",
   "src/shared/styles/theme.css",
+  "src/shared/tokens/theme.css",
 ];
 const PRICE_FILES = [
   "src/views/product/core/buy-box.tsx",

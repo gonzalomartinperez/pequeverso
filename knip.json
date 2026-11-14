@@ -11,6 +11,7 @@
         "tools/!(serve-static).ts",
         "tools/serve-static.ts!",
         "tools/lib/*.ts",
+        "tools/tokens/*.ts",
         "tests/unit/**/*.test.ts",
         "tests/browser/**/*.spec.ts",
         "src/app/**/route.standalone.ts!",

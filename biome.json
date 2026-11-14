@@ -14,6 +14,7 @@
       "!**/public",
       "!**/next-env.d.ts",
       "!**/docs/generated",
+      "!**/src/shared/tokens/theme.css",
       "!**/playwright-report",
       "!**/test-results",
       "!**/media/manifest.json",

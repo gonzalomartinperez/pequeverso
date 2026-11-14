@@ -69,8 +69,23 @@ test("light theme only; !important only in the annotated reduced-motion kill swi
   }
 });
 
-/* OKLCH → sRGB → WCAG 2.x relative luminance, computed from the token source itself. */
+/* OKLCH → sRGB → WCAG 2.x relative luminance, computed from the DTCG token source itself. */
 type Triple = [number, number, number];
+type TokenNode = { $value?: string } & { [key: string]: unknown };
+const tokenSource = JSON.parse(read("design/tokens/pequeverso.tokens.json")) as TokenNode;
+const pairSource = (
+  tokenSource.$extensions as {
+    "com.pequeverso": {
+      contrast: { pairs: Array<{ foreground: string; background: string; min: number }> };
+    };
+  }
+)["com.pequeverso"].contrast.pairs;
+function tokenValue(path: string): string {
+  let node: TokenNode | undefined = tokenSource;
+  for (const part of path.split(".")) node = node?.[part] as TokenNode | undefined;
+  assert.ok(typeof node?.$value === "string", `${path} is not a token`);
+  return node.$value;
+}
 function oklchToLinearRgb([L, C, H]: Triple): Triple {
   const a = C * Math.cos((H * Math.PI) / 180);
   const b = C * Math.sin((H * Math.PI) / 180);
@@ -84,11 +99,9 @@ function oklchToLinearRgb([L, C, H]: Triple): Triple {
     clamp(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s),
   ];
 }
-function luminance(name: string): number {
-  const match = globals.match(
-    new RegExp(`--pv-${name}:\\s*oklch\\(\\s*([\\d.]+)\\s+([\\d.]+)\\s+([\\d.]+)\\s*\\)`),
-  );
-  assert.ok(match, `--pv-${name} is not a plain oklch() token`);
+function luminance(path: string): number {
+  const match = tokenValue(path).match(/^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)$/);
+  assert.ok(match, `${path} is not a plain oklch() token`);
   const [r, g, b] = oklchToLinearRgb([Number(match[1]), Number(match[2]), Number(match[3])]);
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
@@ -97,39 +110,15 @@ function contrast(fg: string, bg: string): number {
   return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 }
 
-test("documented WCAG 2.2 AA contrast pairs hold for the OKLCH tokens", () => {
-  const pairs: Array<[fg: string, bg: string, min: number]> = [
-    ["white", "navy", 12.5],
-    ["white", "navy-deep", 15],
-    ["white", "coral", 4.5],
-    ["white", "coral-hover", 6.5],
-    ["white", "teal", 4.5],
-    ["teal-text", "white", 7.5],
-    ["teal-text", "cream", 7],
-    ["ink", "gold", 11.5],
-    ["ink", "cream", 15.5],
-    ["body", "cream", 7.5],
-    ["muted", "cream", 4.5],
-    ["muted", "white", 4.5],
-    ["turquoise", "navy", 8.5],
-    ["gold", "navy", 9],
-    ["navy", "mint", 11],
-    // Tone chips (badge-variants, Eyebrow accent) and store badges: text on their pale tint.
-    ["teal-text", "mint", 6.5],
-    ["coral-hover", "rose", 5.5],
-    ["ink", "lemon", 14],
-    ["navy", "sky", 11],
-    // Card `gradient`, MediaFrame and ResourceGrid grounds end on celeste: body and muted text stay AA.
-    ["body", "celeste", 6.5],
-    ["muted", "celeste", 4.5],
-    ["ink", "celeste", 13],
-    // Coral text (PriceBlock, PriceTag) on the light surfaces it sits on.
-    ["coral", "white", 4.5],
-    ["coral", "cream", 4.5],
-  ];
-  for (const [fg, bg, min] of pairs) {
-    const ratio = contrast(fg, bg);
-    assert.ok(ratio >= min, `${fg} on ${bg} is ${ratio.toFixed(2)}:1, expected ≥ ${min}`);
+test("documented WCAG 2.2 AA contrast pairs hold for the DTCG tokens", () => {
+  assert.ok(pairSource.length >= 20, "contrast pairs live in the token JSON");
+  for (const { foreground, background, min } of pairSource) {
+    assert.ok(min >= 4.5, `${foreground} on ${background}: minimum ${min} is below AA text 4.5`);
+    const ratio = contrast(foreground, background);
+    assert.ok(
+      ratio >= min,
+      `${foreground} on ${background} is ${ratio.toFixed(2)}:1, expected ≥ ${min}`,
+    );
   }
 });
 

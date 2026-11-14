@@ -1,0 +1,651 @@
+{
+  "$description": "Pequeverso design tokens (DTCG-shaped, CSS-string values; see ADR-0012). Source of truth for src/shared/tokens/theme.css; regenerate with node tools/tokens/build.ts. The CSS custom-property name is the last path segment. Color tokens under color.semantic resolve through light-dark(light, dark); a token may carry $extensions[\"com.pequeverso\"].dark, otherwise dark = light (ADR-0006, ADR-0012).",
+  "color": {
+    "brand": {
+      "pv-navy": {
+        "$value": "oklch(0.3175 0.1094 256.25)",
+        "$type": "color",
+        "$description": "#003068 · white on navy 12.9:1"
+      },
+      "pv-navy-deep": {
+        "$value": "oklch(0.2619 0.0887 255.79)",
+        "$type": "color",
+        "$description": "#00234e · footer, closing bands"
+      },
+      "pv-teal": {
+        "$value": "oklch(0.5324 0.0917 190.84)",
+        "$type": "color",
+        "$description": "#007d79 · icons; white on teal 5.0:1"
+      },
+      "pv-teal-text": {
+        "$value": "oklch(0.4352 0.0749 190.98)",
+        "$type": "color",
+        "$description": "#005e5b · links and small labels, 7.6:1 on white"
+      },
+      "pv-coral": {
+        "$value": "oklch(0.5623 0.1722 28.49)",
+        "$type": "color",
+        "$description": "#c64035 · CTA and price only; white on coral 5.0:1"
+      },
+      "pv-coral-hover": {
+        "$value": "oklch(0.4929 0.1566 28.11)",
+        "$type": "color",
+        "$description": "#a83129 · 6.7:1"
+      },
+      "pv-gold": {
+        "$value": "oklch(0.8908 0.1645 93.89)",
+        "$type": "color",
+        "$description": "#ffd840 · accents, chips; ink on gold 11.9:1, never gold text on light"
+      },
+      "pv-turquoise": {
+        "$value": "oklch(0.8521 0.0956 187.2)",
+        "$type": "color",
+        "$description": "#7fe3d9 · accent on navy only, 8.6:1"
+      },
+      "pv-hero-top": {
+        "$value": "{color.brand.pv-navy-deep}",
+        "$type": "color"
+      },
+      "pv-hero-bottom": {
+        "$value": "{color.brand.pv-navy}",
+        "$type": "color"
+      },
+      "pv-on-navy": {
+        "$value": "oklch(1 0 0 / 86%)",
+        "$type": "color",
+        "$description": "body text on navy 9.9:1"
+      },
+      "pv-on-navy-chip": {
+        "$value": "oklch(1 0 0 / 12%)",
+        "$type": "color"
+      },
+      "pv-planet-teal-hi": {
+        "$value": "oklch(0.7 0.1 190)",
+        "$type": "color"
+      },
+      "pv-planet-teal-lo": {
+        "$value": "oklch(0.38 0.07 190)",
+        "$type": "color"
+      },
+      "pv-planet-gold-hi": {
+        "$value": "oklch(0.93 0.12 95)",
+        "$type": "color"
+      },
+      "pv-planet-gold-lo": {
+        "$value": "oklch(0.72 0.14 90)",
+        "$type": "color"
+      },
+      "pv-planet-turquoise-hi": {
+        "$value": "oklch(0.96 0.04 187)",
+        "$type": "color"
+      },
+      "pv-planet-turquoise-lo": {
+        "$value": "oklch(0.5 0.09 191)",
+        "$type": "color"
+      }
+    },
+    "neutral": {
+      "pv-cream": {
+        "$value": "oklch(0.9868 0.0118 79.79)",
+        "$type": "color",
+        "$description": "#fffaf2"
+      },
+      "pv-white": {
+        "$value": "oklch(1 0 0)",
+        "$type": "color"
+      },
+      "pv-ink": {
+        "$value": "oklch(0.2393 0.0581 256.66)",
+        "$type": "color",
+        "$description": "#0b1f3a · 15.9:1 on cream"
+      },
+      "pv-body": {
+        "$value": "oklch(0.4336 0.0403 255.38)",
+        "$type": "color",
+        "$description": "#425267 · 7.7:1 on cream"
+      },
+      "pv-muted": {
+        "$value": "oklch(0.524 0.0374 258.36)",
+        "$type": "color",
+        "$description": "#5d6b80 · 5.2:1 on cream"
+      },
+      "pv-line": {
+        "$value": "oklch(0.3175 0.1094 256.25 / 14%)",
+        "$type": "color"
+      },
+      "pv-line-strong": {
+        "$value": "oklch(0.3175 0.1094 256.25 / 28%)",
+        "$type": "color"
+      }
+    },
+    "band": {
+      "pv-mint": {
+        "$value": "oklch(0.9616 0.0201 189.22)",
+        "$type": "color",
+        "$description": "#e4f7f5"
+      },
+      "pv-sky": {
+        "$value": "oklch(0.9594 0.02 250.38)",
+        "$type": "color",
+        "$description": "#e8f3ff"
+      },
+      "pv-lemon": {
+        "$value": "oklch(0.965 0.0699 98.77)",
+        "$type": "color",
+        "$description": "#fff5bf"
+      },
+      "pv-rose": {
+        "$value": "oklch(0.9656 0.0176 39.4)",
+        "$type": "color",
+        "$description": "#fff0eb"
+      },
+      "pv-celeste": {
+        "$value": "oklch(0.9425 0.0305 244.5)",
+        "$type": "color",
+        "$description": "#dcefff"
+      },
+      "pv-blue-soft": {
+        "$value": "oklch(0.9013 0.0458 264.2)",
+        "$type": "color",
+        "$description": "#cfe0ff"
+      },
+      "pv-peach": {
+        "$value": "oklch(0.9483 0.0301 55.6)",
+        "$type": "color",
+        "$description": "#ffe9dc"
+      }
+    },
+    "semantic": {
+      "background": {
+        "$value": "{color.neutral.pv-cream}",
+        "$type": "color"
+      },
+      "foreground": {
+        "$value": "{color.neutral.pv-ink}",
+        "$type": "color"
+      },
+      "card": {
+        "$value": "{color.neutral.pv-white}",
+        "$type": "color"
+      },
+      "card-foreground": {
+        "$value": "{color.neutral.pv-ink}",
+        "$type": "color"
+      },
+      "popover": {
+        "$value": "{color.neutral.pv-white}",
+        "$type": "color"
+      },
+      "popover-foreground": {
+        "$value": "{color.neutral.pv-ink}",
+        "$type": "color"
+      },
+      "primary": {
+        "$value": "{color.brand.pv-coral}",
+        "$type": "color"
+      },
+      "primary-foreground": {
+        "$value": "{color.neutral.pv-white}",
+        "$type": "color"
+      },
+      "primary-hover": {
+        "$value": "{color.brand.pv-coral-hover}",
+        "$type": "color"
+      },
+      "secondary": {
+        "$value": "{color.brand.pv-navy}",
+        "$type": "color"
+      },
+      "secondary-foreground": {
+        "$value": "{color.neutral.pv-white}",
+        "$type": "color"
+      },
+      "secondary-hover": {
+        "$value": "{color.brand.pv-navy-deep}",
+        "$type": "color"
+      },
+      "muted": {
+        "$value": "{color.band.pv-sky}",
+        "$type": "color"
+      },
+      "muted-foreground": {
+        "$value": "{color.neutral.pv-muted}",
+        "$type": "color"
+      },
+      "accent": {
+        "$value": "{color.brand.pv-teal}",
+        "$type": "color"
+      },
+      "accent-foreground": {
+        "$value": "{color.neutral.pv-white}",
+        "$type": "color"
+      },
+      "destructive": {
+        "$value": "{color.brand.pv-coral-hover}",
+        "$type": "color"
+      },
+      "border": {
+        "$value": "{color.neutral.pv-line}",
+        "$type": "color"
+      },
+      "input": {
+        "$value": "{color.neutral.pv-line-strong}",
+        "$type": "color"
+      },
+      "ring": {
+        "$value": "{color.brand.pv-navy}",
+        "$type": "color"
+      },
+      "heading": {
+        "$value": "{color.neutral.pv-ink}",
+        "$type": "color"
+      },
+      "body": {
+        "$value": "{color.neutral.pv-body}",
+        "$type": "color"
+      },
+      "link": {
+        "$value": "{color.brand.pv-teal-text}",
+        "$type": "color"
+      },
+      "link-hover": {
+        "$value": "{color.brand.pv-navy}",
+        "$type": "color"
+      },
+      "chip": {
+        "$value": "{color.band.pv-mint}",
+        "$type": "color"
+      },
+      "chip-foreground": {
+        "$value": "{color.brand.pv-navy}",
+        "$type": "color"
+      },
+      "icon": {
+        "$value": "{color.brand.pv-teal}",
+        "$type": "color"
+      },
+      "surface-veil": {
+        "$value": "oklch(0.9868 0.0118 79.79 / 96%)",
+        "$type": "color",
+        "$description": "header and sticky bar over content"
+      }
+    }
+  },
+  "font": {
+    "pv-font-display": {
+      "$value": "\"Fraunces\", \"Fraunces Fallback\", Georgia, \"Times New Roman\", serif",
+      "$type": "fontFamily"
+    },
+    "pv-font-sans": {
+      "$value": "\"Nunito Sans\", \"Nunito Sans Fallback\", system-ui, \"Segoe UI\", Roboto, sans-serif",
+      "$type": "fontFamily"
+    }
+  },
+  "type": {
+    "pv-text-display": {
+      "$value": "clamp(2.375rem, 1.5rem + 3.4vw, 4.5rem)",
+      "$description": "38 → 72"
+    },
+    "pv-text-h2": {
+      "$value": "clamp(2rem, 1.45rem + 2vw, 3.25rem)",
+      "$description": "32 → 52"
+    },
+    "pv-text-h3": {
+      "$value": "clamp(1.25rem, 1.2rem + 0.2vw, 1.375rem)",
+      "$description": "20 → 22"
+    },
+    "pv-text-lead": {
+      "$value": "clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem)",
+      "$description": "17 → 19"
+    },
+    "pv-text-body": {
+      "$value": "clamp(1rem, 0.97rem + 0.15vw, 1.0625rem)",
+      "$description": "16 → 17"
+    },
+    "pv-text-small": {
+      "$value": "0.875rem"
+    },
+    "pv-text-tiny": {
+      "$value": "0.8125rem"
+    },
+    "pv-text-price": {
+      "$value": "clamp(2.375rem, 2rem + 1.2vw, 2.75rem)",
+      "$description": "38 → 44"
+    },
+    "pv-leading-display": {
+      "$value": "1.02"
+    },
+    "pv-leading-heading": {
+      "$value": "1.08"
+    },
+    "pv-tracking-display": {
+      "$value": "-0.022em"
+    },
+    "pv-leading-body": {
+      "$value": "1.6"
+    }
+  },
+  "space": {
+    "space-1": {
+      "$value": "0.25rem"
+    },
+    "space-2": {
+      "$value": "0.5rem"
+    },
+    "space-3": {
+      "$value": "0.75rem"
+    },
+    "space-4": {
+      "$value": "1rem"
+    },
+    "space-5": {
+      "$value": "1.5rem"
+    },
+    "space-6": {
+      "$value": "2rem"
+    },
+    "space-7": {
+      "$value": "3rem"
+    },
+    "space-8": {
+      "$value": "4rem"
+    },
+    "space-9": {
+      "$value": "6rem"
+    },
+    "section-pad": {
+      "$value": "clamp(3.5rem, 2.5rem + 3vw, 6rem)",
+      "$description": "The floor is capped at 6.25vw (20 px at 320 px) so enlarged text does not double the gutter on phones."
+    },
+    "gutter": {
+      "$value": "clamp(min(1.25rem, 6.25vw), 4vw, 1.5rem)"
+    },
+    "page-max": {
+      "$value": "1200px"
+    }
+  },
+  "radius": {
+    "radius": {
+      "$value": "0.5rem",
+      "$type": "dimension",
+      "$description": "shadcn base; the scale below is explicit"
+    },
+    "pv-radius-sm": {
+      "$value": "4px",
+      "$type": "dimension"
+    },
+    "pv-radius-chip": {
+      "$value": "6px",
+      "$type": "dimension"
+    },
+    "pv-radius-md": {
+      "$value": "12px",
+      "$type": "dimension",
+      "$description": "buttons, media, small cards"
+    },
+    "pv-radius-lg": {
+      "$value": "20px",
+      "$type": "dimension",
+      "$description": "large cards, dialogs"
+    },
+    "pv-radius-xl": {
+      "$value": "28px",
+      "$type": "dimension"
+    },
+    "pv-radius-2xl": {
+      "$value": "36px",
+      "$type": "dimension",
+      "$description": "hero cards, bento tiles"
+    },
+    "pv-radius-pill": {
+      "$value": "999px",
+      "$type": "dimension",
+      "$description": "primary CTA and chips"
+    }
+  },
+  "shadow": {
+    "pv-shadow-sm": {
+      "$value": "0 4px 12px oklch(0.3175 0.1094 256.25 / 8%)",
+      "$type": "shadow"
+    },
+    "pv-shadow-md": {
+      "$value": "0 12px 32px oklch(0.3175 0.1094 256.25 / 12%)",
+      "$type": "shadow"
+    },
+    "pv-shadow-lg": {
+      "$value": "0 24px 56px oklch(0.3175 0.1094 256.25 / 16%)",
+      "$type": "shadow"
+    },
+    "pv-shadow-cta": {
+      "$value": "0 10px 24px oklch(0.5623 0.1722 28.49 / 24%)",
+      "$type": "shadow"
+    },
+    "pv-shadow-cta-hover": {
+      "$value": "0 16px 32px oklch(0.5623 0.1722 28.49 / 32%)",
+      "$type": "shadow"
+    },
+    "pv-shadow-float": {
+      "$value": "0 1px 2px oklch(0.3175 0.1094 256.25 / 6%), 0 8px 20px -6px oklch(0.3175 0.1094 256.25 / 10%), 0 32px 64px -16px oklch(0.3175 0.1094 256.25 / 18%)",
+      "$type": "shadow"
+    },
+    "pv-shadow-glow": {
+      "$value": "0 0 0 1px oklch(1 0 0 / 60%), 0 24px 80px -20px oklch(0.5324 0.0917 190.84 / 40%)",
+      "$type": "shadow"
+    }
+  },
+  "motion": {
+    "pv-ease-out": {
+      "$value": "cubic-bezier(0.2, 0.7, 0.2, 1)",
+      "$type": "cubicBezier"
+    },
+    "pv-ease-emphasis": {
+      "$value": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+      "$type": "cubicBezier"
+    },
+    "duration-fast": {
+      "$value": "150ms",
+      "$type": "duration"
+    },
+    "duration": {
+      "$value": "220ms",
+      "$type": "duration"
+    },
+    "duration-reveal": {
+      "$value": "480ms",
+      "$type": "duration"
+    },
+    "duration-hero": {
+      "$value": "600ms",
+      "$type": "duration"
+    },
+    "duration-orbit": {
+      "$value": "48s",
+      "$type": "duration"
+    },
+    "duration-float": {
+      "$value": "7s",
+      "$type": "duration"
+    },
+    "duration-marquee": {
+      "$value": "40s",
+      "$type": "duration"
+    },
+    "stagger": {
+      "$value": "60ms",
+      "$type": "duration"
+    },
+    "reveal-y": {
+      "$value": "16px",
+      "$type": "duration"
+    },
+    "parallax-range": {
+      "$value": "20px",
+      "$type": "duration"
+    },
+    "tilt-max": {
+      "$value": "6deg",
+      "$type": "duration"
+    },
+    "tilt-perspective": {
+      "$value": "900px",
+      "$type": "duration"
+    }
+  },
+  "layout": {
+    "header-height": {
+      "$value": "5rem",
+      "$description": "floating pill (3.75rem) + its 0.625rem top/bottom offset"
+    },
+    "sticky-bar-height": {
+      "$value": "4.5rem"
+    },
+    "section-overlap": {
+      "$value": "{space.space-8}"
+    },
+    "section-intrinsic": {
+      "$value": "640px",
+      "$description": "contain-intrinsic-size for deferred sections"
+    },
+    "wave-height": {
+      "$value": "clamp(2rem, 6vw, 4.5rem)"
+    },
+    "badge-sm": {
+      "$value": "3rem"
+    },
+    "badge-md": {
+      "$value": "3.5rem"
+    },
+    "badge-lg": {
+      "$value": "4.5rem"
+    }
+  },
+  "$extensions": {
+    "com.pequeverso": {
+      "contrast": {
+        "$description": "Text/UI pairs the design system uses; tests/unit/design-system.test.ts asserts each ratio is at least min (WCAG 2.2 AA: 4.5 text, 3 large text and UI; higher minimums pin the documented ratio).",
+        "pairs": [
+          {
+            "foreground": "color.neutral.pv-white",
+            "background": "color.brand.pv-navy",
+            "min": 12.5
+          },
+          {
+            "foreground": "color.neutral.pv-white",
+            "background": "color.brand.pv-navy-deep",
+            "min": 15.0
+          },
+          {
+            "foreground": "color.neutral.pv-white",
+            "background": "color.brand.pv-coral",
+            "min": 4.5
+          },
+          {
+            "foreground": "color.neutral.pv-white",
+            "background": "color.brand.pv-coral-hover",
+            "min": 6.5
+          },
+          {
+            "foreground": "color.neutral.pv-white",
+            "background": "color.brand.pv-teal",
+            "min": 4.5
+          },
+          {
+            "foreground": "color.brand.pv-teal-text",
+            "background": "color.neutral.pv-white",
+            "min": 7.5
+          },
+          {
+            "foreground": "color.brand.pv-teal-text",
+            "background": "color.neutral.pv-cream",
+            "min": 7.0
+          },
+          {
+            "foreground": "color.neutral.pv-ink",
+            "background": "color.brand.pv-gold",
+            "min": 11.5
+          },
+          {
+            "foreground": "color.neutral.pv-ink",
+            "background": "color.neutral.pv-cream",
+            "min": 15.5
+          },
+          {
+            "foreground": "color.neutral.pv-body",
+            "background": "color.neutral.pv-cream",
+            "min": 7.5
+          },
+          {
+            "foreground": "color.neutral.pv-muted",
+            "background": "color.neutral.pv-cream",
+            "min": 4.5
+          },
+          {
+            "foreground": "color.neutral.pv-muted",
+            "background": "color.neutral.pv-white",
+            "min": 4.5
+          },
+          {
+            "foreground": "color.brand.pv-turquoise",
+            "background": "color.brand.pv-navy",
+            "min": 8.5
+          },
+          {
+            "foreground": "color.brand.pv-gold",
+            "background": "color.brand.pv-navy",
+            "min": 9.0
+          },
+          {
+            "foreground": "color.brand.pv-navy",
+            "background": "color.band.pv-mint",
+            "min": 11.0
+          },
+          {
+            "foreground": "color.brand.pv-teal-text",
+            "background": "color.band.pv-mint",
+            "min": 6.5
+          },
+          {
+            "foreground": "color.brand.pv-coral-hover",
+            "background": "color.band.pv-rose",
+            "min": 5.5
+          },
+          {
+            "foreground": "color.neutral.pv-ink",
+            "background": "color.band.pv-lemon",
+            "min": 14.0
+          },
+          {
+            "foreground": "color.brand.pv-navy",
+            "background": "color.band.pv-sky",
+            "min": 11.0
+          },
+          {
+            "foreground": "color.neutral.pv-body",
+            "background": "color.band.pv-celeste",
+            "min": 6.5
+          },
+          {
+            "foreground": "color.neutral.pv-muted",
+            "background": "color.band.pv-celeste",
+            "min": 4.5
+          },
+          {
+            "foreground": "color.neutral.pv-ink",
+            "background": "color.band.pv-celeste",
+            "min": 13.0
+          },
+          {
+            "foreground": "color.brand.pv-coral",
+            "background": "color.neutral.pv-white",
+            "min": 4.5
+          },
+          {
+            "foreground": "color.brand.pv-coral",
+            "background": "color.neutral.pv-cream",
+            "min": 4.5
+          }
+        ]
+      }
+    }
+  }
+}

@@ -11,7 +11,8 @@ Decision record: `docs/decisions/ADR-0006-shadcn-tailwind-design-system.md`; spe
 
 | Path | Contents |
 |---|---|
-| `src/app/globals.css` | fonts, tokens (`:root`), `@theme inline` bridge, `cq-*` variants, base layer, project utilities |
+| `design/tokens/pequeverso.tokens.json` | DTCG token source and contrast pairs (ADR-0012); `node tools/tokens/build.ts` writes `src/shared/tokens/theme.css` (generated, do not edit) |
+| `src/app/globals.css` | fonts, `@theme inline` bridge, `cq-*` variants, base layer, project utilities; imports the generated `:root` tokens |
 | `src/shared/motion/motion.css` | reveal, hero entrance, orbit, parallax, sticky stack, tilt, details, flip view transition |
 | `src/shared/ui/` | shadcn primitives (Base UI) + `button-variants.ts`, `badge-variants.ts` |
 | `src/shared/editorial/` | server blocks composed from primitives and tokens |
@@ -22,8 +23,10 @@ Decision record: `docs/decisions/ADR-0006-shadcn-tailwind-design-system.md`; spe
 ## Tokens
 
 Raw brand values are OKLCH (`--pv-*`); semantic roles (shadcn names plus project roles) point at
-them; `@theme inline` exposes both as utilities. Contrast pairs are recomputed from the token
-source by `tests/unit/design-system.test.ts`.
+them; `@theme inline` exposes both as utilities. Tokens are authored in the DTCG JSON and emitted
+to `:root` with `color-scheme: light`; semantic colors resolve through `light-dark(light, light)` so
+a dark theme is a token change (ADR-0012, ADR-0006 unchanged). Contrast pairs live in the JSON and
+are recomputed by `tests/unit/design-system.test.ts`.
 
 | Token (utility) | Value (sRGB) | Use | Contrast |
 |---|---|---|---|
@@ -223,7 +226,7 @@ Acceptance criterion for every block and page, 320 → 1920 px, enforced by
 
 ## How to change…
 
-- **Brand colour:** edit the `--pv-*` value in `globals.css` (OKLCH); run `npm test` — the
+- **Brand colour:** edit the value in `design/tokens/pequeverso.tokens.json` (OKLCH), run `node tools/tokens/build.ts` and `npm test`; the
   contrast test fails if a documented pair drops below its ratio.
 - **CTA colour:** change `--primary`/`--primary-hover` (and `--pv-shadow-cta`); nothing else uses coral.
 - **Font:** replace the `@font-face` block and the preload list in `src/app/layout.tsx`, then
