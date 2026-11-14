@@ -8,7 +8,7 @@
       "split": "train"
     },
     {
-      "query": "Change the price of the kit to a new amount",
+      "query": "Add a testimonial from a customer to the home page",
       "should_trigger": false,
       "split": "train"
     },
@@ -18,7 +18,7 @@
       "split": "train"
     },
     {
-      "query": "Add a testimonial from a customer to the home page",
+      "query": "Turn on the shopping assistant",
       "should_trigger": false,
       "split": "train"
     },
@@ -28,7 +28,7 @@
       "split": "validation"
     },
     {
-      "query": "Turn on the shopping assistant",
+      "query": "Change the Hotmart checkout URL",
       "should_trigger": false,
       "split": "validation"
     },
@@ -58,7 +58,7 @@
       "split": "validation"
     },
     {
-      "query": "Change the Hotmart checkout URL",
+      "query": "Write a spec before we build the page",
       "should_trigger": false,
       "split": "validation"
     },
@@ -68,7 +68,7 @@
       "split": "train"
     },
     {
-      "query": "Make the buy button green",
+      "query": "Review this pull request for commerce safety",
       "should_trigger": false,
       "split": "train"
     },
@@ -78,7 +78,7 @@
       "split": "validation"
     },
     {
-      "query": "Review this pull request for commerce safety",
+      "query": "Change the price of the kit to a new amount",
       "should_trigger": false,
       "split": "validation"
     },
@@ -88,7 +88,7 @@
       "split": "train"
     },
     {
-      "query": "Write a spec before we build the page",
+      "query": "Update dependencies from the Monday PR",
       "should_trigger": false,
       "split": "train"
     },
@@ -98,7 +98,7 @@
       "split": "validation"
     },
     {
-      "query": "Update dependencies from the Monday PR",
+      "query": "Make the buy button green",
       "should_trigger": false,
       "split": "validation"
     }

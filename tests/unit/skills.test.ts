@@ -37,6 +37,9 @@ function broken(
       "tools",
       "config",
       "src",
+      "ratchets",
+      "content",
+      ".github",
     ])
       cpSync(path.join(root, entry), path.join(dir, entry), {
         recursive: true,
@@ -117,15 +120,70 @@ test("metadata, description prefix, body length and review age are enforced", ()
     ),
     "body must be at most 120 lines",
   );
+  const reviewed =
+    readFileSync(path.join(root, skillDir, "SKILL.md"), "utf8").match(
+      /last-reviewed: "(\d{4}-\d{2}-\d{2})"/,
+    )?.[1] ?? "";
+  const after = (days: number) => new Date(Date.parse(reviewed) + days * 86_400_000);
   const warnings: string[] = [];
   assert.deepEqual(
-    broken(() => {}, warnings, new Date("2027-06-01")),
+    broken(() => {}, warnings, after(200)),
     [],
   );
-  found(warnings, "prepare-delivery: last-reviewed 2026-11-14 is older than 180 days");
+  found(warnings, `prepare-delivery: last-reviewed ${reviewed} is older than 180 days`);
   const fresh: string[] = [];
-  broken(() => {}, fresh, new Date("2026-12-01"));
+  broken(() => {}, fresh, after(10));
   assert.deepEqual(fresh, []);
+  for (const bad of ["2026-99-99", "9999-99-99", "2026-02-30"])
+    found(
+      broken((dir) => edit(path.join(dir, skillDir, "SKILL.md"), (t) => t.replace(reviewed, bad))),
+      "must be a real date",
+    );
+  found(
+    broken((dir) =>
+      edit(path.join(dir, skillDir, "SKILL.md"), (t) => t.replace(reviewed, "9999-12-31")),
+    ),
+    "must be a real date, not in the future",
+  );
+});
+
+test("frontmatter scalars are strict: quoted descriptions, no unterminated quotes", () => {
+  found(
+    broken((dir) =>
+      edit(path.join(dir, skillDir, "SKILL.md"), (t) => t.replace(/(description: ".*)"\n/, "$1\n")),
+    ),
+    "malformed quoted value",
+  );
+  found(
+    broken((dir) =>
+      edit(path.join(dir, skillDir, "SKILL.md"), (t) =>
+        t.replace(/description: "(.*)"\n/, "description: $1\n"),
+      ),
+    ),
+    "description must be double-quoted",
+  );
+  found(
+    broken((dir) =>
+      edit(path.join(dir, skillDir, "SKILL.md"), (t) =>
+        t.replace("owner: gonzalomartinperez", "owner: a: b"),
+      ),
+    ),
+    'quote values that contain ": " or " #"',
+  );
+});
+
+test("skill bodies must reference existing files, including node commands", () => {
+  for (const [text, expected] of [
+    ["`ratchets/missing.json`", "missing ratchets/missing.json"],
+    ["`.github/missing.yml`", "missing .github/missing.yml"],
+    ["`content/es/missing.ts`", "missing content/es/missing.ts"],
+    ["`.agents/skills/missing/SKILL.md`", "missing .agents/skills/missing/SKILL.md"],
+    ["`node tools/missing-script.ts --flag`", "missing tools/missing-script.ts"],
+  ] as const)
+    found(
+      broken((dir) => edit(path.join(dir, skillDir, "SKILL.md"), (t) => `${t}\nSee ${text}.\n`)),
+      expected,
+    );
 });
 
 test("the trigger bank rules are enforced", () => {
@@ -135,6 +193,18 @@ test("the trigger bank rules are enforced", () => {
     [(q) => q.filter((x) => x.should_trigger), "8-10 near-miss negative"],
     [(q) => q.map((x) => ({ ...x, split: "train" })), "split must be 60/40"],
     [(q) => q.map((x) => ({ ...x, split: "test" })), "split train|validation"],
+    [
+      (q) => q.map((x, i) => (i === 0 ? { ...x, split: ["train"] as unknown as string } : x)),
+      "split train|validation",
+    ],
+    [
+      (q) => q.map((x, i) => ({ ...x, split: i % 20 < 7 ? "validation" : "train" })),
+      "split must be 60/40",
+    ],
+    [
+      (q) => q.map((x, i) => ({ ...x, split: i % 20 < 9 ? "validation" : "train" })),
+      "split must be 60/40",
+    ],
   ];
   for (const [change, expected] of cases)
     found(

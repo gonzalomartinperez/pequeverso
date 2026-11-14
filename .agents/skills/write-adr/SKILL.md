@@ -18,8 +18,8 @@ ADRs live in `docs/decisions/` as `ADR-NNNN-kebab-title.md`, numbered in sequenc
 - [ ] Next number: list `docs/decisions/`; never reuse a number.
 - [ ] Header line: Date, Status (proposed | accepted | superseded), and Supersedes or Superseded by
   with a relative link when applicable.
-- [ ] Sections in MADR 4 order: Context and problem, Decision (drivers, chosen option), Consequences,
-  Alternatives considered, Confirmation (how compliance is checked: a test, a gate or a review step).
+- [ ] Sections as in the existing ADRs: Context, Decision, Consequences, Alternatives considered, and
+  optionally Confirmation (how compliance is checked: a test, a gate or a review step).
 - [ ] Facts come from the repository or the owner decision register; cite the file. Never invent
   history, numbers or approvals.
 - [ ] Superseding: add the link in both ADRs and update the old status line.

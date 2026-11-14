@@ -8,7 +8,7 @@
       "split": "train"
     },
     {
-      "query": "Implement the new landing page",
+      "query": "Add a testimonial section",
       "should_trigger": false,
       "split": "train"
     },
@@ -18,7 +18,7 @@
       "split": "train"
     },
     {
-      "query": "Change the price on the product page",
+      "query": "Turn on the assistant for visitors",
       "should_trigger": false,
       "split": "train"
     },
@@ -28,7 +28,7 @@
       "split": "validation"
     },
     {
-      "query": "Add a testimonial section",
+      "query": "Implement the new landing page",
       "should_trigger": false,
       "split": "validation"
     },
@@ -38,7 +38,7 @@
       "split": "train"
     },
     {
-      "query": "Turn on the assistant for visitors",
+      "query": "Review the open pull request",
       "should_trigger": false,
       "split": "train"
     },
@@ -48,7 +48,7 @@
       "split": "train"
     },
     {
-      "query": "Review the open pull request",
+      "query": "Fix the failing responsive test",
       "should_trigger": false,
       "split": "train"
     },
@@ -58,7 +58,7 @@
       "split": "validation"
     },
     {
-      "query": "Fix the failing responsive test",
+      "query": "Write the Spanish copy for the guarantee block",
       "should_trigger": false,
       "split": "validation"
     },
@@ -88,7 +88,7 @@
       "split": "train"
     },
     {
-      "query": "Write the Spanish copy for the guarantee block",
+      "query": "Run the accessibility audit",
       "should_trigger": false,
       "split": "train"
     },
@@ -98,7 +98,7 @@
       "split": "validation"
     },
     {
-      "query": "Run the accessibility audit",
+      "query": "Change the price on the product page",
       "should_trigger": false,
       "split": "validation"
     }

@@ -8,7 +8,7 @@
       "split": "train"
     },
     {
-      "query": "Merge the Dependabot PR",
+      "query": "Review a feature pull request",
       "should_trigger": false,
       "split": "train"
     },
@@ -18,7 +18,7 @@
       "split": "train"
     },
     {
-      "query": "Add a new dependency for animations",
+      "query": "Write an ADR for the new library",
       "should_trigger": false,
       "split": "train"
     },
@@ -28,7 +28,7 @@
       "split": "validation"
     },
     {
-      "query": "Lower the bundle budget so the update passes",
+      "query": "Merge the Dependabot PR",
       "should_trigger": false,
       "split": "validation"
     },
@@ -38,7 +38,7 @@
       "split": "train"
     },
     {
-      "query": "Edit the workflow to skip the failing job",
+      "query": "Add a new page",
       "should_trigger": false,
       "split": "train"
     },
@@ -48,7 +48,7 @@
       "split": "train"
     },
     {
-      "query": "Review a feature pull request",
+      "query": "Change the price",
       "should_trigger": false,
       "split": "train"
     },
@@ -58,7 +58,7 @@
       "split": "validation"
     },
     {
-      "query": "Write an ADR for the new library",
+      "query": "Add a new dependency for animations",
       "should_trigger": false,
       "split": "validation"
     },
@@ -68,7 +68,7 @@
       "split": "train"
     },
     {
-      "query": "Add a new page",
+      "query": "Cut a release",
       "should_trigger": false,
       "split": "train"
     },
@@ -78,7 +78,7 @@
       "split": "validation"
     },
     {
-      "query": "Change the price",
+      "query": "Lower the bundle budget so the update passes",
       "should_trigger": false,
       "split": "validation"
     },
@@ -88,7 +88,7 @@
       "split": "train"
     },
     {
-      "query": "Cut a release",
+      "query": "Run the performance audit",
       "should_trigger": false,
       "split": "train"
     },
@@ -98,7 +98,7 @@
       "split": "validation"
     },
     {
-      "query": "Run the performance audit",
+      "query": "Edit the workflow to skip the failing job",
       "should_trigger": false,
       "split": "validation"
     }

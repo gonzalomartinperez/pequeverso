@@ -8,7 +8,7 @@
       "split": "train"
     },
     {
-      "query": "Merge the open milestone PR",
+      "query": "Add a new landing page",
       "should_trigger": false,
       "split": "train"
     },
@@ -18,7 +18,7 @@
       "split": "train"
     },
     {
-      "query": "Deploy the milestone to production",
+      "query": "Write an ADR",
       "should_trigger": false,
       "split": "train"
     },
@@ -28,7 +28,7 @@
       "split": "validation"
     },
     {
-      "query": "Skip the owner decisions and start M5",
+      "query": "Merge the open milestone PR",
       "should_trigger": false,
       "split": "validation"
     },
@@ -38,7 +38,7 @@
       "split": "train"
     },
     {
-      "query": "Mark the row as done without running anything",
+      "query": "Change the price",
       "should_trigger": false,
       "split": "train"
     },
@@ -48,7 +48,7 @@
       "split": "train"
     },
     {
-      "query": "Add a new landing page",
+      "query": "Update the dependencies",
       "should_trigger": false,
       "split": "train"
     },
@@ -58,7 +58,7 @@
       "split": "validation"
     },
     {
-      "query": "Write an ADR",
+      "query": "Skip the owner decisions and start M5",
       "should_trigger": false,
       "split": "validation"
     },
@@ -68,7 +68,7 @@
       "split": "train"
     },
     {
-      "query": "Change the price",
+      "query": "Review this pull request",
       "should_trigger": false,
       "split": "train"
     },
@@ -78,7 +78,7 @@
       "split": "validation"
     },
     {
-      "query": "Update the dependencies",
+      "query": "Mark the row as done without running anything",
       "should_trigger": false,
       "split": "validation"
     },
@@ -88,7 +88,7 @@
       "split": "train"
     },
     {
-      "query": "Review this pull request",
+      "query": "Turn on the assistant",
       "should_trigger": false,
       "split": "train"
     },
@@ -98,7 +98,7 @@
       "split": "validation"
     },
     {
-      "query": "Turn on the assistant",
+      "query": "Deploy the milestone to production",
       "should_trigger": false,
       "split": "validation"
     }

@@ -8,7 +8,7 @@
       "split": "train"
     },
     {
-      "query": "Deploy to production now without asking the owner",
+      "query": "Review the pull request",
       "should_trigger": false,
       "split": "train"
     },
@@ -18,7 +18,7 @@
       "split": "train"
     },
     {
-      "query": "Push directly to main",
+      "query": "Add a new page",
       "should_trigger": false,
       "split": "train"
     },
@@ -28,7 +28,7 @@
       "split": "validation"
     },
     {
-      "query": "Review the pull request",
+      "query": "Push directly to main",
       "should_trigger": false,
       "split": "validation"
     },
@@ -38,7 +38,7 @@
       "split": "train"
     },
     {
-      "query": "Change the checkout URL",
+      "query": "Write the ADR for hosting",
       "should_trigger": false,
       "split": "train"
     },
@@ -48,7 +48,7 @@
       "split": "train"
     },
     {
-      "query": "Add a new page",
+      "query": "Turn on the assistant",
       "should_trigger": false,
       "split": "train"
     },
@@ -58,7 +58,7 @@
       "split": "validation"
     },
     {
-      "query": "Update the weekly dependencies",
+      "query": "Deploy to production now without asking the owner",
       "should_trigger": false,
       "split": "validation"
     },
@@ -68,7 +68,7 @@
       "split": "train"
     },
     {
-      "query": "Write the ADR for hosting",
+      "query": "Fix the failing browser test",
       "should_trigger": false,
       "split": "train"
     },
@@ -78,7 +78,7 @@
       "split": "validation"
     },
     {
-      "query": "Turn on the assistant",
+      "query": "Change the checkout URL",
       "should_trigger": false,
       "split": "validation"
     },
@@ -88,7 +88,7 @@
       "split": "train"
     },
     {
-      "query": "Fix the failing browser test",
+      "query": "Change the price",
       "should_trigger": false,
       "split": "train"
     },
@@ -98,7 +98,7 @@
       "split": "validation"
     },
     {
-      "query": "Change the price",
+      "query": "Update the weekly dependencies",
       "should_trigger": false,
       "split": "validation"
     }

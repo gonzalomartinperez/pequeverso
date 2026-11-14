@@ -24,7 +24,7 @@
       "prompt": "Rewrite the guarantee paragraph in Spanish",
       "assertions": [
         "Uses neutral Spanish with tú, no voseo",
-        "Reads the guarantee period from config and flags the owner approval list"
+        "Reads the guarantee period from config and flags that copy outside the approved package needs owner confirmation"
       ]
     }
   ]

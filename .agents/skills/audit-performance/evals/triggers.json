@@ -8,7 +8,7 @@
       "split": "train"
     },
     {
-      "query": "Fix the LCP regression by redesigning the hero",
+      "query": "Add a new section to the page",
       "should_trigger": false,
       "split": "train"
     },
@@ -18,7 +18,7 @@
       "split": "train"
     },
     {
-      "query": "Load test the production site",
+      "query": "Change the price",
       "should_trigger": false,
       "split": "train"
     },
@@ -28,7 +28,7 @@
       "split": "validation"
     },
     {
-      "query": "Loosen the bundle budget to pass CI",
+      "query": "Fix the LCP regression by redesigning the hero",
       "should_trigger": false,
       "split": "validation"
     },
@@ -38,7 +38,7 @@
       "split": "train"
     },
     {
-      "query": "Run the accessibility audit",
+      "query": "Turn on the assistant",
       "should_trigger": false,
       "split": "train"
     },
@@ -48,7 +48,7 @@
       "split": "train"
     },
     {
-      "query": "Add a new section to the page",
+      "query": "Add the Meta pixel to a new page",
       "should_trigger": false,
       "split": "train"
     },
@@ -58,7 +58,7 @@
       "split": "validation"
     },
     {
-      "query": "Change the price",
+      "query": "Loosen the bundle budget to pass CI",
       "should_trigger": false,
       "split": "validation"
     },
@@ -68,7 +68,7 @@
       "split": "train"
     },
     {
-      "query": "Turn on the assistant",
+      "query": "Review the pull request",
       "should_trigger": false,
       "split": "train"
     },
@@ -78,7 +78,7 @@
       "split": "validation"
     },
     {
-      "query": "Add the Meta pixel to a new page",
+      "query": "Run the accessibility audit",
       "should_trigger": false,
       "split": "validation"
     },
@@ -88,7 +88,7 @@
       "split": "train"
     },
     {
-      "query": "Review the pull request",
+      "query": "Update the dependencies",
       "should_trigger": false,
       "split": "train"
     },
@@ -98,7 +98,7 @@
       "split": "validation"
     },
     {
-      "query": "Update the dependencies",
+      "query": "Load test the production site",
       "should_trigger": false,
       "split": "validation"
     }

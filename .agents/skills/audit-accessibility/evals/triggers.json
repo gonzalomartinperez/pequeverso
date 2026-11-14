@@ -8,7 +8,7 @@
       "split": "train"
     },
     {
-      "query": "Fix the page design and layout",
+      "query": "Add a testimonial",
       "should_trigger": false,
       "split": "train"
     },
@@ -18,7 +18,7 @@
       "split": "train"
     },
     {
-      "query": "Run Lighthouse performance on the page",
+      "query": "Turn on the assistant",
       "should_trigger": false,
       "split": "train"
     },
@@ -28,7 +28,7 @@
       "split": "validation"
     },
     {
-      "query": "Edit the Hotmart iframe markup to add a title",
+      "query": "Run Lighthouse performance on the page",
       "should_trigger": false,
       "split": "validation"
     },
@@ -38,7 +38,7 @@
       "split": "train"
     },
     {
-      "query": "Make the buy button green",
+      "query": "Implement the new page",
       "should_trigger": false,
       "split": "train"
     },
@@ -48,7 +48,7 @@
       "split": "train"
     },
     {
-      "query": "Add a testimonial",
+      "query": "Review the pull request for commerce safety",
       "should_trigger": false,
       "split": "train"
     },
@@ -58,7 +58,7 @@
       "split": "validation"
     },
     {
-      "query": "Turn on the assistant",
+      "query": "Edit the Hotmart iframe markup to add a title",
       "should_trigger": false,
       "split": "validation"
     },
@@ -68,7 +68,7 @@
       "split": "train"
     },
     {
-      "query": "Implement the new page",
+      "query": "Update dependencies",
       "should_trigger": false,
       "split": "train"
     },
@@ -78,7 +78,7 @@
       "split": "validation"
     },
     {
-      "query": "Review the pull request for commerce safety",
+      "query": "Fix the page design and layout",
       "should_trigger": false,
       "split": "validation"
     },
@@ -88,7 +88,7 @@
       "split": "train"
     },
     {
-      "query": "Update dependencies",
+      "query": "Write the Spanish copy",
       "should_trigger": false,
       "split": "train"
     },
@@ -98,7 +98,7 @@
       "split": "validation"
     },
     {
-      "query": "Write the Spanish copy",
+      "query": "Make the buy button green",
       "should_trigger": false,
       "split": "validation"
     }

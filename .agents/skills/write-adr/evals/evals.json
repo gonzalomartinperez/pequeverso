@@ -7,7 +7,7 @@
       "prompt": "Record the decision to keep the static export as a parity build",
       "assertions": [
         "Uses the next ADR number and the layout of ADR-0010",
-        "Includes Context, Decision, Consequences, Alternatives and Confirmation",
+        "Includes Context, Decision, Consequences and Alternatives considered, plus Confirmation when a check exists",
         "Cites repository files and invents no history"
       ]
     },

@@ -17,8 +17,9 @@ and `ratchets/bundle.json`.
 ## Checklist
 
 - [ ] State which build target is measured (standalone is production; the static export is a parity build).
-- [ ] Build with the production configuration: `npm run build` (needs `.env.local` copied from
-  `.env.example`).
+- [ ] Build: `npm run build` is the static export parity build that `check:bundle` and `lhci` read
+  (needs `.env.local` copied from `.env.example`). Production is `npm run build:standalone` (ADR-0010):
+  run it too when a claim is about production, and say which build each number came from.
 - [ ] Budgets: `npm run check:bundle`, `npm run check:media`, `npm run check:scene`.
 - [ ] Lighthouse at 390 px: `npm run lhci`; summarise with `tools/lhci-summary.ts` when it helps.
 - [ ] LCP element and layout stability: `npm run test:browser -- tests/browser/lcp.spec.ts`.

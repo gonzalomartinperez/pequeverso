@@ -8,7 +8,7 @@
       "split": "train"
     },
     {
-      "query": "Merge the pull request",
+      "query": "Deploy this branch to production",
       "should_trigger": false,
       "split": "train"
     },
@@ -18,7 +18,7 @@
       "split": "train"
     },
     {
-      "query": "Deploy this branch to production",
+      "query": "Update dependencies",
       "should_trigger": false,
       "split": "train"
     },
@@ -38,7 +38,7 @@
       "split": "train"
     },
     {
-      "query": "Implement the review feedback",
+      "query": "Run the performance audit on the live site",
       "should_trigger": false,
       "split": "train"
     },
@@ -48,7 +48,7 @@
       "split": "train"
     },
     {
-      "query": "Write a spec for the page",
+      "query": "Add a testimonial",
       "should_trigger": false,
       "split": "train"
     },
@@ -58,7 +58,7 @@
       "split": "validation"
     },
     {
-      "query": "Update dependencies",
+      "query": "Implement the review feedback",
       "should_trigger": false,
       "split": "validation"
     },
@@ -68,7 +68,7 @@
       "split": "train"
     },
     {
-      "query": "Run the performance audit on the live site",
+      "query": "Write an ADR for this decision",
       "should_trigger": false,
       "split": "train"
     },
@@ -78,7 +78,7 @@
       "split": "validation"
     },
     {
-      "query": "Add a testimonial",
+      "query": "Merge the pull request",
       "should_trigger": false,
       "split": "validation"
     },
@@ -88,7 +88,7 @@
       "split": "train"
     },
     {
-      "query": "Write an ADR for this decision",
+      "query": "Change the price",
       "should_trigger": false,
       "split": "train"
     },
@@ -98,7 +98,7 @@
       "split": "validation"
     },
     {
-      "query": "Change the price",
+      "query": "Write a spec for the page",
       "should_trigger": false,
       "split": "validation"
     }

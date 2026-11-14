@@ -77,8 +77,7 @@ test("files that lint, typecheck or build never ride the docs-only fast path", (
   const docsOnlyCode = files.filter((file) => {
     const hit = profilesFor(file);
     return (
-      hit.length === 1 &&
-      hit[0] === "docs" &&
+      hit.every((name) => name === "docs" || name === "harness") &&
       /\.(ts|tsx|js|mjs|cjs|json|jsonc|css|ya?ml)$/.test(file)
     );
   });
@@ -97,6 +96,15 @@ test("profile routing: docs stay on the fast path, code and workflows run everyt
     "harness",
   ]);
   assert.deepEqual(map.profiles.harness?.adds, ["docs"]);
+  for (const file of [
+    ".claude/settings.json",
+    ".agents/skills/x/scripts/check.ts",
+    ".agents/skills/x/scripts/run.mjs",
+    ".agents/skills/x/scripts/run.js",
+    ".agents/skills/x/ci.yml",
+    ".agents/skills/x/ci.yaml",
+  ])
+    assert.ok(profilesFor(file).includes("code"), `${file} must run lint and typecheck`);
   assert.deepEqual(profilesFor("docs/generated/htaccess.txt").sort(), ["code", "docs"]);
   assert.deepEqual(profilesFor("src/app/page.tsx"), ["code"]);
   assert.deepEqual(profilesFor(".github/workflows/ci.yml"), ["workflow"]);

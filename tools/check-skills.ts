@@ -22,19 +22,31 @@ type Parsed = { meta: Record<string, string>; metadata: Record<string, string>; 
 const MAX_BODY_LINES = 120;
 const STALE_DAYS = 180;
 const ALLOWED_KEYS = ["name", "description", "allowed-tools", "metadata"];
-const unquote = (value: string): string => {
-  if (!value.startsWith('"')) return value;
-  try {
-    return String(JSON.parse(value));
-  } catch {
-    return value;
+/** Parses a frontmatter scalar: double-quoted values must be valid JSON strings, plain ones must not hide ": " or " #". */
+const scalar = (value: string, where: string, problems: string[]): string => {
+  if (value.startsWith('"')) {
+    try {
+      return String(JSON.parse(value));
+    } catch {
+      problems.push(`${where}: malformed quoted value ${value.slice(0, 30)}`);
+      return value;
+    }
   }
+  if (/: | #/.test(value)) problems.push(`${where}: quote values that contain ": " or " #"`);
+  return value;
+};
+
+const isRealDate = (value: string): boolean => {
+  const time = Date.parse(`${value}T00:00:00Z`);
+  return !Number.isNaN(time) && new Date(time).toISOString().slice(0, 10) === value;
 };
 
 const SECRET =
   /\b(sk-[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|EAA[A-Za-z0-9]{20,})/;
 const PRIVATE_PATH = /\/home\/|\/Users\/|[A-Z]:\\/;
-const REPO_FILE = /`((?:tools|tests|docs|config|src)\/[\w./-]+\.(?:ts|tsx|md|json))`/g;
+const REPO_FILE =
+  /`((?:tools|tests|docs|config|src|ratchets|content|\.github|\.agents)\/[\w./-]+\.(?:ts|tsx|md|json|ya?ml|mjs))`/g;
+const NODE_FILE = /`node ((?:tools|tests|scripts)\/[\w./-]+)[^`]*`/g;
 
 function parse(file: string, problems: string[]): Parsed | undefined {
   const match = readFileSync(file, "utf8").match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
@@ -50,7 +62,7 @@ function parse(file: string, problems: string[]): Parsed | undefined {
     if (nested?.[1] && nested[2] && block === "metadata") {
       if (Object.hasOwn(metadata, nested[1]))
         problems.push(`${file}: duplicate metadata field ${nested[1]}`);
-      else metadata[nested[1]] = unquote(nested[2]);
+      else metadata[nested[1]] = scalar(nested[2], `${file}: metadata ${nested[1]}`, problems);
       continue;
     }
     block = "";
@@ -58,8 +70,11 @@ function parse(file: string, problems: string[]): Parsed | undefined {
     if (!field?.[1]) problems.push(`${file}: unsupported frontmatter line "${line}"`);
     else if (Object.hasOwn(meta, field[1]))
       problems.push(`${file}: duplicate frontmatter field ${field[1]}`);
-    else if (field[2]) meta[field[1]] = unquote(field[2]);
-    else if (field[1] === "metadata") {
+    else if (field[2]) {
+      if (field[1] === "description" && !field[2].startsWith('"'))
+        problems.push(`${file}: description must be double-quoted`);
+      meta[field[1]] = scalar(field[2], `${file}: ${field[1]}`, problems);
+    } else if (field[1] === "metadata") {
       meta.metadata = "";
       block = "metadata";
     } else problems.push(`${file}: unsupported frontmatter line "${line}"`);
@@ -109,7 +124,7 @@ function checkEvals(dir: string, name: string, problems: string[]): void {
       if (
         !text ||
         typeof q.should_trigger !== "boolean" ||
-        !["train", "validation"].includes(String(q.split))
+        (q.split !== "train" && q.split !== "validation")
       ) {
         problems.push(
           `${label}: each query needs query, boolean should_trigger and split train|validation`,
@@ -129,7 +144,7 @@ function checkEvals(dir: string, name: string, problems: string[]): void {
     if (count.negative < 8 || count.negative > 10)
       problems.push(`${label}: needs 8-10 near-miss negative queries, found ${count.negative}`);
     const total = count.positive + count.negative;
-    if (Math.abs(count.validation - 0.4 * total) > 1)
+    if (count.validation !== Math.round(0.4 * total))
       problems.push(
         `${label}: split must be 60/40 train/validation, found ${count.validation}/${total} validation`,
       );
@@ -304,6 +319,8 @@ export function checkSkills(root: string, warnings: string[] = [], now = new Dat
       problems.push(
         `${name}: metadata needs owner, last-reviewed (YYYY-MM-DD) and version (x.y.z)`,
       );
+    else if (!isRealDate(reviewed) || Date.parse(reviewed) > now.getTime())
+      problems.push(`${name}: last-reviewed ${reviewed} must be a real date, not in the future`);
     else if (now.getTime() - Date.parse(reviewed) > STALE_DAYS * 86_400_000)
       warnings.push(`${name}: last-reviewed ${reviewed} is older than ${STALE_DAYS} days`);
     if (skill.body.replace(/\n+$/, "").split("\n").length > MAX_BODY_LINES)
@@ -336,6 +353,8 @@ export function checkSkills(root: string, warnings: string[] = [], now = new Dat
     for (const [, script = ""] of skill.body.matchAll(/npm run ([a-z0-9:-]+)/g))
       if (!scripts[script]) problems.push(`${name}: unknown npm script ${script}`);
     for (const [, file = ""] of skill.body.matchAll(REPO_FILE))
+      if (!existsSync(path.join(root, file))) problems.push(`${name}: missing ${file}`);
+    for (const [, file = ""] of skill.body.matchAll(NODE_FILE))
       if (!existsSync(path.join(root, file))) problems.push(`${name}: missing ${file}`);
   }
   return problems;

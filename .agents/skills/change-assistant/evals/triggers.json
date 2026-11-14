@@ -8,7 +8,7 @@
       "split": "train"
     },
     {
-      "query": "Turn on the assistant in production",
+      "query": "Use a real OpenAI key for the assistant",
       "should_trigger": false,
       "split": "train"
     },
@@ -18,7 +18,7 @@
       "split": "train"
     },
     {
-      "query": "Set NEXT_PUBLIC_ASSISTANT_ENABLED to true in the workflow",
+      "query": "Add the Meta pixel to the assistant",
       "should_trigger": false,
       "split": "train"
     },
@@ -28,7 +28,7 @@
       "split": "validation"
     },
     {
-      "query": "Use a real OpenAI key for the assistant",
+      "query": "Turn on the assistant in production",
       "should_trigger": false,
       "split": "validation"
     },
@@ -38,7 +38,7 @@
       "split": "train"
     },
     {
-      "query": "Change the API repository",
+      "query": "Change the price shown on the product page",
       "should_trigger": false,
       "split": "train"
     },
@@ -48,7 +48,7 @@
       "split": "train"
     },
     {
-      "query": "Add a checkout button inside the assistant",
+      "query": "Cut a release",
       "should_trigger": false,
       "split": "train"
     },
@@ -58,7 +58,7 @@
       "split": "validation"
     },
     {
-      "query": "Add the Meta pixel to the assistant",
+      "query": "Set NEXT_PUBLIC_ASSISTANT_ENABLED to true in the workflow",
       "should_trigger": false,
       "split": "validation"
     },
@@ -68,7 +68,7 @@
       "split": "train"
     },
     {
-      "query": "Change the price shown on the product page",
+      "query": "Add a testimonial",
       "should_trigger": false,
       "split": "train"
     },
@@ -78,7 +78,7 @@
       "split": "validation"
     },
     {
-      "query": "Cut a release",
+      "query": "Change the API repository",
       "should_trigger": false,
       "split": "validation"
     },
@@ -88,7 +88,7 @@
       "split": "train"
     },
     {
-      "query": "Add a testimonial",
+      "query": "Add a new landing page section",
       "should_trigger": false,
       "split": "train"
     },
@@ -98,7 +98,7 @@
       "split": "validation"
     },
     {
-      "query": "Add a new landing page section",
+      "query": "Add a checkout button inside the assistant",
       "should_trigger": false,
       "split": "validation"
     }

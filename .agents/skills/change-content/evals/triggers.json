@@ -8,7 +8,7 @@
       "split": "train"
     },
     {
-      "query": "Make the buy button green",
+      "query": "Turn on the assistant",
       "should_trigger": false,
       "split": "train"
     },
@@ -18,7 +18,7 @@
       "split": "train"
     },
     {
-      "query": "Turn on the assistant",
+      "query": "Cut a release",
       "should_trigger": false,
       "split": "train"
     },
@@ -28,7 +28,7 @@
       "split": "validation"
     },
     {
-      "query": "Add the Meta pixel to a new page",
+      "query": "Make the buy button green",
       "should_trigger": false,
       "split": "validation"
     },
@@ -38,7 +38,7 @@
       "split": "train"
     },
     {
-      "query": "Cut a release",
+      "query": "Review the pull request",
       "should_trigger": false,
       "split": "train"
     },
@@ -48,17 +48,17 @@
       "split": "train"
     },
     {
-      "query": "Change the layout of the hero section",
+      "query": "Write an ADR",
       "should_trigger": false,
       "split": "train"
     },
     {
-      "query": "Fix a typo in the FAQ answer",
+      "query": "Add a testimonial from a customer",
       "should_trigger": true,
       "split": "validation"
     },
     {
-      "query": "Review the pull request",
+      "query": "Change the layout of the hero section",
       "should_trigger": false,
       "split": "validation"
     },
@@ -68,7 +68,7 @@
       "split": "train"
     },
     {
-      "query": "Write an ADR",
+      "query": "Run the performance audit",
       "should_trigger": false,
       "split": "train"
     },
@@ -78,17 +78,17 @@
       "split": "validation"
     },
     {
-      "query": "Run the performance audit",
+      "query": "Change the Hotmart checkout URL in the funnel",
       "should_trigger": false,
       "split": "validation"
     },
     {
-      "query": "Change the 30 day guarantee period",
+      "query": "Change the guarantee period",
       "should_trigger": true,
       "split": "train"
     },
     {
-      "query": "Add a testimonial from a customer",
+      "query": "Update dependencies",
       "should_trigger": false,
       "split": "train"
     },
@@ -98,7 +98,7 @@
       "split": "validation"
     },
     {
-      "query": "Change the Hotmart checkout URL in the funnel",
+      "query": "Add the Meta pixel to a new page",
       "should_trigger": false,
       "split": "validation"
     }

@@ -8,7 +8,7 @@
       "split": "train"
     },
     {
-      "query": "Add a CHANGELOG entry",
+      "query": "Write meeting notes for today",
       "should_trigger": false,
       "split": "train"
     },
@@ -18,7 +18,7 @@
       "split": "train"
     },
     {
-      "query": "Write meeting notes for today",
+      "query": "Translate this paragraph to Spanish",
       "should_trigger": false,
       "split": "train"
     },
@@ -28,7 +28,7 @@
       "split": "validation"
     },
     {
-      "query": "Review the existing ADRs for typos",
+      "query": "Add a CHANGELOG entry",
       "should_trigger": false,
       "split": "validation"
     },
@@ -38,7 +38,7 @@
       "split": "train"
     },
     {
-      "query": "Implement the decision from ADR-0003",
+      "query": "Add a testimonial",
       "should_trigger": false,
       "split": "train"
     },
@@ -48,7 +48,7 @@
       "split": "train"
     },
     {
-      "query": "Translate this paragraph to Spanish",
+      "query": "Change the price",
       "should_trigger": false,
       "split": "train"
     },
@@ -58,7 +58,7 @@
       "split": "validation"
     },
     {
-      "query": "Add a testimonial",
+      "query": "Implement the decision from ADR-0003",
       "should_trigger": false,
       "split": "validation"
     },
@@ -68,7 +68,7 @@
       "split": "train"
     },
     {
-      "query": "Change the price",
+      "query": "Run the scorecard",
       "should_trigger": false,
       "split": "train"
     },
@@ -78,7 +78,7 @@
       "split": "validation"
     },
     {
-      "query": "Run the scorecard",
+      "query": "Review the existing ADRs for typos",
       "should_trigger": false,
       "split": "validation"
     },

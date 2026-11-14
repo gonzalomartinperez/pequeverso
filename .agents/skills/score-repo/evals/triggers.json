@@ -8,7 +8,7 @@
       "split": "train"
     },
     {
-      "query": "Fix the failing scorecard metrics",
+      "query": "Merge the milestone PR",
       "should_trigger": false,
       "split": "train"
     },
@@ -18,7 +18,7 @@
       "split": "train"
     },
     {
-      "query": "Loosen the bundle ratchet so CI passes",
+      "query": "Write an ADR for the ratchet policy",
       "should_trigger": false,
       "split": "train"
     },
@@ -28,7 +28,7 @@
       "split": "validation"
     },
     {
-      "query": "Run the accessibility audit on the pages",
+      "query": "Fix the failing scorecard metrics",
       "should_trigger": false,
       "split": "validation"
     },
@@ -38,7 +38,7 @@
       "split": "train"
     },
     {
-      "query": "Run Lighthouse on the live site",
+      "query": "Update dependencies",
       "should_trigger": false,
       "split": "train"
     },
@@ -48,7 +48,7 @@
       "split": "train"
     },
     {
-      "query": "Merge the milestone PR",
+      "query": "Add a new page",
       "should_trigger": false,
       "split": "train"
     },
@@ -58,7 +58,7 @@
       "split": "validation"
     },
     {
-      "query": "Write an ADR for the ratchet policy",
+      "query": "Loosen the bundle ratchet so CI passes",
       "should_trigger": false,
       "split": "validation"
     },
@@ -68,7 +68,7 @@
       "split": "train"
     },
     {
-      "query": "Update dependencies",
+      "query": "Change the price",
       "should_trigger": false,
       "split": "train"
     },
@@ -78,7 +78,7 @@
       "split": "validation"
     },
     {
-      "query": "Add a new page",
+      "query": "Run Lighthouse on the live site",
       "should_trigger": false,
       "split": "validation"
     },
@@ -88,7 +88,7 @@
       "split": "train"
     },
     {
-      "query": "Change the price",
+      "query": "Review this pull request",
       "should_trigger": false,
       "split": "train"
     },
@@ -98,7 +98,7 @@
       "split": "validation"
     },
     {
-      "query": "Review this pull request",
+      "query": "Run the accessibility audit on the pages",
       "should_trigger": false,
       "split": "validation"
     }

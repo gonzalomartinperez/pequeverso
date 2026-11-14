@@ -23,8 +23,9 @@ Rules and sources: `docs/content-model.md`. Owner decisions on copy: `docs/maste
 - [ ] A testimonial or result request is refused: point to the no-testimonials rule in `docs/content-model.md`
   and offer wording that makes no claim.
 - [ ] Neutral Spanish addressing the reader as tú; consistent with the surrounding tone; no voseo.
-- [ ] The change is on the owner approval list when it touches the hub lead, buy box microcopy,
-  guarantee block, consent banner or FAQ: say so in the PR body.
+- [ ] New copy outside the package already approved in `docs/master-plan/design-playbook.md` section 10
+  (hub lead, buy box microcopy, guarantee block, consent banner, FAQ) needs owner confirmation (OD-51:
+  never invent testimonials, numbers or claims): say so in the PR body.
 - [ ] Run `npm test` (includes `tests/unit/content-invariants.test.ts`), `npm run check:placeholders`, `npm run lint`
   and `npm run typecheck`.
 
@@ -38,7 +39,7 @@ whole set above.
 ```
 Changed: <file | field | old -> new>
 Source of each fact: <config key or document>
-Owner approval needed: <yes with item | no>   Verified: <commands>   Not verified: <list>
+Owner confirmation needed: <yes with item | no>   Verified: <commands>   Not verified: <list>
 ```
 
 ## Limits
