@@ -12,39 +12,47 @@ import {
   validateRatchet,
 } from "../../tools/scorecard/ratchets.ts";
 
-const expected = ["a11y", "bundle", "complexity", "coverage", "lighthouse", "repo-size"];
+const root = path.resolve(import.meta.dirname, "../..");
+const ratchetsDir = path.join(root, "ratchets");
+const git = (...args: string[]): string =>
+  execFileSync("git", args, {
+    cwd: root,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+    timeout: 30_000,
+  });
+const required = ["a11y", "bundle", "complexity", "coverage", "lighthouse", "repo-size"];
 
 test("every committed ratchet file is valid and the M1-9 baselines exist", () => {
-  const ratchets = loadRatchets("ratchets");
-  assert.deepEqual(
-    ratchets.map((ratchet) => ratchet.metric),
-    expected,
-  );
-  const coverage = ratchets.find((ratchet) => ratchet.metric === "coverage");
+  const metrics = loadRatchets(ratchetsDir).map((ratchet) => ratchet.metric);
+  for (const metric of required) assert.ok(metrics.includes(metric), `missing ratchets/${metric}.json`);
+  const coverage = loadRatchets(ratchetsDir).find((ratchet) => ratchet.metric === "coverage");
   assert.equal(coverage?.values.find((item) => item.key === "branches")?.value, 88.11);
 });
 
-test("committed baselines only tighten against the base branch", (t) => {
-  let base: string;
+/** The develop tip to compare with; CI checkouts are shallow, so fetch it there (public repo). */
+function developTip(): string | undefined {
   try {
-    base = execFileSync("git", ["merge-base", "HEAD", "origin/develop"], { encoding: "utf8" }).trim();
+    return git("rev-parse", "--verify", "--quiet", "origin/develop").trim();
   } catch {
-    t.skip("no origin/develop to compare with");
+    if (!process.env.CI) return undefined;
+    git("fetch", "--no-tags", "--depth=1", "origin", "+refs/heads/develop:refs/remotes/origin/develop");
+    return git("rev-parse", "--verify", "origin/develop").trim();
+  }
+}
+
+test("committed baselines only tighten against develop", (t) => {
+  const base = developTip();
+  if (!base) {
+    t.skip("no origin/develop outside CI");
     return;
   }
-  for (const metric of expected) {
-    let previous: string;
-    try {
-      previous = execFileSync("git", ["show", `${base}:ratchets/${metric}.json`], {
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "ignore"],
-      });
-    } catch {
-      continue; // new ratchet file: nothing to compare yet
-    }
-    const now = loadRatchets("ratchets").find((ratchet) => ratchet.metric === metric);
-    assert.ok(now, metric);
-    assert.deepEqual(loosened(JSON.parse(previous) as Ratchet, now), [], `${metric} was loosened`);
+  for (const ratchet of loadRatchets(ratchetsDir)) {
+    const file = `ratchets/${ratchet.metric}.json`;
+    const exists = git("ls-tree", "--name-only", base, "--", file).trim() === file;
+    if (!exists) continue; // new ratchet file: nothing to compare yet
+    const previous = JSON.parse(git("show", `${base}:${file}`)) as Ratchet;
+    assert.deepEqual(loosened(previous, ratchet), [], `${file} was loosened`);
   }
 });
 
@@ -85,6 +93,8 @@ test("floors may only rise and ceilings may only fall", () => {
   assert.deepEqual(loosened(sample, { ...sample, values: [floor] }), ["bytes"], "removing a key loosens");
   const flipped = { ...sample, values: [{ ...floor, direction: "max" as const }, ceiling] };
   assert.deepEqual(loosened(sample, flipped), ["branches"]);
+  const relabelled = { ...sample, values: [floor, { ...ceiling, unit: "KB" }] };
+  assert.deepEqual(loosened(sample, relabelled), ["bytes"], "a unit change is a loosening");
 });
 
 test("invalid ratchet files are rejected", () => {

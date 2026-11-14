@@ -19,9 +19,7 @@ export type Ratchet = {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
-/** Validates one parsed ratchet file; returns the problems (empty when valid). */
-export function validateRatchet(data: unknown, file: string): string[] {
-  if (!isRecord(data)) return [`${file}: not an object`];
+function headerProblems(data: Record<string, unknown>, file: string): string[] {
   const problems: string[] = [];
   const expectedMetric = path.basename(file, ".json");
   if (data.metric !== expectedMetric) problems.push(`${file}: metric must be "${expectedMetric}"`);
@@ -30,25 +28,31 @@ export function validateRatchet(data: unknown, file: string): string[] {
   if (typeof data.commit !== "string" || !/^[0-9a-f]{7,40}$/.test(data.commit))
     problems.push(`${file}: commit must be a git SHA`);
   if (typeof data.source !== "string" || !data.source) problems.push(`${file}: source is required`);
-  if (!Array.isArray(data.values) || data.values.length === 0) {
-    problems.push(`${file}: values must be a non-empty array`);
-    return problems;
-  }
-  const keys = new Set<string>();
-  for (const item of data.values) {
-    if (!isRecord(item) || typeof item.key !== "string" || !item.key) {
-      problems.push(`${file}: every value needs a key`);
-      continue;
-    }
-    if (keys.has(item.key)) problems.push(`${file}: duplicate key "${item.key}"`);
-    keys.add(item.key);
-    if (typeof item.value !== "number" || !Number.isFinite(item.value))
-      problems.push(`${file}: "${item.key}" value must be a finite number`);
-    if (item.direction !== "min" && item.direction !== "max")
-      problems.push(`${file}: "${item.key}" direction must be min or max`);
-    if (typeof item.unit !== "string") problems.push(`${file}: "${item.key}" unit must be a string`);
-  }
   return problems;
+}
+
+function valueProblems(item: unknown, file: string): string[] {
+  if (!isRecord(item) || typeof item.key !== "string" || !item.key)
+    return [`${file}: every value needs a key`];
+  const problems: string[] = [];
+  if (typeof item.value !== "number" || !Number.isFinite(item.value))
+    problems.push(`${file}: "${item.key}" value must be a finite number`);
+  if (item.direction !== "min" && item.direction !== "max")
+    problems.push(`${file}: "${item.key}" direction must be min or max`);
+  if (typeof item.unit !== "string") problems.push(`${file}: "${item.key}" unit must be a string`);
+  return problems;
+}
+
+/** Validates one parsed ratchet file; returns the problems (empty when valid). */
+export function validateRatchet(data: unknown, file: string): string[] {
+  if (!isRecord(data)) return [`${file}: not an object`];
+  const problems = headerProblems(data, file);
+  if (!Array.isArray(data.values) || data.values.length === 0)
+    return [...problems, `${file}: values must be a non-empty array`];
+  const keys = data.values.map((item) => (isRecord(item) ? item.key : undefined));
+  const duplicates = keys.filter((key, index) => typeof key === "string" && keys.indexOf(key) !== index);
+  for (const key of new Set(duplicates)) problems.push(`${file}: duplicate key "${String(key)}"`);
+  return [...problems, ...data.values.flatMap((item) => valueProblems(item, file))];
 }
 
 /** Loads and validates every ratchets/*.json file. Throws on any invalid file. */
@@ -82,16 +86,21 @@ export function holds(baseline: RatchetValue, measured: number): boolean {
 
 /**
  * Keys whose baseline was loosened between two versions of a ratchet file (a floor lowered, a
- * ceiling raised, a direction flipped or a key removed). Ratchets may only tighten.
+ * ceiling raised, a direction or unit changed, or a key removed). Ratchets may only tighten.
  */
 export function loosened(before: Ratchet, after: Ratchet): string[] {
   const next = new Map(after.values.map((item) => [item.key, item]));
-  const out: string[] = [];
-  for (const old of before.values) {
-    const current = next.get(old.key);
-    if (!current || current.direction !== old.direction || !holds(old, current.value)) out.push(old.key);
-  }
-  return out;
+  return before.values
+    .filter((old) => {
+      const current = next.get(old.key);
+      return (
+        !current ||
+        current.direction !== old.direction ||
+        current.unit !== old.unit ||
+        !holds(old, current.value)
+      );
+    })
+    .map((old) => old.key);
 }
 
 if (import.meta.main) {

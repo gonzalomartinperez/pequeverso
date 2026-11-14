@@ -78,8 +78,26 @@
       "direction": "max"
     },
     {
+      "key": "/soporte/ html",
+      "value": 22.2,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
       "key": "/soporte/ js",
       "value": 149.5,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/soporte/ css",
+      "value": 32.7,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/terminos/ html",
+      "value": 28.2,
       "unit": "KB gzip",
       "direction": "max"
     },
@@ -90,14 +108,44 @@
       "direction": "max"
     },
     {
+      "key": "/terminos/ css",
+      "value": 32.7,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/privacidad/ html",
+      "value": 28.0,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
       "key": "/privacidad/ js",
       "value": 149.5,
       "unit": "KB gzip",
       "direction": "max"
     },
     {
+      "key": "/privacidad/ css",
+      "value": 32.7,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/arrepentimiento/ html",
+      "value": 27.8,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
       "key": "/arrepentimiento/ js",
       "value": 149.5,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/arrepentimiento/ css",
+      "value": 32.7,
       "unit": "KB gzip",
       "direction": "max"
     }
