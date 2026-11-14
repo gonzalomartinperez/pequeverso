@@ -20,7 +20,7 @@ flowchart LR
 HTTPS `NEXT_PUBLIC_PRODUCT_ANALYTICS_API_ORIGIN`. The browser calls that origin directly; both
 static export and standalone remain supported. There is no site relay, new credential, or dependency.
 The exact origin is added to the existing enforced CSP connect policy on both targets only when
-configured. This does not convert the existing report-only policy into enforcement.
+configured.
 
 The disabled branch does not import the collection runtime. `build-info.json` records `site_analytics: "disabled"`; `npm run check:site-analytics-disabled` scans emitted artifacts and is required in publication CI. Activation needs separate owner approval,
 an enabled API, explicit CORS origins, HTTPS and a tested ingress/rate-limit policy. Preparing or

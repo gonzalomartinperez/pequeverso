@@ -122,6 +122,15 @@ Manual (`workflow_dispatch`), `production` environment with required approval:
    `/_next/static/` is `immutable` (verified through Cloudflare, `docs/verification/edge/`). Purge
    the zone only if you change cache rules.
 
+### CSP rollback at M7 (no git change)
+
+If the enforced CSP breaks something on the first production deploy (a blocked Hotmart or Meta
+resource), set `CSP_MODE=report-only` in hPanel → Environment variables and redeploy: the same
+policy is then sent as `Content-Security-Policy-Report-Only` on both targets. Unset it (or
+`enforce`) and redeploy to enforce again. Any other value fails `tools/check-env.ts`. The daily
+live check accepts the report-only form with a warning until 2026-11-28 (`tools/check-live.ts`,
+`CSP_ENFORCED_FROM`), then fails; bump that date together with the M7 date. See ADR-0014.
+
 ### Edge settings (owner, dashboard only; PV-D9)
 
 Nothing in the repository can change these. Do them after the M7 deploy of the M3-5 config, then

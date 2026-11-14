@@ -42,6 +42,9 @@ async function tlsDays(): Promise<void> {
   );
 }
 
+/** Last day production may still serve the report-only CSP (ADR-0014); bump only with the M7 date. */
+const CSP_ENFORCED_FROM = "2026-11-28";
+
 async function headers(): Promise<void> {
   const html = await get("/");
   const h = html.headers;
@@ -54,14 +57,29 @@ async function headers(): Promise<void> {
       ["cache-control", /no-cache/],
     ] satisfies Array<[string, RegExp]>
   ).filter(([name, re]) => !re.test(h.get(name) || ""));
-  const csp = h.get("content-security-policy-report-only") || h.get("content-security-policy");
-  if (!csp) missing.push(["content-security-policy(-report-only)", /./]);
+  // Hostinger adds its own `content-security-policy: upgrade-insecure-requests`, so any CSP header
+  // is not proof: the site policy must carry `default-src 'self'`. Production still serves the old
+  // report-only policy until M7 (ADR-0014), so until CSP_ENFORCED_FROM the report-only form is a
+  // warning (production-daily stays green); from that date only the enforced header passes.
+  const sitePolicy = /default-src 'self'/;
+  const enforced = sitePolicy.test(h.get("content-security-policy") || "");
+  const reportOnly = sitePolicy.test(h.get("content-security-policy-report-only") || "");
+  const reportOnlyAllowed = new Date() < new Date(CSP_ENFORCED_FROM);
+  record(
+    "Content-Security-Policy on / (enforced, default-src 'self')",
+    enforced ? "pass" : reportOnly && reportOnlyAllowed ? "warn" : "fail",
+    enforced
+      ? "enforced"
+      : reportOnly
+        ? `report-only only (accepted until ${CSP_ENFORCED_FROM}, the M7 deploy)`
+        : "no site policy with default-src 'self'",
+  );
   record(
     "Headers on /",
     missing.length ? "fail" : "pass",
     missing.length
       ? `missing ${missing.map(([n]) => n).join(", ")}`
-      : "HSTS, nosniff, referrer, frame, CSP, no-cache",
+      : "HSTS, nosniff, referrer, frame, no-cache",
   );
 
   const asset = (await html.text()).match(/\/_next\/static\/[^"']+\.js/)?.[0];

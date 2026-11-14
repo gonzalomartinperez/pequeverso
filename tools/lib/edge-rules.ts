@@ -138,7 +138,27 @@ export function resolveEdgeRules(rules: EdgeRules, env: Env): EdgeRules {
           ]),
         ),
       }));
-  return { ...rules, redirects, headers };
+  return { ...rules, redirects, headers: applyCspMode(headers, env.CSP_MODE) };
+}
+
+/**
+ * M7 safety valve (ADR-0014): `CSP_MODE=report-only` at build time sends the policy as
+ * `Content-Security-Policy-Report-Only` on both targets. Empty or `enforce` keeps it enforced.
+ */
+export function applyCspMode(headers: HeaderRule[], mode: string | undefined): HeaderRule[] {
+  const value = (mode ?? "").trim();
+  if (value !== "" && value !== "enforce" && value !== "report-only")
+    throw new Error('edge-rules: CSP_MODE must be empty, "enforce" or "report-only"');
+  if (value !== "report-only") return headers;
+  return headers.map((rule) => ({
+    ...rule,
+    headers: Object.fromEntries(
+      Object.entries(rule.headers).map(([name, v]) => [
+        /^content-security-policy$/i.test(name) ? "Content-Security-Policy-Report-Only" : name,
+        v,
+      ]),
+    ),
+  }));
 }
 
 export function validateEdgeRules(rules: EdgeRules): void {

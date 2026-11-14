@@ -73,6 +73,31 @@ for (const route of routes) {
   });
 }
 
+test("third-party stubs behave under the policy: Hotmart widget iframe and style, Meta pixel image", async ({
+  page,
+}) => {
+  const widget =
+    'window.checkoutElements={init:function(){return{mount:function(s){var st=document.createElement("style");st.textContent="#hotmart-sales-funnel{min-height:1px}";document.head.appendChild(st);var f=document.createElement("iframe");f.title="Hotmart";f.src="https://pay.hotmart.com/funnel";f.style.cssText="width:100%;height:200px;border:0";document.querySelector(s).appendChild(f);}}}};';
+  const pixel =
+    'window.fbq=window.fbq||function(){};window.fbq.loaded=true;new Image().src="https://www.facebook.com/tr?id=1&ev=PageView";';
+  await page.route("https://checkout.hotmart.com/lib/hotmart-checkout-elements.js", (route) =>
+    route.fulfill({ status: 200, contentType: "application/javascript", body: widget }),
+  );
+  await page.route("https://pay.hotmart.com/funnel", (route) =>
+    route.fulfill({ status: 200, contentType: "text/html", body: "<p>funnel</p>" }),
+  );
+  await page.route("https://connect.facebook.net/**", (route) =>
+    route.fulfill({ status: 200, contentType: "application/javascript", body: pixel }),
+  );
+  // The pixel image request is aborted after CSP evaluation (a CSP block would raise a violation).
+  await page.route("https://www.facebook.com/**", (route) => route.abort());
+  await page.goto("/imprime-y-juega/");
+  await expect(page.locator("#hotmart-sales-funnel iframe")).toHaveCount(1);
+  await expect(page.locator('script[src*="connect.facebook.net"]')).toHaveCount(1);
+  await page.waitForLoadState("networkidle");
+  expect(await page.evaluate(() => window.__cspViolations)).toEqual([]);
+});
+
 test("the policy is really enforced (negative control)", async ({ page }) => {
   await page.goto("/");
   // page.evaluate bypasses CSP (CDP), so the probe is a DOM script element the page itself loads.

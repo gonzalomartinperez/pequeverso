@@ -28,7 +28,7 @@ without ever reaching Node.
 3. Everything else stays strict: `default-src 'self'`, `object-src 'none'`, `base-uri 'self'`,
    `frame-ancestors 'self'`, `font-src 'self'`, `form-action 'self' https://*.hotmart.com`,
    `frame-src` limited to Hotmart and Facebook, `connect-src` limited to the hosts above. The
-   product-analytics origin (`docs/site-analytics.md`) is appended to `connect-src` only for builds
+   product-analytics origin (`docs/reference/site-analytics.md`) is appended to `connect-src` only for builds
    that enable it. The assistant API origin is not added: the assistant stays disabled
    (`docs/assistant.md` lists the one-line addition for the enabling change).
 4. The **Cloudflare Web Analytics beacon is deliberately not allowed** (`static.cloudflareinsights.com`
@@ -53,8 +53,10 @@ without ever reaching Node.
   content or reflected input on the site, `object-src 'none'`, `base-uri 'self'`, `form-action` and
   `frame-ancestors` restrictions, `X-Content-Type-Options: nosniff`, and the audited dependency
   set. The scorecard security axis stays at its floor until the hash spike lands.
-- Rollback is one edit: rename the key back to `Content-Security-Policy-Report-Only` (no browser
-  keeps an enforced CSP across responses, unlike HSTS).
+- Rollback needs no git change: the build-time variable `CSP_MODE=report-only` (hPanel, then
+  redeploy; `docs/deployment.md` "CSP rollback at M7") sends the same policy as
+  `Content-Security-Policy-Report-Only` on both targets. The golden file and snapshot stay
+  enforced. No browser keeps an enforced CSP across responses, unlike HSTS.
 - Files served straight from `public/` by Hostinger's LiteSpeed (`/media`, `/fonts`, `/robots.txt`)
   do not pass through Next `headers()`, so they carry no CSP; they are not documents, so this does
   not weaken the document policy (`docs/verification/edge/2026-11-14-curl.md`).
@@ -63,7 +65,7 @@ without ever reaching Node.
 ## Alternatives considered
 
 - **Nonce per request.** Rejected: needs request-time rendering (AGENTS.md), defeats CDN caching.
-- **Per-route script hashes now.** Deferred to M5-9 (`config/csp.generated.json`, build-time
+- **Per-route script hashes now.** Deferred to M5-9 (a generated CSP hash file, build-time
   extraction, route-specific `headers()`): Next's inline bootstrap changes every build and the
   Hotmart and Meta snippets are third-party. If the spike works, `'unsafe-inline'` leaves
   `script-src`; if not, this decision stands.
