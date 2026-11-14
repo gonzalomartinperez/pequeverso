@@ -69,25 +69,22 @@ features squash into `develop` (the default branch; nightly runs there); a relea
 and the verification variable enables `post-deploy-verify`; hotfixes go to `main` and are merged back into `develop`. PRs into `main`
 must be up to date with it.
 
-## Release PR (`.github/workflows/release-please.yml`, roadmap M1-6)
+## Release (`.github/workflows/release.yml`, ADR-0018, OD-78)
 
-release-please runs in manifest mode against `develop` (`release-please-config.json`,
-`.release-please-manifest.json`, version `1.0.0`). It keeps one release PR titled
-`chore(release): vX.Y.Z` that bumps `package.json`, the lockfile and `CHANGELOG.md` (Added, Changed,
-Fixed, Removed; docs, tests, CI and chores hidden). It creates no tag and no GitHub Release: the
-tag `vX.Y.Z` and the immutable release are cut on `main` at promotion (M7). The workflow stays
-disabled until the owner grants a token whose PRs trigger CI (GitHub App or fine-grained PAT as
-`RELEASE_PLEASE_TOKEN`) and sets the variable `RELEASE_PLEASE_ENABLED=true`. Repository settings
-already in place: immutable releases, and the `release tags` ruleset (no deletion, update or
-force-move of `v*` tags). Notes for the first enabled run:
+No release bot and no token. A normal PR on `develop` bumps the release: it sets `package.json`
+`version` (the single version source) and moves the `## [Unreleased]` entries of `CHANGELOG.md`
+under `## [X.Y.Z] - YYYY-MM-DD`. It runs the full CI like any change. The release PR
+`develop` → `main` (merge commit) then reaches `main`, where `release.yml` (push to `main` only,
+`contents: write`) runs `tools/release-notes.ts`, creates the tag `vX.Y.Z` on the merge commit and a
+GitHub Release whose notes are that CHANGELOG section (`gh release create`). It skips when the
+release exists and fails when the version has neither a section nor a release. Repository settings
+already in place: immutable releases and the `release tags` ruleset (no deletion, update or
+force-move of `v*` tags). First real run: the M7 promotion.
 
-- Before merging the first release PR, move the hand-written `## [Unreleased]` notes of
-  `CHANGELOG.md` into the generated section; release-please inserts its entry above that heading.
-- Because release-please creates no GitHub Release here, the M7 tag step on `main` must also relabel
-  the merged release PR from `autorelease: pending` to `autorelease: tagged`. Without that,
-  release-please stops opening release PRs ("untagged, merged release PRs outstanding").
-- Branch policy accepts the release PR's fixed head branch
-  `release-please--branches--develop--components--pequeverso` (same repository, base `develop`).
+Relation to the other workflows: Hostinger builds and publishes every merge to `main` by itself, so
+`release.yml` neither builds nor deploys and does not depend on `deploy.yml`. `deploy.yml` stays
+manual (`workflow_dispatch`, a tag or commit as input) and never creates tags, so a tag made by
+`release.yml` is a valid `ref` for it.
 
 ## Deploy workflow (`.github/workflows/deploy.yml`)
 
