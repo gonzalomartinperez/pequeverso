@@ -89,6 +89,8 @@ export function DecisionBand({ product }: Props) {
             fallbackTitle={copy.widget.fallbackTitle}
             fallbackText={copy.widget.fallbackText}
             reloadLabel={copy.widget.reload}
+            frameTitle={copy.widget.frameTitle}
+            supportLabel={copy.widget.support}
           />
         </div>
       </div>

@@ -204,6 +204,13 @@ export type OfferLandingCopy = {
     upsell: { kicker: string; title: string; text: string };
     downsell: { kicker: string; title: string; text: string };
   };
-  widget: { loading: string; fallbackTitle: string; fallbackText: string; reload: string };
+  widget: {
+    loading: string;
+    fallbackTitle: string;
+    fallbackText: string;
+    reload: string;
+    frameTitle: string;
+    support: string;
+  };
   sticky: { upsell: string; downsell: string };
 };

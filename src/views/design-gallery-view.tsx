@@ -156,6 +156,8 @@ export function DesignGalleryView() {
               fallbackTitle="No pudimos cargar la oferta"
               fallbackText="Recarga la página para intentarlo de nuevo."
               reloadLabel="Recargar"
+              frameTitle="Oferta adicional de Hotmart"
+              supportLabel="Escribir a soporte"
               timeoutMs={4000}
             />
             <p className="text-small">Container id: {hotmart.salesFunnelContainerId}.</p>

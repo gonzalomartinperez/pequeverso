@@ -1,5 +1,25 @@
 import AxeBuilder from "@axe-core/playwright";
+import type { Page } from "@playwright/test";
 import { expect, test } from "./fixtures";
+
+/**
+ * Stand-in for Hotmart's script (the real one is never loaded): like the real widget it appends an
+ * iframe WITHOUT a title whose document holds a link without an accessible name.
+ */
+const HOTMART_STUB = `window.checkoutElements={init:function(){return{mount:function(s){var c=document.querySelector(s);var f=document.createElement("iframe");f.style.cssText="display:block;width:100%;min-width:320px;height:200px;border:0";f.srcdoc='<!doctype html><html lang="es"><body><button>Si</button> <button>No</button><a href="https://hotmart.com/"></a></body></html>';c.appendChild(f);}}}};`;
+
+async function stubHotmart(page: Page) {
+  await page.route("**/hotmart-checkout-elements.js", (route) =>
+    route.fulfill({ status: 200, contentType: "application/javascript", body: HOTMART_STUB }),
+  );
+}
+
+/**
+ * Third-party exclusion (issue #183, expires 2026-12-31): links INSIDE Hotmart's iframe
+ * document (`a` below the iframe) are not ours to name. The iframe itself is analysed, so its
+ * title (set by HotmartWidgetSlot) is still enforced. Remove when Hotmart names its links.
+ */
+const HOTMART_FRAME_LINKS = ["#hotmart-sales-funnel iframe", "a"];
 
 const routes = [
   "/",
@@ -20,6 +40,7 @@ for (const route of routes) {
   test(`axe WCAG 2.2 AA: ${route}`, async ({ page }) => {
     // Contrast is evaluated on settled styles: no reveal/tilt transitions mid-flight.
     await page.emulateMedia({ reducedMotion: "reduce" });
+    await stubHotmart(page);
     await page.goto(route);
     await page.waitForLoadState("networkidle");
     await page.evaluate(() => {
@@ -27,7 +48,7 @@ for (const route of routes) {
     });
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"])
-      .exclude("#hotmart-sales-funnel")
+      .exclude(HOTMART_FRAME_LINKS)
       .analyze();
     const serious = results.violations.filter(
       (v) => v.impact === "serious" || v.impact === "critical",
@@ -42,6 +63,43 @@ for (const route of routes) {
     ).toEqual([]);
   });
 }
+
+test("the Hotmart iframe gets an accessible name from the slot", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await stubHotmart(page);
+  await page.goto("/imprime-y-juega/");
+  await expect(page.locator("#hotmart-sales-funnel iframe")).toHaveAttribute("title", /Hotmart/);
+});
+
+test("the failed widget state passes axe and links to support", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.route("**/hotmart-checkout-elements.js", (route) => route.abort());
+  await page.goto("/imprime-y-juega/");
+  await expect(page.getByTestId("widget-fallback")).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByTestId("widget-fallback").getByRole("link")).toHaveAttribute(
+    "href",
+    "/soporte/",
+  );
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"])
+    .analyze();
+  expect(
+    results.violations.filter((v) => v.impact === "serious" || v.impact === "critical"),
+  ).toEqual([]);
+});
+
+test("the Hotmart link exclusion is current and the stub still exercises it", async ({ page }) => {
+  expect(
+    new Date() <= new Date("2026-12-31T23:59:59Z"),
+    "The Hotmart iframe-link axe exclusion expired on 2026-12-31: remove it or renew it (#183).",
+  ).toBe(true);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await stubHotmart(page);
+  await page.goto("/imprime-y-juega/");
+  await expect(page.locator("#hotmart-sales-funnel iframe")).toHaveAttribute("title", /Hotmart/);
+  const results = await new AxeBuilder({ page }).withRules(["link-name"]).analyze();
+  expect(results.violations.map((v) => v.id)).toContain("link-name");
+});
 
 test("visible headings form a single h1 per page (offer modes included)", async ({ page }) => {
   for (const route of ["/imprime-y-juega/", "/imprime-y-juega/?downsell=1"]) {

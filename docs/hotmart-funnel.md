@@ -50,6 +50,8 @@ widget renders whatever offers are configured for the funnel step in Hotmart, in
 |---|---|
 | Upsell by default; `?downsell=1`, `?offer=downsell` (also with extra parameters) set the downsell view before first paint; only the active decision heading is visible | Playwright `offer-mode.spec.ts` (attribute at DOMContentLoaded, both headings asserted) |
 | Exactly one `#hotmart-sales-funnel` and one widget script on upsell and downsell | Playwright `offer-mode.spec.ts`, `smoke` against production |
+| Axe (WCAG 2.2 AA, 0 serious/critical) on `/imprime-y-juega/` with a stubbed Hotmart script whose iframe has no title: `HotmartWidgetSlot` sets a Spanish `title` on any untitled iframe in the container (MutationObserver; nothing else of the widget is touched). Failed state keeps a reload button and a `/soporte/` link | Playwright `a11y.spec.ts` |
+| Documented axe exclusion: links inside Hotmart's iframe document (`link-name`, F-06) are third-party; excluded by selector `#hotmart-sales-funnel iframe` + `a`, issue `#183`, **expires 2026-12-31** (remove it, or renew with a new issue, by then) | `HOTMART_FRAME_LINKS` in `tests/browser/a11y.spec.ts` |
 | Simulated Hotmart library: `mount()` called once, slot `ready`, no fallback; back navigation leaves one container with one iframe | Playwright `widget.spec.ts` (stubbed script appending an iframe with Hotmart's inline `min-width: 320px`) |
 | Widget fits 320–1920 px (bleeds to the viewport edges below 400 px), no horizontal overflow, CLS ≤ 0.1 | Playwright `widget.spec.ts` (Chromium and WebKit) |
 | Script aborted / never renders → neutral fallback after 8 s; the empty container yields its reserved height to the notice | Playwright `widget.spec.ts` (Chromium and WebKit 390/1440) |
