@@ -3,6 +3,7 @@
 import { ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import {
   Children,
+  Component,
   createContext,
   isValidElement,
   type KeyboardEvent,
@@ -50,6 +51,20 @@ const THUMB =
   "relative shrink-0 cursor-pointer snap-center overflow-hidden rounded-md border-2 border-transparent bg-white p-0 opacity-65 shadow-sm transition duration-(--duration) ease-out hover:opacity-100 aria-selected:border-navy aria-selected:opacity-100 motion-safe:aria-selected:-translate-y-0.5 [&_img]:block [&_img]:aspect-[4/3] [&_img]:w-16 [&_img]:object-cover cq-sm:[&_img]:w-20";
 const DOT =
   "grid h-11 w-6 cursor-pointer place-items-center p-0 before:h-2 before:w-2 before:rounded-full before:bg-line-strong before:transition-all before:duration-(--duration) aria-selected:before:w-5 aria-selected:before:bg-navy";
+
+/** A failed zoom import renders nothing: the page stays usable and the next open retries the import. */
+class ZoomBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  override state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  override render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
+/** Safety net: a programmatic scroll that never reports its target stops suppressing the observer. */
+const SCROLL_TIMEOUT_MS = 1200;
 
 const preloadZoom = () => void loadZoom();
 
@@ -115,6 +130,10 @@ export function GalleryCarousel({
   const [zoomOpen, setZoomOpen] = useState(false);
   const strip = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLUListElement>(null);
+  // Target of a programmatic scroll in flight; the observer is ignored until it is reached.
+  const pendingTarget = useRef<number | null>(null);
+  const pendingTimer = useRef<number | undefined>(undefined);
+  const finishRef = useRef<() => void>(() => undefined);
   const open = useCallback((image: HTMLImageElement) => {
     setZoom(zoomFrom(image));
     setZoomOpen(true);
@@ -135,14 +154,44 @@ export function GalleryCarousel({
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting)
-            setSelected(Number((entry.target as HTMLElement).dataset.index));
+          if (!entry.isIntersecting || entry.intersectionRatio < 0.6) continue;
+          const index = Number((entry.target as HTMLElement).dataset.index);
+          const target = pendingTarget.current;
+          if (target !== null) {
+            // Intermediate slides of a programmatic scroll are not selections.
+            if (index !== target) continue;
+            settle();
+          }
+          setSelected(index);
         }
       },
-      { root, threshold: 0.6 },
+      { root, threshold: [0.6, 1] },
     );
+    const settle = () => {
+      pendingTarget.current = null;
+      window.clearTimeout(pendingTimer.current);
+    };
+    // The reader takes over (touch, wheel, drag): their gesture decides the selection again.
+    const release = () => settle();
+    // `scrollend` or the timeout ends a scroll that never reaches its target (e.g. already there).
+    const finish = () => {
+      const target = pendingTarget.current;
+      if (target === null) return;
+      settle();
+      setSelected(target);
+    };
+    root.addEventListener("pointerdown", release);
+    root.addEventListener("wheel", release, { passive: true });
+    root.addEventListener("scrollend", finish);
     for (const item of root.children) observer.observe(item);
-    return () => observer.disconnect();
+    finishRef.current = finish;
+    return () => {
+      observer.disconnect();
+      settle();
+      root.removeEventListener("pointerdown", release);
+      root.removeEventListener("wheel", release);
+      root.removeEventListener("scrollend", finish);
+    };
   }, []);
 
   // `behavior` is left to the CSS `scroll-behavior` (smooth, `auto` under reduced motion).
@@ -150,6 +199,9 @@ export function GalleryCarousel({
     const root = track.current;
     const item = root?.children[index] as HTMLElement | undefined;
     if (!root || !item) return;
+    pendingTarget.current = index;
+    window.clearTimeout(pendingTimer.current);
+    pendingTimer.current = window.setTimeout(() => finishRef.current(), SCROLL_TIMEOUT_MS);
     root.scrollTo({ left: item.offsetLeft - (root.clientWidth - item.offsetWidth) / 2 });
   }, []);
 
@@ -163,13 +215,19 @@ export function GalleryCarousel({
     el.scrollTo({ left, behavior: smooth ? "smooth" : "auto" });
   }, [selected]);
 
+  // Rapid inputs build on where the scroll is heading, not on the lagging selection.
+  const step = (delta: number) =>
+    scrollToSlide(
+      Math.min(Math.max((pendingTarget.current ?? selected) + delta, 0), slides.length - 1),
+    );
+
   const onKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      scrollToSlide(Math.min(selected + 1, slides.length - 1));
+      step(1);
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
-      scrollToSlide(Math.max(selected - 1, 0));
+      step(-1);
     }
   };
 
@@ -187,7 +245,6 @@ export function GalleryCarousel({
             // biome-ignore lint/a11y/noNoninteractiveTabindex: a keyboard-focusable scroller (arrow keys page through the slides) #177
             tabIndex={0}
             role="list"
-            aria-label={label}
             onKeyDown={onKeyDown}
             className="relative flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain scroll-smooth rounded-lg [scrollbar-width:none] motion-reduce:scroll-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy [&::-webkit-scrollbar]:hidden"
           >
@@ -214,7 +271,7 @@ export function GalleryCarousel({
             <button
               type="button"
               className={ARROW}
-              onClick={() => scrollToSlide(selected - 1)}
+              onClick={() => step(-1)}
               disabled={selected === 0}
               aria-label="Página anterior"
             >
@@ -223,7 +280,7 @@ export function GalleryCarousel({
             <button
               type="button"
               className={ARROW}
-              onClick={() => scrollToSlide(selected + 1)}
+              onClick={() => step(1)}
               disabled={selected === slides.length - 1}
               aria-label="Página siguiente"
             >
@@ -296,16 +353,16 @@ export function GalleryCarousel({
         )}
         {zoomHint ? <p className="text-center text-tiny text-subtle">{zoomHint}</p> : null}
         {zoom ? (
-          <Suspense
-            fallback={<div className="fixed inset-0 z-70 bg-navy-deep/80" aria-hidden="true" />}
-          >
-            <ZoomDialog
-              open={zoomOpen}
-              zoom={zoom}
-              title={zoomTitle}
-              onClose={() => setZoomOpen(false)}
-            />
-          </Suspense>
+          <ZoomBoundary>
+            <Suspense fallback={null}>
+              <ZoomDialog
+                open={zoomOpen}
+                zoom={zoom}
+                title={zoomTitle}
+                onClose={() => setZoomOpen(false)}
+              />
+            </Suspense>
+          </ZoomBoundary>
         ) : null}
       </section>
     </ZoomContext.Provider>

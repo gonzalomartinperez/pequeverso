@@ -3,7 +3,7 @@
   "metric": "lighthouse-lab",
   "measuredAt": "2026-11-14",
   "commit": "7c69e40",
-  "source": "CI run 43592256267 (develop PR #187), see $comment",
+  "source": "CI run 43592256267 (develop PR #187), see $comment. EXCEPTION: /grafismo-fonetico/ js-kb (383.87) is a hand-lowered ESTIMATE (CI value 389.87 minus about 6 KB for the removed embla chunk, M3-3), not a CI measurement; re-seed it from the next CI run.",
   "values": [
     {
       "key": "/ performance",

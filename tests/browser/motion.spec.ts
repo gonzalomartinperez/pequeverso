@@ -112,6 +112,7 @@ test("videos are click-to-play with controls and a text alternative", async ({ p
 test("page gallery: arrows, dots, keyboard and zoom dialog", async ({ page, browserName }) => {
   test.skip(browserName === "webkit", WEBKIT_SOFTWARE_RENDERING);
   await page.goto("/grafismo-fonetico/#paginas");
+  await page.waitForLoadState("networkidle");
   const gallery = page.getByRole("region", { name: "Páginas reales del kit" });
   await expect(gallery.getByText("1 de 20")).toBeVisible();
   await gallery.getByRole("button", { name: "Página siguiente" }).click();
@@ -123,6 +124,67 @@ test("page gallery: arrows, dots, keyboard and zoom dialog", async ({ page, brow
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(dialog).toHaveCount(0);
+});
+
+test.describe("page gallery scroller", () => {
+  test.skip(({ browserName }) => browserName === "webkit", WEBKIT_SOFTWARE_RENDERING);
+
+  const open = async (page: import("@playwright/test").Page) => {
+    await page.goto("/grafismo-fonetico/#paginas");
+    // Controls clicked before hydration do nothing.
+    await page.waitForLoadState("networkidle");
+    const gallery = page.getByRole("region", { name: "Páginas reales del kit" });
+    await expect(gallery.getByText("1 de 20")).toBeVisible();
+    return gallery;
+  };
+
+  test("scrolling the scroller updates the counter", async ({ page }) => {
+    const gallery = await open(page);
+    await gallery.locator("ul").evaluate((el) => {
+      const second = el.children[1] as HTMLElement;
+      el.scrollTo({ left: second.offsetLeft, behavior: "instant" });
+    });
+    await expect(gallery.getByText("2 de 20")).toBeVisible();
+  });
+
+  test("ArrowRight on the focused scroller selects slide 2 and its thumbnail", async ({ page }) => {
+    const gallery = await open(page);
+    await gallery.locator("ul").focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(gallery.getByText("2 de 20")).toBeVisible();
+    await expect(
+      gallery.getByRole("tab", { name: "Ir a la página 2", exact: true }),
+    ).toHaveAttribute("aria-selected", "true");
+    await expect(gallery.locator("[role=tab][aria-selected=true]")).toHaveCount(1);
+  });
+
+  test("two quick Next clicks advance two slides", async ({ page }) => {
+    const gallery = await open(page);
+    const next = gallery.getByRole("button", { name: "Página siguiente" });
+    await next.click();
+    await next.click();
+    await expect(gallery.getByText("3 de 20")).toBeVisible();
+  });
+
+  test("reduced motion makes the scroller jump", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const gallery = await open(page);
+    const behavior = await gallery
+      .locator("ul")
+      .evaluate((el) => getComputedStyle(el).scrollBehavior);
+    expect(behavior).toBe("auto");
+  });
+
+  test("focus returns to the zoom button after Escape", async ({ page }) => {
+    const gallery = await open(page);
+    const zoomButton = gallery.locator("button[aria-label^='Ampliar']").first();
+    await zoomButton.click();
+    const dialog = page.getByRole("dialog", { name: /Página real/ });
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(dialog).toHaveCount(0);
+    await expect(zoomButton).toBeFocused();
+  });
 });
 
 test("age selector swaps the featured worksheet and keeps a single h1", async ({
