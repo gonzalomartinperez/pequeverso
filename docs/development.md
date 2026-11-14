@@ -139,3 +139,20 @@ inclusive a breach is an annotation plus a console line, and from 00:00 UTC the 
 real CI runs and set `calibrated: true`; `tests/unit/ratchets.test.ts` fails after `expires`
 otherwise. A starved sample (fewer than 10 frames) always fails. The spec writes
 `test-results/interaction-measurements/` (part of the CI evidence artifact). Tighten, never loosen. `node tools/interaction-suggest.ts ratchets/interaction.json <run-dir>...` (at least 3 distinct run directories, each a CI run's `interaction-measurements/`) proposes tighter ceilings (worst value plus 25% headroom, never above the current one) and sets `calibrated: true`; review it and commit it over the file.
+
+### Visual baselines
+
+`visual.spec.ts` compares regions (hero, buy box, footer, ...), not full pages, with
+`maxDiffPixelRatio` 0.01, animations disabled and fonts ready. Baselines are only valid when made in
+the pinned image, whose tag equals the installed Playwright version (the nightly `visual` job runs in
+it too; `tests/unit/visual-image.test.ts` keeps the two in step). Regenerate after a deliberate
+visual change, from the repository root with a fresh export in `out/`:
+
+```bash
+NEXT_OUTPUT=export npm run build
+docker run --rm --ipc=host -v "$PWD:$PWD" -w "$PWD" -e HOME=/tmp -e PW_SET=visual \
+  mcr.microsoft.com/playwright:v1.64.1-noble npx playwright test --update-snapshots
+sudo chown -R "$USER:" tests/browser/__screenshots__ test-results playwright-report 2>/dev/null || true
+```
+
+Review the changed PNGs, and keep `ratchets/repo-size.json` from rising (`git ls-files -z | xargs -0 stat -c %s`).

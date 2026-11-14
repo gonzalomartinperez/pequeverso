@@ -8,7 +8,7 @@ import { defineConfig, devices } from "@playwright/test";
  *   pr       chromium at 390 / 768 / 1440 + reduced-motion (pull-request gate, default)
  *   nightly  chromium + webkit at 1440 / 1280 / 1024 / 768 / 430 / 390 / 360
  * responsive.spec.ts sweeps its own widths (320–1920), so it runs once per engine: in the 1440 project.
- *   visual   screenshot baselines at 390 / 1440 (chromium, reduced motion; WebKit text antialiasing drifts)
+ *   visual   region screenshot baselines at 390 / 1440 (chromium, reduced motion, pinned image; WebKit text antialiasing drifts)
  *   prod     chromium-1440 smoke against a deployed origin (E2E_BASE_URL required)
  */
 const set = (process.env.PW_SET ?? "pr") as "pr" | "nightly" | "visual" | "prod";
@@ -107,7 +107,12 @@ export default defineConfig({
   timeout: 30_000,
   expect: {
     timeout: 5_000,
-    toHaveScreenshot: { maxDiffPixelRatio: 0.03, threshold: 0.25, animations: "disabled" },
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.01,
+      threshold: 0.25,
+      animations: "disabled",
+      caret: "hide",
+    },
   },
   snapshotPathTemplate: "{testDir}/__screenshots__/{projectName}/{testFilePath}/{arg}{ext}",
   use: {
