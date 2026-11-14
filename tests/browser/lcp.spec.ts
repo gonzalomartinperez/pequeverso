@@ -33,7 +33,45 @@ async function lcpElement(page: import("@playwright/test").Page) {
   );
 }
 
+/** Final LCP element observed after the consent banner has had time to appear. */
+async function finalLcpInsideBanner(page: import("@playwright/test").Page) {
+  return page.evaluate(
+    () =>
+      new Promise<{ inBanner: boolean; seen: boolean }>((resolve) => {
+        let last: Element | null = null;
+        const observer = new PerformanceObserver((list) => {
+          for (const entry of list.getEntries()) {
+            const element = (entry as PerformanceEntry & { element?: Element }).element;
+            if (element) last = element;
+          }
+        });
+        observer.observe({ type: "largest-contentful-paint", buffered: true });
+        setTimeout(() => {
+          observer.disconnect();
+          resolve({
+            seen: last !== null,
+            inBanner: last?.closest('[data-testid="consent-banner"]') != null,
+          });
+        }, 1500);
+      }),
+  );
+}
+
 for (const route of routes) {
+  test(`${route}: the consent banner never becomes the final LCP element`, async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(!process.env.E2E_EXPECT_CONSENT, "requires a build with NEXT_PUBLIC_META_PIXEL_ID");
+    test.skip(browserName === "webkit", "LCP entries are unreliable in headless WebKit");
+    await page.goto(route);
+    // Observe past the banner delay (two frames plus idle, up to 2.5 s).
+    await expect(page.getByTestId("consent-banner")).toBeVisible({ timeout: 15_000 });
+    const result = await finalLcpInsideBanner(page);
+    expect(result.seen).toBe(true);
+    expect(result.inBanner).toBe(false);
+  });
+
   test(`${route}: LCP element is hero text or the preloaded hero image`, async ({
     page,
     browserName,

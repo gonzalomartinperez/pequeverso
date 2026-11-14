@@ -1,5 +1,5 @@
-/** Bumping this re-prompts every visitor (a policy or category change). */
-export const CONSENT_VERSION = 2;
+/** Bumping this re-prompts every visitor (a policy or category change). 3 = prior opt-in (ADR-0011). */
+export const CONSENT_VERSION = 3;
 export const CONSENT_KEY = "pv_consent";
 export const CONSENT_EVENT = "pv:consent";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 180;
@@ -10,10 +10,10 @@ export type ConsentCategory = "analytics" | "marketing";
 export type ConsentChoice = Record<ConsentCategory, boolean>;
 
 /**
- * Policy before the visitor decides: measurement is on and the banner offers an equal
- * "Rechazar" that withdraws it (opt-out). A stored choice always wins over this default.
+ * Policy before the visitor decides: nothing gated runs (prior opt-in, ADR-0011). Only a
+ * stored choice of the current version grants a category.
  */
-export const DEFAULT_CHOICE: Readonly<ConsentChoice> = { analytics: true, marketing: true };
+export const DEFAULT_CHOICE: Readonly<ConsentChoice> = { analytics: false, marketing: false };
 
 export type ConsentState = ConsentChoice & {
   version: typeof CONSENT_VERSION;
@@ -55,6 +55,13 @@ export function readConsent(): ConsentState | null {
   }
 }
 
+/** Expires the `pv_consent` cookie so the server-side relay gate sees no grant (storage was cleared). */
+export function expireConsentCookie(): void {
+  if (!isBrowser()) return;
+  // biome-ignore lint/suspicious/noDocumentCookie: cookieStore is not available in all target browsers #177
+  document.cookie = `${CONSENT_KEY}=; Max-Age=0; Path=/; SameSite=Lax; Secure`;
+}
+
 /** Persists the choice (localStorage + cookie) and notifies subscribers. */
 export function writeConsent(choice: ConsentChoice): ConsentState {
   const state: ConsentState = {
@@ -84,10 +91,22 @@ export function hasConsent(
   return state ? state[category] : DEFAULT_CHOICE[category];
 }
 
-/** Subscribe to consent changes; returns an unsubscribe function. */
-export function onConsentChange(listener: (state: ConsentState) => void): () => void {
+/**
+ * Subscribe to consent changes (same-tab `pv:consent`, other-tab `storage`); returns an
+ * unsubscribe function. Both are only invalidation signals: the listener always gets the
+ * validated stored choice (`null` when nothing valid is stored), never an event payload.
+ */
+export function onConsentChange(listener: (state: ConsentState | null) => void): () => void {
   if (!isBrowser()) return () => {};
-  const handler = (event: Event) => listener((event as CustomEvent<ConsentState>).detail);
-  window.addEventListener(CONSENT_EVENT, handler);
-  return () => window.removeEventListener(CONSENT_EVENT, handler);
+  const changed = () => listener(readConsent());
+  const storage = (event: Event) => {
+    const key = (event as StorageEvent).key;
+    if (key === CONSENT_KEY || key === null) changed();
+  };
+  window.addEventListener(CONSENT_EVENT, changed);
+  window.addEventListener("storage", storage);
+  return () => {
+    window.removeEventListener(CONSENT_EVENT, changed);
+    window.removeEventListener("storage", storage);
+  };
 }

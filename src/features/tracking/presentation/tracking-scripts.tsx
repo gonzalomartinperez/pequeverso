@@ -10,6 +10,7 @@ import {
   readConsent,
 } from "@/features/tracking/adapters/consent.ts";
 import { enabledAdapters } from "@/features/tracking/adapters/env.ts";
+import { loadWhenIdle } from "@/features/tracking/adapters/idle-script.ts";
 import {
   isTrackingConfigured,
   syncConsent,
@@ -17,7 +18,31 @@ import {
 } from "@/features/tracking/adapters/track.ts";
 import type { ScriptSpec } from "@/features/tracking/adapters/types.ts";
 
-function AdapterScript({ spec, onLoad }: { spec: ScriptSpec; onLoad: () => void }) {
+type ScriptProps = { spec: ScriptSpec; onLoad: () => void; stillGranted: () => boolean };
+
+/** Vendor loader: no `next/script` (it may preload during render); injected imperatively when idle. */
+function IdleLoader({ spec, onLoad, stillGranted }: ScriptProps) {
+  const latest = useRef({ onLoad, stillGranted });
+  latest.current = { onLoad, stillGranted };
+  const { id, src } = spec;
+  // The spec object is rebuilt every render; its identity is `id` and `src`.
+  useEffect(
+    () =>
+      loadWhenIdle(
+        { id, ...(src ? { src } : {}) },
+        {
+          onLoad: () => latest.current.onLoad(),
+          stillGranted: () => latest.current.stillGranted(),
+        },
+      ),
+    [id, src],
+  );
+  return null;
+}
+
+function AdapterScript(props: ScriptProps) {
+  const { spec, onLoad } = props;
+  if (spec.idle) return <IdleLoader {...props} />;
   if (spec.src) {
     return (
       <Script
@@ -38,8 +63,9 @@ function AdapterScript({ spec, onLoad }: { spec: ScriptSpec; onLoad: () => void 
 
 /**
  * Injects each enabled adapter's scripts once the stored choice has been read on the client:
- * allowed by default, never for a category the visitor rejected. A rejection after load is
- * handled by the adapter's `onConsent` (vendor revoke). Fires PageView on the first load and on
+ * only for a category the visitor granted (prior opt-in), vendor loaders also after idle
+ * (`ScriptSpec.idle`), re-checked against storage right before injection and cancelled on a
+ * withdrawal in any tab. A rejection after load is handled by the adapter's `onConsent` (vendor revoke). Fires PageView on the first load and on
  * every client-side navigation. Renders nothing without configuration.
  */
 export function Analytics() {
@@ -49,6 +75,7 @@ export function Analytics() {
 
   useEffect(() => {
     setConsent(readConsent());
+    // `onConsentChange` hands over validated storage (this tab and other tabs), never a payload.
     return onConsentChange(setConsent);
   }, []);
 
@@ -62,13 +89,20 @@ export function Analytics() {
   if (consent === undefined) return null;
 
   const scripts = enabledAdapters().flatMap((adapter) =>
-    hasConsent(adapter.category, consent) ? adapter.scripts() : [],
+    hasConsent(adapter.category, consent)
+      ? adapter.scripts().map((spec) => ({ spec, category: adapter.category }))
+      : [],
   );
 
   return (
     <>
-      {scripts.map((spec) => (
-        <AdapterScript key={spec.id} spec={spec} onLoad={syncConsent} />
+      {scripts.map(({ spec, category }) => (
+        <AdapterScript
+          key={spec.id}
+          spec={spec}
+          onLoad={syncConsent}
+          stillGranted={() => hasConsent(category, readConsent())}
+        />
       ))}
     </>
   );

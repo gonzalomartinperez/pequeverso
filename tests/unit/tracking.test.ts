@@ -4,10 +4,13 @@ import {
   CONSENT_VERSION,
   type ConsentState,
   DEFAULT_CHOICE,
+  hasConsent,
+  onConsentChange,
   readConsent,
   serializeConsentCookie,
   writeConsent,
 } from "../../src/features/tracking/adapters/consent.ts";
+import { loadWhenIdle } from "../../src/features/tracking/adapters/idle-script.ts";
 import { createMetaAdapter } from "../../src/features/tracking/adapters/meta.ts";
 import {
   createMetaCapiAdapter,
@@ -81,6 +84,14 @@ function fakeAdapter(overrides: Partial<FakeAdapter> = {}): FakeAdapter {
   return adapter;
 }
 
+/** A stored marketing grant (what a visitor who pressed "Aceptar" has), without broadcasting. */
+function grantMarketing(): void {
+  window.localStorage.setItem(
+    "pv_consent",
+    JSON.stringify({ version: CONSENT_VERSION, analytics: false, marketing: true, updatedAt: "" }),
+  );
+}
+
 beforeEach(() => {
   installWindow();
   setNodeEnv("development");
@@ -100,6 +111,7 @@ test("forbidden events throw in development and are dropped in production", () =
 });
 
 test("every event gets a UUID id and is mirrored to dataLayer with undefined params dropped", () => {
+  grantMarketing();
   const adapter = fakeAdapter();
   _resetForTests([adapter]);
   const id = trackCheckoutIntent({
@@ -122,6 +134,7 @@ test("every event gets a UUID id and is mirrored to dataLayer with undefined par
 });
 
 test("affiliate clicks are their own custom event, never a checkout or purchase", () => {
+  grantMarketing();
   const adapter = fakeAdapter();
   _resetForTests([adapter]);
   const id = trackAffiliateClick({
@@ -146,31 +159,39 @@ test("affiliate clicks are their own custom event, never a checkout or purchase"
     assert.ok(!names.includes(forbidden));
 });
 
-test("measurement is on by default: events reach a gated adapter before any decision", () => {
-  assert.deepEqual(DEFAULT_CHOICE, { analytics: true, marketing: true });
+test("prior opt-in: nothing reaches a gated adapter before a grant, then events flow", () => {
+  assert.deepEqual(DEFAULT_CHOICE, { analytics: false, marketing: false });
   const adapter = fakeAdapter();
   _resetForTests([adapter]);
-  const first = track("PageView");
+  track("PageView");
+  track("ViewContent", { content_ids: "gf" });
+  assert.equal(adapter.sent.length, 0);
+  writeConsent({ analytics: false, marketing: true });
   const second = track("ViewContent", { content_ids: "gf" });
   assert.deepEqual(
     adapter.sent.map((event) => event.eventId),
-    [first, second],
+    [second],
   );
-  assert.deepEqual(adapter.sent[1]?.params, { content_ids: "gf" });
+  assert.deepEqual(adapter.sent[0]?.params, { content_ids: "gf" });
 });
 
 test("rejecting revokes the adapter, drops its queue and stops every later event", () => {
   const adapter = fakeAdapter({ ready: false });
   _resetForTests([adapter]);
-  track("PageView");
+  grantMarketing();
+  // Granted but the vendor is not ready: the event sits in the adapter queue.
+  const queued = track("PageView");
+  assert.equal(adapter.sent.length, 0);
   const state = writeConsent({ analytics: false, marketing: false });
   assert.deepEqual(adapter.consents, [state]);
   adapter.ready = true;
   flush();
   track("ViewContent");
   assert.equal(adapter.sent.length, 0);
+  // Re-granting must not resurrect the queued event.
   writeConsent({ analytics: false, marketing: true });
   assert.equal(adapter.sent.length, 0);
+  assert.ok(!adapter.sent.some((event) => event.eventId === queued));
   const id = track("CheckoutIntent");
   assert.deepEqual(
     adapter.sent.map((event) => event.eventId),
@@ -202,14 +223,20 @@ test("an adapter in category none ignores a rejection", () => {
   assert.equal(adapter.sent.length, 1);
 });
 
-test("consent v2 cookie format and re-prompt on version bump", () => {
-  assert.equal(CONSENT_VERSION, 2);
-  assert.equal(serializeConsentCookie({ analytics: false, marketing: true }), "a0m1.v2");
-  assert.equal(serializeConsentCookie({ analytics: true, marketing: false }), "a1m0.v2");
-  window.localStorage.setItem("pv_consent", JSON.stringify({ version: 1, marketing: true }));
-  assert.equal(readConsent(), null);
+test("consent v3 cookie format and re-prompt on version bump", () => {
+  assert.equal(CONSENT_VERSION, 3);
+  assert.equal(serializeConsentCookie({ analytics: false, marketing: true }), "a0m1.v3");
+  assert.equal(serializeConsentCookie({ analytics: true, marketing: false }), "a1m0.v3");
+  for (const version of [1, 2]) {
+    window.localStorage.setItem(
+      "pv_consent",
+      JSON.stringify({ version, analytics: true, marketing: true, updatedAt: "" }),
+    );
+    assert.equal(readConsent(), null, `v${version} must re-prompt`);
+    assert.equal(hasConsent("marketing"), false);
+  }
   writeConsent({ analytics: true, marketing: true });
-  assert.match(document.cookie, /^pv_consent=a1m1\.v2; /);
+  assert.match(document.cookie, /^pv_consent=a1m1\.v3; /);
   assert.equal(readConsent()?.marketing, true);
 });
 
@@ -243,8 +270,8 @@ test("meta adapter inits active, revokes on rejection (expiring _fbp/_fbc) and p
   window.fbq = (...args: unknown[]) => void calls.push(args);
   assert.ok(adapter.send({ name: "PageView", params: {}, eventId: "id-1" }));
   assert.ok(adapter.send({ name: "CheckoutIntent", params: { offer: "main" }, eventId: "id-2" }));
-  adapter.onConsent({ version: 2, analytics: false, marketing: false, updatedAt: "" });
-  adapter.onConsent({ version: 2, analytics: false, marketing: true, updatedAt: "" });
+  adapter.onConsent({ version: 3, analytics: false, marketing: false, updatedAt: "" });
+  adapter.onConsent({ version: 3, analytics: false, marketing: true, updatedAt: "" });
   assert.deepEqual(calls, [
     ["track", "PageView", {}, { eventID: "id-1" }],
     ["trackCustom", "CheckoutIntent", { offer: "main" }, { eventID: "id-2" }],
@@ -265,6 +292,7 @@ test("meta adapter inits active, revokes on rejection (expiring _fbp/_fbc) and p
 
 function installCapiPage({ href = "https://pequeverso.com/grafismo-fonetico/", cookie = "" } = {}) {
   setGlobal(window, "location", { href, search: new URL(href).search });
+  grantMarketing();
   // biome-ignore lint/suspicious/noDocumentCookie: fake document in the unit-test window #177
   document.cookie = cookie;
   const requests: CapiRequest[] = [];
@@ -453,4 +481,126 @@ test("meta-capi adapter waits briefly for fbevents.js to write _fbp, then relays
   await tick(100);
   assert.equal(never.requests.length, 1, "sent without fbp once the wait expires");
   assert.equal("fbp" in firstEvent(never.requests), false);
+});
+
+test("consent change events are invalidation signals: payloads never authorize", () => {
+  const seen: (ConsentState | null)[] = [];
+  const stop = onConsentChange((state) => seen.push(state));
+  const forged = { version: 3, analytics: true, marketing: true, updatedAt: "" };
+  window.dispatchEvent(new CustomEvent("pv:consent", { detail: forged }));
+  assert.deepEqual(seen, [null]);
+  window.localStorage.setItem("pv_consent", JSON.stringify({ ...forged, version: 2 }));
+  window.dispatchEvent(new CustomEvent("pv:consent", { detail: forged }));
+  assert.deepEqual(seen, [null, null]);
+  stop();
+});
+
+test("another tab's storage event re-reads validated storage, ignoring other keys", () => {
+  const seen: (ConsentState | null)[] = [];
+  const stop = onConsentChange((state) => seen.push(state));
+  grantMarketing();
+  window.dispatchEvent(Object.assign(new Event("storage"), { key: "other" }));
+  assert.equal(seen.length, 0);
+  window.dispatchEvent(Object.assign(new Event("storage"), { key: "pv_consent" }));
+  assert.equal(seen[0]?.marketing, true);
+  window.localStorage.removeItem("pv_consent");
+  window.dispatchEvent(Object.assign(new Event("storage"), { key: null }));
+  assert.equal(seen[1], null);
+  stop();
+});
+
+test("a withdrawal in another tab stops the tracker without a pv:consent event", () => {
+  const adapter = fakeAdapter();
+  _resetForTests([adapter]);
+  grantMarketing();
+  track("PageView");
+  assert.equal(adapter.sent.length, 1);
+  window.localStorage.setItem(
+    "pv_consent",
+    JSON.stringify({ version: CONSENT_VERSION, analytics: false, marketing: false, updatedAt: "" }),
+  );
+  window.dispatchEvent(Object.assign(new Event("storage"), { key: "pv_consent" }));
+  track("ViewContent");
+  assert.equal(adapter.sent.length, 1);
+});
+
+test("meta-capi adapter re-reads consent before every flush and beacon, discarding and expiring on a null state", async () => {
+  const page = installCapiPage();
+  const beacons: string[] = [];
+  navigator.sendBeacon = (url) => {
+    beacons.push(String(url));
+    return true;
+  };
+  try {
+    const capi = createMetaCapiAdapter("1234567890123456", {
+      fetch: page.fetchImpl,
+      flushDelayMs: 5,
+      fbpWaitMs: 0,
+    });
+    _resetForTests([capi]);
+    grantMarketing();
+    // biome-ignore lint/suspicious/noDocumentCookie: fake document in the unit-test window #177
+    document.cookie = "pv_consent=a1m1.v3";
+    track("PageView");
+    // Another tab cleared storage; no storage or pv:consent event was delivered here yet.
+    window.localStorage.removeItem("pv_consent");
+    window.dispatchEvent(new Event("pagehide"));
+    assert.deepEqual(beacons, []);
+    await tick(20);
+    assert.equal(page.requests.length, 0);
+    assert.match(document.cookie, /^pv_consent=;.*Max-Age=0/);
+    // The timer path is guarded too.
+    grantMarketing();
+    track("ViewContent");
+    window.localStorage.removeItem("pv_consent");
+    await tick(20);
+    assert.equal(page.requests.length, 0);
+  } finally {
+    Reflect.deleteProperty(navigator, "sendBeacon");
+  }
+});
+
+test("idle script loader re-reads consent at the injection point and cancels on withdrawal", () => {
+  type Idle = { callback: () => void; cancelled: boolean };
+  const idles: Idle[] = [];
+  type Appended = { id: string; src: string };
+  const appended: Appended[] = [];
+  const doc = {
+    getElementById: (id: string) => appended.find((script) => script.id === id) ?? null,
+    createElement: () => ({ id: "", src: "", async: false, onload: null as null | (() => void) }),
+    head: { appendChild: (script: Appended) => void appended.push(script) },
+  };
+  const win = {
+    requestIdleCallback: (callback: () => void) => idles.push({ callback, cancelled: false }),
+    cancelIdleCallback: (id: number) => {
+      const idle = idles[id - 1];
+      if (idle) idle.cancelled = true;
+    },
+  };
+  const spec: { id: string; src: string } = {
+    id: "meta-pixel",
+    src: "https://connect.facebook.net/en_US/fbevents.js",
+  };
+  let granted = true;
+  const load = () =>
+    loadWhenIdle(spec, { stillGranted: () => granted, onLoad: () => {}, doc, win } as never);
+  // Withdrawn between the idle callback being scheduled and running: nothing is injected.
+  load();
+  granted = false;
+  idles[0]?.callback();
+  assert.equal(appended.length, 0);
+  // Granted at the callback: injected once, even if the callback somehow runs twice.
+  granted = true;
+  load();
+  idles[1]?.callback();
+  idles[1]?.callback();
+  assert.deepEqual(
+    appended.map((script) => script.src),
+    [spec.src],
+  );
+  // Cancelling (unmount on withdrawal) before idle injects nothing.
+  appended.length = 0;
+  const cancel = load();
+  cancel();
+  assert.equal(idles[2]?.cancelled, true);
 });

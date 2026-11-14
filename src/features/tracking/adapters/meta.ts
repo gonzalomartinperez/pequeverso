@@ -66,7 +66,8 @@ function expirePixelCookies(): void {
 /**
  * Meta Pixel adapter. Standard events go through `fbq('track')`, custom ones through
  * `fbq('trackCustom')`, always with `{ eventID }` so Hotmart's server events deduplicate.
- * The pixel is active from `init`; `onConsent` revokes it and expires `_fbp`/`_fbc` when the
+ * Scripts exist only after a stored marketing grant (the loader also waits for idle);
+ * `onConsent` revokes it and expires `_fbp`/`_fbc` when the
  * visitor rejects marketing.
  */
 export function createMetaAdapter(pixelId: string): TrackingAdapter {
@@ -78,7 +79,7 @@ export function createMetaAdapter(pixelId: string): TrackingAdapter {
     scripts(): ScriptSpec[] {
       return [
         { id: "meta-pixel-bootstrap", inline: bootstrap(pixelId), strategy: "afterInteractive" },
-        { id: "meta-pixel", src: FBEVENTS_SRC, strategy: "afterInteractive" },
+        { id: "meta-pixel", src: FBEVENTS_SRC, strategy: "afterInteractive", idle: true },
       ];
     },
     onConsent(state: ConsentState): void {
