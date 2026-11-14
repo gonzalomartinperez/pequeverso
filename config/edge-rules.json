@@ -4,9 +4,26 @@
   "canonicalHost": "pequeverso.com",
   "hsts": {
     "enabled": true,
-    "maxAge": 300,
+    "maxAge": 604800,
     "includeSubDomains": false,
-    "note": "Raise maxAge to 31536000 only after apex and www have served valid HTTPS for a week (docs/migration.md)."
+    "note": "Staged (PV-D9; see docs/migration.md). Production still serves the first stage (300 s), set by the previous config. No `preload`, ever: it is irreversible in practice. The stage in maxAge/includeSubDomains is what the next production deploy (M7) ships; advance one stage per verified step, never skip the gate.",
+    "rollout": [
+      {
+        "maxAge": 300,
+        "includeSubDomains": false,
+        "gate": "Live since the first HTTPS deploy; detects a broken HTTPS path cheaply."
+      },
+      {
+        "maxAge": 604800,
+        "includeSubDomains": false,
+        "gate": "Ships with the first main deploy that carries this config (M7). Needs: apex and www answer valid HTTPS (www 308 to apex), TLS expiry above the daily floor, no mixed content."
+      },
+      {
+        "maxAge": 31536000,
+        "includeSubDomains": true,
+        "gate": "Seven full days after the previous stage is live and the owner has confirmed that no subdomain of pequeverso.com is served over plain HTTP (DNS inventory in the Cloudflare dashboard). Rollback cost: browsers remember the value for its max-age, so revert only by serving max-age=0 over HTTPS."
+      }
+    ]
   },
   "redirects": [
     {
@@ -78,10 +95,10 @@
         "Referrer-Policy": "strict-origin-when-cross-origin",
         "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), browsing-topics=()",
         "X-Frame-Options": "SAMEORIGIN",
-        "Content-Security-Policy-Report-Only": "default-src 'self'; script-src 'self' 'unsafe-inline' https://checkout.hotmart.com https://*.hotmart.com https://connect.facebook.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.hotmart.com https://www.facebook.com https://connect.facebook.net https://cloud.umami.is https://api-gateway.umami.dev; frame-src https://*.hotmart.com https://www.facebook.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://*.hotmart.com; frame-ancestors 'self'",
+        "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://checkout.hotmart.com https://*.hotmart.com https://connect.facebook.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.hotmart.com https://www.facebook.com https://connect.facebook.net https://cloud.umami.is https://api-gateway.umami.dev; frame-src https://*.hotmart.com https://www.facebook.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://*.hotmart.com; frame-ancestors 'self'",
         "Cache-Control": "no-cache"
       },
-      "description": "Applies to every response; later rules override Cache-Control for immutable assets and build-info. HTML is never CDN-cached (Cloudflare/Hostinger CDN respect origin Cache-Control)."
+      "description": "Applies to every response (Content-Security-Policy is enforced since M3-5, ADR-0014: script-src keeps 'unsafe-inline' as a documented compensating control until the M5 hash spike; the Cloudflare Web Analytics beacon is deliberately not allowed); later rules override Cache-Control for immutable assets and build-info. HTML is never CDN-cached (Cloudflare/Hostinger CDN respect origin Cache-Control)."
     },
     {
       "id": "html-no-cache",

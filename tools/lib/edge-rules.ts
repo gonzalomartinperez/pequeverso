@@ -30,7 +30,13 @@ type HeaderRule = {
 /** Shape of config/edge-rules.json. */
 export type EdgeRules = {
   canonicalHost: string;
-  hsts: { enabled: boolean; maxAge: number; includeSubDomains: boolean };
+  hsts: {
+    enabled: boolean;
+    maxAge: number;
+    includeSubDomains: boolean;
+    /** Documented staged plan (config/edge-rules.json); the active stage is `maxAge`. */
+    rollout?: Array<{ maxAge: number; includeSubDomains: boolean; gate: string }>;
+  };
   redirects: RedirectRule[];
   headers: HeaderRule[];
 };
