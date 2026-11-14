@@ -2,6 +2,8 @@
 
 Read `AGENTS.md` first (non-negotiables, branch flow), then the doc for your task. This file
 covers how code is written and checked; it does not repeat the commerce rules.
+Participation follows the [Code of Conduct](CODE_OF_CONDUCT.md); questions go through
+[SUPPORT.md](SUPPORT.md) and vulnerabilities through [SECURITY.md](SECURITY.md).
 
 ## Setup and checks
 

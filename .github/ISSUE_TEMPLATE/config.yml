@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/gonzalomartinperez/pequeverso/security/advisories/new
+    about: Private report. Do not open a public issue for vulnerabilities (see SECURITY.md).
+  - name: Store support (orders, access, refunds)
+    url: https://pequeverso.com/soporte/
+    about: Buyers get help on the support page. Hotmart handles payment, delivery and refunds.
