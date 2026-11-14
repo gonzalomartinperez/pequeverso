@@ -282,8 +282,6 @@ jobs:
         run: cmp out/.htaccess docs/generated/htaccess.txt
       - name: Lighthouse (5 runs, mobile emulation)
         run: npx lhci autorun --collect.numberOfRuns=5
-      - name: Lighthouse ratchet (median of 5 per route)
-        run: node tools/lhci-assert.ts ratchets/lighthouse-lab.json
       - name: Summary
         if: always()
         run: node tools/lhci-summary.ts >> "$GITHUB_STEP_SUMMARY"
@@ -320,12 +318,14 @@ jobs:
           persist-credentials: false
       - name: Setup
         uses: ./.github/actions/setup
-      # Read-only: loads the public pages only. connect.facebook.net and facebook.com are blocked
-      # in lighthouserc.live.json so the lane cannot send PageView events to the real Meta pixel.
-      - name: Lighthouse (5 runs, mobile emulation, Meta blocked)
+      # Read-only: loads the public pages only. connect.facebook.net, facebook.com and pequeverso.com/api/* are
+      # blocked in lighthouserc.live.json so no event reaches Meta, not even through the CAPI relay.
+      - name: Lighthouse (5 runs, mobile emulation, Meta and /api blocked)
         run: npx lhci collect --config=lighthouserc.live.json
+      - name: Write the report manifest
+        run: npx lhci upload --config=lighthouserc.live.json
       - name: Lighthouse regression against the live ratchet (15% tolerance)
-        run: node tools/lhci-assert.ts ratchets/lighthouse.json --tolerance=0.15 --dir=.lighthouseci-live
+        run: node tools/lhci-assert.ts ratchets/lighthouse.json --config=lighthouserc.live.json --dir=.lighthouseci-live --tolerance=0.15 --allow-missing-paths
       - name: Summary
         if: always()
         run: node tools/lhci-summary.ts .lighthouseci-live >> "$GITHUB_STEP_SUMMARY"

@@ -34,3 +34,8 @@ lane adds its own keys). Two regressions are expected on the first nightlies and
 hidden: `repo-size` is exceeded until M2-5 shrinks the visual baselines, and `coverage` is currently
 below its floor on develop (lines about 96.05 against 96.19, branches about 87.46 against 88.11;
 M2-5 owns the coverage gate). Do not loosen either baseline.
+
+`lighthouse-lab` starts from one local run under heavy load, so its TBT ceilings are loose. After the
+first CI runs on develop, tighten it once: collect the `.lighthouseci` artifact and run
+`node tools/lhci-assert.ts ratchets/lighthouse-lab.json --suggest` (10% headroom over the medians,
+never looser than the current values), review the output and commit it over the file.

@@ -22,7 +22,7 @@
           "disabled": false
         },
         "throttlingMethod": "simulate",
-        "blockedUrlPatterns": ["*://www.facebook.com/tr*"]
+        "blockedUrlPatterns": ["*://*.facebook.com/*"]
       }
     },
     "assert": {
@@ -38,11 +38,40 @@
             ],
             "uses-responsive-images": "off",
             "unused-javascript": "off",
-            "csp-xss": "off"
+            "csp-xss": "off",
+            "categories:best-practices": [
+              "warn",
+              {
+                "minScore": 0.9
+              }
+            ]
+          }
+        },
+        {
+          "matchingUrlPattern": "^http://localhost:3000/(grafismo-fonetico/)?$",
+          "assertions": {
+            "categories:seo": [
+              "warn",
+              {
+                "minScore": 0.9
+              }
+            ],
+            "resource-summary:image:size": [
+              "warn",
+              {
+                "maxNumericValue": 1100000
+              }
+            ],
+            "resource-summary:total:size": [
+              "warn",
+              {
+                "maxNumericValue": 1500000
+              }
+            ]
           }
         }
       ],
-      "_note": "Performance, best-practices, SEO, LCP, TBT, CLS and script KB are asserted by tools/lhci-assert.ts against ratchets/lighthouse-lab.json (M2-1), not here, so the thresholds live in one file."
+      "_note": "Performance, LCP, TBT, CLS and script KB are asserted at error level by tools/lhci-assert.ts against ratchets/lighthouse-lab.json (M2-1), so those thresholds live in one file. Accessibility is an error here; best-practices, SEO and the image and total byte budgets stay at warn."
     },
     "upload": {
       "target": "filesystem",

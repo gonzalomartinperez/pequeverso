@@ -14,7 +14,12 @@
           "disabled": false
         },
         "throttlingMethod": "simulate",
-        "blockedUrlPatterns": ["*://connect.facebook.net/*", "*://*.facebook.com/*"]
+        "blockedUrlPatterns": [
+          "*://connect.facebook.net/*",
+          "*://*.facebook.com/*",
+          "*://pequeverso.com/api/*",
+          "*://*.pequeverso.com/api/*"
+        ]
       }
     },
     "upload": {

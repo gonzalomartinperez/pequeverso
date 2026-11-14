@@ -17,6 +17,7 @@ test-results/
 # assistant verification build (assistant ENABLED: never publish) and its reports
 out-assistant-fixture/
 out-design-gallery/
+out-lhci/
 playwright-report-assistant/
 test-results-assistant/
 .lighthouseci/
