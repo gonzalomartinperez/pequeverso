@@ -36,14 +36,14 @@ const cookies = [
     owner: "Meta Platforms Ireland",
     purpose: "Distinguir navegadores para medir campañas (Meta Pixel)",
     duration: "90 días",
-    type: "Marketing (puedes rechazarla)",
+    type: "Marketing (solo si aceptas)",
   },
   {
     name: "_fbc",
     owner: "Meta Platforms Ireland",
     purpose: "Guardar el identificador del clic en un anuncio de Meta",
     duration: "90 días",
-    type: "Marketing (puedes rechazarla)",
+    type: "Marketing (solo si aceptas)",
   },
 ];
 
@@ -51,7 +51,7 @@ export default function CookiesPage() {
   return (
     <LegalLayout
       title="Política de cookies"
-      intro="El Sitio usa una cookie necesaria y, para medir sus campañas, el píxel de Meta. Puedes rechazarlo en el banner o desde el pie de página; tu elección se recuerda durante seis meses."
+      intro="El Sitio usa una cookie necesaria y, solo si lo aceptas, el píxel de Meta para medir sus campañas. Nada de medición se activa antes de tu elección; puedes cambiarla desde el pie de página y se recuerda durante seis meses."
       updatedAt={seller.updatedAt}
       sections={sections}
     >
@@ -113,17 +113,17 @@ export default function CookiesPage() {
 
       <SectionHeading sections={sections} id="banner" />
       <p>
-        El píxel de Meta se activa desde la primera página que visitas para medir las campañas del
-        Titular; el banner es el control para retirarlo. Ofrece tres opciones en igualdad de
-        condiciones:
+        El píxel de Meta no se carga hasta que eliges. El banner aparece en tu primera visita y
+        ofrece tres opciones en igualdad de condiciones:
       </p>
       <dl>
         <dt>Aceptar</dt>
-        <dd>Mantiene la medición y guarda tu elección durante seis meses.</dd>
+        <dd>Activa la medición de campañas y guarda tu elección durante seis meses.</dd>
         <dt>Rechazar</dt>
         <dd>
-          Desactiva el píxel en ese momento, descarta los eventos pendientes y evita que el script
-          vuelva a cargarse en tus próximas visitas.
+          Mantiene el píxel desactivado. Si antes lo habías aceptado, lo desactiva en ese momento,
+          descarta los eventos pendientes y evita que el script vuelva a cargarse en tus próximas
+          visitas.
         </dd>
         <dt>Configurar</dt>
         <dd>Permite decidir categoría por categoría y guardar la selección.</dd>
