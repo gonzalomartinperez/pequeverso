@@ -237,6 +237,21 @@ Acceptance criterion for every block and page, 320 → 1920 px, enforced by
 - **A new primitive:** `npx shadcn@latest add <name>` (Base UI), then restyle with roles, add
   `data-slot`, keep targets ≥ 44 px, record it in `docs/assets/shadcn-ui.md`.
 
+## State gallery (`/_design`)
+
+A verification-only route that renders the existing components in their states (button treatment
+x state, badges, notices, skeleton, banners, sticky bar, widget loading and fallback) so visual
+and axe tests can cover states without bespoke fixtures (`docs/master-plan/testing.md` section 5).
+It exists only when `NEXT_PUBLIC_DESIGN_GALLERY=true` at build time: `src/app/%5Fdesign/page.design.tsx`
+is a page only when `design.tsx` is a page extension (`config/next.ts`), so otherwise no route,
+chunk or string is emitted. (The folder is `%5Fdesign` because `_design` would be a private
+folder.) The page is `noindex` and not in the sitemap. `tools/check-design-gallery-disabled.ts`
+proves the absence in `out/` and the standalone output and runs in `npm run build` and CI; a
+gallery build (`npm run build:design-gallery`, `npm run test:browser:design-gallery`) is never
+publishable. Not yet covered: the consent banner variants (mounted by the layout, opened with
+"Configurar cookies"), the 404 and error views (they own a page shell or `main`), tracked for M5.
+Composition: `src/views/design-gallery-view.tsx`.
+
 ## Page templates
 
 **Home (hub of two products, docs/specs/home-hub.md)** (`src/app/page.tsx`, `features/home/*`,

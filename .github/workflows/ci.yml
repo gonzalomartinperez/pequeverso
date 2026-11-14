@@ -26,6 +26,7 @@ env:
   E2E_EXPECT_CONSENT: "1"
   NEXT_PUBLIC_ASSISTANT_ENABLED: "false"
   NEXT_PUBLIC_ASSISTANT_API_ORIGIN: ""
+  NEXT_PUBLIC_DESIGN_GALLERY: ""
   NEXT_OUTPUT: export
 jobs:
   classify:
@@ -173,6 +174,8 @@ jobs:
         run: npm run check:rendered
       - name: Assistant absent from the export (no launcher, chunk or API origin)
         run: npm run check:assistant-disabled && npm run check:site-analytics-disabled
+      - name: State gallery absent from the export (no /_design route, chunk or marker)
+        run: npm run check:design-gallery-disabled
       - name: Bind and stage the OFF-only export
         run: node tools/ci/artifacts.ts pack-off out .ci-off-artifact
         id: package

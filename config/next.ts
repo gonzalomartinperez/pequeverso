@@ -2,9 +2,10 @@ import bundleAnalyzer from "@next/bundle-analyzer";
 import { withCn } from "cn/next";
 import type { NextConfig } from "next";
 import { parseAssistantEnv } from "../src/features/assistant/flag.ts";
-import { buildOutput } from "../tools/lib/build-target.ts";
+import { buildOutput, isHostingerNodeBuilder } from "../tools/lib/build-target.ts";
 import { loadEdgeRules, toNextHeaders, toNextRedirects } from "../tools/lib/edge-rules.ts";
 import { SceneBudgetPlugin } from "../tools/scene-budget-plugin.ts";
+import { designGalleryEnabled } from "./design-gallery-env.ts";
 import { parseAnalyticsEnv } from "./site-analytics-env.ts";
 
 /**
@@ -52,6 +53,18 @@ const assistantEnv = assistant.flag.enabled
     }
   : { NEXT_PUBLIC_ASSISTANT_ENABLED: "false", NEXT_PUBLIC_ASSISTANT_API_ORIGIN: "" };
 
+/**
+ * The state gallery route (`/_design`, docs/design-system.md) is a page file named
+ * `page.design.tsx`: it only routes when `design.tsx` is a page extension, which happens solely
+ * with `NEXT_PUBLIC_DESIGN_GALLERY=true`. Otherwise the file is ignored and no route, chunk or
+ * marker string of it is emitted, and the view uses no gallery-only CSS class
+ * (tools/check-design-gallery-disabled.ts proves it). The flag alone is never enough: a build
+ * needs the out-of-band `PV_VERIFICATION_BUILD=design-gallery` token that only
+ * tools/build-design-gallery.ts sets, and Hostinger's builder always refuses it, so a stray
+ * dashboard variable cannot publish the gallery. Anything but true/false/empty fails.
+ */
+const designGallery = designGalleryEnabled(process.env, isHostingerNodeBuilder());
+
 const productAnalytics = parseAnalyticsEnv({
   enabled: process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED,
   apiOrigin: process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_API_ORIGIN,
@@ -70,8 +83,12 @@ const nextConfig: NextConfig = {
   // Route handlers live only in the standalone build: `*.standalone.ts` is a page extension there
   // and plain `route.standalone.ts` files are ignored by the static export (a POST handler breaks
   // `output: "export"`). See docs/decisions/ADR-0005-conversions-api-relay.md.
-  pageExtensions:
-    output === "standalone" ? ["standalone.ts", "standalone.tsx", "tsx", "ts"] : ["tsx", "ts"],
+  pageExtensions: [
+    ...(designGallery ? ["design.tsx"] : []),
+    ...(output === "standalone" ? ["standalone.ts", "standalone.tsx"] : []),
+    "tsx",
+    "ts",
+  ],
   trailingSlash: true,
   poweredByHeader: false,
   reactStrictMode: true,
