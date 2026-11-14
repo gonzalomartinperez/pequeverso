@@ -22,7 +22,9 @@ const walk = (dir: string): void => {
 };
 walk(root);
 
-const forbiddenText = ["Trazos y Sonidos", "lorem ipsum", "Digital Products Team", "digitalproductsteam"];
+const forbiddenText = ["Trazos y Sonidos", "lorem ipsum"];
+/** Retired operator brand and domain (one pattern for both; owner decisions 2026-09-20 and OD-53). */
+const retiredOperator = /digital\s*products\s*team/i;
 /** A page that shows a USD price must also explain that Hotmart charges in local currency. */
 const usdPrice = "US$";
 const localCurrencyWording = "moneda local";
@@ -46,6 +48,7 @@ function check(page: string): string[] {
   for (const text of forbiddenText) {
     if (html.includes(text)) errors.push(`contains "${text}"`);
   }
+  if (retiredOperator.test(html)) errors.push("names the retired operator brand or domain");
   if (placeholderPattern.test(html)) errors.push("contains an owner placeholder");
   const route = `/${name.replace(/(^|\/)index\.html$/, "$1")}`;
   if (html.includes(seller.legalEmail) && !(legalRoutes as readonly string[]).includes(route)) {

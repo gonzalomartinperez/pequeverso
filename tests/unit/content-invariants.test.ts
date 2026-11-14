@@ -16,8 +16,11 @@ const forbiddenClaims = [
 const placeholderPattern = /\[\[[A-Z0-9_]+\]\]/;
 const lineBreak = /\r?\n/;
 
-/** Retired operator brand: the site is Pequeverso only (owner decision, 2026-09-20). */
-const retiredOperator = ["Digital Products Team", "digitalproductsteam"];
+/**
+ * Retired operator brand and domain: the site is Pequeverso only (owner decision, 2026-09-20).
+ * One pattern matches both the brand name and the domain; `old-domain.test.ts` scans every file.
+ */
+const retiredOperator = /digital\s*products\s*team/i;
 const retiredOperatorRoots = ["src", "content", "config"];
 
 function sourceFiles(dir: string, pattern = /\.(ts|tsx)$/): string[] {
@@ -72,10 +75,7 @@ test("no trace of the retired operator brand in code, content or config", () => 
   const scanned = retiredOperatorRoots.flatMap((dir) => sourceFiles(dir, /\.(ts|tsx|mjs|js|json|css|md)$/));
   assert.ok(scanned.length > 0, "expected files to scan");
   for (const file of scanned) {
-    const text = read(file).toLowerCase();
-    for (const literal of retiredOperator) {
-      assert.ok(!text.includes(literal.toLowerCase()), `${relative(".", file)} contains "${literal}"`);
-    }
+    assert.doesNotMatch(read(file), retiredOperator, `${relative(".", file)} names the retired operator`);
   }
 });
 

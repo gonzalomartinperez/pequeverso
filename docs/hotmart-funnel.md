@@ -1,14 +1,14 @@
 # Hotmart purchase funnel — migration to pequeverso.com
 
-Status as of 2026-09-24. The website side is implemented and verified; the Hotmart dashboard
-still points at digitalproductsteam.com until the owner changes it (section 4). Nothing here
-charges a card, changes live Hotmart settings or switches domains.
+The website side is implemented and verified (2026-09-24), and the Hotmart dashboard points at
+`pequeverso.com` (owner confirmed 2026-11-09; section 4). Nothing here charges a card or changes
+live Hotmart settings.
 
 ## 1. Page mapping (legacy → new)
 
 | Funnel role | Legacy (WordPress) | New (pequeverso.com) | Compatibility |
 |---|---|---|---|
-| Main landing | `https://digitalproductsteam.com/pequeverso/grafismo-fonetico/` | `https://pequeverso.com/grafismo-fonetico/` | Old domain: `.htaccess` block in `docs/migration/old-domain.htaccess`. New domain also accepts the legacy paths `/pequeverso/…` and `/products/…` (301/308, query preserved). |
+| Main landing | `/pequeverso/grafismo-fonetico/` on the retired WordPress domain | `https://pequeverso.com/grafismo-fonetico/` | The retired domain is not redirected (OD-53); `pequeverso.com` accepts the legacy paths `/pequeverso/…` and `/products/…` (301/308, query preserved). |
 | Main checkout | `https://pay.hotmart.com/<offer>?checkoutMode=10` (value of `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO`) | same (unchanged; `NEXT_PUBLIC_CHECKOUT_URL`) | Every landing CTA (`header`, `hero`, `mid`, `final`, `sticky`) opens it in the same tab with allowlisted params appended. |
 | Upsell | `…/pequeverso/imprime-y-juega/` | `https://pequeverso.com/imprime-y-juega/` | Same page; one `#hotmart-sales-funnel` widget inside `#gfp-decision` (legacy anchor id kept). |
 | Downsell | `…/pequeverso/imprime-y-juega/?downsell=1` | `https://pequeverso.com/imprime-y-juega/?downsell=1` (alias `?offer=downsell`) | Query only changes the displayed variant; Hotmart decides and charges. |
@@ -60,25 +60,22 @@ widget renders whatever offers are configured for the funnel step in Hotmart, in
 | Thank-you: no `.pdf` links, no purchase markers, links to `consumer.hotmart.com` | Playwright `widget.spec.ts` |
 | Legacy paths redirect with the query intact: `/pequeverso/imprime-y-juega/?downsell=1&…`, `/products/kit-imprime-y-juega/?offer=downsell`, `/pequeverso/grafismo-fonetico/gracias/`, `/products/grafismo-fonetico-gracias/`, `/pequeverso/grafismo-fonetico/`, `/products/grafismo-fonetico/` (308) | curl on the standalone server (2026-09-24) and `tests/unit/edge-rules.test.ts` |
 
-## 4. Pending — Hotmart dashboard changes (owner, not yet done)
+## 4. Hotmart dashboard settings (done; owner confirmed 2026-11-09)
 
-Deploying the pages does **not** move the funnel. In the Hotmart producer area, for the
-principal product (Grafismo Fonético; its offer code is the one in the checkout URL set in
-`NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO`):
+Deploying the pages does **not** move the funnel; these settings live in the Hotmart producer
+area for the principal product (Grafismo Fonético; its offer code is the one in the checkout URL
+set in `NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO`). Re-check them after any URL change:
 
-| Setting | Current (documented) | Change to |
-|---|---|---|
-| Product → Sales page URL | `https://digitalproductsteam.com/pequeverso/grafismo-fonetico/` (older docs still show `/products/grafismo-fonetico/`) | `https://pequeverso.com/grafismo-fonetico/` |
-| Sales Funnel → upsell step → page URL | `https://digitalproductsteam.com/pequeverso/imprime-y-juega/` | `https://pequeverso.com/imprime-y-juega/` |
-| Sales Funnel → downsell step → page URL | `https://digitalproductsteam.com/pequeverso/imprime-y-juega/?downsell=1` | `https://pequeverso.com/imprime-y-juega/?downsell=1` |
-| Post-sale → external thank-you URLs (approved / awaiting payment / under analysis) | `https://digitalproductsteam.com/pequeverso/grafismo-fonetico/gracias/` | `https://pequeverso.com/grafismo-fonetico/gracias/` |
-| Sales Funnel → offers for the upsell (US$14.99) and downsell (US$7.49) steps | documented as "pendiente de configuración y prueba end-to-end" (product README 2026-08-04) | confirm they exist and are active; do not reuse legacy offer ids |
-| Meta Pixel integration | Purchase (Web+API), Checkout page visits on | unchanged; "Hotmart product page visits" off (site owns ViewContent) |
+| Setting | Value |
+|---|---|
+| Product → Sales page URL | `https://pequeverso.com/grafismo-fonetico/` |
+| Sales Funnel → upsell step → page URL | `https://pequeverso.com/imprime-y-juega/` |
+| Sales Funnel → downsell step → page URL | `https://pequeverso.com/imprime-y-juega/?downsell=1` |
+| Post-sale → external thank-you URLs (approved / awaiting payment / under analysis) | `https://pequeverso.com/grafismo-fonetico/gracias/` |
+| Sales Funnel → offers for the upsell (US$14.99) and downsell (US$7.49) steps | exist and are active; never reuse legacy offer ids (the end-to-end check in section 5 is owner input PV-D10) |
+| Meta Pixel integration | Purchase (Web+API) and checkout page visits on; "Hotmart product page visits" off (site owns ViewContent) |
 
-Until these change, buyers who purchase from the new landing are sent by Hotmart to the **old**
-upsell/downsell/thank-you URLs, which the old-domain `.htaccess` block redirects to the new pages
-with the query intact (once that block is installed). Do the Hotmart change and the old-domain
-redirect the same hour (`docs/migration.md`).
+The previous operator domain is not renewed and not redirected (OD-53).
 
 ## 5. End-to-end verification checklist (needs a real purchase session)
 
