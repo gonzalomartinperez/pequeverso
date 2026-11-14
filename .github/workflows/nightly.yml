@@ -1,6 +1,6 @@
 # Scheduled validation only. Manual snapshot regeneration remains explicit and is not comparison acceptance.
 name: Nightly
-'on':
+"on":
   schedule:
     - cron: 17 4 * * *
   workflow_dispatch:
@@ -14,12 +14,12 @@ concurrency:
   group: nightly
   cancel-in-progress: false
 env:
-  NEXT_TELEMETRY_DISABLED: '1'
+  NEXT_TELEMETRY_DISABLED: "1"
   NEXT_PUBLIC_SITE_URL: https://pequeverso.com
   NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO: https://pay.hotmart.com/TEST0000000?checkoutMode=10
   NEXT_OUTPUT: export
-  NEXT_PUBLIC_ASSISTANT_ENABLED: 'false'
-  NEXT_PUBLIC_ASSISTANT_API_ORIGIN: ''
+  NEXT_PUBLIC_ASSISTANT_ENABLED: "false"
+  NEXT_PUBLIC_ASSISTANT_API_ORIGIN: ""
 jobs:
   prepare:
     name: Nightly prepare candidate
@@ -115,7 +115,7 @@ jobs:
       max-parallel: 4
     env:
       SHARD: ${{ matrix.shard }}
-      SHARDS: '8'
+      SHARDS: "8"
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1

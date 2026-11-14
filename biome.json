@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.5.14/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.6.7/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -18,7 +18,8 @@
       "!**/test-results",
       "!**/media/manifest.json",
       "!**/contracts/assistant-api",
-      "!**/contracts/site-analytics"
+      "!**/contracts/site-analytics",
+      "!**/*.md"
     ]
   },
   "formatter": {
@@ -50,9 +51,9 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "a11y": {
-        "recommended": true,
+        "preset": "recommended",
         "noRedundantRoles": "off"
       },
       "correctness": {
