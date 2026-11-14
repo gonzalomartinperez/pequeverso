@@ -33,8 +33,6 @@
         "tests/**",
         "docs/generated/**",
         "ratchets/**",
-        "release-please-config.json",
-        ".release-please-manifest.json",
         "docs/**/*.ts",
         "docs/**/*.tsx",
         "docs/**/*.js",

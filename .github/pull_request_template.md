@@ -26,6 +26,7 @@
 ## Checklist
 
 - [ ] `npm run check` passes locally
+- [ ] User-visible change: entry added under `## [Unreleased]` in `CHANGELOG.md` (or not applicable)
 - [ ] Keyboard, focus and reduced-motion reviewed (where the change is interactive)
 - [ ] Hotmart still owns payment, delivery and refunds; no `InitiateCheckout` or `Purchase` event
 - [ ] Prices, guarantee, checkout URL and other facts come from `config/`, not copy

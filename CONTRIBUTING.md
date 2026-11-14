@@ -56,8 +56,10 @@ See [engineering standards](docs/engineering-standards.md) for ownership, review
 ## Commits and pull requests
 
 Conventional Commits; the body says what was verified and what was not. One owner per lockfile
-change; dependency updates are their own PR. PRs target `develop` (squash). Releases to `main`
-follow `.claude/skills/prepare-delivery/SKILL.md` and need the owner's approval each time.
+change; dependency updates are their own PR. PRs target `develop` (squash). A user-visible change
+adds an entry under `## [Unreleased]` in `CHANGELOG.md`; a release is a version-bump PR
+(`docs/deployment.md`, ADR-0018). Releases to `main` follow `.claude/skills/prepare-delivery/SKILL.md`
+and need the owner's approval each time.
 
 ## Agent skills
 
