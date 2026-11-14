@@ -55,6 +55,13 @@ export function readConsent(): ConsentState | null {
   }
 }
 
+/** Expires the `pv_consent` cookie so the server-side relay gate sees no grant (storage was cleared). */
+export function expireConsentCookie(): void {
+  if (!isBrowser()) return;
+  // biome-ignore lint/suspicious/noDocumentCookie: cookieStore is not available in all target browsers #177
+  document.cookie = `${CONSENT_KEY}=; Max-Age=0; Path=/; SameSite=Lax; Secure`;
+}
+
 /** Persists the choice (localStorage + cookie) and notifies subscribers. */
 export function writeConsent(choice: ConsentChoice): ConsentState {
   const state: ConsentState = {

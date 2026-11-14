@@ -10,6 +10,7 @@ import {
   serializeConsentCookie,
   writeConsent,
 } from "../../src/features/tracking/adapters/consent.ts";
+import { loadWhenIdle } from "../../src/features/tracking/adapters/idle-script.ts";
 import { createMetaAdapter } from "../../src/features/tracking/adapters/meta.ts";
 import {
   createMetaCapiAdapter,
@@ -521,4 +522,85 @@ test("a withdrawal in another tab stops the tracker without a pv:consent event",
   window.dispatchEvent(Object.assign(new Event("storage"), { key: "pv_consent" }));
   track("ViewContent");
   assert.equal(adapter.sent.length, 1);
+});
+
+test("meta-capi adapter re-reads consent before every flush and beacon, discarding and expiring on a null state", async () => {
+  const page = installCapiPage();
+  const beacons: string[] = [];
+  navigator.sendBeacon = (url) => {
+    beacons.push(String(url));
+    return true;
+  };
+  try {
+    const capi = createMetaCapiAdapter("1234567890123456", {
+      fetch: page.fetchImpl,
+      flushDelayMs: 5,
+      fbpWaitMs: 0,
+    });
+    _resetForTests([capi]);
+    grantMarketing();
+    // biome-ignore lint/suspicious/noDocumentCookie: fake document in the unit-test window #177
+    document.cookie = "pv_consent=a1m1.v3";
+    track("PageView");
+    // Another tab cleared storage; no storage or pv:consent event was delivered here yet.
+    window.localStorage.removeItem("pv_consent");
+    window.dispatchEvent(new Event("pagehide"));
+    assert.deepEqual(beacons, []);
+    await tick(20);
+    assert.equal(page.requests.length, 0);
+    assert.match(document.cookie, /^pv_consent=;.*Max-Age=0/);
+    // The timer path is guarded too.
+    grantMarketing();
+    track("ViewContent");
+    window.localStorage.removeItem("pv_consent");
+    await tick(20);
+    assert.equal(page.requests.length, 0);
+  } finally {
+    Reflect.deleteProperty(navigator, "sendBeacon");
+  }
+});
+
+test("idle script loader re-reads consent at the injection point and cancels on withdrawal", () => {
+  type Idle = { callback: () => void; cancelled: boolean };
+  const idles: Idle[] = [];
+  type Appended = { id: string; src: string };
+  const appended: Appended[] = [];
+  const doc = {
+    getElementById: (id: string) => appended.find((script) => script.id === id) ?? null,
+    createElement: () => ({ id: "", src: "", async: false, onload: null as null | (() => void) }),
+    head: { appendChild: (script: Appended) => void appended.push(script) },
+  };
+  const win = {
+    requestIdleCallback: (callback: () => void) => idles.push({ callback, cancelled: false }),
+    cancelIdleCallback: (id: number) => {
+      const idle = idles[id - 1];
+      if (idle) idle.cancelled = true;
+    },
+  };
+  const spec: { id: string; src: string } = {
+    id: "meta-pixel",
+    src: "https://connect.facebook.net/en_US/fbevents.js",
+  };
+  let granted = true;
+  const load = () =>
+    loadWhenIdle(spec, { stillGranted: () => granted, onLoad: () => {}, doc, win } as never);
+  // Withdrawn between the idle callback being scheduled and running: nothing is injected.
+  load();
+  granted = false;
+  idles[0]?.callback();
+  assert.equal(appended.length, 0);
+  // Granted at the callback: injected once, even if the callback somehow runs twice.
+  granted = true;
+  load();
+  idles[1]?.callback();
+  idles[1]?.callback();
+  assert.deepEqual(
+    appended.map((script) => script.src),
+    [spec.src],
+  );
+  // Cancelling (unmount on withdrawal) before idle injects nothing.
+  appended.length = 0;
+  const cancel = load();
+  cancel();
+  assert.equal(idles[2]?.cancelled, true);
 });

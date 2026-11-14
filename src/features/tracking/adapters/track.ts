@@ -2,6 +2,7 @@ import {
   CONSENT_VERSION,
   type ConsentState,
   DEFAULT_CHOICE,
+  expireConsentCookie,
   hasConsent,
   onConsentChange,
   readConsent,
@@ -105,9 +106,10 @@ function applyConsent(state: ConsentState): void {
 function ensureConsentSubscription(): void {
   if (unsubscribe || typeof window === "undefined") return;
   // `null`: the stored choice vanished or is invalid (cleared in another tab), so withdraw.
-  unsubscribe = onConsentChange((state) =>
-    applyConsent(state ?? { version: CONSENT_VERSION, ...DEFAULT_CHOICE, updatedAt: "" }),
-  );
+  unsubscribe = onConsentChange((state) => {
+    if (!state) expireConsentCookie();
+    applyConsent(state ?? { version: CONSENT_VERSION, ...DEFAULT_CHOICE, updatedAt: "" });
+  });
 }
 
 /** Re-sends queued events to every adapter whose category is consented and whose script is ready. */
