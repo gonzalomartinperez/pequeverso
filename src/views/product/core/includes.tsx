@@ -163,7 +163,9 @@ export function Includes({
             aria-hidden="true"
             className="absolute -right-10 -bottom-10 size-40 rounded-full bg-white/10"
           />
-          <p className="text-tiny font-extrabold tracking-[0.1em] text-white uppercase">{price.kicker}</p>
+          <p className="text-tiny font-extrabold tracking-[0.1em] text-white uppercase">
+            {price.kicker}
+          </p>
           <p className="font-display text-[clamp(2.25rem,1.9rem+1.2vw,2.75rem)] leading-none font-bold text-white tabular-nums">
             {price.value}
           </p>

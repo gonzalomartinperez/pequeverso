@@ -88,7 +88,9 @@
   --pv-navy: oklch(0.3175 0.1094 256.25); /* #003068 · white on navy 12.9:1 */
   --pv-navy-deep: oklch(0.2619 0.0887 255.79); /* #00234e · footer, closing bands */
   --pv-teal: oklch(0.5324 0.0917 190.84); /* #007d79 · icons; white on teal 5.0:1 */
-  --pv-teal-text: oklch(0.4352 0.0749 190.98); /* #005e5b · links and small labels, 7.6:1 on white */
+  --pv-teal-text: oklch(
+    0.4352 0.0749 190.98
+  ); /* #005e5b · links and small labels, 7.6:1 on white */
   --pv-coral: oklch(0.5623 0.1722 28.49); /* #c64035 · CTA and price only; white on coral 5.0:1 */
   --pv-coral-hover: oklch(0.4929 0.1566 28.11); /* #a83129 · 6.7:1 */
   --pv-gold: oklch(
@@ -208,7 +210,8 @@
   --pv-shadow-float:
     0 1px 2px oklch(0.3175 0.1094 256.25 / 6%), 0 8px 20px -6px oklch(0.3175 0.1094 256.25 / 10%),
     0 32px 64px -16px oklch(0.3175 0.1094 256.25 / 18%);
-  --pv-shadow-glow: 0 0 0 1px oklch(1 0 0 / 60%), 0 24px 80px -20px oklch(0.5324 0.0917 190.84 / 40%);
+  --pv-shadow-glow:
+    0 0 0 1px oklch(1 0 0 / 60%), 0 24px 80px -20px oklch(0.5324 0.0917 190.84 / 40%);
 
   /* Motion */
   --pv-ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -799,7 +802,12 @@
 @utility sky-band {
   background:
     radial-gradient(55% 40% at 88% 28%, oklch(0.5324 0.0917 190.84 / 24%), transparent 70%),
-    linear-gradient(180deg, var(--pv-hero-top) 0%, var(--pv-hero-bottom) 45%, var(--pv-hero-top) 100%);
+    linear-gradient(
+      180deg,
+      var(--pv-hero-top) 0%,
+      var(--pv-hero-bottom) 45%,
+      var(--pv-hero-top) 100%
+    );
 }
 
 @utility planet-teal {

@@ -21,7 +21,9 @@ function compile(enabled: boolean, commonjs = false): string {
         react: { runtime: "automatic" },
         optimizer: {
           globals: {
-            vars: { "process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED": JSON.stringify(String(enabled)) },
+            vars: {
+              "process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED": JSON.stringify(String(enabled)),
+            },
           },
         },
       },
@@ -131,7 +133,12 @@ function buttons(value: unknown): Node[] {
 }
 
 test("enabled banner reopens stale opt-in while OFF preserves existing marketing consent", () => {
-  const stale = { version: 2, analytics: true, marketing: true, updatedAt: "2025-01-01T00:00:00.000Z" };
+  const stale = {
+    version: 2,
+    analytics: true,
+    marketing: true,
+    updatedAt: "2025-01-01T00:00:00.000Z",
+  };
   assert.deepEqual(render(true, stale, false, false).changes, [{ slot: 1, value: true }]);
   assert.deepEqual(render(false, stale, false, false).changes, [{ slot: 1, value: false }]);
 });

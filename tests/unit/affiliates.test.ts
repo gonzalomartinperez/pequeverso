@@ -18,8 +18,14 @@ const rawRules = (
     redirects: RawRule[];
   }
 ).redirects;
-type ManifestItem = { id: string; rights: { redistribution: string }; provenance: { origin: string } };
-const manifest = JSON.parse(readFileSync(new URL("../../media/manifest.json", import.meta.url), "utf8")) as {
+type ManifestItem = {
+  id: string;
+  rights: { redistribution: string };
+  provenance: { origin: string };
+};
+const manifest = JSON.parse(
+  readFileSync(new URL("../../media/manifest.json", import.meta.url), "utf8"),
+) as {
   items: ManifestItem[];
 };
 
@@ -81,7 +87,9 @@ test("affiliate copy: disclosure, no price, reviews or health promises", () => {
     JSON.stringify(copy),
     JSON.stringify(hubCopy.feeding),
     homeCopy.closing.feedingCta,
-    ...homeCopy.faq.items.filter((item) => item.about === "feeding").flatMap((item) => [item.q, item.a]),
+    ...homeCopy.faq.items
+      .filter((item) => item.about === "feeding")
+      .flatMap((item) => [item.q, item.a]),
     ...affiliates.flatMap((p) => [p.name, p.audience, p.stage, ...p.topics]),
   ].join(" ");
   for (const forbidden of [

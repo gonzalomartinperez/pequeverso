@@ -15,7 +15,9 @@ type Props = { product: OfferProduct };
  */
 export function DownsellHero({ product }: Props) {
   const { copy, media, pricing, resources } = product;
-  const covers = resources.filter((resource) => !resource.embedded).map((resource) => resource.card);
+  const covers = resources
+    .filter((resource) => !resource.embedded)
+    .map((resource) => resource.card);
   return (
     <section
       id="hero-downsell"
@@ -32,7 +34,11 @@ export function DownsellHero({ product }: Props) {
           </h1>
           <p className="lead max-w-[56ch] text-pretty">{copy.downsell.lead}</p>
           <p className="on-light glass inline-flex w-fit max-w-full items-center gap-2 rounded-pill py-2 pr-4 pl-2 text-small font-extrabold text-navy shadow-sm">
-            <ShieldCheck aria-hidden="true" className="size-6 shrink-0 text-teal" strokeWidth={2.2} />
+            <ShieldCheck
+              aria-hidden="true"
+              className="size-6 shrink-0 text-teal"
+              strokeWidth={2.2}
+            />
             <span>{copy.downsell.proof}</span>
           </p>
         </div>
@@ -66,7 +72,9 @@ export function DownsellHero({ product }: Props) {
             <span className="grid size-10 place-items-center rounded-full bg-mint text-teal-text">
               <Check aria-hidden="true" className="size-5" strokeWidth={3} />
             </span>
-            <p className="font-display text-[1.3rem] leading-snug font-bold text-heading">{item.title}</p>
+            <p className="font-display text-[1.3rem] leading-snug font-bold text-heading">
+              {item.title}
+            </p>
             <p className="text-body">{item.text}</p>
           </li>
         ))}

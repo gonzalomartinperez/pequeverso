@@ -40,7 +40,12 @@ export function IconCardList({
           reveal
           stagger={index % cols}
         >
-          <IconBadge icon={item.icon} tone={tone} accent={accent} number={numbered ? index + 1 : undefined} />
+          <IconBadge
+            icon={item.icon}
+            tone={tone}
+            accent={accent}
+            number={numbered ? index + 1 : undefined}
+          />
           <h3 className="mt-2 text-h3">{item.title}</h3>
           <p className="text-small">{item.text}</p>
         </Card>

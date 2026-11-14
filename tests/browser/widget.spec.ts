@@ -20,7 +20,9 @@ test("shows the fallback when the script loads but never renders (timeout)", asy
   await expect(page.getByTestId("widget-fallback")).toBeVisible({ timeout: 12_000 });
 });
 
-test("widget slot reserves height so the page does not shift when the script fails", async ({ page }) => {
+test("widget slot reserves height so the page does not shift when the script fails", async ({
+  page,
+}) => {
   await page.route("**/hotmart-checkout-elements.js", (route) => route.abort());
   await page.goto("/imprime-y-juega/");
   const before = await page.locator("#complemento-title").boundingBox();
@@ -50,13 +52,17 @@ async function stubWidget(page: import("@playwright/test").Page) {
   );
 }
 
-test("simulated widget mounts once, marks the slot ready and never shows the fallback", async ({ page }) => {
+test("simulated widget mounts once, marks the slot ready and never shows the fallback", async ({
+  page,
+}) => {
   await stubWidget(page);
   await page.goto("/imprime-y-juega/?downsell=1");
   const container = page.locator("#hotmart-sales-funnel");
   await expect(container.locator("iframe")).toHaveCount(1);
   await expect(container).toHaveAttribute("data-status", "ready");
-  expect(await page.evaluate(() => (window as unknown as { __hmMounts: number }).__hmMounts)).toBe(1);
+  expect(await page.evaluate(() => (window as unknown as { __hmMounts: number }).__hmMounts)).toBe(
+    1,
+  );
   await expect(page.locator('script[src*="hotmart-checkout-elements.js"]')).toHaveCount(1);
   await expect(page.getByTestId("widget-fallback")).toHaveCount(0);
 });
@@ -108,7 +114,10 @@ test("simulated widget fits every width without overflow or layout shift", async
         new Promise<number>((resolve) => {
           let sum = 0;
           new PerformanceObserver((list) => {
-            for (const entry of list.getEntries() as unknown as { value: number; hadRecentInput: boolean }[])
+            for (const entry of list.getEntries() as unknown as {
+              value: number;
+              hadRecentInput: boolean;
+            }[])
               if (!entry.hadRecentInput) sum += entry.value;
           }).observe({ type: "layout-shift", buffered: true });
           setTimeout(() => resolve(sum), 300);

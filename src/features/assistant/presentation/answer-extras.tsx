@@ -31,7 +31,9 @@ export function Sources({ sources }: { sources: Source[] }) {
               {source.title}
             </SafeLink>
             {approvedSourceUrl(source.url, policy) && (
-              <p className="text-tiny text-subtle [overflow-wrap:anywhere]">{t.officialProcedureLabel}</p>
+              <p className="text-tiny text-subtle [overflow-wrap:anywhere]">
+                {t.officialProcedureLabel}
+              </p>
             )}
           </li>
         ))}
@@ -84,7 +86,12 @@ export function FollowUps({
       <ul className="flex flex-wrap gap-2">
         {items.map((item) => (
           <li key={item} className="max-w-full">
-            <button type="button" className={chipClass} disabled={disabled} onClick={() => onSelect(item)}>
+            <button
+              type="button"
+              className={chipClass}
+              disabled={disabled}
+              onClick={() => onSelect(item)}
+            >
               {item}
             </button>
           </li>

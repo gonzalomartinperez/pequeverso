@@ -12,7 +12,11 @@ type Props = {
 /** A short note from the kit's author (rendered only when the copy enables it). */
 export function CreatorNote({ titleId, kicker, title, paragraphs, signature }: Props) {
   return (
-    <Card pad="lg" className="mx-auto max-w-[70ch] justify-items-start border-l-4 border-l-gold" reveal>
+    <Card
+      pad="lg"
+      className="mx-auto max-w-[70ch] justify-items-start border-l-4 border-l-gold"
+      reveal
+    >
       <Eyebrow>{kicker}</Eyebrow>
       <h2 id={titleId} className="text-h3">
         {title}

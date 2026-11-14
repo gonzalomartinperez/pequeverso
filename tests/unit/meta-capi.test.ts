@@ -58,12 +58,19 @@ function event(overrides: Record<string, unknown> = {}) {
 function fakeFetch(statuses: number[] = []) {
   const calls: GraphCall[] = [];
   const fetchImpl = async (url: string | URL | Request, init?: RequestInit): Promise<Response> => {
-    calls.push({ url: String(url), init: init as GraphCall["init"], body: JSON.parse(String(init?.body)) });
-    const status = statuses.shift() ?? 200;
-    return new Response(JSON.stringify(status >= 400 ? { error: { code: 190, fbtrace_id: "t1" } } : {}), {
-      status,
-      headers: { "content-type": "application/json" },
+    calls.push({
+      url: String(url),
+      init: init as GraphCall["init"],
+      body: JSON.parse(String(init?.body)),
     });
+    const status = statuses.shift() ?? 200;
+    return new Response(
+      JSON.stringify(status >= 400 ? { error: { code: 190, fbtrace_id: "t1" } } : {}),
+      {
+        status,
+        headers: { "content-type": "application/json" },
+      },
+    );
   };
   return { calls, fetchImpl };
 }
@@ -186,7 +193,11 @@ test("validation matrix: bad JSON, forbidden event, unknown param, oversized bod
       const json = await res.json();
       assert.deepEqual(json, { error: reason });
     }
-    const wrongType = await post(base, { events: [event()] }, { headers: { "content-type": "text/plain" } });
+    const wrongType = await post(
+      base,
+      { events: [event()] },
+      { headers: { "content-type": "text/plain" } },
+    );
     assert.equal(wrongType.status, 415);
     const badOrigin = await post(
       base,
@@ -273,7 +284,11 @@ test("valid batch: 202 at once, then Graph API payload with bearer token, ids, i
   assert.equal(call.init.headers["Content-Type"], "application/json");
   assert.equal(call.init.headers.Authorization, `Bearer ${TOKEN}`);
   assert.ok(call.init.signal instanceof AbortSignal);
-  assert.equal("access_token" in call.body, false, "token travels in the header, never the body or url");
+  assert.equal(
+    "access_token" in call.body,
+    false,
+    "token travels in the header, never the body or url",
+  );
   assert.equal(call.url.includes(TOKEN), false);
   assert.equal(call.body.data.length, 3);
   assert.deepEqual(at(call.body.data, 0), {
@@ -291,7 +306,11 @@ test("valid batch: 202 at once, then Graph API payload with bearer token, ids, i
     custom_data: { content_ids: "gf", value: 19.9, currency: "USD" },
   });
   assert.equal(at(call.body.data, 1).event_name, "CheckoutIntent");
-  assert.equal(at(call.body.data, 1).event_time, Math.floor(NOW / 1000), "future time clamped to now");
+  assert.equal(
+    at(call.body.data, 1).event_time,
+    Math.floor(NOW / 1000),
+    "future time clamped to now",
+  );
   assert.equal(
     at(call.body.data, 2).event_time,
     Math.floor((NOW - 10 * 60 * 1000) / 1000),
@@ -450,9 +469,15 @@ test("core: process() describes every response without a transport", async () =>
     [relayInput({ contentType: undefined }), 415, "content-type"],
     [relayInput({ bodyText: "x".repeat(MAX_BODY_BYTES + 1) }), 413, "size"],
     [relayInput({ bodyText: "{" }), 400, "json"],
-    [relayInput({ bodyText: JSON.stringify({ events: [event({ name: "Purchase" })] }) }), 400, "name"],
     [
-      relayInput({ bodyText: JSON.stringify({ events: [event({ sourceUrl: "https://other.example/" })] }) }),
+      relayInput({ bodyText: JSON.stringify({ events: [event({ name: "Purchase" })] }) }),
+      400,
+      "name",
+    ],
+    [
+      relayInput({
+        bodyText: JSON.stringify({ events: [event({ sourceUrl: "https://other.example/" })] }),
+      }),
       400,
       "sourceUrl",
     ],
@@ -474,7 +499,9 @@ test("core: process() describes every response without a transport", async () =>
     }),
   );
   assert.deepEqual(hostOnly, { status: 202, headers: { "Cache-Control": "no-store" } });
-  const noOrigin = relay.process(relayInput({ origin: undefined, ip: undefined, userAgent: undefined }));
+  const noOrigin = relay.process(
+    relayInput({ origin: undefined, ip: undefined, userAgent: undefined }),
+  );
   assert.equal(noOrigin.status, 202);
   assert.equal(relay.pending.size, 2);
   await Promise.all(relay.pending);

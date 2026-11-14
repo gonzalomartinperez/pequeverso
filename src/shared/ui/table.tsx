@@ -19,7 +19,13 @@ function TableHeader({ className, ...props }: ComponentProps<"thead">) {
 }
 
 function TableBody({ className, ...props }: ComponentProps<"tbody">) {
-  return <tbody data-slot="table-body" className={cn("[&_tr:last-child]:border-0", className)} {...props} />;
+  return (
+    <tbody
+      data-slot="table-body"
+      className={cn("[&_tr:last-child]:border-0", className)}
+      {...props}
+    />
+  );
 }
 
 function TableFooter({ className, ...props }: ComponentProps<"tfoot">) {
@@ -33,7 +39,9 @@ function TableFooter({ className, ...props }: ComponentProps<"tfoot">) {
 }
 
 function TableRow({ className, ...props }: ComponentProps<"tr">) {
-  return <tr data-slot="table-row" className={cn("border-b border-border", className)} {...props} />;
+  return (
+    <tr data-slot="table-row" className={cn("border-b border-border", className)} {...props} />
+  );
 }
 
 function TableHead({ className, ...props }: ComponentProps<"th">) {
@@ -47,12 +55,22 @@ function TableHead({ className, ...props }: ComponentProps<"th">) {
 }
 
 function TableCell({ className, ...props }: ComponentProps<"td">) {
-  return <td data-slot="table-cell" className={cn("px-3 py-2 align-top text-body", className)} {...props} />;
+  return (
+    <td
+      data-slot="table-cell"
+      className={cn("px-3 py-2 align-top text-body", className)}
+      {...props}
+    />
+  );
 }
 
 function TableCaption({ className, ...props }: ComponentProps<"caption">) {
   return (
-    <caption data-slot="table-caption" className={cn("mt-4 text-small text-subtle", className)} {...props} />
+    <caption
+      data-slot="table-caption"
+      className={cn("mt-4 text-small text-subtle", className)}
+      {...props}
+    />
   );
 }
 

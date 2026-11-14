@@ -37,7 +37,8 @@ function text(value: unknown, what: string, max: number, min = 1): string {
 }
 
 function integer(value: unknown, what: string, min: number, max: number): number {
-  if (typeof value !== "number" || !Number.isSafeInteger(value) || value < min || value > max) invalid(what);
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value < min || value > max)
+    invalid(what);
   return value;
 }
 
@@ -99,7 +100,8 @@ function product(value: unknown): Product {
   if (kind !== "core" && kind !== "affiliate") invalid("product kind");
   return {
     kind,
-    format: v.format === undefined || v.format === null ? null : text(v.format, "product format", 1500),
+    format:
+      v.format === undefined || v.format === null ? null : text(v.format, "product format", 1500),
     disclosure:
       v.disclosure === undefined || v.disclosure === null
         ? null

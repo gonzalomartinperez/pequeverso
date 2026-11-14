@@ -17,7 +17,12 @@ import { RegistrySchema } from "../../config/products/schema.ts";
 import { getImage, getVideo } from "../../src/shared/media/media.ts";
 import { breadcrumbJsonLd, productJsonLd } from "../../src/views/product-jsonld.ts";
 
-const FORBIDDEN_JSONLD = ["aggregateRating", "review", "shippingDetails", "hasMerchantReturnPolicy"];
+const FORBIDDEN_JSONLD = [
+  "aggregateRating",
+  "review",
+  "shippingDetails",
+  "hasMerchantReturnPolicy",
+];
 
 function sumPages(product: Product): number {
   return product.resources.reduce((sum, resource) => sum + (resource.pages ?? 0), 0);
@@ -48,11 +53,13 @@ test("every media id of every product exists in the manifest with the right kind
     const images = [product.media.hero, ...product.media.pageIds, ...product.media.cards];
     if (product.media.og) images.push(product.media.og);
     if (product.kind === "core") images.push(...Object.values(product.media.scenes));
-    for (const id of images) assert.doesNotThrow(() => getImage(id), `${product.slug}: image ${id}`);
+    for (const id of images)
+      assert.doesNotThrow(() => getImage(id), `${product.slug}: image ${id}`);
     for (const id of product.media.videoIds) {
       assert.doesNotThrow(() => getVideo(id), `${product.slug}: video ${id}`);
     }
-    for (const resource of product.resources) assert.ok(product.media.cards.includes(resource.card));
+    for (const resource of product.resources)
+      assert.ok(product.media.cards.includes(resource.card));
   }
 });
 
@@ -76,12 +83,18 @@ test("documented prices (README 2026-08-04): 14.99 list, 14.99 upsell, 7.49 down
 });
 
 test("the checkout URL comes only from static env references Next can inline", () => {
-  const source = readFileSync(new URL("../../config/products/grafismo-fonetico.ts", import.meta.url), "utf8");
+  const source = readFileSync(
+    new URL("../../config/products/grafismo-fonetico.ts", import.meta.url),
+    "utf8",
+  );
   assert.match(source, /process\.env\.NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO\s*\|\|/);
   assert.match(source, /process\.env\.NEXT_PUBLIC_CHECKOUT_URL\s*\|\|\s*""/);
   assert.doesNotMatch(source, /pay\.hotmart\.com/);
   // CI builds use a fake offer code; only the origin and the checkout mode are invariant.
-  assert.match(grafismoFonetico.checkout.url, /^https:\/\/pay\.hotmart\.com\/[A-Za-z0-9]+\?checkoutMode=10$/);
+  assert.match(
+    grafismoFonetico.checkout.url,
+    /^https:\/\/pay\.hotmart\.com\/[A-Za-z0-9]+\?checkoutMode=10$/,
+  );
   assert.equal(grafismoFonetico.checkout.envKey, "NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO");
   assert.match(grafismoFonetico.checkout.sckPrefix, /^[a-z0-9]{1,6}$/);
 });

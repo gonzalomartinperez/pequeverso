@@ -8,7 +8,9 @@ export type OfferMode = "upsell" | "downsell";
 
 export function readOfferMode(params: URLSearchParams | null): OfferMode {
   if (!params) return "upsell";
-  return params.get("downsell") === "1" || params.get("offer") === "downsell" ? "downsell" : "upsell";
+  return params.get("downsell") === "1" || params.get("offer") === "downsell"
+    ? "downsell"
+    : "upsell";
 }
 
 /**

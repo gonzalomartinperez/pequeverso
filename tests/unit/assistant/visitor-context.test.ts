@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { publicPath, visitorContext } from "../../../src/features/assistant/domain/visitor-context.ts";
+import {
+  publicPath,
+  visitorContext,
+} from "../../../src/features/assistant/domain/visitor-context.ts";
 
 describe("untrusted assistant visitor context", () => {
   it("canonicalizes only reviewed public paths", () => {
@@ -53,6 +56,9 @@ describe("untrusted assistant visitor context", () => {
       presentation: "compact",
     });
     assert.equal(visitorContext(null), null);
-    assert.equal(visitorContext({ opened_path: null, current_path: null, presentation: null }), null);
+    assert.equal(
+      visitorContext({ opened_path: null, current_path: null, presentation: null }),
+      null,
+    );
   });
 });

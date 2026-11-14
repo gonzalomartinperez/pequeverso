@@ -27,7 +27,9 @@ const FADE_SECONDS = 0.18;
 
 /** Decodes every image of the card so the first turn never waits on a decode mid-flight. */
 function decodeImages(root: HTMLElement): Promise<unknown> {
-  return Promise.all([...root.querySelectorAll("img")].map((img) => img.decode().catch(() => undefined)));
+  return Promise.all(
+    [...root.querySelectorAll("img")].map((img) => img.decode().catch(() => undefined)),
+  );
 }
 
 /**
@@ -104,7 +106,11 @@ export function FlipPreview({
       .to(el, { scale: 1.02, z: 24, duration: LIFT_SECONDS, ease: "power1.out" }, 0)
       .to(stage, { "--flip-shadow": 0.4, duration: FLIP_SECONDS / 2, ease: "power1.out" }, 0)
       .to(el, { rotationY: angle, duration: FLIP_SECONDS, ease: "power2.inOut" }, LIFT_SECONDS / 2)
-      .to(el, { scale: 1, z: 0, duration: SETTLE_SECONDS, ease: "power2.out" }, `>-${SETTLE_SECONDS / 2}`)
+      .to(
+        el,
+        { scale: 1, z: 0, duration: SETTLE_SECONDS, ease: "power2.out" },
+        `>-${SETTLE_SECONDS / 2}`,
+      )
       .to(stage, { "--flip-shadow": 1, duration: FLIP_SECONDS / 2, ease: "power1.in" }, "<");
   };
 

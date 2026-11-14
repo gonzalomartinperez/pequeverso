@@ -14,10 +14,12 @@ export const packCopy = {
   taxNote: "+ impuestos aplicables según el país",
   upsell: {
     kicker: "Oferta opcional · tu compra principal ya está confirmada",
-    title: "Ya tienes letras y sonidos. Ahora suma actividades listas para tardes, esperas y viajes.",
+    title:
+      "Ya tienes letras y sonidos. Ahora suma actividades listas para tardes, esperas y viajes.",
     lead: "El Pack Imprime y Juega no repite Grafismo Fonético: amplía las opciones con propuestas para colorear, observar, contar, recortar, dibujar y jugar.",
     priceKicker: "Precio de esta oferta",
-    decisionHint: "Elige Sí para sumar el pack a tu compra o No para continuar solo con Grafismo Fonético.",
+    decisionHint:
+      "Elige Sí para sumar el pack a tu compra o No para continuar solo con Grafismo Fonético.",
   },
   downsell: {
     kicker: "Oferta final de este paso",
@@ -76,9 +78,17 @@ export const packCopy = {
     kicker: "Para qué momentos",
     title: "Una actividad lista cuando la necesitas.",
     items: [
-      { icon: "home", title: "Tardes en casa", text: "Colorear, observar y recortar sin pantallas." },
+      {
+        icon: "home",
+        title: "Tardes en casa",
+        text: "Colorear, observar y recortar sin pantallas.",
+      },
       { icon: "car", title: "Viajes y esperas", text: "Aventuras para llevar en el bolso." },
-      { icon: "calendar", title: "Un día a la vez", text: "30 propuestas breves con 12 comodines." },
+      {
+        icon: "calendar",
+        title: "Un día a la vez",
+        text: "30 propuestas breves con 12 comodines.",
+      },
       { icon: "heart", title: "Valores en familia", text: "Cuentos y tarjetas de conversación." },
     ],
   },

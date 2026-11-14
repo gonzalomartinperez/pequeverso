@@ -32,7 +32,9 @@ test("footer cookie control exists and legal links are complete", async ({ page 
   }
 });
 
-test("footer control opens a necessary-cookies notice when nothing is configured", async ({ page }) => {
+test("footer control opens a necessary-cookies notice when nothing is configured", async ({
+  page,
+}) => {
   test.skip(!!process.env.E2E_EXPECT_CONSENT, "build was configured with a pixel id");
   await page.goto("/");
   // The footer control works after hydration; on the GPU-less WebKit runners a click right after
@@ -66,7 +68,9 @@ test("consent banner (when configured) offers equal accept, reject and configure
   await expect(page.locator('script[src*="connect.facebook.net"]')).toHaveCount(0);
 });
 
-test("footer control reopens the banner (when configured) with the stored selection", async ({ page }) => {
+test("footer control reopens the banner (when configured) with the stored selection", async ({
+  page,
+}) => {
   test.skip(!process.env.E2E_EXPECT_CONSENT, "requires a build with NEXT_PUBLIC_META_PIXEL_ID");
   await page.goto("/");
   const banner = page.getByTestId("consent-banner");

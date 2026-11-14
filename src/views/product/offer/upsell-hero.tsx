@@ -15,7 +15,8 @@ export const HERO_GRID =
   "page-container relative grid items-center gap-x-12 gap-y-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:[grid-template-areas:'copy_visual''facts_visual']";
 
 /** Top padding that clears the floating header (PageShell/Header `overlay`). */
-export const HERO_PAD = "pt-[calc(var(--header-height)+clamp(1.5rem,0.75rem+2.4vw,3rem))] pb-(--section-pad)";
+export const HERO_PAD =
+  "pt-[calc(var(--header-height)+clamp(1.5rem,0.75rem+2.4vw,3rem))] pb-(--section-pad)";
 
 /** Heading scale for the long offer titles (the global display size is tuned for short heroes). */
 export const HERO_TITLE =
@@ -27,7 +28,9 @@ export const HERO_TITLE =
  */
 export function UpsellHero({ product, counters }: Props) {
   const { copy, media, pricing, resources, composition } = product;
-  const covers = resources.filter((resource) => !resource.embedded).map((resource) => resource.card);
+  const covers = resources
+    .filter((resource) => !resource.embedded)
+    .map((resource) => resource.card);
   return (
     <section
       id="hero"
@@ -74,7 +77,9 @@ export function UpsellHero({ product, counters }: Props) {
                 key={fact.label}
                 className="on-light glass inline-grid min-h-11 content-center justify-items-center gap-0.5 rounded-lg px-4 py-3 text-center"
               >
-                <strong className="font-display text-[1.35rem] leading-none text-navy">{fact.label}</strong>
+                <strong className="font-display text-[1.35rem] leading-none text-navy">
+                  {fact.label}
+                </strong>
                 <span className="text-tiny font-extrabold tracking-[0.06em] text-subtle uppercase">
                   {fact.detail}
                 </span>

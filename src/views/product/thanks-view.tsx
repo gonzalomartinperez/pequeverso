@@ -159,14 +159,21 @@ export function ThanksPage({ product }: Props) {
                   </span>
                 </span>
                 <div className="on-light glass grid w-full grid-cols-1 gap-2 rounded-xl p-5 shadow-[0_18px_40px_-24px_oklch(0.3175_0.1094_256.25/0.4)]">
-                  <h3 className="font-display text-[1.3rem] leading-tight font-bold">{step.title}</h3>
+                  <h3 className="font-display text-[1.3rem] leading-tight font-bold">
+                    {step.title}
+                  </h3>
                   <p className="text-small">{step.text}</p>
                 </div>
               </li>
             ))}
           </ol>
           <p className="mt-10 flex justify-center">
-            <CTAButton href={hotmart.consumerArea} variant="outline" external className="rounded-pill">
+            <CTAButton
+              href={hotmart.consumerArea}
+              variant="outline"
+              external
+              className="rounded-pill"
+            >
               {copy.access.cta}
             </CTAButton>
           </p>
@@ -227,7 +234,11 @@ export function ThanksPage({ product }: Props) {
         className="aurora-sky defer-render relative section-pad"
       >
         <div className="page-container">
-          <SectionHeading id="recursos-title" kicker={copy.resources.kicker} title={copy.resources.title} />
+          <SectionHeading
+            id="recursos-title"
+            kicker={copy.resources.kicker}
+            title={copy.resources.title}
+          />
           <ResourceGrid resources={product.resources} compact />
         </div>
       </section>

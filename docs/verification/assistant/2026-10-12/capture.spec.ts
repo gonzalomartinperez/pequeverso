@@ -11,7 +11,8 @@ const build = JSON.parse(readFileSync("out-assistant-fixture/build-info.json", "
   assistant: string;
 };
 const producer = readFileSync("tests/assistant/api-revision", "utf8").trim();
-if (build.assistant !== "enabled") throw new Error("Use only the isolated assistant fixture export");
+if (build.assistant !== "enabled")
+  throw new Error("Use only the isolated assistant fixture export");
 test("quality gallery of actual compact interface", async ({ page, context }, info) => {
   const mobile = info.project.name === "mobile";
   await context.route(/^https:\/\/([a-z0-9-]+\.)*facebook\.(com|net)\//, (route) => route.abort());
@@ -105,7 +106,9 @@ test("quality gallery of actual compact interface", async ({ page, context }, in
   const products = panel.getByRole("region", { name: "Productos mencionados" });
   const product = products.locator("article").first();
   if (await product.count()) {
-    await product.evaluate((element) => element.scrollIntoView({ block: "start", behavior: "instant" }));
+    await product.evaluate((element) =>
+      element.scrollIntoView({ block: "start", behavior: "instant" }),
+    );
     await expect(product.getByRole("heading")).toBeInViewport();
     await capture("producto-resumen-detalle");
     await product.getByRole("link", { name: "Ver opciones de compra" }).scrollIntoViewIfNeeded();

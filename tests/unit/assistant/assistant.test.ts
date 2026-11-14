@@ -7,7 +7,11 @@ import {
   type Runtime,
   type SendInput,
 } from "../../../src/features/assistant/application/ports.ts";
-import type { Message, RunEvent, SessionSnapshot } from "../../../src/features/assistant/domain/models.ts";
+import type {
+  Message,
+  RunEvent,
+  SessionSnapshot,
+} from "../../../src/features/assistant/domain/models.ts";
 
 const policy = { storefrontOrigin: "https://pequeverso.com", linkHosts: [] };
 const tick = () => new Promise((resolve) => setTimeout(resolve, 0));
@@ -53,7 +57,11 @@ type Script = (
   emit: (event: RunEvent) => void,
 ) => Promise<"terminal" | "eof">;
 
-function fixture(script: Script, overrides: Partial<AssistantTransport> = {}, clock: Partial<Runtime> = {}) {
+function fixture(
+  script: Script,
+  overrides: Partial<AssistantTransport> = {},
+  clock: Partial<Runtime> = {},
+) {
   const calls = { open: 0, send: [] as SendInput[], cancel: [] as string[], delete: 0 };
   let ids = 0;
   const transport: AssistantTransport = {
@@ -305,7 +313,11 @@ describe("assistant controller", () => {
     assistant.start();
     await tick();
     assistant.setPage("product");
-    assistant.setContext({ opened_path: "/", current_path: "/grafismo-fonetico/", presentation: "compact" });
+    assistant.setContext({
+      opened_path: "/",
+      current_path: "/grafismo-fonetico/",
+      presentation: "compact",
+    });
     assert.equal(assistant.submit("Original question"), true);
     await tick();
     assistant.setPage("support");

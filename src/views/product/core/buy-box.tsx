@@ -64,7 +64,9 @@ export function BuyBox({
       )}
     >
       <div className="grid gap-3">
-        <p className="text-tiny font-extrabold tracking-[0.12em] text-teal-text uppercase">{kicker}</p>
+        <p className="text-tiny font-extrabold tracking-[0.12em] text-teal-text uppercase">
+          {kicker}
+        </p>
         <h1 id={titleId} className="text-[clamp(2rem,1.55rem+1.6vw,3rem)] leading-[1.04]">
           {title}
         </h1>

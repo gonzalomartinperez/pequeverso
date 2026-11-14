@@ -31,7 +31,15 @@ export function sourceFiles(directory: string): string[] {
 /** Keep the documented store topology explicit, including modules with no imports. */
 export function sourcePlacementViolations(modules: ReadonlyMap<string, SourceModule>): string[] {
   const roots = new Set(["app", "views", "shell", "features", "shared"]);
-  const shared = new Set(["ui", "styles", "motion", "editorial", "identity", "media", "navigation"]);
+  const shared = new Set([
+    "ui",
+    "styles",
+    "motion",
+    "editorial",
+    "identity",
+    "media",
+    "navigation",
+  ]);
   const layers: Record<string, ReadonlySet<string>> = {
     assistant: new Set(["domain", "application", "adapters", "presentation"]),
     commerce: new Set(["domain", "presentation"]),
@@ -91,7 +99,9 @@ export function sourceModule(file: string, source = readFileSync(file, "utf8")):
         node.source.value,
         node.importKind === "type" ||
           (node.specifiers.length > 0 &&
-            node.specifiers.every((item) => item.type === "ImportSpecifier" && item.importKind === "type")),
+            node.specifiers.every(
+              (item) => item.type === "ImportSpecifier" && item.importKind === "type",
+            )),
       );
     },
     ExportNamedDeclaration(node) {
@@ -99,14 +109,19 @@ export function sourceModule(file: string, source = readFileSync(file, "utf8")):
         add(
           node.source.value,
           node.exportKind === "type" ||
-            (node.specifiers.length > 0 && node.specifiers.every((item) => item.exportKind === "type")),
+            (node.specifiers.length > 0 &&
+              node.specifiers.every((item) => item.exportKind === "type")),
         );
     },
     ExportAllDeclaration(node) {
       add(node.source.value, node.exportKind === "type");
     },
     ImportExpression(node) {
-      add(node.source.type === "Literal" && typeof node.source.value === "string" ? node.source.value : null);
+      add(
+        node.source.type === "Literal" && typeof node.source.value === "string"
+          ? node.source.value
+          : null,
+      );
     },
     TSImportEqualsDeclaration(node) {
       if (node.moduleReference.type === "TSExternalModuleReference")
@@ -127,7 +142,9 @@ export function sourceModule(file: string, source = readFileSync(file, "utf8")):
     CallExpression(node) {
       if (node.callee.type !== "Identifier" || node.callee.name !== "require") return;
       const argument = node.arguments[0];
-      add(argument?.type === "Literal" && typeof argument.value === "string" ? argument.value : null);
+      add(
+        argument?.type === "Literal" && typeof argument.value === "string" ? argument.value : null,
+      );
     },
   }).visit(parsed.program);
   return {
@@ -169,9 +186,14 @@ function graphTarget(
   if (target === null) return null;
   const stem = target.replace(/\.jsx?$/, "");
   return (
-    [target, `${stem}.ts`, `${stem}.tsx`, `${stem}.js`, `${target}/index.ts`, `${target}/index.tsx`].find(
-      (candidate) => modules.has(candidate),
-    ) ?? null
+    [
+      target,
+      `${stem}.ts`,
+      `${stem}.tsx`,
+      `${stem}.js`,
+      `${target}/index.ts`,
+      `${target}/index.tsx`,
+    ].find((candidate) => modules.has(candidate)) ?? null
   );
 }
 
@@ -201,8 +223,12 @@ export function ownedImportViolations(modules: ReadonlyMap<string, SourceModule>
       if (specifier === null) continue; // Existing launcher expressions retain their own bounded policy.
       const local = sourceTarget(file, specifier);
       if (local !== null) {
-        const generated = ["src/shared/styles/cn-tables", "src/shared/styles/cn-tables.js"].includes(local);
-        const asset = /\.(?:css|json|svg|png|jpe?g|webp|avif|woff2?)$/.test(local) && existsSync(local);
+        const generated = [
+          "src/shared/styles/cn-tables",
+          "src/shared/styles/cn-tables.js",
+        ].includes(local);
+        const asset =
+          /\.(?:css|json|svg|png|jpe?g|webp|avif|woff2?)$/.test(local) && existsSync(local);
         if (!generated && !asset && graphTarget(file, specifier, modules) === null)
           problems.push(`${file}: unresolved owned import ${specifier}`);
       } else {
@@ -226,7 +252,8 @@ export function runtimeGraph(modules: ReadonlyMap<string, SourceModule>): Map<st
     [...modules].map(([file, module]) => [
       file,
       module.imports.flatMap(({ specifier, typeOnly }) => {
-        const target = !typeOnly && specifier !== null ? graphTarget(file, specifier, modules) : null;
+        const target =
+          !typeOnly && specifier !== null ? graphTarget(file, specifier, modules) : null;
         return target === null ? [] : [target];
       }),
     ]),
@@ -297,7 +324,9 @@ export function clientBoundaryViolations(modules: ReadonlyMap<string, SourceModu
           builtins.has(specifier.replace(/^node:/, "")) ||
           specifier.startsWith("/") ||
           specifier.startsWith("#") ||
-          /^(?:node:|server-only$|next\/(?:headers|server)$|openai(?:\/|$)|pg$|postgres$)/.test(specifier)
+          /^(?:node:|server-only$|next\/(?:headers|server)$|openai(?:\/|$)|pg$|postgres$)/.test(
+            specifier,
+          )
         )
           violations.push(`${entry}: ${chain.join(" -> ")} -> ${specifier ?? "nonliteral import"}`);
       }
@@ -331,13 +360,16 @@ export function assistantDependencyAllowed(
 ): boolean {
   if (!assistantSourcePlacementAllowed(file)) return false;
   const from = assistantLayer(file);
-  if (specifier === null) return !["domain", "application", "adapters", "presentation"].includes(from ?? "");
+  if (specifier === null)
+    return !["domain", "application", "adapters", "presentation"].includes(from ?? "");
   const target = sourceTarget(file, specifier);
   const to = target === null ? null : assistantLayer(target);
   if (from === "domain") return to === "domain";
   if (from === "application") return to === "domain" || to === "application";
   if (from === "adapters") return to === "domain" || to === "application" || to === "adapters";
   if (from === "presentation")
-    return to === null || to === "domain" || to === "presentation" || (to === "application" && typeOnly);
+    return (
+      to === null || to === "domain" || to === "presentation" || (to === "application" && typeOnly)
+    );
   return true;
 }

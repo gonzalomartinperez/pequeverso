@@ -4,7 +4,10 @@ import { describe, it } from "node:test";
 import { assistantConfig } from "../../../config/assistant.ts";
 import { createHttpTransport } from "../../../src/features/assistant/adapters/http.ts";
 import { PayloadError, parseMessage } from "../../../src/features/assistant/adapters/validate.ts";
-import { affiliatePurchasePath, applyLinkPolicy } from "../../../src/features/assistant/domain/links.ts";
+import {
+  affiliatePurchasePath,
+  applyLinkPolicy,
+} from "../../../src/features/assistant/domain/links.ts";
 import type { Message } from "../../../src/features/assistant/domain/models.ts";
 
 const policy = {
@@ -45,7 +48,9 @@ describe("affiliate product metadata is additive and validated", () => {
             headers: { "content-type": "text/event-stream" },
           });
     };
-    const transport = createHttpTransport("https://api.example", fetcher, { responseLanguage: "es" });
+    const transport = createHttpTransport("https://api.example", fetcher, {
+      responseLanguage: "es",
+    });
     const controller = new AbortController();
     await transport.openSession(controller.signal, "es");
     const answers: Message[] = [];
@@ -73,7 +78,12 @@ describe("affiliate product metadata is additive and validated", () => {
 
   it("preserves unknown price and the published course format and disclosure", () => {
     const parsed = parseMessage(
-      message({ ...base, kind: "affiliate", format: "Curso en video", disclosure: "Enlace de afiliado." }),
+      message({
+        ...base,
+        kind: "affiliate",
+        format: "Curso en video",
+        disclosure: "Enlace de afiliado.",
+      }),
     );
     assert.equal(parsed.products[0]?.kind, "affiliate");
     assert.equal(parsed.products[0]?.format, "Curso en video");
@@ -101,7 +111,10 @@ describe("affiliate product metadata is additive and validated", () => {
 describe("affiliate actions use only the configured clean redirect", () => {
   it("allows a visitor click on the exact same-origin path without a deployment hotlink", () => {
     assert.equal(affiliatePurchasePath(base.purchase_url, policy), "/alimentacion-bebe/");
-    assert.equal(affiliatePurchasePath(base.purchase_url, { ...policy, affiliatePurchasePaths: [] }), null);
+    assert.equal(
+      affiliatePurchasePath(base.purchase_url, { ...policy, affiliatePurchasePaths: [] }),
+      null,
+    );
   });
 
   it("rejects a foreign host, secrets, tracking, fragments and unregistered redirects", () => {

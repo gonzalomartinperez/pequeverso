@@ -19,7 +19,9 @@ export const RichTextView = memo(function RichTextView({
 }) {
   const blocks = parseRichText(text);
   return (
-    <div className={cx("flex flex-col gap-3 text-base text-body [overflow-wrap:anywhere]", className)}>
+    <div
+      className={cx("flex flex-col gap-3 text-base text-body [overflow-wrap:anywhere]", className)}
+    >
       {blocks.map((block, index) => {
         if (block.kind === "paragraph")
           return (

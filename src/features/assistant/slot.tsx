@@ -13,7 +13,8 @@ import type { RouteContext } from "./mount";
  * defines the variable (normalized "true"/"false"), so an unset variable is folded too.
  */
 export async function AssistantSlot() {
-  const mount = process.env.NEXT_PUBLIC_ASSISTANT_ENABLED === "true" ? await import("./mount") : null;
+  const mount =
+    process.env.NEXT_PUBLIC_ASSISTANT_ENABLED === "true" ? await import("./mount") : null;
   if (!mount) return null;
   // Enabled builds re-validate the origin here too (dev servers skip tools/check-env.ts).
   const parsed = parseAssistantEnv({

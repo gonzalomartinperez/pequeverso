@@ -70,7 +70,14 @@ function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
   return (
     <ul className="grid gap-2 text-small text-body">
       <li className="flex items-start gap-2">
-        <input type="checkbox" id={`${prefix}-necessary`} className={CHECKBOX} checked disabled readOnly />
+        <input
+          type="checkbox"
+          id={`${prefix}-necessary`}
+          className={CHECKBOX}
+          checked
+          disabled
+          readOnly
+        />
         <label htmlFor={`${prefix}-necessary`} className="min-h-6">
           <strong>Necesarias:</strong> recordar tu elección de cookies. Siempre activas.
         </label>
@@ -89,7 +96,8 @@ function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
               {category.title} ({category.tools.join(", ")}):
             </strong>{" "}
             {category.purpose}.{" "}
-            {process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" && category.id === "analytics"
+            {process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" &&
+            category.id === "analytics"
               ? "Se activa al aceptar o guardar tu selección."
               : "Activa salvo que la desmarques."}
           </label>
@@ -170,9 +178,9 @@ export function ConsentBanner({ classes }: Props) {
             Cookies
           </h2>
           <p id={descId} className={TEXT}>
-            Este sitio solo usa cookies propias necesarias para funcionar y no requieren tu permiso. No hay
-            integraciones de medición ni de marketing activas, así que no hay nada que configurar.{" "}
-            <Link href="/cookies/">Más información</Link>
+            Este sitio solo usa cookies propias necesarias para funcionar y no requieren tu permiso.
+            No hay integraciones de medición ni de marketing activas, así que no hay nada que
+            configurar. <Link href="/cookies/">Más información</Link>
           </p>
           <div className={ACTIONS}>
             <button type="button" className={classes.primary} onClick={() => setOpen(false)}>
@@ -198,7 +206,8 @@ export function ConsentBanner({ classes }: Props) {
           Cookies y medición
         </h2>
         <p id={descId} className={TEXT}>
-          Usamos cookies necesarias y {joinSpanish(categories.flatMap((category) => category.tools))} para{" "}
+          Usamos cookies necesarias y{" "}
+          {joinSpanish(categories.flatMap((category) => category.tools))} para{" "}
           {joinSpanish(categories.map((category) => category.purpose))}. Si rechazas, la medición se
           desactiva; puedes cambiar tu elección en el pie de página.{" "}
           <Link href="/cookies/">Más información</Link>
@@ -230,7 +239,11 @@ export function ConsentBanner({ classes }: Props) {
               Guardar selección
             </button>
           ) : (
-            <button type="button" className={classes.secondary} onClick={() => setConfiguring(true)}>
+            <button
+              type="button"
+              className={classes.secondary}
+              onClick={() => setConfiguring(true)}
+            >
               Configurar
             </button>
           )}

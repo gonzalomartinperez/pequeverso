@@ -16,9 +16,13 @@ export type AssistantEnv = {
   localTestBuild?: string | undefined;
 };
 
-export type AssistantFlag = { enabled: false } | { enabled: true; apiOrigin: string; localTest: boolean };
+export type AssistantFlag =
+  | { enabled: false }
+  | { enabled: true; apiOrigin: string; localTest: boolean };
 
-export type AssistantFlagResult = { ok: true; flag: AssistantFlag } | { ok: false; errors: string[] };
+export type AssistantFlagResult =
+  | { ok: true; flag: AssistantFlag }
+  | { ok: false; errors: string[] };
 
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1"]);
 
@@ -32,7 +36,8 @@ function bareOrigin(value: string, allowLocalHttp: boolean): string | null {
   if (url.username || url.password || url.search || url.hash) return null;
   if (url.pathname !== "/" || !value.replace(/\/$/, "").endsWith(url.host)) return null;
   if (url.protocol === "https:" && !LOCAL_HOSTS.has(url.hostname)) return url.origin;
-  if (allowLocalHttp && /^https?:$/.test(url.protocol) && LOCAL_HOSTS.has(url.hostname)) return url.origin;
+  if (allowLocalHttp && /^https?:$/.test(url.protocol) && LOCAL_HOSTS.has(url.hostname))
+    return url.origin;
   return null;
 }
 
@@ -40,7 +45,10 @@ export function parseAssistantEnv(env: AssistantEnv): AssistantFlagResult {
   const raw = (env.enabled ?? "").trim();
   if (raw === "" || raw === "false") return { ok: true, flag: { enabled: false } };
   if (raw !== "true")
-    return { ok: false, errors: ['NEXT_PUBLIC_ASSISTANT_ENABLED must be "true" or "false" (or unset)'] };
+    return {
+      ok: false,
+      errors: ['NEXT_PUBLIC_ASSISTANT_ENABLED must be "true" or "false" (or unset)'],
+    };
   const localTest = (env.localTestBuild ?? "").trim() === "true";
   const origin = bareOrigin((env.apiOrigin ?? "").trim(), localTest);
   if (!origin)

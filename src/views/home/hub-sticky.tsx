@@ -106,13 +106,17 @@ function Row({
         className={cn(
           "grid size-[44px] shrink-0 overflow-hidden rounded-md ring-1 ring-navy/10 max-[22.5rem]:hidden [&_img]:size-full [&_picture]:size-full",
           NEED_TONE[need.key].stage,
-          need.recommended ? "[&_img]:object-contain [&_img]:object-bottom" : "[&_img]:object-cover",
+          need.recommended
+            ? "[&_img]:object-contain [&_img]:object-bottom"
+            : "[&_img]:object-cover",
         )}
       >
         <MediaImage id={need.thumb} sizes="44px" alt="" />
       </span>
       <span className="on-light grid min-w-0 grow basis-0 gap-0.5">
-        <span className="truncate text-small leading-tight font-extrabold text-heading">{title}</span>
+        <span className="truncate text-small leading-tight font-extrabold text-heading">
+          {title}
+        </span>
         <span className="text-tiny leading-tight text-pretty text-body">{detail}</span>
       </span>
       {children}

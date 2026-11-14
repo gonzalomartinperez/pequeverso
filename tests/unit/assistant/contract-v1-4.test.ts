@@ -13,7 +13,12 @@ const stream = () =>
   new Response(read("examples/stream.recommendation.sse"), {
     headers: { "content-type": "text/event-stream" },
   });
-const input = { content: "What is included?", page: null, key: "profile-key-001", locale: "en" as const };
+const input = {
+  content: "What is included?",
+  page: null,
+  key: "profile-key-001",
+  locale: "en" as const,
+};
 const signal = () => new AbortController().signal;
 const protocol = (error: unknown) => error instanceof AssistantError && error.code === "protocol";
 
@@ -25,7 +30,9 @@ describe("native Spanish profile requires the additive v1.4 contract", () => {
         paths.push(String(path));
         return json({ ...session, contract_revision: revision });
       };
-      const transport = createHttpTransport("https://api.example", fetcher, { responseLanguage: "es" });
+      const transport = createHttpTransport("https://api.example", fetcher, {
+        responseLanguage: "es",
+      });
       await assert.rejects(transport.openSession(signal(), "es"), protocol, String(revision));
       await assert.rejects(
         transport.send(input, signal(), () => {}),
@@ -74,6 +81,9 @@ describe("native Spanish profile requires the additive v1.4 contract", () => {
     const transport = createHttpTransport("https://api.example", fetcher);
     await transport.openSession(signal(), "en");
     await transport.send(input, signal(), () => {});
-    assert.deepEqual(bodies, [{ locale: "en" }, { content: input.content, page: null, locale: "en" }]);
+    assert.deepEqual(bodies, [
+      { locale: "en" },
+      { content: input.content, page: null, locale: "en" },
+    ]);
   });
 });

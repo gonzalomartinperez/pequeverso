@@ -118,9 +118,21 @@ export type CoreLandingCopy = {
     total: string;
     units?: { pdf: string; pages: string };
     /** Labels of the bundle: the main PDF plus its bonuses, all in the single price (counts from the registry). */
-    bundle?: { main: string; bonus: string; included: string; bonuses: string; allIncluded: string };
+    bundle?: {
+      main: string;
+      bonus: string;
+      included: string;
+      bonuses: string;
+      allIncluded: string;
+    };
     /** Bento tiles: the whole-kit tile and the all-included price tile. */
-    tiles?: { kitTitle: string; kitText: string; priceKicker: string; priceNote: string; priceLink: string };
+    tiles?: {
+      kitTitle: string;
+      kitText: string;
+      priceKicker: string;
+      priceNote: string;
+      priceLink: string;
+    };
   };
   midOffer: { title: string; text: string; cta: string };
   /** Offer card details (kicker, checks); title, text and CTA come from `midOffer`. */
@@ -153,7 +165,13 @@ export type CoreLandingCopy = {
   sticky: { label: string; cta: string };
 };
 
-type OfferView = { kicker: string; title: string; lead: string; priceKicker: string; decisionHint: string };
+type OfferView = {
+  kicker: string;
+  title: string;
+  lead: string;
+  priceKicker: string;
+  decisionHint: string;
+};
 
 /** Copy of a post-purchase offer page (upsell and downsell views, Hotmart widget decision). */
 export type OfferLandingCopy = {

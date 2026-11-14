@@ -78,7 +78,10 @@ while (Date.now() < deadline) {
     output(last.sha);
     summarize([
       ["Origin", base],
-      ["Commit", `\`${expected}\` superseded by live \`${last.sha}\` (built ${last.builtAt ?? "?"})`],
+      [
+        "Commit",
+        `\`${expected}\` superseded by live \`${last.sha}\` (built ${last.builtAt ?? "?"})`,
+      ],
       ["Live after", `${elapsed} s (${polls} polls)`],
     ]);
     process.exit(0);

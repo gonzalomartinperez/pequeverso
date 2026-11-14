@@ -20,7 +20,8 @@ const runs = (JSON.parse(readFileSync(manifestPath, "utf8")) as ManifestRun[]).f
 );
 const score = (value: number | undefined): number | string =>
   value === undefined ? "–" : Math.round(value * 100);
-const ms = (audit: Audit | undefined): string => (audit ? `${Math.round(audit.numericValue)} ms` : "–");
+const ms = (audit: Audit | undefined): string =>
+  audit ? `${Math.round(audit.numericValue)} ms` : "–";
 
 const rows = runs.map((run) => {
   const lhr = JSON.parse(readFileSync(run.jsonPath, "utf8")) as Lhr;

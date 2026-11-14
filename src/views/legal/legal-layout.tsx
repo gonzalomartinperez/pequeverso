@@ -15,7 +15,8 @@ type Props = {
 const TOC_LABEL = "Contenido de esta página";
 const TOC_HEADING = "text-tiny font-extrabold tracking-[0.12em] text-teal-text uppercase";
 /** Index rows: pill hover on the `toc` counter list (numbers come from the utility). */
-const TOC_LIST = "toc grid gap-y-0.5 [&_a]:rounded-md [&_a]:px-2 [&_a:hover]:bg-white [&_a:hover]:text-navy";
+const TOC_LIST =
+  "toc grid gap-y-0.5 [&_a]:rounded-md [&_a]:px-2 [&_a:hover]:bg-white [&_a:hover]:text-navy";
 
 function TocList({ sections, className }: { sections: readonly Section[]; className?: string }) {
   return (
@@ -78,14 +79,19 @@ export function LegalLayout({ title, intro, updatedAt, sections = [], children }
                   <summary className="flex min-h-14 cursor-pointer list-none flex-wrap items-center gap-3 px-5 font-extrabold text-heading [&::-webkit-details-marker]:hidden">
                     <ListIcon aria-hidden="true" focusable="false" className="size-5 text-icon" />
                     <span className="flex-1">En esta página</span>
-                    <span className="text-tiny font-bold text-subtle">{sections.length} apartados</span>
+                    <span className="text-tiny font-bold text-subtle">
+                      {sections.length} apartados
+                    </span>
                     <ChevronDownIcon
                       aria-hidden="true"
                       focusable="false"
                       className="size-5 text-icon transition-transform duration-(--duration) group-open:rotate-180"
                     />
                   </summary>
-                  <nav aria-label={TOC_LABEL} className="border-t border-navy/8 px-3 pt-2 pb-4 text-small">
+                  <nav
+                    aria-label={TOC_LABEL}
+                    className="border-t border-navy/8 px-3 pt-2 pb-4 text-small"
+                  >
                     <TocList sections={sections} className="cq-sm:grid-cols-2 cq-sm:gap-x-4" />
                   </nav>
                 </details>

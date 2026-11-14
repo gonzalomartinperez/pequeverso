@@ -55,10 +55,14 @@ for (const route of routes) {
         expect(box, `${route} @${width}: header CTA`).not.toBeNull();
         if (box) {
           expect(box.x, `${route} @${width}: header CTA left edge`).toBeGreaterThanOrEqual(0);
-          expect(box.x + box.width, `${route} @${width}: header CTA right edge`).toBeLessThanOrEqual(width);
-          expect(box.y + box.height, `${route} @${width}: header CTA below the fold`).toBeLessThanOrEqual(
-            height(width),
-          );
+          expect(
+            box.x + box.width,
+            `${route} @${width}: header CTA right edge`,
+          ).toBeLessThanOrEqual(width);
+          expect(
+            box.y + box.height,
+            `${route} @${width}: header CTA below the fold`,
+          ).toBeLessThanOrEqual(height(width));
           expect(box.height, `${route} @${width}: header CTA target`).toBeGreaterThanOrEqual(44);
         }
       }
@@ -85,7 +89,10 @@ test("short landscape phone: no fixed layer covers a checkout CTA", async ({ pag
           cta.evaluate((el) => {
             el.scrollIntoView({ block: "center", behavior: "instant" });
             const rect = el.getBoundingClientRect();
-            const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+            const hit = document.elementFromPoint(
+              rect.left + rect.width / 2,
+              rect.top + rect.height / 2,
+            );
             return hit !== null && el.contains(hit);
           }),
         { message: `checkout CTA #${index} is covered`, timeout: 3_000 },
@@ -94,7 +101,9 @@ test("short landscape phone: no fixed layer covers a checkout CTA", async ({ pag
   }
 });
 
-test("primary CTA labels (checkout and product links) stay on one line from 320 px up", async ({ page }) => {
+test("primary CTA labels (checkout and product links) stay on one line from 320 px up", async ({
+  page,
+}) => {
   // 360 covers the home's narrow-phone pills; the landing keeps its original widths (funnel pages
   // are out of scope for the hub change).
   for (const [route, width] of [
@@ -128,7 +137,8 @@ test("primary CTA labels (checkout and product links) stay on one line from 320 
         // compare its height with one line of its own line-height.
         .filter((span) => {
           const style = getComputedStyle(span);
-          const line = Number.parseFloat(style.lineHeight) || Number.parseFloat(style.fontSize) * 1.2;
+          const line =
+            Number.parseFloat(style.lineHeight) || Number.parseFloat(style.fontSize) * 1.2;
           return span.getBoundingClientRect().height > line * 1.5;
         })
         .map((span) => span.textContent?.trim()),

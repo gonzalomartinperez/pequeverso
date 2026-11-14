@@ -45,14 +45,16 @@ function deriveFbc(now: number): string | undefined {
 function relayParams(params: EventParams): EventParams {
   const out: EventParams = {};
   for (const [key, value] of Object.entries(params)) {
-    if (typeof value === "string" || (typeof value === "number" && Number.isFinite(value))) out[key] = value;
+    if (typeof value === "string" || (typeof value === "number" && Number.isFinite(value)))
+      out[key] = value;
   }
   return out;
 }
 
 function chunk<T>(items: T[], size: number): T[][] {
   const out: T[][] = [];
-  for (let index = 0; index < items.length; index += size) out.push(items.slice(index, index + size));
+  for (let index = 0; index < items.length; index += size)
+    out.push(items.slice(index, index + size));
   return out;
 }
 
@@ -76,7 +78,11 @@ export function createMetaCapiAdapter(pixelId: string, deps: MetaCapiDeps = {}):
 
   function post(events: RelayEvent[], unloading: boolean): void {
     const body = JSON.stringify({ events });
-    if (unloading && typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+    if (
+      unloading &&
+      typeof navigator !== "undefined" &&
+      typeof navigator.sendBeacon === "function"
+    ) {
       if (navigator.sendBeacon(endpoint, new Blob([body], { type: "application/json" }))) return;
     }
     const fetchImpl = deps.fetch ?? (typeof fetch === "function" ? fetch : undefined);
@@ -105,7 +111,11 @@ export function createMetaCapiAdapter(pixelId: string, deps: MetaCapiDeps = {}):
     }
     waitingSince = null;
     const fbc = readCookie("_fbc") ?? deriveFbc(now());
-    const events = buffer.map((event) => ({ ...event, ...(fbp ? { fbp } : {}), ...(fbc ? { fbc } : {}) }));
+    const events = buffer.map((event) => ({
+      ...event,
+      ...(fbp ? { fbp } : {}),
+      ...(fbc ? { fbc } : {}),
+    }));
     buffer = [];
     for (const batch of chunk(events, MAX_BATCH)) post(batch, unloading);
   }

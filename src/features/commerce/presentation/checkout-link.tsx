@@ -34,7 +34,9 @@ export function CheckoutLink({ product, position, children, className, title }: 
 
   useEffect(() => {
     if (!checkoutUrl) return;
-    setHref(buildCheckoutUrl(checkoutUrl, window.location.search, { sck: sckFor(sckPrefix, position) }));
+    setHref(
+      buildCheckoutUrl(checkoutUrl, window.location.search, { sck: sckFor(sckPrefix, position) }),
+    );
   }, [checkoutUrl, sckPrefix, position]);
 
   const onClick = () => {
@@ -60,7 +62,13 @@ export function CheckoutLink({ product, position, children, className, title }: 
         data-icon="inline-start"
       />
       <span>{children}</span>
-      <ArrowRight aria-hidden="true" focusable="false" size={18} strokeWidth={2.4} data-icon="inline-end" />
+      <ArrowRight
+        aria-hidden="true"
+        focusable="false"
+        size={18}
+        strokeWidth={2.4}
+        data-icon="inline-end"
+      />
     </a>
   );
 }

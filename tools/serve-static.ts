@@ -4,7 +4,12 @@
 // Conversions API relay (src/features/tracking/adapters/server/meta-capi.ts, POST /api/meta/events/) before static
 // resolution. Used by Playwright, Lighthouse CI and `npm start`.
 import { createReadStream, existsSync, readFileSync, statSync } from "node:fs";
-import { createServer, type IncomingMessage, type OutgoingHttpHeaders, type ServerResponse } from "node:http";
+import {
+  createServer,
+  type IncomingMessage,
+  type OutgoingHttpHeaders,
+  type ServerResponse,
+} from "node:http";
 import { createServer as createTlsServer } from "node:https";
 import { extname, join, normalize, resolve } from "node:path";
 import { brotliCompressSync, constants, gzipSync } from "node:zlib";
@@ -43,7 +48,16 @@ if (!existsSync(root)) {
   process.exit(1);
 }
 
-const COMPRESSIBLE = new Set([".html", ".css", ".js", ".json", ".xml", ".txt", ".svg", ".webmanifest"]);
+const COMPRESSIBLE = new Set([
+  ".html",
+  ".css",
+  ".js",
+  ".json",
+  ".xml",
+  ".txt",
+  ".svg",
+  ".webmanifest",
+]);
 
 function send(res: ServerResponse, file: string, status = 200, acceptEncoding = ""): void {
   const ext = extname(file);

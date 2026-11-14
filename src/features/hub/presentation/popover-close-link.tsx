@@ -22,7 +22,8 @@ export function PopoverCloseLink(props: Props) {
       onBlur={(event) => {
         const panel = event.currentTarget.closest<HTMLElement>("[popover]");
         const next = event.relatedTarget;
-        if (next && panel && !panel.contains(next) && panel.matches(":popover-open")) panel.hidePopover();
+        if (next && panel && !panel.contains(next) && panel.matches(":popover-open"))
+          panel.hidePopover();
       }}
     />
   );

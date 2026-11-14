@@ -1,7 +1,9 @@
 import type { ComponentProps } from "react";
 import { cn } from "@/shared/styles/cn.ts";
 
-type SeparatorProps = ComponentProps<"hr"> & { orientation?: "horizontal" | "vertical" | undefined };
+type SeparatorProps = ComponentProps<"hr"> & {
+  orientation?: "horizontal" | "vertical" | undefined;
+};
 
 /**
  * Hairline rule between content groups: a server-rendered `<hr>` (implicit `separator` role,

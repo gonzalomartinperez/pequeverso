@@ -93,7 +93,10 @@ export function HeroStack({ pages, featured, layout = "fan", labels, className }
   return (
     <div
       data-slot="hero-stack"
-      className={cx("relative aspect-[4/3] perspective-(--tilt-perspective) transform-3d", className)}
+      className={cx(
+        "relative aspect-[4/3] perspective-(--tilt-perspective) transform-3d",
+        className,
+      )}
       data-hero-enter="media"
       style={{ "--i": ENTER_ORDER } as CSSProperties}
     >

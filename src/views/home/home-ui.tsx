@@ -78,7 +78,10 @@ export function Pill({
         className,
       )}
     >
-      <span aria-hidden="true" className={cn("size-1.5 shrink-0 rounded-full", PILL_TONES[tone][1])} />
+      <span
+        aria-hidden="true"
+        className={cn("size-1.5 shrink-0 rounded-full", PILL_TONES[tone][1])}
+      />
       {children}
     </Tag>
   );
@@ -89,7 +92,9 @@ export function Accent({ title, tone = "light" }: { title: AccentTitle; tone?: "
   return (
     <>
       {title.before}
-      <span className={tone === "dark" ? "text-gradient-sky" : "text-gradient"}>{title.accent}</span>
+      <span className={tone === "dark" ? "text-gradient-sky" : "text-gradient"}>
+        {title.accent}
+      </span>
       {title.after}
     </>
   );

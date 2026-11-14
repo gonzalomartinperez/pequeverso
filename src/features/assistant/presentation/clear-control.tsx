@@ -104,7 +104,9 @@ export function ClearControl({
           onClick={() => {
             setOpen(false);
             // The removed confirmation must never strand focus on body, especially on phones.
-            trigger.current?.closest<HTMLElement>("#pv-assistant-panel")?.focus({ preventScroll: true });
+            trigger.current
+              ?.closest<HTMLElement>("#pv-assistant-panel")
+              ?.focus({ preventScroll: true });
             onConfirm();
           }}
         >

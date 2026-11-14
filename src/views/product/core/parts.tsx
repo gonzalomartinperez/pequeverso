@@ -97,7 +97,8 @@ export function SyllableTile({
   );
 }
 
-const STAR = "M12 1.5l2.95 6.62 7.2.72-5.42 4.8 1.56 7.08L12 17.1l-6.29 3.62 1.56-7.08L1.85 8.84l7.2-.72z";
+const STAR =
+  "M12 1.5l2.95 6.62 7.2.72-5.42 4.8 1.56 7.08L12 17.1l-6.29 3.62 1.56-7.08L1.85 8.84l7.2-.72z";
 
 /** The brand's gold star with a soft glow. */
 export function GoldStar({
@@ -144,9 +145,14 @@ type PhotoProps = {
 /** Lifestyle photo in a rounded frame with an optional glass caption in the corner. */
 export function Photo({ id, sizes, caption, className, imgClassName }: PhotoProps) {
   return (
-    <figure className={cn("relative m-0 overflow-hidden rounded-2xl bg-sky shadow-float", className)}>
+    <figure
+      className={cn("relative m-0 overflow-hidden rounded-2xl bg-sky shadow-float", className)}
+    >
       <div
-        className={cn("size-full [&_img]:size-full [&_img]:object-cover [&_picture]:contents", imgClassName)}
+        className={cn(
+          "size-full [&_img]:size-full [&_img]:object-cover [&_picture]:contents",
+          imgClassName,
+        )}
       >
         <MediaImage id={id} sizes={sizes} />
       </div>

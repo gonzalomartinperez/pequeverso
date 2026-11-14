@@ -26,7 +26,9 @@ export type Measurement = Intent & {
 };
 export function routeOf(path: string): Route | null {
   if (path === "/") return "/";
-  return path === "/grafismo-fonetico/" || path === "/grafismo-fonetico" ? "/grafismo-fonetico/" : null;
+  return path === "/grafismo-fonetico/" || path === "/grafismo-fonetico"
+    ? "/grafismo-fonetico/"
+    : null;
 }
 export function sectionAllowed(route: Route, section: string): section is Section {
   return (profile[route] as readonly string[]).includes(section);

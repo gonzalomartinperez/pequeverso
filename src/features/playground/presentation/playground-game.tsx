@@ -99,7 +99,13 @@ function Whole({ text, height }: { text: string; height: string }) {
         aria-hidden="true"
         focusable="false"
       >
-        <text x={width / 2} y="84" textAnchor="middle" fontSize="88" className="fill-navy font-display">
+        <text
+          x={width / 2}
+          y="84"
+          textAnchor="middle"
+          fontSize="88"
+          className="fill-navy font-display"
+        >
           {text}
         </text>
       </svg>
@@ -289,7 +295,10 @@ export function PlaygroundGame({ words, pages, title, hint, doneLabel }: Props) 
 
         <div className="flex flex-wrap items-center justify-center gap-2">
           {words.length > 1 ? (
-            <fieldset className="flex min-w-0 flex-wrap justify-center gap-2" aria-label="Elige una palabra">
+            <fieldset
+              className="flex min-w-0 flex-wrap justify-center gap-2"
+              aria-label="Elige una palabra"
+            >
               {words.map((item, index) => (
                 <button
                   key={item.word}

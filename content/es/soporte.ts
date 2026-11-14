@@ -50,7 +50,11 @@ export const soporteCopy = {
     items: ["Ver o modificar datos de pago.", "Cambiar el correo de una compra."],
     note: "Esas gestiones las hace Hotmart desde su centro de ayuda.",
   },
-  contact: { label: "Correo de soporte:", moreLabel: "Más detalle en", moreLink: "Compras y reembolsos" },
+  contact: {
+    label: "Correo de soporte:",
+    moreLabel: "Más detalle en",
+    moreLink: "Compras y reembolsos",
+  },
 } as const;
 
 export const notFoundCopy = {

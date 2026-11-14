@@ -18,7 +18,13 @@ export type Presentation = {
 
 const PresentationContext = createContext<Presentation | null>(null);
 
-export function PresentationProvider({ value, children }: { value: Presentation; children: ReactNode }) {
+export function PresentationProvider({
+  value,
+  children,
+}: {
+  value: Presentation;
+  children: ReactNode;
+}) {
   return <PresentationContext value={value}>{children}</PresentationContext>;
 }
 

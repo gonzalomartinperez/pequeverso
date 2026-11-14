@@ -32,7 +32,10 @@ export default function SoportePage() {
           <div className="grid grid-cols-1 items-end gap-x-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
             <div className="grid gap-5 pb-8 lg:pb-16">
               <Kicker>{copy.kicker}</Kicker>
-              <h1 id="soporte-title" className="text-[clamp(2.3rem,1.6rem+2.8vw,4.2rem)] leading-[1.04]">
+              <h1
+                id="soporte-title"
+                className="text-[clamp(2.3rem,1.6rem+2.8vw,4.2rem)] leading-[1.04]"
+              >
                 <AccentText text={copy.title} />
               </h1>
               <p className="lead max-w-[52ch] text-pretty">{copy.lead}</p>
@@ -46,7 +49,10 @@ export default function SoportePage() {
                 </a>
               </p>
             </div>
-            <div aria-hidden="true" className="relative mx-auto hidden w-full max-w-[22rem] lg:block">
+            <div
+              aria-hidden="true"
+              className="relative mx-auto hidden w-full max-w-[22rem] lg:block"
+            >
               <div className="absolute inset-x-[6%] top-[14%] bottom-[8%] rounded-t-[999px] bg-[linear-gradient(180deg,var(--pv-celeste),var(--pv-peach))]" />
               <Sparkle className="top-[10%] left-[4%]" size={26} />
               <Sparkle className="top-[34%] right-[2%]" size={16} />
@@ -110,7 +116,8 @@ export default function SoportePage() {
             </ul>
             <p className="text-small">{copy.include.note}</p>
             <p className="text-small">
-              {copy.include.hotmartLabel} <a href={hotmart.consumerArea}>{copy.include.hotmartLink}</a>
+              {copy.include.hotmartLabel}{" "}
+              <a href={hotmart.consumerArea}>{copy.include.hotmartLink}</a>
             </p>
           </div>
           <div className="on-light grid grid-cols-1 content-start gap-4 rounded-2xl border border-coral/15 bg-[linear-gradient(160deg,var(--pv-white),var(--pv-peach))] p-6 shadow-float sm:p-8">
@@ -127,8 +134,10 @@ export default function SoportePage() {
             </ul>
             <p className="text-small">{copy.limits.note}</p>
             <p className="text-small">
-              {copy.contact.label} <a href={`mailto:${seller.supportEmail}`}>{seller.supportEmail}</a> ·{" "}
-              {copy.contact.moreLabel} <Link href="/compras-y-reembolsos/">{copy.contact.moreLink}</Link>.
+              {copy.contact.label}{" "}
+              <a href={`mailto:${seller.supportEmail}`}>{seller.supportEmail}</a> ·{" "}
+              {copy.contact.moreLabel}{" "}
+              <Link href="/compras-y-reembolsos/">{copy.contact.moreLink}</Link>.
             </p>
           </div>
         </div>

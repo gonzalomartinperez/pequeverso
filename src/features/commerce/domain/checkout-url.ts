@@ -1,4 +1,7 @@
-import { checkoutPassthroughParams, checkoutPassthroughPrefixes } from "../../../../config/commerce.ts";
+import {
+  checkoutPassthroughParams,
+  checkoutPassthroughPrefixes,
+} from "../../../../config/commerce.ts";
 
 /**
  * Builds the checkout URL for a CTA: the configured Hotmart URL plus the allowlisted
@@ -33,12 +36,15 @@ export function isAllowedParam(key: string): boolean {
 export function withPassthrough(path: string, pageSearch: string): string {
   const incoming = new URLSearchParams(pageSearch);
   const kept = new URLSearchParams();
-  for (const [key, value] of incoming.entries()) if (value && isAllowedParam(key)) kept.set(key, value);
+  for (const [key, value] of incoming.entries())
+    if (value && isAllowedParam(key)) kept.set(key, value);
   const query = kept.toString();
   if (!query) return path;
   // Keep a fragment after the query (`/#bebe` → `/?utm_source=ig#bebe`).
   const hashAt = path.indexOf("#");
-  return hashAt === -1 ? `${path}?${query}` : `${path.slice(0, hashAt)}?${query}${path.slice(hashAt)}`;
+  return hashAt === -1
+    ? `${path}?${query}`
+    : `${path.slice(0, hashAt)}?${query}${path.slice(hashAt)}`;
 }
 
 /** `pv-<product prefix>-<position>`; Hotmart `sck` is limited to 30 characters. */

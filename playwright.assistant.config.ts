@@ -47,8 +47,16 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"], viewport: desktop, reducedMotion: "reduce" },
     },
     // Gecko and WebKit render the landing's WebGL scene in software on CI runners: one worker each.
-    { name: "firefox-desktop", workers: 1, use: { ...devices["Desktop Firefox"], viewport: desktop } },
-    { name: "webkit-desktop", workers: 1, use: { ...devices["Desktop Safari"], viewport: desktop } },
+    {
+      name: "firefox-desktop",
+      workers: 1,
+      use: { ...devices["Desktop Firefox"], viewport: desktop },
+    },
+    {
+      name: "webkit-desktop",
+      workers: 1,
+      use: { ...devices["Desktop Safari"], viewport: desktop },
+    },
     { name: "webkit-mobile", workers: 1, use: { ...devices["iPhone 13"] } },
   ],
   webServer: [

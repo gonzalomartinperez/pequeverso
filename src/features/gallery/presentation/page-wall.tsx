@@ -37,7 +37,10 @@ function Lap({ ids, hidden }: { ids: readonly string[]; hidden?: boolean }) {
         <div
           // biome-ignore lint/suspicious/noArrayIndexKey: a lap repeats pages; order is fixed
           key={`${id}-${index}`}
-          className={cn(styles.card, "rounded-[18px] bg-white p-1.5 shadow-float [&_img]:rounded-[12px]")}
+          className={cn(
+            styles.card,
+            "rounded-[18px] bg-white p-1.5 shadow-float [&_img]:rounded-[12px]",
+          )}
           style={{ "--card-rotate": TILTS[index % TILTS.length] } as CSSProperties}
         >
           <MediaImage id={id} sizes={SIZES} alt="" />
@@ -79,7 +82,9 @@ export function PageWall({ ids, label, rows = 2, className }: Props) {
               className={styles.row}
               data-direction={index % 2 === 1 ? "reverse" : "forward"}
               style={
-                { "--wall-duration": `${cards.length * SECONDS_PER_CARD + index * 6}s` } as CSSProperties
+                {
+                  "--wall-duration": `${cards.length * SECONDS_PER_CARD + index * 6}s`,
+                } as CSSProperties
               }
               aria-hidden="true"
             >

@@ -30,7 +30,9 @@ test("both doors are inside the first viewport, the same size, and select each p
   // A visitor can identify the actual product and its origin before following either door,
   // including on phones where the old chooser hid both product names.
   await expect(doors.nth(0).getByText("Grafismo Fonético", { exact: true })).toBeVisible();
-  await expect(doors.nth(1).getByText("Guía de Alimentación para Bebés", { exact: true })).toBeVisible();
+  await expect(
+    doors.nth(1).getByText("Guía de Alimentación para Bebés", { exact: true }),
+  ).toBeVisible();
   await expect(doors.nth(0).getByText("Kit de Pequeverso", { exact: true })).toBeVisible();
   await expect(doors.nth(1).getByText("Curso afiliado", { exact: true })).toBeVisible();
   const actions = await doors
@@ -53,7 +55,9 @@ test("anchors for bios work on direct entry, below the header", async ({ page })
     const target = page.locator(`[id="${anchor}"]`);
     await expect(target).toHaveCount(1);
     await expect
-      .poll(() => target.evaluate((el) => Math.round(el.getBoundingClientRect().top)), { timeout: 5_000 })
+      .poll(() => target.evaluate((el) => Math.round(el.getBoundingClientRect().top)), {
+        timeout: 5_000,
+      })
       .toBeLessThan(400);
   }
 });
@@ -77,7 +81,9 @@ test("header «Productos» opens a menu with both needs and closes on Escape", a
   await expect(panel).toBeHidden();
   // Prevent real affiliate navigation while exercising its click and panel dismissal.
   await trigger.click();
-  await cards.nth(1).evaluate((link) => link.addEventListener("click", (event) => event.preventDefault()));
+  await cards
+    .nth(1)
+    .evaluate((link) => link.addEventListener("click", (event) => event.preventDefault()));
   await cards.nth(1).click();
   await expect(panel).toBeHidden();
   await expect(page).toHaveURL(/\/$/);
@@ -107,7 +113,10 @@ test("phone sticky bar follows the chapter in view and keeps the disclosure next
   await page.locator("#leer h2").scrollIntoViewIfNeeded();
   await page.evaluate(() => window.scrollBy(0, 200));
   await expect(bar).toHaveAttribute("data-mode", "reading");
-  await expect(bar.locator('a[data-position="sticky"]')).toHaveAttribute("href", /\/grafismo-fonetico\//);
+  await expect(bar.locator('a[data-position="sticky"]')).toHaveAttribute(
+    "href",
+    /\/grafismo-fonetico\//,
+  );
   await page.locator("#bebe h2").scrollIntoViewIfNeeded();
   await page.evaluate(() => window.scrollBy(0, 200));
   await expect(bar).toHaveAttribute("data-mode", "feeding");
@@ -117,7 +126,9 @@ test("phone sticky bar follows the chapter in view and keeps the disclosure next
   await expect(bar).toHaveAttribute("data-mode", "hidden");
 });
 
-test("an anchor jump keeps the header visible and lands the chapter right under it", async ({ page }) => {
+test("an anchor jump keeps the header visible and lands the chapter right under it", async ({
+  page,
+}) => {
   await page.goto("/");
   await page.waitForLoadState("networkidle");
   // Existing informational navigation still jumps with the header visible. Product selection does not scroll.
@@ -136,7 +147,9 @@ test("an anchor jump keeps the header visible and lands the chapter right under 
       page.evaluate(() => {
         // Gap between the visible header and the chapter's first visible content.
         const pill = document.querySelector('[data-slot="header-pill"]')?.getBoundingClientRect();
-        const tops = [...document.querySelectorAll<HTMLElement>("#preguntas [data-reveal], #preguntas h2")]
+        const tops = [
+          ...document.querySelectorAll<HTMLElement>("#preguntas [data-reveal], #preguntas h2"),
+        ]
           .map((el) => el.getBoundingClientRect())
           .filter((rect) => rect.height > 0)
           .map((rect) => rect.top);
@@ -159,7 +172,8 @@ for (const nativeScrollEnd of [true, false]) {
       await page.addInitScript(() => {
         let prototype: object | null = document;
         while (prototype) {
-          if (Object.hasOwn(prototype, "onscrollend")) Reflect.deleteProperty(prototype, "onscrollend");
+          if (Object.hasOwn(prototype, "onscrollend"))
+            Reflect.deleteProperty(prototype, "onscrollend");
           prototype = Object.getPrototypeOf(prototype);
         }
       });
@@ -184,7 +198,8 @@ for (const nativeScrollEnd of [true, false]) {
     await expect(header).not.toHaveAttribute("data-hidden", "");
     await page.clock.pauseAt(new Date("2026-10-18T12:05:00Z"));
     await page.evaluate((native) => {
-      if ("onscrollend" in document !== native) throw new Error("Unexpected scrollend fixture support");
+      if ("onscrollend" in document !== native)
+        throw new Error("Unexpected scrollend fixture support");
       document.addEventListener(
         "scrollend",
         (event) => {
@@ -229,7 +244,10 @@ test("purchase and post-purchase footers keep the single-product column", async 
   for (const route of ["/grafismo-fonetico/", "/imprime-y-juega/", "/grafismo-fonetico/gracias/"]) {
     await page.goto(route);
     const footer = page.getByRole("contentinfo");
-    await expect(footer.getByRole("navigation", { name: "Producto", exact: true }), route).toHaveCount(1);
+    await expect(
+      footer.getByRole("navigation", { name: "Producto", exact: true }),
+      route,
+    ).toHaveCount(1);
     await expect(footer.locator('a[href="/#bebe"]'), route).toHaveCount(0);
     await expect(footer.locator('a[href="/grafismo-fonetico/#preguntas"]'), route).toHaveCount(1);
   }
@@ -267,7 +285,9 @@ test("direct selection preserves acquisition, announces the affiliate and emits 
   await expect(course.locator("svg.lucide-external-link:visible")).toHaveCount(1);
   await expect(page.locator("a a, a button")).toHaveCount(0);
   await kit.evaluate((link) => link.addEventListener("click", (event) => event.preventDefault()));
-  await course.evaluate((link) => link.addEventListener("click", (event) => event.preventDefault()));
+  await course.evaluate((link) =>
+    link.addEventListener("click", (event) => event.preventDefault()),
+  );
   await kit.click();
   await course.click();
   const events = await page.evaluate(
@@ -276,11 +296,15 @@ test("direct selection preserves acquisition, announces the affiliate and emits 
   expect(events.filter(({ event }) => event === "PequeversoProductInterest")).toHaveLength(1);
   expect(events.filter(({ event }) => event === "PequeversoAffiliateClick")).toHaveLength(1);
   expect(
-    events.filter(({ event }) => ["CheckoutIntent", "InitiateCheckout", "Purchase"].includes(event)),
+    events.filter(({ event }) =>
+      ["CheckoutIntent", "InitiateCheckout", "Purchase"].includes(event),
+    ),
   ).toHaveLength(0);
 });
 
-test("mobile product selections go directly to the destinations and close the sheet", async ({ page }) => {
+test("mobile product selections go directly to the destinations and close the sheet", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await page.locator('[data-slot="mobile-nav-trigger"]').click();
@@ -291,7 +315,9 @@ test("mobile product selections go directly to the destinations and close the sh
   await expect(links.nth(1)).toHaveAttribute("href", "/alimentacion-bebe/?src=sitio-home");
   await expect(links.nth(1)).toHaveAttribute("rel", "sponsored noopener");
   await expect(links.nth(1)).toContainText("Enlace de afiliado");
-  await links.nth(1).evaluate((link) => link.addEventListener("click", (event) => event.preventDefault()));
+  await links
+    .nth(1)
+    .evaluate((link) => link.addEventListener("click", (event) => event.preventDefault()));
   await links.nth(1).click();
   await expect(sheet).toBeHidden();
 });
@@ -369,7 +395,11 @@ test("enlarged text keeps both product menus free of clipped selections", async 
     await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
     for (const mode of ["popover", "sheet"]) {
       await page
-        .locator(mode === "popover" ? "header [data-products-trigger]" : '[data-slot="mobile-nav-trigger"]')
+        .locator(
+          mode === "popover"
+            ? "header [data-products-trigger]"
+            : '[data-slot="mobile-nav-trigger"]',
+        )
         .click();
       const menu =
         mode === "popover"

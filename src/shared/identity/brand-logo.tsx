@@ -18,7 +18,12 @@ type Props = {
  * exists yet, see docs/media.md) plus the wordmark as real text, so the brand name is always
  * readable by assistive technology.
  */
-export function BrandLogo({ variant = "full", wordmark = "always", className, priority = false }: Props) {
+export function BrandLogo({
+  variant = "full",
+  wordmark = "always",
+  className,
+  priority = false,
+}: Props) {
   const mark = getImage("brand.isotipo");
   const small = mark.renditions[0] ?? { src: mark.src, width: mark.width, height: mark.height };
   const medium = mark.renditions[1] ?? small;

@@ -29,7 +29,10 @@ for (const path of files) {
   writeFileSync(out, git("show", `${sha}:${path}`));
 }
 const manifest = git("show", `${sha}:contracts/manifest.json`);
-const parsed = JSON.parse(manifest.toString("utf8")) as { contract_version: string; schema_version: string };
+const parsed = JSON.parse(manifest.toString("utf8")) as {
+  contract_version: string;
+  schema_version: string;
+};
 const source = {
   api_repository: "https://github.com/gonzalomartinperez/pequeverso-assistant-api",
   api_commit: sha,

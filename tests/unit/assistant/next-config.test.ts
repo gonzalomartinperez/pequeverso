@@ -9,7 +9,12 @@ function configEnv(env: Record<string, string>): unknown {
     'const v=typeof c==="function"?await c("phase-production-build",{defaultConfig:{}}):c;' +
     "process.stdout.write(JSON.stringify(v.env))";
   const out = execFileSync("node", ["--input-type=module", "-e", script], {
-    env: { NODE_ENV: "production", PATH: process.env.PATH ?? "", HOME: process.env.HOME ?? "", ...env },
+    env: {
+      NODE_ENV: "production",
+      PATH: process.env.PATH ?? "",
+      HOME: process.env.HOME ?? "",
+      ...env,
+    },
     stdio: ["ignore", "pipe", "pipe"],
   });
   return JSON.parse(out.toString("utf8"));

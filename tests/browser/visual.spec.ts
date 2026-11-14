@@ -16,7 +16,12 @@ test.beforeEach(async ({ page }) => {
     ({ key, version }) =>
       window.localStorage.setItem(
         key,
-        JSON.stringify({ version, analytics: false, marketing: false, updatedAt: new Date().toISOString() }),
+        JSON.stringify({
+          version,
+          analytics: false,
+          marketing: false,
+          updatedAt: new Date().toISOString(),
+        }),
       ),
     { key: CONSENT_KEY, version: CONSENT_VERSION },
   );
@@ -29,7 +34,9 @@ async function prepareHomeCapture(page: Page) {
   await page.addStyleTag({ content: ".defer-render { content-visibility: visible !important; }" });
   await page.evaluate(async () => {
     const renderedFrame = () =>
-      new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+      new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+      );
     // Trace-only progress uses geometry and image state, never URLs or page content.
     const progress = (phase: string, images: HTMLImageElement[] = []) =>
       console.debug("pv-visual-capture", {
@@ -124,7 +131,8 @@ test("footer matches its baseline", async ({ page }) => {
   const scrollPadding = await page.evaluate(() => {
     const style = getComputedStyle(document.documentElement);
     return (
-      (Number.parseFloat(style.scrollPaddingTop) || 0) + (Number.parseFloat(style.scrollPaddingBottom) || 0)
+      (Number.parseFloat(style.scrollPaddingTop) || 0) +
+      (Number.parseFloat(style.scrollPaddingBottom) || 0)
     );
   });
   const captureViewport = {
@@ -147,7 +155,9 @@ test("footer matches its baseline", async ({ page }) => {
       const before = await footer.boundingBox();
       await page.evaluate(
         () =>
-          new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))),
+          new Promise<void>((resolve) =>
+            requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+          ),
       );
       return JSON.stringify(before) === JSON.stringify(await footer.boundingBox());
     })

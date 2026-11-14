@@ -4,7 +4,10 @@ const CHECKOUT_ORIGIN = "https://pay.hotmart.com/";
 
 type DataLayerEvent = { event: string; cta_position?: string; event_id?: string };
 
-async function dataLayer(page: import("@playwright/test").Page, name: string): Promise<DataLayerEvent[]> {
+async function dataLayer(
+  page: import("@playwright/test").Page,
+  name: string,
+): Promise<DataLayerEvent[]> {
   return page.evaluate(
     (eventName) =>
       ((window as unknown as { dataLayer?: DataLayerEvent[] }).dataLayer ?? []).filter(
@@ -28,7 +31,10 @@ test("every principal CTA points to the configured checkout with allowlisted par
     "/grafismo-fonetico/?utm_source=tiktok&utm_medium=social&a=aff1&off=EVIL&ref=EVIL&fbclid=abc",
   );
   // Params are appended after hydration; wait for the first link before reading them all.
-  await expect(page.locator("a[data-checkout]").first()).toHaveAttribute("href", /utm_source=tiktok/);
+  await expect(page.locator("a[data-checkout]").first()).toHaveAttribute(
+    "href",
+    /utm_source=tiktok/,
+  );
   const links = await page.locator("a[data-checkout]").evaluateAll((els) =>
     els.map((el) => ({
       href: (el as HTMLAnchorElement).href,
@@ -60,7 +66,9 @@ test("each CTA click fires exactly one CheckoutIntent with a unique event id", a
   const positions = await page
     .locator("a[data-checkout]")
     .evaluateAll((els) => els.map((el) => el.getAttribute("data-position")));
-  expect(positions).toEqual(expect.arrayContaining(["header", "hero", "oferta", "final", "sticky"]));
+  expect(positions).toEqual(
+    expect.arrayContaining(["header", "hero", "oferta", "final", "sticky"]),
+  );
   const hero = page.locator('a[data-checkout][data-position="hero"]');
   await hero.click();
   await hero.click();
@@ -75,7 +83,10 @@ test("each CTA click fires exactly one CheckoutIntent with a unique event id", a
 test("hub links keep acquisition params and emit product interest", async ({ page }) => {
   await page.goto("/?utm_source=ig&utm_campaign=sept&foo=bar");
   const story = page.locator('a[data-position="story"]');
-  await expect(story).toHaveAttribute("href", /\/grafismo-fonetico\/\?utm_source=ig&utm_campaign=sept/);
+  await expect(story).toHaveAttribute(
+    "href",
+    /\/grafismo-fonetico\/\?utm_source=ig&utm_campaign=sept/,
+  );
   await expect(story).not.toHaveAttribute("href", /foo=bar/);
   await preventNavigation(page, "a[data-position]");
   await story.click();
@@ -93,7 +104,9 @@ test("no pixel script is injected without configuration", async ({ page }) => {
 
 test("landing records ViewContent once on mount", async ({ page }) => {
   await page.goto("/grafismo-fonetico/");
-  await expect.poll(async () => (await dataLayer(page, "ViewContent")).length, { timeout: 10_000 }).toBe(1);
+  await expect
+    .poll(async () => (await dataLayer(page, "ViewContent")).length, { timeout: 10_000 })
+    .toBe(1);
   await page.waitForTimeout(500);
   expect(await dataLayer(page, "ViewContent")).toHaveLength(1);
 });
@@ -122,7 +135,8 @@ test("home recommends the affiliate course with a visible disclosure and its own
   // The affiliate link is navy (secondary), never the coral purchase CTA.
   await expect(link).toHaveClass(/\bbg-secondary\b/);
   await expect(link).not.toHaveClass(/\bbg-primary\b/);
-  for (const img of await block.locator("img").all()) await expect(img).toHaveAttribute("loading", "lazy");
+  for (const img of await block.locator("img").all())
+    await expect(img).toHaveAttribute("loading", "lazy");
 
   await preventNavigation(page, "a[data-affiliate]");
   await link.click();

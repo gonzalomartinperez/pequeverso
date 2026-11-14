@@ -45,7 +45,8 @@ isolatedBuild(
   {
     NEXT_OUTPUT: "export",
     NEXT_PUBLIC_SITE_URL: "https://pequeverso.com",
-    NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO: "https://pay.hotmart.com/TEST0000000?checkoutMode=10",
+    NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO:
+      "https://pay.hotmart.com/TEST0000000?checkoutMode=10",
     NEXT_PUBLIC_ASSISTANT_ENABLED: "true",
     NEXT_PUBLIC_ASSISTANT_API_ORIGIN: apiOrigin,
     ASSISTANT_LOCAL_TEST_BUILD: "true",

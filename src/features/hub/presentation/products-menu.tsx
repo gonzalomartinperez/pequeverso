@@ -86,7 +86,9 @@ function MenuCard({ need }: { need: HubNeed }) {
             ? "bg-[linear-gradient(160deg,var(--pv-peach),var(--pv-celeste))]"
             : "bg-[linear-gradient(160deg,var(--pv-celeste),var(--pv-white))]",
           "[&_img]:size-full [&_img]:transition-transform [&_img]:duration-500 [&_img]:ease-out motion-safe:group-hover/card:[&_img]:scale-[1.05]",
-          need.recommended ? "[&_img]:object-contain [&_img]:object-bottom" : "[&_img]:object-cover",
+          need.recommended
+            ? "[&_img]:object-contain [&_img]:object-bottom"
+            : "[&_img]:object-cover",
         )}
       >
         <MediaImage id={need.thumb} sizes="(min-width: 640px) 360px, 88px" alt="" />

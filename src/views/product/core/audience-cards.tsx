@@ -38,7 +38,12 @@ export function AudienceCards({ yes, no, photo }: Props) {
           <ul className="grid gap-3" role="list">
             {yes.items.map((item) => (
               <li key={item} className="flex items-start gap-3 font-semibold text-ink">
-                <Icon name="check" size={20} strokeWidth={2.4} className="mt-0.5 shrink-0 text-teal" />
+                <Icon
+                  name="check"
+                  size={20}
+                  strokeWidth={2.4}
+                  className="mt-0.5 shrink-0 text-teal"
+                />
                 <span>{item}</span>
               </li>
             ))}

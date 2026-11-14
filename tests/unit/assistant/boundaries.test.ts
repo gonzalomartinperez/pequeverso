@@ -58,17 +58,24 @@ describe("native assistant boundaries", () => {
     for (const file of all) {
       const name = toPosix(file);
       for (const { specifier, typeOnly } of sourceImports(file)) {
-        assert.ok(assistantDependencyAllowed(name, specifier, typeOnly), `${name} imports ${specifier}`);
+        assert.ok(
+          assistantDependencyAllowed(name, specifier, typeOnly),
+          `${name} imports ${specifier}`,
+        );
       }
     }
   });
 
   it("wires adapters only in the composition entry", () => {
     const users = all.filter((file) =>
-      imports(file).some((target) => assistantLayer(sourceTarget(file, target) ?? "") === "adapters"),
+      imports(file).some(
+        (target) => assistantLayer(sourceTarget(file, target) ?? "") === "adapters",
+      ),
     );
     assert.deepEqual(
-      users.map((file) => toPosix(relative(root, file))).filter((file) => !file.startsWith("adapters/")),
+      users
+        .map((file) => toPosix(relative(root, file)))
+        .filter((file) => !file.startsWith("adapters/")),
       ["entry.ts"],
     );
   });
@@ -120,7 +127,10 @@ describe("native assistant boundaries", () => {
         .platformDeadline,
       true,
     );
-    assert.equal(sourceModule("probe.ts", 'const text="AbortSignal.timeout(1)";').platformDeadline, false);
+    assert.equal(
+      sourceModule("probe.ts", 'const text="AbortSignal.timeout(1)";').platformDeadline,
+      false,
+    );
   });
 
   it("never renders HTML, stores credentials in the browser or opens windows by itself", () => {
@@ -134,7 +144,10 @@ describe("native assistant boundaries", () => {
         !/localStorage|sessionStorage|indexedDB|document\.cookie/.test(text),
         `${toPosix(file)} uses storage`,
       );
-      assert.ok(!/window\.open|location\.(assign|replace|href\s*=)/.test(text), `${toPosix(file)} navigates`);
+      assert.ok(
+        !/window\.open|location\.(assign|replace|href\s*=)/.test(text),
+        `${toPosix(file)} navigates`,
+      );
     }
   });
 
@@ -162,21 +175,44 @@ describe("native assistant boundaries", () => {
   });
 
   it("rejects traversal, directory and alias imports that used to evade the layer checks", () => {
-    for (const target of ["./../adapters/http.ts", "../adapters", "@/features/assistant/adapters/http"]) {
+    for (const target of [
+      "./../adapters/http.ts",
+      "../adapters",
+      "@/features/assistant/adapters/http",
+    ]) {
       assert.equal(assistantDependencyAllowed(`${root}/domain/models.ts`, target), false, target);
-      assert.equal(assistantDependencyAllowed(`${root}/application/ports.ts`, target), false, target);
-      assert.equal(assistantDependencyAllowed(`${root}/presentation/panel.tsx`, target), false, target);
+      assert.equal(
+        assistantDependencyAllowed(`${root}/application/ports.ts`, target),
+        false,
+        target,
+      );
+      assert.equal(
+        assistantDependencyAllowed(`${root}/presentation/panel.tsx`, target),
+        false,
+        target,
+      );
     }
     assert.equal(assistantDependencyAllowed(`${root}/domain/models.ts`, "react"), false);
-    assert.equal(assistantDependencyAllowed(`${root}/application/ports.ts`, "./../domain/models.ts"), true);
+    assert.equal(
+      assistantDependencyAllowed(`${root}/application/ports.ts`, "./../domain/models.ts"),
+      true,
+    );
     assert.equal(
       assistantDependencyAllowed(`${root}/domain/models.ts`, "@/features/assistant/domain/links"),
       true,
     );
     for (const target of ["../entry", "../runtime", "../application/assistant"])
-      assert.equal(assistantDependencyAllowed(`${root}/presentation/panel.tsx`, target), false, target);
+      assert.equal(
+        assistantDependencyAllowed(`${root}/presentation/panel.tsx`, target),
+        false,
+        target,
+      );
     assert.equal(
-      assistantDependencyAllowed(`${root}/presentation/panel.tsx`, "../application/assistant", true),
+      assistantDependencyAllowed(
+        `${root}/presentation/panel.tsx`,
+        "../application/assistant",
+        true,
+      ),
       true,
     );
   });
