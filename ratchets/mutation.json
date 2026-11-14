@@ -1,0 +1,29 @@
+{
+  "$comment": "Mutation score of the scoped pure modules (stryker.config.json, ADR-0015). `score` is the global floor checked by the weekly run; `files` are per-file floors checked by the pull-request gate (tools/ci/mutation-gate.ts). Both may only rise. First full run, 1565 mutants (997 killed, 5 timed out, 362 survived, 97 no coverage, 104 runtime errors excluded).",
+  "metric": "mutation",
+  "measuredAt": "2026-11-14",
+  "commit": "e8f58a3",
+  "source": "npm run test:mutation (StrykerJS 10.1.1, tap-runner, FC_SEED=20261114 FC_NUM_RUNS=25), docs/decisions/ADR-0015-mutation-tooling.md",
+  "values": [
+    {
+      "key": "score",
+      "value": 68.58,
+      "unit": "%",
+      "direction": "min"
+    }
+  ],
+  "files": {
+    "config/products/schema.ts": 29.76,
+    "src/features/assistant/application/assistant.ts": 60.27,
+    "src/features/assistant/application/ports.ts": 33.33,
+    "src/features/assistant/domain/conversation.ts": 76.69,
+    "src/features/assistant/domain/links.ts": 80,
+    "src/features/assistant/domain/models.ts": 0,
+    "src/features/assistant/domain/rich-text.ts": 70.96,
+    "src/features/assistant/domain/visitor-context.ts": 77.41,
+    "src/features/commerce/domain/checkout-url.ts": 98.38,
+    "src/features/playground/domain/syllable-game.ts": 80.26,
+    "src/features/tracking/adapters/consent.ts": 70.12,
+    "tools/lib/edge-rules.ts": 66.92
+  }
+}

@@ -1,0 +1,45 @@
+# Weekly full mutation run on the scoped modules (ADR-0015, docs/master-plan/testing.md section 1).
+# Validation only: it publishes the report as an artifact and seeds the incremental baseline that
+# the pull-request `mutation` job restores. Budget: at most 30 minutes.
+name: Mutation weekly
+"on":
+  schedule:
+    - cron: 41 3 * * 1
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: mutation-weekly
+  cancel-in-progress: false
+jobs:
+  mutation:
+    name: Mutation (full, scoped modules)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Full mutation run (breaks below 60; target 75-80)
+        run: npm run test:mutation
+        timeout-minutes: 28
+      - name: Global score against ratchets/mutation.json (nothing is updated automatically)
+        run: node tools/ci/mutation-gate.ts --global
+      - name: Save the incremental baseline for pull requests
+        if: always()
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: reports/mutation/stryker-incremental.json
+          key: mutation-incremental-${{ github.run_id }}
+      - name: Upload the mutation report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: mutation-report-${{ github.run_id }}
+          path: reports/mutation/mutation.json
+          retention-days: 30
+          if-no-files-found: warn

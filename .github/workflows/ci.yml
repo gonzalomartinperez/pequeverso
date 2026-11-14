@@ -131,6 +131,66 @@ jobs:
         run: npm audit --omit=dev --audit-level=high
       - name: Validate focused agent workflows
         run: npm run check:skills
+  mutation:
+    name: Mutation (incremental, changed scoped modules)
+    needs: classify
+    if: contains(fromJSON(needs.classify.outputs.jobs), 'mutation')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version-file: .nvmrc
+      - name: Select the changed scoped modules (ADR-0015)
+        id: scope
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: |-
+          set -euo pipefail
+          files=""
+          if [[ "$EVENT" != "pull_request" ]]; then
+            echo "Not a pull request: the weekly full run covers it."
+          elif [[ "$BASE_REF" == "main" && "$HEAD_REF" == "develop" ]]; then
+            echo "Release PR: the weekly full run covers it."
+          else
+            # The checkout is the merge ref: HEAD^1 is the base, so the diff is this PR's change.
+            files=$(node tools/ci/mutation-scope.ts HEAD^1)
+          fi
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+      - name: Setup
+        if: steps.scope.outputs.files != ''
+        uses: ./.github/actions/setup
+      - name: Restore the incremental baseline of the last weekly run (a miss only costs time)
+        if: steps.scope.outputs.files != ''
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: reports/mutation/stryker-incremental.json
+          key: mutation-incremental-none
+          restore-keys: mutation-incremental-
+      - name: Mutation tests on the changed modules (Stryker does not break; the gate decides)
+        if: steps.scope.outputs.files != ''
+        timeout-minutes: 4
+        run: |-
+          set -euo pipefail
+          node -e 'const c = JSON.parse(fs.readFileSync("stryker.config.json", "utf8")); c.thresholds.break = 0; fs.writeFileSync("stryker.pr.config.json", JSON.stringify(c));'
+          npm run test:mutation:incremental -- stryker.pr.config.json --mutate "$FILES"
+        env:
+          FILES: ${{ steps.scope.outputs.files }}
+      - name: Per-file baseline gate (ratchets/mutation.json)
+        if: steps.scope.outputs.files != ''
+        run: node tools/ci/mutation-gate.ts --files "$FILES"
+        env:
+          FILES: ${{ steps.scope.outputs.files }}
   build:
     name: Build
     runs-on: ubuntu-24.04
@@ -432,6 +492,7 @@ jobs:
       - hosting
       - browser
       - performance
+      - mutation
     if: always()
     steps:
       # Fail closed: a failed or cancelled job fails the gate; a job classify selected must succeed

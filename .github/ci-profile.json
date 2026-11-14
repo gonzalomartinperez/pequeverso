@@ -79,6 +79,24 @@
       "budgetP50Minutes": 5,
       "budgetP95Minutes": 10
     },
+    "mutation": {
+      "paths": [
+        "config/products/schema.ts",
+        "src/features/commerce/domain/checkout-url.ts",
+        "src/features/tracking/adapters/consent.ts",
+        "src/features/playground/domain/**",
+        "tools/lib/edge-rules.ts",
+        "src/features/assistant/domain/**",
+        "src/features/assistant/application/**",
+        "stryker.config.json",
+        "tools/ci/mutation-scope.ts",
+        "tools/ci/mutation-gate.ts",
+        "ratchets/mutation.json"
+      ],
+      "adds": ["mutation"],
+      "budgetP50Minutes": 3,
+      "budgetP95Minutes": 5
+    },
     "workflow": {
       "paths": [".github/**"],
       "adds": ["docs", "quality", "build", "hosting", "browser", "performance"],

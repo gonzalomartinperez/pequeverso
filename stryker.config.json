@@ -1,0 +1,52 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "_comment": "Mutation testing (ADR-0015, docs/master-plan/testing.md section 1). node:test via the tap-runner; no checker plugin (the TypeScript checker needs the JS compiler API, absent from TypeScript 7 until 7.1). Scoped to pure domain modules, never UI glue. The weekly run mutates everything below; the PR run narrows it with --mutate (tools/ci/mutation-scope.ts).",
+  "testRunner": "tap",
+  "plugins": ["@stryker-mutator/tap-runner"],
+  "tap": {
+    "testFiles": [
+      "tests/unit/{affiliates,edge-rules,headers-snapshot,params,products,syllable-game,tracking}.test.ts",
+      "tests/unit/site-analytics/consent-build.test.ts",
+      "tests/unit/property/*.test.ts",
+      "tests/unit/assistant/!(boundaries|next-config|flag).test.ts"
+    ],
+    "nodeArgs": ["--env-file-if-exists=.env.example", "--test-reporter=tap"]
+  },
+  "mutate": [
+    "config/products/schema.ts",
+    "src/features/commerce/domain/checkout-url.ts",
+    "src/features/tracking/adapters/consent.ts",
+    "src/features/playground/domain/**/*.ts",
+    "tools/lib/edge-rules.ts",
+    "src/features/assistant/domain/**/*.ts",
+    "src/features/assistant/application/**/*.ts"
+  ],
+  "coverageAnalysis": "perTest",
+  "ignorePatterns": [
+    ".git",
+    ".claude",
+    ".agents",
+    ".codex",
+    ".next",
+    "out",
+    "out-assistant-fixture",
+    "tests/browser",
+    "playwright-report",
+    "test-results",
+    "reports",
+    ".lighthouseci",
+    "tsconfig.json",
+    "tsconfig.node.json"
+  ],
+  "thresholds": { "high": 80, "low": 65, "break": 60 },
+  "incremental": true,
+  "incrementalFile": "reports/mutation/stryker-incremental.json",
+  "reporters": ["clear-text", "json", "html"],
+  "jsonReporter": { "fileName": "reports/mutation/mutation.json" },
+  "htmlReporter": { "fileName": "reports/mutation/index.html" },
+  "tempDirName": ".stryker-tmp",
+  "cleanTempDir": true,
+  "timeoutMS": 10000,
+  "timeoutFactor": 2,
+  "concurrency": 2
+}

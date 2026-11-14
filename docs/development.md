@@ -18,6 +18,7 @@
 | `npm run typecheck` | `next typegen` + `tsc --noEmit` (TypeScript 7) + `tsc -p tsconfig.node.json` (Node-run files under `nodenext`) |
 | `npm run typecheck:media` | `tools/media` project (after `npm ci --prefix tools/media --ignore-scripts`) |
 | `npm test` | Unit tests (`node --test`, TypeScript via Node type stripping) |
+| `npm run test:mutation` / `test:mutation:incremental` | StrykerJS (`tap-runner` on `node:test`) over the scoped pure modules in `stryker.config.json`: full run (weekly) or incremental (PR); reports in `reports/mutation/` (gitignored); `-- --mutate <files>` narrows it, `node tools/ci/mutation-scope.ts origin/develop` lists the changed scoped files (ADR-0015) |
 | `npm run test:property:nightly` | fast-check suites in `tests/unit/property/` at 1000 runs (PR runs 100 inside `npm test`); a failure prints its seed: reproduce with `FC_SEED=<seed> FC_NUM_RUNS=<n>` |
 | `npm run test:browser` | Playwright against `out/` (build first) |
 | `npm run check` | Lint, types, unit tests, production knip, export and media/render/bundle gates; CI also runs skills, media types, production audit, workflow/security scans, parity, browser and fixture-assistant jobs |
