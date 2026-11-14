@@ -1,0 +1,15 @@
+{
+  "$comment": "Mutation score of the scoped pure modules (stryker.config.json, ADR-0015). Floor: may only rise. First full run, 1565 mutants (997 killed, 5 timed out, 362 survived, 97 no coverage, 104 runtime errors excluded). Weakest files: assistant/domain/models.ts 0, config/products/schema.ts 29.8, assistant/application/ports.ts 33.3.",
+  "metric": "mutation",
+  "measuredAt": "2026-11-14",
+  "commit": "e8f58a3",
+  "source": "npm run test:mutation (StrykerJS 10.1.1, tap-runner, FC_SEED=20261114 FC_NUM_RUNS=25), docs/decisions/ADR-0015-mutation-tooling.md",
+  "values": [
+    {
+      "key": "score",
+      "value": 68.58,
+      "unit": "%",
+      "direction": "min"
+    }
+  ]
+}

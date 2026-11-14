@@ -43,3 +43,5 @@ src/shared/styles/cn-tables.js
 
 # CI checkout of the pinned assistant API (tests/assistant/api-revision)
 .assistant-api/
+reports/
+.stryker-tmp/
