@@ -20,9 +20,14 @@ import {
   _resetForTests,
   FORBIDDEN_EVENTS,
   flush,
+  isTrackingConfigured,
+  syncConsent,
   track,
   trackAffiliateClick,
   trackCheckoutIntent,
+  trackPageView,
+  trackProductInterest,
+  trackViewContent,
 } from "../../src/features/tracking/adapters/track.ts";
 import type { TrackedEvent, TrackingAdapter } from "../../src/features/tracking/adapters/types.ts";
 
@@ -603,4 +608,67 @@ test("idle script loader re-reads consent at the injection point and cancels on 
   const cancel = load();
   cancel();
   assert.equal(idles[2]?.cancelled, true);
+});
+
+test("tracking wrappers preserve the public event names and product parameters", () => {
+  assert.equal(isTrackingConfigured(), false);
+  const adapter = fakeAdapter();
+  _resetForTests([adapter]);
+  assert.equal(isTrackingConfigured(), true);
+  grantMarketing();
+  const ids = [
+    trackPageView(),
+    trackViewContent({ product: "fixture", name: "Fixture", value: 12, currency: "USD" }),
+    trackProductInterest({ product: "fixture", position: "hero", destination: "checkout" }),
+  ];
+  assert.equal(new Set(ids).size, 3);
+  assert.deepEqual(
+    adapter.sent.map(({ name, params }) => ({ name, params })),
+    [
+      { name: "PageView", params: {} },
+      {
+        name: "ViewContent",
+        params: {
+          content_ids: "fixture",
+          content_name: "Fixture",
+          content_type: "product",
+          value: 12,
+          currency: "USD",
+        },
+      },
+      {
+        name: "PequeversoProductInterest",
+        params: { product: "fixture", cta_position: "hero", destination: "checkout" },
+      },
+    ],
+  );
+});
+
+test("syncConsent re-applies stored consent and drains a ready adapter only when granted", () => {
+  const adapter = fakeAdapter({ ready: false });
+  _resetForTests([adapter]);
+  grantMarketing();
+  const id = trackPageView();
+  adapter.ready = true;
+  syncConsent();
+  assert.equal(adapter.consents.length, 1);
+  assert.equal(adapter.sent[0]?.eventId, id);
+  syncConsent();
+  assert.equal(adapter.sent.length, 1, "a drained event is not sent twice");
+  window.localStorage.removeItem("pv_consent");
+  syncConsent();
+  assert.equal(adapter.consents.length, 2, "missing consent cannot manufacture a grant");
+});
+
+test("tracking falls back to a local event id when randomUUID is unavailable", (t) => {
+  t.mock.method(Math, "random", () => 0.5);
+  t.mock.method(Date, "now", () => 1000);
+  const original = Object.getOwnPropertyDescriptor(globalThis, "crypto");
+  try {
+    setGlobal(globalThis, "crypto", {});
+    assert.equal(trackPageView(), "pv-rs-i");
+  } finally {
+    if (original) Object.defineProperty(globalThis, "crypto", original);
+    else Reflect.deleteProperty(globalThis, "crypto");
+  }
 });
