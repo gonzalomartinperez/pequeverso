@@ -37,7 +37,7 @@ test("static headers include cache policy for media, fonts and build-info", () =
   assert.match(html, /max-age=31536000, immutable/);
   assert.match(html, /ErrorDocument 404 \/404\.html/);
   assert.match(html, /RewriteRule \(\^\|\/\)\\.\(\?!well-known\/\) - \[R=404,L\]/);
-  assert.match(html, /Strict-Transport-Security "max-age=300"/);
+  assert.match(html, /Strict-Transport-Security "max-age=604800"/);
 });
 
 test("standalone target receives the same rules", () => {

@@ -109,6 +109,11 @@ followed by a refund inside the guarantee) — **only with the owner's explicit 
 Record results in `docs/verification/` (date, URLs Hotmart used, screenshots of the widget in
 each mode, transaction ids masked).
 
+Permissions-Policy: `payment` is delegated to the apex and Hotmart's two checkout origins
+(`payment=(self "https://pay.hotmart.com" "https://pci-pay.hotmart.com")`, `config/edge-rules.json`)
+because the funnel iframe carries `allow="payment *"`; with `payment=()` the browser would block the
+Payment Request API inside it. The CSP `frame-src` already allows `https://*.hotmart.com`.
+
 ## 6. Boundaries
 
 - No independent checkout links for upsell/downsell; no invented offer ids; Hotmart owns

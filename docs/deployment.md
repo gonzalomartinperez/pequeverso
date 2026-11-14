@@ -118,8 +118,43 @@ Manual (`workflow_dispatch`), `production` environment with required approval:
 2. GitHub → Settings → Environments → `production`: reviewer = you (already set); variables
    `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_CHECKOUT_URL` (required), `NEXT_PUBLIC_META_PIXEL_ID` (optional).
    The Deploy workflow reads only these `vars`; nothing else is inlined.
-3. Cloudflare proxy: HTML responses are `Cache-Control: no-cache` (never CDN-cached); `/media/`,
-   `/_next/static/` are `immutable`. Purge the zone only if you change cache rules.
+3. Cloudflare proxy: HTML responses are `Cache-Control: no-cache` (never CDN-cached);
+   `/_next/static/` is `immutable` (verified through Cloudflare, `docs/verification/edge/`). Purge
+   the zone only if you change cache rules.
+
+### CSP rollback at M7 (no git change)
+
+If the enforced CSP breaks something on the first production deploy (a blocked Hotmart or Meta
+resource), set `CSP_MODE=report-only` in hPanel → Environment variables and redeploy: the same
+policy is then sent as `Content-Security-Policy-Report-Only` on both targets. Unset it (or
+`enforce`) and redeploy to enforce again. Any other value fails `tools/check-env.ts`. The daily
+live check accepts the report-only form with a warning until 2026-11-28 (`tools/check-live.ts`,
+`CSP_ENFORCED_FROM`), then fails; bump that date together with the M7 date. See ADR-0014.
+
+### Edge settings (owner, dashboard only; PV-D9)
+
+Nothing in the repository can change these. Do them after the M7 deploy of the M3-5 config, then
+re-run the `curl -I` commands of `docs/verification/edge/2026-11-14-curl.md` into a new dated file.
+
+1. **Cache of `public/` files** (`/media/*`, `/fonts/*`, `/favicon.ico`, `/robots.txt`). Hostinger's
+   LiteSpeed serves them without the Node `headers()`, so they have no immutable header and
+   Cloudflare applies its 4 h Browser Cache TTL (`max-age=14400`). Cloudflare → Caching →
+   Cache Rules → Create rule: URI path starts with `/media/` or `/fonts/` → **Edge TTL: Ignore
+   cache-control header and use 1 year**, **Browser TTL: Override origin, 1 year**. Both folders are
+   content-hashed, so this is safe. Leave
+   `/favicon.ico` and `/robots.txt` at 4 h. Also set Caching → Configuration → **Browser Cache TTL
+   → Respect Existing Headers** so the origin value always wins for `/_next/static`.
+2. **Cloudflare Web Analytics beacon off.** Cloudflare → Analytics & Logs → Web Analytics → the site
+   → Disable (or remove the site). Check: `curl -s -A "Mozilla/5.0 Chrome/130" -H "Accept:
+   text/html" https://pequeverso.com/ | grep -c cloudflareinsights` prints 0. The CSP already
+   blocks it (ADR-0014).
+3. **HSTS stage 3** (only after seven days on `max-age=604800` and a DNS review): in Cloudflare →
+   SSL/TLS → Edge Certificates → HSTS leave it **off** (the origin sends the header; enabling both
+   duplicates it), and open DNS → Records to confirm every subdomain of `pequeverso.com` serves
+   HTTPS. Then tell the engineering session to merge the stage-3 edit of `config/edge-rules.json`.
+   `preload` is never set.
+4. Email Address Obfuscation is on (it adds `/cdn-cgi/scripts/.../email-decode.min.js`); harmless,
+   and covered by `script-src 'self'`.
 
 ## Environment variables (hPanel → Environment variables; GitHub `production` environment)
 

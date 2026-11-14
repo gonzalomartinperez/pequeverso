@@ -73,6 +73,10 @@ function validate(): string[] {
   const assistant = assistantFlag();
   if (!assistant.ok) errors.push(...assistant.errors);
 
+  const cspMode = read("CSP_MODE");
+  if (cspMode && cspMode !== "enforce" && cspMode !== "report-only")
+    errors.push('CSP_MODE must be empty, "enforce" or "report-only"');
+
   try {
     parseAnalyticsEnv({
       enabled: process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED,

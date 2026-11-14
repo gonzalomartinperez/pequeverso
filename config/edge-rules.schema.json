@@ -14,7 +14,19 @@
         "enabled": { "type": "boolean" },
         "maxAge": { "type": "integer", "minimum": 0 },
         "includeSubDomains": { "type": "boolean" },
-        "note": { "type": "string" }
+        "note": { "type": "string" },
+        "rollout": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["maxAge", "includeSubDomains", "gate"],
+            "properties": {
+              "maxAge": { "type": "integer", "minimum": 0 },
+              "includeSubDomains": { "type": "boolean" },
+              "gate": { "type": "string" }
+            }
+          }
+        }
       }
     },
     "redirects": {

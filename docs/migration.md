@@ -29,9 +29,12 @@ intact, so old links and calendar entries keep working. The rules live in
 | `/pequeverso/grafismo-fonetico/gracias/`, `/products/grafismo-fonetico-gracias/` | `/grafismo-fonetico/gracias/` | permanent redirect |
 | `/shop-2/*` (URLs of the domain's previous owner, still indexed by Google) | — | 410 |
 
-Site policy: trailing-slash canonical, `www`→apex and `http`→`https` in one hop. HSTS stays at
-`max-age=300` until apex and www have served valid HTTPS for a week, then rises to one year
-(`config/edge-rules.json`, roadmap task M3-5). Post-purchase
+Site policy: trailing-slash canonical, `www`→apex and `http`→`https` in one hop. HSTS is staged in
+`config/edge-rules.json` (`hsts.rollout`, roadmap M3-5, owner decision PV-D9): `max-age=300` (live
+today) → `max-age=604800` (first deploy that carries M3-5, M7) → `max-age=31536000;
+includeSubDomains` seven days later, after the owner confirms no subdomain is served over plain HTTP.
+No `preload`. Browsers cache HSTS for its whole `max-age`, so a rollback means serving `max-age=0`
+over HTTPS, not reverting the config. Post-purchase
 and legal pages are `noindex`; the sitemap lists the indexable routes.
 
 ## External references (all point at pequeverso.com)
