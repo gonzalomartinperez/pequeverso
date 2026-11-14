@@ -65,6 +65,19 @@ features squash into `develop` (the default branch; nightly runs there); a relea
 and the verification variable enables `post-deploy-verify`; hotfixes go to `main` and are merged back into `develop`. PRs into `main`
 must be up to date with it.
 
+## Release PR (`.github/workflows/release-please.yml`, roadmap M1-6)
+
+release-please runs in manifest mode against `develop` (`release-please-config.json`,
+`.release-please-manifest.json`, version `1.0.0`). It keeps one release PR titled
+`chore(release): vX.Y.Z` that bumps `package.json`, the lockfile and `CHANGELOG.md` (Added, Changed,
+Fixed, Removed; docs, tests, CI and chores hidden). It creates no tag and no GitHub Release: the
+tag `vX.Y.Z` and the immutable release are cut on `main` at promotion (M7). The workflow stays
+disabled until the owner grants a token whose PRs trigger CI (GitHub App or fine-grained PAT as
+`RELEASE_PLEASE_TOKEN`) and sets the variable `RELEASE_PLEASE_ENABLED=true`. Repository settings
+already in place: immutable releases, and the `release tags` ruleset (no deletion, update or
+force-move of `v*` tags). When the first release PR merges, fold the hand-written
+`## [Unreleased]` notes of `CHANGELOG.md` into the generated section.
+
 ## Deploy workflow (`.github/workflows/deploy.yml`)
 
 Manual (`workflow_dispatch`), `production` environment with required approval:
