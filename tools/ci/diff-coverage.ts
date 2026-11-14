@@ -1,7 +1,9 @@
 // Diff coverage gate (roadmap M2-5, docs/master-plan/testing.md section 1): the share of changed
-// executable lines that the unit tests execute. No dependency: it reads node's lcov report and the
-// zero-context unified diff of the branch. Only files that appear in the lcov report count, and only
-// lines with a DA record (executable) count, so docs, JSON, tests and untracked files are ignored.
+// code lines that the unit tests execute. No dependency: it reads node's lcov report and the
+// zero-context unified diff of the branch. Counted: added lines with a DA record in a file of the
+// report (blank and comment-only lines dropped by a source-text heuristic), plus every added code
+// line of an in-scope source file (inScope) that the report lacks, which fails as "not measured".
+// Docs, JSON, tests, .tsx components and other files are ignored.
 // Usage: node tools/ci/diff-coverage.ts [--lcov coverage/lcov.info] [--base origin/develop] [--min 85]
 //   without --min the floor is ratchets/diff-coverage.json ("changed lines").
 import { execFileSync } from "node:child_process";
@@ -11,9 +13,11 @@ import path from "node:path";
 export type LineHits = Map<number, number>;
 export type DiffCoverage = {
   covered: number;
-  executable: number;
+  counted: number;
   percent: number;
   uncovered: Map<string, number[]>;
+  /** In-scope changed files that no test loaded (absent from lcov); every changed code line counts as uncovered. */
+  notMeasured: Map<string, number[]>;
 };
 
 /** lcov text to `repo-relative file -> line -> hits` (DA records). */
@@ -43,12 +47,22 @@ export function parseLcovLines(text: string, root: string): Map<string, LineHits
 export function parseChangedLines(diff: string): Map<string, Set<number>> {
   const changed = new Map<string, Set<number>>();
   let lines: Set<number> | undefined;
+  // `---`/`+++` are headers only between `diff --git` and the first hunk; inside a hunk a content
+  // line such as `+++ x` (an added `++ x`) is data.
+  let header: "none" | "start" | "old" = "none";
   for (const line of diff.split("\n")) {
-    if (line.startsWith("+++ ")) {
-      const target = line.slice(4);
+    if (line.startsWith("diff --git ")) {
+      header = "start";
+      lines = undefined;
+    } else if (header === "start" && line.startsWith("--- ")) header = "old";
+    else if (header === "old" && line.startsWith("+++ ")) {
+      const target = line.slice(4).replace(/\t.*$/, "");
       lines = target === "/dev/null" ? undefined : new Set();
       if (lines) changed.set(target.replace(/^b\//, ""), lines);
-    } else if (lines && line.startsWith("@@")) {
+      header = "none";
+    } else if (line.startsWith("@@")) {
+      header = "none";
+      if (!lines) continue;
       const hunk = /\+(\d+)(?:,(\d+))?/.exec(line);
       const start = Number(hunk?.[1]);
       const count = hunk?.[2] === undefined ? 1 : Number(hunk[2]);
@@ -58,30 +72,61 @@ export function parseChangedLines(diff: string): Map<string, Set<number>> {
   return changed;
 }
 
+/**
+ * Source files the unit run can load and measure: TypeScript under tools, src and config. Components
+ * (.tsx) are excluded on purpose: most are never loaded by node:test (Playwright covers them), so
+ * counting the absent ones would fail every UI change; loaded ones are measured via the lcov. Tests, declarations and generated files are out too.
+ */
+export function inScope(file: string): boolean {
+  return (
+    /^(tools|src|config)\/.+\.ts$/.test(file) &&
+    !file.endsWith(".d.ts") &&
+    !/(^|\/)(generated|__generated__)\//.test(file)
+  );
+}
+
+/** A line worth covering: node reports every line, comments included, so drop blanks and comments. */
+export function isCodeLine(text: string): boolean {
+  const line = text.trim();
+  return line !== "" && !/^(\/\/|\/\*|\*)/.test(line);
+}
+
 export function diffCoverage(
   coverage: Map<string, LineHits>,
   changed: Map<string, Set<number>>,
+  isCode: (file: string, line: number) => boolean = () => true,
 ): DiffCoverage {
   const uncovered = new Map<string, number[]>();
+  const notMeasured = new Map<string, number[]>();
   let covered = 0;
-  let executable = 0;
+  let measured = 0;
+  const miss = (target: Map<string, number[]>, file: string, number: number) => {
+    target.set(file, [...(target.get(file) ?? []), number]);
+  };
   for (const [file, lines] of changed) {
     const hits = coverage.get(file);
-    if (!hits) continue;
+    if (!hits && !inScope(file)) continue;
     for (const number of [...lines].sort((a, b) => a - b)) {
+      if (!isCode(file, number)) continue;
+      measured += 1;
+      if (!hits) {
+        // In scope but never loaded by a test: every changed code line is uncovered.
+        miss(notMeasured, file, number);
+        continue;
+      }
       const count = hits.get(number);
-      if (count === undefined) continue;
-      executable += 1;
-      if (count > 0) covered += 1;
-      else uncovered.set(file, [...(uncovered.get(file) ?? []), number]);
+      if (count === undefined) measured -= 1;
+      else if (count > 0) covered += 1;
+      else miss(uncovered, file, number);
     }
   }
-  // Nothing executable changed: the gate has nothing to judge and passes.
+  // Nothing measurable changed: the gate has nothing to judge and passes (the CLI says so).
   return {
     covered,
-    executable,
-    percent: executable ? (covered / executable) * 100 : 100,
+    counted: measured,
+    percent: measured ? (covered / measured) * 100 : 100,
     uncovered,
+    notMeasured,
   };
 }
 
@@ -108,15 +153,44 @@ if (import.meta.main) {
     const min = Number(option(args, "--min") ?? floorFromRatchet(root));
     if (!Number.isFinite(min)) throw new Error("--min must be a number");
     const lcov = readFileSync(option(args, "--lcov") ?? "coverage/lcov.info", "utf8");
-    const diff = execFileSync("git", ["diff", "--unified=0", "--no-color", `${base}...HEAD`], {
-      encoding: "utf8",
-      maxBuffer: 64 * 1024 * 1024,
-    });
-    const result = diffCoverage(parseLcovLines(lcov, root), parseChangedLines(diff));
+    const coverage = parseLcovLines(lcov, root);
+    if (!coverage.size) throw new Error("The lcov report has no SF records: nothing was measured");
+    const diff = execFileSync(
+      "git",
+      [
+        "-c",
+        "core.quotePath=false",
+        "diff",
+        "--unified=0",
+        "--no-color",
+        "--no-ext-diff",
+        "--src-prefix=a/",
+        "--dst-prefix=b/",
+        `${base}...HEAD`,
+      ],
+      { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
+    );
+    const sources = new Map<string, string[] | undefined>();
+    const isCode = (file: string, line: number): boolean => {
+      if (!sources.has(file)) {
+        try {
+          sources.set(file, readFileSync(path.join(root, file), "utf8").split("\n"));
+        } catch {
+          sources.set(file, undefined);
+        }
+      }
+      const text = sources.get(file)?.[line - 1];
+      return text === undefined || isCodeLine(text);
+    };
+    const result = diffCoverage(coverage, parseChangedLines(diff), isCode);
     for (const [file, lines] of result.uncovered)
       console.log(`uncovered ${file}: ${lines.join(", ")}`);
+    for (const [file, lines] of result.notMeasured)
+      console.log(`not measured (no test loads ${file}): ${lines.join(", ")}`);
+    if (!result.counted)
+      console.log("nothing measured: no changed code line is in a measured or in-scope file");
     console.log(
-      `diff coverage ${result.percent.toFixed(2)}% (${result.covered}/${result.executable} changed executable lines), floor ${min}%`,
+      `diff coverage ${result.percent.toFixed(2)}% (${result.covered}/${result.counted} changed code lines), floor ${min}%`,
     );
     if (result.percent < min) process.exitCode = 1;
   } catch (error) {

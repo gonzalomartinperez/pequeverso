@@ -25,6 +25,7 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "test": "node --env-file-if-exists=.env.example --test \"tests/unit/**/*.test.ts\"",
+    "test:coverage": "node --env-file-if-exists=.env.example --test --experimental-test-coverage --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info \"tests/unit/**/*.test.ts\"",
     "test:mutation": "cross-env FC_SEED=20261114 FC_NUM_RUNS=25 stryker run --force",
     "test:mutation:incremental": "cross-env FC_SEED=20261114 FC_NUM_RUNS=25 stryker run",
     "test:property:nightly": "cross-env FC_NUM_RUNS=1000 node --env-file-if-exists=.env.example --test \"tests/unit/property/**/*.test.ts\"",

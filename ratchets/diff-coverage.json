@@ -1,5 +1,5 @@
 {
-  "$comment": "Share of changed executable lines (node lcov DA records) that unit tests execute, per pull request (`node tools/ci/diff-coverage.ts`, roadmap M2-5). Floor: may only rise.",
+  "$comment": "Share of changed code lines (node lcov DA records, blank and comment lines dropped; in-scope files no test loads count as uncovered) that unit tests execute, per pull request (`node tools/ci/diff-coverage.ts`, roadmap M2-5). Floor: may only rise.",
   "metric": "diff-coverage",
   "measuredAt": "2026-11-14",
   "commit": "6ce7d61",

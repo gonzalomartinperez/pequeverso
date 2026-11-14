@@ -128,11 +128,8 @@ jobs:
         run: |-
           set -euo pipefail
           mkdir -p coverage
-          node --env-file-if-exists=.env.example --test --experimental-test-coverage \
-            --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=lcov --test-reporter-destination=coverage/lcov.info \
-            "tests/unit/**/*.test.ts"
-      - name: Diff coverage (changed executable lines against the base branch, floor in ratchets/diff-coverage.json)
+          npm run test:coverage
+      - name: Diff coverage (changed code lines against the base branch, floor in ratchets/diff-coverage.json)
         if: github.event_name == 'pull_request'
         env:
           BASE_REF: ${{ github.base_ref }}
