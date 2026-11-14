@@ -17,7 +17,7 @@ function reviewedOf(date: string | undefined, path: string): string {
   return date;
 }
 
-/** Indexable routes only; post-purchase and pure legal pages are noindex and excluded. */
+/** Indexable routes only; post-purchase and the purchase/legal pages are noindex and excluded. */
 function indexableRoutes(): Route[] {
   return [
     { path: "/", priority: 1, reviewed: pageReviewed.home, changeFrequency: "weekly" },
@@ -33,6 +33,12 @@ function indexableRoutes(): Route[] {
       path: "/soporte/",
       priority: 0.4,
       reviewed: pageReviewed.support,
+      changeFrequency: "monthly",
+    },
+    {
+      path: "/accesibilidad/",
+      priority: 0.3,
+      reviewed: pageReviewed.accessibility,
       changeFrequency: "monthly",
     },
   ];

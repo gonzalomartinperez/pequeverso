@@ -20,6 +20,7 @@ const routes = [
   "/grafismo-fonetico/gracias/",
   "/soporte/",
   "/privacidad/",
+  "/accesibilidad/",
 ];
 for (const route of routes) {
   const res = await head(route);

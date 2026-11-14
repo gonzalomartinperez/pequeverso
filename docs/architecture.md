@@ -134,6 +134,7 @@ footer/404 links and terms paragraph without touching the app tree.
 | `/grafismo-fonetico/gracias/` | Post-purchase guidance, `[product]/gracias` | noindex | self |
 | `/aviso-legal/`, `/privacidad/`, `/cookies/`, `/terminos/`, `/compras-y-reembolsos/` | Legal | noindex,follow | self |
 | `/soporte/` | Support and contact | index | self |
+| `/accesibilidad/` | Accessibility statement (WCAG 2.2 AA target) | index | self |
 | anything else | Real 404 (`out/404.html`, `ErrorDocument 404`) | — | — |
 
 All routes are trailing-slash canonical (`trailingSlash: true`; the server redirects the non-slash
