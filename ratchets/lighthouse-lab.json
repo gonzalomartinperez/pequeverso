@@ -1,0 +1,153 @@
+{
+  "$comment": "Production-config export (fake pixel id, real third-party hosts, *.facebook.com blocked), Lighthouse mobile, simulated throttling. Values come from the medians of CI run 43592256267 (3 runs per route, artifact `lighthouse`) with the --suggest headroom (10%, at least 0.25 s, 5 KB or 5 points). js-kb is FIRST-PARTY script transfer KB (same-origin Script requests) and is gated at error; third-party-js-kb (Meta, Hotmart funnel, ...) is recorded and reported at WARN only, never failing: revisit in M3-3 (third-party budget). Tighten later with `node tools/lhci-assert.ts ratchets/lighthouse-lab.json --suggest`.",
+  "metric": "lighthouse-lab",
+  "measuredAt": "2026-11-14",
+  "commit": "7c69e40",
+  "source": "CI run 43592256267 (develop PR #187), see $comment",
+  "values": [
+    {
+      "key": "/ performance",
+      "value": 90,
+      "unit": "score",
+      "direction": "min"
+    },
+    {
+      "key": "/ lcp",
+      "value": 1.11,
+      "unit": "s",
+      "direction": "max"
+    },
+    {
+      "key": "/ tbt",
+      "value": 0.25,
+      "unit": "s",
+      "direction": "max"
+    },
+    {
+      "key": "/ js-kb",
+      "value": 196.45,
+      "unit": "KB",
+      "direction": "max"
+    },
+    {
+      "key": "/ third-party-js-kb",
+      "value": 110.6,
+      "unit": "KB",
+      "direction": "max"
+    },
+    {
+      "key": "/ cls",
+      "value": 0,
+      "unit": "",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/ performance",
+      "value": 90,
+      "unit": "score",
+      "direction": "min"
+    },
+    {
+      "key": "/grafismo-fonetico/ lcp",
+      "value": 1.18,
+      "unit": "s",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/ tbt",
+      "value": 0.27,
+      "unit": "s",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/ js-kb",
+      "value": 389.87,
+      "unit": "KB",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/ third-party-js-kb",
+      "value": 110.6,
+      "unit": "KB",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/ cls",
+      "value": 0,
+      "unit": "",
+      "direction": "max"
+    },
+    {
+      "key": "/imprime-y-juega/ performance",
+      "value": 90,
+      "unit": "score",
+      "direction": "min"
+    },
+    {
+      "key": "/imprime-y-juega/ lcp",
+      "value": 0.55,
+      "unit": "s",
+      "direction": "max"
+    },
+    {
+      "key": "/imprime-y-juega/ tbt",
+      "value": 0.25,
+      "unit": "s",
+      "direction": "max"
+    },
+    {
+      "key": "/imprime-y-juega/ js-kb",
+      "value": 196.45,
+      "unit": "KB",
+      "direction": "max"
+    },
+    {
+      "key": "/imprime-y-juega/ third-party-js-kb",
+      "value": 1305.99,
+      "unit": "KB",
+      "direction": "max"
+    },
+    {
+      "key": "/imprime-y-juega/ cls",
+      "value": 0,
+      "unit": "",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/gracias/ performance",
+      "value": 90,
+      "unit": "score",
+      "direction": "min"
+    },
+    {
+      "key": "/grafismo-fonetico/gracias/ lcp",
+      "value": 0.55,
+      "unit": "s",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/gracias/ tbt",
+      "value": 0.25,
+      "unit": "s",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/gracias/ js-kb",
+      "value": 175.05,
+      "unit": "KB",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/gracias/ third-party-js-kb",
+      "value": 110.6,
+      "unit": "KB",
+      "direction": "max"
+    },
+    {
+      "key": "/grafismo-fonetico/gracias/ cls",
+      "value": 0,
+      "unit": "",
+      "direction": "max"
+    }
+  ]
+}

@@ -263,6 +263,7 @@ test("the committed ratchets load and every one is compared", () => {
     "coverage",
     "design-lint",
     "lighthouse",
+    "lighthouse-lab",
     "repo-size",
   ]);
   assert.equal(card.summary.fail, 0);

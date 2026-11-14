@@ -305,6 +305,39 @@ jobs:
             .ci-analyzer-artifact/manifest.json
           retention-days: 30
           if-no-files-found: ignore
+  lighthouse-live:
+    name: Nightly Lighthouse (live site)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Setup
+        uses: ./.github/actions/setup
+      # Read-only: loads the public pages only. connect.facebook.net, facebook.com and pequeverso.com/api/* are
+      # blocked in lighthouserc.live.json so no event reaches Meta, not even through the CAPI relay.
+      - name: Lighthouse (5 runs, mobile emulation, Meta and /api blocked)
+        run: npx lhci collect --config=lighthouserc.live.json
+      - name: Write the report manifest
+        run: npx lhci upload --config=lighthouserc.live.json
+      - name: Lighthouse regression against the live ratchet (15% tolerance)
+        run: node tools/lhci-assert.ts ratchets/lighthouse.json --config=lighthouserc.live.json --dir=.lighthouseci-live --tolerance=0.15 --allow-missing-paths
+      - name: Summary
+        if: always()
+        run: node tools/lhci-summary.ts .lighthouseci-live >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload live Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: lighthouse-live
+          path: .lighthouseci-live
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: warn
   checks:
     name: Nightly required checks
     runs-on: ubuntu-24.04
@@ -318,6 +351,7 @@ jobs:
       - visual
       - links
       - bundle
+      - lighthouse-live
     if: always()
     steps:
       - name: Checkout

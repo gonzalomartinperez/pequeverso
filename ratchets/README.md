@@ -7,7 +7,7 @@ may only fall. `measuredAt`, `commit` and `source` say where the baseline comes 
 - `tools/scorecard/ratchets.ts` loads and validates the files (`node tools/scorecard/ratchets.ts`).
 - `tests/unit/ratchets.test.ts` fails when a file is invalid or when a baseline is loosened against
   the merge base with `origin/develop`. Tightening is a normal change; loosening needs an ADR.
-- Baselines today: `coverage`, `bundle`, `lighthouse` (live, mobile), `a11y`, `repo-size` and
+- Baselines today: `coverage`, `bundle`, `lighthouse` (live, mobile), `lighthouse-lab` (production-config export, CI gate `tools/lhci-assert.ts`), `a11y`, `repo-size` and
   `complexity` (first run). The plan adds more files as their gates land (`ci-duration`, `mutation`,
   `design-lint`, `scorecard-axes`, ...); the nightly scorecard (M2-9) compares measurements with
   these baselines.
@@ -34,3 +34,8 @@ lane adds its own keys). Two regressions are expected on the first nightlies and
 hidden: `repo-size` is exceeded until M2-5 shrinks the visual baselines, and `coverage` is currently
 below its floor on develop (lines about 96.05 against 96.19, branches about 87.46 against 88.11;
 M2-5 owns the coverage gate). Do not loosen either baseline.
+
+`lighthouse-lab` starts from the medians of CI run 43592256267 (first-party `js-kb` gated, `third-party-js-kb`
+reported at WARN only, revisit in M3-3). To tighten it later, download the `lighthouse` artifact and run
+`node tools/lhci-assert.ts ratchets/lighthouse-lab.json --suggest --dir=<artifact dir>` (10% headroom,
+never looser than the current values), review the output and commit it over the file.

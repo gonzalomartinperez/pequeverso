@@ -24,7 +24,7 @@
 | `npm run check:media` | Media budget and manifest provenance |
 | `npm run check:placeholders[:strict]` | Report / fail on `[[PLACEHOLDER]]` tokens |
 | `npm run check:skills` | Skill catalog: frontmatter and `metadata`, body at most 120 lines, `evals/triggers.json` and `evals/evals.json` structure, symlinks, review age (warns after 180 days) |
-| `npm run lhci` | Lighthouse CI on `out/` |
+| `npm run lhci` | Lighthouse CI on `out/` (3 runs, mobile) then the strict ratchet assertion `node tools/lhci-assert.ts ratchets/lighthouse-lab.json`; `npm run lhci:production-config` builds the fake-pixel `out-lhci/` first (see Lighthouse lanes) |
 | `npm run scorecard -- --inputs <dir> --out scorecard.json` | Compares measurements (`<dir>/coverage/lcov.info`, `<dir>/bundle.json` from `node tools/check-bundle-budget.ts --json`, `<dir>/.lighthouseci`, repo size from `git ls-files`) with `ratchets/*.json`; missing inputs are `missing`, a regression exits 1; `--need coverage,bundle` also fails on incomplete inputs. Runs nightly (`scorecard` job, artifact `scorecard`, 30 days) |
 | `npm run build:standalone` | Node target build (fallback), for parity checks |
 | `npm run build:design-gallery` / `test:browser:design-gallery` | Verification export WITH the `/_design` state gallery in `out-design-gallery/` (unpublishable), and its light Playwright spec; see `docs/design-system.md` |
@@ -46,6 +46,43 @@ Copy `.env.example` to `.env.local` before the first build (`cp .env.example .en
 `NEXT_PUBLIC_*` values are inlined at build time; `tools/check-env.ts` refuses to build without
 `NEXT_PUBLIC_SITE_URL` and a checkout URL, and the repository carries no inline defaults for them.
 With the optional variables empty no pixel is injected and the Conversions API relay answers `204`.
+
+## Lighthouse lanes (M2-1)
+
+- **PR (`performance` job)**: `lighthouserc.json` runs Lighthouse mobile, 3 runs per URL (12 runs; sized
+  for the 15 minute job, drop to 2 if it gets close), on the production-config export (fake pixel id
+  `1234567890123456`, fake `TEST0000000` offer, real third-party hosts) for home, kit,
+  `/imprime-y-juega/` (upsell) and the kit thanks page.
+  - `tools/lhci-assert.ts` asserts at `error` level the median of the runs for performance, LCP, TBT,
+    CLS and first-party script transfer KB (`js-kb`, same-origin scripts) against `ratchets/lighthouse-lab.json` (the only copy of those
+    thresholds). It is strict: every key must be checked, a route with fewer runs than expected, a
+    `runtimeError` run or a missing or non-finite value fails, and an unknown metric in a key throws.
+    The ratchet may only tighten (`tests/unit/ratchets.test.ts`). `third-party-js-kb` (Meta, the Hotmart
+    funnel; it varies between runs) is recorded and reported at WARN, never failing; revisit in M3-3.
+    The step prints a route | metric | median | limit | status table. Starting values come from CI run
+    43592256267.
+  - lhci itself asserts accessibility at `error`; best-practices, SEO and the image (1.1 MB) and total
+    (1.5 MB) byte budgets stay at `warn` (home and kit only).
+- **No events reach Meta**: `connect.facebook.net` loads, so `fbevents.js` counts toward TBT and JS KB,
+  but every `*.facebook.com` request is blocked (`blockedUrlPatterns`), which includes the `/tr` pixel
+  ping, and the CAPI relay answers `204` in CI (no token).
+- **Nightly live (`lighthouse-live` job)**: `lighthouserc.live.json` measures `https://pequeverso.com/`
+  and `/grafismo-fonetico/` (5 runs, mobile, read-only), writes the manifest with `lhci upload`, and
+  compares the median with `ratchets/lighthouse.json` (live values, 2 of its 5 routes, hence
+  `--allow-missing-paths`) with 15% tolerance. It blocks `connect.facebook.net`, `*.facebook.com`
+  and `pequeverso.com/api/*` so neither the browser nor the production CAPI relay can forward a
+  PageView to Meta (consequence: Meta's script cost is not in the live numbers; the PR lane measures
+  it). Run it only in CI. Reports go to the `lighthouse-live` artifact.
+- **Local run** (one command; the measurement lane for M3 before/after numbers):
+  `npm run lhci:production-config` builds the fake-pixel export into the gitignored, unpublishable
+  `out-lhci/` (`tools/build-lhci.ts`; `out/` and `.next/` are untouched), serves it and runs
+  `npm run lhci`. It needs a Chrome (`CHROME_PATH`, for example the Playwright Chromium). Use
+  `npm run build:lhci` then `SERVE_DIR=out-lhci npx lhci autorun --collect.numberOfRuns=1` for a quick
+  pass.
+- **Tightening**: after the first CI runs on develop, download the `.lighthouseci` artifact and run
+  `node tools/lhci-assert.ts ratchets/lighthouse-lab.json --suggest > /tmp/lab.json`; it prints the
+  ratchet with 10% headroom (at least 0.25 s, 5 KB or 5 points), never looser than today. `--dir` accepts a
+  downloaded artifact. Review and copy it over the file.
 
 ## Conventions
 
