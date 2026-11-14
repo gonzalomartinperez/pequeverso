@@ -209,9 +209,10 @@ test("both deployment headers add exactly the enabled origin; OFF is unchanged",
     NEXT_PUBLIC_PRODUCT_ANALYTICS_API_ORIGIN: "https://analytics.example.com",
   });
   assert.equal(on.redirects.length, base.redirects.length);
-  assert.ok(toHtaccess(on).includes("https://analytics.example.com;"));
-  assert.ok(JSON.stringify(toNextHeaders(on)).includes("https://analytics.example.com;"));
-  assert.ok(!toHtaccess(base).includes("analytics.example.com"));
+  // The collector origin appears as a CSP source token (`origin;`), not as a URL to trust.
+  assert.match(toHtaccess(on), /\shttps:\/\/analytics\.example\.com;/);
+  assert.match(JSON.stringify(toNextHeaders(on)), /\shttps:\/\/analytics\.example\.com;/);
+  assert.doesNotMatch(toHtaccess(base), /analytics\.example\.com/);
 });
 
 test("site analytics preserves layer direction and closed composition ownership", async () => {

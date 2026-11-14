@@ -232,6 +232,13 @@ export function hstsValue(hsts: EdgeRules["hsts"]): string {
   return `max-age=${hsts.maxAge}${hsts.includeSubDomains ? "; includeSubDomains" : ""}`;
 }
 
+/** Escape every regex metacharacter (host names and literal path parts in Apache patterns). */
+const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** Backslash-escape `\` and the given characters for an Apache directive argument. */
+const escapeFor = (value: string, special: RegExp): string =>
+  value.replace(/\\/g, "\\\\").replace(special, "\\$&");
+
 /**
  * Convert a Next.js-style path pattern into an Apache regex fragment (per-directory
  * context: no leading slash). Supports literal paths and a trailing `:name*` segment.
@@ -277,7 +284,7 @@ export function toHtaccess(rules: EdgeRules, opts: { buildId?: string } = {}): s
   lines.push("# Never serve dotfiles (the deploy branch is pulled with its .git directory).");
   lines.push("RewriteRule (^|/)\\.(?!well-known/) - [R=404,L]");
   lines.push("# Canonical host and scheme in one hop.");
-  lines.push(`RewriteCond %{HTTP_HOST} ^www\\.${rules.canonicalHost.replace(/\./g, "\\.")}$ [NC]`);
+  lines.push(`RewriteCond %{HTTP_HOST} ^www\\.${escapeRegex(rules.canonicalHost)}$ [NC]`);
   lines.push(`RewriteRule ^(.*)$ https://${rules.canonicalHost}/$1 [R=301,L]`);
   lines.push("RewriteCond %{HTTPS} !=on");
   lines.push("RewriteCond %{HTTP:X-Forwarded-Proto} !=https");
@@ -288,7 +295,7 @@ export function toHtaccess(rules: EdgeRules, opts: { buildId?: string } = {}): s
       lines.push(`RewriteRule ${toApacheRegex(r.source)} - [G,L]`);
     } else {
       // `%` would read as a RewriteCond back-reference in the substitution: escape it.
-      const dest = (r.destination ?? "").replace(/:[a-zA-Z0-9_]+\*/g, "$1").replace(/%/g, "\\%");
+      const dest = escapeFor((r.destination ?? "").replace(/:[a-zA-Z0-9_]+\*/g, "$1"), /%/g);
       // Affiliate links keep the visitor's query (?src=… reaches Hotmart) even when they carry their own.
       const flags = `R=${r.permanent === false ? 302 : 301},L${r.destinationEnv ? ",QSA,NE" : ""}`;
       lines.push(`RewriteRule ${toApacheRegex(r.source)} ${dest} [${flags}]`);
@@ -305,7 +312,7 @@ export function toHtaccess(rules: EdgeRules, opts: { buildId?: string } = {}): s
     lines.push(`# ${h.id}`);
     if (expr) lines.push(`<If "${expr}">`);
     for (const [key, value] of Object.entries(h.headers)) {
-      lines.push(`${expr ? "  " : ""}Header always set ${key} "${value.replace(/"/g, '\\"')}"`);
+      lines.push(`${expr ? "  " : ""}Header always set ${key} "${escapeFor(value, /"/g)}"`);
     }
     if (expr) lines.push("</If>");
   }
