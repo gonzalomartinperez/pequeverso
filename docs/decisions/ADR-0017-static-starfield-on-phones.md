@@ -20,8 +20,10 @@ resting layout of the scene.
 2. The scene chunk is `import()`ed only when `(pointer: fine) and (min-width: 1024px)` matches, not
    under `prefers-reduced-motion`, Save-Data or a viewport under 650 px tall, and only after the first
    `pointerdown`, `keydown`, `scroll` or `wheel` (once, passive) plus an idle moment. The predicate
-   and the interaction wait live in `src/shared/motion/scene/scene-gate.ts`; the media queries are
-   listened to, so resizing or docking a window re-evaluates the gate.
+   (a `scroll` before the window `load` event, such as scroll restoration or a `#hash` jump, is
+   not an interaction) and the interaction wait live in `src/shared/motion/scene/scene-gate.ts`; the media queries are
+   listened to: a change tears down a live scene and waits for a new interaction before mounting
+   again. An interaction before hydration is not seen; the next one recovers it.
 3. The swap is unchanged: the canvas is absolutely positioned over the static layers and fades in
    (opacity only), so it adds no layout shift and the static layers are never the LCP element
    (the hero cutout image is).
@@ -30,8 +32,11 @@ resting layout of the scene.
 ## Consequences
 
 - Phones and narrow windows never request or parse the scene closure (about 177.6 KB, cap 250 KB):
-  less JavaScript, less TBT. LCP is not expected to move (M3-1); the framework and the hero image
-  decide it.
+  less JavaScript, less TBT. This task targets TBT and TTI; LCP is not expected to move (M3-1), the
+  framework and the hero image decide it. LCP evidence comes from the CI production-config
+  Lighthouse lane, recorded by the M3 lead.
+- The pause toggle stays visible on phones: the CSS-driven `.pv-float` tiles and planets in the
+  hero still move there and the toggle pauses them (WCAG 2.2.2).
 - Desktop visitors who never interact never see the live scene; the static layers are the same
   composition, so this is invisible apart from the missing twinkle and parallax.
 - The test `tests/browser/scene-gating.spec.ts` asserts that no scene chunk is requested on the

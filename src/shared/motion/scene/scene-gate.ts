@@ -24,13 +24,15 @@ const INTERACTIONS = ["pointerdown", "keydown", "scroll", "wheel"] as const;
 
 /**
  * Calls `callback` once on the first pointerdown, keydown, scroll or wheel (passive listeners on
- * `window`); returns a canceller. A programmatic scroll restoration counts as an interaction.
+ * `window`); returns a canceller. A `scroll` before the window `load` event is ignored: scroll
+ * restoration and `#hash` navigation scroll the page without the visitor doing anything.
  */
 export function afterFirstInteraction(callback: () => void): () => void {
   const off = () => {
     for (const type of INTERACTIONS) window.removeEventListener(type, fire);
   };
-  function fire() {
+  function fire(event: Event) {
+    if (event.type === "scroll" && document.readyState !== "complete") return;
     off();
     callback();
   }
