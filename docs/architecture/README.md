@@ -11,7 +11,7 @@ redirect to its configured Hotmart affiliate destination (checkout or the produc
 There is no course landing hosted by Pequeverso. Payment, delivery and refunds belong to Hotmart.
 The native assistant remains OFF: no launcher, runtime chunk or assistant API traffic is emitted.
 Future API deployment, HTTPS and proxy configuration belong to vps-ops. Route semantics come
-from the [affiliate redirect contract](../affiliates.md) and [Home hub spec](../specs/home-hub.md).
+from the [affiliate redirect contract](../reference/affiliates.md) and [Home hub spec](../specs/home-hub.md).
 
 Solid arrows identify explicit visitor paths or guarded application/storage access. Dashed arrows
 identify disabled or optional integration; the labels distinguish them. A dashed box marks

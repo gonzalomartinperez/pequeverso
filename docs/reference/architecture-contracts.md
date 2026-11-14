@@ -1,4 +1,4 @@
-# Engineering standards
+# Architecture contracts
 
 These standards preserve Pequeverso's commercial behavior while making changes testable and
 reviewable. `AGENTS.md`, contract compatibility and the existing activation rules remain binding.
@@ -70,7 +70,7 @@ import features or page/shell/framework composition; features cannot import view
 Root `content` and `config` retain their owned inputs; the tracking server adapter is under its
 exact feature namespace and is excluded from transitive client runtime alongside the build-time
 catalog. The generated `src/shared/styles/cn-tables` is an exact generator-owned exception.
-See [ADR-0009](decisions/ADR-0009-common-site-module-spine.md) for the physical cutover and invariants.
+See [ADR-0009](../decisions/ADR-0009-common-site-module-spine.md) for the physical cutover and invariants.
 
 The checker uses the maintained Oxc TypeScript AST parser, declared directly as an exact development
 dependency. The same package/version was already locked through Knip: this adds no resolved packages

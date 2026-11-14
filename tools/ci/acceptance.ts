@@ -1,6 +1,6 @@
 /**
  * Fail-closed result evaluation for the Nightly aggregate step. PR and push CI use the
- * engineering-standards `ci-gate` action instead (profile-aware; docs/ci-profile.md).
+ * engineering-standards `ci-gate` action instead (profile-aware; docs/reference/ci-profile.md).
  */
 import { pathToFileURL } from "node:url";
 

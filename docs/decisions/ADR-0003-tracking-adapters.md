@@ -11,7 +11,7 @@ providers (TikTok, Google) without touching pages.
 
 ## Decision
 
-- One `track(name, params)` entry point in `src/features/tracking/track.ts` generates a UUID
+- One `track(name, params)` entry point in `src/features/tracking/adapters/track.ts` generates a UUID
   event id, mirrors the event to `window.dataLayer` and fans out to enabled adapters.
 - Adapters implement `TrackingAdapter` (`id`, `category`, `enabled`, `scripts(mode)`,
   `onConsent(state)`, `send(event)`); Meta (marketing, consent API `revoke`/`grant`) is
@@ -24,7 +24,7 @@ providers (TikTok, Google) without touching pages.
   the deployment surface is site URL, checkout override and pixel id only.
 - `InitiateCheckout`, `Purchase`, `PlaceAnOrder` and `begin_checkout` are forbidden at the type
   level and guarded at runtime: Hotmart owns them.
-- `scripts/check-env.mjs` validates variable formats before every build and prints the enabled
+- `tools/check-env.ts` validates variable formats before every build and prints the enabled
   adapters without printing values.
 
 ## Consequences
@@ -34,4 +34,4 @@ providers (TikTok, Google) without touching pages.
 - No server-side event API from the site (static target); Hotmart's server events cover purchases.
   Superseded on 2026-09-20 by ADR-0005: a same-origin Conversions API relay in the Node server
   mirrors the site events; purchases stay with Hotmart.
-- Tests run with a fake id; `tests/e2e/fixtures.ts` aborts every Meta host, so CI never contacts Meta.
+- Tests run with a fake id; `tests/browser/fixtures.ts` aborts every Meta host, so CI never contacts Meta.

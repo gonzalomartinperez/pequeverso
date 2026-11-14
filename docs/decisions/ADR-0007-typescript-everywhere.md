@@ -2,6 +2,10 @@
 
 Date: 2026-09-24 · Status: accepted
 
+> Path note: source paths in this record are historical (as of its date). Several have since moved
+> to the module spine of [ADR-0009](ADR-0009-common-site-module-spine.md) (`scripts/` to `tools/`,
+> `tests/e2e` to `tests/browser`, `.mjs` to `.ts`) or were retired; the decision itself is unchanged.
+
 ## Context
 
 The application (`src/`, `config/`, `content/`) was TypeScript, but the build and release tooling

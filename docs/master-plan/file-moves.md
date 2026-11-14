@@ -46,6 +46,16 @@ Every move, rename, split, deletion or conversion of the 906 tracked files at `o
 | `tools/gen-htaccess.ts` | (deleted) | delete | M4 (PV-D3) | Static export retired (PV-D3, M4) |
 | `tools/serve-static.ts` | (deleted) | delete | M4 (PV-D3) | Static export retired (PV-D3, M4) |
 
+### 1.1 Docs phase 1 (done in M3-9)
+
+Pure `git mv` moves with every link and path reference updated (no rewrite): `docs/code-quality.md`,
+`docs/site-analytics.md`, `docs/ci-profile.md`, `docs/affiliates.md` to `docs/reference/`;
+`docs/engineering-standards.md` to `docs/reference/architecture-contracts.md`; `docs/media.md` to
+`docs/how-to/update-media.md`. The table above keeps the original From column for traceability.
+Remaining Diátaxis moves (architecture, assistant, content-model, design-system, deployment,
+development, dependency-updates, hotmart-funnel, legal-checklist, migration, performance, tracking,
+`docs/assets/shadcn-ui.md`) stay for M3-M4 because they combine rewrites or touch many consumers.
+
 ## 2. Bulk actions
 
 | Set | Files | Action | Motive |

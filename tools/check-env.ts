@@ -122,5 +122,5 @@ console.log(summary());
 const unsetAffiliates = affiliateEnvNames().filter((name) => !read(name));
 if (unsetAffiliates.length > 0)
   console.warn(
-    `check-env: warning: ${unsetAffiliates.join(", ")} empty: ${affiliateSources().join(", ")} will 404 (set it for a publishable build; docs/affiliates.md)`,
+    `check-env: warning: ${unsetAffiliates.join(", ")} empty: ${affiliateSources().join(", ")} will 404 (set it for a publishable build; docs/reference/affiliates.md)`,
   );

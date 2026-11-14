@@ -2,6 +2,10 @@
 
 Date: 2026-09-13 · Status: accepted
 
+> Path note: source paths in this record are historical (as of its date). Several have since moved
+> to the module spine of [ADR-0009](ADR-0009-common-site-module-spine.md) (`scripts/` to `tools/`,
+> `tests/e2e` to `tests/browser`, `.mjs` to `.ts`) or were retired; the decision itself is unchanged.
+
 ## Context
 
 v1 hard-coded the two products across the tree: prices and composition in `config/commerce.ts`,

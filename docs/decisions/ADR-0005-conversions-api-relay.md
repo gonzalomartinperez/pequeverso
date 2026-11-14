@@ -2,6 +2,10 @@
 
 Date: 2026-09-20 · Status: accepted
 
+> Path note: source paths in this record are historical (as of its date). Several have since moved
+> to the module spine of [ADR-0009](ADR-0009-common-site-module-spine.md) (`scripts/` to `tools/`,
+> `tests/e2e` to `tests/browser`, `.mjs` to `.ts`) or were retired; the decision itself is unchanged.
+
 ## Context
 
 Browser-only pixels lose a share of events to ad blockers, ITP and rejected scripts, and the

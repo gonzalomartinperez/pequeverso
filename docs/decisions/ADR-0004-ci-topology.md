@@ -2,16 +2,20 @@
 
 Date: 2026-09-13 · Status: accepted, with dated amendments
 
+> Path note: source paths in this record are historical (as of its date). Several have since moved
+> to the module spine of [ADR-0009](ADR-0009-common-site-module-spine.md) (`scripts/` to `tools/`,
+> `tests/e2e` to `tests/browser`, `.mjs` to `.ts`) or were retired; the decision itself is unchanged.
+
 > **Amended 2026-11-14 (roadmap M1-1):** PR and push CI select jobs through CI profiles. The
 > engineering-standards `classify` reusable workflow applies `.github/ci-profile.json`, every job is
 > gated on its output, and the engineering-standards `ci-gate` action is the single fail-closed
 > required check (`ci` stays as a temporary alias). Both are pinned by commit SHA; standards changes
 > arrive through that pin. Docs-only changes run workflow validation, secret scan and a
 > dependency-free docs job; any file that lints, typechecks or builds routes to the full set.
-> Details: [CI profile](../ci-profile.md).
+> Details: [CI profile](../reference/ci-profile.md).
 
 The original decision and measurements below are historical. The 2026-10-18 amendment and
-[CI profile](../ci-profile.md) describe the current source topology; earlier green runs do not
+[CI profile](../reference/ci-profile.md) describe the current source topology; earlier green runs do not
 validate the new layout.
 
 ## Context

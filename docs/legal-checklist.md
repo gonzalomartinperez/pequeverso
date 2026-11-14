@@ -106,7 +106,7 @@ Status: ✅ done · ⚠️ done with a caveat · ❌ gap (owner action) · — n
   law. The consumer chooses the forum; Bahía Blanca is one option, as the seller's domicile. Bahía
   Blanca is the agreed forum only for buyers who do not act as consumers.
 - **Demo videos** are labelled "Video ilustrativo.", and `/aviso-legal/` and `/terminos/` describe them
-  as illustrative and sometimes AI-generated (docs/media.md).
+  as illustrative and sometimes AI-generated (docs/how-to/update-media.md).
 
 ## Sources (read 2026-09-24)
 

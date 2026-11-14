@@ -1,5 +1,5 @@
 /**
- * Third-party products Pequeverso recommends as a Hotmart affiliate (docs/affiliates.md).
+ * Third-party products Pequeverso recommends as a Hotmart affiliate (docs/reference/affiliates.md).
  * There is no landing of our own: `path` is the clean redirect in `config/edge-rules.json`
  * (`destinationEnv`), which sends the visitor to the owner's affiliate link. The link itself is
  * a deployment value and never lives in the repository.
