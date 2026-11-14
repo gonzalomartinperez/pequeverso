@@ -28,7 +28,7 @@ for (const malicious of [false, true]) {
     const generations: string[] = [];
     const sessions: string[] = [];
     page.on("request", (request) => {
-      if (request.url().startsWith("https://help.hotmart.com")) offsiteRequests.push(request.url());
+      if (new URL(request.url()).host === "help.hotmart.com") offsiteRequests.push(request.url());
       if (request.url() === `${API}/api/v1/messages` && request.method() === "POST")
         generations.push(request.url());
       if (request.url() === `${API}/api/v1/session`) sessions.push(request.url());

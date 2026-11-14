@@ -95,3 +95,26 @@ test("affiliate destinations must be plain https links (Hotmart or the producer'
   );
   assert.match(escaped, /https:\/\/x\.example\.com\/p\?r=A\\%2F1 \[R=302,L,QSA,NE\]/);
 });
+
+test("htaccess escaping covers backslashes, regex metacharacters, % and quotes", () => {
+  const tricky = {
+    ...rules,
+    canonicalHost: "ex-ample.com",
+    redirects: [
+      { id: "esc", source: "/a/", destination: "https://ex-ample.com/p%20\\q", permanent: true },
+    ],
+    headers: [{ id: "esc-h", source: "/:path*", headers: { "X-Test": 'say "hi" \\ bye' } }],
+  } as typeof rules;
+  const out = toHtaccess(tricky);
+  assert.ok(out.includes("^www\\.ex-ample\\.com$"), "dots escaped in the host");
+  assert.ok(
+    out.includes("https://ex-ample.com/p\\%20\\\\q [R=301,L]"),
+    "% and \\ escaped in the target",
+  );
+  assert.ok(
+    out.includes('Header always set X-Test "say \\"hi\\" \\\\ bye"'),
+    "quote and \\ escaped",
+  );
+  const dotted = toHtaccess({ ...rules, canonicalHost: "a.b+c.com" } as typeof rules);
+  assert.ok(dotted.includes("^www\\.a\\.b\\+c\\.com$"), "every metacharacter escaped in the host");
+});

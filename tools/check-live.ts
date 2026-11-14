@@ -196,7 +196,7 @@ const icon: Record<Status, string> = { pass: "✅", warn: "⚠️", fail: "❌" 
 const stepSummary = process.env.GITHUB_STEP_SUMMARY;
 if (stepSummary) {
   const rows = results.map(
-    (r) => `| ${r.name} | ${icon[r.status]} | ${r.detail.replace(/\|/g, "\\|")} |`,
+    (r) => `| ${r.name} | ${icon[r.status]} | ${r.detail.replace(/[\\|]/g, "\\$&")} |`,
   );
   appendFileSync(
     stepSummary,

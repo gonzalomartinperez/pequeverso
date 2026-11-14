@@ -36,7 +36,7 @@ comments; no dead code (knip is a gate); business facts come from `config/` and 
 | E2E | Playwright `PW_SET=pr` in four exact-identity shards: six configured projects (Firefox/WebKit 390, Chromium 390/768/1440 + reduced motion) (smoke, axe WCAG 2.2 AA, offer modes, widget lifecycle, commerce, consent, motion, navigation, responsive contract 320–1920 in the 1440 project) | PR, develop, main | yes |
 | Lighthouse | LHCI on the export, 2 runs, mobile emulation; a11y ≥ 0.95 and CLS ≤ 0.1 are errors; report kept as artifact and job summary | PR, develop, main | a11y/CLS |
 | Production | `post-deploy-verify`: revision match, smoke, headers, `PW_SET=prod`, informative Lighthouse | main push, deploy | yes |
-| Nightly | 7 widths × Chromium/WebKit, visual snapshots (`tests/browser/visual.spec.ts`, Linux baselines under `tests/browser/__screenshots__`, regenerate with the `update_snapshots` input), clean-clone invariant, knip, LHCI ×5, link check, bundle analysis | nightly | report |
+| Nightly | 7 widths × Chromium/WebKit, visual region snapshots (`tests/browser/visual.spec.ts`, baselines under `tests/browser/__screenshots__` from the pinned Playwright image, regenerate with the `update_snapshots` input or `docs/development.md`), clean-clone invariant, knip, LHCI ×5, link check, bundle analysis | nightly | report |
 
 ### Development-only advisories (2026-10-05)
 

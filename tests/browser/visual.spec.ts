@@ -3,9 +3,11 @@ import { CONSENT_KEY, CONSENT_VERSION } from "../../src/features/tracking/adapte
 import { expect, test } from "./fixtures";
 
 /**
- * Screenshot baselines (PW_SET=visual: chromium at 390 / 1440, reduced motion). Baselines are
- * generated on Linux by the nightly workflow (`update_snapshots`) and committed under
- * tests/browser/__screenshots__. Reduced motion freezes every CSS animation, so only video is masked.
+ * Screenshot baselines (PW_SET=visual: chromium at 390 / 1440, reduced motion). Each baseline is one
+ * region (a hero, the buy box, the footer, ...) rather than a full page: a regression stays local
+ * and a baseline stays small (repo-size ratchet). Baselines are generated in the pinned Playwright
+ * image (docs/development.md, "Visual baselines") and committed under tests/browser/__screenshots__.
+ * Reduced motion freezes every CSS animation, so only video is masked.
  */
 const MASKED = "video";
 
@@ -27,8 +29,8 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-/** Materialize deferred Home sections and lazy media before comparing complete rendered content. */
-async function prepareHomeCapture(page: Page) {
+/** Materialize deferred sections and lazy media before comparing rendered regions. */
+async function prepareCapture(page: Page) {
   // A full-page screenshot must paint bands that the browser normally defers off-screen.
   // This affects capture preparation only; production keeps its rendering optimization.
   await page.addStyleTag({ content: ".defer-render { content-visibility: visible !important; }" });
@@ -92,36 +94,100 @@ async function prepareHomeCapture(page: Page) {
   // IntersectionObserver delivery can follow the two rendering frames. Wait for the real
   // controller to finish returning to the hero before capturing; never hide the mobile bar.
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
-  await expect(page.getByTestId("hub-sticky")).toHaveAttribute("data-mode", "hidden");
-  await expect(page.getByTestId("hub-sticky")).not.toBeVisible();
+  const hubSticky = page.getByTestId("hub-sticky");
+  if (await hubSticky.count()) {
+    await expect(hubSticky).toHaveAttribute("data-mode", "hidden");
+    await expect(hubSticky).not.toBeVisible();
+  }
 }
 
-const pages = [
-  { name: "home", path: "/" },
-  { name: "landing", path: "/grafismo-fonetico/" },
-  { name: "upsell", path: "/imprime-y-juega/" },
-  { name: "downsell", path: "/imprime-y-juega/?downsell=1" },
-  { name: "thanks", path: "/grafismo-fonetico/gracias/" },
+type Region = { name: string; selector: string };
+const pages: { name: string; path: string; regions: Region[] }[] = [
+  {
+    name: "home",
+    path: "/",
+    regions: [
+      { name: "hero", selector: "#hero" },
+      { name: "closing", selector: "#cierre" },
+    ],
+  },
+  {
+    name: "landing",
+    path: "/grafismo-fonetico/",
+    regions: [
+      { name: "hero", selector: "#hero" },
+      { name: "buy-box", selector: "#comprar" },
+      { name: "offer", selector: "#oferta" },
+    ],
+  },
+  {
+    name: "upsell",
+    path: "/imprime-y-juega/",
+    regions: [
+      { name: "hero", selector: "#hero" },
+      { name: "includes", selector: "#incluye" },
+    ],
+  },
+  {
+    name: "downsell",
+    path: "/imprime-y-juega/?downsell=1",
+    regions: [{ name: "hero", selector: "#hero-downsell" }],
+  },
+  {
+    name: "thanks",
+    path: "/grafismo-fonetico/gracias/",
+    regions: [{ name: "hero", selector: 'section[aria-labelledby="hero-title"]' }],
+  },
+  { name: "support", path: "/soporte/", regions: [{ name: "main", selector: "main" }] },
+  { name: "legal", path: "/terminos/", regions: [{ name: "main", selector: "main" }] },
+  // An unknown path is served as the real 404 page (same semantics as production).
+  { name: "not-found", path: "/no-existe/", regions: [{ name: "main", selector: "main" }] },
 ];
 
-for (const { name, path } of pages) {
-  test(`${name} matches its baseline`, async ({ page }) => {
+/** The floating header and the buy bars are fixed/sticky: wherever a region capture scrolls, they overlap it. */
+const HIDE_FIXED =
+  '[data-slot="header"], [data-slot="sticky-cta"] { visibility: hidden !important; }';
+
+// One test per page: the navigation and the capture preparation run once, then every region is
+// compared with a soft expectation under its own baseline name (a slow runner cannot time out per region).
+for (const { name, path, regions } of pages) {
+  test(`${name} regions match their baselines`, async ({ page }) => {
+    test.setTimeout(120_000);
     await page.goto(path, { waitUntil: "networkidle" });
     await page.evaluate(() => document.fonts.ready);
-    if (name === "home") await prepareHomeCapture(page);
-    await expect(page).toHaveScreenshot(`${name}.png`, {
-      fullPage: true,
-      mask: [page.locator(MASKED)],
-      // The redesigned landing is ~15 000 px tall at 1440: a full-page capture needs more than 5 s.
-      timeout: 20_000,
-    });
+    await prepareCapture(page);
+    await page.addStyleTag({ content: HIDE_FIXED });
+    for (const region of regions)
+      await expect
+        .soft(page.locator(region.selector).first())
+        .toHaveScreenshot(`${name}-${region.name}.png`, {
+          mask: [page.locator(MASKED)],
+          timeout: 30_000,
+        });
   });
 }
 
+// The fixed chrome is compared on its own, where HIDE_FIXED keeps it out of every region above.
+test("header and sticky bar match their baselines", async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.goto("/imprime-y-juega/", { waitUntil: "networkidle" });
+  await page.evaluate(() => document.fonts.ready);
+  const header = page.locator('[data-slot="header"]').first();
+  await expect.soft(header).toHaveScreenshot("chrome-header.png", { timeout: 30_000 });
+  // The sticky decision bar is phone-only (hidden from 1024 px) and appears once the offer hero has
+  // scrolled away.
+  if ((page.viewportSize()?.width ?? 0) >= 1024) return;
+  await page.evaluate(() => window.scrollTo({ top: 3500, behavior: "instant" }));
+  const sticky = page.getByTestId("sticky-cta");
+  await expect(sticky).toBeVisible();
+  await expect.soft(sticky).toHaveScreenshot("chrome-sticky-bar.png", { timeout: 30_000 });
+});
+
 test("footer matches its baseline", async ({ page }) => {
+  test.setTimeout(120_000);
   await page.goto("/", { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
-  await prepareHomeCapture(page);
+  await prepareCapture(page);
   const footer = page.getByRole("contentinfo");
   const viewport = page.viewportSize();
   const bounds = await footer.boundingBox();
@@ -164,8 +230,6 @@ test("footer matches its baseline", async ({ page }) => {
     .toBe(true);
   // The floating header and the mobile buy bar are fixed/sticky: wherever the capture scrolls,
   // they overlap the footer. Hide them for this element capture (a mask would move with them).
-  await page.addStyleTag({
-    content: '[data-slot="header"], [data-slot="sticky-cta"] { visibility: hidden !important; }',
-  });
-  await expect(footer).toHaveScreenshot("footer.png");
+  await page.addStyleTag({ content: HIDE_FIXED });
+  await expect(footer).toHaveScreenshot("footer.png", { timeout: 30_000 });
 });
