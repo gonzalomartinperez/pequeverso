@@ -54,33 +54,33 @@ function joinSpanish(items: string[]): string {
   return `${items.slice(0, -1).join(", ")} y ${items[items.length - 1]}`;
 }
 
-const FIRST_PAINT_TIMEOUT_MS = 3000;
+const FIRST_PAINT_TIMEOUT_MS = 2500;
 
-/** Runs `callback` once the page has loaded and the browser is idle (timeout fallback); returns a canceller. */
+/**
+ * Runs `callback` after the first paint (two animation frames) once the browser is idle
+ * (`requestIdleCallback`, with a timeout fallback), so the banner is never the LCP element nor
+ * a layout shift. Returns a canceller.
+ */
 function afterFirstPaint(callback: () => void): () => void {
-  let done = false;
-  let idleId: number | undefined;
-  let timerId: ReturnType<typeof setTimeout> | undefined;
+  let cancelled = false;
+  let frame = 0;
+  let idle = 0;
+  let timer: ReturnType<typeof setTimeout> | undefined;
   const run = () => {
-    if (done) return;
-    done = true;
-    callback();
+    if (!cancelled) callback();
   };
-  const schedule = () => {
-    if ("requestIdleCallback" in window) {
-      idleId = window.requestIdleCallback(run, { timeout: FIRST_PAINT_TIMEOUT_MS });
-    } else {
-      timerId = setTimeout(run, 200);
-    }
-  };
-  const loaded = document.readyState === "complete";
-  if (loaded) schedule();
-  else window.addEventListener("load", schedule, { once: true });
+  frame = window.requestAnimationFrame(() => {
+    frame = window.requestAnimationFrame(() => {
+      if ("requestIdleCallback" in window)
+        idle = window.requestIdleCallback(run, { timeout: FIRST_PAINT_TIMEOUT_MS });
+      else timer = setTimeout(run, 200);
+    });
+  });
   return () => {
-    done = true;
-    window.removeEventListener("load", schedule);
-    if (idleId !== undefined) window.cancelIdleCallback(idleId);
-    clearTimeout(timerId);
+    cancelled = true;
+    window.cancelAnimationFrame(frame);
+    if (idle) window.cancelIdleCallback(idle);
+    clearTimeout(timer);
   };
 }
 

@@ -15,6 +15,8 @@ export type ScriptSpec = {
   src?: string;
   inline?: string;
   strategy: ScriptStrategy;
+  /** Vendor loader: injected only after `requestIdleCallback` (timeout fallback), never on first paint. */
+  idle?: boolean;
   attributes?: Readonly<Record<string, string>>;
 };
 
@@ -36,7 +38,7 @@ export type TrackedEvent = {
  * 1. Add its id to `AdapterId` and a factory `createXAdapter(config)` in `adapters/x.ts` that
  *    returns this shape; `enabled` must be false when its `NEXT_PUBLIC_*` value is empty.
  * 2. `scripts()` returns the vendor stub and loader. Scripts are injected only while the
- *    adapter's category is allowed (granted by default, withdrawn through the banner), and
+ *    adapter's category is granted (prior opt-in, ADR-0011; withdrawn through the banner), and
  *    `onConsent` must map a withdrawal to the vendor's revoke call.
  * 3. `send()` maps standard names (`PageView`, `ViewContent`) to the vendor's standard events
  *    and passes `eventId` as the vendor's deduplication id; return `false` when the vendor

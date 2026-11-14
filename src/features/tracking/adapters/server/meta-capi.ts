@@ -41,6 +41,8 @@ export type RelayInput = {
   host?: string | undefined;
   ip?: string | undefined;
   userAgent?: string | undefined;
+  /** Raw `Cookie` header: the relay forwards events only with a stored marketing grant. */
+  cookie?: string | undefined;
 };
 
 /** The response the adapter must write. */
@@ -220,6 +222,13 @@ export function pickClientIp(candidates: ReadonlyArray<string | undefined | null
   return "";
 }
 
+/** Consent cookie value is `a<0|1>m<0|1>.v3` (see `serializeConsentCookie`); only `m1` of the current version grants. */
+const MARKETING_GRANT = /(?:^|;\s*)pv_consent=a[01]m1\.v3(?:;|$)/;
+
+function hasMarketingGrant(cookie: string | undefined): boolean {
+  return MARKETING_GRANT.test(cookie || "");
+}
+
 function allowedOrigins(host: string | undefined, siteOrigin: string | null): Set<string> {
   const origins = new Set(siteOrigin ? [siteOrigin] : []);
   if (typeof host === "string" && /^[a-z0-9.:[\]-]+$/i.test(host)) {
@@ -350,6 +359,8 @@ export function createMetaCapiRelay(options: RelayOptions): MetaCapiRelay {
     const origins = allowedOrigins(input.host, siteOrigin);
     if (input.origin && !origins.has(input.origin)) return result(403, "origin");
     if (!enabled) return result(204);
+    // Prior opt-in: an event without a stored grant is dropped, never forwarded to Meta.
+    if (!hasMarketingGrant(input.cookie)) return result(204);
     if (!/^application\/json\b/i.test(input.contentType || "")) return result(415, "content-type");
     if (Buffer.byteLength(input.bodyText, "utf8") > MAX_BODY_BYTES) return result(413, "size");
     let events: RelayEvent[];
@@ -419,6 +430,7 @@ export function createMetaCapiHandler(options: RelayOptions): MetaCapiHandler {
           req.socket?.remoteAddress,
         ]),
         userAgent: header(req.headers, "user-agent"),
+        cookie: header(req.headers, "cookie"),
       };
       if (req.method !== "POST" || !relay.enabled) {
         req.resume();

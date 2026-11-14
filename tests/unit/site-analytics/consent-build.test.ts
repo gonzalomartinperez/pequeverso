@@ -111,9 +111,13 @@ function render(enabled: boolean, stored: unknown, open: boolean, failWrite: boo
     },
     Date: { now: () => Date.parse("2026-10-19T00:00:00.000Z") },
     Event,
-    document: { readyState: "complete" },
     window: {
-      // The first-visit banner opens after load + idle; the stub runs the callback at once.
+      // The first-visit banner opens after two frames and idle; the stub runs the callbacks at once.
+      requestAnimationFrame: (callback: () => void) => {
+        callback();
+        return 1;
+      },
+      cancelAnimationFrame() {},
       requestIdleCallback: (callback: () => void) => {
         callback();
         return 1;
