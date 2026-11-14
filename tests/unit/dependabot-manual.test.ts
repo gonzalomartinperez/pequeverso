@@ -44,19 +44,37 @@ test("Dependabot config is one weekly group on Monday 09:00 ART targeting develo
 });
 
 test("the weekly guard and the daily vulnerability job reuse the pinned standards workflows", () => {
-  for (const [file, workflow] of [
-    [".github/workflows/deps-weekly-guard.yml", "deps-weekly-guard.yml"],
-    [".github/workflows/vuln-daily.yml", "vuln-daily.yml"],
-  ] as const) {
+  const callers = {
+    ".github/workflows/deps-weekly-guard.yml": {
+      workflow: "deps-weekly-guard",
+      grants: ["contents: read", "pull-requests: write", "issues: write", "checks: read"],
+    },
+    ".github/workflows/vuln-daily.yml": {
+      workflow: "vuln-daily",
+      grants: ["contents: read", "issues: write"],
+    },
+  };
+  for (const [file, { workflow, grants }] of Object.entries(callers)) {
     const source = readFileSync(file, "utf8");
     assert.match(
       source,
       new RegExp(
-        `uses: gonzalomartinperez/engineering-standards/\\.github/workflows/${workflow.replace(".", "\\.")}@[0-9a-f]{40} `,
+        `uses: gonzalomartinperez/engineering-standards/\\.github/workflows/${workflow}\\.yml@[0-9a-f]{40} `,
       ),
     );
     assert.match(source, /^permissions: \{\}$/m);
-    assert.doesNotMatch(source, /contents: write|@\w+ rebase/);
+    for (const grant of grants)
+      assert.match(source, new RegExp(`\\n {6}${grant}`), `${file} grants ${grant}`);
+    assert.doesNotMatch(source, /contents: write|@\w+ rebase|\n {2}pull_request(_target)?:/);
+    assert.match(source, /\n {2}schedule:\n/);
   }
-  assert.match(readFileSync(".github/workflows/deps-weekly-guard.yml", "utf8"), /group-name: weekly-all/);
+});
+
+test("the guard matches the branch segment Dependabot derives from the weekly group", () => {
+  const config = readFileSync(".github/dependabot.yml", "utf8");
+  const group = /multi-ecosystem-groups:\n {2}([a-z][\w-]*):/.exec(config)?.[1] ?? "";
+  assert.ok(group, "group name");
+  const guard = readFileSync(".github/workflows/deps-weekly-guard.yml", "utf8");
+  // Dependabot branch: dependabot/<target>/<group with "-" written as "_">-<hash> (PR #156).
+  assert.match(guard, new RegExp(`group-name: ${group.replaceAll("-", "_")}\\n`));
 });

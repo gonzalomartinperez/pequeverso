@@ -8,12 +8,13 @@
   for majors and 3 for patches. Security-update PRs are off; alerts stay on and ride the weekly PR
   (OD-22, OD-75). The owner merges the weekly PR manually.
 - `deps-weekly-guard.yml` (engineering-standards reusable workflow) runs Monday at 10:30 ART and on
-  Dependabot PR events. If two weekly PRs are open it closes the older one, pointing to the newer.
+  manual dispatch. If two weekly PRs are open it closes the older one, pointing to the newer.
   It labels a red survivor `needs-fix`, so the harness fixes it on the same branch.
-- `vuln-daily.yml` (engineering-standards reusable workflow) runs osv-scanner every day, plus a
-  compromise watch of workflow actions.
+- `vuln-daily.yml` (engineering-standards reusable workflow) runs osv-scanner every day at 11:30 ART,
+  plus a compromise watch of workflow actions.
 - Both workflows edit the single `vuln` tracking issue in place, which notifies nobody. Only the
-  Monday vulnerability run adds one summary comment, the single weekly email (OD-75).
+  Monday vulnerability run adds one summary comment, the single weekly email (OD-75). The one
+  exception is the rare closing comment the guard leaves on a superseded Dependabot PR.
 - `tests/unit/dependabot-manual.test.ts` asserts this shape. The group carries the schedule, target,
   limit and commit message; every entry joins the group with `patterns: ["*"]`; semver cooldowns
   appear only on package ecosystems.

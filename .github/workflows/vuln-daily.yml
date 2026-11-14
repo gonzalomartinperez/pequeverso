@@ -6,7 +6,7 @@ name: Vulnerability scan
 # the Monday run (America/Argentina/Buenos_Aires) adds the weekly summary comment.
 on:
   schedule:
-    - cron: "0 10 * * *" # daily 07:00 ART; the Monday run also posts the weekly summary
+    - cron: "30 14 * * *" # daily 11:30 ART, after Monday's Dependabot PR (09:00) and guard (10:30)
   workflow_dispatch:
 
 permissions: {}
