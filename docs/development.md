@@ -24,7 +24,7 @@
 | `npm run check:media` | Media budget and manifest provenance |
 | `npm run check:placeholders[:strict]` | Report / fail on `[[PLACEHOLDER]]` tokens |
 | `npm run lhci` | Lighthouse CI on `out/` |
-| `npm run scorecard -- --inputs <dir> --out scorecard.json` | Compares measurements (`<dir>/coverage/lcov.info`, `<dir>/bundle.json` from `node tools/check-bundle-budget.ts --json`, `<dir>/.lighthouseci`, repo size from `git ls-files`) with `ratchets/*.json`; missing inputs are `missing`, a regression exits 1. Runs nightly (`scorecard` job, artifact `scorecard`, 30 days) |
+| `npm run scorecard -- --inputs <dir> --out scorecard.json` | Compares measurements (`<dir>/coverage/lcov.info`, `<dir>/bundle.json` from `node tools/check-bundle-budget.ts --json`, `<dir>/.lighthouseci`, repo size from `git ls-files`) with `ratchets/*.json`; missing inputs are `missing`, a regression exits 1; `--need coverage,bundle` also fails on incomplete inputs. Runs nightly (`scorecard` job, artifact `scorecard`, 30 days) |
 | `npm run build:standalone` | Node target build (fallback), for parity checks |
 
 ## Environment

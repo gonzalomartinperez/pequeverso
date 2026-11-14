@@ -304,46 +304,6 @@ jobs:
             .ci-analyzer-artifact/manifest.json
           retention-days: 30
           if-no-files-found: ignore
-  scorecard:
-    name: Nightly scorecard
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    permissions:
-      contents: read
-    needs:
-      - quality
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          persist-credentials: false
-      - name: Setup
-        uses: ./.github/actions/setup
-      - name: Unit tests with lcov coverage
-        run: |-
-          set -euo pipefail
-          mkdir -p scorecard-inputs/coverage
-          node --env-file-if-exists=.env.example --test --experimental-test-coverage \
-            --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=lcov --test-reporter-destination=scorecard-inputs/coverage/lcov.info \
-            "tests/unit/**/*.test.ts"
-      - name: Build the export and measure the bundle
-        run: |-
-          npm run build
-          node tools/check-bundle-budget.ts --json scorecard-inputs/bundle.json
-      - name: Scorecard (fails on a regression against ratchets/*.json)
-        run: |-
-          set -euo pipefail
-          node tools/scorecard/run.ts --inputs scorecard-inputs --out scorecard.json | tee -a "$GITHUB_STEP_SUMMARY"
-          echo "Lighthouse, a11y and complexity inputs are reported as missing: their baselines are live-site or other lanes (see ratchets/README.md). ratchets/repo-size.json is known to be exceeded until M2-5 shrinks the visual baselines; that regression is expected and reported here, not hidden." >> "$GITHUB_STEP_SUMMARY"
-      - name: Upload scorecard
-        if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
-        with:
-          name: scorecard
-          path: scorecard.json
-          retention-days: 30
-          if-no-files-found: ignore
   checks:
     name: Nightly required checks
     runs-on: ubuntu-24.04
@@ -380,3 +340,67 @@ jobs:
           fi
         env:
           UPDATE_SNAPSHOTS: ${{ inputs.update_snapshots }}
+  scorecard:
+    name: Nightly scorecard
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    needs:
+      - quality
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Unit tests with lcov coverage
+        id: tests
+        continue-on-error: true
+        run: |-
+          set -euo pipefail
+          mkdir -p scorecard-inputs/coverage
+          node --env-file-if-exists=.env.example --test --experimental-test-coverage \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=lcov --test-reporter-destination=scorecard-inputs/coverage/lcov.info \
+            "tests/unit/**/*.test.ts"
+      - name: Build the export
+        id: build
+        continue-on-error: true
+        run: npm run build
+      - name: Measure the bundle (a budget breach still writes the measurements)
+        id: bundle
+        continue-on-error: true
+        run: node tools/check-bundle-budget.ts --json scorecard-inputs/bundle.json
+      - name: Explain the expected regressions
+        if: always()
+        run: |-
+          {
+            echo "Expected on the first nightlies, until fixed (the ratchets are not loosened):"
+            echo "- repo-size: ratchets/repo-size.json is exceeded; M2-5 shrinks the visual baselines."
+            echo "- coverage: develop is below ratchets/coverage.json (lines about 96.05 vs 96.19, branches about 87.46 vs 88.11); M2-5 owns the coverage gate."
+            echo "Lighthouse, a11y and complexity are reported as missing: their baselines are live-site or other lanes (ratchets/README.md)."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Scorecard (fails on a regression against ratchets/*.json)
+        run: |-
+          set -euo pipefail
+          node tools/scorecard/run.ts --inputs scorecard-inputs --out scorecard.json \
+            --need coverage,bundle | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Upload scorecard
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: scorecard
+          path: scorecard.json
+          retention-days: 30
+          if-no-files-found: ignore
+      - name: Fail when a measurement step failed
+        if: always()
+        env:
+          TESTS: ${{ steps.tests.outcome }}
+          BUILD: ${{ steps.build.outcome }}
+          BUNDLE: ${{ steps.bundle.outcome }}
+        run: |-
+          echo "unit tests: $TESTS, build: $BUILD, bundle budget: $BUNDLE"
+          [[ "$TESTS" != failure && "$BUILD" != failure && "$BUNDLE" != failure ]]

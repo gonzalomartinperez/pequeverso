@@ -14,8 +14,6 @@ export type MetricResult = {
   status: Status;
 };
 
-const round = (value: number, digits: number): number => Number(value.toFixed(digits));
-
 /** Coverage percentages from an lcov report (LF/LH lines, BRF/BRH branches, FNF/FNH functions). */
 export function parseLcov(text: string): Record<string, number> {
   const sums: Record<string, number> = { LF: 0, LH: 0, BRF: 0, BRH: 0, FNF: 0, FNH: 0 };
@@ -25,7 +23,7 @@ export function parseLcov(text: string): Record<string, number> {
     if (tag !== undefined && tag in sums && Number.isFinite(value))
       sums[tag] = (sums[tag] ?? 0) + value;
   }
-  const pct = (hit: number, found: number): number => round(found ? (hit / found) * 100 : 0, 2);
+  const pct = (hit: number, found: number): number => (found ? (hit / found) * 100 : 0);
   if (!sums.LF) return {};
   return {
     lines: pct(sums.LH ?? 0, sums.LF),
@@ -38,28 +36,48 @@ export function parseLcov(text: string): Record<string, number> {
 export function bundleMeasurements(
   rows: readonly { route: string; metric: string; kb: number }[],
 ): Record<string, number> {
-  return Object.fromEntries(rows.map((row) => [`${row.route} ${row.metric}`, round(row.kb, 1)]));
+  return Object.fromEntries(
+    rows
+      .filter((row) => typeof row.kb === "number" && Number.isFinite(row.kb))
+      .map((row) => [`${row.route} ${row.metric}`, row.kb]),
+  );
 }
 
-type LighthouseRun = {
+export type LighthouseRun = {
   path: string;
-  performance?: number;
-  lcp?: number;
-  tbt?: number;
-  cls?: number;
+  performance?: unknown;
+  lcp?: unknown;
+  tbt?: unknown;
+  cls?: unknown;
 };
 
-/** Lighthouse medians (one per URL) to ratchet keys: score 0-100, lcp and tbt in seconds, cls. */
+const median = (values: number[]): number => {
+  const sorted = [...values].sort((x, y) => x - y);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2
+    ? (sorted[mid] as number)
+    : ((sorted[mid - 1] as number) + (sorted[mid] as number)) / 2;
+};
+
+/**
+ * Lighthouse medians per URL and metric over every run (not lhci's representative run): score 0-100,
+ * lcp and tbt in seconds, cls. A value that is not a number in any run is skipped, so a metric with
+ * no numeric value stays unmeasured (missing).
+ */
 export function lighthouseMeasurements(runs: readonly LighthouseRun[]): Record<string, number> {
-  const out: Record<string, number> = {};
+  const samples = new Map<string, number[]>();
+  const add = (page: string, name: string, value: unknown, scale: number): void => {
+    if (typeof value !== "number" || !Number.isFinite(value)) return;
+    const key = `${page} ${name}`;
+    samples.set(key, [...(samples.get(key) ?? []), value * scale]);
+  };
   for (const run of runs) {
-    if (run.performance !== undefined)
-      out[`${run.path} performance`] = Math.round(run.performance * 100);
-    if (run.lcp !== undefined) out[`${run.path} lcp`] = round(run.lcp / 1000, 1);
-    if (run.tbt !== undefined) out[`${run.path} tbt`] = round(run.tbt / 1000, 1);
-    if (run.cls !== undefined) out[`${run.path} cls`] = round(run.cls, 3);
+    add(run.path, "performance", run.performance, 100);
+    add(run.path, "lcp", run.lcp, 1 / 1000);
+    add(run.path, "tbt", run.tbt, 1 / 1000);
+    add(run.path, "cls", run.cls, 1);
   }
-  return out;
+  return Object.fromEntries([...samples].map(([key, values]) => [key, median(values)]));
 }
 
 /** Repo size keys from tracked files (`git ls-files` plus stat). */
@@ -139,7 +157,8 @@ export function axisReports(report: Record<string, MetricResult[]>): Record<stri
       out[axis] = { kind: "evaluator", inputs: [], status: "evaluator" };
       continue;
     }
-    const results = spec.ratchets.flatMap((metric) => report[metric] ?? []);
+    const groups = spec.ratchets.map((metric) => report[metric] ?? []);
+    const results = groups.flat();
     const statuses = new Set(results.map((result) => result.status));
     out[axis] = {
       kind: spec.ratchets.length ? "automatic" : "unmeasured",
@@ -148,7 +167,7 @@ export function axisReports(report: Record<string, MetricResult[]>): Record<stri
         ? "unmeasured"
         : statuses.has("fail")
           ? "fail"
-          : statuses.has("missing") || !results.length
+          : statuses.has("missing") || groups.some((group) => !group.length)
             ? "missing"
             : "pass",
     };
@@ -161,6 +180,8 @@ export type Scorecard = {
   generatedAt: string;
   commit: string;
   summary: { pass: number; fail: number; missing: number };
+  /** Collector problems, keyed by metric (absent input or malformed file). */
+  inputProblems: Record<string, string>;
   metrics: Record<string, MetricResult[]>;
   axes: Record<string, AxisReport>;
 };
@@ -169,6 +190,7 @@ export function buildScorecard(
   ratchets: readonly Ratchet[],
   measurements: Measurements,
   meta: { generatedAt: string; commit: string },
+  inputProblems: Record<string, string> = {},
 ): Scorecard {
   const metrics = compare(ratchets, measurements);
   const all = Object.values(metrics).flat();
@@ -177,6 +199,7 @@ export function buildScorecard(
     version: 1,
     ...meta,
     summary: { pass: count("pass"), fail: count("fail"), missing: count("missing") },
+    inputProblems,
     metrics,
     axes: axisReports(metrics),
   };
@@ -192,4 +215,12 @@ export function regressions(scorecard: Scorecard): string[] {
           `${metric}: ${result.key} is ${result.measured} ${result.unit}, ${result.direction === "min" ? "floor" : "ceiling"} ${result.baseline}`,
       ),
   );
+}
+
+/** Required metrics (`--need coverage,bundle`) that have a missing value; empty means satisfied. */
+export function unmetRequirements(scorecard: Scorecard, required: readonly string[]): string[] {
+  return required.filter((metric) => {
+    const results = scorecard.metrics[metric];
+    return !results || results.some((result) => result.status === "missing");
+  });
 }
