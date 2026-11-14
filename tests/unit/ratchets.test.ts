@@ -8,7 +8,9 @@ import {
   holds,
   loadRatchets,
   loosened,
+  needsCalibration,
   type Ratchet,
+  ratchetPhase,
   validateRatchet,
 } from "../../tools/scorecard/ratchets.ts";
 
@@ -136,5 +138,83 @@ test("invalid ratchet files are rejected", () => {
     assert.throws(() => loadRatchets(dir), /invalid JSON/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+const warnSample: Ratchet = {
+  ...sample,
+  metric: "interaction",
+  measuredAt: "2026-11-14",
+  mode: "warn",
+  expires: "2026-11-28",
+};
+
+test("ratchetPhase: warn through the expiry day inclusive, enforce after, fail closed", () => {
+  assert.equal(ratchetPhase(warnSample, "2026-11-14"), "warn");
+  assert.equal(ratchetPhase(warnSample, "2026-11-28"), "warn");
+  assert.equal(ratchetPhase(warnSample, "2026-11-29"), "enforce");
+  assert.equal(
+    ratchetPhase({ ...warnSample, expires: "2026-11-30" }, "2026-11-20"),
+    "enforce",
+    "a window longer than 14 days enforces at every consumer",
+  );
+  assert.equal(ratchetPhase({ ...warnSample, expires: "2099-01-01" }, "2026-11-20"), "enforce");
+  assert.equal(ratchetPhase({ ...warnSample, measuredAt: "nope" }, "2026-11-20"), "enforce");
+  const { expires: _expires, ...noExpiry } = warnSample;
+  assert.equal(ratchetPhase(noExpiry, "2026-11-14"), "enforce", "missing expires enforces");
+  assert.equal(ratchetPhase({ ...warnSample, expires: "soon" }, "2026-11-14"), "enforce");
+  assert.equal(ratchetPhase({ ...warnSample, expires: "2026-02-30" }, "2026-02-01"), "enforce");
+  assert.equal(ratchetPhase({ ...warnSample, mode: "enforce" }, "2026-11-14"), "enforce");
+  assert.equal(ratchetPhase(sample, "2026-11-14"), "enforce", "no mode enforces");
+});
+
+test("mode and expires are validated: warn needs expires within 14 days of measuredAt", () => {
+  const check = (patch: object) => validateRatchet({ ...warnSample, ...patch }, "interaction.json");
+  assert.deepEqual(check({}), []);
+  assert.deepEqual(check({ mode: "enforce", expires: undefined }), []);
+  assert.match(check({ mode: "soft" }).join(), /mode must be/);
+  assert.match(check({ expires: undefined }).join(), /needs expires/);
+  assert.match(check({ expires: "2026-11-30" }).join(), /at most 14 days/);
+  assert.match(check({ expires: "2026-13-01" }).join(), /needs expires/);
+  assert.match(check({ mode: undefined }).join(), /mode must be/);
+});
+
+test("postponing a warn window is a loosening", () => {
+  assert.deepEqual(loosened(warnSample, warnSample), []);
+  assert.deepEqual(loosened(warnSample, { ...warnSample, expires: "2026-11-27" }), []);
+  assert.deepEqual(loosened(warnSample, { ...warnSample, expires: "2026-12-05" }), ["expires"]);
+  assert.deepEqual(loosened({ ...warnSample, mode: "enforce" }, warnSample), ["mode"]);
+  assert.deepEqual(loosened(sample, warnSample), ["mode"], "no mode means enforce");
+  const { mode: _mode, expires: _expires, ...enforced } = warnSample;
+  assert.deepEqual(loosened(warnSample, enforced), [], "warn -> enforce tightens");
+});
+
+test("needsCalibration: a warn ratchet must be calibrated once it enforces", () => {
+  const { expires: _expires, ...noExpiry } = warnSample;
+  assert.equal(needsCalibration(warnSample, "2026-11-28"), false, "still warning");
+  assert.equal(needsCalibration(warnSample, "2026-11-29"), true, "expired, not calibrated");
+  assert.equal(needsCalibration({ ...warnSample, calibrated: true }, "2026-11-29"), false);
+  assert.equal(needsCalibration({ ...warnSample, calibrated: false }, "2026-11-29"), true);
+  assert.equal(needsCalibration(sample, "2026-11-29"), false, "no mode: nothing to calibrate");
+  assert.equal(needsCalibration(noExpiry, "2026-11-20"), true);
+});
+
+test("calibrated is validated and cannot be withdrawn", () => {
+  const check = (patch: object) => validateRatchet({ ...warnSample, ...patch }, "interaction.json");
+  assert.deepEqual(check({ calibrated: true }), []);
+  assert.match(check({ calibrated: "yes" }).join(), /calibrated must be a boolean/);
+  const calibrated = { ...warnSample, calibrated: true };
+  assert.deepEqual(loosened(calibrated, calibrated), []);
+  assert.deepEqual(loosened(calibrated, warnSample), ["calibrated"]);
+});
+
+test("no committed ratchet that declares a mode is uncalibrated after its warn window", () => {
+  const today = new Date().toISOString().slice(0, 10);
+  for (const ratchet of loadRatchets(ratchetsDir)) {
+    assert.equal(
+      needsCalibration(ratchet, today),
+      false,
+      `ratchets/${ratchet.metric}.json passed its warn window without "calibrated": true: calibrate it from CI runs and set it`,
+    );
   }
 });

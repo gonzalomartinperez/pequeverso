@@ -14,7 +14,74 @@ export type Ratchet = {
   commit: string;
   source: string;
   values: RatchetValue[];
+  /** Absent means enforce. `warn` is a time-boxed soft gate and needs `expires`. */
+  mode?: "warn" | "enforce";
+  /** Last day (inclusive, YYYY-MM-DD) a `warn` ratchet only warns; it enforces from the next day. */
+  expires?: string;
+  /**
+   * True once the values were calibrated from real CI runs rather than provisional placeholders.
+   * A ratchet that declares a `mode` must have it once it enforces (`needsCalibration`).
+   */
+  calibrated?: boolean;
 };
+
+const DAY_MS = 86_400_000;
+/** A warn window may be at most this many days after `measuredAt` (ci-cd.md: warn for 14 days). */
+export const MAX_WARN_DAYS = 14;
+const isDate = (value: unknown): value is string =>
+  typeof value === "string" &&
+  /^\d{4}-\d{2}-\d{2}$/.test(value) &&
+  Number.isFinite(Date.parse(`${value}T00:00:00Z`)) &&
+  new Date(`${value}T00:00:00Z`).toISOString().startsWith(value);
+const dayNumber = (value: string): number => Date.parse(`${value}T00:00:00Z`) / DAY_MS;
+
+/**
+ * Whether a ratchet warns or enforces on `today` (YYYY-MM-DD, UTC: the flip happens at 00:00 UTC
+ * the day after `expires`). Expiry is inclusive: a `warn` ratchet warns through its `expires` date
+ * and enforces from the next day. Fails closed for every consumer: a missing or malformed
+ * `expires` or `measuredAt`, an `expires` more than MAX_WARN_DAYS after `measuredAt`, or an
+ * unknown mode, enforces.
+ */
+export function ratchetPhase(
+  ratchet: Pick<Ratchet, "mode" | "expires" | "measuredAt">,
+  today: string,
+): "warn" | "enforce" {
+  if (ratchet.mode !== "warn") return "enforce";
+  if (!isDate(ratchet.expires) || !isDate(ratchet.measuredAt) || !isDate(today)) return "enforce";
+  if (dayNumber(ratchet.expires) - dayNumber(ratchet.measuredAt) > MAX_WARN_DAYS) return "enforce";
+  return today <= ratchet.expires ? "warn" : "enforce";
+}
+
+/**
+ * A ratchet that declares a `mode` started as a time-boxed soft gate with provisional values; once
+ * it enforces, those values must have been calibrated (`calibrated: true`), whatever its `source`
+ * text says.
+ */
+export function needsCalibration(
+  ratchet: Pick<Ratchet, "mode" | "expires" | "measuredAt" | "calibrated">,
+  today: string,
+): boolean {
+  return (
+    ratchet.mode !== undefined &&
+    ratchetPhase(ratchet, today) === "enforce" &&
+    ratchet.calibrated !== true
+  );
+}
+
+function phaseProblems(data: Record<string, unknown>, file: string): string[] {
+  if (data.calibrated !== undefined && typeof data.calibrated !== "boolean")
+    return [`${file}: calibrated must be a boolean`];
+  if (data.mode === undefined && data.expires === undefined) return [];
+  if (data.mode !== "warn" && data.mode !== "enforce")
+    return [`${file}: mode must be "warn" or "enforce"`];
+  if (data.mode === "enforce") return [];
+  if (!isDate(data.expires)) return [`${file}: a warn ratchet needs expires (YYYY-MM-DD)`];
+  if (!isDate(data.measuredAt)) return [];
+  const days = dayNumber(data.expires) - dayNumber(data.measuredAt);
+  return days > MAX_WARN_DAYS
+    ? [`${file}: expires must be at most ${MAX_WARN_DAYS} days after measuredAt`]
+    : [];
+}
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -54,6 +121,7 @@ export function validateRatchet(data: unknown, file: string): string[] {
     (key, index) => typeof key === "string" && keys.indexOf(key) !== index,
   );
   for (const key of new Set(duplicates)) problems.push(`${file}: duplicate key "${String(key)}"`);
+  problems.push(...phaseProblems(data, file));
   return [...problems, ...data.values.flatMap((item) => valueProblems(item, file))];
 }
 
@@ -92,17 +160,27 @@ export function holds(baseline: RatchetValue, measured: number): boolean {
  */
 export function loosened(before: Ratchet, after: Ratchet): string[] {
   const next = new Map(after.values.map((item) => [item.key, item]));
-  return before.values
-    .filter((old) => {
-      const current = next.get(old.key);
-      return (
-        !current ||
-        current.direction !== old.direction ||
-        current.unit !== old.unit ||
-        !holds(old, current.value)
-      );
-    })
-    .map((old) => old.key);
+  const phase: string[] = [];
+  // enforce -> warn, or a later warn expiry, postpones enforcement: a loosening.
+  const wasWarn = before.mode === "warn";
+  if (before.calibrated === true && after.calibrated !== true) phase.push("calibrated");
+  if (!wasWarn && after.mode === "warn") phase.push("mode");
+  if (wasWarn && after.mode === "warn" && (after.expires ?? "") > (before.expires ?? ""))
+    phase.push("expires");
+  return [
+    ...phase,
+    ...before.values
+      .filter((old) => {
+        const current = next.get(old.key);
+        return (
+          !current ||
+          current.direction !== old.direction ||
+          current.unit !== old.unit ||
+          !holds(old, current.value)
+        );
+      })
+      .map((old) => old.key),
+  ];
 }
 
 if (import.meta.main) {
