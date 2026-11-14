@@ -43,7 +43,7 @@ async function reflowFaults(page: Page) {
   return page.evaluate(() => {
     const root = document.scrollingElement ?? document.documentElement;
     const width = root.clientWidth;
-    const describe = (el: Element, left: number, right: number) => {
+    const describeBox = (el: Element, left: number, right: number) => {
       const slot = el.getAttribute("data-slot");
       const classes = String(el.getAttribute("class") ?? "").slice(0, 60);
       const text = (el.textContent ?? "").trim().slice(0, 30);
@@ -73,7 +73,7 @@ async function reflowFaults(page: Page) {
       .filter((el) => !(el.parentElement && el.parentElement !== document.body && outside(el.parentElement)))
       .map((el) => {
         const rect = el.getBoundingClientRect();
-        return `box ${describe(el, rect.left, rect.right)}`;
+        return `box ${describeBox(el, rect.left, rect.right)}`;
       });
     const text: string[] = [];
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -87,7 +87,7 @@ async function reflowFaults(page: Page) {
       const line = [...range.getClientRects()].find(
         (rect) => rect.width >= 1 && (rect.right > width + 1 || rect.left < -1),
       );
-      if (line) text.push(`text ${describe(el, line.left, line.right)}`);
+      if (line) text.push(`text ${describeBox(el, line.left, line.right)}`);
     }
     return { scrollWidth: root.scrollWidth, clientWidth: width, faults: [...boxes, ...text].slice(0, 15) };
   });

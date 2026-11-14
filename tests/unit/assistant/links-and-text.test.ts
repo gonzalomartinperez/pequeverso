@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { applyLinkPolicy, externalUrl, storefrontUrl } from "../../../src/features/assistant/domain/links.ts";
+import {
+  applyLinkPolicy,
+  externalUrl,
+  storefrontPath,
+  storefrontUrl,
+} from "../../../src/features/assistant/domain/links.ts";
 import type { Message, Product } from "../../../src/features/assistant/domain/models.ts";
 import { parseInline, parseRichText } from "../../../src/features/assistant/domain/rich-text.ts";
 
@@ -123,12 +128,7 @@ describe("rich text", () => {
   });
 });
 
-describe("storefront URLs cannot become protocol-relative links", async () => {
-  const { externalUrl, storefrontPath, storefrontUrl } = await import(
-    "../../../src/features/assistant/domain/links.ts"
-  );
-  const policy = { storefrontOrigin: "https://pequeverso.com", linkHosts: ["consumer.hotmart.com"] };
-
+describe("storefront URLs cannot become protocol-relative links", () => {
   it("rejects double-slash paths, backslashes and control characters", () => {
     for (const value of [
       "https://pequeverso.com//evil.com/x",
