@@ -1,0 +1,20 @@
+{
+  "metric": "coverage",
+  "measuredAt": "2026-11-14",
+  "commit": "abc1234",
+  "source": "fixture",
+  "values": [
+    {
+      "key": "lines",
+      "value": 95,
+      "unit": "%",
+      "direction": "min"
+    },
+    {
+      "key": "branches",
+      "value": 88,
+      "unit": "%",
+      "direction": "min"
+    }
+  ]
+}

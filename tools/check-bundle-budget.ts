@@ -1,6 +1,7 @@
 // Enforces per-route transfer-size budgets (gzip) on the static export.
 // Budgets live in config/budgets.json; a markdown table is appended to $GITHUB_STEP_SUMMARY when set.
-import { appendFileSync, existsSync, readFileSync } from "node:fs";
+// `--json <file>` also writes [{route, metric, kb}] for the scorecard (tools/scorecard).
+import { appendFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { gzipSync } from "node:zlib";
 
@@ -41,6 +42,7 @@ function measureRoute(route: string): Record<Metric, number> & { route: string; 
 
 const kb = (bytes: number): string => `${(bytes / 1024).toFixed(1)} KB`;
 const rows: string[] = [];
+const measuredRows: { route: string; metric: Metric; kb: number }[] = [];
 const failures: string[] = [];
 
 for (const [route, limits] of Object.entries(budgets.routes)) {
@@ -48,6 +50,7 @@ for (const [route, limits] of Object.entries(budgets.routes)) {
   for (const metric of metrics) {
     const limit = limits[metric] ?? budgets.default[metric];
     const over = measured[metric] > limit;
+    measuredRows.push({ route, metric, kb: measured[metric] / 1024 });
     if (over) failures.push(`${route} ${metric} ${kb(measured[metric])} > ${kb(limit)}`);
     rows.push(
       `| ${route} | ${metric} | ${kb(measured[metric])} | ${kb(limit)} | ${over ? "❌" : "✅"} |`,
@@ -63,6 +66,10 @@ const table = [
 console.log(table);
 if (process.env.GITHUB_STEP_SUMMARY)
   appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## Bundle budget\n\n${table}\n`);
+
+const jsonFlag = process.argv.indexOf("--json");
+if (jsonFlag !== -1 && process.argv[jsonFlag + 1])
+  writeFileSync(process.argv[jsonFlag + 1] as string, `${JSON.stringify(measuredRows)}\n`);
 
 if (failures.length) {
   for (const failure of failures) console.error(`✖ ${failure}`);

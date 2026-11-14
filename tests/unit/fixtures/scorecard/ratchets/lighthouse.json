@@ -1,0 +1,20 @@
+{
+  "metric": "lighthouse",
+  "measuredAt": "2026-11-14",
+  "commit": "abc1234",
+  "source": "fixture",
+  "values": [
+    {
+      "key": "/ performance",
+      "value": 55,
+      "unit": "score",
+      "direction": "min"
+    },
+    {
+      "key": "/ lcp",
+      "value": 4.4,
+      "unit": "s",
+      "direction": "max"
+    }
+  ]
+}
