@@ -245,10 +245,7 @@ test("backed periods and reviewed statements pass", () => {
 test("refund copy never says Hotmart always executes the refund", () => {
   const unqualified = /siempre\s+(?:lo\s+|la\s+)?(?:ejecuta|hace|procesa)\s+Hotmart/iu;
   assert.match("El reembolso siempre lo ejecuta Hotmart", unqualified);
-  assert.match(
-    "siempre lo ejecuta\n Hotmart",
-    new RegExp(unqualified.source.replace(/\\s\+/g, "\\s+"), "iu"),
-  );
+  assert.match("siempre lo ejecuta\n Hotmart", unqualified, "a line break counts as whitespace");
   for (const file of ["content", "src/views"].flatMap(sourceFiles))
     assert.doesNotMatch(readFileSync(file, "utf8").replace(/\s+/gu, " "), unqualified, file);
   assert.ok(!/por el mismo medio de pago o el que acordemos/u.test(withdrawalCopy.manualRefund));

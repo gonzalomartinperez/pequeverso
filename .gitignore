@@ -46,3 +46,4 @@ src/shared/styles/cn-tables.js
 reports/
 .stryker-tmp/
 stryker.pr.config.json
+coverage/

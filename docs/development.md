@@ -26,6 +26,7 @@
 | `npm run check:placeholders[:strict]` | Report / fail on `[[PLACEHOLDER]]` tokens |
 | `npm run check:skills` | Skill catalog: frontmatter and `metadata`, body at most 120 lines, `evals/triggers.json` and `evals/evals.json` structure, symlinks, review age (warns after 180 days) |
 | `npm run lhci` | Lighthouse CI on `out/` (3 runs, mobile) then the strict ratchet assertion `node tools/lhci-assert.ts ratchets/lighthouse-lab.json`; `npm run lhci:production-config` builds the fake-pixel `out-lhci/` first (see Lighthouse lanes) |
+| `node tools/ci/diff-coverage.ts [--lcov coverage/lcov.info] [--base origin/develop] [--min 85]` | Diff coverage (M2-5): share of changed code lines that the unit tests run, from `git diff --unified=0 <base>...HEAD` and node's lcov (`DA` records; node reports every line, so blank and comment-only lines are dropped by a source-text check). Counted: files in the lcov report, plus every added line of a `tools/`, `src/` or `config/` `.ts` file that no test loaded (listed as "not measured", counts as uncovered). `.tsx` files count only when the lcov lists them (components most tests never load are not penalized; Playwright covers them), and tests, `.d.ts`, generated files, docs and JSON are out of scope. Floor 85 % from `ratchets/diff-coverage.json`; exit 1 below it or when the lcov has no records; 100 % with a "nothing measured" notice when no counted line changed. `npm run test:coverage` writes `coverage/lcov.info` (the `quality` job runs it, then this tool on pull requests) |
 | `npm run scorecard -- --inputs <dir> --out scorecard.json` | Compares measurements (`<dir>/coverage/lcov.info`, `<dir>/bundle.json` from `node tools/check-bundle-budget.ts --json`, `<dir>/.lighthouseci`, repo size from `git ls-files`) with `ratchets/*.json`; missing inputs are `missing`, a regression exits 1; `--need coverage,bundle` also fails on incomplete inputs. Runs nightly (`scorecard` job, artifact `scorecard`, 30 days) |
 | `npm run build:standalone` | Node target build (fallback), for parity checks |
 | `npm run build:design-gallery` / `test:browser:design-gallery` | Verification export WITH the `/_design` state gallery in `out-design-gallery/` (unpublishable), and its light Playwright spec; see `docs/design-system.md` |
@@ -150,3 +151,28 @@ inclusive a breach is an annotation plus a console line, and from 00:00 UTC the 
 real CI runs and set `calibrated: true`; `tests/unit/ratchets.test.ts` fails after `expires`
 otherwise. A starved sample (fewer than 10 frames) always fails. The spec writes
 `test-results/interaction-measurements/` (part of the CI evidence artifact). Tighten, never loosen. `node tools/interaction-suggest.ts ratchets/interaction.json <run-dir>...` (at least 3 distinct run directories, each a CI run's `interaction-measurements/`) proposes tighter ceilings (worst value plus 25% headroom, never above the current one) and sets `calibrated: true`; review it and commit it over the file.
+
+### Visual baselines
+
+`visual.spec.ts` compares regions (hero, buy box, footer, ...), not full pages, with
+`maxDiffPixelRatio` 0.01, animations disabled and fonts ready. Baselines are only valid when made in
+the pinned image, whose tag equals the installed Playwright version (the nightly `visual` job runs in
+it too; `tests/unit/visual-image.test.ts` keeps the two in step). Regenerate after a deliberate
+visual change, from the repository root with a fresh export in `out/`:
+
+```bash
+NEXT_OUTPUT=export npm run build
+docker run --rm --ipc=host --user "$(id -u):$(id -g)" -v "$PWD:$PWD" -w "$PWD" -e HOME=/tmp -e PW_SET=visual \
+  mcr.microsoft.com/playwright:v1.64.1-noble@sha256:2f05f8a734509a7b3f26a912639488ee08f58a7b292d14d62271bcff9038768f \
+  npx playwright test --update-snapshots
+```
+
+The image is pinned by digest (`docker inspect --format '{{index .RepoDigests 0}}' mcr.microsoft.com/playwright:v1.64.1-noble` prints it);
+bump tag and digest together with Playwright.
+
+Visual coverage today: hub (hero, closing), kit (hero, buy box, offer), upsell and downsell, thanks,
+support, one legal page, 404, footer, and the header and sticky bar, at 390 and 1440. Deferred (not
+in this slice): consent banner (the visual export has no pixel id, so no banner opens; needs a
+pixel build), assistant-disabled state, state gallery, and a reduced-motion variant pair.
+
+Review the changed PNGs, and keep `ratchets/repo-size.json` from rising (`git ls-files -z | xargs -0 stat -c %s`).
