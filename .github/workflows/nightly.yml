@@ -282,6 +282,8 @@ jobs:
         run: cmp out/.htaccess docs/generated/htaccess.txt
       - name: Lighthouse (5 runs, mobile emulation)
         run: npx lhci autorun --collect.numberOfRuns=5
+      - name: Lighthouse ratchet (median of 5 per route)
+        run: node tools/lhci-assert.ts ratchets/lighthouse-lab.json
       - name: Summary
         if: always()
         run: node tools/lhci-summary.ts >> "$GITHUB_STEP_SUMMARY"
@@ -305,6 +307,37 @@ jobs:
             .ci-analyzer-artifact/manifest.json
           retention-days: 30
           if-no-files-found: ignore
+  lighthouse-live:
+    name: Nightly Lighthouse (live site)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Setup
+        uses: ./.github/actions/setup
+      # Read-only: loads the public pages only. connect.facebook.net and facebook.com are blocked
+      # in lighthouserc.live.json so the lane cannot send PageView events to the real Meta pixel.
+      - name: Lighthouse (5 runs, mobile emulation, Meta blocked)
+        run: npx lhci collect --config=lighthouserc.live.json
+      - name: Lighthouse regression against the live ratchet (15% tolerance)
+        run: node tools/lhci-assert.ts ratchets/lighthouse.json --tolerance=0.15 --dir=.lighthouseci-live
+      - name: Summary
+        if: always()
+        run: node tools/lhci-summary.ts .lighthouseci-live >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload live Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: lighthouse-live
+          path: .lighthouseci-live
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: warn
   checks:
     name: Nightly required checks
     runs-on: ubuntu-24.04
@@ -318,6 +351,7 @@ jobs:
       - visual
       - links
       - bundle
+      - lighthouse-live
     if: always()
     steps:
       - name: Checkout

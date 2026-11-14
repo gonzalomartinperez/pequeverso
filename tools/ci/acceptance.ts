@@ -5,7 +5,7 @@
 import { pathToFileURL } from "node:url";
 
 export const prerequisites = {
-  nightly: ["prepare", "quality", "browser", "visual", "links", "bundle"],
+  nightly: ["prepare", "quality", "browser", "visual", "links", "bundle", "lighthouse-live"],
 } as const;
 
 export function requireSuccessfulJobs(value: unknown, profile: keyof typeof prerequisites): void {

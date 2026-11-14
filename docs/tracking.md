@@ -3,7 +3,9 @@
 First-party tracking with an opt-out banner (`src/features/tracking/`). Hotmart remains the
 source of truth for checkout and purchases; the site only measures interest. The browser
 variable is the Meta Pixel id; the server-only `META_CAPI_ACCESS_TOKEN` enables the
-Conversions API relay (below); every other behaviour is policy in code.
+Conversions API relay (below); every other behaviour is policy in code. CI uses the fake pixel id
+`1234567890123456`; the Lighthouse lane blocks `facebook.com/tr` so it sends nothing to Meta
+(`docs/development.md`, Lighthouse lanes).
 
 ## Adapters
 

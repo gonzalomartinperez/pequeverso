@@ -400,8 +400,11 @@ jobs:
           CI_MANIFEST_SHA256: ${{ needs.build.outputs.manifest_sha256 }}
       - name: Verify exported edge rules
         run: cmp out/.htaccess docs/generated/htaccess.txt
-      - name: Lighthouse (2 runs, mobile emulation)
+      - name: Lighthouse (3 runs, mobile emulation, production-config export)
         run: npx lhci autorun
+      - name: Lighthouse ratchet (median of 3 per route, error level)
+        if: always()
+        run: node tools/lhci-assert.ts ratchets/lighthouse-lab.json
       - name: Summary
         if: always()
         run: node tools/lhci-summary.ts >> "$GITHUB_STEP_SUMMARY"

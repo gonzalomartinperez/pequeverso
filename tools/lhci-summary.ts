@@ -2,7 +2,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-const manifestPath = resolve(process.cwd(), ".lighthouseci/manifest.json");
+const manifestPath = resolve(process.cwd(), process.argv[2] ?? ".lighthouseci", "manifest.json");
 if (!existsSync(manifestPath)) {
   console.log("## Lighthouse\n\nNo results found.");
   process.exit(0);

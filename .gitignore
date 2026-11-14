@@ -20,6 +20,7 @@ out-design-gallery/
 playwright-report-assistant/
 test-results-assistant/
 .lighthouseci/
+.lighthouseci-live/
 
 # local env (never commit real values; see .env.example)
 .env

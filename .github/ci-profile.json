@@ -66,6 +66,7 @@
         "postcss.config.json",
         "components.json",
         "lighthouserc.json",
+        "lighthouserc.live.json",
         "playwright.config.ts",
         "playwright.assistant.config.ts",
         ".nvmrc",

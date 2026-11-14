@@ -28,6 +28,7 @@ const required = [
   "coverage",
   "design-lint",
   "lighthouse",
+  "lighthouse-lab",
   "repo-size",
 ];
 
