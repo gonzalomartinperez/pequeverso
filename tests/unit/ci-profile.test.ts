@@ -61,6 +61,18 @@ test("every tracked file belongs to at least one path profile (no silent fail-cl
   );
 });
 
+test("files that lint, typecheck or build never ride the docs-only fast path", () => {
+  const files = execFileSync("git", ["ls-files", "-z"], { encoding: "utf8", timeout: 10_000 })
+    .split("\0")
+    .filter(Boolean);
+  const docsOnlyCode = files.filter((file) => {
+    const hit = profilesFor(file);
+    return hit.length === 1 && hit[0] === "docs" && /\.(ts|tsx|js|mjs|cjs|json|jsonc|css|ya?ml)$/.test(file);
+  });
+  assert.deepEqual(docsOnlyCode, [], "route these files to the code profile");
+  assert.ok(profilesFor("docs/verification/assistant/capture.spec.ts").includes("code"));
+});
+
 test("profile routing: docs stay on the fast path, code and workflows run everything", () => {
   assert.deepEqual(profilesFor("docs/architecture.md"), ["docs"]);
   assert.deepEqual(profilesFor(".agents/skills/review-change/SKILL.md"), ["docs"]);

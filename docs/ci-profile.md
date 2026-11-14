@@ -16,8 +16,8 @@ gated on `classify` and feeds `ci-gate`.
 | Profile | Selected by | Jobs |
 |---|---|---|
 | base (always) | every run | `workflows` (actionlint + zizmor), `secrets` (gitleaks, full history) |
-| `docs` | `**/*.md`, `docs/**`, licences, the agent harness (`.agents`, `.claude`, `.codex`) | `docs`: skills catalog and repository-wide content guards, no `npm ci` (budget p50 2 min) |
-| `code` | source, config, content, contracts, public, media, tools, tests, `docs/generated/**`, root configs and the lockfile | `docs`, `quality`, `build`, `hosting`, `browser`, `performance` |
+| `docs` | `**/*.md`, `docs/**` except code files, licences, the agent harness (`.agents`, `.claude`, `.codex`) | `docs`: skills catalog and its tests, repository-wide content guards, no `npm ci` (budget p50 2 min) |
+| `code` | source, config, content, contracts, public, media, tools, tests, `docs/generated/**`, code files under `docs/` (`.ts`, `.tsx`, `.js`, `.mjs`, `.json`: they lint and typecheck), root configs and the lockfile | `docs`, `quality`, `build`, `hosting`, `browser`, `performance` |
 | `workflow` | `.github/**` | same as `code` (a workflow change can break any job) |
 | `deps-weekly`, `release`, `hotfix` | built-in branch/label rules (Dependabot branch or `deps-weekly` label; `develop` → `main` or `release` label; `hotfix/**` → `main`) | every job |
 
@@ -28,7 +28,7 @@ Fail closed: a changed file outside every profile, a diff error, an empty diff o
 |---|---|---|
 | Workflow validation | classify | actionlint + zizmor, all workflows/actions |
 | Secret scan | classify | redacted full-history scanner, fail on incomplete history |
-| Docs and harness checks | classify | `tools/check-skills.ts`, old-domain and security.txt guards (no dependencies installed) |
+| Docs and harness checks | classify | `tools/check-skills.ts` and `skills.test.ts`, old-domain and security.txt guards (no dependencies installed) |
 | Quality checks | classify | static/unit/dependency checks, no production credentials |
 | Build | quality | default-OFF export, tree cleanliness, media/scene/bundle/render checks |
 | Hosting contract | quality | pinned Rocky 8, GLIBC 2.28, WASM SWC, standalone startup/smoke |
