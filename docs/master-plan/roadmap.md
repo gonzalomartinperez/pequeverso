@@ -16,7 +16,7 @@ Dependency on other repos: none blocks M1-M6 (the store consumes pinned contract
 
 | # | Task | Acceptance criteria | Effort | Status |
 |---|---|---|---|---|
-| M1-1 | Adopt `engineering-standards` reusable workflows (when the repo exists, E1) or in-repo equivalents; `classify` job and `ci-profile.json`; `ci-gate` required (alias `ci` kept one week) | profile coverage test passes; docs-only PR p50 at most 2 min; gate fails closed (negative test) | L (10 h) | todo |
+| M1-1 | Adopt `engineering-standards` reusable workflows (when the repo exists, E1) or in-repo equivalents; `classify` job and `ci-profile.json`; `ci-gate` required (alias `ci` kept one week) | profile coverage test passes; docs-only PR p50 at most 2 min; gate fails closed (negative test) | L (10 h) | in-progress |
 | M1-2 | Dependabot single weekly group; merge or close #148-#150; update `dependabot-manual.test.ts`; `deps-weekly-guard` | exactly one Dependabot PR observed on the next Monday (or simulated in the sandbox, E2); guard test | M (4 h) | todo |
 | M1-3 | Supply chain: CodeQL default setup, Scorecard weekly, dependency-review, osv-scanner daily (issue not PR), CycloneDX SBOM artifact, repo setting "require SHA pinning", secret scanning and push protection | each workflow green; SBOM attached to a CI run; zizmor clean | M (5 h) | todo |
 | M1-4 | Community files (SECURITY.md already handled in M1-10); `security.txt`; issue forms; PR template; `SUPPORT.md`; `CODE_OF_CONDUCT.md`; CODEOWNERS extension | files present; README heading and links check green | S (3 h) | done (PR #162, SHA 6cc1e12) |

@@ -74,7 +74,7 @@ Console / CrUX after launch.
 
 ## Current CI profile
 
-[The CI profile](ci-profile.md) defines the eight core job roles, temporary required `ci` bridge,
+[The CI profile](ci-profile.md) defines the profile map, the core job roles, the required `ci-gate` (with a temporary `ci` alias),
 seven Nightly roles and source-bound OFF export transfer. Functional and native configurations
 remain separate, each with six projects and four disjoint test-identity shards. No measured
 speedup is claimed for this topology until hosted runs complete.
