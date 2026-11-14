@@ -1,4 +1,4 @@
-import type { ConsentState } from "./consent.ts";
+import { type ConsentState, expireConsentCookie, hasConsent, readConsent } from "./consent.ts";
 import type { EventParams, ScriptSpec, TrackedEvent, TrackingAdapter } from "./types.ts";
 
 /** One event in the body of `POST /api/meta/events` (validated by `src/features/tracking/adapters/server/meta-capi.ts`). */
@@ -104,6 +104,15 @@ export function createMetaCapiAdapter(pixelId: string, deps: MetaCapiDeps = {}):
   function flush(unloading: boolean): void {
     clearTimer();
     if (buffer.length === 0) return;
+    // Re-read storage at the send boundary: a withdrawal in another tab may not have reached
+    // this tab as an event yet. Without a stored grant, drop the buffer and the grant cookie.
+    const stored = readConsent();
+    if (!hasConsent("marketing", stored)) {
+      buffer = [];
+      waitingSince = null;
+      if (stored === null) expireConsentCookie();
+      return;
+    }
     const fbp = readCookie("_fbp");
     if (!unloading && !fbp && waitingSince !== null && now() - waitingSince < fbpWaitMs) {
       timer = setTimeout(() => flush(false), flushDelayMs);

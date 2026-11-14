@@ -41,6 +41,8 @@ export type RelayInput = {
   host?: string | undefined;
   ip?: string | undefined;
   userAgent?: string | undefined;
+  /** Raw `Cookie` header: the relay forwards events only with a stored marketing grant. */
+  cookie?: string | undefined;
 };
 
 /** The response the adapter must write. */
@@ -220,6 +222,20 @@ export function pickClientIp(candidates: ReadonlyArray<string | undefined | null
   return "";
 }
 
+/** Consent cookie value of a marketing grant under the current policy (`serializeConsentCookie`). */
+const MARKETING_GRANT_VALUE = /^a[01]m1\.v3$/;
+
+/** True only with exactly one `pv_consent` cookie whose value is a valid v3 marketing grant. */
+function hasMarketingGrant(cookie: string | undefined): boolean {
+  const values: string[] = [];
+  for (const pair of (cookie || "").split(";")) {
+    const at = pair.indexOf("=");
+    if (at > 0 && pair.slice(0, at).trim() === "pv_consent") values.push(pair.slice(at + 1).trim());
+  }
+  const [only] = values;
+  return values.length === 1 && only !== undefined && MARKETING_GRANT_VALUE.test(only);
+}
+
 function allowedOrigins(host: string | undefined, siteOrigin: string | null): Set<string> {
   const origins = new Set(siteOrigin ? [siteOrigin] : []);
   if (typeof host === "string" && /^[a-z0-9.:[\]-]+$/i.test(host)) {
@@ -350,6 +366,8 @@ export function createMetaCapiRelay(options: RelayOptions): MetaCapiRelay {
     const origins = allowedOrigins(input.host, siteOrigin);
     if (input.origin && !origins.has(input.origin)) return result(403, "origin");
     if (!enabled) return result(204);
+    // Prior opt-in: an event without a stored grant is dropped, never forwarded to Meta.
+    if (!hasMarketingGrant(input.cookie)) return result(204);
     if (!/^application\/json\b/i.test(input.contentType || "")) return result(415, "content-type");
     if (Buffer.byteLength(input.bodyText, "utf8") > MAX_BODY_BYTES) return result(413, "size");
     let events: RelayEvent[];
@@ -419,6 +437,7 @@ export function createMetaCapiHandler(options: RelayOptions): MetaCapiHandler {
           req.socket?.remoteAddress,
         ]),
         userAgent: header(req.headers, "user-agent"),
+        cookie: header(req.headers, "cookie"),
       };
       if (req.method !== "POST" || !relay.enabled) {
         req.resume();
