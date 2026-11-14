@@ -158,7 +158,7 @@ HTML budgets without improving LCP).
 13 KB table); client islands outside `src/shared/ui` use `cx` or receive class strings from
 the server, so the always-loaded layout, error boundaries and header ship no variant tables. The
 mobile-nav sheet (Base UI dialog) is a separate chunk loaded on intent. three + gsap load only in
-`src/shared/motion/scene/scene-runtime.ts`, behind `await import()` and motion/Save-Data/viewport gates.
+`src/shared/motion/scene/scene-runtime.ts`, behind `await import()`, the ADR-0017 gate (fine pointer, at least 1024 px, first interaction) and motion/Save-Data/viewport gates.
 
 ## Re-measuring
 

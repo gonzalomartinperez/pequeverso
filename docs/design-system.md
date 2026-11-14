@@ -156,7 +156,7 @@ untouched); **(4) WAAPI** —
 motion turns on). **3D** is limited to `src/shared/motion/scene`: `SceneStage` keeps the server-rendered
 static layers (`StaticStarfield`: a seeded 320 px SVG pattern tile defined once by the hero and
 reused by bands, the planets marked `data-scene-planet`/`data-scene-depth`, the `Orbit` marked
-`data-scene-orbit`). After `load` + idle it creates a canvas and `await import()`s
+`data-scene-orbit`). Only on a fine pointer at least 1024 px wide (`scene-gate.ts`), after the first pointerdown, keydown, scroll or wheel and an idle moment (ADR-0017), it creates a canvas and `await import()`s
 `scene-runtime.ts` (three + gsap ScrollTrigger), which rebuilds the same universe in WebGL at the
 positions the static layers occupy (seamless crossfade via `data-live`): a layered starfield with
 depth, lit planet impostors with the CSS gradient stops (`--pv-planet-*`), the gold star on its
@@ -164,7 +164,7 @@ orbit with a trail. One scroll progress (ScrollTrigger) drives a dolly with fram
 independent smoothing; fine pointers add camera parallax; camera and planets are written only
 when they change. Adaptive quality (DPR cap and star share) follows measured frame times; the
 loop pauses off-screen or in hidden tabs; a lost context falls back to the static layers until it
-is restored. No canvas exists under reduced motion, Save-Data or viewports under 650 px tall. The
+is restored. No canvas exists, and the chunk is never requested, on phones, coarse pointers, windows under 1024 px, reduced motion, Save-Data or viewports under 650 px tall: they keep the static starfield. The
 pause toggle (`data-mode="running|paused|static"`, WCAG 2.2.2) also stops the CSS orbit.
 Band orbits (`Orbit motion="scroll"`) follow a view timeline, so they only move while scrolling.
 
