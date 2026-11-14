@@ -128,3 +128,14 @@ Projects: `chromium-1440`, `chromium-768`, `chromium-390`, `reduced-motion`, plu
 `firefox-390` and `webkit-390` (PR set);
 `PW_SET=nightly` uses `chromium-<w>` / `webkit-<w>` at 1440/1280/1024/768/430/390/360;
 `PW_SET=visual` uses `visual-chromium-390` / `visual-chromium-1440` for reference comparisons.
+
+`interaction.spec.ts` (M2-2) measures frame time (rAF p95 and long-frame share per phase: idle hero, scrolling,
+wall on screen), Long Animation Frames, and an INP proxy (the longest interaction event duration,
+Event Timing with a 16 ms threshold) on `/` and `/grafismo-fonetico/` in `chromium-390` (4x CPU
+slowdown, first-party requests only), and asserts in `reduced-motion` that nothing animates
+continuously. Ceilings are in `ratchets/interaction.json` (`mode: warn`): through its `expires` date
+inclusive a breach is an annotation plus a console line, and from 00:00 UTC the next day it fails
+(`ratchetPhase`). The values are provisional placeholders: before `expires`, calibrate them from
+real CI runs and set `calibrated: true`; `tests/unit/ratchets.test.ts` fails after `expires`
+otherwise. A starved sample (fewer than 10 frames) always fails. The spec writes
+`test-results/interaction-measurements/` (part of the CI evidence artifact). Tighten, never loosen.
