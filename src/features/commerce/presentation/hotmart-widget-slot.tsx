@@ -1,6 +1,7 @@
 "use client";
 
 import { hotmart } from "@config/commerce.ts";
+import Link from "next/link";
 import Script from "next/script";
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { buttonVariants } from "@/shared/ui/button-variants.ts";
@@ -21,6 +22,10 @@ type Props = {
   fallbackTitle: string;
   fallbackText: string;
   reloadLabel: string;
+  /** Accessible name Hotmart's iframe lacks (set from our side; never alters the widget). */
+  frameTitle: string;
+  /** Support link shown with the failed state. */
+  supportLabel: string;
   /** Milliseconds before the fallback shows when the widget never renders. */
   timeoutMs?: number;
 };
@@ -65,6 +70,8 @@ export function HotmartWidgetSlot({
   fallbackTitle,
   fallbackText,
   reloadLabel,
+  frameTitle,
+  supportLabel,
   timeoutMs = 8000,
 }: Props) {
   const [status, setStatus] = useState<Status>("loading");
@@ -106,6 +113,22 @@ export function HotmartWidgetSlot({
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
   }, []);
+
+  // Hotmart's iframe ships without a title (axe frame-title). Label it from outside, only when
+  // it has none; attributes, behaviour and contents of the widget are left untouched.
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const label = () => {
+      for (const frame of container.querySelectorAll("iframe")) {
+        if (!frame.getAttribute("title")?.trim()) frame.setAttribute("title", frameTitle);
+      }
+    };
+    label();
+    const observer = new MutationObserver(label);
+    observer.observe(container, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [frameTitle]);
 
   // Status: "ready" once Hotmart renders anything inside the container; "failed" on timeout.
   useEffect(() => {
@@ -183,6 +206,9 @@ export function HotmartWidgetSlot({
           >
             {reloadLabel}
           </button>
+          <Link href="/soporte/" className="inline-flex min-h-6 items-center font-bold underline underline-offset-4">
+            {supportLabel}
+          </Link>
         </div>
       ) : null}
       <Script

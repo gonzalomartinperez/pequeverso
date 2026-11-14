@@ -121,6 +121,8 @@ export const packCopy = {
     fallbackText:
       "Tu compra principal ya está confirmada. Puedes recargar esta página para volver a intentarlo o cerrar la ventana y revisar tu correo para acceder a Grafismo Fonético.",
     reload: "Recargar la página",
+    frameTitle: "Opciones de compra de Hotmart",
+    support: "Escribir a soporte",
   },
   sticky: { upsell: "Sumar el pack", downsell: "Agregar por menos" },
 } as const satisfies OfferLandingCopy;
