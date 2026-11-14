@@ -42,34 +42,34 @@
   --pv-peach: oklch(0.9483 0.0301 55.6); /* #ffe9dc */
 
   /* color.semantic */
-  --background: light-dark(var(--pv-cream), var(--pv-cream));
-  --foreground: light-dark(var(--pv-ink), var(--pv-ink));
-  --card: light-dark(var(--pv-white), var(--pv-white));
-  --card-foreground: light-dark(var(--pv-ink), var(--pv-ink));
-  --popover: light-dark(var(--pv-white), var(--pv-white));
-  --popover-foreground: light-dark(var(--pv-ink), var(--pv-ink));
-  --primary: light-dark(var(--pv-coral), var(--pv-coral));
-  --primary-foreground: light-dark(var(--pv-white), var(--pv-white));
-  --primary-hover: light-dark(var(--pv-coral-hover), var(--pv-coral-hover));
-  --secondary: light-dark(var(--pv-navy), var(--pv-navy));
-  --secondary-foreground: light-dark(var(--pv-white), var(--pv-white));
-  --secondary-hover: light-dark(var(--pv-navy-deep), var(--pv-navy-deep));
-  --muted: light-dark(var(--pv-sky), var(--pv-sky));
-  --muted-foreground: light-dark(var(--pv-muted), var(--pv-muted));
-  --accent: light-dark(var(--pv-teal), var(--pv-teal));
-  --accent-foreground: light-dark(var(--pv-white), var(--pv-white));
-  --destructive: light-dark(var(--pv-coral-hover), var(--pv-coral-hover));
-  --border: light-dark(var(--pv-line), var(--pv-line));
-  --input: light-dark(var(--pv-line-strong), var(--pv-line-strong));
-  --ring: light-dark(var(--pv-navy), var(--pv-navy));
-  --heading: light-dark(var(--pv-ink), var(--pv-ink));
-  --body: light-dark(var(--pv-body), var(--pv-body));
-  --link: light-dark(var(--pv-teal-text), var(--pv-teal-text));
-  --link-hover: light-dark(var(--pv-navy), var(--pv-navy));
-  --chip: light-dark(var(--pv-mint), var(--pv-mint));
-  --chip-foreground: light-dark(var(--pv-navy), var(--pv-navy));
-  --icon: light-dark(var(--pv-teal), var(--pv-teal));
-  --surface-veil: light-dark(oklch(0.9868 0.0118 79.79 / 96%), oklch(0.9868 0.0118 79.79 / 96%)); /* header and sticky bar over content */
+  --background: var(--pv-cream);
+  --foreground: var(--pv-ink);
+  --card: var(--pv-white);
+  --card-foreground: var(--pv-ink);
+  --popover: var(--pv-white);
+  --popover-foreground: var(--pv-ink);
+  --primary: var(--pv-coral);
+  --primary-foreground: var(--pv-white);
+  --primary-hover: var(--pv-coral-hover);
+  --secondary: var(--pv-navy);
+  --secondary-foreground: var(--pv-white);
+  --secondary-hover: var(--pv-navy-deep);
+  --muted: var(--pv-sky);
+  --muted-foreground: var(--pv-muted);
+  --accent: var(--pv-teal);
+  --accent-foreground: var(--pv-white);
+  --destructive: var(--pv-coral-hover);
+  --border: var(--pv-line);
+  --input: var(--pv-line-strong);
+  --ring: var(--pv-navy);
+  --heading: var(--pv-ink);
+  --body: var(--pv-body);
+  --link: var(--pv-teal-text);
+  --link-hover: var(--pv-navy);
+  --chip: var(--pv-mint);
+  --chip-foreground: var(--pv-navy);
+  --icon: var(--pv-teal);
+  --surface-veil: oklch(0.9868 0.0118 79.79 / 96%); /* header and sticky bar over content */
 
   /* font */
   --pv-font-display: "Fraunces", "Fraunces Fallback", Georgia, "Times New Roman", serif;
@@ -147,4 +147,37 @@
   --badge-sm: 3rem;
   --badge-md: 3.5rem;
   --badge-lg: 4.5rem;
+}
+
+@supports (color: light-dark(white, black)) {
+  :root {
+    --background: light-dark(var(--pv-cream), var(--pv-cream));
+    --foreground: light-dark(var(--pv-ink), var(--pv-ink));
+    --card: light-dark(var(--pv-white), var(--pv-white));
+    --card-foreground: light-dark(var(--pv-ink), var(--pv-ink));
+    --popover: light-dark(var(--pv-white), var(--pv-white));
+    --popover-foreground: light-dark(var(--pv-ink), var(--pv-ink));
+    --primary: light-dark(var(--pv-coral), var(--pv-coral));
+    --primary-foreground: light-dark(var(--pv-white), var(--pv-white));
+    --primary-hover: light-dark(var(--pv-coral-hover), var(--pv-coral-hover));
+    --secondary: light-dark(var(--pv-navy), var(--pv-navy));
+    --secondary-foreground: light-dark(var(--pv-white), var(--pv-white));
+    --secondary-hover: light-dark(var(--pv-navy-deep), var(--pv-navy-deep));
+    --muted: light-dark(var(--pv-sky), var(--pv-sky));
+    --muted-foreground: light-dark(var(--pv-muted), var(--pv-muted));
+    --accent: light-dark(var(--pv-teal), var(--pv-teal));
+    --accent-foreground: light-dark(var(--pv-white), var(--pv-white));
+    --destructive: light-dark(var(--pv-coral-hover), var(--pv-coral-hover));
+    --border: light-dark(var(--pv-line), var(--pv-line));
+    --input: light-dark(var(--pv-line-strong), var(--pv-line-strong));
+    --ring: light-dark(var(--pv-navy), var(--pv-navy));
+    --heading: light-dark(var(--pv-ink), var(--pv-ink));
+    --body: light-dark(var(--pv-body), var(--pv-body));
+    --link: light-dark(var(--pv-teal-text), var(--pv-teal-text));
+    --link-hover: light-dark(var(--pv-navy), var(--pv-navy));
+    --chip: light-dark(var(--pv-mint), var(--pv-mint));
+    --chip-foreground: light-dark(var(--pv-navy), var(--pv-navy));
+    --icon: light-dark(var(--pv-teal), var(--pv-teal));
+    --surface-veil: light-dark(oklch(0.9868 0.0118 79.79 / 96%), oklch(0.9868 0.0118 79.79 / 96%));
+  }
 }

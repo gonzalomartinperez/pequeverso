@@ -1,6 +1,5 @@
 {
-  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
-  "$description": "Pequeverso design tokens (DTCG). Source of truth for src/shared/tokens/theme.css; regenerate with node tools/tokens/build.ts. The CSS custom-property name is the last path segment. Color tokens under color.semantic resolve through light-dark(light, dark); a token may carry $extensions[\"com.pequeverso\"].dark, otherwise dark = light (ADR-0006, ADR-0012).",
+  "$description": "Pequeverso design tokens (DTCG-shaped, CSS-string values; see ADR-0012). Source of truth for src/shared/tokens/theme.css; regenerate with node tools/tokens/build.ts. The CSS custom-property name is the last path segment. Color tokens under color.semantic resolve through light-dark(light, dark); a token may carry $extensions[\"com.pequeverso\"].dark, otherwise dark = light (ADR-0006, ADR-0012).",
   "color": {
     "brand": {
       "pv-navy": {

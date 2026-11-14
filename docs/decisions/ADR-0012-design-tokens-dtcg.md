@@ -11,8 +11,9 @@ contrast test that reads the source, with no visual change.
 
 ## Decision
 
-1. **Source of truth:** `design/tokens/pequeverso.tokens.json` (DTCG 2025.10 shape: `$value`,
-   `$type`, `$description`, `{group.token}` references). The CSS custom-property name is the last
+1. **Source of truth:** `design/tokens/pequeverso.tokens.json`, DTCG-shaped with CSS-string values
+   (`$value`, `$type`, `$description`, `{group.token}` references; not DTCG 2025.10 conformant: no
+   `$schema`, colors, dimensions and shadows are CSS strings, not structured objects). The CSS custom-property name is the last
    path segment, so `--pv-navy` and every consumer keep their names. Groups: `color.brand`,
    `color.neutral`, `color.band`, `color.semantic`, `font`, `type`, `space`, `radius`, `shadow`,
    `motion`, `layout`. Values stay CSS strings (`oklch(...)`, `clamp(...)`, comma-separated
@@ -21,15 +22,22 @@ contrast test that reads the source, with no visual change.
    a "generated, do not edit" header. `tests/unit/tokens.test.ts` regenerates in memory and fails
    when the committed file is stale. `globals.css` imports it and keeps the Tailwind `@theme
    inline` bridge, fonts, variants and base layer.
-3. **`light-dark()` indirection:** `:root` sets `color-scheme: light`; each `color.semantic` token
-   (`--background`, `--primary`, `--surface-veil`, ...) is emitted as `light-dark(<light>,
-   <dark>)`. A token may carry `$extensions["com.pequeverso"].dark`; without it dark equals light.
+3. **`light-dark()` indirection:** `:root` sets `color-scheme: light` (and the layout viewport
+   emits `<meta name="color-scheme" content="light">`). Every token is first emitted as a plain
+   light value; each `color.semantic` token (`--background`, `--primary`, `--surface-veil`, ...)
+   is then upgraded to `light-dark(<light>, <dark>)` inside `@supports (color: light-dark(white,
+   black))`. Browser floor for the upgrade: Chrome/Edge 123, Safari 17.5, Firefox 120; older
+   engines (Chrome 111 and Safari 16.4 are still built for) keep the plain light value, because an
+   unsupported `light-dark()` would invalidate every `var(--role)` at computed-value time. A token may carry `$extensions["com.pequeverso"].dark`; without it dark equals light.
    A dark theme is therefore a token change plus switching `color-scheme`; ADR-0006 stands: the
    site ships one light theme, and a unit test asserts the two arguments are identical.
-4. **Contrast:** the pairs the design system uses live in the JSON
+4. **Validation:** the generator rejects non-string values, `*/` in descriptions, duplicate CSS
+   names, unknown references and reference cycles (including dark references); each has a negative
+   test.
+5. **Contrast:** the pairs the design system uses live in the JSON
    (`$extensions["com.pequeverso"].contrast.pairs`); `tests/unit/design-system.test.ts` computes
    WCAG ratios from the OKLCH values and asserts each pair reaches its minimum (never below 4.5:1).
-5. **Design lint** (M2-7) allows color literals in the generated file, like `globals.css`.
+6. **Design lint** (M2-7) allows color literals in the generated file, like `globals.css`.
 
 ## Style Dictionary: deferred
 
@@ -42,7 +50,13 @@ need transforms (color-space conversion, composite shadow/typography objects), o
 that needs a second emitted file. Then replace `tools/tokens/build.ts` with a Style Dictionary
 config producing the same `theme.css` and keep the stale-file test.
 
+Deviations from `docs/master-plan/design-playbook.md`: no primitive/semantic/component tiers (flat
+groups plus `color.semantic`), and no `@theme` emission (the Tailwind `@theme inline` bridge stays
+hand-written in `globals.css`). Migrating to Style Dictionary or a DTCG validator needs a value
+rewrite (CSS strings to structured color, dimension and shadow values).
+
 ## Confirmation
 
-`npm test` (staleness, `light-dark()`, contrast); computed styles on every route were compared
-before and after the move with no differences.
+`npm test` (staleness, `light-dark()`, contrast); `tools/tokens/compare-computed.ts` (manual, documented in its header) compares resolved custom
+properties and 25 computed properties of every element on every exported route at 390 and 1280 px
+between two static exports; the move had no differences.
