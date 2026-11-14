@@ -1,0 +1,77 @@
+{
+  "metric": "interaction",
+  "measuredAt": "2026-11-14",
+  "commit": "a71ca6f",
+  "source": "tests/browser/interaction.spec.ts, chromium-390 with a 4x CPU slowdown set before navigation, first-party only (external hosts are aborted). PROVISIONAL placeholders: ceilings are about 1.5x the worst local value measured on a machine at load average 46, not CI numbers. The warn phase runs through expires inclusive and enforces from 00:00 UTC the next day; before then calibrate from real CI runs and set calibrated to true (tests/unit/ratchets.test.ts fails after expires otherwise). Plan targets: docs/master-plan/testing.md (p95 20 ms, long frames 2 %, LoAF 100 ms, interaction 150 ms)",
+  "mode": "warn",
+  "calibrated": false,
+  "expires": "2026-11-28",
+  "values": [
+    {
+      "key": "frame-hero-p95-ms",
+      "value": 5600,
+      "unit": "ms",
+      "direction": "max"
+    },
+    {
+      "key": "frame-scroll-p95-ms",
+      "value": 5600,
+      "unit": "ms",
+      "direction": "max"
+    },
+    {
+      "key": "frame-wall-p95-ms",
+      "value": 5600,
+      "unit": "ms",
+      "direction": "max"
+    },
+    {
+      "key": "long-frame-hero-share-pct",
+      "value": 95,
+      "unit": "%",
+      "direction": "max"
+    },
+    {
+      "key": "long-frame-scroll-share-pct",
+      "value": 95,
+      "unit": "%",
+      "direction": "max"
+    },
+    {
+      "key": "long-frame-wall-share-pct",
+      "value": 95,
+      "unit": "%",
+      "direction": "max"
+    },
+    {
+      "key": "loaf-load-count",
+      "value": 20,
+      "unit": "frames",
+      "direction": "max"
+    },
+    {
+      "key": "loaf-load-max-ms",
+      "value": 3000,
+      "unit": "ms",
+      "direction": "max"
+    },
+    {
+      "key": "loaf-total-count",
+      "value": 160,
+      "unit": "frames",
+      "direction": "max"
+    },
+    {
+      "key": "loaf-total-max-ms",
+      "value": 5000,
+      "unit": "ms",
+      "direction": "max"
+    },
+    {
+      "key": "inp-proxy-ms",
+      "value": 1100,
+      "unit": "ms",
+      "direction": "max"
+    }
+  ]
+}

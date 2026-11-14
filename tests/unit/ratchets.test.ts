@@ -29,6 +29,7 @@ const required = [
   "complexity",
   "coverage",
   "design-lint",
+  "interaction",
   "lighthouse",
   "lighthouse-lab",
   "repo-size",

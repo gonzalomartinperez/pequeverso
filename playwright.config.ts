@@ -26,6 +26,8 @@ const desktopFirefox = devices["Desktop Firefox"];
 const specs = {
   functional:
     /(hub|playground|smoke|csp|a11y|offer-mode|widget|commerce|consent|legal|motion|scene-gating|surfaces|navigation|tracking|lcp|responsive|text-zoom|assistant-disabled|site-analytics-dom|design-gallery)\.spec\.ts/,
+  /** Frame-time, LoAF and INP specs (M2-2): the mobile project and the reduced-motion lane only. */
+  interaction: /interaction\.spec\.ts/,
   visual: /visual\.spec\.ts/,
   prod: /smoke\.spec\.ts/,
 };
@@ -55,12 +57,12 @@ const projectSets = {
     {
       name: "chromium-390",
       use: { ...devices["Pixel 7"], viewport: viewport(390) },
-      testMatch: specs.functional,
+      testMatch: [specs.functional, specs.interaction],
     },
     {
       name: "reduced-motion",
       use: { ...desktopChrome, viewport: viewport(1280), reducedMotion: "reduce" as const },
-      testMatch: /(playground|motion|a11y|smoke)\.spec\.ts/,
+      testMatch: /(playground|motion|a11y|smoke|interaction)\.spec\.ts/,
     },
   ],
   nightly: [
