@@ -144,8 +144,8 @@ re-deployed. The verify job then proves the previous `sha` is live; if Hostinger
 
 ## Not covered by automation
 
-Hotmart configuration (sales page URL, funnel stage URLs, thank-you URLs), Search Console
-submissions, social bios and the old-domain `.htaccess` block are manual steps in `docs/migration.md`.
+Hotmart configuration (sales page URL, funnel stage URLs, thank-you URLs; `docs/hotmart-funnel.md`
+section 4), Search Console submissions and social bios are manual steps (`docs/migration.md`).
 
 ## Daily internal-link and affiliate checks
 
