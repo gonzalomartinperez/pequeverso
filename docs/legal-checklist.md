@@ -284,5 +284,8 @@ Data-protection law names:
   - Response time: "48 horas hábiles" for support, 24 h for the arrepentimiento code.
   - `seller.legalEmail` is the Titular's own mailbox, registered in the Hotmart account, where Hotmart
     forwards buyer contacts. It appears only on the six legal routes.
-- **Accessibility statement.** `/aviso-legal/` has a voluntary statement that uses WCAG 2.2 AA as the
-  reference; it is not a conformance claim.
+- **Accessibility statement.** `/accesibilidad/` (`content/es/legal/accesibilidad.ts`, M3-7) states the
+  WCAG 2.2 AA target, the checks that exist in `tests/browser`, known limits (Hotmart iframe #183,
+  PDFs), the support contact and a review date (`pageReviewed.accessibility`). It is indexable and in
+  the sitemap, linked from the footer; it is not a conformance claim. The EAA paragraph is a neutral
+  scope note awaiting owner or counsel confirmation (PV-D8). `/aviso-legal/` §Accesibilidad links to it.

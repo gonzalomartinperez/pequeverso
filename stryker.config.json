@@ -5,7 +5,7 @@
   "plugins": ["@stryker-mutator/tap-runner"],
   "tap": {
     "testFiles": [
-      "tests/unit/{affiliates,edge-rules,headers-snapshot,params,products,syllable-game,tracking}.test.ts",
+      "tests/unit/{affiliates,csp,edge-rules,edge-rules-contract,headers-snapshot,params,products,syllable-game,tracking}.test.ts",
       "tests/unit/site-analytics/consent-build.test.ts",
       "tests/unit/property/*.test.ts",
       "tests/unit/assistant/!(boundaries|next-config|flag).test.ts"

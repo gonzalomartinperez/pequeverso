@@ -199,7 +199,8 @@ export default function AvisoLegalPage() {
         (contraste, navegación por teclado, objetivos táctiles, movimiento reducido y alternativas
         de texto). Si encuentras una barrera, escríbenos a{" "}
         <a href={`mailto:${seller.supportEmail}`}>{seller.supportEmail}</a> y trataremos de
-        resolverla.
+        resolverla. La <Link href="/accesibilidad/">declaración de accesibilidad</Link> detalla cómo
+        lo verificamos y qué limitaciones conocemos.
       </p>
 
       <SectionHeading sections={sections} id="ley" />

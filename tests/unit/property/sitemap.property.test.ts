@@ -31,7 +31,12 @@ test("sitemap stays absolute, unique, canonical and date-stable across generatio
       assert.equal(new Set(entries.map((entry) => entry.url)).size, entries.length);
       assert.deepEqual(
         entries.map((entry) => new URL(entry.url).pathname),
-        ["/", ...indexableProducts().map((product) => product.path), "/soporte/"],
+        [
+          "/",
+          ...indexableProducts().map((product) => product.path),
+          "/soporte/",
+          "/accesibilidad/",
+        ],
       );
       for (const [index, entry] of entries.entries()) {
         const url = new URL(entry.url);

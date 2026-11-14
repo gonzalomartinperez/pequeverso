@@ -33,6 +33,7 @@ const legalLinks = [
   { href: "/aviso-legal/", label: "Aviso legal" },
   { href: "/privacidad/", label: "Privacidad" },
   { href: "/cookies/", label: "Cookies" },
+  { href: "/accesibilidad/", label: "Accesibilidad" },
   { href: "/terminos/", label: "Términos de compra" },
 ];
 

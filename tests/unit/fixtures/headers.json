@@ -4,7 +4,7 @@
     "headers": [
       {
         "key": "Strict-Transport-Security",
-        "value": "max-age=300"
+        "value": "max-age=604800"
       }
     ]
   },
@@ -21,14 +21,14 @@
       },
       {
         "key": "Permissions-Policy",
-        "value": "camera=(), microphone=(), geolocation=(), payment=(), browsing-topics=()"
+        "value": "camera=(), microphone=(), geolocation=(), payment=(self \"https://pay.hotmart.com\" \"https://pci-pay.hotmart.com\"), browsing-topics=()"
       },
       {
         "key": "X-Frame-Options",
         "value": "SAMEORIGIN"
       },
       {
-        "key": "Content-Security-Policy-Report-Only",
+        "key": "Content-Security-Policy",
         "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://checkout.hotmart.com https://*.hotmart.com https://connect.facebook.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://*.hotmart.com https://www.facebook.com https://connect.facebook.net https://cloud.umami.is https://api-gateway.umami.dev; frame-src https://*.hotmart.com https://www.facebook.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://*.hotmart.com; frame-ancestors 'self'"
       },
       {

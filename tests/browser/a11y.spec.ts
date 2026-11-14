@@ -31,7 +31,9 @@ const routes = [
   "/privacidad/",
   "/terminos/",
   "/cookies/",
+  "/compras-y-reembolsos/",
   "/aviso-legal/",
+  "/accesibilidad/",
   "/arrepentimiento/",
   "/esta-no-existe/",
 ];

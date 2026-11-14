@@ -7,4 +7,6 @@
 export const pageReviewed = {
   home: "2026-11-14",
   support: "2026-11-14",
+  /** Last accessibility review of /accesibilidad/; bump it when the statement or the checks it cites change. */
+  accessibility: "2026-11-14",
 } as const;
