@@ -1,9 +1,9 @@
 {
   "$comment": "First-load gzip size per route and asset class from `npm run check:bundle` on the export build. Ceilings: may only fall (M3-3 targets: product page js <= 170, hub js <= 165).",
   "metric": "bundle",
-  "measuredAt": "2026-11-09",
-  "commit": "cbf519c",
-  "source": "docs/master-plan/audit/repo-checks/check-bundle.log",
+  "measuredAt": "2026-11-14",
+  "commit": "f4ce311",
+  "source": "npm run check:bundle on perf/m3-3-js-budget (M3-3: embla removed; js ceilings re-measured)",
   "values": [
     {
       "key": "/ html",
@@ -13,7 +13,7 @@
     },
     {
       "key": "/ js",
-      "value": 156.3,
+      "value": 156.0,
       "unit": "KB gzip",
       "direction": "max"
     },
@@ -31,7 +31,7 @@
     },
     {
       "key": "/grafismo-fonetico/ js",
-      "value": 174.5,
+      "value": 167.4,
       "unit": "KB gzip",
       "direction": "max"
     },
@@ -49,7 +49,7 @@
     },
     {
       "key": "/imprime-y-juega/ js",
-      "value": 174.5,
+      "value": 167.4,
       "unit": "KB gzip",
       "direction": "max"
     },
@@ -67,7 +67,7 @@
     },
     {
       "key": "/grafismo-fonetico/gracias/ js",
-      "value": 150.4,
+      "value": 150.1,
       "unit": "KB gzip",
       "direction": "max"
     },
@@ -85,7 +85,7 @@
     },
     {
       "key": "/soporte/ js",
-      "value": 149.5,
+      "value": 149.2,
       "unit": "KB gzip",
       "direction": "max"
     },
@@ -103,7 +103,7 @@
     },
     {
       "key": "/terminos/ js",
-      "value": 149.5,
+      "value": 149.2,
       "unit": "KB gzip",
       "direction": "max"
     },
@@ -121,7 +121,7 @@
     },
     {
       "key": "/privacidad/ js",
-      "value": 149.5,
+      "value": 149.2,
       "unit": "KB gzip",
       "direction": "max"
     },
@@ -139,7 +139,7 @@
     },
     {
       "key": "/arrepentimiento/ js",
-      "value": 149.5,
+      "value": 149.2,
       "unit": "KB gzip",
       "direction": "max"
     },

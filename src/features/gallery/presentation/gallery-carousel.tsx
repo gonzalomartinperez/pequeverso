@@ -1,9 +1,9 @@
 "use client";
 
-import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import {
   Children,
+  Component,
   createContext,
   isValidElement,
   type KeyboardEvent,
@@ -52,6 +52,20 @@ const THUMB =
 const DOT =
   "grid h-11 w-6 cursor-pointer place-items-center p-0 before:h-2 before:w-2 before:rounded-full before:bg-line-strong before:transition-all before:duration-(--duration) aria-selected:before:w-5 aria-selected:before:bg-navy";
 
+/** A failed zoom import renders nothing: the page stays usable and the next open retries the import. */
+class ZoomBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  override state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  override render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
+/** Safety net: a programmatic scroll that never reports its target stops suppressing the observer. */
+const SCROLL_TIMEOUT_MS = 1200;
+
 const preloadZoom = () => void loadZoom();
 
 const ZoomContext = createContext<(image: HTMLImageElement) => void>(() => undefined);
@@ -72,6 +86,7 @@ export function GalleryZoomButton({ label, children }: { label: string; children
       className={ZOOM}
       onClick={onClick}
       onPointerEnter={preloadZoom}
+      onFocus={preloadZoom}
       aria-label={label}
     >
       {children}
@@ -97,8 +112,8 @@ function zoomFrom(image: HTMLImageElement): Zoom {
 }
 
 /**
- * Product-page style gallery of real worksheet pages: one large page on a framed stage (drag/swipe,
- * glass arrows, keyboard), a counter pill, the caption, a scroll-snap strip of thumbnails (dots
+ * Product-page style gallery of real worksheet pages: one large page on a framed stage (swipe on a CSS scroll-snap
+ * scroller, glass arrows, keyboard), a counter pill, the caption, a scroll-snap strip of thumbnails (dots
  * when no thumbnails are given) and a zoom on the Base UI dialog, loaded on first use.
  */
 export function GalleryCarousel({
@@ -110,19 +125,15 @@ export function GalleryCarousel({
   zoomTitle,
   meta,
 }: Props) {
-  const [emblaRef, embla] = useEmblaCarousel({
-    // No loop: the looper re-translates slides on every frame, and WebKit never reports the zoom
-    // button as stable under it; a product gallery reads better with a clear first and last page.
-    loop: false,
-    align: "center",
-    skipSnaps: false,
-    dragFree: false,
-  });
   const [selected, setSelected] = useState(0);
-  const [settled, setSettled] = useState(true);
   const [zoom, setZoom] = useState<Zoom | null>(null);
   const [zoomOpen, setZoomOpen] = useState(false);
   const strip = useRef<HTMLDivElement>(null);
+  const track = useRef<HTMLUListElement>(null);
+  // Target of a programmatic scroll in flight; the observer is ignored until it is reached.
+  const pendingTarget = useRef<number | null>(null);
+  const pendingTimer = useRef<number | undefined>(undefined);
+  const finishRef = useRef<() => void>(() => undefined);
   const open = useCallback((image: HTMLImageElement) => {
     setZoom(zoomFrom(image));
     setZoomOpen(true);
@@ -135,33 +146,64 @@ export function GalleryCarousel({
   const position = (index: number) => `${itemLabel ? `${itemLabel} ` : ""}${index + 1} de ${total}`;
   const thumbs = meta && meta.length === slides.length ? meta : undefined;
 
-  const onSelect = useCallback(() => {
-    if (!embla) return;
-    setSelected(embla.selectedScrollSnap());
-  }, [embla]);
-
+  // The scroller is the source of truth: the slide that is mostly in view is the selected one.
+  // An IntersectionObserver reports it without reading layout on scroll.
   useEffect(() => {
-    if (!embla) return;
-    const onScroll = () => setSettled(false);
-    const onSettle = () => setSettled(true);
-    // A new selection starts a snap animation: mark it in motion at once, not on the first scroll
-    // frame, so nothing sees "settled" while the slide still travels (Safari eases longer).
-    const onPick = () => {
-      onSelect();
-      setSettled(false);
+    const root = track.current;
+    if (!root) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting || entry.intersectionRatio < 0.6) continue;
+          const index = Number((entry.target as HTMLElement).dataset.index);
+          const target = pendingTarget.current;
+          if (target !== null) {
+            // Intermediate slides of a programmatic scroll are not selections.
+            if (index !== target) continue;
+            settle();
+          }
+          setSelected(index);
+        }
+      },
+      { root, threshold: [0.6, 1] },
+    );
+    const settle = () => {
+      pendingTarget.current = null;
+      window.clearTimeout(pendingTimer.current);
     };
-    onSelect();
-    embla.on("select", onPick);
-    embla.on("reInit", onSelect);
-    embla.on("scroll", onScroll);
-    embla.on("settle", onSettle);
+    // The reader takes over (touch, wheel, drag): their gesture decides the selection again.
+    const release = () => settle();
+    // `scrollend` or the timeout ends a scroll that never reaches its target (e.g. already there).
+    const finish = () => {
+      const target = pendingTarget.current;
+      if (target === null) return;
+      settle();
+      setSelected(target);
+    };
+    root.addEventListener("pointerdown", release);
+    root.addEventListener("wheel", release, { passive: true });
+    root.addEventListener("scrollend", finish);
+    for (const item of root.children) observer.observe(item);
+    finishRef.current = finish;
     return () => {
-      embla.off("select", onPick);
-      embla.off("reInit", onSelect);
-      embla.off("scroll", onScroll);
-      embla.off("settle", onSettle);
+      observer.disconnect();
+      settle();
+      root.removeEventListener("pointerdown", release);
+      root.removeEventListener("wheel", release);
+      root.removeEventListener("scrollend", finish);
     };
-  }, [embla, onSelect]);
+  }, []);
+
+  // `behavior` is left to the CSS `scroll-behavior` (smooth, `auto` under reduced motion).
+  const scrollToSlide = useCallback((index: number) => {
+    const root = track.current;
+    const item = root?.children[index] as HTMLElement | undefined;
+    if (!root || !item) return;
+    pendingTarget.current = index;
+    window.clearTimeout(pendingTimer.current);
+    pendingTimer.current = window.setTimeout(() => finishRef.current(), SCROLL_TIMEOUT_MS);
+    root.scrollTo({ left: item.offsetLeft - (root.clientWidth - item.offsetWidth) / 2 });
+  }, []);
 
   // Keep the selected thumbnail centred in its strip (horizontal scroll only, never the page).
   useEffect(() => {
@@ -173,13 +215,19 @@ export function GalleryCarousel({
     el.scrollTo({ left, behavior: smooth ? "smooth" : "auto" });
   }, [selected]);
 
-  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+  // Rapid inputs build on where the scroll is heading, not on the lagging selection.
+  const step = (delta: number) =>
+    scrollToSlide(
+      Math.min(Math.max((pendingTarget.current ?? selected) + delta, 0), slides.length - 1),
+    );
+
+  const onKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      embla?.scrollNext();
+      step(1);
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
-      embla?.scrollPrev();
+      step(-1);
     }
   };
 
@@ -192,27 +240,27 @@ export function GalleryCarousel({
         aria-label={label}
       >
         <div className="relative rounded-xl bg-white/70 p-2 shadow-float border border-white sm:p-3">
-          {/* biome-ignore lint/a11y/noStaticElementInteractions: keyboard navigation for the carousel viewport (roving focus lives on the controls) #177 */}
-          <div
-            className="overflow-hidden rounded-lg"
-            ref={emblaRef}
+          <ul
+            ref={track}
+            // biome-ignore lint/a11y/noNoninteractiveTabindex: a keyboard-focusable scroller (arrow keys page through the slides) #177
+            tabIndex={0}
+            role="list"
             onKeyDown={onKeyDown}
-            data-state={settled ? "settled" : "scrolling"}
+            className="relative flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain scroll-smooth rounded-lg [scrollbar-width:none] motion-reduce:scroll-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy [&::-webkit-scrollbar]:hidden"
           >
-            <ul className="-ml-3 flex touch-pan-y touch-pinch-zoom" role="list">
-              {slides.map((slide, index) => (
-                <li
-                  key={slide.key}
-                  className="min-w-0 flex-[0_0_100%] pl-3"
-                  data-active={index === selected ? "" : undefined}
-                  aria-roledescription="diapositiva"
-                  aria-label={position(index)}
-                >
-                  {slide.node}
-                </li>
-              ))}
-            </ul>
-          </div>
+            {slides.map((slide, index) => (
+              <li
+                key={slide.key}
+                className="min-w-0 flex-[0_0_100%] snap-center snap-always"
+                data-index={index}
+                data-active={index === selected ? "" : undefined}
+                aria-roledescription="diapositiva"
+                aria-label={position(index)}
+              >
+                {slide.node}
+              </li>
+            ))}
+          </ul>
           <p
             className="pointer-events-none absolute top-5 left-5 rounded-pill bg-navy/88 px-3 py-1.5 text-tiny font-extrabold text-white tabular-nums shadow-md sm:top-6 sm:left-6 sm:text-small"
             aria-live="polite"
@@ -223,7 +271,7 @@ export function GalleryCarousel({
             <button
               type="button"
               className={ARROW}
-              onClick={() => embla?.scrollPrev()}
+              onClick={() => step(-1)}
               disabled={selected === 0}
               aria-label="Página anterior"
             >
@@ -232,7 +280,7 @@ export function GalleryCarousel({
             <button
               type="button"
               className={ARROW}
-              onClick={() => embla?.scrollNext()}
+              onClick={() => step(1)}
               disabled={selected === slides.length - 1}
               aria-label="Página siguiente"
             >
@@ -268,7 +316,7 @@ export function GalleryCarousel({
                     index === 0 && "ml-4",
                     index === slides.length - 1 && "mr-4",
                   )}
-                  onClick={() => embla?.scrollTo(index)}
+                  onClick={() => scrollToSlide(index)}
                 >
                   {item ? (
                     <img
@@ -298,21 +346,23 @@ export function GalleryCarousel({
                 aria-selected={index === selected}
                 aria-label={`Ir a la página ${index + 1}`}
                 className={DOT}
-                onClick={() => embla?.scrollTo(index)}
+                onClick={() => scrollToSlide(index)}
               />
             ))}
           </div>
         )}
         {zoomHint ? <p className="text-center text-tiny text-subtle">{zoomHint}</p> : null}
         {zoom ? (
-          <Suspense fallback={null}>
-            <ZoomDialog
-              open={zoomOpen}
-              zoom={zoom}
-              title={zoomTitle}
-              onClose={() => setZoomOpen(false)}
-            />
-          </Suspense>
+          <ZoomBoundary>
+            <Suspense fallback={null}>
+              <ZoomDialog
+                open={zoomOpen}
+                zoom={zoom}
+                title={zoomTitle}
+                onClose={() => setZoomOpen(false)}
+              />
+            </Suspense>
+          </ZoomBoundary>
         ) : null}
       </section>
     </ZoomContext.Provider>
