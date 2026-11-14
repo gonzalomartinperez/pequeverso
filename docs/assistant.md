@@ -80,7 +80,7 @@ Spanish response profile requires a reviewed compatible v1 API revision **at lea
   checks `Origin` on every mutation.
 - Proxy (vps-ops): preserve `/api` paths, do not buffer `text/event-stream`, keep idle timeouts above
   the API's 15 s heartbeat and 45 s run deadline, never cache API responses.
-- Store CSP (`config/edge-rules.json`, report-only today) must add the approved API origin to
+- Store CSP (`config/edge-rules.json`, enforced since ADR-0014) must add the approved API origin to
   `connect-src`. It is not added now because no hostname is approved.
 
 ## Behaviour

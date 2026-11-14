@@ -117,6 +117,20 @@ Legal note: an opt-out default does not meet the AEPD / ePrivacy prior-consent c
 marketing cookies. Switching to prior consent is a one-line change (`DEFAULT_CHOICE` all false)
 plus the banner copy; the tests in `tests/browser/tracking.spec.ts` encode the current policy.
 
+## Cloudflare Web Analytics beacon (not ours)
+
+Cloudflare injects `static.cloudflareinsights.com/beacon.min.js` into the HTML it proxies for
+browser user agents (`docs/verification/edge/2026-11-14-curl.md`). It comes from the Cloudflare
+dashboard setting Web Analytics, not from this repository, so no code or env variable controls it.
+Cloudflare describes it as cookieless and without fingerprinting (vendor claim, not audited here);
+it still sends page-view data to Cloudflare before any consent choice, which the banner does not
+govern. Owner decision PV-D9: turn it off (dashboard step in `docs/deployment.md`, "Edge
+settings"). Until then the enforced CSP blocks it on purpose (ADR-0014): no scripts or `connect-src`
+entry for Cloudflare Insights exist, and it must not be added to the CSP without revisiting this
+section. The cookie table owner is `/cookies/` (roadmap M3-C4): it lists the beacon only if the
+owner decides to keep it; this section is the source for that copy. Email Address Obfuscation
+(`/cdn-cgi/scripts/.../email-decode.min.js`) is a separate, cookie-free Cloudflare feature.
+
 ## Adding an adapter (TikTok, gtag, ...)
 
 1. Add the id to `AdapterId` and a factory `createXAdapter(config)` in `adapters/x.ts` returning
