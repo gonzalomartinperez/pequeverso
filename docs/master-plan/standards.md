@@ -8,7 +8,7 @@ Google TypeScript Style Guide for semantics, Biome for layout, as the ecosystem 
 
 | Topic | Ecosystem standard | This repo today | Decision |
 |---|---|---|---|
-| Layout | 2-space, 100 columns, double quotes, semicolons | 2-space, **110 columns**, double quotes, semicolons, trailing commas | Move to 100 in one mechanical formatting PR at the end of M1, recorded in `.git-blame-ignore-revs`; until then 110 is a tolerated drift tracked in `ratchets/style.json` |
+| Layout | 2-space, 100 columns, double quotes, semicolons | 2-space, **110 columns**, double quotes, semicolons, trailing commas | Done in M1-8: one mechanical formatting commit at 100 columns, recorded in `.git-blame-ignore-revs` |
 | Biome version | pinned exactly | `2.5.15` in `package.json`, `$schema` says `2.5.14` | Align the schema URL in M1 |
 | Biome domains | `next`, `react`, `test`, `project` | `next`, `react` | Add `test` and `project`; add `noImportCycles`, `noPrivateImports`, `noUndeclaredDependencies`, `noRestrictedImports` for the guard rules in `target-state.md` section 3; `useSortedClasses` for Tailwind classes |
 | Exports | named; default only for framework entry files and `*.config.ts` | same, with the Next.js list | keep |

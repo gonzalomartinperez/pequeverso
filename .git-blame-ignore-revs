@@ -1,0 +1,5 @@
+# Mechanical formatting commits, skipped by `git blame` (git config blame.ignoreRevsFile .git-blame-ignore-revs).
+# GitHub uses this file automatically.
+
+# style(m1-8): format the codebase at 100 columns
+5a62970553c6f13264a1b5f56418e1416f5b81fc
