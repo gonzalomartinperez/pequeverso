@@ -55,3 +55,34 @@ test("sck carries the product prefix, is sanitized and capped at 30 characters",
   assert.equal(sckFor("gf", "he ro!"), "pv-gf-hero");
   assert.ok(sckFor("gf", "a-very-long-position-name-that-exceeds").length <= 30);
 });
+
+test("extra checkout params cannot bypass the acquisition allowlist", () => {
+  const url = new URL(
+    buildCheckoutUrl(base, "", {
+      "": " ",
+      off: "offer",
+      ref: "affiliate",
+      foo: "bar",
+      sck: "hero",
+    }),
+  );
+  assert.equal(url.searchParams.toString(), "checkoutMode=10&sck=hero");
+});
+
+test("visitor and extra sck values respect Hotmart's 30-character limit", () => {
+  for (const key of ["sck", "SCK"]) {
+    assert.equal(
+      new URL(
+        buildCheckoutUrl(base, new URLSearchParams({ [key]: "x".repeat(31) }).toString()),
+      ).searchParams.get(key),
+      "x".repeat(30),
+    );
+    assert.equal(
+      new URL(buildCheckoutUrl(base, "", { [key]: "y".repeat(31) })).searchParams.get(key),
+      "y".repeat(30),
+    );
+  }
+  const configuredOffer = `${base}&off=configured&ref=owner`;
+  const built = buildCheckoutUrl(configuredOffer, "off=visitor&ref=visitor");
+  assert.equal(built, configuredOffer);
+});

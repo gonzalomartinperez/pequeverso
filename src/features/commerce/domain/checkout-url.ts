@@ -5,7 +5,8 @@ import {
 
 /**
  * Builds the checkout URL for a CTA: the configured Hotmart URL plus the allowlisted
- * acquisition parameters found in the current page URL. `off`/`ref` are never
+ * acquisition parameters found in the current page URL. `extra` uses the same allowlist;
+ * forwarded `sck` values are capped at 30 characters. `off`/`ref` are never
  * forwarded (they would let a visitor select an arbitrary Hotmart offer).
  */
 export function buildCheckoutUrl(
@@ -18,10 +19,12 @@ export function buildCheckoutUrl(
   const incoming = new URLSearchParams(pageSearch);
   for (const [key, value] of incoming.entries()) {
     if (!value) continue;
-    if (isAllowedParam(key) && !url.searchParams.has(key)) url.searchParams.set(key, value);
+    if (isAllowedParam(key) && !url.searchParams.has(key))
+      url.searchParams.set(key, key.toLowerCase() === "sck" ? value.slice(0, 30) : value);
   }
   for (const [key, value] of Object.entries(extra)) {
-    if (value && !url.searchParams.has(key)) url.searchParams.set(key, value);
+    if (value && isAllowedParam(key) && !url.searchParams.has(key))
+      url.searchParams.set(key, key.toLowerCase() === "sck" ? value.slice(0, 30) : value);
   }
   return url.toString();
 }
