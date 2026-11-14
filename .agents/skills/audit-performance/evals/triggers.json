@@ -1,0 +1,106 @@
+{
+  "skill": "audit-performance",
+  "runs_per_query": 3,
+  "queries": [
+    {
+      "query": "Run a performance audit of the build",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Fix the LCP regression by redesigning the hero",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Check LCP and CLS on the home page",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Load test the production site",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Verify the bundle budget after my change",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Loosen the bundle budget to pass CI",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Run Lighthouse at 390 px and compare with the baseline",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Run the accessibility audit",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Does any third party load before consent?",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Add a new section to the page",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Measure frame time on the scene page",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Change the price",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Why did the LCP regress in this PR?",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Turn on the assistant",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Audit the performance of the production-config build",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Add the Meta pixel to a new page",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Check the media and scene budgets",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Review the pull request",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Report TBT for the product page",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Update the dependencies",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

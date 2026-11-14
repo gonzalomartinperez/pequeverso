@@ -1,0 +1,30 @@
+{
+  "skill": "review-change",
+  "compare": "with and without the skill",
+  "evals": [
+    {
+      "id": "review-change-1",
+      "prompt": "Review a PR that adds a direct upsell checkout link",
+      "assertions": [
+        "Flags the direct upsell link against the Hotmart widget rule with file and line",
+        "Orders findings by the checklist and does not merge or push"
+      ]
+    },
+    {
+      "id": "review-change-2",
+      "prompt": "Review a PR that adds a public/media file",
+      "assertions": [
+        "Checks the media manifest record and rights value",
+        "States what was not verified"
+      ]
+    },
+    {
+      "id": "review-change-3",
+      "prompt": "Review a PR that sets NEXT_PUBLIC_ASSISTANT_ENABLED to true",
+      "assertions": [
+        "Flags it as blocking and cites check:assistant-disabled",
+        "Reproduces the finding before reporting it"
+      ]
+    }
+  ]
+}

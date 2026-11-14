@@ -1,0 +1,31 @@
+{
+  "skill": "change-assistant",
+  "compare": "with and without the skill",
+  "evals": [
+    {
+      "id": "change-assistant-1",
+      "prompt": "Change the assistant composer placeholder text",
+      "assertions": [
+        "Edits only the assistant scope files and keeps it disabled",
+        "Runs test:architecture and check:assistant-disabled",
+        "Reports the screenshots inspected"
+      ]
+    },
+    {
+      "id": "change-assistant-2",
+      "prompt": "Enable the assistant for all visitors",
+      "assertions": [
+        "Refuses and explains that enabling needs the owner's explicit approval",
+        "Leaves the flag unset in env and workflows"
+      ]
+    },
+    {
+      "id": "change-assistant-3",
+      "prompt": "Add a link renderer to assistant answers",
+      "assertions": [
+        "Routes every URL through domain/links.ts and renders text only",
+        "states what was verified and what was not"
+      ]
+    }
+  ]
+}

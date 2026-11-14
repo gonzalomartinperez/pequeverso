@@ -1,6 +1,10 @@
 ---
 name: specify-feature
-description: Write a short spec before building or redesigning a page or section of pequeverso.com. Not for implementing the page (use implement-feature) or changing commerce facts.
+description: "Use when a short spec is needed before building or redesigning a page or section of pequeverso.com. Not for implementing the page (use implement-feature) or changing commerce facts."
+metadata:
+  owner: gonzalomartinperez
+  last-reviewed: "2026-11-14"
+  version: "1.0.0"
 ---
 
 # Specify a page or section

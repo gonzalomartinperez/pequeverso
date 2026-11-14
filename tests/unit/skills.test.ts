@@ -21,7 +21,11 @@ test("the committed skill catalog is valid", () => {
 });
 
 /** A copy of the real catalog in a temp dir, broken by `mutate`, returns the problems found. */
-function broken(mutate: (dir: string) => void): string[] {
+function broken(
+  mutate: (dir: string) => void,
+  warnings: string[] = [],
+  now = new Date(),
+): string[] {
   const dir = mkdtempSync(path.join(tmpdir(), "pv-skills-"));
   try {
     for (const entry of [
@@ -41,8 +45,12 @@ function broken(mutate: (dir: string) => void): string[] {
     mkdirSync(path.join(dir, "tests"));
     for (const entry of ["helpers", "unit"])
       cpSync(path.join(root, "tests", entry), path.join(dir, "tests", entry), { recursive: true });
+    cpSync(path.join(root, "tests/browser"), path.join(dir, "tests/browser"), {
+      recursive: true,
+      filter: (source) => !source.includes("__screenshots__"),
+    });
     mutate(dir);
-    return checkSkills(dir);
+    return checkSkills(dir, warnings, now);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -53,7 +61,7 @@ const edit = (file: string, change: (text: string) => string) =>
 test("a skill without limits or exclusions is rejected", () => {
   const problems = broken((dir) => {
     edit(path.join(dir, ".agents/skills/prepare-delivery/SKILL.md"), (t) =>
-      t.replace(" Not an authorization to release or deploy.", "").replace(/## Limits[\s\S]*$/, ""),
+      t.replace("Not for authorizing", "Never for authorizing").replace(/## Limits[\s\S]*$/, ""),
     );
   });
   assert.ok(problems.some((p) => p.includes('prepare-delivery: missing "## Limits" section')));
@@ -61,6 +69,116 @@ test("a skill without limits or exclusions is rejected", () => {
     problems.some((p) =>
       p.includes("prepare-delivery: description must state what the skill is not for"),
     ),
+  );
+});
+
+const skillDir = ".agents/skills/prepare-delivery";
+const triggers = path.join(skillDir, "evals/triggers.json");
+const outputs = path.join(skillDir, "evals/evals.json");
+// biome-ignore lint/suspicious/noExplicitAny: loosely typed JSON fixture
+type Bank = Record<string, any>;
+type Query = { query: string; should_trigger: boolean; split: string };
+const editJson = (dir: string, file: string, change: (data: Bank) => void) => {
+  const target = path.join(dir, file);
+  const data = JSON.parse(readFileSync(target, "utf8")) as Bank;
+  change(data);
+  writeFileSync(target, JSON.stringify(data));
+};
+const found = (problems: string[], expected: string) =>
+  assert.ok(
+    problems.some((p) => p.includes(expected)),
+    `${expected} in ${problems.join(" | ")}`,
+  );
+
+test("metadata, description prefix, body length and review age are enforced", () => {
+  found(
+    broken((dir) =>
+      edit(path.join(dir, skillDir, "SKILL.md"), (t) => t.replace(/metadata:[\s\S]*?\n---/, "---")),
+    ),
+    "frontmatter must contain name, description, metadata",
+  );
+  found(
+    broken((dir) =>
+      edit(path.join(dir, skillDir, "SKILL.md"), (t) => t.replace('"1.0.0"', '"one"')),
+    ),
+    "metadata needs owner, last-reviewed",
+  );
+  found(
+    broken((dir) =>
+      edit(path.join(dir, skillDir, "SKILL.md"), (t) =>
+        t.replace('description: "Use when', 'description: "When'),
+      ),
+    ),
+    'description must start with "Use when"',
+  );
+  found(
+    broken((dir) =>
+      edit(path.join(dir, skillDir, "SKILL.md"), (t) => `${t}${"filler line\n".repeat(120)}`),
+    ),
+    "body must be at most 120 lines",
+  );
+  const warnings: string[] = [];
+  assert.deepEqual(
+    broken(() => {}, warnings, new Date("2027-06-01")),
+    [],
+  );
+  found(warnings, "prepare-delivery: last-reviewed 2026-11-14 is older than 180 days");
+  const fresh: string[] = [];
+  broken(() => {}, fresh, new Date("2026-12-01"));
+  assert.deepEqual(fresh, []);
+});
+
+test("the trigger bank rules are enforced", () => {
+  const cases: [(queries: Query[]) => Query[], string][] = [
+    [(q) => [...q, { ...(q[0] as Query) }], "duplicate query"],
+    [(q) => q.filter((x) => !x.should_trigger).concat(q.slice(0, 3)), "8-10 positive"],
+    [(q) => q.filter((x) => x.should_trigger), "8-10 near-miss negative"],
+    [(q) => q.map((x) => ({ ...x, split: "train" })), "split must be 60/40"],
+    [(q) => q.map((x) => ({ ...x, split: "test" })), "split train|validation"],
+  ];
+  for (const [change, expected] of cases)
+    found(
+      broken((dir) => editJson(dir, triggers, (d) => (d.queries = change(d.queries)))),
+      expected,
+    );
+  found(
+    broken((dir) => editJson(dir, triggers, (d) => (d.runs_per_query = 1))),
+    "runs_per_query must be 3",
+  );
+  found(
+    broken((dir) => editJson(dir, triggers, (d) => (d.skill = "other"))),
+    'skill must be "prepare-delivery"',
+  );
+  found(
+    broken((dir) => rmSync(path.join(dir, triggers))),
+    "evals/triggers.json: missing",
+  );
+  found(
+    broken((dir) => writeFileSync(path.join(dir, triggers), "[]")),
+    "must be a JSON object",
+  );
+});
+
+test("the output eval rules are enforced", () => {
+  found(
+    broken((dir) => rmSync(path.join(dir, outputs))),
+    "evals/evals.json: missing",
+  );
+  found(
+    broken((dir) => editJson(dir, outputs, (d) => (d.evals = d.evals.slice(0, 1)))),
+    "needs 2-3 output evals",
+  );
+  found(
+    broken((dir) => editJson(dir, outputs, (d) => (d.evals[0].assertions = ["only one"]))),
+    "at least 2 non-empty assertions",
+  );
+  found(
+    broken((dir) => editJson(dir, outputs, (d) => (d.evals[1].id = d.evals[0].id))),
+    "each eval needs a unique id",
+  );
+  found(
+    broken((dir) => editJson(dir, outputs, (d) => (d.compare = ""))),
+    "compare is required",
   );
 });
 

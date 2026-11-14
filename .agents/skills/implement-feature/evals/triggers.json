@@ -1,0 +1,106 @@
+{
+  "skill": "implement-feature",
+  "runs_per_query": 3,
+  "queries": [
+    {
+      "query": "Add a new section to the home page with three cards",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Change the price of the kit to a new amount",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Build the support page layout from the spec",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Add a testimonial from a customer to the home page",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Create a FAQ block component using the shared editorial primitives",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Turn on the shopping assistant",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Make the hero responsive at 320 px without overflow",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Add the Meta pixel to a new page",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Add a reveal animation to the benefits grid with reduced motion support",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Cut a release and deploy to production",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Add an image with width, height and alt to the product page",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Change the Hotmart checkout URL",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Implement the downsell page using the Hotmart widget slot",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Make the buy button green",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Refactor the pricing card to use design tokens",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Review this pull request for commerce safety",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Add a Playwright spec for the new section",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Write a spec before we build the page",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Wire the hub page cards to the product registry",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Update dependencies from the Monday PR",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

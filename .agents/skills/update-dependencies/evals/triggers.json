@@ -1,0 +1,106 @@
+{
+  "skill": "update-dependencies",
+  "runs_per_query": 3,
+  "queries": [
+    {
+      "query": "Handle the weekly Dependabot PR",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Merge the Dependabot PR",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Bump next to the new minor and fix the breakage",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Add a new dependency for animations",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Read the changelogs of the weekly dependency update",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Lower the bundle budget so the update passes",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Update tailwindcss and keep CI green",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Edit the workflow to skip the failing job",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Fix the build failure on the Dependabot branch",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Review a feature pull request",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Review the zod major upgrade and adapt the code",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Write an ADR for the new library",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Update Playwright and align the browser revisions",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Add a new page",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Run the gates on the weekly update PR",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Change the price",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Which packages in the weekly PR are high risk?",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Cut a release",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Hold back a package that breaks the build and explain why",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Run the performance audit",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

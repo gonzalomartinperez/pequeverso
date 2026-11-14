@@ -1,0 +1,31 @@
+{
+  "skill": "resume-refactor",
+  "compare": "with and without the skill",
+  "evals": [
+    {
+      "id": "resume-refactor-1",
+      "prompt": "Continue the refactor in a new session",
+      "assertions": [
+        "Reads RESUME.md, progress.md and the roadmap row in order",
+        "Checks git log and open PRs before choosing the item",
+        "Reads the owner decisions that cover the item"
+      ]
+    },
+    {
+      "id": "resume-refactor-2",
+      "prompt": "The progress log says done but git has no commit",
+      "assertions": [
+        "Trusts git history and reports the mismatch",
+        "states what was verified and what was not"
+      ]
+    },
+    {
+      "id": "resume-refactor-3",
+      "prompt": "Mark the roadmap row done",
+      "assertions": [
+        "Refuses to mark done without command output as evidence",
+        "states what was verified and what was not"
+      ]
+    }
+  ]
+}

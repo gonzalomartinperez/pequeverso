@@ -1,0 +1,106 @@
+{
+  "skill": "prepare-delivery",
+  "runs_per_query": 3,
+  "queries": [
+    {
+      "query": "Cut a release tag for the next version",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Deploy to production now without asking the owner",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Prepare the release of the site",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Push directly to main",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Run the Deploy workflow for the new tag",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Review the pull request",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "How do I roll back the last production deploy?",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Change the checkout URL",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Verify build-info.json matches the released commit",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Add a new page",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Prepare the changelog and version bump for release",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Update the weekly dependencies",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Run the post-deploy curl matrix",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Write the ADR for hosting",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Walk me through the gated production deploy",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Turn on the assistant",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Check the release is ready: placeholders strict and green main",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Fix the failing browser test",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Redeploy the previous tag as a rollback",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Change the price",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "skill": "audit-accessibility",
+  "runs_per_query": 3,
+  "queries": [
+    {
+      "query": "Run an accessibility audit of the product page",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Fix the page design and layout",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Check axe and keyboard navigation on the home page",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Run Lighthouse performance on the page",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Verify WCAG 2.2 AA after my UI change",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Edit the Hotmart iframe markup to add a title",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Audit reduced motion and text zoom",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Make the buy button green",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Check focus visibility and target sizes of the new button",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Add a testimonial",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Why does axe flag the Hotmart iframe?",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Turn on the assistant",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Test the cookie banner with the keyboard only",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Implement the new page",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Audit the support page for landmarks and headings",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Review the pull request for commerce safety",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Run the a11y spec and report violations",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Update dependencies",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Check contrast of the new navy section",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Write the Spanish copy",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

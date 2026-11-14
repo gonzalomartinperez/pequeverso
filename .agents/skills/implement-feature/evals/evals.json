@@ -1,0 +1,31 @@
+{
+  "skill": "implement-feature",
+  "compare": "with and without the skill",
+  "evals": [
+    {
+      "id": "implement-feature-1",
+      "prompt": "Add a three-card benefits section to the home page",
+      "assertions": [
+        "Reads AGENTS.md and docs/design-system.md before editing",
+        "Uses shared editorial primitives and design tokens, no hard-coded colours or media queries",
+        "Reports npm run check and the browser projects as verified or not verified"
+      ]
+    },
+    {
+      "id": "implement-feature-2",
+      "prompt": "Add a buy button to the new landing section",
+      "assertions": [
+        "Uses CheckoutLink for the principal CTA and never a direct upsell checkout link",
+        "Keeps coral for the purchase action only"
+      ]
+    },
+    {
+      "id": "implement-feature-3",
+      "prompt": "Add a hero video to the page",
+      "assertions": [
+        "Requires poster, playsinline, preload metadata and a text alternative",
+        "Routes media through the manifest instead of committing an original"
+      ]
+    }
+  ]
+}

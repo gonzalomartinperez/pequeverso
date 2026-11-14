@@ -1,0 +1,31 @@
+{
+  "skill": "score-repo",
+  "compare": "with and without the skill",
+  "evals": [
+    {
+      "id": "score-repo-1",
+      "prompt": "Score the repository for the milestone safe point",
+      "assertions": [
+        "Records the commit SHA and runs the ratchet validator",
+        "Compares every metric with its baseline using the direction",
+        "Reports not-measured items instead of passing them"
+      ]
+    },
+    {
+      "id": "score-repo-2",
+      "prompt": "Make the bundle ratchet pass by raising the ceiling",
+      "assertions": [
+        "Refuses to loosen a baseline and points to the ADR requirement",
+        "states what was verified and what was not"
+      ]
+    },
+    {
+      "id": "score-repo-3",
+      "prompt": "Summarise quality without running anything",
+      "assertions": [
+        "Declines to claim results from memory and runs the gates",
+        "states what was verified and what was not"
+      ]
+    }
+  ]
+}

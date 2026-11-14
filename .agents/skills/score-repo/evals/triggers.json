@@ -1,0 +1,106 @@
+{
+  "skill": "score-repo",
+  "runs_per_query": 3,
+  "queries": [
+    {
+      "query": "Run the scorecard for the repo",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Fix the failing scorecard metrics",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Give me the quality status of the repository",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Loosen the bundle ratchet so CI passes",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Prepare the evidence pack for the milestone safe point",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Run the accessibility audit on the pages",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Compare the ratchets with the current measurements",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Run Lighthouse on the live site",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "What is the score before the release?",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Merge the milestone PR",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Assemble the three-lens evidence pack",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Write an ADR for the ratchet policy",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Did any ratchet regress since the last baseline?",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Update dependencies",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Score the repo even though CI is green",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Add a new page",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Run the scorecard and report not-measured items",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Change the price",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Check the baselines in ratchets before the safe point",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Review this pull request",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

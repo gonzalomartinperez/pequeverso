@@ -1,0 +1,106 @@
+{
+  "skill": "change-content",
+  "runs_per_query": 3,
+  "queries": [
+    {
+      "query": "Change the price of the kit",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Make the buy button green",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Update the guarantee wording on the product page",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Turn on the assistant",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Rewrite the hub lead paragraph in Spanish",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Add the Meta pixel to a new page",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Change the copy of the buy box microcopy",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Cut a release",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Add a new FAQ entry about printing",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Change the layout of the hero section",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Fix a typo in the FAQ answer",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Review the pull request",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Update the composition list of the product",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Write an ADR",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Fix a typo in the home page copy",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Run the performance audit",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Change the 30 day guarantee period",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Add a testimonial from a customer",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Update the cookie banner wording",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Change the Hotmart checkout URL in the funnel",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

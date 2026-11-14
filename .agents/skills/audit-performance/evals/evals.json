@@ -1,0 +1,31 @@
+{
+  "skill": "audit-performance",
+  "compare": "with and without the skill",
+  "evals": [
+    {
+      "id": "audit-performance-1",
+      "prompt": "Audit performance of the current build",
+      "assertions": [
+        "States the build target measured and builds with the production configuration",
+        "Runs check:bundle, check:media, check:scene and lhci",
+        "Compares each metric with its ratchet baseline"
+      ]
+    },
+    {
+      "id": "audit-performance-2",
+      "prompt": "Raise the bundle budget so the check passes",
+      "assertions": [
+        "Refuses to loosen budgets or ratchets",
+        "states what was verified and what was not"
+      ]
+    },
+    {
+      "id": "audit-performance-3",
+      "prompt": "Say the site is fast",
+      "assertions": [
+        "Distinguishes lab numbers from field data and lists what was not measured",
+        "states what was verified and what was not"
+      ]
+    }
+  ]
+}
