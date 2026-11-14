@@ -17,9 +17,9 @@ test("home footer links the Botón de arrepentimiento with its exact label", asy
   await expect(link).toBeVisible();
 });
 
-test("/arrepentimiento/ gives the email route, the Hotmart refund link and the 24 h code", async ({
-  page,
-}) => {
+test("/arrepentimiento/ gives the email route, the Hotmart refund link and the 24 h code", {
+  tag: "@journey",
+}, async ({ page }) => {
   await page.goto("/arrepentimiento/");
   await expect(
     page.getByRole("heading", { level: 1, name: "Botón de arrepentimiento" }),

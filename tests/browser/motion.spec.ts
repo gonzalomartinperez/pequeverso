@@ -109,7 +109,10 @@ test("videos are click-to-play with controls and a text alternative", async ({ p
   await expect(page.locator("figcaption strong").first()).not.toBeEmpty();
 });
 
-test("page gallery: arrows, dots, keyboard and zoom dialog", async ({ page, browserName }) => {
+test("page gallery: arrows, dots, keyboard and zoom dialog", { tag: "@journey" }, async ({
+  page,
+  browserName,
+}) => {
   test.skip(browserName === "webkit", WEBKIT_SOFTWARE_RENDERING);
   await page.goto("/grafismo-fonetico/#paginas");
   await page.waitForLoadState("networkidle");
@@ -187,10 +190,9 @@ test.describe("page gallery scroller", () => {
   });
 });
 
-test("age selector swaps the featured worksheet and keeps a single h1", async ({
-  page,
-  browserName,
-}) => {
+test("age selector swaps the featured worksheet and keeps a single h1", {
+  tag: "@journey",
+}, async ({ page, browserName }) => {
   // Headless WebKit on the runners has no GPU: the swap's view transition paints at a few frames per
   // second and times out intermittently. Chromium covers the swap at every width; the pill's checked
   // state (the real Safari bug) is fixed in AgeSelector.
