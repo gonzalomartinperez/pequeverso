@@ -1,0 +1,91 @@
+{
+  "$schema": "https://raw.githubusercontent.com/gonzalomartinperez/engineering-standards/main/schemas/ci-profile.schema.json",
+  "$comment": "CI profile map (ecosystem 6.0, docs/master-plan/ci-cd.md section 2), read by the engineering-standards classify workflow. Job names are ci.yml job ids. Fail closed: a changed file outside every profile, a diff error or a change to this file runs every job; push, schedule and dispatch runs always run everything. tests/unit/ci-profile.test.ts asserts every tracked file matches a profile.",
+  "version": 1,
+  "base": ["workflows", "secrets"],
+  "profiles": {
+    "docs": {
+      "paths": [
+        "**/*.md",
+        "docs/**",
+        "LICENSE",
+        "LICENSE-CONTENT.md",
+        ".agents/**",
+        ".claude/**",
+        ".codex/**",
+        ".worktreeinclude",
+        ".editorconfig"
+      ],
+      "adds": ["docs"],
+      "budgetP50Minutes": 2,
+      "budgetP95Minutes": 4
+    },
+    "code": {
+      "paths": [
+        "src/**",
+        "config/**",
+        "content/**",
+        "contracts/**",
+        "public/**",
+        "media/**",
+        "tools/**",
+        "tests/**",
+        "docs/generated/**",
+        "ratchets/**",
+        "release-please-config.json",
+        ".release-please-manifest.json",
+        "docs/**/*.ts",
+        "docs/**/*.tsx",
+        "docs/**/*.js",
+        "docs/**/*.mjs",
+        "docs/**/*.json",
+        "package.json",
+        "package-lock.json",
+        "tsconfig.json",
+        "tsconfig.node.json",
+        "biome.json",
+        "knip.json",
+        "next.config.mjs",
+        "postcss.config.json",
+        "components.json",
+        "lighthouserc.json",
+        "playwright.config.ts",
+        "playwright.assistant.config.ts",
+        ".nvmrc",
+        ".npmrc",
+        ".gitignore",
+        ".gitattributes",
+        ".env.example"
+      ],
+      "adds": ["docs", "quality", "build", "hosting", "browser", "performance"],
+      "budgetP50Minutes": 5,
+      "budgetP95Minutes": 10
+    },
+    "workflow": {
+      "paths": [".github/**"],
+      "adds": ["docs", "quality", "build", "hosting", "browser", "performance"],
+      "budgetP50Minutes": 5,
+      "budgetP95Minutes": 10
+    },
+    "deps-weekly": {
+      "trigger": "branch dependabot/** or label deps-weekly (built-in; runs every job)",
+      "adds": ["all-profiles"],
+      "budgetP50Minutes": 8,
+      "budgetP95Minutes": 13
+    },
+    "release": {
+      "trigger": "develop -> main or label release (built-in; runs every job)",
+      "adds": ["all-profiles"],
+      "budgetP50Minutes": 10,
+      "budgetP95Minutes": 20
+    },
+    "hotfix": {
+      "trigger": "hotfix/** -> main (built-in; runs every job)",
+      "all": true,
+      "adds": ["all-profiles"],
+      "budgetP50Minutes": 5,
+      "budgetP95Minutes": 10
+    }
+  },
+  "required": "ci-gate"
+}

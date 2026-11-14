@@ -6,26 +6,43 @@ and Branch policy workflows are unchanged. Main publication remains the owner's 
 
 ## Core CI
 
-PRs, pushes to `develop`/`main` and manual dispatch run the same gates. Independent workflow and
-secret validation can fail early. Quality contains lint, root/Node/media types, unit/architecture
-negative fixtures, production/full knip, skills and the production dependency audit.
+PRs, pushes to `develop`/`main` and manual dispatch run `.github/workflows/ci.yml`. The first job,
+`classify`, is the engineering-standards reusable workflow (pinned by SHA). It reads the changed
+files, the branch and the labels, applies `.github/ci-profile.json` and outputs the list of jobs to
+run. Every other job runs only when that list names it. `tests/unit/ci-profile.test.ts` asserts that
+every tracked file belongs to a profile, that every job the map names exists, and that every job is
+gated on `classify` and feeds `ci-gate`.
+
+| Profile | Selected by | Jobs |
+|---|---|---|
+| base (always) | every run | `workflows` (actionlint + zizmor), `secrets` (gitleaks, full history) |
+| `docs` | `**/*.md`, `docs/**` except code files, licences, the agent harness (`.agents`, `.claude`, `.codex`) | `docs`: skills catalog and its tests, repository-wide content guards, no `npm ci` (budget p50 2 min) |
+| `code` | source, config, content, contracts, public, media, tools, tests, `docs/generated/**`, code files under `docs/` (`.ts`, `.tsx`, `.js`, `.mjs`, `.json`: they lint and typecheck), root configs and the lockfile | `docs`, `quality`, `build`, `hosting`, `browser`, `performance` |
+| `workflow` | `.github/**` | same as `code` (a workflow change can break any job) |
+| `deps-weekly`, `release`, `hotfix` | built-in branch/label rules (Dependabot branch or `deps-weekly` label; `develop` → `main` or `release` label; `hotfix/**` → `main`) | every job |
+
+Fail closed: a changed file outside every profile, a diff error, an empty diff or a change to
+`.github/ci-profile.json` runs every job; push, schedule and manual runs always run every job.
 
 | Job role | Depends on | Required behavior |
 |---|---|---|
-| Workflow validation | none | actionlint + zizmor, all workflows/actions |
-| Secret scan | none | redacted full-history scanner, fail on incomplete history |
-| Quality checks | none | static/unit/dependency checks, no production credentials |
+| Workflow validation | classify | actionlint + zizmor, all workflows/actions |
+| Secret scan | classify | redacted full-history scanner, fail on incomplete history |
+| Docs and harness checks | classify | `tools/check-skills.ts` and `skills.test.ts`, old-domain and security.txt guards (no dependencies installed) |
+| Quality checks | classify | static/unit/dependency checks, no production credentials |
 | Build | quality | default-OFF export, tree cleanliness, media/scene/bundle/render checks |
 | Hosting contract | quality | pinned Rocky 8, GLIBC 2.28, WASM SWC, standalone startup/smoke |
 | Browser tests (1–8) | build | functional shards 1–4; native shards 1–4; fail-fast false |
 | Performance checks | build | existing two-run/four-route Lighthouse checks, unchanged thresholds |
-| Required checks | all seven roles | every exact prerequisite must be `success` |
+| `ci-gate` | every job above | engineering-standards `ci-gate` action: any failed or cancelled job fails it; a job `classify` selected must succeed (a skip there is a broken `if:`); unselected jobs may be skipped |
 
-The existing required status `ci` is a temporary compatibility job after all eight roles. It
-requires all of them to succeed under `always()`: missing, failed, cancelled, pending or skipped
-results fail closed. No protection is removed, renamed in settings or bypassed by this source
-change. Branch policy stays independently required. New human-facing status names do not collide
-with Nightly names. Only superseded PR CI is cancelled; pushes and Nightly are not cancelled.
+`ci-gate` is the required check. `ci` is a temporary alias that needs `ci-gate` and passes only on
+its success; it is removed once the `develop` and `main` rulesets require `ci-gate` alone (one week
+after both names are required, roadmap M1-1). Branch policy stays independently required. Only
+superseded PR CI is cancelled; pushes and Nightly are not cancelled. Production remains the
+standalone build (ADR-0010); the PR path keeps building the export for the browser and Lighthouse
+legs until M4-2 retires it, and the `hosting` job builds, starts and smoke-tests standalone on every
+code change.
 
 ### Browser identity coverage
 

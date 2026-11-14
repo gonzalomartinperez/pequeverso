@@ -1,7 +1,11 @@
-# Validation only. The ci bridge preserves existing protection until an owner-approved transition.
+# Validation only. CI profiles (ecosystem 6.0, docs/ci-profile.md): `classify` (engineering-standards
+# reusable workflow) maps the changed files, branch and labels in .github/ci-profile.json to the jobs
+# to run; every other job is gated on that list, and `ci-gate` is the single fail-closed required
+# check. `ci` is a temporary alias of `ci-gate` kept until the rulesets require `ci-gate` only.
 name: CI
 "on":
   pull_request:
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled]
     branches:
       - develop
       - main
@@ -24,8 +28,15 @@ env:
   NEXT_PUBLIC_ASSISTANT_API_ORIGIN: ""
   NEXT_OUTPUT: export
 jobs:
+  classify:
+    uses: gonzalomartinperez/engineering-standards/.github/workflows/classify.yml@1f33be46bcb95f42f550f74608bc679cae5575ad # v1.0.0
+    permissions:
+      contents: read
+      pull-requests: read
   workflows:
     name: Workflow validation
+    needs: classify
+    if: contains(fromJSON(needs.classify.outputs.jobs), 'workflows')
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -49,6 +60,8 @@ jobs:
           min-severity: low
   secrets:
     name: Secret scan
+    needs: classify
+    if: contains(fromJSON(needs.classify.outputs.jobs), 'secrets')
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -61,8 +74,35 @@ jobs:
           persist-credentials: false
       - name: gitleaks over the full history (redacted; fails on zero commits scanned)
         run: .github/scripts/secret-scan.sh
+  docs:
+    name: Docs and harness checks
+    needs: classify
+    if: contains(fromJSON(needs.classify.outputs.jobs), 'docs')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Setup Node (dependency-free checks, no npm ci)
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version-file: .nvmrc
+      - name: Skills catalog and its tests
+        run: node tools/check-skills.ts && node --test tests/unit/skills.test.ts
+      - name: Repository-wide content guards (retired domain, security.txt)
+        run: |
+          set -euo pipefail
+          guards=(tests/unit/old-domain.test.ts tests/unit/security-txt.test.ts)
+          for guard in "${guards[@]}"; do test -f "$guard" || { echo "::error::missing $guard"; exit 1; }; done
+          node --test "${guards[@]}"
   quality:
     name: Quality checks
+    needs: classify
+    if: contains(fromJSON(needs.classify.outputs.jobs), 'quality')
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
@@ -97,7 +137,9 @@ jobs:
     permissions:
       contents: read
     needs:
+      - classify
       - quality
+    if: contains(fromJSON(needs.classify.outputs.jobs), 'build')
     outputs:
       source_sha: ${{ steps.package.outputs.source_sha }}
       manifest_sha256: ${{ steps.package.outputs.manifest_sha256 }}
@@ -197,7 +239,9 @@ jobs:
       - name: Build leaves the tree clean
         run: git diff --exit-code
     needs:
+      - classify
       - quality
+    if: contains(fromJSON(needs.classify.outputs.jobs), 'hosting')
   browser:
     name: Browser tests (${{ matrix.index }})
     runs-on: ubuntu-24.04
@@ -205,7 +249,9 @@ jobs:
     permissions:
       contents: read
     needs:
+      - classify
       - build
+    if: contains(fromJSON(needs.classify.outputs.jobs), 'browser')
     strategy:
       fail-fast: false
       max-parallel: 4
@@ -327,7 +373,9 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs:
+      - classify
       - build
+    if: contains(fromJSON(needs.classify.outputs.jobs), 'performance')
     permissions:
       contents: read
     steps:
@@ -363,15 +411,16 @@ jobs:
           include-hidden-files: true
           retention-days: 30
           if-no-files-found: warn
-  checks:
-    name: Required checks
+  ci-gate:
+    name: ci-gate
     runs-on: ubuntu-24.04
     timeout-minutes: 3
-    permissions:
-      contents: read
+    permissions: {}
     needs:
+      - classify
       - workflows
       - secrets
+      - docs
       - quality
       - build
       - hosting
@@ -379,44 +428,25 @@ jobs:
       - performance
     if: always()
     steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      # Fail closed: a failed or cancelled job fails the gate; a job classify selected must succeed
+      # (a skip there means a broken `if:`); unselected jobs may be skipped. classify must succeed.
+      - name: Aggregate job results
+        uses: gonzalomartinperez/engineering-standards/actions/ci-gate@1f33be46bcb95f42f550f74608bc679cae5575ad # v1.0.0
         with:
-          persist-credentials: false
-      - name: Setup Node for the dependency-free CI helpers
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
-        with:
-          node-version-file: .nvmrc
-      - name: Require successful complete job evidence
-        run: node tools/ci/acceptance.ts core
-        env:
-          CI_NEEDS: ${{ toJSON(needs) }}
+          needs: ${{ toJSON(needs) }}
+          expected: ${{ needs.classify.outputs.jobs || '[]' }}
   ci:
     name: ci
     runs-on: ubuntu-24.04
-    timeout-minutes: 3
-    permissions:
-      contents: read
+    timeout-minutes: 2
+    permissions: {}
     needs:
-      - workflows
-      - secrets
-      - quality
-      - build
-      - hosting
-      - browser
-      - performance
-      - checks
+      - ci-gate
     if: always()
     steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          persist-credentials: false
-      - name: Setup Node for the dependency-free CI helpers
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
-        with:
-          node-version-file: .nvmrc
-      - name: Require successful complete job evidence
-        run: node tools/ci/acceptance.ts bridge
+      - name: Temporary alias of ci-gate (removed once the rulesets require ci-gate only)
         env:
-          CI_NEEDS: ${{ toJSON(needs) }}
+          GATE: ${{ needs.ci-gate.result }}
+        run: |
+          echo "ci-gate: $GATE"
+          test "$GATE" = success
