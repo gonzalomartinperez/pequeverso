@@ -24,7 +24,12 @@ export function BulletList({
   return (
     <Tag
       data-slot="bullet-list"
-      className={cn("grid", variant === "card" ? "gap-2" : "gap-3", tone === "dark" && "on-navy", className)}
+      className={cn(
+        "grid",
+        variant === "card" ? "gap-2" : "gap-3",
+        tone === "dark" && "on-navy",
+        className,
+      )}
       role="list"
     >
       {items.map((item) => (
@@ -32,7 +37,8 @@ export function BulletList({
           key={item}
           className={cn(
             "flex items-start gap-3 text-body",
-            variant === "card" && "rounded-md border border-foreground/8 bg-card/70 px-4 py-3 shadow-sm",
+            variant === "card" &&
+              "rounded-md border border-foreground/8 bg-card/70 px-4 py-3 shadow-sm",
           )}
         >
           <IconDot icon={icon} className="mt-[-0.05em]" />

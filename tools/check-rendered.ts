@@ -37,7 +37,8 @@ function check(page: string): string[] {
   const errors: string[] = [];
   const isOfferPage = html.includes("data-offer-root");
   const h1s = count(html, /<h1[\s>]/g);
-  if (h1s !== (isOfferPage ? 2 : 1)) errors.push(`expected ${isOfferPage ? 2 : 1} h1, found ${h1s}`);
+  if (h1s !== (isOfferPage ? 2 : 1))
+    errors.push(`expected ${isOfferPage ? 2 : 1} h1, found ${h1s}`);
   if (!/<html[^>]*\slang="es"/.test(html)) errors.push('missing lang="es"');
   const isErrorPage = name.startsWith("404") || name.startsWith("_not-found");
   if (!isErrorPage && !/<link rel="canonical"/.test(html)) errors.push("missing canonical");

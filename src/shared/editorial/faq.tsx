@@ -75,7 +75,12 @@ export function FAQ({ items, openFirst = true, surface = "card", className }: Pr
             <span className="text-pretty">{item.q}</span>
             <PlusMinus boxed={!lines} />
           </summary>
-          <p className={cn("max-w-[70ch] text-body", lines ? "pr-10 pb-5" : "px-5 pt-0 pb-6 sm:px-6")}>
+          <p
+            className={cn(
+              "max-w-[70ch] text-body",
+              lines ? "pr-10 pb-5" : "px-5 pt-0 pb-6 sm:px-6",
+            )}
+          >
             {item.a}
           </p>
         </details>

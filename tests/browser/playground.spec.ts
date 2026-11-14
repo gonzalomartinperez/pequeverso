@@ -36,12 +36,15 @@ test.describe("syllable playground", () => {
     }
     await expect(game.locator("[data-done]").first()).toBeVisible();
     await expect(game.getByText(`${count} de ${count}`)).toHaveCount(1);
-    for (const tile of await tiles.all()) await expect(tile).toHaveAttribute("aria-disabled", "true");
+    for (const tile of await tiles.all())
+      await expect(tile).toHaveAttribute("aria-disabled", "true");
     // The first word has three syllables, so the tiles never start solved.
     expect(await tiles.first().getAttribute("data-index")).not.toBe("0");
   });
 
-  test("works from the keyboard and the word chips swap the word and its real page", async ({ page }) => {
+  test("works from the keyboard and the word chips swap the word and its real page", async ({
+    page,
+  }) => {
     const game = page.locator('[data-slot="syllable-playground"]').first();
     await game.scrollIntoViewIfNeeded();
     const tile = game.locator('[data-slot="syllable-tile"][data-index="0"]');
@@ -84,7 +87,9 @@ test("home demo mixes reading order and reversed pairs and completes by keyboard
     const tiles = game.locator('[data-slot="syllable-tile"]');
     orders.push(
       (
-        await tiles.evaluateAll((elements) => elements.map((element) => element.getAttribute("data-index")))
+        await tiles.evaluateAll((elements) =>
+          elements.map((element) => element.getAttribute("data-index")),
+        )
       ).join(""),
     );
     for (let index = 0; index < item.syllables.length; index += 1) {
@@ -97,7 +102,8 @@ test("home demo mixes reading order and reversed pairs and completes by keyboard
     }
     await expect(game.locator("[data-done]").first()).toBeVisible();
     await expect(game.getByText("2 de 2", { exact: true })).toHaveCount(1);
-    for (const tile of await tiles.all()) await expect(tile).toHaveAttribute("aria-disabled", "true");
+    for (const tile of await tiles.all())
+      await expect(tile).toHaveAttribute("aria-disabled", "true");
   }
   expect(orders).toContain("01");
   expect(orders).toContain("10");
@@ -107,7 +113,9 @@ test("page wall drifts without widening the page and can be paused", async ({ pa
   await page.goto(WALL_PATH);
   const wall = page.locator('[data-slot="page-wall"]').first();
   await wall.scrollIntoViewIfNeeded();
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - window.innerWidth,
+  );
   expect(overflow).toBeLessThanOrEqual(0);
   await expect(wall.getByRole("list")).toHaveCount(1);
   const reduced = await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches);

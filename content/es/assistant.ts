@@ -4,7 +4,11 @@
  * selector. Stored answers retain their original language. The assistant is advisory: no copy
  * here promises prices, stock, discounts or learning outcomes.
  */
-import type { ErrorCode, Notice, UnavailableReason } from "../../src/features/assistant/domain/models.ts";
+import type {
+  ErrorCode,
+  Notice,
+  UnavailableReason,
+} from "../../src/features/assistant/domain/models.ts";
 
 /** The only strings the eager launcher needs (kept apart so the initial bundle stays small). */
 export const launcherCopy = {
@@ -34,7 +38,8 @@ export const assistantCopy = {
     "¿Qué enseña la Guía de Alimentación para Bebés?": "Guía para bebés",
     "¿Qué enseña Guía de Alimentación para Bebés?": "Guía para bebés",
     "¿Para qué edades es Grafismo Fonético?": "Edad recomendada",
-    "¿Qué diferencias hay entre Grafismo Fonético y Guía de Alimentación para Bebés?": "Comparar opciones",
+    "¿Qué diferencias hay entre Grafismo Fonético y Guía de Alimentación para Bebés?":
+      "Comparar opciones",
     "¿Qué opción es para la etapa que busco?": "Elegir por etapa",
     "¿Cómo accedo después de comprar?": "Acceso a la compra",
   } as Record<string, string>,
@@ -55,7 +60,8 @@ export const assistantCopy = {
   send: "Enviar pregunta",
   stop: "Detener respuesta",
   stopping: "Deteniendo…",
-  charactersLeft: (count: number) => (count === 1 ? "Queda 1 carácter" : `Quedan ${count} caracteres`),
+  charactersLeft: (count: number) =>
+    count === 1 ? "Queda 1 carácter" : `Quedan ${count} caracteres`,
   tooLong: (max: number) => `Tu pregunta supera el máximo de ${max} caracteres.`,
 
   thinking: "Pensando…",
@@ -130,7 +136,8 @@ export const assistantCopy = {
   reconnect: "Reintentar conexión",
   expiredNotice: "Tu conversación anterior expiró. Puedes seguir con una nueva.",
   offlineTitle: "No pudimos conectar con el asistente.",
-  offlineBody: "Revisa tu conexión e inténtalo de nuevo. La tienda sigue funcionando con normalidad.",
+  offlineBody:
+    "Revisa tu conexión e inténtalo de nuevo. La tienda sigue funcionando con normalidad.",
   unavailableTitle: "El asistente no está disponible en este momento.",
   unavailableBody: {
     assistant_disabled: "Puedes seguir navegando la tienda o escribirnos desde Soporte.",

@@ -67,7 +67,13 @@ export function GalleryZoomButton({ label, children }: { label: string; children
     if (image) open(image);
   };
   return (
-    <button type="button" className={ZOOM} onClick={onClick} onPointerEnter={preloadZoom} aria-label={label}>
+    <button
+      type="button"
+      className={ZOOM}
+      onClick={onClick}
+      onPointerEnter={preloadZoom}
+      aria-label={label}
+    >
       {children}
       <span
         className="absolute right-3 bottom-3 grid size-10 place-items-center rounded-full bg-white/95 text-navy shadow-md transition-transform duration-(--duration-fast) ease-out group-hover/zoom:scale-110"
@@ -95,7 +101,15 @@ function zoomFrom(image: HTMLImageElement): Zoom {
  * glass arrows, keyboard), a counter pill, the caption, a scroll-snap strip of thumbnails (dots
  * when no thumbnails are given) and a zoom on the Base UI dialog, loaded on first use.
  */
-export function GalleryCarousel({ label, zoomHint, children, count, itemLabel, zoomTitle, meta }: Props) {
+export function GalleryCarousel({
+  label,
+  zoomHint,
+  children,
+  count,
+  itemLabel,
+  zoomTitle,
+  meta,
+}: Props) {
   const [emblaRef, embla] = useEmblaCarousel({
     // No loop: the looper re-translates slides on every frame, and WebKit never reports the zoom
     // button as stable under it; a product gallery reads better with a clear first and last page.
@@ -249,7 +263,11 @@ export function GalleryCarousel({ label, zoomHint, children, count, itemLabel, z
                   role="tab"
                   aria-selected={index === selected}
                   aria-label={`Ir a la página ${index + 1}`}
-                  className={cx(THUMB, index === 0 && "ml-4", index === slides.length - 1 && "mr-4")}
+                  className={cx(
+                    THUMB,
+                    index === 0 && "ml-4",
+                    index === slides.length - 1 && "mr-4",
+                  )}
                   onClick={() => embla?.scrollTo(index)}
                 >
                   {item ? (
@@ -267,7 +285,11 @@ export function GalleryCarousel({ label, zoomHint, children, count, itemLabel, z
             })}
           </div>
         ) : (
-          <div className="flex flex-wrap justify-center" role="tablist" aria-label="Ir a una página">
+          <div
+            className="flex flex-wrap justify-center"
+            role="tablist"
+            aria-label="Ir a una página"
+          >
             {slides.map((slide, index) => (
               <button
                 key={slide.key}
@@ -284,7 +306,12 @@ export function GalleryCarousel({ label, zoomHint, children, count, itemLabel, z
         {zoomHint ? <p className="text-center text-tiny text-subtle">{zoomHint}</p> : null}
         {zoom ? (
           <Suspense fallback={null}>
-            <ZoomDialog open={zoomOpen} zoom={zoom} title={zoomTitle} onClose={() => setZoomOpen(false)} />
+            <ZoomDialog
+              open={zoomOpen}
+              zoom={zoom}
+              title={zoomTitle}
+              onClose={() => setZoomOpen(false)}
+            />
           </Suspense>
         ) : null}
       </section>

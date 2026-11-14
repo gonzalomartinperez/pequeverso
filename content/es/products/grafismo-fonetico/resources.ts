@@ -29,7 +29,8 @@ export const grafismoResources: Resource[] = [
     title: "Sílabas en Tus Manos",
     pages: 40,
     pagesLabel: "40 páginas",
-    description: "Tarjetas recortables para mezclar, repasar y formar palabras de una manera más dinámica.",
+    description:
+      "Tarjetas recortables para mezclar, repasar y formar palabras de una manera más dinámica.",
   },
   {
     id: "21-dias",
@@ -61,7 +62,8 @@ export const grafismoResources: Resource[] = [
     title: "Los Sonidos de Mi Casa",
     pages: 40,
     pagesLabel: "40 páginas",
-    description: "Actividades con objetos cotidianos y palabras cercanas que resultan fáciles de reconocer.",
+    description:
+      "Actividades con objetos cotidianos y palabras cercanas que resultan fáciles de reconocer.",
   },
   {
     id: "pared-de-sonidos",
@@ -69,7 +71,8 @@ export const grafismoResources: Resource[] = [
     title: "Mi Pared de Sonidos",
     pages: 40,
     pagesLabel: "40 páginas",
-    description: "Material visual para imprimir, plastificar o dejar a mano como apoyo durante la semana.",
+    description:
+      "Material visual para imprimir, plastificar o dejar a mano como apoyo durante la semana.",
   },
   {
     id: "letras-de-mi-mundo",

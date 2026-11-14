@@ -18,13 +18,23 @@ type LinkProps = Common & { href: string; external?: boolean | undefined } & Omi
     AnchorHTMLAttributes<HTMLAnchorElement>,
     "href" | "className" | "onClick" | "onMouseEnter" | "onTouchStart"
   >;
-type ButtonProps = Common & { href?: undefined } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className">;
+type ButtonProps = Common & { href?: undefined } & Omit<
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    "className"
+  >;
 
-function Content({ icon: Icon, iconAfter, children }: Pick<Common, "icon" | "iconAfter" | "children">) {
-  const After = iconAfter === "arrow" ? ArrowRight : iconAfter === "external" ? ExternalLink : iconAfter;
+function Content({
+  icon: Icon,
+  iconAfter,
+  children,
+}: Pick<Common, "icon" | "iconAfter" | "children">) {
+  const After =
+    iconAfter === "arrow" ? ArrowRight : iconAfter === "external" ? ExternalLink : iconAfter;
   return (
     <>
-      {Icon ? <Icon aria-hidden="true" focusable="false" strokeWidth={2.4} data-icon="inline-start" /> : null}
+      {Icon ? (
+        <Icon aria-hidden="true" focusable="false" strokeWidth={2.4} data-icon="inline-start" />
+      ) : null}
       <span>{children}</span>
       {After ? (
         <After
@@ -46,7 +56,8 @@ function Content({ icon: Icon, iconAfter, children }: Pick<Common, "icon" | "ico
  */
 export function CTAButton(props: LinkProps | ButtonProps) {
   if (typeof props.href === "string") {
-    const { href, external, variant, size, block, className, children, icon, iconAfter, ...rest } = props;
+    const { href, external, variant, size, block, className, children, icon, iconAfter, ...rest } =
+      props;
     const classes = cn(buttonVariants({ variant, size, block }), className);
     const isExternal = external || /^https?:/.test(href);
     const isMail = /^mailto:/.test(href);
@@ -74,7 +85,17 @@ export function CTAButton(props: LinkProps | ButtonProps) {
       </Link>
     );
   }
-  const { variant, size, block, className, children, type = "button", icon, iconAfter, ...rest } = props;
+  const {
+    variant,
+    size,
+    block,
+    className,
+    children,
+    type = "button",
+    icon,
+    iconAfter,
+    ...rest
+  } = props;
   return (
     <button
       type={type}

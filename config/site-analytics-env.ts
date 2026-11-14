@@ -23,7 +23,8 @@ export function parseAnalyticsEnv(input: {
     url.pathname !== "/" ||
     !input.apiOrigin?.replace(/\/$/, "").endsWith(url.host) ||
     (loopback && input.localTestBuild !== "true") ||
-    (url.protocol !== "https:" && !(url.protocol === "http:" && loopback && input.localTestBuild === "true"))
+    (url.protocol !== "https:" &&
+      !(url.protocol === "http:" && loopback && input.localTestBuild === "true"))
   ) {
     throw new Error(
       "Product analytics requires a bare HTTPS API origin; loopback needs an isolated test build",

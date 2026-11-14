@@ -73,7 +73,8 @@ export function ProductGallery({
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) setActive(Number((entry.target as HTMLElement).dataset.index ?? 0));
+          if (entry.isIntersecting)
+            setActive(Number((entry.target as HTMLElement).dataset.index ?? 0));
         }
       },
       { root: el, threshold: 0.6 },
@@ -89,7 +90,11 @@ export function ProductGallery({
   }, [selected, go]);
 
   return (
-    <section data-slot="product-gallery" className={cx("cq grid gap-3", className)} aria-label={label}>
+    <section
+      data-slot="product-gallery"
+      className={cx("cq grid gap-3", className)}
+      aria-label={label}
+    >
       <div className={cx("relative overflow-hidden", frameClassName)}>
         {/* biome-ignore lint/a11y/noNoninteractiveTabindex: a scrollable region must be keyboard reachable (arrow keys scroll it) */}
         <div ref={track} className={TRACK} tabIndex={0}>

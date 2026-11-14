@@ -21,7 +21,9 @@ test("/arrepentimiento/ gives the email route, the Hotmart refund link and the 2
   page,
 }) => {
   await page.goto("/arrepentimiento/");
-  await expect(page.getByRole("heading", { level: 1, name: "Botón de arrepentimiento" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Botón de arrepentimiento" }),
+  ).toBeVisible();
   const main = page.getByRole("main");
   await expect(main.locator(`a[href^="mailto:${seller.supportEmail}"]`).first()).toBeVisible();
   await expect(main.locator(`a[href="${hotmart.refunds}"]`).first()).toBeVisible();

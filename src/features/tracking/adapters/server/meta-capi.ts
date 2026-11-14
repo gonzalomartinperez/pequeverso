@@ -73,7 +73,12 @@ const ALLOWED_EVENTS = new Set([
   "PequeversoAffiliateClick",
   "CheckoutIntent",
 ]);
-const FORBIDDEN_EVENTS = new Set(["InitiateCheckout", "Purchase", "PlaceAnOrder", "begin_checkout"]);
+const FORBIDDEN_EVENTS = new Set([
+  "InitiateCheckout",
+  "Purchase",
+  "PlaceAnOrder",
+  "begin_checkout",
+]);
 const ALLOWED_PARAMS = new Set([
   "content_ids",
   "content_name",
@@ -154,7 +159,8 @@ function validateEvent(raw: unknown, origins: Set<string>, now: number): RelayEv
 
 function validateBody(body: unknown, origins: Set<string>, now: number): RelayEvent[] {
   if (!isPlainObject(body) || !Array.isArray(body.events)) throw new ValidationError("events");
-  if (body.events.length < 1 || body.events.length > MAX_EVENTS) throw new ValidationError("events");
+  if (body.events.length < 1 || body.events.length > MAX_EVENTS)
+    throw new ValidationError("events");
   return body.events.map((event) => validateEvent(event, origins, now));
 }
 
@@ -302,7 +308,9 @@ export function createMetaCapiRelay(options: RelayOptions): MetaCapiRelay {
     let detail = "";
     if (!response.ok) {
       try {
-        const json = (await response.json()) as { error?: { code?: number; fbtrace_id?: string } } | null;
+        const json = (await response.json()) as {
+          error?: { code?: number; fbtrace_id?: string };
+        } | null;
         const code = json?.error?.code;
         const trace = json?.error?.fbtrace_id;
         detail = `${code !== undefined ? ` code=${code}` : ""}${trace ? ` fbtrace=${trace}` : ""}`;
@@ -426,7 +434,10 @@ export function createMetaCapiHandler(options: RelayOptions): MetaCapiHandler {
       try {
         bodyText = await readBody(req, MAX_BODY_BYTES);
       } catch (error) {
-        write(res, error instanceof ValidationError ? result(413, error.reason) : result(400, "body"));
+        write(
+          res,
+          error instanceof ValidationError ? result(413, error.reason) : result(400, "body"),
+        );
         return true;
       }
       write(res, relay.process({ ...base, bodyText }));

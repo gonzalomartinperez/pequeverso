@@ -52,7 +52,10 @@ export function IconButton({
   children,
   className,
   ...props
-}: Omit<ComponentProps<"button">, "aria-label"> & { label: string; className?: string | undefined }) {
+}: Omit<ComponentProps<"button">, "aria-label"> & {
+  label: string;
+  className?: string | undefined;
+}) {
   return (
     <Tooltip>
       <TooltipTrigger
@@ -72,7 +75,12 @@ export function IconButton({
       >
         {children}
       </TooltipTrigger>
-      <TooltipContent className={styles.tooltip} positionerClassName="z-[100]" role="tooltip" side="bottom">
+      <TooltipContent
+        className={styles.tooltip}
+        positionerClassName="z-[100]"
+        role="tooltip"
+        side="bottom"
+      >
         {label}
       </TooltipContent>
     </Tooltip>

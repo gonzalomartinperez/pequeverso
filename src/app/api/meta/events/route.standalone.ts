@@ -31,7 +31,11 @@ function currentRelay(): MetaCapiRelay {
   return relay;
 }
 
-function toResponse(outcome: { status: number; headers: Record<string, string>; body?: string }): Response {
+function toResponse(outcome: {
+  status: number;
+  headers: Record<string, string>;
+  body?: string;
+}): Response {
   return new Response(outcome.body ?? null, { status: outcome.status, headers: outcome.headers });
 }
 

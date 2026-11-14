@@ -22,7 +22,13 @@ type Props = {
  * tinted circle with a short bold label and an optional detail. Facts come from config/content;
  * never invent guarantees or claims.
  */
-export function TrustRow({ items, layout = "grid", divided = true, tone = "light", className }: Props) {
+export function TrustRow({
+  items,
+  layout = "grid",
+  divided = true,
+  tone = "light",
+  className,
+}: Props) {
   const grid = layout === "grid";
   return (
     <div data-slot="trust-row" className={cn("cq", tone === "dark" && "on-navy", className)}>
@@ -49,7 +55,9 @@ export function TrustRow({ items, layout = "grid", divided = true, tone = "light
             <IconDot icon={item.icon} size={grid ? "lg" : "sm"} />
             <span className="grid min-w-0 leading-tight">
               <span className="text-small font-extrabold text-heading">{item.label}</span>
-              {item.detail ? <span className="text-tiny text-muted-foreground">{item.detail}</span> : null}
+              {item.detail ? (
+                <span className="text-tiny text-muted-foreground">{item.detail}</span>
+              ) : null}
             </span>
           </li>
         ))}

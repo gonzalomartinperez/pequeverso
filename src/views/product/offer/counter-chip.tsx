@@ -9,8 +9,13 @@ type Props = { value: number; unit: string };
 export function CounterChip({ value, unit }: Props) {
   return (
     <span className="on-light glass inline-grid min-h-11 min-w-22 justify-items-center gap-0.5 rounded-lg px-4 py-3 text-center shadow-[0_12px_32px_-18px_oklch(0.3175_0.1094_256.25/0.45)]">
-      <Counter value={value} className="font-display text-[2rem] leading-none font-bold text-navy" />
-      <span className="text-tiny font-extrabold tracking-[0.06em] text-subtle uppercase">{unit}</span>
+      <Counter
+        value={value}
+        className="font-display text-[2rem] leading-none font-bold text-navy"
+      />
+      <span className="text-tiny font-extrabold tracking-[0.06em] text-subtle uppercase">
+        {unit}
+      </span>
     </span>
   );
 }

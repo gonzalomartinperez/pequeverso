@@ -14,7 +14,8 @@ const THANKS_PATH = /^\/[a-z0-9-]+\/gracias\/$/;
 
 /** A media manifest id that exists in `media/manifest.json` (any kind). */
 export const MediaId = z.string().refine(hasMedia, {
-  error: (issue) => `unknown media id "${String(issue.input)}" (declare it in tools/media/sources.json)`,
+  error: (issue) =>
+    `unknown media id "${String(issue.input)}" (declare it in tools/media/sources.json)`,
 });
 
 const Price = z.number().positive().multipleOf(0.01);
@@ -118,7 +119,11 @@ function checkRegistry(list: Parsed[], ctx: z.RefinementCtx): void {
     else checkOffer(product, index, slugs, ctx);
   });
   if (!list.some((product) => product.kind === "core")) {
-    ctx.addIssue({ code: "custom", path: [], message: "the registry needs at least one core product" });
+    ctx.addIssue({
+      code: "custom",
+      path: [],
+      message: "the registry needs at least one core product",
+    });
   }
 }
 
@@ -175,5 +180,8 @@ export type OfferProduct = Extract<Product, { kind: "post-purchase-offer" }>;
 
 /** `code.kind.01 … code.kind.NN`, the naming convention of `tools/media/sources.json`. */
 export function mediaSequence(prefix: string, count: number): string[] {
-  return Array.from({ length: count }, (_, index) => `${prefix}.${String(index + 1).padStart(2, "0")}`);
+  return Array.from(
+    { length: count },
+    (_, index) => `${prefix}.${String(index + 1).padStart(2, "0")}`,
+  );
 }

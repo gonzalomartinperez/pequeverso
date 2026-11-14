@@ -34,11 +34,18 @@ for (const malicious of [false, true]) {
       if (request.url() === `${API}/api/v1/session`) sessions.push(request.url());
     });
     await context.route(/^https:\/\/help\.hotmart\.com\//, (route) => route.abort());
-    await context.route(/^https:\/\/([a-z0-9-]+\.)*facebook\.(com|net)\//, (route) => route.abort());
+    await context.route(/^https:\/\/([a-z0-9-]+\.)*facebook\.(com|net)\//, (route) =>
+      route.abort(),
+    );
     await context.addInitScript(() =>
       localStorage.setItem(
         "pv_consent",
-        JSON.stringify({ version: 2, analytics: false, marketing: false, updatedAt: "2026-10-13T00:00:00Z" }),
+        JSON.stringify({
+          version: 2,
+          analytics: false,
+          marketing: false,
+          updatedAt: "2026-10-13T00:00:00Z",
+        }),
       ),
     );
     await page.route(`${API}/api/v1/messages`, async (route) => {
@@ -105,10 +112,15 @@ for (const malicious of [false, true]) {
       for (const source of SOURCES) {
         if (!source.title) throw new Error("Each fixture article needs an explicit title");
         await expect(
-          sources.getByRole("link", { name: `${source.title} ${assistantCopy.opensInNewTab}`, exact: true }),
+          sources.getByRole("link", {
+            name: `${source.title} ${assistantCopy.opensInNewTab}`,
+            exact: true,
+          }),
         ).toHaveAttribute("href", source.url);
       }
-      await expect(sources.getByText("Hotmart · procedimiento general", { exact: true })).toHaveCount(3);
+      await expect(
+        sources.getByText("Hotmart · procedimiento general", { exact: true }),
+      ).toHaveCount(3);
     } else {
       await expect(panel.locator("details")).toHaveCount(0);
     }
@@ -125,7 +137,9 @@ for (const malicious of [false, true]) {
     expect(generations).toHaveLength(1);
     expect(sessions).toHaveLength(1);
     expect(offsiteRequests).toEqual([]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
     if (!malicious && ["chromium-desktop", "chromium-mobile"].includes(info.project.name)) {
       await sources.scrollIntoViewIfNeeded();
       mkdirSync("test-results-assistant/screenshots", { recursive: true });

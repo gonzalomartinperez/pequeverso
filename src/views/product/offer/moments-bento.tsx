@@ -19,7 +19,12 @@ const TONES = [
   "bg-[linear-gradient(160deg,var(--pv-white),var(--pv-lemon))]",
 ] as const;
 
-const AREAS = ["lg:[grid-area:m0]", "lg:[grid-area:m1]", "lg:[grid-area:m2]", "lg:[grid-area:m3]"] as const;
+const AREAS = [
+  "lg:[grid-area:m0]",
+  "lg:[grid-area:m1]",
+  "lg:[grid-area:m2]",
+  "lg:[grid-area:m3]",
+] as const;
 
 /**
  * "Para qué momentos" as a bento: four moment tiles around a centre tile with a real page floating
@@ -46,7 +51,10 @@ export function MomentsBento({ items, pageId }: Props) {
             <span className="grid size-13 place-items-center rounded-lg bg-navy text-gold shadow-md">
               <Icon name={item.icon} size={24} strokeWidth={2.2} />
             </span>
-            <span aria-hidden="true" className="font-display text-[2rem] leading-none font-bold text-navy/15">
+            <span
+              aria-hidden="true"
+              className="font-display text-[2rem] leading-none font-bold text-navy/15"
+            >
               {String(index + 1).padStart(2, "0")}
             </span>
           </span>

@@ -2,7 +2,9 @@ import { parseAnalyticsEnv } from "../../../config/site-analytics-env.ts";
 
 export async function SiteAnalyticsSlot() {
   const mount =
-    process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" ? await import("./mount.tsx") : null;
+    process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true"
+      ? await import("./mount.tsx")
+      : null;
   if (!mount) return null;
   const flag = parseAnalyticsEnv({
     enabled: "true",

@@ -94,7 +94,9 @@ const groupSummary = [...groupTotals]
   .sort((a, b) => b[1] - a[1])
   .map(([group, bytes]) => `${group} ${mb(bytes)} MB`)
   .join(", ");
-console.log(`check-media: ${files.length} files, ${mb(total)} MB, ${declared.size} manifest outputs`);
+console.log(
+  `check-media: ${files.length} files, ${mb(total)} MB, ${declared.size} manifest outputs`,
+);
 console.log(`check-media: groups — ${groupSummary}`);
 if (errors.length) {
   for (const e of errors) console.error(`  ✖ ${e}`);

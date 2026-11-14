@@ -48,7 +48,13 @@ export function AffiliateLink({
     >
       <span>{children}</span>
       <span className="sr-only"> {newTabLabel}</span>
-      <ExternalLink aria-hidden="true" focusable="false" size={18} strokeWidth={2.4} data-icon="inline-end" />
+      <ExternalLink
+        aria-hidden="true"
+        focusable="false"
+        size={18}
+        strokeWidth={2.4}
+        data-icon="inline-end"
+      />
     </a>
   );
 }

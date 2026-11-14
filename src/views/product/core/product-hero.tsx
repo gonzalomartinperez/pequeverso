@@ -56,7 +56,9 @@ export function ProductHero({ id, titleId, breadcrumb, gallery, buyBox }: Props)
           </ol>
         </nav>
         <div className="grid items-start gap-6 cq-lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] cq-lg:gap-10 cq-xl:gap-14">
-          <div className="min-w-0 cq-lg:sticky cq-lg:top-[calc(var(--header-height)+1rem)]">{gallery}</div>
+          <div className="min-w-0 cq-lg:sticky cq-lg:top-[calc(var(--header-height)+1rem)]">
+            {gallery}
+          </div>
           <div className="min-w-0">{buyBox}</div>
         </div>
       </div>

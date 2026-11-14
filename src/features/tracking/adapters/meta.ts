@@ -53,7 +53,8 @@ function expirePixelCookies(): void {
   if (typeof document === "undefined" || typeof window === "undefined") return;
   const labels = (window.location?.hostname ?? "").split(".");
   const domains = [""];
-  for (let index = 0; index < labels.length - 1; index += 1) domains.push(labels.slice(index).join("."));
+  for (let index = 0; index < labels.length - 1; index += 1)
+    domains.push(labels.slice(index).join("."));
   for (const name of PIXEL_COOKIES) {
     for (const domain of domains) {
       // biome-ignore lint/suspicious/noDocumentCookie: cookieStore is not available in all target browsers

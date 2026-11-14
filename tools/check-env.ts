@@ -42,9 +42,14 @@ function validate(): string[] {
   if (!siteUrl) errors.push("NEXT_PUBLIC_SITE_URL is required (https:// origin of the deployment)");
   else if (!isHttpsUrl(siteUrl)) errors.push("NEXT_PUBLIC_SITE_URL must be an https:// origin");
 
-  const checkoutNames = ["NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO", "NEXT_PUBLIC_CHECKOUT_URL"] as const;
+  const checkoutNames = [
+    "NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO",
+    "NEXT_PUBLIC_CHECKOUT_URL",
+  ] as const;
   if (!checkoutNames.some((name) => read(name))) {
-    errors.push(`${checkoutNames[0]} is required (the Hotmart checkout URL of the principal product)`);
+    errors.push(
+      `${checkoutNames[0]} is required (the Hotmart checkout URL of the principal product)`,
+    );
   }
   for (const name of checkoutNames) {
     const value = read(name);
@@ -53,7 +58,8 @@ function validate(): string[] {
   }
 
   const pixel = read("NEXT_PUBLIC_META_PIXEL_ID");
-  if (pixel && !/^\d{15,16}$/.test(pixel)) errors.push("NEXT_PUBLIC_META_PIXEL_ID must be 15-16 digits");
+  if (pixel && !/^\d{15,16}$/.test(pixel))
+    errors.push("NEXT_PUBLIC_META_PIXEL_ID must be 15-16 digits");
 
   const token = process.env.META_CAPI_ACCESS_TOKEN;
   if (token !== undefined && token !== "" && (token.length < 32 || /\s/.test(token)))

@@ -33,7 +33,8 @@ const legalViewFiles = new Set([
 ]);
 
 function checkLegalEmailReference(file: string, source: string): void {
-  if (file === "content/es/legal/seller.ts" || legalPageFiles.has(file) || legalViewFiles.has(file)) return;
+  if (file === "content/es/legal/seller.ts" || legalPageFiles.has(file) || legalViewFiles.has(file))
+    return;
   assert.doesNotMatch(source, /\blegalEmail\b/, `${file} references seller.legalEmail`);
 }
 
@@ -41,7 +42,10 @@ test("the personal email literal lives only in the seller module", () => {
   assert.notEqual(seller.legalEmail, seller.supportEmail);
   for (const file of scanned) {
     if (file === "content/es/legal/seller.ts") continue;
-    assert.ok(!readFileSync(file, "utf8").includes(seller.legalEmail), `${file} contains the personal email`);
+    assert.ok(
+      !readFileSync(file, "utf8").includes(seller.legalEmail),
+      `${file} contains the personal email`,
+    );
   }
 });
 
@@ -49,10 +53,15 @@ test("only legal routes and their exact legal views render seller.legalEmail", (
   for (const file of scanned) {
     checkLegalEmailReference(file, readFileSync(file, "utf8"));
   }
-  for (const file of legalPageFiles) assert.ok(scanned.includes(file), `missing legal route ${file}`);
+  for (const file of legalPageFiles)
+    assert.ok(scanned.includes(file), `missing legal route ${file}`);
   for (const file of legalViewFiles) {
     assert.ok(scanned.includes(file), `missing legal view ${file}`);
-    assert.match(readFileSync(file, "utf8"), /\blegalEmail\b/, `${file} is not a legal email consumer`);
+    assert.match(
+      readFileSync(file, "utf8"),
+      /\blegalEmail\b/,
+      `${file} is not a legal email consumer`,
+    );
   }
 });
 

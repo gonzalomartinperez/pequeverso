@@ -16,7 +16,11 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 
-export function isolatedBuild(root: string, env: Record<string, string>, use: (out: string) => void): void {
+export function isolatedBuild(
+  root: string,
+  env: Record<string, string>,
+  use: (out: string) => void,
+): void {
   const listed = execFileSync("git", ["ls-files", "-co", "--exclude-standard", "-z"], { cwd: root })
     .toString("utf8")
     .split("\0")

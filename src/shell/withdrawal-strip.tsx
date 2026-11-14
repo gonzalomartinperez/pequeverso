@@ -32,7 +32,10 @@ export function WithdrawalStrip({ tone = "navy" }: Props) {
         >
           <span
             aria-hidden="true"
-            className={cn("grid size-5 place-items-center rounded-full", navy ? "bg-white/10" : "bg-mint")}
+            className={cn(
+              "grid size-5 place-items-center rounded-full",
+              navy ? "bg-white/10" : "bg-mint",
+            )}
           >
             <UndoIcon focusable="false" className="size-3" strokeWidth={2.6} />
           </span>

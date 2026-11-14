@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { checkoutPassthroughParams, currency, formatUsd, guaranteeDays } from "../../config/commerce.ts";
+import {
+  checkoutPassthroughParams,
+  currency,
+  formatUsd,
+  guaranteeDays,
+} from "../../config/commerce.ts";
 
 test("shared commercial facts (guarantee and currency)", () => {
   assert.equal(guaranteeDays, 7);

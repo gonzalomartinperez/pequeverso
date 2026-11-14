@@ -28,7 +28,10 @@ export default function ErrorPage({ error, reset }: Props) {
         <div className="absolute top-[calc(18%-1.75rem)] left-[calc(12%-1.75rem)] size-19 rounded-full border border-dashed border-navy/18" />
       </div>
       <div className="glass grid w-full max-w-[40rem] justify-items-start gap-5 rounded-2xl p-[clamp(1.5rem,5vw,3rem)] shadow-float ring-1 ring-navy/8">
-        <Link href="/" className="font-display text-2xl leading-none font-bold text-navy no-underline">
+        <Link
+          href="/"
+          className="font-display text-2xl leading-none font-bold text-navy no-underline"
+        >
           pequeverso
         </Link>
         <p className={`${badgeVariants({ variant: "chip" })} rounded-pill!`}>{copy.kicker}</p>
@@ -45,7 +48,10 @@ export default function ErrorPage({ error, reset }: Props) {
           <Link href="/" className={`${buttonVariants({ variant: "outline" })} rounded-pill!`}>
             {copy.home}
           </Link>
-          <Link href="/soporte/" className={`${buttonVariants({ variant: "ghost" })} rounded-pill!`}>
+          <Link
+            href="/soporte/"
+            className={`${buttonVariants({ variant: "ghost" })} rounded-pill!`}
+          >
             {copy.support}
           </Link>
         </div>

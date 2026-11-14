@@ -73,7 +73,9 @@ export function OfferCard({
             aria-hidden="true"
             className="planet-gold absolute -top-20 -right-20 -z-1 size-36 rounded-full opacity-80"
           />
-          <p className="text-tiny font-extrabold tracking-[0.1em] text-gold uppercase">{price.kicker}</p>
+          <p className="text-tiny font-extrabold tracking-[0.1em] text-gold uppercase">
+            {price.kicker}
+          </p>
           <p className="font-display text-[clamp(2.75rem,2.3rem+1.6vw,3.5rem)] leading-none font-bold text-white tabular-nums">
             <span className="sr-only">Precio: </span>
             {formatUsd(price.value)}

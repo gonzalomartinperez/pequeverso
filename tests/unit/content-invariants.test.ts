@@ -43,7 +43,8 @@ function sourceFiles(dir: string, pattern = /\.(ts|tsx)$/): string[] {
 const files = roots.flatMap((dir) => sourceFiles(dir));
 const read = (file: string): string => readFileSync(file, "utf8");
 const toPosix = (file: string): string => file.split("\\").join("/");
-const isSellerModule = (file: string): boolean => toPosix(file).endsWith("content/es/legal/seller.ts");
+const isSellerModule = (file: string): boolean =>
+  toPosix(file).endsWith("content/es/legal/seller.ts");
 const isQuestion = (line: string): boolean => /[¿?]/.test(line);
 
 test("pre-purchase copy (home, principal landing) never offers paid extras", () => {
@@ -72,10 +73,16 @@ test("customer-facing sources never use the retired product name or generic plac
 });
 
 test("no trace of the retired operator brand in code, content or config", () => {
-  const scanned = retiredOperatorRoots.flatMap((dir) => sourceFiles(dir, /\.(ts|tsx|mjs|js|json|css|md)$/));
+  const scanned = retiredOperatorRoots.flatMap((dir) =>
+    sourceFiles(dir, /\.(ts|tsx|mjs|js|json|css|md)$/),
+  );
   assert.ok(scanned.length > 0, "expected files to scan");
   for (const file of scanned) {
-    assert.doesNotMatch(read(file), retiredOperator, `${relative(".", file)} names the retired operator`);
+    assert.doesNotMatch(
+      read(file),
+      retiredOperator,
+      `${relative(".", file)} names the retired operator`,
+    );
   }
 });
 
@@ -126,13 +133,21 @@ test("price literals in copy use the shared formatter", () => {
     })),
   );
   for (const { file, raw, value } of prices) {
-    assert.equal(raw.replace(/\s/g, ""), formatUsd(value), `${relative(".", file)} hard-codes ${raw}`);
+    assert.equal(
+      raw.replace(/\s/g, ""),
+      formatUsd(value),
+      `${relative(".", file)} hard-codes ${raw}`,
+    );
   }
 });
 
 test("price literals never use a decimal point (customer-facing prices read US$14,99)", () => {
   assert.equal(formatUsd(14.99), "US$14,99");
   for (const file of files) {
-    assert.doesNotMatch(read(file), /US\$\s?\d+\.\d{2}/, `${relative(".", file)} uses a decimal point`);
+    assert.doesNotMatch(
+      read(file),
+      /US\$\s?\d+\.\d{2}/,
+      `${relative(".", file)} uses a decimal point`,
+    );
   }
 });

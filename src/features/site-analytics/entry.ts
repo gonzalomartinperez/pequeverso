@@ -30,7 +30,8 @@ export function startSiteAnalytics(
     dispose();
     dispose = () => {};
     // A missing/invalid stored decision never inherits the marketing opt-out default.
-    const allowed = gate.allows(readConsent(), Date.now()) && view.document.visibilityState === "visible";
+    const allowed =
+      gate.allows(readConsent(), Date.now()) && view.document.visibilityState === "visible";
     controller.consent(allowed);
     const route = routeOf(path);
     if (!stopped && allowed && route) dispose = observePublicSections(view, route, controller);

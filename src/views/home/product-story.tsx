@@ -83,7 +83,10 @@ export function ProductStory({
         className="absolute top-0 block scroll-mt-[calc(1.25rem-var(--section-pad))]"
       />
       <div className="page-container grid items-center gap-10 cq-lg:grid-cols-2 cq-lg:gap-16">
-        <div className={cn("min-w-0", mediaFirst ? "cq-lg:order-1" : "cq-lg:order-2")} data-reveal="blur">
+        <div
+          className={cn("min-w-0", mediaFirst ? "cq-lg:order-1" : "cq-lg:order-2")}
+          data-reveal="blur"
+        >
           {media}
         </div>
         <div
@@ -115,7 +118,9 @@ export function ProductStory({
             <p className="lead text-pretty text-ink">{desire}</p>
           </div>
           <div className="grid w-full gap-3">
-            <p className="text-tiny font-extrabold tracking-[0.08em] text-subtle uppercase">{listLabel}</p>
+            <p className="text-tiny font-extrabold tracking-[0.08em] text-subtle uppercase">
+              {listLabel}
+            </p>
             <ul className="grid grid-cols-1 gap-2.5 cq-md:grid-cols-2 cq-md:gap-x-6 cq-lg:grid-cols-1">
               {list.map((item, index) => (
                 <li
@@ -185,7 +190,10 @@ export function StoryStage({
       >
         <div
           aria-hidden="true"
-          className={cn("absolute top-[8%] left-[10%] aspect-square w-[80%] rounded-full", tone.glow)}
+          className={cn(
+            "absolute top-[8%] left-[10%] aspect-square w-[80%] rounded-full",
+            tone.glow,
+          )}
         />
         <div
           aria-hidden="true"

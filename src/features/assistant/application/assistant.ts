@@ -41,7 +41,11 @@ function codeOf(error: unknown): ErrorCode {
   return error instanceof AssistantError ? error.code : "network";
 }
 
-export function createAssistant(transport: AssistantTransport, runtime: Runtime, options: AssistantOptions) {
+export function createAssistant(
+  transport: AssistantTransport,
+  runtime: Runtime,
+  options: AssistantOptions,
+) {
   let state: ConversationState = initialState;
   const listeners = new Set<() => void>();
   let lifetime = new AbortController();
@@ -145,7 +149,8 @@ export function createAssistant(transport: AssistantTransport, runtime: Runtime,
       );
       // The reducer preserves an authoritative answer and clears pending even when the
       // connection closes before its terminal event. A settled answer is not a settled run.
-      if (generation === current && end === "eof") dispatch({ type: "run.interrupted", key: turn.key });
+      if (generation === current && end === "eof")
+        dispatch({ type: "run.interrupted", key: turn.key });
     } catch (error) {
       if (generation !== current || lifetime.signal.aborted) return;
       if (current.controller.signal.aborted) {
@@ -228,7 +233,13 @@ export function createAssistant(transport: AssistantTransport, runtime: Runtime,
     // Replaying an interrupted request keeps its exact body even if the visitor changes
     // route or interface language. A deliberate new attempt may use the current context.
     if (!reuse)
-      sentInput = { content: turn.prompt, page, key: turn.key, locale, ...(context ? { context } : {}) };
+      sentInput = {
+        content: turn.prompt,
+        page,
+        key: turn.key,
+        locale,
+        ...(context ? { context } : {}),
+      };
     dispatch({ type: "turn.submitted", turn, question: null });
     void run(turn, reuse);
     return true;

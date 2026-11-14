@@ -19,7 +19,8 @@ const buildInfo = (path: string): { assistant?: unknown; output?: unknown } | nu
     return null;
   }
 };
-const standalone = !explicit && buildInfo(resolve("public/build-info.json"))?.output === "standalone";
+const standalone =
+  !explicit && buildInfo(resolve("public/build-info.json"))?.output === "standalone";
 const dirs = explicit
   ? [resolve(explicit)]
   : standalone
@@ -52,10 +53,14 @@ function files(root: string): string[] {
 }
 
 const failures: string[] = [];
-const info = buildInfo(standalone ? resolve("public/build-info.json") : join(dir, "build-info.json"));
+const info = buildInfo(
+  standalone ? resolve("public/build-info.json") : join(dir, "build-info.json"),
+);
 if (!info) failures.push("build-info.json is missing or unreadable");
 else if (info.assistant === "enabled" && allowEnabled) {
-  console.warn("check-assistant-disabled: assistant ENABLED build (verification only): NOT publishable");
+  console.warn(
+    "check-assistant-disabled: assistant ENABLED build (verification only): NOT publishable",
+  );
   process.exit(0);
 } else if (info.assistant !== "disabled")
   failures.push('build-info.json does not record assistant: "disabled"');
@@ -75,7 +80,9 @@ for (const file of scanned) {
 
 if (failures.length) {
   for (const failure of new Set(failures)) console.error(`check-assistant-disabled: ${failure}`);
-  console.error("check-assistant-disabled: this artifact includes the assistant and is NOT publishable");
+  console.error(
+    "check-assistant-disabled: this artifact includes the assistant and is NOT publishable",
+  );
   process.exit(1);
 }
 console.log(

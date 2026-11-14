@@ -34,7 +34,8 @@ const open = (messages: Message[] = []): ConversationState =>
     expired: false,
   });
 
-const run = (state: ConversationState, ...events: ConversationEvent[]) => events.reduce(reduce, state);
+const run = (state: ConversationState, ...events: ConversationEvent[]) =>
+  events.reduce(reduce, state);
 const turn = (key = "key-00001", retry = false): Turn => ({ key, prompt: "¿Qué incluye?", retry });
 
 describe("conversation reducer", () => {

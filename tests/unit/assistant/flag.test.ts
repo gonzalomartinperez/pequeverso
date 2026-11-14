@@ -24,10 +24,13 @@ describe("assistant flag (disabled by default)", () => {
   });
 
   it("requires a bare https origin when enabled", () => {
-    assert.deepEqual(parseAssistantEnv({ enabled: "true", apiOrigin: "https://assistant.example/" }), {
-      ok: true,
-      flag: { enabled: true, apiOrigin: "https://assistant.example", localTest: false },
-    });
+    assert.deepEqual(
+      parseAssistantEnv({ enabled: "true", apiOrigin: "https://assistant.example/" }),
+      {
+        ok: true,
+        flag: { enabled: true, apiOrigin: "https://assistant.example", localTest: false },
+      },
+    );
     for (const apiOrigin of [
       undefined,
       "",
@@ -45,7 +48,11 @@ describe("assistant flag (disabled by default)", () => {
 
   it("allows loopback origins only for explicit local test builds", () => {
     assert.equal(
-      parseAssistantEnv({ enabled: "true", apiOrigin: "https://127.0.0.1:8217", localTestBuild: "true" }).ok,
+      parseAssistantEnv({
+        enabled: "true",
+        apiOrigin: "https://127.0.0.1:8217",
+        localTestBuild: "true",
+      }).ok,
       true,
     );
     const result = parseAssistantEnv({
@@ -58,7 +65,11 @@ describe("assistant flag (disabled by default)", () => {
       flag: { enabled: true, apiOrigin: "http://127.0.0.1:8217", localTest: true },
     });
     assert.equal(
-      parseAssistantEnv({ enabled: "true", apiOrigin: "http://example.com", localTestBuild: "true" }).ok,
+      parseAssistantEnv({
+        enabled: "true",
+        apiOrigin: "http://example.com",
+        localTestBuild: "true",
+      }).ok,
       false,
     );
   });

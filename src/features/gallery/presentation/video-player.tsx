@@ -40,7 +40,10 @@ export function VideoGroup({ children }: { children: ReactNode }) {
         .catch(() => undefined);
     });
   }, []);
-  const stop = useCallback((id: string) => setActive((current) => (current === id ? null : current)), []);
+  const stop = useCallback(
+    (id: string) => setActive((current) => (current === id ? null : current)),
+    [],
+  );
   const value = useMemo(() => ({ active, play, stop, register }), [active, play, stop, register]);
   return <GroupContext.Provider value={value}>{children}</GroupContext.Provider>;
 }

@@ -8,7 +8,9 @@ import { test as base } from "@playwright/test";
 export const test = base.extend<{ blockMetaHosts: boolean }>({
   blockMetaHosts: [
     async ({ context }, use) => {
-      await context.route(/^https:\/\/([a-z0-9-]+\.)*facebook\.(com|net)\//, (route) => route.abort());
+      await context.route(/^https:\/\/([a-z0-9-]+\.)*facebook\.(com|net)\//, (route) =>
+        route.abort(),
+      );
       await use(true);
     },
     { auto: true },

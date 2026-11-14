@@ -21,7 +21,10 @@ const productLinks = [
 const helpLinks = [
   { href: "/soporte/", label: "Soporte y contacto" },
   { href: "/compras-y-reembolsos/", label: "Reembolsos" },
-  ...coreProducts().map((product) => ({ href: product.funnel.thanksPath, label: "Acceso a tu compra" })),
+  ...coreProducts().map((product) => ({
+    href: product.funnel.thanksPath,
+    label: "Acceso a tu compra",
+  })),
 ];
 
 const legalLinks = [
@@ -150,11 +153,12 @@ export function Footer({ hub = false }: { hub?: boolean } = {}) {
 
       <div className="page-container mt-14 grid gap-2 border-t border-white/14 pt-6 [&_p]:text-small [&_p]:text-white/72">
         <p>
-          Material educativo complementario. No sustituye la escuela ni una terapia y no garantiza resultados
-          específicos.
+          Material educativo complementario. No sustituye la escuela ni una terapia y no garantiza
+          resultados específicos.
         </p>
         <p>
-          © {new Date().getFullYear()} {site.name}. Pagos, entrega y reembolsos gestionados por Hotmart.
+          © {new Date().getFullYear()} {site.name}. Pagos, entrega y reembolsos gestionados por
+          Hotmart.
         </p>
       </div>
 

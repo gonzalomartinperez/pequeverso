@@ -3,7 +3,14 @@ import { dataAuthority } from "@content/es/legal/argentina";
 import { seller, sellerIdentity } from "@content/es/legal/seller";
 import Link from "next/link";
 import { Notice } from "@/shared/editorial/notice.tsx";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui/table.tsx";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/shared/ui/table.tsx";
 import { LegalLayout, type Section, SectionHeading } from "@/views/legal/legal-layout.tsx";
 
 const sections: readonly Section[] = [
@@ -29,7 +36,8 @@ const purposes = [
   },
   {
     purpose: "Atender consultas, soporte posventa, reembolsos y pedidos de arrepentimiento",
-    basis: "Relación contractual con el Comprador y tu propia solicitud (art. 5, inc. 2 d, Ley 25.326)",
+    basis:
+      "Relación contractual con el Comprador y tu propia solicitud (art. 5, inc. 2 d, Ley 25.326)",
   },
   {
     purpose: "Atender solicitudes de acceso, rectificación, actualización o supresión",
@@ -43,7 +51,10 @@ const purposes = [
 
 const retention = [
   { data: "Tu elección de cookies (pv_consent)", period: "6 meses, o hasta que la cambies" },
-  { data: "Cookies de Meta (_fbp, _fbc)", period: "Hasta 90 días desde la última visita, según Meta" },
+  {
+    data: "Cookies de Meta (_fbp, _fbc)",
+    period: "Hasta 90 días desde la última visita, según Meta",
+  },
   {
     data: "Correos de soporte y pedidos de arrepentimiento",
     period:
@@ -53,7 +64,10 @@ const retention = [
     data: "Datos de compra y facturación",
     period: "Los conserva Hotmart según sus plazos legales y contables",
   },
-  { data: "Registros técnicos del alojamiento", period: "Plazos técnicos breves definidos por el proveedor" },
+  {
+    data: "Registros técnicos del alojamiento",
+    period: "Plazos técnicos breves definidos por el proveedor",
+  },
 ];
 
 const recipients = [
@@ -135,18 +149,18 @@ export default function PrivacidadPage() {
         </dd>
       </dl>
       <p>
-        Hotmart actúa como <strong>responsable independiente</strong> de los datos que recoge en su página de
-        pago y en su área de compras (identidad, facturación, medio de pago), conforme a su propia política de
-        privacidad, que aceptas al comprar.
+        Hotmart actúa como <strong>responsable independiente</strong> de los datos que recoge en su
+        página de pago y en su área de compras (identidad, facturación, medio de pago), conforme a
+        su propia política de privacidad, que aceptas al comprar.
       </p>
 
       <SectionHeading sections={sections} id="marco" />
       <p>
-        El tratamiento se rige por la Ley 25.326 de Protección de los Datos Personales de la República
-        Argentina y su Decreto reglamentario 1558/2001. El órgano de control es la{" "}
-        <a href={dataAuthority.url}>{dataAuthority.name}</a>. Los datos de Usuarios y Compradores de cualquier
-        país se tratan conforme a esta ley; si resides en un país con su propia ley de protección de datos,
-        puedes ejercer además los derechos que esa ley te reconozca (ver{" "}
+        El tratamiento se rige por la Ley 25.326 de Protección de los Datos Personales de la
+        República Argentina y su Decreto reglamentario 1558/2001. El órgano de control es la{" "}
+        <a href={dataAuthority.url}>{dataAuthority.name}</a>. Los datos de Usuarios y Compradores de
+        cualquier país se tratan conforme a esta ley; si resides en un país con su propia ley de
+        protección de datos, puedes ejercer además los derechos que esa ley te reconozca (ver{" "}
         <a href="#otros-paises">Usuarios de otros países</a>).
       </p>
 
@@ -154,34 +168,35 @@ export default function PrivacidadPage() {
       <dl>
         <dt>Navegación</dt>
         <dd>
-          Salvo que te opongas, Meta recibe identificadores de navegación (cookies <code>_fbp</code> y{" "}
-          <code>_fbc</code>, dirección IP, agente de usuario) y eventos del Sitio: página vista, interés en el
-          producto, clic hacia la página de pago y clic en un producto recomendado de terceros, tanto desde tu
-          navegador como, para que la medición sea fiable, a través del servidor del Sitio (API de
-          conversiones de Meta) con los mismos datos. Si te opones, la medición se desactiva por ambas vías y
-          no se carga ningún script de Meta en tus próximas visitas. No se envían a Meta tu nombre, tu correo
-          ni datos de compra. Detalle en la <Link href="/cookies/">Política de cookies</Link>.
+          Salvo que te opongas, Meta recibe identificadores de navegación (cookies <code>_fbp</code>{" "}
+          y <code>_fbc</code>, dirección IP, agente de usuario) y eventos del Sitio: página vista,
+          interés en el producto, clic hacia la página de pago y clic en un producto recomendado de
+          terceros, tanto desde tu navegador como, para que la medición sea fiable, a través del
+          servidor del Sitio (API de conversiones de Meta) con los mismos datos. Si te opones, la
+          medición se desactiva por ambas vías y no se carga ningún script de Meta en tus próximas
+          visitas. No se envían a Meta tu nombre, tu correo ni datos de compra. Detalle en la{" "}
+          <Link href="/cookies/">Política de cookies</Link>.
         </dd>
         <dt>Compra</dt>
         <dd>
-          El pago y la entrega se realizan en Hotmart. El Titular nunca ve datos de tarjetas ni de otros
-          medios de pago. Hotmart le facilita tu nombre, tu correo electrónico y los datos de la transacción
-          (producto, fecha, código, estado) para darte soporte y atender reembolsos.
+          El pago y la entrega se realizan en Hotmart. El Titular nunca ve datos de tarjetas ni de
+          otros medios de pago. Hotmart le facilita tu nombre, tu correo electrónico y los datos de
+          la transacción (producto, fecha, código, estado) para darte soporte y atender reembolsos.
         </dd>
         <dt>Soporte y arrepentimiento</dt>
         <dd>
-          Si escribes, se tratan tu correo electrónico y el contenido del mensaje (incluido, si lo indicas, el
-          código de transacción de Hotmart) para responderte.
+          Si escribes, se tratan tu correo electrónico y el contenido del mensaje (incluido, si lo
+          indicas, el código de transacción de Hotmart) para responderte.
         </dd>
         <dt>Registros técnicos</dt>
         <dd>
-          El proveedor de alojamiento registra de forma automática la dirección IP, la fecha y la página
-          solicitada para garantizar la seguridad del servicio.
+          El proveedor de alojamiento registra de forma automática la dirección IP, la fecha y la
+          página solicitada para garantizar la seguridad del servicio.
         </dd>
       </dl>
       <p>
-        No se tratan datos sensibles. Facilitar los datos de contacto es voluntario, pero sin ellos no es
-        posible responder a tu consulta.
+        No se tratan datos sensibles. Facilitar los datos de contacto es voluntario, pero sin ellos
+        no es posible responder a tu consulta.
       </p>
 
       <SectionHeading sections={sections} id="finalidades" />
@@ -202,8 +217,9 @@ export default function PrivacidadPage() {
         </TableBody>
       </Table>
       <p>
-        No se toman decisiones automatizadas con efectos jurídicos sobre ti ni se elaboran perfiles a partir
-        de los datos de soporte o de compra. Los datos no se usan para finalidades distintas de las indicadas.
+        No se toman decisiones automatizadas con efectos jurídicos sobre ti ni se elaboran perfiles
+        a partir de los datos de soporte o de compra. Los datos no se usan para finalidades
+        distintas de las indicadas.
       </p>
 
       <SectionHeading sections={sections} id="destinatarios" />
@@ -213,28 +229,30 @@ export default function PrivacidadPage() {
         ))}
       </dl>
       <p>
-        El Titular no vende ni cede tus datos a otros terceros. Solo los comunicaría a una autoridad cuando
-        una obligación legal lo exija.
+        El Titular no vende ni cede tus datos a otros terceros. Solo los comunicaría a una autoridad
+        cuando una obligación legal lo exija.
       </p>
       <p>
-        <strong>Enlaces de afiliado.</strong> Las direcciones cortas con las que el Sitio recomienda productos
-        de terceros (por ejemplo, <code>pequeverso.com{affiliateExamplePath}</code>) solo redirigen tu
-        navegador a Hotmart: la redirección la hace el servidor sin instalar cookies ni pedirte datos, más
-        allá de los registros técnicos del alojamiento. A partir de ahí, tus datos los tratan Hotmart y el
-        productor de ese producto según sus propias políticas de privacidad y de cookies. Hotmart puede
-        informar al Titular de la venta para calcular su comisión, conforme a sus términos. Más información en
-        el <Link href="/aviso-legal/#afiliados">Aviso legal</Link>.
+        <strong>Enlaces de afiliado.</strong> Las direcciones cortas con las que el Sitio recomienda
+        productos de terceros (por ejemplo, <code>pequeverso.com{affiliateExamplePath}</code>) solo
+        redirigen tu navegador a Hotmart: la redirección la hace el servidor sin instalar cookies ni
+        pedirte datos, más allá de los registros técnicos del alojamiento. A partir de ahí, tus
+        datos los tratan Hotmart y el productor de ese producto según sus propias políticas de
+        privacidad y de cookies. Hotmart puede informar al Titular de la venta para calcular su
+        comisión, conforme a sus términos. Más información en el{" "}
+        <Link href="/aviso-legal/#afiliados">Aviso legal</Link>.
       </p>
 
       <SectionHeading sections={sections} id="transferencias" />
       <p>
-        Los proveedores indicados tratan datos fuera de la República Argentina. Las transferencias a Hotmart
-        B.V. (Países Bajos) y a Meta Platforms Ireland se dirigen a países que la AAIP considera con nivel de
-        protección adecuado (Disposición DNPDP 60/2016, modificada por la Resolución AAIP 34/2019). Otros
-        proveedores, como Hostinger, Cloudflare, Google o las empresas de Meta en los Estados Unidos, pueden
-        tratar datos en países que no figuran en esa lista; en esos casos, la transferencia se apoya en las
-        cláusulas contractuales de protección de datos que esos proveedores ofrecen, conforme al art. 12 de la
-        Ley 25.326 y a las cláusulas modelo aprobadas por la AAIP. Puedes pedir más detalle por correo.
+        Los proveedores indicados tratan datos fuera de la República Argentina. Las transferencias a
+        Hotmart B.V. (Países Bajos) y a Meta Platforms Ireland se dirigen a países que la AAIP
+        considera con nivel de protección adecuado (Disposición DNPDP 60/2016, modificada por la
+        Resolución AAIP 34/2019). Otros proveedores, como Hostinger, Cloudflare, Google o las
+        empresas de Meta en los Estados Unidos, pueden tratar datos en países que no figuran en esa
+        lista; en esos casos, la transferencia se apoya en las cláusulas contractuales de protección
+        de datos que esos proveedores ofrecen, conforme al art. 12 de la Ley 25.326 y a las
+        cláusulas modelo aprobadas por la AAIP. Puedes pedir más detalle por correo.
       </p>
 
       <SectionHeading sections={sections} id="conservacion" />
@@ -265,15 +283,16 @@ export default function PrivacidadPage() {
       <h3>Cómo ejercerlos</h3>
       <ol>
         <li>
-          Escribe a <a href={`mailto:${seller.privacyEmail}`}>{seller.privacyEmail}</a> indicando qué derecho
-          quieres ejercer y el correo con el que escribiste o compraste.
+          Escribe a <a href={`mailto:${seller.privacyEmail}`}>{seller.privacyEmail}</a> indicando
+          qué derecho quieres ejercer y el correo con el que escribiste o compraste.
         </li>
         <li>Si es necesario, se te pedirá un dato adicional para confirmar tu identidad.</li>
         <li>La respuesta llega por correo dentro de los plazos legales indicados arriba.</li>
       </ol>
       <p>
         Los datos que Hotmart trata como responsable (compra, facturación, reembolsos) se solicitan
-        directamente a Hotmart desde su centro de ayuda; si escribes al Titular, te indicará cómo hacerlo.
+        directamente a Hotmart desde su centro de ayuda; si escribes al Titular, te indicará cómo
+        hacerlo.
       </p>
       <Notice title="Órgano de control (Resolución AAIP 14/2018)">
         <p>{dataAuthority.notice}</p>
@@ -284,9 +303,10 @@ export default function PrivacidadPage() {
 
       <SectionHeading sections={sections} id="otros-paises" />
       <p>
-        El Titular está establecido en la República Argentina y trata los datos de Usuarios de cualquier país
-        conforme a la Ley 25.326. Si resides en un país con su propia ley de protección de datos, puedes
-        ejercer además los derechos que esa ley te reconozca, escribiendo al mismo correo. Por ejemplo:
+        El Titular está establecido en la República Argentina y trata los datos de Usuarios de
+        cualquier país conforme a la Ley 25.326. Si resides en un país con su propia ley de
+        protección de datos, puedes ejercer además los derechos que esa ley te reconozca,
+        escribiendo al mismo correo. Por ejemplo:
       </p>
       <ul>
         {foreignDataLaws.map((law) => (
@@ -294,31 +314,32 @@ export default function PrivacidadPage() {
         ))}
       </ul>
       <p>
-        Si resides en la Unión Europea, además de los derechos indicados arriba puedes solicitar la limitación
-        del tratamiento y la portabilidad de los datos que facilitaste, y presentar una reclamación ante la
-        autoridad de protección de datos de tu país; las solicitudes se atienden, en general, en el plazo de
-        un mes. La Comisión Europea reconoce a la República Argentina un nivel de protección adecuado.
+        Si resides en la Unión Europea, además de los derechos indicados arriba puedes solicitar la
+        limitación del tratamiento y la portabilidad de los datos que facilitaste, y presentar una
+        reclamación ante la autoridad de protección de datos de tu país; las solicitudes se
+        atienden, en general, en el plazo de un mes. La Comisión Europea reconoce a la República
+        Argentina un nivel de protección adecuado.
       </p>
 
       <SectionHeading sections={sections} id="seguridad" />
       <p>
-        El Sitio se sirve siempre por HTTPS, no almacena contraseñas ni datos de pago y limita los datos que
-        trata a los descritos en esta política.
+        El Sitio se sirve siempre por HTTPS, no almacena contraseñas ni datos de pago y limita los
+        datos que trata a los descritos en esta política.
       </p>
 
       <SectionHeading sections={sections} id="menores" />
       <p>
-        El Sitio se dirige a madres, padres, cuidadores y docentes adultos que compran material para niños a
-        su cargo. No se piden ni se tratan datos de los niños que usan el material, no se dirige publicidad a
-        menores y no se recopilan datos de menores de forma consciente. Si crees que un menor envió datos,
-        escribe al correo indicado y se eliminarán.
+        El Sitio se dirige a madres, padres, cuidadores y docentes adultos que compran material para
+        niños a su cargo. No se piden ni se tratan datos de los niños que usan el material, no se
+        dirige publicidad a menores y no se recopilan datos de menores de forma consciente. Si crees
+        que un menor envió datos, escribe al correo indicado y se eliminarán.
       </p>
 
       <SectionHeading sections={sections} id="cambios" />
       <p>
-        Si se incorpora una nueva herramienta o cambia un proveedor, el Titular actualizará esta página y la
-        fecha indicada al inicio. Si el cambio afecta a las cookies, el banner vuelve a mostrarse para que
-        decidas de nuevo.
+        Si se incorpora una nueva herramienta o cambia un proveedor, el Titular actualizará esta
+        página y la fecha indicada al inicio. Si el cambio afecta a las cookies, el banner vuelve a
+        mostrarse para que decidas de nuevo.
       </p>
     </LegalLayout>
   );

@@ -22,7 +22,11 @@ export function requireSuccessfulJobs(value: unknown, profile: keyof typeof prer
   }
   for (const name of expected) {
     const item = results[name];
-    if (!item || typeof item !== "object" || (item as Record<string, unknown>).result !== "success") {
+    if (
+      !item ||
+      typeof item !== "object" ||
+      (item as Record<string, unknown>).result !== "success"
+    ) {
       throw new Error("Every required job must complete successfully");
     }
   }

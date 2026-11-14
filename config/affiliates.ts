@@ -45,7 +45,14 @@ export type AffiliateProduct = {
    * Manifest ids used on the home (docs/specs/home-hub.md): the hero figure, the chapter scene,
    * the menu scene and the transparent cut-outs (devices, bowl, food planet).
    */
-  media: { figure: string; photo: string; menu: string; device: string; detail: string; planet: string };
+  media: {
+    figure: string;
+    photo: string;
+    menu: string;
+    device: string;
+    detail: string;
+    planet: string;
+  };
 };
 
 export const alimentacionBebe = {

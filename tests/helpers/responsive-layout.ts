@@ -4,7 +4,9 @@ export function collectLayoutFaults(): string[] {
   const doc = document.documentElement;
   if (doc.scrollWidth > doc.clientWidth) {
     const culprit = [...document.querySelectorAll<HTMLElement>("body *")].find(
-      (el) => el.getBoundingClientRect().right > doc.clientWidth + 0.5 && !el.closest("[aria-hidden='true']"),
+      (el) =>
+        el.getBoundingClientRect().right > doc.clientWidth + 0.5 &&
+        !el.closest("[aria-hidden='true']"),
     );
     const where = culprit
       ? `${culprit.tagName.toLowerCase()}.${String(culprit.className).slice(0, 60)}`
@@ -50,7 +52,9 @@ export function collectLayoutFaults(): string[] {
     const natural = img.naturalWidth / img.naturalHeight;
     const drift = Math.abs(width / height - natural) / natural;
     if (drift > 0.02)
-      faults.push(`img ${img.currentSrc.split("/").pop()} is stretched (${(drift * 100).toFixed(1)}%)`);
+      faults.push(
+        `img ${img.currentSrc.split("/").pop()} is stretched (${(drift * 100).toFixed(1)}%)`,
+      );
   }
   return faults;
 }

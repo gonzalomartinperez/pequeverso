@@ -3,7 +3,12 @@ import { cn } from "@/shared/styles/cn.ts";
 
 type TopbarTone = "navy" | "mint";
 
-type Props = { items?: readonly string[]; children?: ReactNode; tone?: TopbarTone; className?: string };
+type Props = {
+  items?: readonly string[];
+  children?: ReactNode;
+  tone?: TopbarTone;
+  className?: string;
+};
 
 /**
  * Slim factual strip above the header (counts, confirmation state). Navy: deep sky with a thin

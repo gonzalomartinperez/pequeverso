@@ -36,10 +36,12 @@ type Manifest = {
   build_id: string;
   files: Member[];
 };
-export const digest = (data: string | Uint8Array): string => createHash("sha256").update(data).digest("hex");
+export const digest = (data: string | Uint8Array): string =>
+  createHash("sha256").update(data).digest("hex");
 
 function object(value: unknown, keys: readonly string[]): Record<string, unknown> {
-  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("Invalid artifact object");
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    throw new Error("Invalid artifact object");
   const found = Object.keys(value);
   if (found.length !== keys.length || keys.some((key) => !Object.hasOwn(value, key))) {
     throw new Error("Unexpected artifact fields");
@@ -58,7 +60,10 @@ export function safeMember(value: unknown): string {
   }
   const parts = value.split("/");
   if (
-    parts.some((part) => !part || part === "." || part === ".." || part.startsWith(".env") || part === ".git")
+    parts.some(
+      (part) =>
+        !part || part === "." || part === ".." || part.startsWith(".env") || part === ".git",
+    )
   ) {
     throw new Error("Unsafe artifact member");
   }
@@ -69,7 +74,10 @@ export function safeMember(value: unknown): string {
 }
 export function requireBinding(actual: unknown, expected: Binding): void {
   const found = object(actual, Object.keys(expected));
-  if (Object.keys(expected).length !== 7 || expected.repository !== "gonzalomartinperez/pequeverso") {
+  if (
+    Object.keys(expected).length !== 7 ||
+    expected.repository !== "gonzalomartinperez/pequeverso"
+  ) {
     throw new Error("Invalid expected producer");
   }
   for (const key of ["source_sha", "workflow_sha"] as const) {
@@ -151,14 +159,19 @@ export function requireMembers(value: unknown): Member[] {
   }
   return members;
 }
-export function requireManifest(value: unknown, expected: Binding, actual: readonly Member[]): Manifest {
+export function requireManifest(
+  value: unknown,
+  expected: Binding,
+  actual: readonly Member[],
+): Manifest {
   const manifest = object(value, ["schema_version", "variant", "binding", "build_id", "files"]);
   if (manifest.schema_version !== 1 || manifest.variant !== "off-export")
     throw new Error("Not an OFF manifest");
   requireBinding(manifest.binding, expected);
   const members = requireMembers(manifest.files);
   requireMembers(actual);
-  const order = (items: readonly Member[]) => [...items].sort((a, b) => a.path.localeCompare(b.path));
+  const order = (items: readonly Member[]) =>
+    [...items].sort((a, b) => a.path.localeCompare(b.path));
   if (JSON.stringify(order(members)) !== JSON.stringify(order(actual)))
     throw new Error("Payload file set differs");
   if (typeof manifest.build_id !== "string" || !/^[0-9a-f]{64}$/.test(manifest.build_id)) {
@@ -201,7 +214,11 @@ function readRegular(path: string, maximum: number): Buffer {
     }
     const final = fstatSync(fd);
     requireRegular(final, maximum);
-    if (length !== initial.size || final.size !== initial.size || final.mtimeMs !== initial.mtimeMs) {
+    if (
+      length !== initial.size ||
+      final.size !== initial.size ||
+      final.mtimeMs !== initial.mtimeMs
+    ) {
       throw new Error("File changed during validation");
     }
     return bytes.subarray(0, length);
@@ -219,7 +236,8 @@ export function payloadInventory(directory: string): Member[] {
       throw new Error("Directory inventory exceeds bounds");
     const current = join(directory, relative);
     const stat = lstatSync(current);
-    if (!stat.isDirectory() || stat.isSymbolicLink()) throw new Error("Linked or non-directory payload");
+    if (!stat.isDirectory() || stat.isSymbolicLink())
+      throw new Error("Linked or non-directory payload");
     for (const entry of readdirSync(current, { withFileTypes: true }).sort((a, b) =>
       a.name.localeCompare(b.name),
     )) {
@@ -239,7 +257,11 @@ export function payloadInventory(directory: string): Member[] {
   return files;
 }
 /** Read-only quarantine validation; the caller creates out/ only after this succeeds. */
-export function validateOffArtifact(artifact: string, binding: Binding, checksum: string): Manifest {
+export function validateOffArtifact(
+  artifact: string,
+  binding: Binding,
+  checksum: string,
+): Manifest {
   const root = lstatSync(artifact);
   if (
     !root.isDirectory() ||
@@ -303,7 +325,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     const binding = expectedBinding();
     requireBinding(binding, binding);
     if (mode === "pack-off") {
-      if (directory !== "out" || existsSync(artifact)) throw new Error("Unexpected root or existing package");
+      if (directory !== "out" || existsSync(artifact))
+        throw new Error("Unexpected root or existing package");
       const files = payloadInventory(directory);
       const build_id = buildIdentity(
         readRegular(join(directory, "build-info.json"), 8192),
@@ -329,7 +352,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
           { flag: "a" },
         );
     } else if (mode === "unpack-off") {
-      if (directory !== "out" || existsSync(directory)) throw new Error("Expected absent export root");
+      if (directory !== "out" || existsSync(directory))
+        throw new Error("Expected absent export root");
       const manifest = validateOffArtifact(artifact, binding, process.env.CI_MANIFEST_SHA256 ?? "");
       const payload = join(artifact, "payload");
       mkdirSync(directory);

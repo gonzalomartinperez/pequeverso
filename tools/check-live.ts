@@ -24,15 +24,22 @@ const get = (path: string, init?: RequestInit): Promise<Response> =>
 async function tlsDays(): Promise<void> {
   const { hostname } = new URL(base);
   const validTo = await new Promise<string>((resolve, reject) => {
-    const socket = connect({ host: hostname, port: 443, servername: hostname, timeout: 10_000 }, () => {
-      resolve(socket.getPeerCertificate().valid_to);
-      socket.end();
-    });
+    const socket = connect(
+      { host: hostname, port: 443, servername: hostname, timeout: 10_000 },
+      () => {
+        resolve(socket.getPeerCertificate().valid_to);
+        socket.end();
+      },
+    );
     socket.on("error", reject);
     socket.on("timeout", () => socket.destroy(new Error("TLS timeout")));
   });
   const days = Math.floor((Date.parse(String(validTo)) - Date.now()) / 86_400_000);
-  record("TLS certificate", days >= MIN_TLS_DAYS ? "pass" : "fail", `${days} days left (${validTo})`);
+  record(
+    "TLS certificate",
+    days >= MIN_TLS_DAYS ? "pass" : "fail",
+    `${days} days left (${validTo})`,
+  );
 }
 
 async function headers(): Promise<void> {
@@ -58,7 +65,9 @@ async function headers(): Promise<void> {
   );
 
   const asset = (await html.text()).match(/\/_next\/static\/[^"']+\.js/)?.[0];
-  const assetCache = asset ? (await get(asset, { method: "HEAD" })).headers.get("cache-control") || "" : "";
+  const assetCache = asset
+    ? (await get(asset, { method: "HEAD" })).headers.get("cache-control") || ""
+    : "";
   record(
     "Headers on /_next/static",
     /immutable/.test(assetCache) ? "pass" : "fail",
@@ -91,9 +100,9 @@ async function sitemapAndRobots(): Promise<string[]> {
 
 async function checkoutLink(): Promise<void> {
   const res = await get("/grafismo-fonetico/");
-  const hrefs = [...(await res.text()).matchAll(/href="(https:\/\/pay\.hotmart\.com\/[^"]+)"/g)].map(
-    (m) => m[1],
-  );
+  const hrefs = [
+    ...(await res.text()).matchAll(/href="(https:\/\/pay\.hotmart\.com\/[^"]+)"/g),
+  ].map((m) => m[1]);
   record(
     "Hotmart checkout link",
     hrefs.length ? "pass" : "fail",
@@ -161,13 +170,16 @@ const pages: string[] = await sitemapAndRobots().catch((error: unknown) => {
   record("sitemap/robots", "fail", String(error));
   return [];
 });
-if (pages.length) await crawl(pages).catch((error) => record("Internal links", "fail", String(error)));
+if (pages.length)
+  await crawl(pages).catch((error) => record("Internal links", "fail", String(error)));
 
 const failed = results.filter((r) => r.status === "fail").map((r) => r.name);
 const icon: Record<Status, string> = { pass: "✅", warn: "⚠️", fail: "❌" };
 const stepSummary = process.env.GITHUB_STEP_SUMMARY;
 if (stepSummary) {
-  const rows = results.map((r) => `| ${r.name} | ${icon[r.status]} | ${r.detail.replace(/\|/g, "\\|")} |`);
+  const rows = results.map(
+    (r) => `| ${r.name} | ${icon[r.status]} | ${r.detail.replace(/\|/g, "\\|")} |`,
+  );
   appendFileSync(
     stepSummary,
     `${["## Live checks", "", "| Check | | Detail |", "|---|---|---|", ...rows, ""].join("\n")}\n`,

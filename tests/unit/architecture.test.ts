@@ -45,7 +45,10 @@ describe("store architecture", () => {
         if (typeOnly || specifier?.startsWith("node:")) continue;
         assert.ok(specifier, `${file}: nonliteral daily dependency needs explicit review`);
         const target = sourceTarget(file, specifier);
-        assert.ok(target && existsSync(target), `${file}: unresolved daily dependency ${specifier}`);
+        assert.ok(
+          target && existsSync(target),
+          `${file}: unresolved daily dependency ${specifier}`,
+        );
         if (!files.has(target)) {
           files.add(target);
           visit(target);
@@ -101,7 +104,11 @@ describe("store architecture", () => {
           .map((rule: { source: string }) => rule.source),
       );
       select(["scripts", "config"]);
-      assert.equal(existsSync(join(root, entry)), false, "old cone must reproduce the missing entry");
+      assert.equal(
+        existsSync(join(root, entry)),
+        false,
+        "old cone must reproduce the missing entry",
+      );
       select(["tools"]);
       assert.throws(
         () => edgeRules.affiliateSources(),
@@ -171,10 +178,16 @@ describe("store architecture", () => {
     ])
       assert.equal(siteDependencyAllowed(file ?? "", specifier ?? null), false);
     assert.equal(
-      siteDependencyAllowed("src/views/home-view.tsx", "@/features/hub/presentation/hub-sticky-bar"),
+      siteDependencyAllowed(
+        "src/views/home-view.tsx",
+        "@/features/hub/presentation/hub-sticky-bar",
+      ),
       true,
     );
-    assert.equal(siteDependencyAllowed("src/shared/editorial/card.tsx", "@/shared/styles/cn"), true);
+    assert.equal(
+      siteDependencyAllowed("src/shared/editorial/card.tsx", "@/shared/styles/cn"),
+      true,
+    );
     for (const [file, module] of modules)
       for (const edge of module.imports)
         assert.ok(siteDependencyAllowed(file, edge.specifier), `${file}: ${edge.specifier}`);
@@ -255,7 +268,9 @@ describe("store architecture", () => {
       "src/features/tracking/adapters/server/meta-capi.ts",
     ];
     assert.deepEqual(
-      sourcePlacementViolations(new Map(files.map((file) => [file, sourceModule(file, "export {};")]))),
+      sourcePlacementViolations(
+        new Map(files.map((file) => [file, sourceModule(file, "export {};")])),
+      ),
       [],
     );
   });
@@ -277,15 +292,24 @@ describe("store architecture", () => {
         sourceModule("private.ts", 'import "server-only"; import "node:fs";'),
       ],
     ]);
-    assert.match(clientBoundaryViolations(fixtures).join("\n"), /client.tsx.*barrel.ts.*server\/private.ts/);
+    assert.match(
+      clientBoundaryViolations(fixtures).join("\n"),
+      /client.tsx.*barrel.ts.*server\/private.ts/,
+    );
     fixtures.set(
       "src/barrel.ts",
       sourceModule("barrel.ts", 'export const load = () => import("@server/private");'),
     );
     assert.notEqual(clientBoundaryViolations(fixtures).length, 0);
-    fixtures.set("src/barrel.ts", sourceModule("barrel.ts", 'export * from "../scripts/unscanned";'));
+    fixtures.set(
+      "src/barrel.ts",
+      sourceModule("barrel.ts", 'export * from "../scripts/unscanned";'),
+    );
     assert.match(clientBoundaryViolations(fixtures).join("\n"), /unscanned local module/);
-    fixtures.set("src/barrel.ts", sourceModule("barrel.ts", 'import filesystem = require("node:fs");'));
+    fixtures.set(
+      "src/barrel.ts",
+      sourceModule("barrel.ts", 'import filesystem = require("node:fs");'),
+    );
     assert.match(clientBoundaryViolations(fixtures).join("\n"), /node:fs/);
     fixtures.set("src/barrel.ts", sourceModule("barrel.ts", 'export { value } from "./client";'));
     assert.deepEqual(firstRuntimeCycle(runtimeGraph(fixtures)), [

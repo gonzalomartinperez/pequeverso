@@ -46,7 +46,10 @@ const assistant = parseAssistantEnv({
 });
 if (!assistant.ok) throw new Error(`assistant configuration: ${assistant.errors.join("; ")}`);
 const assistantEnv = assistant.flag.enabled
-  ? { NEXT_PUBLIC_ASSISTANT_ENABLED: "true", NEXT_PUBLIC_ASSISTANT_API_ORIGIN: assistant.flag.apiOrigin }
+  ? {
+      NEXT_PUBLIC_ASSISTANT_ENABLED: "true",
+      NEXT_PUBLIC_ASSISTANT_API_ORIGIN: assistant.flag.apiOrigin,
+    }
   : { NEXT_PUBLIC_ASSISTANT_ENABLED: "false", NEXT_PUBLIC_ASSISTANT_API_ORIGIN: "" };
 
 const productAnalytics = parseAnalyticsEnv({
@@ -67,7 +70,8 @@ const nextConfig: NextConfig = {
   // Route handlers live only in the standalone build: `*.standalone.ts` is a page extension there
   // and plain `route.standalone.ts` files are ignored by the static export (a POST handler breaks
   // `output: "export"`). See docs/decisions/ADR-0005-conversions-api-relay.md.
-  pageExtensions: output === "standalone" ? ["standalone.ts", "standalone.tsx", "tsx", "ts"] : ["tsx", "ts"],
+  pageExtensions:
+    output === "standalone" ? ["standalone.ts", "standalone.tsx", "tsx", "ts"] : ["tsx", "ts"],
   trailingSlash: true,
   poweredByHeader: false,
   reactStrictMode: true,

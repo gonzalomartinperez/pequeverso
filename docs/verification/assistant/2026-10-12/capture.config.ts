@@ -3,7 +3,11 @@ import { defineConfig } from "@playwright/test";
 import base from "../../../../playwright.assistant.config.ts";
 
 const checkout = resolve(import.meta.dirname, "../../../..");
-const servers = Array.isArray(base.webServer) ? base.webServer : base.webServer ? [base.webServer] : [];
+const servers = Array.isArray(base.webServer)
+  ? base.webServer
+  : base.webServer
+    ? [base.webServer]
+    : [];
 
 /** Sequential photography of several states, not a replacement for the 45 s browser gates. */
 export default defineConfig({

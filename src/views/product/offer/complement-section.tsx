@@ -26,7 +26,9 @@ export function ComplementSection({ copy }: Props) {
             className="on-light glass grid content-start gap-4 rounded-2xl p-6 shadow-float sm:p-8"
           >
             <Kicker as="span">{copy.ownedLabel}</Kicker>
-            <h3 className="font-display text-[1.5rem] leading-tight font-bold">{copy.owned.title}</h3>
+            <h3 className="font-display text-[1.5rem] leading-tight font-bold">
+              {copy.owned.title}
+            </h3>
             <ul className="grid gap-3">
               {copy.owned.points.map((point) => (
                 <li key={point} className="flex items-center gap-3 font-bold text-body">

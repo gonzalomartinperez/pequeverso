@@ -13,7 +13,10 @@ export type PageMeta = {
   imageAlt?: string;
 };
 
-export const defaultOgImage = { path: "/media/brand/pequeverso-og-1200x630.png", alt: "Pequeverso" };
+export const defaultOgImage = {
+  path: "/media/brand/pequeverso-og-1200x630.png",
+  alt: "Pequeverso",
+};
 
 /** Builds canonical, robots, Open Graph and Twitter metadata for a route. */
 export function buildMetadata(meta: PageMeta): Metadata {

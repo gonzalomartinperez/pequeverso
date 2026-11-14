@@ -34,9 +34,15 @@ async function lcpElement(page: import("@playwright/test").Page) {
 }
 
 for (const route of routes) {
-  test(`${route}: LCP element is hero text or the preloaded hero image`, async ({ page, browserName }) => {
+  test(`${route}: LCP element is hero text or the preloaded hero image`, async ({
+    page,
+    browserName,
+  }) => {
     // WebKit's LCP entries on the GPU-less runners are intermittent; Chromium asserts the contract.
-    test.skip(browserName === "webkit", "LCP entries are unreliable in headless WebKit without a GPU");
+    test.skip(
+      browserName === "webkit",
+      "LCP entries are unreliable in headless WebKit without a GPU",
+    );
     await page.goto(route);
     const element = await lcpElement(page);
     expect(element).not.toBeNull();
@@ -44,12 +50,16 @@ for (const route of routes) {
     expect(element?.heroText || (element?.tag === "img" && element.lcp)).toBe(true);
   });
 
-  test(`${route}: the image preload targets the hero worksheet, never the isotipo`, async ({ page }) => {
+  test(`${route}: the image preload targets the hero worksheet, never the isotipo`, async ({
+    page,
+  }) => {
     await page.goto(route);
     const hero = page.locator("main img[data-lcp]").first();
     const candidates = await hero.evaluate((img) => [
       img.getAttribute("srcset"),
-      ...[...(img.closest("picture")?.querySelectorAll("source") ?? [])].map((s) => s.getAttribute("srcset")),
+      ...[...(img.closest("picture")?.querySelectorAll("source") ?? [])].map((s) =>
+        s.getAttribute("srcset"),
+      ),
     ]);
     const sizes = await hero.getAttribute("sizes");
     const preloads = await page
@@ -65,13 +75,15 @@ for (const route of routes) {
     expect(own).toHaveLength(1);
     expect(own[0]?.srcset).toMatch(HERO_RENDITION);
     expect(own[0]?.priority).toBe("high");
-    expect(await hero.evaluate((img) => (img instanceof HTMLImageElement ? img.currentSrc : ""))).toMatch(
-      HERO_RENDITION,
-    );
+    expect(
+      await hero.evaluate((img) => (img instanceof HTMLImageElement ? img.currentSrc : "")),
+    ).toMatch(HERO_RENDITION);
     const allPreloads = await page
       .locator('link[rel="preload"]')
       .evaluateAll((links) =>
-        links.map((link) => `${link.getAttribute("href") ?? ""} ${link.getAttribute("imagesrcset") ?? ""}`),
+        links.map(
+          (link) => `${link.getAttribute("href") ?? ""} ${link.getAttribute("imagesrcset") ?? ""}`,
+        ),
       );
     expect(allPreloads.join(" ")).not.toContain("isotipo");
   });

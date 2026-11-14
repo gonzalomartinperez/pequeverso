@@ -3,7 +3,10 @@ import { checkoutFallbackPath } from "@config/products/index.ts";
 import type { CoreProduct } from "@config/products/schema.ts";
 import { site } from "@config/site.ts";
 import type { CSSProperties, ReactNode } from "react";
-import { CheckoutLink, type CheckoutTarget } from "@/features/commerce/presentation/checkout-link.tsx";
+import {
+  CheckoutLink,
+  type CheckoutTarget,
+} from "@/features/commerce/presentation/checkout-link.tsx";
 import { StickyCTA } from "@/features/commerce/presentation/sticky-cta.tsx";
 import { ViewContentOnMount } from "@/features/commerce/presentation/view-content-on-mount.tsx";
 import { GallerySlide } from "@/features/gallery/presentation/gallery-slide.tsx";
@@ -13,7 +16,10 @@ import { VideoBlock } from "@/features/gallery/presentation/video-block.tsx";
 import { AgeProvider } from "@/features/landing/presentation/age-context.tsx";
 import { AgeSelector } from "@/features/landing/presentation/age-selector.tsx";
 import { HeroStack } from "@/features/landing/presentation/hero-stack.tsx";
-import { type GallerySlideItem, ProductGallery } from "@/features/landing/presentation/product-gallery.tsx";
+import {
+  type GallerySlideItem,
+  ProductGallery,
+} from "@/features/landing/presentation/product-gallery.tsx";
 import { SyllablePlayground } from "@/features/playground/presentation/syllable-playground.tsx";
 import { Eyebrow } from "@/shared/editorial/eyebrow.tsx";
 import { FAQ } from "@/shared/editorial/faq.tsx";
@@ -122,7 +128,8 @@ function captionFor(id: string): string {
   return getImage(id).alt.replace(/^Página real \d+: /i, "");
 }
 
-const pageId = (pageIds: readonly string[], page: number): string => pageIds[page - 1] ?? pageIds[0] ?? "";
+const pageId = (pageIds: readonly string[], page: number): string =>
+  pageIds[page - 1] ?? pageIds[0] ?? "";
 
 /** A slide frame of the product gallery (square from md, a little shorter on phones). */
 const SLIDE = "grid aspect-[10/9] place-items-center @min-[30rem]:aspect-square";
@@ -173,7 +180,10 @@ export function CoreLanding({ product }: Props) {
     : 0;
   const stackPages = HERO_STACK_PAGES.map((position, index) => {
     const id = media.pageIds[position] ?? media.hero;
-    return { id, node: <MediaImage id={id} sizes={HERO_STACK_SIZES} priority={index === defaultAge} /> };
+    return {
+      id,
+      node: <MediaImage id={id} sizes={HERO_STACK_SIZES} priority={index === defaultAge} />,
+    };
   });
   const assurance = copy.hero.assurance;
   const labels = copy.included.bundle;
@@ -292,11 +302,18 @@ export function CoreLanding({ product }: Props) {
           body: (
             <ul className="grid gap-2" role="list">
               {product.resources.map((resource, index) => (
-                <li key={resource.id} className="flex flex-wrap items-baseline justify-between gap-3">
+                <li
+                  key={resource.id}
+                  className="flex flex-wrap items-baseline justify-between gap-3"
+                >
                   <span className="font-bold text-ink">
-                    {index === 0 ? resource.title : `${labels?.bonus ?? ""} ${index} · ${resource.title}`}
+                    {index === 0
+                      ? resource.title
+                      : `${labels?.bonus ?? ""} ${index} · ${resource.title}`}
                   </span>
-                  <span className="shrink-0 text-tiny font-bold text-subtle">{resource.pagesLabel}</span>
+                  <span className="shrink-0 text-tiny font-bold text-subtle">
+                    {resource.pagesLabel}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -350,12 +367,17 @@ export function CoreLanding({ product }: Props) {
               tagline={pdp?.tagline ?? ""}
               taglineAccent={pdp?.taglineAccent}
               lead={copy.hero.lead}
-              badges={(pdp?.badges ?? []).map((badge) => ({ icon: badge.icon, text: factText(badge) }))}
+              badges={(pdp?.badges ?? []).map((badge) => ({
+                icon: badge.icon,
+                text: factText(badge),
+              }))}
               price={price}
               priceTag={pdp?.priceTag ?? ""}
               taxNote={copy.hero.taxNote}
               variant={
-                ages ? <AgeSelector legend={ages.legend} options={ages.items} initial={defaultAge} /> : null
+                ages ? (
+                  <AgeSelector legend={ages.legend} options={ages.items} initial={defaultAge} />
+                ) : null
               }
               cta={
                 <CheckoutLink product={target} position="hero" className={CTA_BUY}>
@@ -472,7 +494,13 @@ export function CoreLanding({ product }: Props) {
                 </span>
               </div>
             ) : null}
-            <SyllableTile tone="turquoise" size="sm" delay={2} rotate={8} className="-top-4 right-4">
+            <SyllableTile
+              tone="turquoise"
+              size="sm"
+              delay={2}
+              rotate={8}
+              className="-top-4 right-4"
+            >
               MA
             </SyllableTile>
           </div>
@@ -485,7 +513,10 @@ export function CoreLanding({ product }: Props) {
               <Accent text={copy.benefits.title} accent={copy.benefits.titleAccent} />
             </h3>
           </div>
-          <ul className="grid grid-cols-1 gap-3 cq-xs:grid-cols-2 cq-sm:gap-4 cq-lg:grid-cols-4" role="list">
+          <ul
+            className="grid grid-cols-1 gap-3 cq-xs:grid-cols-2 cq-sm:gap-4 cq-lg:grid-cols-4"
+            role="list"
+          >
             {copy.benefits.items.map((item, index) => (
               <li
                 key={item.title}
@@ -510,9 +541,16 @@ export function CoreLanding({ product }: Props) {
               </li>
             ))}
           </ul>
-          <figure className="cq relative m-0 overflow-hidden rounded-2xl bg-sky shadow-float" data-reveal="">
+          <figure
+            className="cq relative m-0 overflow-hidden rounded-2xl bg-sky shadow-float"
+            data-reveal=""
+          >
             <div className="aspect-[16/10] cq-md:aspect-[16/7] [&_img]:size-full [&_img]:object-cover [&_img]:object-left [&_picture]:contents">
-              <MediaImage id={VISUAL.life.editorial} sizes="(min-width: 1280px) 1200px, 96vw" alt="" />
+              <MediaImage
+                id={VISUAL.life.editorial}
+                sizes="(min-width: 1280px) 1200px, 96vw"
+                alt=""
+              />
             </div>
             <blockquote className="glass m-0 grid gap-3 p-6 cq-md:absolute cq-md:top-1/2 cq-md:right-6 cq-md:w-[40%] cq-md:-translate-y-1/2 cq-md:rounded-xl cq-md:p-8 cq-md:shadow-float">
               <span aria-hidden="true" className="font-display text-5xl leading-none text-teal">
@@ -741,7 +779,8 @@ export function CoreLanding({ product }: Props) {
                 <Icon name="mail" size={20} strokeWidth={2.2} />
               </span>
               <p className="min-w-0 text-small text-pretty">
-                {copy.faq.supportNote} <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>
+                {copy.faq.supportNote}{" "}
+                <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>
               </p>
             </div>
           </div>
@@ -776,7 +815,13 @@ export function CoreLanding({ product }: Props) {
       </Section>
 
       <StickyCTA
-        hideWhenVisible={['a[data-position="hero"]', "#comprar", "#oferta", "#oferta-final", "footer"]}
+        hideWhenVisible={[
+          'a[data-position="hero"]',
+          "#comprar",
+          "#oferta",
+          "#oferta-final",
+          "footer",
+        ]}
         label={`${copy.sticky.label} · ${formatUsd(price)}`}
         note={localCurrencyNoteShort}
         thumb={<MediaImage id={media.cards[0] ?? media.hero} sizes="44px" alt="" />}

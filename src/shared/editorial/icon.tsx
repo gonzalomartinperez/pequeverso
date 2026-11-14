@@ -76,5 +76,7 @@ type Props = LucideProps & { name: IconName };
 /** Decorative by default (aria-hidden); pass `aria-label` to make it meaningful. */
 export function Icon({ name, ...props }: Props) {
   const Component = icons[name];
-  return <Component aria-hidden={props["aria-label"] ? undefined : true} focusable="false" {...props} />;
+  return (
+    <Component aria-hidden={props["aria-label"] ? undefined : true} focusable="false" {...props} />
+  );
 }

@@ -7,7 +7,12 @@ import "./globals.css";
  * uses plain token utilities (no variant functions) to stay out of every page's bundle weight.
  * Same aurora ground and glass card as the route error boundary.
  */
-export default function GlobalError({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function GlobalError({
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   return (
     <html lang="es">
       <body className="aurora-cream grid min-h-dvh place-items-center px-(--gutter) py-16">

@@ -244,7 +244,12 @@ export function mountScene(
   canvas: HTMLCanvasElement,
   options: SceneOptions = {},
 ): SceneRuntime {
-  const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: "low-power" });
+  const renderer = new WebGLRenderer({
+    canvas,
+    alpha: true,
+    antialias: false,
+    powerPreference: "low-power",
+  });
   renderer.setClearColor(0x000000, 0);
   const scene = new Scene();
   const camera = new PerspectiveCamera(FOV, 1, 0.1, 80);
@@ -281,49 +286,55 @@ export function mountScene(
   scene.add(stars);
 
   const quad = new PlaneGeometry(2, 2);
-  const planets: Planet[] = [...host.querySelectorAll<HTMLElement>("[data-scene-planet]")].map((element) => {
-    const name = element.dataset.scenePlanet ?? "teal";
-    const planetTime = { value: 0 };
-    const material = new ShaderMaterial({
-      vertexShader: planetVertex,
-      fragmentShader: planetFragment,
-      uniforms: {
-        halo: { value: HALO },
+  const planets: Planet[] = [...host.querySelectorAll<HTMLElement>("[data-scene-planet]")].map(
+    (element) => {
+      const name = element.dataset.scenePlanet ?? "teal";
+      const planetTime = { value: 0 };
+      const material = new ShaderMaterial({
+        vertexShader: planetVertex,
+        fragmentShader: planetFragment,
+        uniforms: {
+          halo: { value: HALO },
+          time: planetTime,
+          bands: { value: Number(element.dataset.sceneBands ?? 0.05) },
+          hiColor: { value: tokenColor(host, `--pv-planet-${name}-hi`, "#ffffff") },
+          baseColor: { value: tokenColor(host, `--pv-${name}`, "#007d79") },
+          loColor: { value: tokenColor(host, `--pv-planet-${name}-lo`, "#00234e") },
+        },
+        transparent: true,
+        depthWrite: false,
+        depthTest: false,
+      });
+      const mesh = new Mesh(quad, material);
+      const z = Number(element.dataset.sceneDepth ?? 0);
+      mesh.renderOrder = Math.round(z * 10);
+      scene.add(mesh);
+      return {
+        element,
+        mesh,
+        z,
+        base: new Vector3(),
+        lift: Number(element.dataset.sceneLift ?? 0),
         time: planetTime,
-        bands: { value: Number(element.dataset.sceneBands ?? 0.05) },
-        hiColor: { value: tokenColor(host, `--pv-planet-${name}-hi`, "#ffffff") },
-        baseColor: { value: tokenColor(host, `--pv-${name}`, "#007d79") },
-        loColor: { value: tokenColor(host, `--pv-planet-${name}-lo`, "#00234e") },
-      },
-      transparent: true,
-      depthWrite: false,
-      depthTest: false,
-    });
-    const mesh = new Mesh(quad, material);
-    const z = Number(element.dataset.sceneDepth ?? 0);
-    mesh.renderOrder = Math.round(z * 10);
-    scene.add(mesh);
-    return {
-      element,
-      mesh,
-      z,
-      base: new Vector3(),
-      lift: Number(element.dataset.sceneLift ?? 0),
-      time: planetTime,
-    };
-  });
+      };
+    },
+  );
 
   const orbitElement = host.querySelector<SVGSVGElement>("[data-scene-orbit]");
   const orbitGeometry = new BufferGeometry();
   const angles = new Float32Array(ORBIT_DOTS + TRAIL + 1);
   const kinds = new Float32Array(ORBIT_DOTS + TRAIL + 1);
-  for (let index = 0; index < ORBIT_DOTS; index += 1) angles[index] = (index / ORBIT_DOTS) * Math.PI * 2;
+  for (let index = 0; index < ORBIT_DOTS; index += 1)
+    angles[index] = (index / ORBIT_DOTS) * Math.PI * 2;
   for (let index = 0; index < TRAIL; index += 1) {
     angles[ORBIT_DOTS + index] = (index + 1) * 0.02;
     kinds[ORBIT_DOTS + index] = 1;
   }
   kinds[ORBIT_DOTS + TRAIL] = 2;
-  orbitGeometry.setAttribute("position", new BufferAttribute(new Float32Array(angles.length * 3), 3));
+  orbitGeometry.setAttribute(
+    "position",
+    new BufferAttribute(new Float32Array(angles.length * 3), 3),
+  );
   orbitGeometry.setAttribute("angle", new BufferAttribute(angles, 1));
   orbitGeometry.setAttribute("kind", new BufferAttribute(kinds, 1));
   const orbitUniforms = {
@@ -486,13 +497,18 @@ export function mountScene(
     camera.position.set(x, y, z);
     starUniforms.scroll.value = progress;
     for (const planet of planets) {
-      planet.mesh.position.set(planet.base.x, planet.base.y + progress * planet.lift, planet.base.z);
+      planet.mesh.position.set(
+        planet.base.x,
+        planet.base.y + progress * planet.lift,
+        planet.base.z,
+      );
     }
   };
 
   const render = () => {
     starUniforms.time.value = elapsed;
-    orbitUniforms.phase.value = orbitPhase - (elapsed / ORBIT_SECONDS) * Math.PI * 2 - state.progress * 0.9;
+    orbitUniforms.phase.value =
+      orbitPhase - (elapsed / ORBIT_SECONDS) * Math.PI * 2 - state.progress * 0.9;
     for (const planet of planets) planet.time.value = elapsed;
     place();
     renderer.render(scene, camera);

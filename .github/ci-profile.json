@@ -14,7 +14,8 @@
         ".claude/**",
         ".codex/**",
         ".worktreeinclude",
-        ".editorconfig"
+        ".editorconfig",
+        ".git-blame-ignore-revs"
       ],
       "adds": ["docs"],
       "budgetP50Minutes": 2,

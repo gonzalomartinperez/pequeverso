@@ -6,7 +6,9 @@ const image = `data:image/svg+xml,${encodeURIComponent(
 )}`;
 
 for (const boxSizing of ["content-box", "border-box"] as const) {
-  test(`image aspect uses the ${boxSizing} content box through visual transforms`, async ({ page }) => {
+  test(`image aspect uses the ${boxSizing} content box through visual transforms`, async ({
+    page,
+  }) => {
     // Both variants have a 200×150 CSS content box; the second also has real padding/borders.
     const box =
       boxSizing === "border-box"
@@ -25,7 +27,10 @@ for (const boxSizing of ["content-box", "border-box"] as const) {
     const subject = page.locator("#subject");
     await subject.evaluate(async (element: HTMLImageElement) => element.decode());
     expect(
-      await subject.evaluate((element: HTMLImageElement) => [element.naturalWidth, element.naturalHeight]),
+      await subject.evaluate((element: HTMLImageElement) => [
+        element.naturalWidth,
+        element.naturalHeight,
+      ]),
     ).toEqual([400, 300]);
     const parentBefore = await page.locator("#projected").getAttribute("style");
 

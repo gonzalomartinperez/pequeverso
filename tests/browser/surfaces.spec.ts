@@ -19,6 +19,8 @@ for (const route of ["/", "/grafismo-fonetico/", "/imprime-y-juega/", "/privacid
       }
       return found;
     });
-    expect(filters, `${route}: surfaces must remain responsive without backdrop layers`).toEqual([]);
+    expect(filters, `${route}: surfaces must remain responsive without backdrop layers`).toEqual(
+      [],
+    );
   });
 }

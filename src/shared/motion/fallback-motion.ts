@@ -39,8 +39,9 @@ export function mountFallbackMotion(): () => void {
       },
     });
     const range =
-      Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--parallax-range")) ||
-      20;
+      Number.parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue("--parallax-range"),
+      ) || 20;
     for (const layer of document.querySelectorAll<HTMLElement>(".pv-parallax-layer")) {
       const sign = layer.dataset.direction === "down" ? -1 : 1;
       gsap.fromTo(

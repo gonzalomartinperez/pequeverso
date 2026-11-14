@@ -19,7 +19,10 @@ export function EmptyState({
   return (
     <li className="flex flex-col gap-4">
       <div className={styles.greeting}>
-        <span aria-hidden="true" className="grid size-8 place-items-center rounded-md bg-navy text-gold">
+        <span
+          aria-hidden="true"
+          className="grid size-8 place-items-center rounded-md bg-navy text-gold"
+        >
           <Sparkles className="size-[18px]" />
         </span>
         <h2 className="font-display text-[1.375rem] leading-tight font-bold text-heading">

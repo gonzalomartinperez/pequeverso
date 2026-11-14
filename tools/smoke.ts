@@ -29,7 +29,10 @@ for (const route of routes) {
   }
 }
 const noSlash = await head("/grafismo-fonetico");
-expect([301, 308].includes(noSlash.status), `/grafismo-fonetico → ${noSlash.status}, expected 301/308`);
+expect(
+  [301, 308].includes(noSlash.status),
+  `/grafismo-fonetico → ${noSlash.status}, expected 301/308`,
+);
 expect(
   (noSlash.headers.get("location") || "").endsWith("/grafismo-fonetico/"),
   "non-slash redirect target mismatch",
@@ -41,7 +44,8 @@ expect(info.status === 200, `build-info.json → ${info.status}`);
 if (info.ok) {
   const json = (await info.json()) as { sha: string; ref: string; builtAt: string };
   console.log(`deployed sha ${json.sha} (${json.ref}, ${json.builtAt})`);
-  if (expectedSha) expect(json.sha === expectedSha, `deployed sha ${json.sha} != expected ${expectedSha}`);
+  if (expectedSha)
+    expect(json.sha === expectedSha, `deployed sha ${json.sha} != expected ${expectedSha}`);
 }
 const upsell = await fetch(`${base}/imprime-y-juega/`);
 const html = await upsell.text();
@@ -49,7 +53,10 @@ expect(
   (html.match(/hotmart-sales-funnel/g) || []).length === 1,
   "upsell must contain exactly one hotmart-sales-funnel container",
 );
-expect(html.includes("hotmart-checkout-elements.js"), "upsell must reference the Hotmart widget script");
+expect(
+  html.includes("hotmart-checkout-elements.js"),
+  "upsell must reference the Hotmart widget script",
+);
 
 if (failures.length) {
   for (const f of failures) console.error(`✖ ${f}`);

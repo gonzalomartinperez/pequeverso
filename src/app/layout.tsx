@@ -17,7 +17,10 @@ const consentClasses = {
   secondary: buttonVariants({ variant: "ghost", size: "sm" }),
 };
 
-const fonts = ["/fonts/fraunces-latin-wght-7f9d191d.woff2", "/fonts/nunito-sans-latin-wght-29e38904.woff2"];
+const fonts = [
+  "/fonts/fraunces-latin-wght-7f9d191d.woff2",
+  "/fonts/nunito-sans-latin-wght-29e38904.woff2",
+];
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -45,7 +48,8 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-  for (const href of fonts) preload(href, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
+  for (const href of fonts)
+    preload(href, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
   return (
     <html lang={site.locale}>
       <body>

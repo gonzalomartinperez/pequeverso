@@ -49,7 +49,9 @@ export function SectionHeading({
         {title}
       </h2>
       {lead ? (
-        <p className={cn("lead max-w-[56ch] text-pretty", align === "center" && "mx-auto")}>{lead}</p>
+        <p className={cn("lead max-w-[56ch] text-pretty", align === "center" && "mx-auto")}>
+          {lead}
+        </p>
       ) : null}
     </div>
   );

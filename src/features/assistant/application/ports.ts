@@ -32,7 +32,11 @@ export interface AssistantTransport {
   /** Deletes the session and its whole conversation. */
   deleteSession(signal: AbortSignal): Promise<void>;
   /** Refusals before the stream opens reject with AssistantError; events are validated. */
-  send(input: SendInput, signal: AbortSignal, onEvent: (event: RunEvent) => void): Promise<StreamEnd>;
+  send(
+    input: SendInput,
+    signal: AbortSignal,
+    onEvent: (event: RunEvent) => void,
+  ): Promise<StreamEnd>;
   cancelRun(runId: string, signal: AbortSignal): Promise<void>;
 }
 

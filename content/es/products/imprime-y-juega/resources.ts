@@ -12,7 +12,8 @@ export const packResources: Resource[] = [
     title: "Kit Tardes Tranquilas",
     pages: 84,
     pagesLabel: "84 páginas",
-    description: "Más de 65 actividades para colorear, observar, contar, recortar, dibujar y jugar en casa.",
+    description:
+      "Más de 65 actividades para colorear, observar, contar, recortar, dibujar y jugar en casa.",
   },
   {
     id: "que-imprimo-hoy",
@@ -20,7 +21,8 @@ export const packResources: Resource[] = [
     title: "¿Qué Imprimo Hoy?",
     pages: null,
     pagesLabel: "Incluido en el kit",
-    description: "Una guía rápida para elegir según la edad, el momento del día y el tiempo disponible.",
+    description:
+      "Una guía rápida para elegir según la edad, el momento del día y el tiempo disponible.",
     embedded: true,
   },
   {
@@ -29,7 +31,8 @@ export const packResources: Resource[] = [
     title: "Pequeños Logros, Grandes Sonrisas",
     pages: null,
     pagesLabel: "Incluido en el kit",
-    description: "Tarjetas, medallas y certificados para reconocer el esfuerzo y celebrar cada intento.",
+    description:
+      "Tarjetas, medallas y certificados para reconocer el esfuerzo y celebrar cada intento.",
     embedded: true,
   },
   {
@@ -38,7 +41,8 @@ export const packResources: Resource[] = [
     title: "Listos para Jugar",
     pages: null,
     pagesLabel: "Incluido en el kit",
-    description: "Checklist y un sistema sencillo para preparar el material y comenzar sin vueltas.",
+    description:
+      "Checklist y un sistema sencillo para preparar el material y comenzar sin vueltas.",
     embedded: true,
   },
   {
@@ -82,6 +86,7 @@ export const packResources: Resource[] = [
     title: "Mira, Busca y Colorea",
     pages: 60,
     pagesLabel: "60 páginas",
-    description: "Treinta láminas con diferencias, búsquedas y escenas visuales organizadas en tres niveles.",
+    description:
+      "Treinta láminas con diferencias, búsquedas y escenas visuales organizadas en tres niveles.",
   },
 ];

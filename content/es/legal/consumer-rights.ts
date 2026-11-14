@@ -119,7 +119,8 @@ export const consumerRights: readonly ConsumerRightsEntry[] = [
   },
   {
     country: "Nicaragua",
-    authority: "Dirección de Protección de los Derechos de las Personas Consumidoras (DIPRODEC, MIFIC)",
+    authority:
+      "Dirección de Protección de los Derechos de las Personas Consumidoras (DIPRODEC, MIFIC)",
     url: "https://www.mific.gob.ni/Inicio/Servicios/Servicio-Diprodec",
     period: null,
     note: "Ley 842 de Protección de los Derechos de las Personas Consumidoras y Usuarias.",

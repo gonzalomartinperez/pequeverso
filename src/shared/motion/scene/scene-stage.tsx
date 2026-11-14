@@ -44,7 +44,11 @@ export function SceneStage({
       data-live={live ? "" : undefined}
       className={cx("absolute inset-0", className)}
     >
-      <div ref={layer} aria-hidden="true" className="absolute inset-0 overflow-hidden contain-paint">
+      <div
+        ref={layer}
+        aria-hidden="true"
+        className="absolute inset-0 overflow-hidden contain-paint"
+      >
         <div className="pv-scene-static absolute inset-0">{children}</div>
       </div>
       {controls ? (

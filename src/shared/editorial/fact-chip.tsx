@@ -2,7 +2,13 @@ import type { IconName } from "@/shared/editorial/icon.tsx";
 import { IconDot } from "@/shared/editorial/icon-dot.tsx";
 import { cn } from "@/shared/styles/cn.ts";
 
-type Props = { icon?: IconName; label: string; detail?: string; tone?: "light" | "dark"; className?: string };
+type Props = {
+  icon?: IconName;
+  label: string;
+  detail?: string;
+  tone?: "light" | "dark";
+  className?: string;
+};
 
 /** Small factual pill (icon disc, bold label, optional detail) on glass for hero and offer rows. */
 export function FactChip({ icon, label, detail, tone = "light", className }: Props) {

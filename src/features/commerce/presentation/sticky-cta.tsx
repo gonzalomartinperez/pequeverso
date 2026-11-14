@@ -36,7 +36,9 @@ function BrandTile() {
 }
 
 function observeTargets(selectors: string[], onChange: (covered: boolean) => void) {
-  const targets = selectors.map((selector) => document.querySelector(selector)).filter(Boolean) as Element[];
+  const targets = selectors
+    .map((selector) => document.querySelector(selector))
+    .filter(Boolean) as Element[];
   if (targets.length === 0) return undefined;
   const state = new Map<Element, boolean>();
   const observer = new IntersectionObserver(
@@ -90,7 +92,9 @@ export function StickyCTA({ hideWhenVisible, label, note, thumb, children }: Pro
         "pv-sticky glass fixed inset-x-3 bottom-[calc(var(--space-3)+env(safe-area-inset-bottom))] z-60 mx-auto hidden max-w-xl flex-wrap items-center gap-[min(0.625rem,10px)] rounded-[2rem] p-[min(0.5rem,8px)] shadow-float ring-1 ring-navy/10 transition-all duration-(--duration) ease-emphasis max-lg:flex",
         "[body:has(dialog[open],[role=dialog][data-open])_&]:invisible [body:has(dialog[open],[role=dialog][data-open])_&]:translate-y-[calc(100%+2rem)] [body:has(dialog[open],[role=dialog][data-open])_&]:opacity-0",
         // Hidden means off-screen *and* invisible, so full-page captures never show it over content.
-        visible ? "visible translate-y-0 opacity-100" : "invisible translate-y-[calc(100%+2rem)] opacity-0",
+        visible
+          ? "visible translate-y-0 opacity-100"
+          : "invisible translate-y-[calc(100%+2rem)] opacity-0",
       )}
     >
       <div
@@ -110,7 +114,9 @@ export function StickyCTA({ hideWhenVisible, label, note, thumb, children }: Pro
               {price}
             </span>
             {note ? (
-              <span className="min-w-0 truncate text-tiny text-subtle max-[25rem]:hidden">{note}</span>
+              <span className="min-w-0 truncate text-tiny text-subtle max-[25rem]:hidden">
+                {note}
+              </span>
             ) : null}
           </span>
         ) : note ? (
