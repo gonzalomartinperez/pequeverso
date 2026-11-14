@@ -28,7 +28,12 @@ test("sitemap contains exactly the indexable routes, excluding legal, offers and
   const routes = await routeMetadata();
   assert.deepEqual(
     entries.map((entry) => new URL(entry.url).pathname).sort(),
-    ["/", ...indexableProducts().map((product) => product.path), "/soporte/"].sort(),
+    [
+      "/",
+      ...indexableProducts().map((product) => product.path),
+      "/soporte/",
+      "/accesibilidad/",
+    ].sort(),
   );
   assertSitemap(entries, routes);
   const first = entries[0];
@@ -54,6 +59,7 @@ test("sitemap lastModified comes from content review dates, not build time", asy
   const expected = new Map<string, string>([
     ["/", pageReviewed.home],
     ["/soporte/", pageReviewed.support],
+    ["/accesibilidad/", pageReviewed.accessibility],
     ...indexableProducts().map((product): [string, string] => [
       product.path,
       String(product.seo.lastReviewed),

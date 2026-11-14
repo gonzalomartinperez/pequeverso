@@ -79,7 +79,9 @@ under `## [X.Y.Z] - YYYY-MM-DD`. It runs the full CI like any change. The releas
 GitHub Release whose notes are that CHANGELOG section (`gh release create`). It skips when the
 release exists and fails when the version has neither a section nor a release. Repository settings
 already in place: immutable releases and the `release tags` ruleset (no deletion, update or
-force-move of `v*` tags). First real run: the M7 promotion.
+force-move of `v*` tags). First real run: the M7 promotion. M7 checklist: move `/accesibilidad/` out of `pendingRoutes` in
+`tests/browser/smoke.spec.ts` and the localhost-only push in `tools/smoke.ts` into their `routes`
+lists (production has no such page until the promotion, so the daily checks skip it).
 
 Relation to the other workflows: Hostinger builds and publishes every merge to `main` by itself, so
 `release.yml` neither builds nor deploys and does not depend on `deploy.yml`. `deploy.yml` stays

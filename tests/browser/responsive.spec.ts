@@ -26,6 +26,7 @@ const routes = [
   "/privacidad/",
   "/terminos/",
   "/aviso-legal/",
+  "/accesibilidad/",
   "/arrepentimiento/",
   "/esta-no-existe/",
 ];

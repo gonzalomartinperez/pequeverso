@@ -8,9 +8,16 @@ const routes = [
   "/soporte/",
   "/privacidad/",
 ];
+// Not in production until the M7 promotion: production-daily (PW_SET=prod) would go red. Move into
+// `routes` at M7.
+const pendingRoutes = ["/accesibilidad/"];
 
-for (const route of routes) {
+for (const route of [...routes, ...pendingRoutes]) {
   test(`renders ${route} with one h1 and complete landmarks`, async ({ page }) => {
+    test.skip(
+      process.env.PW_SET === "prod" && pendingRoutes.includes(route),
+      "not in production until M7",
+    );
     const response = await page.goto(route);
     expect(response?.status()).toBe(200);
     await expect(page.locator("h1:visible")).toHaveCount(1);

@@ -60,3 +60,25 @@ for (const path of [
     expect(box && viewport && box.y + box.height <= viewport.height).toBe(true);
   });
 }
+
+test("/accesibilidad/ states the target, the limits, the contact and the review date", async ({
+  page,
+}) => {
+  await page.goto("/accesibilidad/");
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Declaración de accesibilidad" }),
+  ).toBeVisible();
+  const main = page.getByRole("main");
+  await expect(main).toContainText("WCAG");
+  await expect(main).toContainText("Hotmart");
+  await expect(main).toContainText("PDF");
+  await expect(main.locator(`a[href^="mailto:${seller.supportEmail}"]`).first()).toBeVisible();
+  await expect(main).toContainText("Última actualización");
+  await expect(page.locator('meta[name="robots"]')).not.toHaveAttribute("content", /noindex/);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/accesibilidad\/$/);
+  const footer = page.getByRole("contentinfo");
+  await expect(footer.getByRole("link", { name: "Accesibilidad" })).toHaveAttribute(
+    "href",
+    "/accesibilidad/",
+  );
+});
