@@ -41,6 +41,7 @@
     "knip": "knip --no-progress",
     "knip:production": "knip --no-progress --production",
     "check:bundle": "node tools/check-bundle-budget.ts",
+    "scorecard": "node tools/scorecard/run.ts",
     "check:scene": "node tools/check-scene-budget.ts",
     "analyze": "cross-env ANALYZE=1 next build --webpack",
     "check:rendered": "node tools/check-rendered.ts",

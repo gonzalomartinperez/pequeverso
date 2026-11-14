@@ -1,0 +1,17 @@
+TN:
+SF:src/a.ts
+FNF:4
+FNH:4
+LF:100
+LH:99
+BRF:10
+BRH:9
+end_of_record
+SF:src/b.ts
+FNF:6
+FNH:5
+LF:100
+LH:97
+BRF:10
+BRH:9
+end_of_record

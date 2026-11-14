@@ -1,0 +1,20 @@
+{
+  "metric": "bundle",
+  "measuredAt": "2026-11-14",
+  "commit": "abc1234",
+  "source": "fixture",
+  "values": [
+    {
+      "key": "/ js",
+      "value": 160,
+      "unit": "KB gzip",
+      "direction": "max"
+    },
+    {
+      "key": "/ html",
+      "value": 50,
+      "unit": "KB gzip",
+      "direction": "max"
+    }
+  ]
+}
