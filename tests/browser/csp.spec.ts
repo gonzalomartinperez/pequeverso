@@ -93,7 +93,9 @@ test("third-party stubs behave under the policy: Hotmart widget iframe and style
   await page.route("https://www.facebook.com/**", (route) => route.abort());
   await page.goto("/imprime-y-juega/");
   await expect(page.locator("#hotmart-sales-funnel iframe")).toHaveCount(1);
-  await expect(page.locator('script[src*="connect.facebook.net"]')).toHaveCount(1);
+  // The pixel only loads in builds with a Meta Pixel id (CI sets E2E_EXPECT_CONSENT for them).
+  if (process.env.E2E_EXPECT_CONSENT)
+    await expect(page.locator('script[src*="connect.facebook.net"]')).toHaveCount(1);
   await page.waitForLoadState("networkidle");
   expect(await page.evaluate(() => window.__cspViolations)).toEqual([]);
 });
