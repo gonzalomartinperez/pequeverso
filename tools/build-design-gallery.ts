@@ -19,6 +19,7 @@ isolatedBuild(
     NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO:
       "https://pay.hotmart.com/TEST0000000?checkoutMode=10",
     NEXT_PUBLIC_DESIGN_GALLERY: "true",
+    PV_VERIFICATION_BUILD: "design-gallery",
     NEXT_PUBLIC_META_PIXEL_ID: "1234567890123456",
   },
   (out) => {

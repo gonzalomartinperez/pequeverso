@@ -2,9 +2,10 @@ import bundleAnalyzer from "@next/bundle-analyzer";
 import { withCn } from "cn/next";
 import type { NextConfig } from "next";
 import { parseAssistantEnv } from "../src/features/assistant/flag.ts";
-import { buildOutput } from "../tools/lib/build-target.ts";
+import { buildOutput, isHostingerNodeBuilder } from "../tools/lib/build-target.ts";
 import { loadEdgeRules, toNextHeaders, toNextRedirects } from "../tools/lib/edge-rules.ts";
 import { SceneBudgetPlugin } from "../tools/scene-budget-plugin.ts";
+import { designGalleryEnabled } from "./design-gallery-env.ts";
 import { parseAnalyticsEnv } from "./site-analytics-env.ts";
 
 /**
@@ -55,15 +56,14 @@ const assistantEnv = assistant.flag.enabled
 /**
  * The state gallery route (`/_design`, docs/design-system.md) is a page file named
  * `page.design.tsx`: it only routes when `design.tsx` is a page extension, which happens solely
- * with `NEXT_PUBLIC_DESIGN_GALLERY=true`. Otherwise the file is ignored and nothing of it is
- * emitted (tools/check-design-gallery-disabled.ts proves it). Anything but true/false/empty fails.
+ * with `NEXT_PUBLIC_DESIGN_GALLERY=true`. Otherwise the file is ignored and no route, chunk or
+ * marker string of it is emitted, and the view uses no gallery-only CSS class
+ * (tools/check-design-gallery-disabled.ts proves it). The flag alone is never enough: a build
+ * needs the out-of-band `PV_VERIFICATION_BUILD=design-gallery` token that only
+ * tools/build-design-gallery.ts sets, and Hostinger's builder always refuses it, so a stray
+ * dashboard variable cannot publish the gallery. Anything but true/false/empty fails.
  */
-const galleryFlag = (process.env.NEXT_PUBLIC_DESIGN_GALLERY ?? "").trim();
-if (!["", "true", "false"].includes(galleryFlag))
-  throw new Error(
-    'design gallery configuration: NEXT_PUBLIC_DESIGN_GALLERY must be "true" or "false"',
-  );
-const designGallery = galleryFlag === "true";
+const designGallery = designGalleryEnabled(process.env, isHostingerNodeBuilder());
 
 const productAnalytics = parseAnalyticsEnv({
   enabled: process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED,

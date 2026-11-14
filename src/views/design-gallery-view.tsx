@@ -45,7 +45,9 @@ function Buttons({ variants }: { variants: readonly (typeof VARIANTS)[number][] 
           data-gallery-row={`button-${variant}`}
           className="flex flex-wrap items-center gap-3"
         >
-          <code className="w-24 text-small">{variant}</code>
+          <code className="text-small" style={{ width: "6rem" }}>
+            {variant}
+          </code>
           <CTAButton variant={variant} href="/">
             Link
           </CTAButton>
@@ -134,7 +136,7 @@ export function DesignGalleryView() {
             <div
               id="gallery-sticky-sentinel"
               aria-hidden="true"
-              className="absolute -top-[200vh] h-px w-px"
+              style={{ position: "absolute", top: "-200vh", width: 1, height: 1 }}
             />
             <StickyCTA
               hideWhenVisible={["#gallery-sticky-sentinel"]}

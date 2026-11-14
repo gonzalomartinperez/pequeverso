@@ -1,10 +1,10 @@
 // Proves a build ships WITHOUT the state gallery (`/_design`, docs/design-system.md): no route,
 // HTML file, directory, chunk or gallery-only marker string in the emitted output. `npm run build`
 // runs it as a last step with --allow-enabled (a build made with NEXT_PUBLIC_DESIGN_GALLERY=true
-// only prints a warning); CI and `check:design-gallery-disabled` run it strictly. Usage:
+// only prints a warning when PV_VERIFICATION_BUILD=design-gallery is also set); CI and `check:design-gallery-disabled` run it strictly. Usage:
 //   node tools/check-design-gallery-disabled.ts [--allow-enabled] [dir]
 // Without a dir it scans out/ (export) or .next (standalone: static, server, manifests and the
-// traced standalone copy), following public/build-info.json.
+// traced standalone copy, node_modules excluded), following public/build-info.json.
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 
@@ -12,7 +12,7 @@ const args = process.argv.slice(2);
 const allowEnabled = args.includes("--allow-enabled");
 const explicit = args.find((arg) => !arg.startsWith("--"));
 const TEXT = /\.(html|js|mjs|css|json|txt|map|xml|webmanifest|htaccess|rsc|nft)$|^\.htaccess$/;
-const SKIPPED_DIRS = new Set(["node_modules", "cache"]);
+const SKIPPED_DIRS = new Set(["node_modules"]);
 
 /** Strings only the gallery emits (keep in sync with src/views/design-gallery-view.tsx). */
 const MARKERS = [
@@ -49,7 +49,7 @@ function walk(root: string, visit: (path: string, name: string, directory: boole
 const roots = explicit
   ? [resolve(explicit)]
   : buildOutput() === "standalone"
-    ? [resolve(".next/static"), resolve(".next/server"), resolve(".next/standalone/.next")]
+    ? [resolve(".next/static"), resolve(".next/server"), resolve(".next/standalone")]
     : [resolve("out")];
 const manifests =
   !explicit && buildOutput() === "standalone" && existsSync(".next")
@@ -81,9 +81,12 @@ for (const root of present)
   });
 for (const file of manifests) inspect(file);
 
+const verification =
+  process.env.NEXT_PUBLIC_DESIGN_GALLERY?.trim() === "true" &&
+  process.env.PV_VERIFICATION_BUILD === "design-gallery";
 if (present.length > 0 && scanned === 0) failures.push("no build output found to scan");
 
-if (failures.length && allowEnabled && process.env.NEXT_PUBLIC_DESIGN_GALLERY?.trim() === "true") {
+if (failures.length && allowEnabled && verification) {
   console.warn(
     "check-design-gallery-disabled: gallery ENABLED build (verification only): NOT publishable",
   );
