@@ -55,7 +55,8 @@ test("consent banner (when configured) offers equal accept, reject and configure
   test.skip(!process.env.E2E_EXPECT_CONSENT, "requires a build with NEXT_PUBLIC_META_PIXEL_ID");
   await page.goto("/");
   const banner = page.getByTestId("consent-banner");
-  await expect(banner).toBeVisible();
+  // Shown after first paint and idle (2.5 s idle timeout), then its lazy chunk loads.
+  await expect(banner).toBeVisible({ timeout: 15_000 });
   await expect(banner).toContainText("Meta Pixel");
   await expect(banner).toContainText("Si aceptas, también usamos Meta Pixel");
   await expect(banner.getByRole("button", { name: "Aceptar" })).toBeVisible();

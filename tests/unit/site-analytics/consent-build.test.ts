@@ -7,12 +7,13 @@ import { explicitGrant } from "../../../src/features/site-analytics/domain/conse
 
 const require = createRequire(import.meta.url);
 const { transformSync } = require("next/dist/build/swc/index.js");
-const banner = readFileSync("src/features/tracking/presentation/consent-banner.tsx", "utf8");
+const banner = readFileSync("src/features/tracking/presentation/consent-banner-ui.tsx", "utf8");
+const trigger = readFileSync("src/features/tracking/presentation/consent-banner.tsx", "utf8");
 
-function compile(enabled: boolean, commonjs = false): string {
+function compile(enabled: boolean, commonjs = false, source = banner): string {
   // Exercise the installed Next compiler's environment substitution and dead-code pass,
   // without building the application or substituting a synthetic component.
-  const substituted = transformSync(banner, {
+  const substituted = transformSync(source, {
     filename: "consent-banner.tsx",
     jsc: {
       target: "es2022",
@@ -60,16 +61,23 @@ test("enabled consent compilation retains opt-in freshness, withdrawal and exist
     "Analítica del sitio Pequeverso",
     "pv:site-analytics:withdraw",
     "Se activa al aceptar o guardar tu selección.",
-    "explicitGrant",
     "writeConsent",
     "Aceptar",
     "Rechazar",
   ])
     assert.ok(output.includes(marker), marker);
+  // The lazy trigger keeps the freshness check that reopens a stale analytics opt-in.
+  assert.ok(compile(true, false, trigger).includes("explicitGrant"));
 });
 
 type Node = { type: unknown; props: Record<string, unknown> };
-function render(enabled: boolean, stored: unknown, open: boolean, failWrite: boolean) {
+function render(
+  enabled: boolean,
+  stored: unknown,
+  open: boolean,
+  failWrite: boolean,
+  part: "ui" | "trigger" = "ui",
+) {
   const effects: (() => unknown)[] = [];
   const changes: { slot: number; value: unknown }[] = [];
   const events: string[] = [];
@@ -101,10 +109,11 @@ function render(enabled: boolean, stored: unknown, open: boolean, failWrite: boo
     },
     "@/features/tracking/adapters/env.ts": {
       enabledAdapters: () => [{ category: "marketing", label: "Meta Pixel" }],
+      siteAnalyticsBuilt: enabled,
     },
   };
-  const exports: { ConsentBanner?: (props: unknown) => Node } = {};
-  runInNewContext(compile(enabled, true), {
+  const exports: Record<string, ((props: unknown) => Node) | undefined> = {};
+  runInNewContext(compile(enabled, true, part === "ui" ? banner : trigger), {
     exports,
     require: (name: string) => {
       assert.ok(Object.hasOwn(modules, name), name);
@@ -131,8 +140,9 @@ function render(enabled: boolean, stored: unknown, open: boolean, failWrite: boo
       },
     },
   });
-  assert.ok(exports.ConsentBanner);
-  const tree = exports.ConsentBanner({ classes: { primary: "primary" } });
+  const component = part === "ui" ? exports.ConsentBannerUi : exports.ConsentBanner;
+  assert.ok(component);
+  const tree = component({ classes: { primary: "primary" }, reopen: true, opener: null });
   for (const effect of effects) effect();
   return { tree, changes, events, writes };
 }
@@ -151,8 +161,9 @@ test("enabled banner reopens stale opt-in while OFF preserves existing marketing
     marketing: true,
     updatedAt: "2025-01-01T00:00:00.000Z",
   };
-  assert.deepEqual(render(true, stale, false, false).changes, [{ slot: 1, value: true }]);
-  assert.deepEqual(render(false, stale, false, false).changes, []);
+  // The lazy trigger requests the banner chunk (one state update) only when analytics is built in.
+  assert.equal(render(true, stale, false, false, "trigger").changes.length, 1);
+  assert.equal(render(false, stale, false, false, "trigger").changes.length, 0);
 });
 
 test("enabled rejection withdraws before failed persistence; OFF keeps the original writer behavior", () => {

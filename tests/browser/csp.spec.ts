@@ -91,11 +91,18 @@ test("third-party stubs behave under the policy: Hotmart widget iframe and style
   );
   // The pixel image request is aborted after CSP evaluation (a CSP block would raise a violation).
   await page.route("https://www.facebook.com/**", (route) => route.abort());
+  // Prior opt-in (ADR-0011): the pixel loads only for a returning visitor with a stored grant.
+  await page.addInitScript(() => {
+    const grant = { version: 3, analytics: true, marketing: true, updatedAt: "" };
+    localStorage.setItem("pv_consent", JSON.stringify(grant));
+  });
   await page.goto("/imprime-y-juega/");
   await expect(page.locator("#hotmart-sales-funnel iframe")).toHaveCount(1);
   // The pixel only loads in builds with a Meta Pixel id (CI sets E2E_EXPECT_CONSENT for them).
   if (process.env.E2E_EXPECT_CONSENT)
-    await expect(page.locator('script[src*="connect.facebook.net"]')).toHaveCount(1);
+    await expect(page.locator('script[src*="connect.facebook.net"]')).toHaveCount(1, {
+      timeout: 15_000,
+    });
   await page.waitForLoadState("networkidle");
   expect(await page.evaluate(() => window.__cspViolations)).toEqual([]);
 });
