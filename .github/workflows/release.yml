@@ -45,6 +45,9 @@ jobs:
           if gh release view "v${VERSION}" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
             exit 0
           fi
+          if gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/v${VERSION}" > /dev/null 2>&1; then
+            exit 0
+          fi
           echo "::error title=release::version ${VERSION} has no CHANGELOG section and no release"
           exit 1
       - name: Create the tag and the release
@@ -57,6 +60,12 @@ jobs:
           tag="v${VERSION}"
           if gh release view "$tag" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
             echo "release $tag already exists; nothing to do"
+            exit 0
+          fi
+          # A tag without a published release (for example v1.0.0, whose release is a draft) is
+          # never re-targeted or duplicated: bump the version instead.
+          if gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${tag}" > /dev/null 2>&1; then
+            echo "::notice title=release::tag $tag already exists; bump package.json version to release"
             exit 0
           fi
           gh release create "$tag" --repo "$GITHUB_REPOSITORY" --target "$SHA" --title "$tag" \

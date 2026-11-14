@@ -35,7 +35,9 @@ Reference: engineering-standards ADR 0003 (release automation without release-pl
   passed `ci-gate`; the release notes are the reviewed CHANGELOG text.
 - Bad: the CHANGELOG is curated by hand (PR template and CONTRIBUTING require an Unreleased entry);
   a promotion without a version bump creates no new release (the workflow skips because the
-  release exists); a bumped version without a section fails the workflow.
+  release exists); a bumped version without a section fails the workflow. A tag that already exists
+  without a published release (`v1.0.0` has only a draft) is never re-targeted: the workflow skips
+  with a notice, so the first release after this ADR must bump the version.
 - The SBOM attachment named in `docs/master-plan/ci-cd.md` section 6 is a follow-up.
 
 ## Confirmation
