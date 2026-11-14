@@ -29,7 +29,7 @@ env:
   NEXT_OUTPUT: export
 jobs:
   classify:
-    uses: gonzalomartinperez/engineering-standards/.github/workflows/classify.yml@6c39ee40f7203c03a382b076b320276d4397e06d # main (pre-release; repin to the v1 tag)
+    uses: gonzalomartinperez/engineering-standards/.github/workflows/classify.yml@1f33be46bcb95f42f550f74608bc679cae5575ad # v1.0.0
     permissions:
       contents: read
       pull-requests: read
@@ -431,7 +431,7 @@ jobs:
       # Fail closed: a failed or cancelled job fails the gate; a job classify selected must succeed
       # (a skip there means a broken `if:`); unselected jobs may be skipped. classify must succeed.
       - name: Aggregate job results
-        uses: gonzalomartinperez/engineering-standards/actions/ci-gate@6c39ee40f7203c03a382b076b320276d4397e06d # main (pre-release; repin to the v1 tag)
+        uses: gonzalomartinperez/engineering-standards/actions/ci-gate@1f33be46bcb95f42f550f74608bc679cae5575ad # v1.0.0
         with:
           needs: ${{ toJSON(needs) }}
           expected: ${{ needs.classify.outputs.jobs || '[]' }}
