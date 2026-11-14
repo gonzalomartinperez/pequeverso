@@ -185,7 +185,8 @@ export function HotmartWidgetSlot({
         ) : null}
       </div>
       <p
-        className="flex min-h-[1.4em] items-center justify-center gap-2 text-center text-small text-subtle empty:hidden"
+        className="flex min-h-[1.4em] items-center justify-center gap-2 text-center text-small text-subtle data-[status=failed]:hidden"
+        data-status={status}
         role="status"
         aria-live="polite"
       >
@@ -206,7 +207,10 @@ export function HotmartWidgetSlot({
           >
             {reloadLabel}
           </button>
-          <Link href="/soporte/" className="inline-flex min-h-6 items-center font-bold underline underline-offset-4">
+          <Link
+            href="/soporte/"
+            className="inline-flex min-h-6 items-center font-bold underline underline-offset-4"
+          >
             {supportLabel}
           </Link>
         </div>

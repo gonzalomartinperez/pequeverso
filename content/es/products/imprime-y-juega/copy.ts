@@ -119,9 +119,9 @@ export const packCopy = {
     loading: "Cargando las opciones de Hotmart…",
     fallbackTitle: "No pudimos cargar las opciones de Hotmart.",
     fallbackText:
-      "Tu compra principal ya está confirmada. Puedes recargar esta página para volver a intentarlo o cerrar la ventana y revisar tu correo para acceder a Grafismo Fonético.",
+      "Si ya hiciste tu compra, la confirmación está en tu correo. Recarga la página para volver a intentarlo o escríbenos si el problema sigue.",
     reload: "Recargar la página",
-    frameTitle: "Opciones de compra de Hotmart",
+    frameTitle: "Oferta adicional de Hotmart",
     support: "Escribir a soporte",
   },
   sticky: { upsell: "Sumar el pack", downsell: "Agregar por menos" },

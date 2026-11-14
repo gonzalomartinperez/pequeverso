@@ -64,15 +64,15 @@ for (const route of routes) {
   });
 }
 
-test("the Hotmart iframe gets an accessible name and the failed state passes axe", async ({
-  page,
-}) => {
+test("the Hotmart iframe gets an accessible name from the slot", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await stubHotmart(page);
   await page.goto("/imprime-y-juega/");
-  const frame = page.locator("#hotmart-sales-funnel iframe");
-  await expect(frame).toHaveAttribute("title", /Hotmart/);
-  await page.unroute("**/hotmart-checkout-elements.js");
+  await expect(page.locator("#hotmart-sales-funnel iframe")).toHaveAttribute("title", /Hotmart/);
+});
+
+test("the failed widget state passes axe and links to support", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.route("**/hotmart-checkout-elements.js", (route) => route.abort());
   await page.goto("/imprime-y-juega/");
   await expect(page.getByTestId("widget-fallback")).toBeVisible({ timeout: 10_000 });
@@ -86,6 +86,19 @@ test("the Hotmart iframe gets an accessible name and the failed state passes axe
   expect(
     results.violations.filter((v) => v.impact === "serious" || v.impact === "critical"),
   ).toEqual([]);
+});
+
+test("the Hotmart link exclusion is current and the stub still exercises it", async ({ page }) => {
+  expect(
+    new Date() <= new Date("2026-12-31T23:59:59Z"),
+    "The Hotmart iframe-link axe exclusion expired on 2026-12-31: remove it or renew it (#183).",
+  ).toBe(true);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await stubHotmart(page);
+  await page.goto("/imprime-y-juega/");
+  await expect(page.locator("#hotmart-sales-funnel iframe")).toHaveAttribute("title", /Hotmart/);
+  const results = await new AxeBuilder({ page }).withRules(["link-name"]).analyze();
+  expect(results.violations.map((v) => v.id)).toContain("link-name");
 });
 
 test("visible headings form a single h1 per page (offer modes included)", async ({ page }) => {

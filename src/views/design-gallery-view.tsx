@@ -156,7 +156,7 @@ export function DesignGalleryView() {
               fallbackTitle="No pudimos cargar la oferta"
               fallbackText="Recarga la página para intentarlo de nuevo."
               reloadLabel="Recargar"
-              frameTitle="Opciones de compra de Hotmart"
+              frameTitle="Oferta adicional de Hotmart"
               supportLabel="Escribir a soporte"
               timeoutMs={4000}
             />
