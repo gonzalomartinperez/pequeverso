@@ -78,7 +78,7 @@ test("a skill without limits or exclusions is rejected", () => {
 const skillDir = ".agents/skills/prepare-delivery";
 const triggers = path.join(skillDir, "evals/triggers.json");
 const outputs = path.join(skillDir, "evals/evals.json");
-// biome-ignore lint/suspicious/noExplicitAny: loosely typed JSON fixture
+// biome-ignore lint/suspicious/noExplicitAny: loosely typed JSON fixture #177
 type Bank = Record<string, any>;
 type Query = { query: string; should_trigger: boolean; split: string };
 const editJson = (dir: string, file: string, change: (data: Bank) => void) => {
