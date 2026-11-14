@@ -3,7 +3,16 @@
 // no variable leaks in from the caller's shell or .env files. Returns the temporary out/ path via
 // the callback before cleanup.
 import { execFileSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync, symlinkSync } from "node:fs";
+import {
+  cpSync,
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  mkdtempSync,
+  readlinkSync,
+  rmSync,
+  symlinkSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 
@@ -18,7 +27,9 @@ export function isolatedBuild(root: string, env: Record<string, string>, use: (o
       const from = join(root, file);
       if (!existsSync(from)) continue;
       mkdirSync(dirname(join(work, file)), { recursive: true });
-      cpSync(from, join(work, file));
+      // Tracked symlinks (for example .claude/skills/<name>) stay links; cpSync would follow them.
+      if (lstatSync(from).isSymbolicLink()) symlinkSync(readlinkSync(from), join(work, file));
+      else cpSync(from, join(work, file));
     }
     symlinkSync(join(root, "node_modules"), join(work, "node_modules"), "dir");
     const sha = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root }).toString("utf8").trim();
