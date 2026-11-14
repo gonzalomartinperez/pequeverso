@@ -2,6 +2,10 @@
 
 All notable changes are recorded here. The format follows Keep a Changelog; versions are tags.
 
+Release flow (ADR-0018, `docs/deployment.md`): entries accumulate under `## [Unreleased]`; the
+version-bump PR sets `package.json` `version` and moves them under `## [X.Y.Z] - YYYY-MM-DD`
+(hyphen); `release.yml` tags `vX.Y.Z` and publishes that section on merge to `main`.
+
 ## [Unreleased]
 
 ### Changed
@@ -22,7 +26,7 @@ All notable changes are recorded here. The format follows Keep a Changelog; vers
 - The floating offer keeps its price on one line while its explanatory note yields space
   and truncates within the available width.
 
-## [1.0.0] — 2026-10-13
+## [1.0.0] - 2026-10-13
 
 pequeverso.com v1: the home is the hub of two products. Grafismo Fonético is Pequeverso's own kit.
 Guía de Alimentación para Bebés is a recommended Hotmart affiliate course. Hostinger builds every
@@ -31,7 +35,7 @@ merge to `main`.
 ### Added
 - Affiliate redirect `/alimentacion-bebe/` (`config/edge-rules.json`, 302 with query passthrough).
   The destination lives only in `NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE` (hPanel), and
-  `check-env` validates it (docs/affiliates.md).
+  `check-env` validates it (docs/reference/affiliates.md).
 - Affiliate disclosures: in the legal notice (`/aviso-legal/#afiliados`), terms, privacy and
   cookies, and next to every affiliate link with the commission wording.
 

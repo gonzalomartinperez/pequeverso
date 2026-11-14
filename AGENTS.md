@@ -14,12 +14,12 @@ Spanish. Read this file first, then the doc that matches your task.
 | Run, build, test locally | `docs/development.md` |
 | Change copy, prices, product facts | `docs/content-model.md` (and `config/commerce.ts`) |
 | Visual work | `docs/design-system.md` |
-| Images, video, fonts | `docs/media.md` |
+| Images, video, fonts | `docs/how-to/update-media.md` |
 | Events, pixel, consent | `docs/tracking.md` |
 | Legal/support pages | `docs/legal-checklist.md` |
 | Release or deploy | `docs/deployment.md` |
 | URL changes, redirects, cutover | `docs/migration.md` |
-| Affiliate redirects (`/<slug>/` → affiliate link from an env variable) | `docs/affiliates.md` |
+| Affiliate redirects (`/<slug>/` → affiliate link from an env variable) | `docs/reference/affiliates.md` |
 | Hotmart funnel (checkout, widget, dashboard changes, E2E checklist) | `docs/hotmart-funnel.md` |
 | Native shopping assistant (disabled by default) | `docs/assistant.md`, ADR-0008 |
 | Code style, setup, skills validation | `CONTRIBUTING.md` (Google TS style adaptations); skills: `.agents/skills/*/SKILL.md` (canonical), `.claude/skills/<name>` relative symlinks to it, `npm run check:skills` |

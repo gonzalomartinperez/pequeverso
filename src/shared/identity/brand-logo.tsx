@@ -15,7 +15,7 @@ type Props = {
 
 /**
  * Isotipo from the media manifest (derived from the approved PNG master; no vector master
- * exists yet, see docs/media.md) plus the wordmark as real text, so the brand name is always
+ * exists yet, see docs/how-to/update-media.md) plus the wordmark as real text, so the brand name is always
  * readable by assistive technology.
  */
 export function BrandLogo({

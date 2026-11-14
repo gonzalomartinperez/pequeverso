@@ -114,7 +114,7 @@ course is not a third `config/products` kind and does not inherit the kit's pric
 PDF composition or funnel. Home links to the kit landing before its configured
 checkout, while `AffiliateLink` sends an explicitly disclosed recommendation
 through the configured redirect. Post-purchase offers retain their existing
-Hotmart widget flow. See [affiliate configuration](affiliates.md) for the redirect
+Hotmart widget flow. See [affiliate configuration](reference/affiliates.md) for the redirect
 and attribution contract; those facts are not duplicated in presentation code.
 
 ## Routes
@@ -214,7 +214,7 @@ provider, physical phone keyboard or production VPS cookies/CORS/proxy behavior.
 
 ### Enforced dependency contracts
 
-[Engineering standards](engineering-standards.md) document ownership, review and blocking CI rules.
+[Engineering standards](reference/architecture-contracts.md) document ownership, review and blocking CI rules.
 `npm run test:architecture` parses imports with Oxc, checks runtime cycles and follows client
 imports transitively through barrels and aliases. Assistant presentation receives a stable
 controller from `runtime.tsx`; only `entry.ts` constructs its HTTP adapter. Domain and application

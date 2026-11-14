@@ -23,7 +23,7 @@ module is inert: no scripts, no banner (the footer control shows a necessary-coo
 | `PageView` | first load + every client navigation (once per path) | — | `fbq('track')` |
 | `ViewContent` | product landing mount; upsell/downsell mount (`content_name` suffixed with the mode) | `content_ids`, `content_name`, `content_type: product`, `value`, `currency` | `fbq('track')` |
 | `PequeversoProductInterest` | hub → product link click | `product`, `cta_position`, `destination` | `fbq('trackCustom')` |
-| `PequeversoAffiliateClick` | click on a recommended third-party product (`AffiliateLink`, docs/affiliates.md) | `product`, `cta_position`, `destination` | `fbq('trackCustom')` |
+| `PequeversoAffiliateClick` | click on a recommended third-party product (`AffiliateLink`, docs/reference/affiliates.md) | `product`, `cta_position`, `destination` | `fbq('trackCustom')` |
 | `CheckoutIntent` | principal CTA click | `product`, `offer`, `cta_position`, `offer_mode` | `fbq('trackCustom')` |
 
 Every event gets a UUID `eventId` (`crypto.randomUUID`), is pushed to `window.dataLayer` as
@@ -177,7 +177,7 @@ events remain complete.
 
 ## Separate opt-in site aggregates
 
-[Optional site analytics](site-analytics.md) uses an independent default-off build switch and requires
+[Optional site analytics](reference/site-analytics.md) uses an independent default-off build switch and requires
 an explicit stored analytics grant. It does not inherit the Meta opt-out default described above,
 use the vendor queue, or emit purchase/checkout events. Both integrations retain the existing
 preference storage; the additional analytics category is visible only in a configured build.

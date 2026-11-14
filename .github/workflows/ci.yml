@@ -1,4 +1,4 @@
-# Validation only. CI profiles (ecosystem 6.0, docs/ci-profile.md): `classify` (engineering-standards
+# Validation only. CI profiles (ecosystem 6.0, docs/reference/ci-profile.md): `classify` (engineering-standards
 # reusable workflow) maps the changed files, branch and labels in .github/ci-profile.json to the jobs
 # to run; every other job is gated on that list, and `ci-gate` is the single fail-closed required
 # check. `ci` is a temporary alias of `ci-gate` kept until the rulesets require `ci-gate` only.

@@ -22,10 +22,10 @@ request-time code; the assistant API will run on the VPS behind vps-ops' proxy.
   tokens, one CSS Module for geometry), `entry.ts` (the only module that wires adapters). Enforced
   by `tests/unit/assistant/boundaries.test.ts`.
 - **Disabled by default, compiled out.** `NEXT_PUBLIC_ASSISTANT_ENABLED` must be exactly `true` to
-  enable; unset/empty/`false` disables; anything else fails `scripts/check-env.ts` without echoing the
+  enable; unset/empty/`false` disables; anything else fails `tools/check-env.ts` without echoing the
   value. `src/features/assistant/slot.tsx` imports the client code behind an inline build-time
   comparison, so a disabled build emits no assistant module, chunk, string or API origin
-  (`scripts/check-assistant-disabled.ts`, `tests/e2e/assistant-disabled.spec.ts`). The static export
+  (`tools/check-assistant-disabled.ts`, `tests/browser/assistant-disabled.spec.ts`). The static export
   bakes the value in: switching it requires a rebuild and a release.
 - **Cross-origin API.** The browser calls `NEXT_PUBLIC_ASSISTANT_API_ORIGIN` (`/api/v1/...`) with
   `credentials: "include"`. The store gains no endpoint and no proxy; vps-ops owns routing/TLS. The
