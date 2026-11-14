@@ -138,4 +138,4 @@ inclusive a breach is an annotation plus a console line, and from 00:00 UTC the 
 (`ratchetPhase`). The values are provisional placeholders: before `expires`, calibrate them from
 real CI runs and set `calibrated: true`; `tests/unit/ratchets.test.ts` fails after `expires`
 otherwise. A starved sample (fewer than 10 frames) always fails. The spec writes
-`test-results/interaction-measurements/` (part of the CI evidence artifact). Tighten, never loosen.
+`test-results/interaction-measurements/` (part of the CI evidence artifact). Tighten, never loosen. `node tools/interaction-suggest.ts ratchets/interaction.json <run-dir>...` (at least 3 distinct run directories, each a CI run's `interaction-measurements/`) proposes tighter ceilings (worst value plus 25% headroom, never above the current one) and sets `calibrated: true`; review it and commit it over the file.
