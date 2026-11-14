@@ -6,6 +6,8 @@
  * adds a period that `source` does not back. Cuba is omitted (Hotmart excludes OFAC-sanctioned
  * countries). tests/unit/consumer-rights.test.ts checks https links, sources and order.
  */
+import { withdrawalPeriod, withdrawalWindow } from "../../../config/commerce.ts";
+
 export type ConsumerRightsEntry = {
   country: string;
   /** Consumer-protection authority. */
@@ -25,7 +27,7 @@ export const consumerRights: readonly ConsumerRightsEntry[] = [
     country: "Argentina",
     authority: "Defensa de las y los Consumidores (Ventanilla Federal Única de Reclamos)",
     url: "https://www.argentina.gob.ar/servicio/iniciar-un-reclamo-ante-defensa-del-consumidor",
-    period: "10 días corridos",
+    period: withdrawalPeriod(withdrawalWindow("Argentina")),
     note: "Ley 24.240, art. 34, y Código Civil y Comercial, art. 1110. El art. 1116 exceptúa, salvo pacto en contrario, los archivos descargables de inmediato; la garantía de Hotmart es ese pacto. En la provincia de Buenos Aires también atiende la Dirección Provincial de Defensa de los Derechos de las y los Consumidores.",
     source: "https://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/638/texact.htm",
   },
@@ -40,7 +42,7 @@ export const consumerRights: readonly ConsumerRightsEntry[] = [
     country: "Brasil",
     authority: "Senacon (consumidor.gov.br) y Procon de tu estado",
     url: "https://www.consumidor.gov.br/",
-    period: "7 días",
+    period: withdrawalPeriod(withdrawalWindow("Brasil")),
     note: "Código de Defesa do Consumidor (Lei 8.078/1990), art. 49, para compras fuera del establecimiento comercial.",
     source: "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm",
   },
@@ -48,7 +50,7 @@ export const consumerRights: readonly ConsumerRightsEntry[] = [
     country: "Chile",
     authority: "Servicio Nacional del Consumidor (SERNAC)",
     url: "https://www.sernac.cl/portal/617/w3-article-9178.html",
-    period: "10 días",
+    period: withdrawalPeriod(withdrawalWindow("Chile")),
     note: "Ley 19.496, art. 3 bis b), para contratos celebrados por medios electrónicos. La ley no menciona expresamente el contenido digital.",
     source: "https://www.bcn.cl/leychile/navegar?idNorma=1160403",
   },
@@ -56,7 +58,7 @@ export const consumerRights: readonly ConsumerRightsEntry[] = [
     country: "Colombia",
     authority: "Superintendencia de Industria y Comercio (SIC)",
     url: "https://denuncias.sic.gov.co/consumidor/consumidor/paso0",
-    period: "5 días hábiles",
+    period: withdrawalPeriod(withdrawalWindow("Colombia")),
     note: "Ley 1480 de 2011, art. 47 (derecho de retracto). No prevé una excepción expresa para contenido digital.",
     source: "https://www.secretariasenado.gov.co/senado/basedoc/ley_1480_2011.html",
   },
@@ -85,7 +87,7 @@ export const consumerRights: readonly ConsumerRightsEntry[] = [
     country: "España",
     authority: "Ministerio de Derechos Sociales, Consumo y Agenda 2030 (cómo reclamar)",
     url: "https://www.dsca.gob.es/es/consumo/como-reclamar-conflicto-consumo",
-    period: "14 días naturales",
+    period: withdrawalPeriod(withdrawalWindow("España")),
     note: "Real Decreto Legislativo 1/2007, arts. 102 y 104. El art. 103 m) excluye el contenido digital descargado cuando diste tu consentimiento previo, reconociste que perdías el derecho y recibiste la confirmación; la garantía de Hotmart se aplica igualmente.",
     source: "https://www.boe.es/buscar/act.php?id=BOE-A-2007-20555",
   },
@@ -157,7 +159,7 @@ export const consumerRights: readonly ConsumerRightsEntry[] = [
     country: "Unión Europea (resto de países)",
     authority: "Comisión Europea: organismos de resolución de litigios de consumo",
     url: "https://consumer-redress.ec.europa.eu/dispute-resolution-bodies",
-    period: "14 días",
+    period: withdrawalPeriod(withdrawalWindow("Unión Europea (resto de países)")),
     note: "Directiva 2011/83/UE, art. 9. El art. 16 m) excluye el contenido digital descargado con tu consentimiento previo y reconocimiento de la pérdida del derecho; la garantía de Hotmart se aplica igualmente.",
     source: "https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:02011L0083-20220528",
   },
@@ -165,7 +167,7 @@ export const consumerRights: readonly ConsumerRightsEntry[] = [
     country: "Uruguay",
     authority: "Unidad de Defensa del Consumidor (Ministerio de Economía y Finanzas)",
     url: "https://www.gub.uy/tramites/consulta-reclamo-yo-denuncia-materia-defensa-consumidor",
-    period: "5 días hábiles",
+    period: withdrawalPeriod(withdrawalWindow("Uruguay")),
     note: "Ley 17.250, art. 16, para ofertas por medios informáticos, desde el contrato o la entrega. El producto debe devolverse sin uso.",
     source: "https://www.impo.com.uy/bases/leyes/17250-2000",
   },

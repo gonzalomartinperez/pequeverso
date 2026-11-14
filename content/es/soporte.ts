@@ -4,6 +4,7 @@
  */
 import { guaranteeDays, hotmart } from "../../config/commerce.ts";
 import { seller } from "./legal/seller.ts";
+import { withdrawalCopy, withdrawalWindowList } from "./legal/withdrawal.ts";
 
 export const soporteCopy = {
   meta: {
@@ -45,6 +46,7 @@ export const soporteCopy = {
     hotmartLabel: "Tus compras en Hotmart:",
     hotmartLink: "consumer.hotmart.com",
   },
+  withdrawal: { ...withdrawalCopy, windows: withdrawalWindowList },
   limits: {
     title: "Lo que no podemos hacer",
     items: ["Ver o modificar datos de pago.", "Cambiar el correo de una compra."],

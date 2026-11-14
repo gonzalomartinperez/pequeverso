@@ -3,6 +3,7 @@ import { offerProducts } from "@config/products/index.ts";
 import { consumerLaw } from "@content/es/legal/argentina";
 import { hotmartFacts } from "@content/es/legal/hotmart";
 import { seller } from "@content/es/legal/seller";
+import { withdrawalCopy, withdrawalWindowList } from "@content/es/legal/withdrawal";
 import Link from "next/link";
 import { Notice } from "@/shared/editorial/notice.tsx";
 import {
@@ -23,6 +24,7 @@ const sections: readonly Section[] = [
   { id: "ofertas", title: "Ofertas opcionales" },
   { id: "reembolso", title: "Cómo pedir un reembolso" },
   { id: "garantia-y-ley", title: "Garantía y derechos legales" },
+  { id: "por-correo", title: withdrawalCopy.title },
   { id: "plazos", title: "Plazos" },
   { id: "contacto", title: "Canales de contacto" },
   { id: "preguntas", title: "Preguntas frecuentes" },
@@ -222,6 +224,31 @@ export default function ComprasPage() {
           {consumerLaw.revocationCodeHours} horas.
         </p>
       </Notice>
+
+      <SectionHeading sections={sections} id="por-correo" />
+      <p>{withdrawalCopy.summary}</p>
+      <p>
+        <strong>{withdrawalCopy.windowsLead}</strong>
+      </p>
+      <ul>
+        {withdrawalWindowList.map((window) => (
+          <li key={window.country}>
+            {window.country}: <strong>{window.period}</strong>
+          </li>
+        ))}
+      </ul>
+      <p>{withdrawalCopy.windowsNote}</p>
+      <ol>
+        {withdrawalCopy.steps.map((step) => (
+          <li key={step}>{step}</li>
+        ))}
+      </ol>
+      <p>{withdrawalCopy.answerTime}</p>
+      <p>{withdrawalCopy.argentinaCode}</p>
+      <p>
+        {withdrawalCopy.manualRefund} Más detalle por país en la{" "}
+        <Link href="/arrepentimiento/#paises">referencia por país</Link>.
+      </p>
 
       <SectionHeading sections={sections} id="plazos" />
       <Table>

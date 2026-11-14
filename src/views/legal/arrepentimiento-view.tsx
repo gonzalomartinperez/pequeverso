@@ -7,6 +7,7 @@ import {
 import { consumerRights } from "@content/es/legal/consumer-rights";
 import { hotmartFacts } from "@content/es/legal/hotmart";
 import { seller } from "@content/es/legal/seller";
+import { withdrawalCopy, withdrawalWindowList } from "@content/es/legal/withdrawal";
 import { Mail, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { CTAButton } from "@/shared/editorial/cta-button.tsx";
@@ -26,6 +27,7 @@ const sections: readonly Section[] = [
   { id: "como", title: "Cómo pedirlo" },
   { id: "despues", title: "Qué ocurre después" },
   { id: "plazos", title: "Plazos" },
+  { id: "por-correo", title: withdrawalCopy.title },
   { id: "paises", title: "Si compras desde otro país" },
   { id: "reclamos", title: "Si no quedas conforme" },
 ];
@@ -171,6 +173,28 @@ export default function ArrepentimientoPage() {
           ))}
         </TableBody>
       </Table>
+
+      <SectionHeading sections={sections} id="por-correo" />
+      <p>{withdrawalCopy.summary}</p>
+      <p>
+        <strong>{withdrawalCopy.windowsLead}</strong>
+      </p>
+      <ul>
+        {withdrawalWindowList.map((window) => (
+          <li key={window.country}>
+            {window.country}: <strong>{window.period}</strong>
+          </li>
+        ))}
+      </ul>
+      <p>{withdrawalCopy.windowsNote}</p>
+      <ol>
+        {withdrawalCopy.steps.map((step) => (
+          <li key={step}>{step}</li>
+        ))}
+      </ol>
+      <p>{withdrawalCopy.answerTime}</p>
+      <p>{withdrawalCopy.argentinaCode}</p>
+      <p>{withdrawalCopy.manualRefund}</p>
 
       <SectionHeading sections={sections} id="paises" />
       <p>

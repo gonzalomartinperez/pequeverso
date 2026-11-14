@@ -140,6 +140,33 @@ export default function SoportePage() {
               <Link href="/compras-y-reembolsos/">{copy.contact.moreLink}</Link>.
             </p>
           </div>
+          <div className="on-light glass grid grid-cols-1 content-start gap-4 rounded-2xl p-6 shadow-float sm:p-8 md:col-span-2">
+            <h2 id="soporte-arrepentimiento" className="font-display text-[1.5rem] leading-tight">
+              {copy.withdrawal.title}
+            </h2>
+            <p>{copy.withdrawal.summary}</p>
+            <p className="font-bold">{copy.withdrawal.windowsLead}</p>
+            <ul className="grid gap-1 sm:grid-cols-2">
+              {copy.withdrawal.windows.map((window) => (
+                <li key={window.country}>
+                  {window.country}: <strong>{window.period}</strong>
+                </li>
+              ))}
+            </ul>
+            <p className="text-small">{copy.withdrawal.windowsNote}</p>
+            <ol className="grid list-decimal gap-1 pl-5">
+              {copy.withdrawal.steps.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+            <p>{copy.withdrawal.answerTime}</p>
+            <p className="text-small">{copy.withdrawal.argentinaCode}</p>
+            <p className="text-small">{copy.withdrawal.manualRefund}</p>
+            <p className="text-small">
+              <Link href="/arrepentimiento/">Botón de arrepentimiento</Link> ·{" "}
+              <Link href="/compras-y-reembolsos/">Compras y reembolsos</Link>
+            </p>
+          </div>
         </div>
       </section>
 

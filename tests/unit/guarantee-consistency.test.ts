@@ -44,7 +44,3 @@ test("legal withdrawal pages preserve longer legal windows and email access", ()
     assert.match(source, /(?:plazo mayor|prevalece si es mayor)/);
   }
 });
-
-test.todo(
-  "M3-8: withdrawal config pins EU/Spain 14 and AR/CL 10 days, with manual email refunds (OD-50)",
-);
