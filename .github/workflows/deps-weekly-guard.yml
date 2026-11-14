@@ -1,0 +1,31 @@
+name: Dependency PR guard
+
+# Weekly single dependency PR guard (ecosystem 5.3 as amended by OD-75), from engineering-standards:
+# at most one open Dependabot weekly-group PR (older ones are closed pointing to the newest); on the
+# Monday run the survivor's ci-gate result labels it needs-fix when red. State is written silently
+# into the single `vuln` tracking issue shared with vuln-daily.yml. No PR code is checked out.
+on:
+  schedule:
+    - cron: "30 13 * * 1" # Monday 10:30 America/Argentina/Buenos_Aires (UTC-3, no DST)
+  pull_request:
+    types: [opened, reopened, synchronize]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: deps-weekly-guard
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    if: github.event_name != 'pull_request' || github.actor == 'dependabot[bot]'
+    uses: gonzalomartinperez/engineering-standards/.github/workflows/deps-weekly-guard.yml@0fc59d1cb0881636fd7d841f9a05470ab11d8d40 # main (pre-release; repin to the v1 tag)
+    permissions:
+      contents: read
+      pull-requests: write # close a superseded weekly PR, add or remove needs-fix
+      issues: write # edit the single tracking issue
+      checks: read # read the survivor's ci-gate result
+    with:
+      group-name: weekly-all
+      gate-check-name: ci-gate

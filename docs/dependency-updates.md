@@ -1,5 +1,23 @@
 # Dependency updates: manual profile
 
+## Weekly single PR and tracking issue — 2026-11-14 (roadmap M1-2)
+
+- `.github/dependabot.yml` has one multi-ecosystem group, `weekly-all` (npm at the root and in
+  `tools/media`, GitHub Actions). It opens one PR on Monday at 09:00 America/Argentina/Buenos_Aires
+  into `develop`, with an open-PR limit of 1. Cooldowns: 7 days by default; npm also uses 14 days
+  for majors and 3 for patches. Security-update PRs are off; alerts stay on and ride the weekly PR
+  (OD-22, OD-75). The owner merges the weekly PR manually.
+- `deps-weekly-guard.yml` (engineering-standards reusable workflow) runs Monday at 10:30 ART and on
+  Dependabot PR events. If two weekly PRs are open it closes the older one, pointing to the newer.
+  It labels a red survivor `needs-fix`, so the harness fixes it on the same branch.
+- `vuln-daily.yml` (engineering-standards reusable workflow) runs osv-scanner every day, plus a
+  compromise watch of workflow actions.
+- Both workflows edit the single `vuln` tracking issue in place, which notifies nobody. Only the
+  Monday vulnerability run adds one summary comment, the single weekly email (OD-75).
+- `tests/unit/dependabot-manual.test.ts` asserts this shape. The group carries the schedule, target,
+  limit and commit message; every entry joins the group with `patterns: ["*"]`; semver cooldowns
+  appear only on package ecosystems.
+
 ## Current policy — 2026-10-17
 
 Every Dependabot update requires manual review and a protected merge. Weekly version-update
