@@ -58,6 +58,8 @@ jobs:
           browser: chromium
       - name: Dead code (full)
         run: npm run knip
+      - name: Property-based suites (1000 runs; a failure prints the seed for FC_SEED)
+        run: npm run test:property:nightly
       - name: Build the no-integration default-OFF export
         run: npm run build
       - name: Bundle budget
