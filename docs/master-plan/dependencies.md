@@ -22,7 +22,7 @@ Policy (ecosystem section 7): a new runtime dependency passes an ADR with need v
 | Package | Version | Purpose | Decision |
 |---|---|---|---|
 | `typescript` | 7.0.2 | `tsc` gate | Keep; Stryker alias to TS 6 until 7.1 if needed |
-| `@biomejs/biome` | 2.5.15 | Lint and format | Keep, pinned; align `$schema`; enable the guard rules (standards.md) |
+| `@biomejs/biome` | 2.6.7 | Lint and format (TS, JSON, CSS, YAML; Markdown excluded so the byte-identical plan copies stay untouched) | Keep, pinned; `$schema` aligned; enable the guard rules (standards.md) |
 | `@playwright/test` | 1.64.1 | Browser tests (Dependabot ignores the single bad 1.64.0) | Keep |
 | `@axe-core/playwright` | 4.13.0 | Accessibility | Keep |
 | `@lhci/cli` | 0.15.1 | Lighthouse CI; needs four security `overrides` (`tmp`, `uuid`, `qs`, `basic-ftp`) | Spike in M2: replace with the `lighthouse` package plus the repo's own assertion script (`tools/lhci-summary.ts` exists) to drop the overrides; keep until proven |
