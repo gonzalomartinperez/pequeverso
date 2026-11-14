@@ -1,5 +1,6 @@
 /**
- * Copy for /soporte/ and the 404 / error pages. Support routes point to Hotmart for anything
+ * Copy for /soporte/ (the 404 and error copy lives in ./errors.ts so the client error boundary
+ * does not bundle this module and its config data). Support routes point to Hotmart for anything
  * about payment, access or refunds; the site itself only answers by email.
  */
 import { guaranteeDays, hotmart } from "../../config/commerce.ts";
@@ -62,23 +63,4 @@ export const soporteCopy = {
     moreLabel: "Más detalle en",
     moreLink: "Compras y reembolsos",
   },
-} as const;
-
-export const notFoundCopy = {
-  meta: { title: "Página no encontrada" },
-  kicker: "Error 404",
-  title: "Esta página no existe.",
-  lead: "Puede que el enlace esté incompleto o que la página se haya movido. Estas son las salidas más útiles:",
-  home: "Ir al inicio",
-  product: "Ver",
-  support: "Soporte",
-} as const;
-
-export const errorCopy = {
-  kicker: "Algo salió mal",
-  title: "No pudimos mostrar esta página.",
-  lead: "Puedes intentar de nuevo o volver al inicio. Si compraste el kit y necesitas ayuda, escríbenos desde la página de soporte.",
-  retry: "Intentar de nuevo",
-  home: "Ir al inicio",
-  support: "Soporte",
 } as const;

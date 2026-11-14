@@ -1,6 +1,6 @@
 "use client";
 
-import { errorCopy as copy } from "@content/es/soporte";
+import { errorCopy as copy } from "@content/es/errors";
 import Link from "next/link";
 import { useEffect } from "react";
 import { badgeVariants } from "@/shared/ui/badge-variants.ts";

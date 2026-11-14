@@ -1,6 +1,6 @@
 import { coreProducts } from "@config/products/index.ts";
+import { notFoundCopy as copy } from "@content/es/errors";
 import { hubCopy } from "@content/es/hub";
-import { notFoundCopy as copy } from "@content/es/soporte";
 import type { CSSProperties } from "react";
 import { feeding } from "@/features/hub/adapters/hub-products.ts";
 import { HubProductLink } from "@/features/hub/presentation/hub-product-link.tsx";
