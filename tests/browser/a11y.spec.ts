@@ -15,7 +15,7 @@ async function stubHotmart(page: Page) {
 }
 
 /**
- * Third-party exclusion (issue #TBD-M3-4, expires 2026-12-31): links INSIDE Hotmart's iframe
+ * Third-party exclusion (issue #183, expires 2026-12-31): links INSIDE Hotmart's iframe
  * document (`a` below the iframe) are not ours to name. The iframe itself is analysed, so its
  * title (set by HotmartWidgetSlot) is still enforced. Remove when Hotmart names its links.
  */
