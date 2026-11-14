@@ -75,8 +75,15 @@ tag `vX.Y.Z` and the immutable release are cut on `main` at promotion (M7). The 
 disabled until the owner grants a token whose PRs trigger CI (GitHub App or fine-grained PAT as
 `RELEASE_PLEASE_TOKEN`) and sets the variable `RELEASE_PLEASE_ENABLED=true`. Repository settings
 already in place: immutable releases, and the `release tags` ruleset (no deletion, update or
-force-move of `v*` tags). When the first release PR merges, fold the hand-written
-`## [Unreleased]` notes of `CHANGELOG.md` into the generated section.
+force-move of `v*` tags). Notes for the first enabled run:
+
+- Before merging the first release PR, move the hand-written `## [Unreleased]` notes of
+  `CHANGELOG.md` into the generated section; release-please inserts its entry above that heading.
+- Because release-please creates no GitHub Release here, the M7 tag step on `main` must also relabel
+  the merged release PR from `autorelease: pending` to `autorelease: tagged`. Without that,
+  release-please stops opening release PRs ("untagged, merged release PRs outstanding").
+- Branch policy accepts the release PR's fixed head branch
+  `release-please--branches--develop--components--pequeverso` (same repository, base `develop`).
 
 ## Deploy workflow (`.github/workflows/deploy.yml`)
 

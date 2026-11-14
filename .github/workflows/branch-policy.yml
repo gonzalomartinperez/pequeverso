@@ -42,6 +42,8 @@ jobs:
           if [ "$HEAD_REPO" = "$BASE_REPO" ]; then
             case "$HEAD_REF>$BASE_REF" in
               "develop>main" | "main>develop") flow="yes" ;;
+              # release-please's fixed head branch for the single root package (docs/deployment.md).
+              "release-please--branches--develop--components--pequeverso>develop") flow="yes" ;;
             esac
           fi
           if [ -n "$flow" ]; then

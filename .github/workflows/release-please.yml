@@ -26,6 +26,14 @@ jobs:
     permissions:
       contents: read # writes go through the owner-granted token, not GITHUB_TOKEN
     steps:
+      - name: Require the owner-granted token
+        env:
+          HAS_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN != '' }}
+        run: |
+          if [ "$HAS_TOKEN" != "true" ]; then
+            echo "::error::RELEASE_PLEASE_TOKEN is not set; GITHUB_TOKEN cannot open a PR that triggers CI"
+            exit 1
+          fi
       - name: Open or update the release PR
         uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         with:
