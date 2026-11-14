@@ -19,7 +19,8 @@
       "!**/media/manifest.json",
       "!**/contracts/assistant-api",
       "!**/contracts/site-analytics",
-      "!**/*.md"
+      "!**/*.md",
+      "!**/docs/master-plan/audit"
     ]
   },
   "formatter": {
