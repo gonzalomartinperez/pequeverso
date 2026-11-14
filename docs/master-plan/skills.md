@@ -1,6 +1,6 @@
 # Skills
 
-Ecosystem section 15 applies. Canonical skills live in `.agents/skills/<name>/SKILL.md`; the standard says each has a relative symlink `.claude/skills/<name>`. This repo uses **regular thin adapter files** instead (AGENTS.md "Physical module ownership"; `tools/check-skills.ts` validates them). Decision: convert to relative symlinks in M1 (WSL and Linux are the only authoring environments; CI runs Linux) and update `check-skills.ts` and its tests; if a Windows checkout ever matters the adapters can return. Deviation is temporary.
+Ecosystem section 15 applies. Canonical skills live in `.agents/skills/<name>/SKILL.md`; the standard says each has a relative symlink `.claude/skills/<name>`. Since M1-7 this repo follows the standard: `.claude/skills/<name>` are relative symlinks to `../../.agents/skills/<name>`, validated by `tools/check-skills.ts` (WSL and Linux are the only authoring environments; CI runs Linux; if a Windows checkout ever matters, regular adapter files can return).
 
 ## 1. Audit of existing skills
 

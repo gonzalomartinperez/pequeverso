@@ -1,6 +1,6 @@
 # ADR-0001: Hosting target — static export on a Hostinger website, Node app as fallback
 
-Date: 2026-09-12 · Status: accepted, amended the same day (see Addendum)
+Date: 2026-09-12 · Status: superseded by [ADR-0010](ADR-0010-standalone-production-target.md) (2026-11-14); amended the same day (see Addendum)
 
 ## Context
 

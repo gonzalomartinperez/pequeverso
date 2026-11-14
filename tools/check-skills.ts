@@ -1,7 +1,9 @@
-// Validates agent skills: canonical procedures in .agents/skills (Codex) and thin adapters in
-// .claude/skills (Claude Code) that point to them. Frontmatter is name + description only, so it
+// Validates agent skills: canonical procedures in .agents/skills (Codex) and relative directory
+// symlinks in .claude/skills (Claude Code) that point to them. Frontmatter is name + description only, so it
 // is parsed without a YAML dependency. Usage: `node tools/check-skills.ts` (exit 1 on problems).
-import { existsSync, lstatSync, readdirSync, readFileSync, realpathSync } from "node:fs";
+
+import { execFileSync } from "node:child_process";
+import { existsSync, lstatSync, readdirSync, readFileSync, readlinkSync, realpathSync } from "node:fs";
 import path from "node:path";
 
 type Parsed = { meta: Record<string, string>; body: string };
@@ -49,11 +51,68 @@ export function checkSkills(root: string): string[] {
       return problems;
     }
   }
-  const canonical = list(path.join(root, ".agents/skills"));
-  const adapters = list(path.join(root, ".claude/skills"));
+  // Repo skills are the real (non-symlink) directories of .agents/skills. Entries that are symlinks
+  // there, or symlinks in .claude/skills with other names, are machine-local external skills
+  // (locally excluded from git): they are never validated and never make the check fail.
+  const canonical = list(path.join(root, ".agents/skills")).filter((name) => {
+    const entry = path.join(root, ".agents/skills", name);
+    return !lstatSync(entry).isSymbolicLink() && lstatSync(entry).isDirectory();
+  });
   if (!canonical.length) problems.push("no skills in .agents/skills");
-  if (JSON.stringify(canonical) !== JSON.stringify(adapters))
-    problems.push("skill catalogs differ between .agents/skills and .claude/skills");
+  const linkPrefix = "../../.agents/skills/";
+  // Fail closed for tracked entries: when the root is a git checkout, nothing tracked under the
+  // catalogs may be an external or unexpected link; only untracked entries are ignored.
+  if (existsSync(path.join(root, ".git"))) {
+    const tracked = execFileSync(
+      "git",
+      ["-C", root, "ls-files", "-s", "--", ".claude/skills", ".agents/skills"],
+      { encoding: "utf8" },
+    )
+      .split("\n")
+      .filter(Boolean);
+    for (const line of tracked) {
+      const [info = "", file = ""] = line.split("\t");
+      const mode = info.split(" ")[0];
+      const parts = file.split("/");
+      const name = parts[2] ?? "";
+      if (parts[0] === ".agents") {
+        if (mode === "120000" || parts.length < 4 || !canonical.includes(name))
+          problems.push(
+            `${file}: tracked entry in .agents/skills must be a file inside a real skill directory`,
+          );
+      } else if (parts.length !== 3 || mode !== "120000") {
+        problems.push(`${file}: tracked entry in .claude/skills must be a single symlink`);
+      } else if (
+        readlinkSync(path.join(root, file)) !== `${linkPrefix}${name}` ||
+        !canonical.includes(name)
+      ) {
+        problems.push(`${file}: tracked link must target ${linkPrefix}<canonical skill name>`);
+      }
+    }
+  }
+  const rootReal = realpathSync(root);
+  for (const name of list(path.join(root, ".claude/skills"))) {
+    const entry = path.join(root, ".claude/skills", name);
+    const stat = lstatSync(entry);
+    const link = stat.isSymbolicLink() ? readlinkSync(entry) : "";
+    if (canonical.includes(name)) {
+      const expected = `${linkPrefix}${name}`;
+      if (!stat.isSymbolicLink())
+        problems.push(`${name}: .claude/skills entry must be a symlink to ${expected}`);
+      else if (link !== expected)
+        problems.push(`${name}: .claude/skills link must be exactly ${expected}, found ${link}`);
+      else if (!existsSync(entry)) problems.push(`${name}: .claude/skills link is broken`);
+      else if (!realpathSync(entry).startsWith(`${rootReal}${path.sep}`))
+        problems.push(`${name}: .claude/skills link resolves outside the repository`);
+    } else if (!stat.isSymbolicLink()) {
+      problems.push(`${name}: .claude/skills entry has no canonical .agents/skills/${name}`);
+    } else if (link.startsWith(linkPrefix)) {
+      problems.push(`${name}: .claude/skills link targets a missing canonical skill`);
+    }
+  }
+  for (const name of canonical)
+    if (!list(path.join(root, ".claude/skills")).includes(name))
+      problems.push(`${name}: missing .claude/skills symlink`);
   const claude = path.join(root, "CLAUDE.md");
   if (!existsSync(claude) || readFileSync(claude, "utf8") !== "@AGENTS.md\n")
     problems.push("CLAUDE.md must be exactly @AGENTS.md");
@@ -78,29 +137,18 @@ export function checkSkills(root: string): string[] {
 
   for (const name of canonical) {
     const source = path.join(root, ".agents/skills", name, "SKILL.md");
-    const adapterFile = path.join(root, ".claude/skills", name, "SKILL.md");
-    let regular = true;
-    for (const file of [source, adapterFile]) {
-      const folder = path.dirname(file);
-      if (
-        !existsSync(file) ||
-        !confined(file) ||
-        lstatSync(file).isSymbolicLink() ||
-        !lstatSync(file).isFile() ||
-        lstatSync(folder).isSymbolicLink() ||
-        !lstatSync(folder).isDirectory()
-      ) {
-        problems.push(
-          `${name}: canonical and adapter entries must be regular files in real skill directories`,
-        );
-        regular = false;
-      }
+    if (
+      !existsSync(source) ||
+      !confined(source) ||
+      lstatSync(source).isSymbolicLink() ||
+      !lstatSync(source).isFile()
+    ) {
+      problems.push(`${name}: canonical entry must be a regular SKILL.md file`);
+      continue;
     }
-    if (!regular) continue;
     resources(path.dirname(source), name);
     const skill = parse(source, problems);
-    const adapter = parse(adapterFile, problems);
-    if (!skill || !adapter) continue;
+    if (!skill) continue;
     const description = skill.meta.description ?? "";
     if (Object.keys(skill.meta).sort().join(",") !== "description,name")
       problems.push(`${name}: frontmatter must contain only name and description`);
@@ -113,15 +161,10 @@ export function checkSkills(root: string): string[] {
     const twin = descriptions.get(description);
     if (twin) problems.push(`${name}: same description as ${twin}`);
     descriptions.set(description, name);
-    if (JSON.stringify(adapter.meta) !== JSON.stringify(skill.meta))
-      problems.push(`${name}: adapter frontmatter drifted from the canonical skill`);
-    const pointer = `This adapter points to the canonical skill. Read and follow \`.agents/skills/${name}/SKILL.md\`.`;
-    if (adapter.body.trim() !== pointer)
-      problems.push(`${name}: adapter must contain only the canonical skill reference`);
     if (!/^## Limits$/m.test(skill.body)) problems.push(`${name}: missing "## Limits" section`);
     if (/\b(TODO|FIXME|TBD)\b/.test(skill.body)) problems.push(`${name}: placeholder text`);
     if (PRIVATE_PATH.test(skill.body)) problems.push(`${name}: absolute private path`);
-    if (SECRET.test(skill.body) || SECRET.test(adapter.body)) problems.push(`${name}: secret-like token`);
+    if (SECRET.test(skill.body)) problems.push(`${name}: secret-like token`);
     for (const [, target = ""] of skill.body.matchAll(/\]\(([^)\s]+)\)/g)) {
       if (/^(https?:|mailto:|#)/.test(target)) continue;
       const destination = path.resolve(path.dirname(source), target.split("#")[0] ?? "");

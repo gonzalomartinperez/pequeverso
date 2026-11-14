@@ -41,7 +41,7 @@ and run `npm run test:architecture` locally.
 
 | Application | Responsibility | Operational boundary |
 |---|---|---|
-| This store | Public product pages, checkout links, native conversation UI | Static export by default; Node standalone also supported |
+| This store | Public product pages, checkout links, native conversation UI | Production is the Hostinger Node.js Web App (standalone, ADR-0010); the static export is a parity build until M4 |
 | [Assistant API](https://github.com/gonzalomartinperez/pequeverso-assistant-api) | Sessions, grounding, streaming, conversation persistence and provider credentials | Deployment belongs to vps-ops; no provider secret reaches this store |
 | [Backoffice](https://github.com/gonzalomartinperez/pequeverso-backoffice) | Private administration and authenticated operations | Separate application; never a public chat iframe |
 | vps-ops | VPS deployment, Coolify, reverse proxy and shared infrastructure | This repository supplies artifacts and contracts; it does not provision the VPS |
@@ -159,7 +159,7 @@ Measured runs and screenshots establish what was actually exercised. CI does not
 | `content/es` | Store and Spanish-only assistant copy |
 | `media/manifest.json`, `tools/media` | Media provenance, rights and build-time pipeline |
 | `scripts`, `tests`, `.github` | Build/publish guards, verification and protected workflow |
-| `.agents/skills`, `.claude/skills` | Canonical .agents procedures and regular thin .claude references |
+| `.agents/skills`, `.claude/skills` | Canonical .agents procedures and relative .claude symlinks to them |
 
 ## Documentation and contribution
 

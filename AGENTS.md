@@ -1,7 +1,8 @@
 # Agent guide — pequeverso
 
-Public repository for the Pequeverso commercial website (Next.js 16 App Router, static export,
-Hostinger, Hotmart checkout). Engineering language is English; customer-facing copy is neutral
+Public repository for the Pequeverso commercial website (Next.js 16 App Router; production is
+the Hostinger Node.js Web App building `main` with `output: "standalone"`, ADR-0010; Hotmart
+checkout). Engineering language is English; customer-facing copy is neutral
 Spanish. Read this file first, then the doc that matches your task.
 
 ## Start here
@@ -21,7 +22,7 @@ Spanish. Read this file first, then the doc that matches your task.
 | Affiliate redirects (`/<slug>/` → affiliate link from an env variable) | `docs/affiliates.md` |
 | Hotmart funnel (checkout, widget, dashboard changes, E2E checklist) | `docs/hotmart-funnel.md` |
 | Native shopping assistant (disabled by default) | `docs/assistant.md`, ADR-0008 |
-| Code style, setup, skills validation | `CONTRIBUTING.md` (Google TS style adaptations); skills: `.agents/skills/*/SKILL.md` (canonical), regular thin `.claude/skills` references, `npm run check:skills` |
+| Code style, setup, skills validation | `CONTRIBUTING.md` (Google TS style adaptations); skills: `.agents/skills/*/SKILL.md` (canonical), `.claude/skills/<name>` relative symlinks to it, `npm run check:skills` |
 
 ## Non-negotiables
 
@@ -31,7 +32,8 @@ Spanish. Read this file first, then the doc that matches your task.
   `InitiateCheckout` or `Purchase`. A thank-you URL is not proof of payment; never expose files.
 - **Business facts are configuration, not copy.** Prices, composition, guarantee period, checkout
   URL and social profiles live in `config/`. Do not invent testimonials, results, guarantees or claims.
-- **Both build targets must keep working.** Static export (default) and `NEXT_OUTPUT=standalone`.
+- **Both build targets must keep working.** `NEXT_OUTPUT=standalone` is production (ADR-0010); the
+  static export is a parity build only, kept until M4 retires it.
   No `proxy.ts`, no request-time APIs, no runtime image optimization. Redirects and headers only in
   `config/edge-rules.json` (rendered to `.htaccess` and `next.config`).
 - **Media enters the repo only through `tools/media` with a `media/manifest.json` record** (source
@@ -91,7 +93,7 @@ component mount/cleanup lifetimes, tracking/consent/checkout and disabled-assist
 No forwarding barrels, duplicated implementation, changed deadlines/retries/budgets or new authority
 follow from a relocation. Historical receipts, copied contract provenance and scanner fingerprints
 retain their original source attribution. The public-site pair keeps one canonical procedure in `.agents/skills/<name>/SKILL.md` and
-a regular `.claude/skills/<name>/SKILL.md` adapter with identical frontmatter and one source reference.
+a relative directory symlink `.claude/skills/<name>` -> `../../.agents/skills/<name>`.
 Do not duplicate the procedure or infer API/backoffice discovery changes from this site convention.
 
 ## Boundaries
