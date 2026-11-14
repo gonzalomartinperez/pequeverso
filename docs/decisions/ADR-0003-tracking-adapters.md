@@ -18,9 +18,9 @@ providers (TikTok, Google) without touching pages.
   implemented. Adding a provider is a new adapter file plus an
   environment variable; pages never change.
 - Consent v2 stores per-category decisions (`analytics`, `marketing`) with a version that forces a
-  re-prompt when the policy changes. Policy lives in code (`DEFAULT_CHOICE`): since 2026-09-14
-  measurement is on by default and the banner withdraws it (owner decision; see the legal note in
-  `docs/tracking.md`). The earlier `NEXT_PUBLIC_CONSENT_MODE` and Umami variables were removed so
+  re-prompt when the policy changes. Policy lives in code (`DEFAULT_CHOICE`): all false (prior
+  opt-in, consent v3) since [ADR-0011](ADR-0011-prior-opt-in-consent.md), which replaced the
+  2026-09-14 opt-out decision. The earlier `NEXT_PUBLIC_CONSENT_MODE` and Umami variables were removed so
   the deployment surface is site URL, checkout override and pixel id only.
 - `InitiateCheckout`, `Purchase`, `PlaceAnOrder` and `begin_checkout` are forbidden at the type
   level and guarded at runtime: Hotmart owns them.

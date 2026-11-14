@@ -1,6 +1,6 @@
 # Tracking and consent
 
-First-party tracking with an opt-out banner (`src/features/tracking/`). Hotmart remains the
+First-party tracking with a prior opt-in banner (`src/features/tracking/`). Hotmart remains the
 source of truth for checkout and purchases; the site only measures interest. The browser
 variable is the Meta Pixel id; the server-only `META_CAPI_ACCESS_TOKEN` enables the
 Conversions API relay (below); every other behaviour is policy in code. CI uses the fake pixel id
@@ -93,29 +93,30 @@ endpoint answers `204`/`202` before Meta is contacted.
 Static hosting mode (`deploy` branch, no Node) has no relay: the endpoint returns the 404 page and
 the browser ignores it. Only the Node.js Web App mode gains the Conversions API.
 
-## Consent (opt-out)
+## Consent (prior opt-in)
 
-Categories: `necessary` (implicit), `analytics`, `marketing`. Policy: `DEFAULT_CHOICE` in
-`consent.ts` grants every category until the visitor decides (owner decision, 2026-09-14: the
-pixel measures campaigns from the first page view; the banner is the withdrawal control). Store:
-`localStorage.pv_consent` (`{ version: 2, analytics, marketing, updatedAt }`) plus cookie
-`pv_consent=a<0|1>m<0|1>.v2` (6 months) for a future server-side check. `CONSENT_VERSION = 2`;
-bumping it re-prompts every visitor. Changes are broadcast on `window` as `pv:consent`.
+Policy: [ADR-0011](decisions/ADR-0011-prior-opt-in-consent.md). Categories: `necessary` (implicit),
+`analytics`, `marketing`. `DEFAULT_CHOICE` in `consent.ts` is all `false`: nothing gated runs and
+nothing third-party is requested until the visitor chooses. Store: `localStorage.pv_consent`
+(`{ version: 3, analytics, marketing, updatedAt }`) plus cookie `pv_consent=a<0|1>m<0|1>.v3`
+(6 months), which the Conversions API relay reads. `CONSENT_VERSION = 3`; a choice stored under an
+older version is ignored and re-prompts. Changes are broadcast on `window` as `pv:consent`.
 
-`ConsentBanner` shows on the first visit when an enabled adapter has a gated category. Actions:
-**Aceptar** (store the grant), **Rechazar** (deny all: `onConsent` revokes the vendor, the queue
-is dropped, later events are never sent, and the script is not injected on later visits),
-**Configurar** (one checkbox per gated category, checked by default, then "Guardar selección").
-The footer `CookieSettingsLink` reopens it (`pv:consent:open`) with the stored selection; with no
-gated integration it opens a necessary-cookies notice instead.
+`ConsentBanner` appears after first paint on the first visit when an enabled adapter has a gated
+category. Three equal buttons: **Aceptar** (store the grant), **Rechazar** (deny all: `onConsent`
+revokes the vendor, the queue is dropped, later events are never sent, no script on later visits),
+**Configurar** (one unchecked checkbox per gated category, then "Guardar selección"). The footer
+`CookieSettingsLink` reopens it (`pv:consent:open`) with the stored selection; with no gated
+integration it opens a necessary-cookies notice instead.
 
-`TrackingScripts` injects vendor scripts only after reading the stored choice on the client (no
-hydration mismatch, nothing for a rejected category). Events raised while a script is still
-loading stay queued until `syncConsent()` runs on script load.
+`TrackingScripts` injects vendor scripts only after reading the stored choice on the client and
+only for a granted category. The Meta bootstrap stub is inline; `fbevents.js` (`idle: true` in its
+`ScriptSpec`) loads after `requestIdleCallback` (2 s timeout fallback). Events raised before a
+choice are dropped, not queued; events raised while the script loads stay queued until
+`syncConsent()` runs on script load. The relay (`/api/meta/events/`) answers `204` and forwards
+nothing unless the request cookie carries `a?m1.v3`.
 
-Legal note: an opt-out default does not meet the AEPD / ePrivacy prior-consent criteria for
-marketing cookies. Switching to prior consent is a one-line change (`DEFAULT_CHOICE` all false)
-plus the banner copy; the tests in `tests/browser/tracking.spec.ts` encode the current policy.
+Invariant: `third_party_requests_before_consent == 0` on every public route.
 
 ## Adding an adapter (TikTok, gtag, ...)
 
@@ -163,15 +164,15 @@ events remain complete.
 ## Tests
 
 - `tests/unit/tracking.test.ts`: forbidden guard, UUID + dataLayer mirror, per-adapter queue and
-  flush, drop on reject, consent v2 format and re-prompt, Meta adapter contract (revoke expires
+  flush, drop on reject, consent v3 format and re-prompt, Meta adapter contract (revoke expires
   the cookies), relay adapter (batching, shared event ids, `_fbp`/`_fbc`/`fbclid`, nothing after
   Rechazar, `sendBeacon` on `pagehide`, wait for `_fbp`).
 - `tests/unit/meta-capi.test.ts`: server handler against a real `http` server with a fake Graph
   API — validation matrix, disabled → 204, payload shape and bearer header, IP/UA sourcing, retry
   policy and logging, rate limit.
-- `tests/browser/tracking.spec.ts` (only with `E2E_EXPECT_CONSENT=1`): the pixel runs by default with
-  ids, Aceptar keeps it, Rechazar → revoke and nothing later (pixel and relay), Configurar →
-  per-category save, CTA click never emits a forbidden event, version bump re-prompts, the relay
+- `tests/browser/tracking.spec.ts` (only with `E2E_EXPECT_CONSENT=1`): no Meta request before a
+  choice on every public route, Rechazar keeps it at zero, Aceptar loads `fbevents.js` after idle,
+  Rechazar after loading → revoke and nothing later (pixel and relay), Configurar → per-category save, CTA click never emits a forbidden event, version bump re-prompts, the relay
   receives the pixel's event ids with `_fbp`. Third-party hosts are stubbed; `/api/meta/events/`
   is intercepted.
 - `tests/browser/consent.spec.ts`: no banner on the public build; banner controls and footer reopen
@@ -180,6 +181,6 @@ events remain complete.
 ## Separate opt-in site aggregates
 
 [Optional site analytics](reference/site-analytics.md) uses an independent default-off build switch and requires
-an explicit stored analytics grant. It does not inherit the Meta opt-out default described above,
+an explicit stored analytics grant. It shares the prior opt-in policy described above (no grant, no run),
 use the vendor queue, or emit purchase/checkout events. Both integrations retain the existing
 preference storage; the additional analytics category is visible only in a configured build.
