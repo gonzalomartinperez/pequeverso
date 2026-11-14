@@ -1,6 +1,8 @@
 // Validates agent skills: canonical procedures in .agents/skills (Codex) and relative directory
 // symlinks in .claude/skills (Claude Code) that point to them. Frontmatter is name + description only, so it
 // is parsed without a YAML dependency. Usage: `node tools/check-skills.ts` (exit 1 on problems).
+
+import { execFileSync } from "node:child_process";
 import { existsSync, lstatSync, readdirSync, readFileSync, readlinkSync, realpathSync } from "node:fs";
 import path from "node:path";
 
@@ -58,6 +60,36 @@ export function checkSkills(root: string): string[] {
   });
   if (!canonical.length) problems.push("no skills in .agents/skills");
   const linkPrefix = "../../.agents/skills/";
+  // Fail closed for tracked entries: when the root is a git checkout, nothing tracked under the
+  // catalogs may be an external or unexpected link; only untracked entries are ignored.
+  if (existsSync(path.join(root, ".git"))) {
+    const tracked = execFileSync(
+      "git",
+      ["-C", root, "ls-files", "-s", "--", ".claude/skills", ".agents/skills"],
+      { encoding: "utf8" },
+    )
+      .split("\n")
+      .filter(Boolean);
+    for (const line of tracked) {
+      const [info = "", file = ""] = line.split("\t");
+      const mode = info.split(" ")[0];
+      const parts = file.split("/");
+      const name = parts[2] ?? "";
+      if (parts[0] === ".agents") {
+        if (mode === "120000" || parts.length < 4 || !canonical.includes(name))
+          problems.push(
+            `${file}: tracked entry in .agents/skills must be a file inside a real skill directory`,
+          );
+      } else if (parts.length !== 3 || mode !== "120000") {
+        problems.push(`${file}: tracked entry in .claude/skills must be a single symlink`);
+      } else if (
+        readlinkSync(path.join(root, file)) !== `${linkPrefix}${name}` ||
+        !canonical.includes(name)
+      ) {
+        problems.push(`${file}: tracked link must target ${linkPrefix}<canonical skill name>`);
+      }
+    }
+  }
   const rootReal = realpathSync(root);
   for (const name of list(path.join(root, ".claude/skills"))) {
     const entry = path.join(root, ".claude/skills", name);

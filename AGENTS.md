@@ -21,7 +21,7 @@ Spanish. Read this file first, then the doc that matches your task.
 | Affiliate redirects (`/<slug>/` → affiliate link from an env variable) | `docs/affiliates.md` |
 | Hotmart funnel (checkout, widget, dashboard changes, E2E checklist) | `docs/hotmart-funnel.md` |
 | Native shopping assistant (disabled by default) | `docs/assistant.md`, ADR-0008 |
-| Code style, setup, skills validation | `CONTRIBUTING.md` (Google TS style adaptations); skills: `.agents/skills/*/SKILL.md` (canonical), regular thin `.claude/skills` references, `npm run check:skills` |
+| Code style, setup, skills validation | `CONTRIBUTING.md` (Google TS style adaptations); skills: `.agents/skills/*/SKILL.md` (canonical), `.claude/skills/<name>` relative symlinks to it, `npm run check:skills` |
 
 ## Non-negotiables
 

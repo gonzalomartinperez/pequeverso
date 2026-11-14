@@ -159,7 +159,7 @@ Measured runs and screenshots establish what was actually exercised. CI does not
 | `content/es` | Store and Spanish-only assistant copy |
 | `media/manifest.json`, `tools/media` | Media provenance, rights and build-time pipeline |
 | `scripts`, `tests`, `.github` | Build/publish guards, verification and protected workflow |
-| `.agents/skills`, `.claude/skills` | Canonical .agents procedures and regular thin .claude references |
+| `.agents/skills`, `.claude/skills` | Canonical .agents procedures and relative .claude symlinks to them |
 
 ## Documentation and contribution
 

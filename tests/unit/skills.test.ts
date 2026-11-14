@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -168,4 +169,25 @@ test("skill catalogs keep real directories while confined resource links stay va
     );
   });
   assert.deepEqual(internal, []);
+});
+
+const hasGit = (() => {
+  try {
+    execFileSync("git", ["--version"], { stdio: "ignore" });
+    return true;
+  } catch {
+    return false;
+  }
+})();
+
+test("a tracked external-looking skill link fails closed", { skip: !hasGit }, () => {
+  const problems = broken((dir) => {
+    const git = (...args: string[]) => execFileSync("git", ["-C", dir, ...args], { stdio: "ignore" });
+    git("init", "-q");
+    symlinkSync("/tmp", path.join(dir, ".claude/skills/external"), "dir");
+    symlinkSync("/tmp", path.join(dir, ".agents/skills/external"), "dir");
+    git("add", ".claude/skills", ".agents/skills");
+  });
+  assert.ok(problems.some((p) => p.includes(".claude/skills/external: tracked")));
+  assert.ok(problems.some((p) => p.includes(".agents/skills/external: tracked")));
 });
