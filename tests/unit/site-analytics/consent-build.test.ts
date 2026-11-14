@@ -111,7 +111,14 @@ function render(enabled: boolean, stored: unknown, open: boolean, failWrite: boo
     },
     Date: { now: () => Date.parse("2026-10-19T00:00:00.000Z") },
     Event,
+    document: { readyState: "complete" },
     window: {
+      // The first-visit banner opens after load + idle; the stub runs the callback at once.
+      requestIdleCallback: (callback: () => void) => {
+        callback();
+        return 1;
+      },
+      cancelIdleCallback() {},
       addEventListener() {},
       removeEventListener() {},
       dispatchEvent(event: Event) {
@@ -120,7 +127,7 @@ function render(enabled: boolean, stored: unknown, open: boolean, failWrite: boo
     },
   });
   assert.ok(exports.ConsentBanner);
-  const tree = exports.ConsentBanner({ classes: { primary: "primary", secondary: "secondary" } });
+  const tree = exports.ConsentBanner({ classes: { primary: "primary" } });
   for (const effect of effects) effect();
   return { tree, changes, events, writes };
 }
@@ -134,13 +141,13 @@ function buttons(value: unknown): Node[] {
 
 test("enabled banner reopens stale opt-in while OFF preserves existing marketing consent", () => {
   const stale = {
-    version: 2,
+    version: 3,
     analytics: true,
     marketing: true,
     updatedAt: "2025-01-01T00:00:00.000Z",
   };
   assert.deepEqual(render(true, stale, false, false).changes, [{ slot: 1, value: true }]);
-  assert.deepEqual(render(false, stale, false, false).changes, [{ slot: 1, value: false }]);
+  assert.deepEqual(render(false, stale, false, false).changes, []);
 });
 
 test("enabled rejection withdraws before failed persistence; OFF keeps the original writer behavior", () => {

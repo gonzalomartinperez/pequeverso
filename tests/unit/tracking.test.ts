@@ -4,6 +4,7 @@ import {
   CONSENT_VERSION,
   type ConsentState,
   DEFAULT_CHOICE,
+  hasConsent,
   readConsent,
   serializeConsentCookie,
   writeConsent,
@@ -81,6 +82,14 @@ function fakeAdapter(overrides: Partial<FakeAdapter> = {}): FakeAdapter {
   return adapter;
 }
 
+/** A stored marketing grant (what a visitor who pressed "Aceptar" has), without broadcasting. */
+function grantMarketing(): void {
+  window.localStorage.setItem(
+    "pv_consent",
+    JSON.stringify({ version: CONSENT_VERSION, analytics: false, marketing: true, updatedAt: "" }),
+  );
+}
+
 beforeEach(() => {
   installWindow();
   setNodeEnv("development");
@@ -100,6 +109,7 @@ test("forbidden events throw in development and are dropped in production", () =
 });
 
 test("every event gets a UUID id and is mirrored to dataLayer with undefined params dropped", () => {
+  grantMarketing();
   const adapter = fakeAdapter();
   _resetForTests([adapter]);
   const id = trackCheckoutIntent({
@@ -122,6 +132,7 @@ test("every event gets a UUID id and is mirrored to dataLayer with undefined par
 });
 
 test("affiliate clicks are their own custom event, never a checkout or purchase", () => {
+  grantMarketing();
   const adapter = fakeAdapter();
   _resetForTests([adapter]);
   const id = trackAffiliateClick({
@@ -146,17 +157,20 @@ test("affiliate clicks are their own custom event, never a checkout or purchase"
     assert.ok(!names.includes(forbidden));
 });
 
-test("measurement is on by default: events reach a gated adapter before any decision", () => {
-  assert.deepEqual(DEFAULT_CHOICE, { analytics: true, marketing: true });
+test("prior opt-in: nothing reaches a gated adapter before a grant, then events flow", () => {
+  assert.deepEqual(DEFAULT_CHOICE, { analytics: false, marketing: false });
   const adapter = fakeAdapter();
   _resetForTests([adapter]);
-  const first = track("PageView");
+  track("PageView");
+  track("ViewContent", { content_ids: "gf" });
+  assert.equal(adapter.sent.length, 0);
+  writeConsent({ analytics: false, marketing: true });
   const second = track("ViewContent", { content_ids: "gf" });
   assert.deepEqual(
     adapter.sent.map((event) => event.eventId),
-    [first, second],
+    [second],
   );
-  assert.deepEqual(adapter.sent[1]?.params, { content_ids: "gf" });
+  assert.deepEqual(adapter.sent[0]?.params, { content_ids: "gf" });
 });
 
 test("rejecting revokes the adapter, drops its queue and stops every later event", () => {
@@ -202,14 +216,20 @@ test("an adapter in category none ignores a rejection", () => {
   assert.equal(adapter.sent.length, 1);
 });
 
-test("consent v2 cookie format and re-prompt on version bump", () => {
-  assert.equal(CONSENT_VERSION, 2);
-  assert.equal(serializeConsentCookie({ analytics: false, marketing: true }), "a0m1.v2");
-  assert.equal(serializeConsentCookie({ analytics: true, marketing: false }), "a1m0.v2");
-  window.localStorage.setItem("pv_consent", JSON.stringify({ version: 1, marketing: true }));
-  assert.equal(readConsent(), null);
+test("consent v3 cookie format and re-prompt on version bump", () => {
+  assert.equal(CONSENT_VERSION, 3);
+  assert.equal(serializeConsentCookie({ analytics: false, marketing: true }), "a0m1.v3");
+  assert.equal(serializeConsentCookie({ analytics: true, marketing: false }), "a1m0.v3");
+  for (const version of [1, 2]) {
+    window.localStorage.setItem(
+      "pv_consent",
+      JSON.stringify({ version, analytics: true, marketing: true, updatedAt: "" }),
+    );
+    assert.equal(readConsent(), null, `v${version} must re-prompt`);
+    assert.equal(hasConsent("marketing"), false);
+  }
   writeConsent({ analytics: true, marketing: true });
-  assert.match(document.cookie, /^pv_consent=a1m1\.v2; /);
+  assert.match(document.cookie, /^pv_consent=a1m1\.v3; /);
   assert.equal(readConsent()?.marketing, true);
 });
 
@@ -243,8 +263,8 @@ test("meta adapter inits active, revokes on rejection (expiring _fbp/_fbc) and p
   window.fbq = (...args: unknown[]) => void calls.push(args);
   assert.ok(adapter.send({ name: "PageView", params: {}, eventId: "id-1" }));
   assert.ok(adapter.send({ name: "CheckoutIntent", params: { offer: "main" }, eventId: "id-2" }));
-  adapter.onConsent({ version: 2, analytics: false, marketing: false, updatedAt: "" });
-  adapter.onConsent({ version: 2, analytics: false, marketing: true, updatedAt: "" });
+  adapter.onConsent({ version: 3, analytics: false, marketing: false, updatedAt: "" });
+  adapter.onConsent({ version: 3, analytics: false, marketing: true, updatedAt: "" });
   assert.deepEqual(calls, [
     ["track", "PageView", {}, { eventID: "id-1" }],
     ["trackCustom", "CheckoutIntent", { offer: "main" }, { eventID: "id-2" }],
@@ -265,6 +285,7 @@ test("meta adapter inits active, revokes on rejection (expiring _fbp/_fbc) and p
 
 function installCapiPage({ href = "https://pequeverso.com/grafismo-fonetico/", cookie = "" } = {}) {
   setGlobal(window, "location", { href, search: new URL(href).search });
+  grantMarketing();
   // biome-ignore lint/suspicious/noDocumentCookie: fake document in the unit-test window #177
   document.cookie = cookie;
   const requests: CapiRequest[] = [];

@@ -23,7 +23,10 @@ type CategoryInfo = {
 const CATEGORY_ORDER: readonly ConsentCategory[] = ["analytics", "marketing"];
 const CATEGORY_COPY: Record<ConsentCategory, Pick<CategoryInfo, "title" | "purpose">> = {
   analytics: { title: "Analítica", purpose: "entender qué páginas se visitan" },
-  marketing: { title: "Marketing", purpose: "medir nuestras campañas y el interés en el producto" },
+  marketing: {
+    title: "Marketing",
+    purpose: "medir nuestras campañas y el interés en los productos",
+  },
 };
 
 function gatedCategories(adapters: TrackingAdapter[]): CategoryInfo[] {
@@ -49,6 +52,36 @@ function choiceFor(categories: CategoryInfo[], value: boolean): ConsentChoice {
 function joinSpanish(items: string[]): string {
   if (items.length < 2) return items[0] ?? "";
   return `${items.slice(0, -1).join(", ")} y ${items[items.length - 1]}`;
+}
+
+const FIRST_PAINT_TIMEOUT_MS = 3000;
+
+/** Runs `callback` once the page has loaded and the browser is idle (timeout fallback); returns a canceller. */
+function afterFirstPaint(callback: () => void): () => void {
+  let done = false;
+  let idleId: number | undefined;
+  let timerId: ReturnType<typeof setTimeout> | undefined;
+  const run = () => {
+    if (done) return;
+    done = true;
+    callback();
+  };
+  const schedule = () => {
+    if ("requestIdleCallback" in window) {
+      idleId = window.requestIdleCallback(run, { timeout: FIRST_PAINT_TIMEOUT_MS });
+    } else {
+      timerId = setTimeout(run, 200);
+    }
+  };
+  const loaded = document.readyState === "complete";
+  if (loaded) schedule();
+  else window.addEventListener("load", schedule, { once: true });
+  return () => {
+    done = true;
+    window.removeEventListener("load", schedule);
+    if (idleId !== undefined) window.cancelIdleCallback(idleId);
+    clearTimeout(timerId);
+  };
 }
 
 const BANNER =
@@ -99,7 +132,7 @@ function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
             {process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" &&
             category.id === "analytics"
               ? "Se activa al aceptar o guardar tu selección."
-              : "Activa salvo que la desmarques."}
+              : "Solo se activa si la marcas."}
           </label>
         </li>
       ))}
@@ -109,33 +142,35 @@ function CategoryOptions({ categories, selection, onToggle }: OptionsProps) {
 
 type Props = {
   /** Button classes computed on the server (`buttonVariants`), keeping variant tables out of the layout chunk. */
-  classes: { primary: string; secondary: string };
+  classes: { primary: string };
 };
 
 /**
- * Cookie banner with equal "Aceptar" / "Rechazar" actions plus "Configurar" for a per-category
- * choice. Measurement runs by default (`DEFAULT_CHOICE`); "Rechazar" withdraws it and the choice
- * is kept for six months. Shown on first visit only when an enabled adapter has a gated
- * category; `CookieSettingsLink` reopens it (pv:consent:open). With no gated integration it
+ * Cookie banner with three equal actions: "Aceptar", "Rechazar" and "Configurar" (per-category
+ * choice). Nothing gated runs before the choice (`DEFAULT_CHOICE`, prior opt-in); the choice is
+ * kept for six months. Shown on first visit, after first paint, only when an enabled adapter
+ * has a gated category; `CookieSettingsLink` reopens it (pv:consent:open). With no gated integration it
  * opens on request as a notice that only necessary cookies are used.
  */
 export function ConsentBanner({ classes }: Props) {
   const [categories] = useState(() => gatedCategories(enabledAdapters()));
   const [open, setOpen] = useState(false);
   const [configuring, setConfiguring] = useState(false);
-  const [selection, setSelection] = useState<ConsentChoice>(() => choiceFor(categories, true));
+  const [selection, setSelection] = useState<ConsentChoice>(() => choiceFor(categories, false));
   const headingId = useId();
   const descId = useId();
 
   useEffect(() => {
+    let cancelFirstVisit = () => {};
     if (categories.length > 0) {
       const stored = readConsent();
-      setOpen(
+      const needsChoice =
         stored === null ||
-          (process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" &&
-            stored.analytics &&
-            !explicitGrant(stored, Date.now())),
-      );
+        (process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true" &&
+          stored.analytics &&
+          !explicitGrant(stored, Date.now()));
+      // After first paint: the banner must not be the LCP element nor shift the layout.
+      if (needsChoice) cancelFirstVisit = afterFirstPaint(() => setOpen(true));
     }
     const reopen = () => {
       const current = readConsent();
@@ -148,6 +183,7 @@ export function ConsentBanner({ classes }: Props) {
       setConfiguring(false);
     });
     return () => {
+      cancelFirstVisit();
       window.removeEventListener("pv:consent:open", reopen);
       unsubscribe();
     };
@@ -203,14 +239,13 @@ export function ConsentBanner({ classes }: Props) {
     >
       <div className={INNER}>
         <h2 id={headingId} className={TITLE}>
-          Cookies y medición
+          Tu privacidad, tu elección
         </h2>
         <p id={descId} className={TEXT}>
-          Usamos cookies necesarias y{" "}
+          Usamos solo lo necesario para que el sitio funcione. Si aceptas, también usamos{" "}
           {joinSpanish(categories.flatMap((category) => category.tools))} para{" "}
-          {joinSpanish(categories.map((category) => category.purpose))}. Si rechazas, la medición se
-          desactiva; puedes cambiar tu elección en el pie de página.{" "}
-          <Link href="/cookies/">Más información</Link>
+          {joinSpanish(categories.map((category) => category.purpose))}. Puedes cambiarlo cuando
+          quieras. <Link href="/cookies/">Más información</Link>
         </p>
         {configuring ? (
           <CategoryOptions
@@ -235,15 +270,11 @@ export function ConsentBanner({ classes }: Props) {
             Rechazar
           </button>
           {configuring ? (
-            <button type="button" className={classes.secondary} onClick={() => persist(selection)}>
+            <button type="button" className={classes.primary} onClick={() => persist(selection)}>
               Guardar selección
             </button>
           ) : (
-            <button
-              type="button"
-              className={classes.secondary}
-              onClick={() => setConfiguring(true)}
-            >
+            <button type="button" className={classes.primary} onClick={() => setConfiguring(true)}>
               Configurar
             </button>
           )}
