@@ -82,6 +82,8 @@ function render(
   const changes: { slot: number; value: unknown }[] = [];
   const events: string[] = [];
   const writes: unknown[] = [];
+  const listeners = new Map<string, () => void>();
+  const consentListeners: ((state: unknown) => void)[] = [];
   let slot = 0;
   const jsx = (type: unknown, props: Record<string, unknown>): Node => ({ type, props });
   const modules: Record<string, unknown> = {
@@ -100,7 +102,10 @@ function render(
     "@/features/site-analytics/domain/consent.ts": { explicitGrant },
     "@/features/tracking/adapters/consent.ts": {
       readConsent: () => stored,
-      onConsentChange: () => () => {},
+      onConsentChange: (listener: (state: unknown) => void) => {
+        consentListeners.push(listener);
+        return () => {};
+      },
       writeConsent: (choice: unknown) => {
         events.push("write");
         writes.push(choice);
@@ -121,6 +126,8 @@ function render(
     },
     Date: { now: () => Date.parse("2026-10-19T00:00:00.000Z") },
     Event,
+    HTMLElement: class {},
+    document: { activeElement: null, body: null },
     window: {
       // The first-visit banner opens after two frames and idle; the stub runs the callbacks at once.
       requestAnimationFrame: (callback: () => void) => {
@@ -133,7 +140,9 @@ function render(
         return 1;
       },
       cancelIdleCallback() {},
-      addEventListener() {},
+      addEventListener(type: string, listener: () => void) {
+        listeners.set(type, listener);
+      },
       removeEventListener() {},
       dispatchEvent(event: Event) {
         events.push(event.type);
@@ -144,7 +153,15 @@ function render(
   assert.ok(component);
   const tree = component({ classes: { primary: "primary" }, reopen: true, opener: null });
   for (const effect of effects) effect();
-  return { tree, changes, events, writes };
+  return { tree, changes, events, writes, listeners, consentListeners };
+}
+
+/** The banner request the trigger stored by its last state update (updaters applied to null). */
+function lastRequest(changes: { slot: number; value: unknown }[]): unknown {
+  const last = changes.filter((change) => change.slot === 0).at(-1)?.value;
+  const request = typeof last === "function" ? (last as (current: unknown) => unknown)(null) : last;
+  // The component runs in another realm: compare plain data, not prototypes.
+  return request === undefined ? undefined : JSON.parse(JSON.stringify(request));
 }
 
 function buttons(value: unknown): Node[] {
@@ -161,9 +178,29 @@ test("enabled banner reopens stale opt-in while OFF preserves existing marketing
     marketing: true,
     updatedAt: "2025-01-01T00:00:00.000Z",
   };
-  // The lazy trigger requests the banner chunk (one state update) only when analytics is built in.
-  assert.equal(render(true, stale, false, false, "trigger").changes.length, 1);
-  assert.equal(render(false, stale, false, false, "trigger").changes.length, 0);
+  // The lazy trigger requests the banner chunk only when analytics is built in.
+  assert.deepEqual(lastRequest(render(true, stale, false, false, "trigger").changes), {
+    reopen: false,
+    opener: null,
+  });
+  assert.deepEqual(render(false, stale, false, false, "trigger").changes, []);
+});
+
+test("trigger requests the banner on a first visit, a footer click and a storage clear", () => {
+  const firstVisit = render(false, null, false, false, "trigger");
+  assert.deepEqual(lastRequest(firstVisit.changes), { reopen: false, opener: null });
+
+  const granted = { version: 3, analytics: true, marketing: true, updatedAt: "" };
+  const returning = render(false, granted, false, false, "trigger");
+  assert.deepEqual(returning.changes, [], "a stored choice needs no banner");
+  returning.listeners.get("pv:consent:open")?.();
+  assert.deepEqual(lastRequest(returning.changes), { reopen: true, opener: null });
+
+  const cleared = render(false, granted, false, false, "trigger");
+  for (const listener of cleared.consentListeners) listener(granted);
+  assert.deepEqual(cleared.changes, [], "a valid change keeps the banner closed");
+  for (const listener of cleared.consentListeners) listener(null);
+  assert.deepEqual(lastRequest(cleared.changes), { reopen: false, opener: null });
 });
 
 test("enabled rejection withdraws before failed persistence; OFF keeps the original writer behavior", () => {

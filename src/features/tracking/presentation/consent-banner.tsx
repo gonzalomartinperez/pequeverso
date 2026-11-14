@@ -1,8 +1,8 @@
 "use client";
 
-import { type ComponentType, useEffect, useState } from "react";
+import { type ComponentType, useEffect, useRef, useState } from "react";
 import { explicitGrant } from "@/features/site-analytics/domain/consent.ts";
-import { readConsent } from "@/features/tracking/adapters/consent.ts";
+import { onConsentChange, readConsent } from "@/features/tracking/adapters/consent.ts";
 import { enabledAdapters, siteAnalyticsBuilt } from "@/features/tracking/adapters/env.ts";
 
 type UiProps = { classes: { primary: string }; reopen: boolean; opener: HTMLElement | null };
@@ -52,18 +52,28 @@ type Props = {
 export function ConsentBanner({ classes }: Props) {
   const [request, setRequest] = useState<Request | null>(null);
   const [Ui, setUi] = useState<ComponentType<UiProps> | null>(null);
+  const loaded = useRef(false);
+  const requested = request !== null;
 
   // The banner UI and its copy are a separate chunk, fetched only once the banner is requested.
+  // A failed fetch clears the request, so the next trigger or footer click retries it.
   useEffect(() => {
-    if (request === null) return;
+    if (!requested) return;
     let live = true;
-    import("./consent-banner-ui.tsx").then((module) => {
-      if (live) setUi(() => module.ConsentBannerUi);
-    });
+    import("./consent-banner-ui.tsx").then(
+      (module) => {
+        if (!live) return;
+        loaded.current = true;
+        setUi(() => module.ConsentBannerUi);
+      },
+      () => {
+        if (live) setRequest(null);
+      },
+    );
     return () => {
       live = false;
     };
-  }, [request]);
+  }, [requested]);
 
   useEffect(() => {
     let cancelFirstVisit = () => {};
@@ -72,25 +82,31 @@ export function ConsentBanner({ classes }: Props) {
       enabledAdapters().some(
         (adapter) => adapter.category === "analytics" || adapter.category === "marketing",
       );
+    const firstVisit = () => setRequest((current) => current ?? { reopen: false, opener: null });
     if (gated) {
       const stored = readConsent();
       const needsChoice =
         stored === null ||
         (siteAnalyticsBuilt && stored.analytics && !explicitGrant(stored, Date.now()));
-      if (needsChoice)
-        cancelFirstVisit = afterFirstPaint(() =>
-          setRequest((current) => current ?? { reopen: false, opener: null }),
-        );
+      if (needsChoice) cancelFirstVisit = afterFirstPaint(firstVisit);
     }
+    // Once the UI is mounted it handles both events itself; before that, the trigger requests it.
     const open = () => {
+      if (loaded.current) return;
       const active = document.activeElement;
       const opener = active instanceof HTMLElement && active !== document.body ? active : null;
-      setRequest((current) => current ?? { reopen: true, opener });
+      // A footer click while the first-visit chunk loads upgrades the request (opener, stored seed).
+      setRequest({ reopen: true, opener });
     };
     window.addEventListener("pv:consent:open", open);
+    // Storage cleared elsewhere (no valid choice left): ask again, as the inline banner did.
+    const unsubscribe = onConsentChange((state) => {
+      if (state === null && gated && !loaded.current) firstVisit();
+    });
     return () => {
       cancelFirstVisit();
       window.removeEventListener("pv:consent:open", open);
+      unsubscribe();
     };
   }, []);
 
