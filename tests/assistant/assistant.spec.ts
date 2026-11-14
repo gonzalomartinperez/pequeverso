@@ -52,7 +52,7 @@ test.beforeEach(async ({ context }, info) => {
     window.localStorage.setItem(
       "pv_consent",
       JSON.stringify({
-        version: 2,
+        version: 3,
         analytics: false,
         marketing: false,
         updatedAt: "2026-10-05T00:00:00Z",

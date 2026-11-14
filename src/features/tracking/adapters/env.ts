@@ -22,6 +22,9 @@ const adapters: readonly TrackingAdapter[] = [
   createMetaCapiAdapter(trackingEnv.metaPixelId),
 ];
 
+/** True when the optional site analytics tool is built in (static read, inlined by Next.js). */
+export const siteAnalyticsBuilt = process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED === "true";
+
 /** Adapters whose variables are set at build time, in injection order. */
 export function enabledAdapters(): TrackingAdapter[] {
   return adapters.filter((adapter) => adapter.enabled);

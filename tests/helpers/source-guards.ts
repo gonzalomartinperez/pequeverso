@@ -9,7 +9,7 @@ export const ENV_EXCEPTIONS: Record<string, string> = {
   "src/views/legal/cookies-view.tsx": "Disclosure follows the analytics build flag.",
   "src/features/site-analytics/slot.tsx": "Compile-time removal and local fixture configuration.",
   "src/features/assistant/slot.tsx": "Compile-time removal and local fixture configuration.",
-  "src/features/tracking/presentation/consent-banner.tsx":
+  "src/features/tracking/presentation/consent-banner-ui.tsx":
     "Analytics consent controls follow the build flag.",
   "src/features/tracking/adapters/env.ts": "Existing static NEXT_PUBLIC reads for Next inlining.",
   "src/features/tracking/adapters/track.ts": "Development-only diagnostic branch.",

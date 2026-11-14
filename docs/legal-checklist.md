@@ -261,10 +261,9 @@ Data-protection law names:
    - Whether that is enough for Argentine buyers is untested.
    - Options: show an ARS reference price to Argentine visitors, or get a lawyer's opinion that the
      checkout suffices.
-7. **Consent model.** The pixel runs by default with an opt-out banner (owner decision,
-   2026-09-14).
-   - Ley 25.326 art. 5 asks for free, express and informed consent. The EU requires prior consent.
-   - Switching `DEFAULT_CHOICE` in `src/features/tracking/adapters/consent.ts` to opt-in removes this risk.
+7. **Consent model.** Prior opt-in: nothing runs before the visitor accepts (ADR-0011, PV-D1).
+   - Ley 25.326 art. 5 asks for free, express and informed consent; the EU requires prior consent.
+   - `DEFAULT_CHOICE` in `src/features/tracking/adapters/consent.ts` is all false.
 8. **Legal review.** This is research, not legal advice. Before launch, a lawyer in the provincia de
    Buenos Aires should review:
    - the jurisdiction clause;
@@ -277,7 +276,7 @@ Data-protection law names:
 - **Hotmart's role.** Hotmart is the intermediary for payment, currency conversion, taxes, delivery
   and refunds, and the site never sees card data.
   - The site never emits `InitiateCheckout` or `Purchase`.
-- **Cookies.** The cookies table (`pv_consent`, `_fbp`, `_fbc`) and the opt-out banner (Aceptar /
+- **Cookies.** The cookies table (`pv_consent`, `_fbp`, `_fbc`) and the opt-in banner (Aceptar /
   Rechazar / Configurar) mirror `src/features/tracking`.
 - **Mailboxes.** The primary mailbox is `somospequeverso@gmail.com` (`config/site.ts`,
   `content/es/legal/seller.ts`).
