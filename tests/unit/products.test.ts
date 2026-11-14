@@ -77,8 +77,8 @@ test("documented prices (README 2026-08-04): 14.99 list, 14.99 upsell, 7.49 down
 
 test("the checkout URL comes only from static env references Next can inline", () => {
   const source = readFileSync(new URL("../../config/products/grafismo-fonetico.ts", import.meta.url), "utf8");
-  assert.match(source, /process\.env\.NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO \|\|/);
-  assert.match(source, /process\.env\.NEXT_PUBLIC_CHECKOUT_URL \|\| ""/);
+  assert.match(source, /process\.env\.NEXT_PUBLIC_CHECKOUT_URL_GRAFISMO_FONETICO\s*\|\|/);
+  assert.match(source, /process\.env\.NEXT_PUBLIC_CHECKOUT_URL\s*\|\|\s*""/);
   assert.doesNotMatch(source, /pay\.hotmart\.com/);
   // CI builds use a fake offer code; only the origin and the checkout mode are invariant.
   assert.match(grafismoFonetico.checkout.url, /^https:\/\/pay\.hotmart\.com\/[A-Za-z0-9]+\?checkoutMode=10$/);
