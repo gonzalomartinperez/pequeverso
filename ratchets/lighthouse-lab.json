@@ -1,9 +1,9 @@
 {
-  "$comment": "Production-config export (fake pixel id, real third-party hosts, *.facebook.com blocked), Lighthouse mobile, simulated throttling. Values come from the medians of CI run 43592256267 (3 runs per route, artifact `lighthouse`) with the --suggest headroom (10%, at least 0.25 s, 5 KB or 5 points). js-kb is FIRST-PARTY script transfer KB (same-origin Script requests) and is gated at error; third-party-js-kb (Meta, Hotmart funnel, ...) is recorded and reported at WARN only, never failing: revisit in M3-3 (third-party budget). Tighten later with `node tools/lhci-assert.ts ratchets/lighthouse-lab.json --suggest`.",
+  "$comment": "Production-config export (fake pixel id, real third-party hosts, *.facebook.com blocked), Lighthouse mobile, simulated throttling. Values come from the medians of CI run 43642986761 (3 runs per route, artifact `lighthouse`) with the --suggest headroom (10%, at least 0.25 s, 5 KB or 5 points). js-kb is FIRST-PARTY script transfer KB (same-origin Script requests) and is gated at error; third-party-js-kb (Meta, Hotmart funnel, ...) is recorded and reported at WARN only, never failing: after prior opt-in consent (ADR-0011) no third-party script loads before a grant except the Hotmart funnel on /imprime-y-juega/. Tighten later with `node tools/lhci-assert.ts ratchets/lighthouse-lab.json --suggest`.",
   "metric": "lighthouse-lab",
   "measuredAt": "2026-11-14",
-  "commit": "7c69e40",
-  "source": "CI run 43592256267 (develop PR #187), see $comment. EXCEPTION: /grafismo-fonetico/ js-kb (383.87) is a hand-lowered ESTIMATE (CI value 389.87 minus about 6 KB for the removed embla chunk, M3-3), not a CI measurement; re-seed it from the next CI run.",
+  "commit": "6406b95",
+  "source": "CI run 43642986761 (develop after #192 consent opt-in, #196 scene gate, #197 JS budget), artifact `lighthouse`, lhci-assert --suggest (median of 3 runs, 10% headroom, at least 0.25 s, 5 KB or 5 points)",
   "values": [
     {
       "key": "/ performance",
@@ -13,7 +13,7 @@
     },
     {
       "key": "/ lcp",
-      "value": 1.11,
+      "value": 0.54,
       "unit": "s",
       "direction": "max"
     },
@@ -25,13 +25,13 @@
     },
     {
       "key": "/ js-kb",
-      "value": 196.45,
+      "value": 191.42,
       "unit": "KB",
       "direction": "max"
     },
     {
       "key": "/ third-party-js-kb",
-      "value": 110.6,
+      "value": 5,
       "unit": "KB",
       "direction": "max"
     },
@@ -49,25 +49,25 @@
     },
     {
       "key": "/grafismo-fonetico/ lcp",
-      "value": 1.18,
+      "value": 1.16,
       "unit": "s",
       "direction": "max"
     },
     {
       "key": "/grafismo-fonetico/ tbt",
-      "value": 0.27,
+      "value": 0.25,
       "unit": "s",
       "direction": "max"
     },
     {
       "key": "/grafismo-fonetico/ js-kb",
-      "value": 383.87,
+      "value": 191.42,
       "unit": "KB",
       "direction": "max"
     },
     {
       "key": "/grafismo-fonetico/ third-party-js-kb",
-      "value": 110.6,
+      "value": 5,
       "unit": "KB",
       "direction": "max"
     },
@@ -85,7 +85,7 @@
     },
     {
       "key": "/imprime-y-juega/ lcp",
-      "value": 0.55,
+      "value": 0.54,
       "unit": "s",
       "direction": "max"
     },
@@ -97,13 +97,13 @@
     },
     {
       "key": "/imprime-y-juega/ js-kb",
-      "value": 196.45,
+      "value": 191.42,
       "unit": "KB",
       "direction": "max"
     },
     {
       "key": "/imprime-y-juega/ third-party-js-kb",
-      "value": 1305.99,
+      "value": 1210.7,
       "unit": "KB",
       "direction": "max"
     },
@@ -121,7 +121,7 @@
     },
     {
       "key": "/grafismo-fonetico/gracias/ lcp",
-      "value": 0.55,
+      "value": 0.54,
       "unit": "s",
       "direction": "max"
     },
@@ -139,7 +139,7 @@
     },
     {
       "key": "/grafismo-fonetico/gracias/ third-party-js-kb",
-      "value": 110.6,
+      "value": 5,
       "unit": "KB",
       "direction": "max"
     },
