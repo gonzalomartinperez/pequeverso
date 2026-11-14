@@ -12,7 +12,7 @@
 | Command | What it does |
 |---|---|
 | `npm run dev` | Next dev server (Turbopack) |
-| `npm run build` | `build-info.json` → `next build` (static export to `out/`) → `out/.htaccess` |
+| `npm run build` | `build-info.json` → `next build` (static export to `out/`, the parity target) → `out/.htaccess`; `npm run build:standalone` builds the production target (ADR-0010) |
 | `npm start` | Serves `out/` with production-like semantics (`tools/serve-static.ts`), or the standalone server when `.next/standalone` exists; both serve `/api/meta/events/` (`META_CAPI_ACCESS_TOKEN=… npm start` to enable the relay locally) |
 | `npm run lint` / `lint:fix` / `format` | Biome |
 | `npm run typecheck` | `next typegen` + `tsc --noEmit` (TypeScript 7) + `tsc -p tsconfig.node.json` (Node-run files under `nodenext`) |

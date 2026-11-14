@@ -12,18 +12,22 @@ Hostinger build fails, the site keeps serving the previous build; read the build
 This variable controls verification only: it never deploys or enables the assistant. Keep
 `NEXT_PUBLIC_ASSISTANT_ENABLED=false` and verify the actual publishable build.
 
-## Two supported Hostinger modes (same repository, no SSH, no secrets)
+## Hostinger modes (same repository, no SSH, no secrets)
 
-| | **Node.js Web App** (connected to main) | **Website + Git deployment** (static export alternative) |
+Production is the Node.js Web App (ADR-0010). The Website + Git column documents the static export,
+which is a parity build only until M4-2 retires it; the production host does not serve it.
+
+| | **Node.js Web App** (production, connected to main) | **Website + Git deployment** (static export, parity only until M4) |
 |---|---|---|
 | What Hostinger does | Clones the connected branch, runs `npm install` + `npm run build` on its builder (Node 24, GLIBC 2.28), forces `output: 'standalone'`, starts the app | Pulls the connected branch into `public_html` as plain files; no build |
 | What the repo does | `config/next.ts` (re-exported by `next.config.mjs`) detects the `/hbuilds/` builder and attaches redirects/headers from `config/edge-rules.json`; `npm run build` uses `--webpack` (native SWC/Turbopack bindings cannot load on GLIBC 2.28, the WASM fallback can); Hostinger's Next.js preset starts Next's standalone server directly; the Meta CAPI relay is the route handler `src/app/api/meta/events/route.standalone.ts`, compiled only in standalone builds (`pageExtensions`) | The Deploy workflow builds `out/` and publishes it to the orphan **`deploy`** branch with `.htaccess` (generated from the same edge rules) |
 | Branch to connect in hPanel | **`main`** (connected); every merge deploys. `release` remains an optional manual-publication alternative requiring a separate hosting choice | **`deploy`** |
 | Revision check | `https://pequeverso.com/build-info.json` (`Cache-Control: no-store`) | same |
-| Trade-offs | Idle process stop (cold start on first visit), no rollback UI in hPanel (re-run Deploy with the previous tag), Hostinger build time ~2–4 min | No cold starts, `.htaccess` fully ours; no Node, so no Conversions API relay (`/api/meta/events/` is a 404 the browser ignores) |
+| Trade-offs | Idle process stop (cold start on first visit), no rollback UI in hPanel (roll back with a revert PR on `main`; Hostinger rebuilds it), Hostinger build time ~2–4 min | No cold starts, `.htaccess` fully ours; no Node, so no Conversions API relay (`/api/meta/events/` is a 404 the browser ignores) |
 
-Both modes are built in CI on every PR (the `build` job builds the static export; `npm run
-build:standalone` is the Node parity build you can run locally).
+Both targets are built in CI on every PR today: the `build` job builds the static export and the
+`hosting` job builds and serves the standalone target. The M1-1 CI profiles make standalone the
+primary PR build and move the export to the nightly parity job (ADR-0010).
 
 ## Workflow map (`.github/workflows`)
 
@@ -114,7 +118,7 @@ boot line: `meta-capi: enabled|disabled`.
 | `NEXT_PUBLIC_META_PIXEL_ID` | optional | 15–16 digits | no pixel; the first-visit banner is not shown and "Configurar cookies" opens a necessary-cookies notice. When set, the pixel runs by default and the banner withdraws it (`docs/tracking.md`) |
 | `META_CAPI_ACCESS_TOKEN` | optional, **server-only** (never `NEXT_PUBLIC_`, never in the repo or CI) | ≥ 32 characters, no whitespace | the `/api/meta/events/` relay answers `204` and Meta is never called from the server. With the pixel id set too, browser events are mirrored to the Conversions API and deduplicated by event id |
 | `NEXT_PUBLIC_CHECKOUT_URL_ALIMENTACION_BEBE` (one `NEXT_PUBLIC_CHECKOUT_URL_<PRODUCT>` per affiliate redirect in `config/edge-rules.json`) | optional; follows the `NEXT_PUBLIC_CHECKOUT_URL_<PRODUCT>` naming standard, but only the redirect reads it at build time (never inlined in pages) | plain `https://` affiliate link (Hotmart hotlink or the producer's page with the affiliate code) | `/alimentacion-bebe/` answers 404. Set: `302` to the link, visitor query appended. Build log line: `affiliate redirects: N` |
-| `NEXT_OUTPUT` | never in hPanel | `export` (default) or `standalone` | auto-detected: Hostinger's Node builder gets `standalone` |
+| `NEXT_OUTPUT` | never in hPanel | `export` (build script default, parity only) or `standalone` (production) | auto-detected: Hostinger's Node builder gets `standalone` |
 
 Those (plus the affiliate links) are the whole surface: no analytics, consent-mode, test-event or debug variables
 exist; debug logging follows `NODE_ENV=development`.

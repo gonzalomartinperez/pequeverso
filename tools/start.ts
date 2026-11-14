@@ -2,7 +2,7 @@
 // - standalone (Hostinger Node.js Web App, NEXT_OUTPUT=standalone): copies public/ and .next/static
 //   next to the standalone server if they are missing, then runs it (honours PORT/HOSTNAME). The
 //   Meta CAPI relay is the route handler src/app/api/meta/events/route.standalone.ts inside Next.
-// - static export (default): serves out/ with production semantics (tools/serve-static.ts),
+// - static export (parity build until M4, ADR-0010): serves out/ with production semantics (tools/serve-static.ts),
 //   which mounts the same relay from src/features/tracking/adapters/server/meta-capi.ts.
 import { cpSync, existsSync } from "node:fs";
 import { resolve } from "node:path";

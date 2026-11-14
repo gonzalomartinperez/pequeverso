@@ -1,0 +1,38 @@
+name: Roadmap task
+description: A planned unit of work from docs/master-plan/roadmap.md.
+title: "task: "
+labels: ["task"]
+body:
+  - type: input
+    id: milestone
+    attributes:
+      label: Milestone
+      placeholder: M1
+    validations:
+      required: true
+  - type: input
+    id: task-id
+    attributes:
+      label: Task ID
+      placeholder: M1-4
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What is in and out of this task.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Verifiable conditions, one per line.
+      placeholder: "- [ ] ..."
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies and risks

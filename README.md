@@ -41,7 +41,7 @@ and run `npm run test:architecture` locally.
 
 | Application | Responsibility | Operational boundary |
 |---|---|---|
-| This store | Public product pages, checkout links, native conversation UI | Static export by default; Node standalone also supported |
+| This store | Public product pages, checkout links, native conversation UI | Production is the Hostinger Node.js Web App (standalone, ADR-0010); the static export is a parity build until M4 |
 | [Assistant API](https://github.com/gonzalomartinperez/pequeverso-assistant-api) | Sessions, grounding, streaming, conversation persistence and provider credentials | Deployment belongs to vps-ops; no provider secret reaches this store |
 | [Backoffice](https://github.com/gonzalomartinperez/pequeverso-backoffice) | Private administration and authenticated operations | Separate application; never a public chat iframe |
 | vps-ops | VPS deployment, Coolify, reverse proxy and shared infrastructure | This repository supplies artifacts and contracts; it does not provision the VPS |
@@ -163,7 +163,7 @@ Measured runs and screenshots establish what was actually exercised. CI does not
 
 ## Documentation and contribution
 
-Start with [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md). Task branches originate from `develop`; task PRs squash into `develop`. An authorized `develop`→`main` release uses a merge commit with required checks and no protection bypass.
+Start with [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md). Community files: [Support](SUPPORT.md) · [Security policy](SECURITY.md) · [Code of conduct](CODE_OF_CONDUCT.md). Task branches originate from `develop`; task PRs squash into `develop`. An authorized `develop`→`main` release uses a merge commit with required checks and no protection bypass.
 
 | Read | For |
 |---|---|
