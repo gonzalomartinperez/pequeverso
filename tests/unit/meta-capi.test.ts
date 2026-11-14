@@ -19,6 +19,7 @@ const SITE = "https://pequeverso.com";
 const PIXEL = "1234567890123456";
 const TOKEN = "EAAB".padEnd(64, "x");
 const NOW = 1_800_000_000_000;
+const GRANT = "pv_consent=a1m1.v3";
 const UUID = "3f1c2a9e-5b7d-4c8e-9a1b-2c3d4e5f6a7b";
 
 type GraphEvent = {
@@ -101,7 +102,7 @@ function post(
 ): Promise<Response> {
   return fetch(`${base}${META_CAPI_PATH}`, {
     method: "POST",
-    headers: { "content-type": "application/json", ...headers },
+    headers: { "content-type": "application/json", cookie: GRANT, ...headers },
     body: typeof body === "string" ? body : JSON.stringify(body),
   });
 }
@@ -139,7 +140,7 @@ test("other paths return false so the caller continues; only POST on the relay p
     }
     const slashless = await fetch(`${base}/api/meta/events`, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { "content-type": "application/json", cookie: GRANT },
       body: JSON.stringify({ events: [event()] }),
     });
     assert.equal(slashless.status, 202);
@@ -445,6 +446,7 @@ function relayInput(overrides: Partial<RelayInput> = {}): RelayInput {
     host: "pequeverso.com",
     ip: "203.0.113.7",
     userAgent: "Mozilla/5.0 (core)",
+    cookie: GRANT,
     ...overrides,
   };
 }
@@ -538,4 +540,30 @@ test("pickClientIp takes the first valid address, splitting x-forwarded-for list
   assert.equal(pickClientIp([null, "not-an-ip", "::ffff:192.0.2.9"]), "192.0.2.9");
   assert.equal(pickClientIp(["", "2001:db8::1"]), "2001:db8::1");
   assert.equal(pickClientIp([]), "");
+});
+
+test("core: events without a stored marketing grant are dropped and never forwarded", async () => {
+  const fake = fakeFetch();
+  const relay = createMetaCapiRelay({
+    pixelId: PIXEL,
+    accessToken: TOKEN,
+    siteUrl: SITE,
+    fetchImpl: fake.fetchImpl,
+    now: () => NOW,
+  });
+  const denied = [
+    undefined,
+    "",
+    "other=1",
+    "pv_consent=a0m0.v3",
+    "pv_consent=a1m0.v3",
+    "pv_consent=a1m1.v2",
+    "xpv_consent=a1m1.v3",
+  ];
+  for (const cookie of denied) {
+    assert.equal(relay.process(relayInput({ cookie })).status, 204, String(cookie));
+  }
+  assert.equal(relay.process(relayInput({ cookie: `x=1; ${GRANT}; y=2` })).status, 202);
+  await Promise.all(relay.pending);
+  assert.equal(fake.calls.length, 1);
 });

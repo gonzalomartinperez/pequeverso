@@ -48,6 +48,7 @@ export async function POST(request: Request): Promise<Response> {
     host: headers.get("host") ?? undefined,
     ip: pickClientIp([headers.get("cf-connecting-ip"), headers.get("x-forwarded-for")]),
     userAgent: headers.get("user-agent") ?? undefined,
+    cookie: headers.get("cookie") ?? undefined,
   };
   const active = currentRelay();
   if (!active.enabled) return toResponse(active.process({ ...base, bodyText: "" }));

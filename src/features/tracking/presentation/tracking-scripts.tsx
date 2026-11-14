@@ -17,7 +17,26 @@ import {
 } from "@/features/tracking/adapters/track.ts";
 import type { ScriptSpec } from "@/features/tracking/adapters/types.ts";
 
+const IDLE_TIMEOUT_MS = 2000;
+
+/** True once the browser is idle (`requestIdleCallback`, with a timeout fallback). */
+function useIdle(wait: boolean): boolean {
+  const [idle, setIdle] = useState(!wait);
+  useEffect(() => {
+    if (!wait) return;
+    if ("requestIdleCallback" in window) {
+      const id = window.requestIdleCallback(() => setIdle(true), { timeout: IDLE_TIMEOUT_MS });
+      return () => window.cancelIdleCallback(id);
+    }
+    const timer = setTimeout(() => setIdle(true), IDLE_TIMEOUT_MS / 4);
+    return () => clearTimeout(timer);
+  }, [wait]);
+  return idle;
+}
+
 function AdapterScript({ spec, onLoad }: { spec: ScriptSpec; onLoad: () => void }) {
+  const ready = useIdle(spec.idle === true);
+  if (!ready) return null;
   if (spec.src) {
     return (
       <Script
@@ -38,7 +57,8 @@ function AdapterScript({ spec, onLoad }: { spec: ScriptSpec; onLoad: () => void 
 
 /**
  * Injects each enabled adapter's scripts once the stored choice has been read on the client:
- * allowed by default, never for a category the visitor rejected. A rejection after load is
+ * only for a category the visitor granted (prior opt-in), vendor loaders also after idle
+ * (`ScriptSpec.idle`). A rejection after load is
  * handled by the adapter's `onConsent` (vendor revoke). Fires PageView on the first load and on
  * every client-side navigation. Renders nothing without configuration.
  */
