@@ -15,16 +15,16 @@ import { parseAnalyticsEnv } from "./site-analytics-env.ts";
  *
  * Build target selection:
  *
- * - Static export (default): `NEXT_OUTPUT` unset or "export". Served from public_html; redirects and
- *   headers come from the generated .htaccess (tools/gen-htaccess.ts).
- * - Node server: `NEXT_OUTPUT=standalone`, or automatically when the build runs inside Hostinger's
+ * - Static export (build script default, parity only until M4; ADR-0010): `NEXT_OUTPUT` unset or
+ *   "export"; redirects and headers come from the generated .htaccess (tools/gen-htaccess.ts).
+ * - Node server (production): `NEXT_OUTPUT=standalone`, or automatically when the build runs inside Hostinger's
  *   Node.js Web App builder (its working directory lives under `/hbuilds/`). Hostinger wraps this
  *   config and forces `output: 'standalone'` itself; here we make sure the same redirects/headers
  *   from config/edge-rules.json are attached, since no .htaccess of ours is served in that mode.
  *
  * Builds use `next build --webpack` (package.json): Hostinger's builder has GLIBC 2.28, where the
  * native SWC/Turbopack bindings cannot load and only the WASM fallback (webpack-compatible) works.
- * See docs/architecture.md and docs/decisions/ADR-0001-hosting-target.md.
+ * See docs/architecture.md and docs/decisions/ADR-0010-standalone-production-target.md.
  *
  * `withCn` compiles the Tailwind class-merge tables used by `src/shared/styles/cn.ts` from the sources
  * before the compiler starts (dev, build and typegen alike); `SceneBudgetPlugin` records the

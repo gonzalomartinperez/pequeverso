@@ -24,19 +24,19 @@ flowchart LR
 
 ## Build targets
 
-| | Static export (default) | Node standalone (fallback) |
+| | Static export (parity build until M4; not served) | Node standalone (production, ADR-0010) |
 |---|---|---|
-| Config | `NEXT_OUTPUT=export` (default) | `NEXT_OUTPUT=standalone` |
+| Config | `NEXT_OUTPUT=export` (the build script default) | `NEXT_OUTPUT=standalone` (forced on Hostinger by `/hbuilds/`) |
 | Serving | Hostinger website (LiteSpeed) serving `public_html`, pulled from the `deploy` branch by Hostinger Git | Hostinger Node.js Web App building `release`/`main` (forces `standalone`; auto-detected by `/hbuilds/`) |
 | Redirects/headers | `out/.htaccess` generated from `config/edge-rules.json` | `redirects()`/`headers()` from the same file |
 | Meta CAPI relay | `tools/serve-static.ts` mounts `src/features/tracking/adapters/server/meta-capi.ts` (Node.js Web App only; the LiteSpeed mode has no relay) | `src/app/api/meta/events/route.standalone.ts`, compiled only when `output === "standalone"` (`pageExtensions` adds `standalone.ts`) |
 | Images | Build-time WebP derivatives (`tools/media`), `images.unoptimized` | same |
-| Status | Supported (Deploy workflow publishes `deploy`) | **Connected to `main` since 2026-10-13** (owner confirmed); Hostinger automatically builds and publishes merges. Post-deploy verification is enabled. On 2026-10-17 the owner confirmed the product page works in a browser; an earlier HEAD probe returned HTTP 403 and remains a probe-specific observation, not a diagnosed hosting outage. Each release still requires its own post-deploy verification |
+| Status | Parity build; the Deploy workflow can still publish `deploy`, but the production host does not serve it (retired at M4-2) | **Connected to `main` since 2026-10-13** (owner confirmed); Hostinger automatically builds and publishes merges. Post-deploy verification is enabled. On 2026-10-17 the owner confirmed the product page works in a browser; an earlier HEAD probe returned HTTP 403 and remains a probe-specific observation, not a diagnosed hosting outage. Each release still requires its own post-deploy verification |
 
 Rules that keep both targets valid: no `proxy.ts`/middleware, no `cookies()`/`headers()`/request-time
 APIs, no route handlers beyond `sitemap.ts`/`robots.ts`/metadata images (plus `*.standalone.ts`
 handlers, invisible to the export), no runtime image optimizer. Server logic lives in `src/features/tracking/adapters/server/`
-(transport-agnostic cores with a Node adapter); standalone route handlers are thin wrappers. ADRs: `docs/decisions/ADR-0001-hosting-target.md`, `ADR-0005-conversions-api-relay.md`.
+(transport-agnostic cores with a Node adapter); standalone route handlers are thin wrappers. ADRs: `docs/decisions/ADR-0010-standalone-production-target.md` (supersedes ADR-0001), `ADR-0005-conversions-api-relay.md`.
 
 ## Source tree
 
