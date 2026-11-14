@@ -1,8 +1,8 @@
 import { expect, test } from "./fixtures";
 
-test("upsell mode by default: upsell view visible, downsell hidden, one widget container", async ({
-  page,
-}) => {
+test("upsell mode by default: upsell view visible, downsell hidden, one widget container", {
+  tag: "@journey",
+}, async ({ page }) => {
   await page.goto("/imprime-y-juega/");
   await expect(page.locator("[data-offer-root]")).toHaveAttribute("data-offer", "upsell");
   await expect(page.locator("#hero-title-upsell")).toBeVisible();

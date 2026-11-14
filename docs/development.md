@@ -125,8 +125,13 @@ npm run test:browser -- tests/browser/text-zoom.spec.ts --project=chromium-390 -
 ```
 
 Projects: `chromium-1440`, `chromium-768`, `chromium-390`, `reduced-motion`, plus targeted text-zoom
-`firefox-390` and `webkit-390` (PR set);
-`PW_SET=nightly` uses `chromium-<w>` / `webkit-<w>` at 1440/1280/1024/768/430/390/360;
+`firefox-390` and `webkit-390` (PR set), and `iphone-15` (iPhone 15, WebKit, PR set): it runs only the
+tests tagged `@journey` (`{ tag: "@journey" }` on the core journeys: hub door to kit, checkout links and
+intent, upsell widget, consent, legal, 404, playground, gallery and age selector). Tag a new core
+journey there; do not widen the iPhone project to whole specs. Quarantine a WebKit-only failure with
+`@quarantine` in the title plus an issue reference, fix or delete within 7 days (testing.md flake policy);
+`PW_SET=nightly` uses `chromium-<w>` / `webkit-<w>` at 1440/1280/1024/768/430/390/360 plus the
+full functional set on `iphone-15` and `pixel-7` (Chromium);
 `PW_SET=visual` uses `visual-chromium-390` / `visual-chromium-1440` for reference comparisons.
 
 `interaction.spec.ts` (M2-2) measures frame time (rAF p95 and long-frame share per phase: idle hero, scrolling,

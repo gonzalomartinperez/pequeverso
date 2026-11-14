@@ -7,9 +7,9 @@ import { expect, test } from "./fixtures";
  * bar with the affiliate disclosure.
  */
 
-test("both doors are inside the first viewport, the same size, and select each product destination directly", async ({
-  page,
-}) => {
+test("both doors are inside the first viewport, the same size, and select each product destination directly", {
+  tag: "@journey",
+}, async ({ page }) => {
   await page.goto("/");
   const doors = page.locator("a[data-door]");
   await expect(doors).toHaveCount(2);
@@ -322,9 +322,9 @@ test("mobile product selections go directly to the destinations and close the sh
   await expect(sheet).toBeHidden();
 });
 
-test("the kit door opens our landing, keeping acquisition and excluding offer overrides", async ({
-  page,
-}) => {
+test("the kit door opens our landing, keeping acquisition and excluding offer overrides", {
+  tag: "@journey",
+}, async ({ page }) => {
   await page.goto("/?utm_source=home-route&off=EVIL&ref=EVIL");
   const kit = page.locator('a[data-door="reading"]');
   await expect(kit).toHaveAttribute("href", "/grafismo-fonetico/?utm_source=home-route");
