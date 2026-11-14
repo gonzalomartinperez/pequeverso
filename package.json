@@ -15,7 +15,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "node tools/check-env.ts && node tools/build-info.ts && next build --webpack && node tools/gen-htaccess.ts && node tools/check-assistant-disabled.ts --allow-enabled && node tools/check-site-analytics-disabled.ts --allow-enabled",
+    "build": "node tools/check-env.ts && node tools/build-info.ts && next build --webpack && node tools/gen-htaccess.ts && node tools/check-assistant-disabled.ts --allow-enabled && node tools/check-site-analytics-disabled.ts --allow-enabled && node tools/check-design-gallery-disabled.ts --allow-enabled",
     "build:standalone": "cross-env NEXT_OUTPUT=standalone npm run build",
     "start": "node tools/start.ts",
     "typegen": "next typegen",
@@ -46,6 +46,9 @@
     "check:rendered": "node tools/check-rendered.ts",
     "check:site-analytics-disabled": "node tools/check-site-analytics-disabled.ts",
     "check:assistant-disabled": "node tools/check-assistant-disabled.ts",
+    "check:design-gallery-disabled": "node tools/check-design-gallery-disabled.ts",
+    "build:design-gallery": "node tools/build-design-gallery.ts",
+    "test:browser:design-gallery": "node tools/build-design-gallery.ts && DESIGN_GALLERY_E2E=1 SERVE_DIR=out-design-gallery PORT=3102 playwright test --project=chromium-1440 --project=chromium-390 design-gallery",
     "build:assistant-fixture": "node tools/build-assistant-fixture.ts",
     "test:browser:assistant": "node tools/build-assistant-fixture.ts && playwright test -c playwright.assistant.config.ts",
     "check:assistant-absent-build": "node tools/check-assistant-absent-build.ts",

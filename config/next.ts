@@ -52,6 +52,19 @@ const assistantEnv = assistant.flag.enabled
     }
   : { NEXT_PUBLIC_ASSISTANT_ENABLED: "false", NEXT_PUBLIC_ASSISTANT_API_ORIGIN: "" };
 
+/**
+ * The state gallery route (`/_design`, docs/design-system.md) is a page file named
+ * `page.design.tsx`: it only routes when `design.tsx` is a page extension, which happens solely
+ * with `NEXT_PUBLIC_DESIGN_GALLERY=true`. Otherwise the file is ignored and nothing of it is
+ * emitted (tools/check-design-gallery-disabled.ts proves it). Anything but true/false/empty fails.
+ */
+const galleryFlag = (process.env.NEXT_PUBLIC_DESIGN_GALLERY ?? "").trim();
+if (!["", "true", "false"].includes(galleryFlag))
+  throw new Error(
+    'design gallery configuration: NEXT_PUBLIC_DESIGN_GALLERY must be "true" or "false"',
+  );
+const designGallery = galleryFlag === "true";
+
 const productAnalytics = parseAnalyticsEnv({
   enabled: process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED,
   apiOrigin: process.env.NEXT_PUBLIC_PRODUCT_ANALYTICS_API_ORIGIN,
@@ -70,8 +83,12 @@ const nextConfig: NextConfig = {
   // Route handlers live only in the standalone build: `*.standalone.ts` is a page extension there
   // and plain `route.standalone.ts` files are ignored by the static export (a POST handler breaks
   // `output: "export"`). See docs/decisions/ADR-0005-conversions-api-relay.md.
-  pageExtensions:
-    output === "standalone" ? ["standalone.ts", "standalone.tsx", "tsx", "ts"] : ["tsx", "ts"],
+  pageExtensions: [
+    ...(designGallery ? ["design.tsx"] : []),
+    ...(output === "standalone" ? ["standalone.ts", "standalone.tsx"] : []),
+    "tsx",
+    "ts",
+  ],
   trailingSlash: true,
   poweredByHeader: false,
   reactStrictMode: true,

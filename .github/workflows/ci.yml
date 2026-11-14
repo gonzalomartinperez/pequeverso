@@ -173,6 +173,8 @@ jobs:
         run: npm run check:rendered
       - name: Assistant absent from the export (no launcher, chunk or API origin)
         run: npm run check:assistant-disabled && npm run check:site-analytics-disabled
+      - name: State gallery absent from the export (no /_design route, chunk or marker)
+        run: npm run check:design-gallery-disabled
       - name: Bind and stage the OFF-only export
         run: node tools/ci/artifacts.ts pack-off out .ci-off-artifact
         id: package
