@@ -416,7 +416,7 @@ it("guards environment, external scripts, adapter boundaries and HTML sinks", as
     await import("../helpers/source-guards.ts");
   const pinned = {
     env: [ENV_EXCEPTIONS, 7],
-    "unsafe-html": [HTML_EXCEPTIONS, 3],
+    "unsafe-html": [HTML_EXCEPTIONS, 2],
     "script-host": [SCRIPT_EXCEPTIONS, 2],
     "adapter-import": [ADAPTER_IMPORT_EXCEPTIONS, 1],
   } as const;

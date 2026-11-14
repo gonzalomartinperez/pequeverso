@@ -28,9 +28,8 @@ export const SCRIPT_EXCEPTIONS: Record<string, string> = {
 export const HTML_EXCEPTIONS: Record<string, string> = {
   "src/features/commerce/presentation/offer-mode-root.tsx":
     "Constant pre-hydration offer-mode script (docs/architecture.md).",
-  "src/views/home-view.tsx": "Existing organization JSON-LD; serializer extraction is pending M3.",
-  "src/views/product/core-landing-view.tsx":
-    "Existing product JSON-LD; serializer extraction is pending M3.",
+  "src/shared/seo/json-ld-script.tsx":
+    "The single JSON-LD emitter; jsonLd() escapes every < (M3-6, tests/unit/json-ld.test.ts).",
 };
 
 /** Syntax-aware guards: strings and comments cannot masquerade as executable code. */
