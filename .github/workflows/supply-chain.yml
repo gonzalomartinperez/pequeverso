@@ -1,0 +1,76 @@
+name: Supply chain
+
+# Dependency review on pull requests (new advisories or disallowed licences introduced by the diff)
+# and a CycloneDX SBOM of the production dependency tree as a run artifact (ecosystem section 7,
+# roadmap M1-3). Not a required check yet: the M1-1 CI profiles fold both into `ci-gate`.
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: supply-chain-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high
+          # Licence allow-list from docs/master-plan/dependencies.md, plus licences already present in
+          # the transitive build/dev tree (CC-BY-4.0 caniuse-lite, CC0-1.0, PSF-2.0, MPL-2.0).
+          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, BlueOak-1.0.0, CC0-1.0, CC-BY-4.0, PSF-2.0, MPL-2.0
+          # Reviewed exceptions: gsap (GSAP standard no-charge licence, docs/master-plan/dependencies.md)
+          # and sharp's prebuilt platform binaries under @img (LGPL-3.0-or-later libvips; optional
+          # binaries of next/sharp and tools/media). Only runtime-scope changes are checked (the
+          # action's default `fail-on-scopes: runtime`); dev tooling such as @lhci/cli is not.
+          allow-dependencies-licenses: pkg:npm/gsap, pkg:npm/%40img/sharp-libvips-darwin-arm64, pkg:npm/%40img/sharp-libvips-darwin-x64, pkg:npm/%40img/sharp-libvips-linux-arm, pkg:npm/%40img/sharp-libvips-linux-arm64, pkg:npm/%40img/sharp-libvips-linux-ppc64, pkg:npm/%40img/sharp-libvips-linux-riscv64, pkg:npm/%40img/sharp-libvips-linux-s390x, pkg:npm/%40img/sharp-libvips-linux-x64, pkg:npm/%40img/sharp-libvips-linuxmusl-arm64, pkg:npm/%40img/sharp-libvips-linuxmusl-x64, pkg:npm/%40img/sharp-wasm32, pkg:npm/%40img/sharp-win32-arm64, pkg:npm/%40img/sharp-win32-ia32, pkg:npm/%40img/sharp-win32-x64
+          comment-summary-in-pr: never
+
+  sbom:
+    name: SBOM (CycloneDX)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install dependencies (no lifecycle scripts)
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Generate the production SBOM with npm's built-in generator
+        run: |
+          set -euo pipefail
+          mkdir -p sbom
+          npm sbom --sbom-format cyclonedx --omit dev --package-lock-only > sbom/pequeverso.cdx.json
+          node -e 'const s=require("./sbom/pequeverso.cdx.json"); if (s.bomFormat !== "CycloneDX" || !Array.isArray(s.components) || s.components.length === 0) { console.error("SBOM is empty or not CycloneDX"); process.exit(1) } console.log("CycloneDX " + s.specVersion + ": " + s.components.length + " components")'
+      - name: Upload the SBOM
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sbom-cyclonedx-${{ github.sha }}
+          path: sbom/pequeverso.cdx.json
+          retention-days: 30
+          if-no-files-found: error

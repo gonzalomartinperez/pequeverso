@@ -38,6 +38,8 @@ primary PR build and move the export to the nightly parity job (ADR-0010).
 | `nightly.yml` | 04:17 UTC, manual (`update_snapshots`) | Chromium + WebKit × 7 widths, visual baselines, clean-clone invariant, full knip, 20 Lighthouse samples (5 × 4 routes), links, bundle analysis; seven logical phases (14 jobs after browser expansion), with a fail-closed aggregate | `contents: read` |
 | `deploy.yml` | manual, `production`/`staging` environment approval | gated release below, then `post-deploy-verify` | `contents: write` on the release job only |
 | `production-daily.yml` | 09:00 UTC, manual | live-site checks without building: reuses `post-deploy-verify` with the live sha, plus TLS, header matrix, relay probe, checkout link, sitemap/robots, internal links; opens/closes one `production` issue | `contents: read`; `issues: write` on the report job only |
+| `supply-chain.yml` | pull request, push to `main` or `develop`, manual | `dependency-review-action` on PRs (fails on high advisories or licences outside the allow-list in the workflow); CycloneDX SBOM of the production tree (`npm sbom`) uploaded as a run artifact | `contents: read` |
+| `scorecard.yml` | Monday 07:17 UTC, push to `develop`, manual | OpenSSF Scorecard; SARIF to code scanning and the public Scorecard API | `contents: read`, `security-events: write`, `id-token: write`, `actions: read` |
 | `branch-policy.yml` | `pull_request_target` | base `develop` (features) or `main` (releases from `develop`, hotfixes), branch name and PR title policy from the base branch; no checkout, `permissions: {}` | none |
 
 `.github/actions/setup` is the shared composite (Node from `.nvmrc`, npm cache, `npm ci`,
@@ -57,13 +59,35 @@ The `hosting` job is the CI stand-in for the host's builder (`rockylinux:8`, gli
 `.nvmrc`, `next build --webpack` with the WASM SWC bindings, `NEXT_OUTPUT=standalone`, `npm start`
 smoke-tested). A green `ci` therefore means both targets build and the Node one serves.
 
-Owner toggles that are repository settings, not workflows: CodeQL default setup (Settings →
-Code security; JavaScript/TypeScript, free for public repositories), Dependabot alerts, and the
+Repository settings, not workflows: CodeQL default setup (JavaScript/TypeScript and Actions,
+enabled 2026-11-14), secret scanning with push protection, private vulnerability reporting,
+"require actions pinned to a full-length commit SHA" (enabled 2026-11-14), Dependabot alerts
+(security-update PRs off, OD-75), and the
 `ci` required check on the `main` ruleset. A merge queue is not used: one maintainer. Branch flow:
 features squash into `develop` (the default branch; nightly runs there); a release is a PR
 `develop` → `main` merged with a merge commit. Once hosting is connected, that merge deploys
 and the verification variable enables `post-deploy-verify`; hotfixes go to `main` and are merged back into `develop`. PRs into `main`
 must be up to date with it.
+
+## Release PR (`.github/workflows/release-please.yml`, roadmap M1-6)
+
+release-please runs in manifest mode against `develop` (`release-please-config.json`,
+`.release-please-manifest.json`, version `1.0.0`). It keeps one release PR titled
+`chore(release): vX.Y.Z` that bumps `package.json`, the lockfile and `CHANGELOG.md` (Added, Changed,
+Fixed, Removed; docs, tests, CI and chores hidden). It creates no tag and no GitHub Release: the
+tag `vX.Y.Z` and the immutable release are cut on `main` at promotion (M7). The workflow stays
+disabled until the owner grants a token whose PRs trigger CI (GitHub App or fine-grained PAT as
+`RELEASE_PLEASE_TOKEN`) and sets the variable `RELEASE_PLEASE_ENABLED=true`. Repository settings
+already in place: immutable releases, and the `release tags` ruleset (no deletion, update or
+force-move of `v*` tags). Notes for the first enabled run:
+
+- Before merging the first release PR, move the hand-written `## [Unreleased]` notes of
+  `CHANGELOG.md` into the generated section; release-please inserts its entry above that heading.
+- Because release-please creates no GitHub Release here, the M7 tag step on `main` must also relabel
+  the merged release PR from `autorelease: pending` to `autorelease: tagged`. Without that,
+  release-please stops opening release PRs ("untagged, merged release PRs outstanding").
+- Branch policy accepts the release PR's fixed head branch
+  `release-please--branches--develop--components--pequeverso` (same repository, base `develop`).
 
 ## Deploy workflow (`.github/workflows/deploy.yml`)
 
