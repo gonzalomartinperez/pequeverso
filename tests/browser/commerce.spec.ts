@@ -24,9 +24,9 @@ async function preventNavigation(page: import("@playwright/test").Page, selector
   }, selector);
 }
 
-test("every principal CTA points to the configured checkout with allowlisted params only", async ({
-  page,
-}) => {
+test("every principal CTA points to the configured checkout with allowlisted params only", {
+  tag: "@journey",
+}, async ({ page }) => {
   await page.goto(
     "/grafismo-fonetico/?utm_source=tiktok&utm_medium=social&a=aff1&off=EVIL&ref=EVIL&fbclid=abc",
   );
@@ -58,7 +58,9 @@ test("every principal CTA points to the configured checkout with allowlisted par
   }
 });
 
-test("each CTA click fires exactly one CheckoutIntent with a unique event id", async ({ page }) => {
+test("each CTA click fires exactly one CheckoutIntent with a unique event id", {
+  tag: "@journey",
+}, async ({ page }) => {
   await page.goto("/grafismo-fonetico/");
   // Click tracking attaches on hydration; a pre-hydration click still reaches Hotmart untracked.
   await page.waitForLoadState("networkidle");

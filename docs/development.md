@@ -26,6 +26,7 @@
 | `npm run check:placeholders[:strict]` | Report / fail on `[[PLACEHOLDER]]` tokens |
 | `npm run check:skills` | Skill catalog: frontmatter and `metadata`, body at most 120 lines, `evals/triggers.json` and `evals/evals.json` structure, symlinks, review age (warns after 180 days) |
 | `npm run lhci` | Lighthouse CI on `out/` (3 runs, mobile) then the strict ratchet assertion `node tools/lhci-assert.ts ratchets/lighthouse-lab.json`; `npm run lhci:production-config` builds the fake-pixel `out-lhci/` first (see Lighthouse lanes) |
+| `node tools/ci/diff-coverage.ts [--lcov coverage/lcov.info] [--base origin/develop] [--min 85]` | Diff coverage (M2-5): share of changed code lines that the unit tests run, from `git diff --unified=0 <base>...HEAD` and node's lcov (`DA` records; node reports every line, so blank and comment-only lines are dropped by a source-text check). Counted: files in the lcov report, plus every added line of a `tools/`, `src/` or `config/` `.ts` file that no test loaded (listed as "not measured", counts as uncovered). `.tsx` files count only when the lcov lists them (components most tests never load are not penalized; Playwright covers them), and tests, `.d.ts`, generated files, docs and JSON are out of scope. Floor 85 % from `ratchets/diff-coverage.json`; exit 1 below it or when the lcov has no records; 100 % with a "nothing measured" notice when no counted line changed. `npm run test:coverage` writes `coverage/lcov.info` (the `quality` job runs it, then this tool on pull requests) |
 | `npm run scorecard -- --inputs <dir> --out scorecard.json` | Compares measurements (`<dir>/coverage/lcov.info`, `<dir>/bundle.json` from `node tools/check-bundle-budget.ts --json`, `<dir>/.lighthouseci`, repo size from `git ls-files`) with `ratchets/*.json`; missing inputs are `missing`, a regression exits 1; `--need coverage,bundle` also fails on incomplete inputs. Runs nightly (`scorecard` job, artifact `scorecard`, 30 days) |
 | `npm run build:standalone` | Node target build (fallback), for parity checks |
 | `npm run build:design-gallery` / `test:browser:design-gallery` | Verification export WITH the `/_design` state gallery in `out-design-gallery/` (unpublishable), and its light Playwright spec; see `docs/design-system.md` |
@@ -125,9 +126,20 @@ npm run test:browser -- tests/browser/text-zoom.spec.ts --project=chromium-390 -
 ```
 
 Projects: `chromium-1440`, `chromium-768`, `chromium-390`, `reduced-motion`, plus targeted text-zoom
-`firefox-390` and `webkit-390` (PR set);
-`PW_SET=nightly` uses `chromium-<w>` / `webkit-<w>` at 1440/1280/1024/768/430/390/360;
+`firefox-390` and `webkit-390` (PR set), and `iphone-15` (iPhone 15, WebKit, PR set): it runs only the
+tests tagged `@journey` (`{ tag: "@journey" }` on the core journeys: hub door to kit, checkout links and
+intent, upsell widget, consent, legal, 404, playground, gallery and age selector; the gallery and
+age-selector tests skip on WebKit, so in the PR set they run on Chromium only). Tag a new core
+journey there; do not widen the iPhone project to whole specs. Quarantine a WebKit-only failure with
+`@quarantine` in the title plus an issue reference, fix or delete within 7 days (testing.md flake policy);
+`PW_SET=nightly` uses `chromium-<w>` / `webkit-<w>` at 1440/1280/1024/768/430/390/360 plus the
+full functional set on `iphone-15` and `pixel-7` (Chromium);
 `PW_SET=visual` uses `visual-chromium-390` / `visual-chromium-1440` for reference comparisons.
+
+Journey coverage (testing.md, "User journeys"): the FAQ and the sample download have no tagged test
+yet. The consent-banner journey runs only in builds with a pixel id (CI sets `E2E_EXPECT_CONSENT=1`;
+locally it skips). The nightly browser job has a 45-minute timeout over eight shards; after the
+`iphone-15` and `pixel-7` profiles joined, check its duration on the first nightlies.
 
 `interaction.spec.ts` (M2-2) measures frame time (rAF p95 and long-frame share per phase: idle hero, scrolling,
 wall on screen), Long Animation Frames, and an INP proxy (the longest interaction event duration,

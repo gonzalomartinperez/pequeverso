@@ -5,8 +5,10 @@ import { defineConfig, devices } from "@playwright/test";
  * trailing-slash and 404 semantics as production) unless E2E_BASE_URL points elsewhere.
  *
  * Project sets are selected with PW_SET:
- *   pr       chromium at 390 / 768 / 1440 + reduced-motion (pull-request gate, default)
- *   nightly  chromium + webkit at 1440 / 1280 / 1024 / 768 / 430 / 390 / 360
+ *   pr       chromium at 390 / 768 / 1440 + reduced-motion + iPhone 15 WebKit on the `@journey` tests
+ *            (pull-request gate, default)
+ *   nightly  chromium + webkit at 1440 / 1280 / 1024 / 768 / 430 / 390 / 360, plus the iPhone 15
+ *            (WebKit) and Pixel 7 (Chromium) device profiles
  * responsive.spec.ts sweeps its own widths (320–1920), so it runs once per engine: in the 1440 project.
  *   visual   region screenshot baselines at 390 / 1440 (chromium, reduced motion, pinned image; WebKit text antialiasing drifts)
  *   prod     chromium-1440 smoke against a deployed origin (E2E_BASE_URL required)
@@ -23,6 +25,8 @@ function viewport(width: number) {
 const desktopChrome = devices["Desktop Chrome"];
 const desktopSafari = devices["Desktop Safari"];
 const desktopFirefox = devices["Desktop Firefox"];
+/** The core user journeys (testing.md, "User journeys"): tests tagged `@journey`. */
+const journeys = /@journey/;
 const specs = {
   functional:
     /(hub|playground|smoke|csp|a11y|offer-mode|widget|commerce|consent|legal|motion|scene-gating|surfaces|navigation|tracking|lcp|responsive|text-zoom|assistant-disabled|site-analytics-dom|design-gallery)\.spec\.ts/,
@@ -43,6 +47,12 @@ const projectSets = {
       name: "webkit-390",
       use: { ...desktopSafari, viewport: viewport(390) },
       testMatch: /(text-zoom|surfaces|site-analytics-dom)\.spec\.ts/,
+    },
+    {
+      name: "iphone-15",
+      use: { ...devices["iPhone 15"] },
+      testMatch: specs.functional,
+      grep: journeys,
     },
     {
       name: "chromium-1440",
@@ -76,6 +86,8 @@ const projectSets = {
       use: { ...desktopSafari, viewport: viewport(width) },
       testMatch: specs.functional,
     })),
+    { name: "iphone-15", use: { ...devices["iPhone 15"] }, testMatch: specs.functional },
+    { name: "pixel-7", use: { ...devices["Pixel 7"] }, testMatch: specs.functional },
   ],
   visual: [390, 1440].map((width) => ({
     name: `visual-chromium-${width}`,

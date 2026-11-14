@@ -39,7 +39,7 @@ for (const route of ["/", "/grafismo-fonetico/"]) {
   });
 }
 
-test("unknown route returns a real 404 with navigation", async ({ page }) => {
+test("unknown route returns a real 404 with navigation", { tag: "@journey" }, async ({ page }) => {
   const response = await page.goto("/esta-ruta-no-existe/");
   expect(response?.status()).toBe(404);
   await expect(page.locator("h1")).toContainText("no existe");

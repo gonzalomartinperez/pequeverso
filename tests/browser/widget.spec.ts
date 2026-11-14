@@ -52,9 +52,9 @@ async function stubWidget(page: import("@playwright/test").Page) {
   );
 }
 
-test("simulated widget mounts once, marks the slot ready and never shows the fallback", async ({
-  page,
-}) => {
+test("simulated widget mounts once, marks the slot ready and never shows the fallback", {
+  tag: "@journey",
+}, async ({ page }) => {
   await stubWidget(page);
   await page.goto("/imprime-y-juega/?downsell=1");
   const container = page.locator("#hotmart-sales-funnel");

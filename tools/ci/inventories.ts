@@ -16,6 +16,7 @@ export const projects = {
   functional: [
     "firefox-390",
     "webkit-390",
+    "iphone-15",
     "chromium-1440",
     "chromium-768",
     "chromium-390",
@@ -29,9 +30,11 @@ export const projects = {
     "webkit-desktop",
     "webkit-mobile",
   ],
-  nightly: ["chromium", "webkit"].flatMap((browser) =>
-    widths.map((width) => `${browser}-${width}`),
-  ),
+  nightly: [
+    ...["chromium", "webkit"].flatMap((browser) => widths.map((width) => `${browser}-${width}`)),
+    "iphone-15",
+    "pixel-7",
+  ],
 } as const;
 export type Suite = keyof typeof projects;
 
