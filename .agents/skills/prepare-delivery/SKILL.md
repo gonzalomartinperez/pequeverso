@@ -1,6 +1,10 @@
 ---
 name: prepare-delivery
-description: Cut a tagged release of pequeverso.com and run the gated deploy with verification and rollback. Not an authorization to release or deploy.
+description: "Use when cutting a tagged release of pequeverso.com and running the gated deploy with verification and rollback. Not for authorizing a release or deploy: each one needs the owner's explicit approval."
+metadata:
+  owner: gonzalomartinperez
+  last-reviewed: "2026-11-14"
+  version: "1.0.0"
 ---
 
 # Release and deploy

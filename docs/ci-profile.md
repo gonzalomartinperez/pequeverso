@@ -16,7 +16,8 @@ gated on `classify` and feeds `ci-gate`.
 | Profile | Selected by | Jobs |
 |---|---|---|
 | base (always) | every run | `workflows` (actionlint + zizmor), `secrets` (gitleaks, full history) |
-| `docs` | `**/*.md`, `docs/**` except code files, licences, the agent harness (`.agents`, `.claude`, `.codex`) | `docs`: skills catalog and its tests, repository-wide content guards, no `npm ci` (budget p50 2 min) |
+| `docs` | `**/*.md`, `docs/**` except code files, licences | `docs`: skills catalog and its tests, repository-wide content guards, no `npm ci` (budget p50 2 min) |
+| `harness` | `.agents/**`, `.claude/**`, `.codex/**`, `AGENTS.md`, `CLAUDE.md`, `tools/check-skills.ts`, `tests/unit/skills.test.ts` (the skill eval JSON also rides `code` so it is linted) | `docs`: `check-skills` (frontmatter, evals, symlinks) and its tests (budget p50 2 min) |
 | `code` | source, config, content, contracts, public, media, tools, tests, `docs/generated/**`, code files under `docs/` (`.ts`, `.tsx`, `.js`, `.mjs`, `.json`: they lint and typecheck), root configs and the lockfile | `docs`, `quality`, `build`, `hosting`, `browser`, `performance` |
 | `workflow` | `.github/**` | same as `code` (a workflow change can break any job) |
 | `deps-weekly`, `release`, `hotfix` | built-in branch/label rules (Dependabot branch or `deps-weekly` label; `develop` → `main` or `release` label; `hotfix/**` → `main`) | every job |

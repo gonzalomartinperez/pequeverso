@@ -1,0 +1,30 @@
+{
+  "skill": "audit-accessibility",
+  "compare": "with and without the skill",
+  "evals": [
+    {
+      "id": "audit-accessibility-1",
+      "prompt": "Audit accessibility of the product page",
+      "assertions": [
+        "Runs the a11y spec through the browser project and lists violations with rule, selector, route and viewport",
+        "Does the keyboard path by hand and reports it separately"
+      ]
+    },
+    {
+      "id": "audit-accessibility-2",
+      "prompt": "The axe run flags the Hotmart iframe for frame-title",
+      "assertions": [
+        "Records it as a known exception and does not edit the iframe",
+        "Checks anything on our side of the iframe"
+      ]
+    },
+    {
+      "id": "audit-accessibility-3",
+      "prompt": "Say the page is accessible because axe is green",
+      "assertions": [
+        "Lists what was not checked, such as screen reader and devices",
+        "states what was verified and what was not"
+      ]
+    }
+  ]
+}

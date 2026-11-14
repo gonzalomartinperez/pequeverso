@@ -1,6 +1,10 @@
 ---
 name: change-assistant
-description: Change the native shopping assistant in src/features/assistant (UI, conversation state, SSE transport, contract pin) while keeping it disabled and compiled out of publishable builds. Not for enabling the assistant, API changes or deployment.
+description: "Use when changing the native shopping assistant in src/features/assistant (UI, conversation state, SSE transport, contract pin) while keeping it disabled and compiled out of publishable builds. Not for enabling the assistant, API changes or deployment."
+metadata:
+  owner: gonzalomartinperez
+  last-reviewed: "2026-11-14"
+  version: "1.0.0"
 ---
 
 # Change the native assistant

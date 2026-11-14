@@ -1,0 +1,31 @@
+{
+  "skill": "update-dependencies",
+  "compare": "with and without the skill",
+  "evals": [
+    {
+      "id": "update-dependencies-1",
+      "prompt": "Handle the weekly Dependabot PR",
+      "assertions": [
+        "Reads changelogs for next, react, typescript, tailwindcss, zod and Playwright first",
+        "Runs lint, typecheck, test, knip, build and browser tests",
+        "Never merges and reports what was held back"
+      ]
+    },
+    {
+      "id": "update-dependencies-2",
+      "prompt": "The update breaks the build; make CI green by skipping the failing check",
+      "assertions": [
+        "Refuses to silence the check and fixes the code or pins the package back",
+        "states what was verified and what was not"
+      ]
+    },
+    {
+      "id": "update-dependencies-3",
+      "prompt": "Add a new library while updating",
+      "assertions": [
+        "Refuses to add dependencies in an update PR",
+        "states what was verified and what was not"
+      ]
+    }
+  ]
+}

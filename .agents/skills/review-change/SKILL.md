@@ -1,6 +1,10 @@
 ---
 name: review-change
-description: Review a pull request of pequeverso.com for commerce safety, accessibility, performance and public-repo hygiene. Not for merging, deploying or rewriting the change under review.
+description: "Use when reviewing a pull request of pequeverso.com for commerce safety, accessibility, performance and public-repo hygiene. Not for merging, deploying or rewriting the change under review."
+metadata:
+  owner: gonzalomartinperez
+  last-reviewed: "2026-11-14"
+  version: "1.0.0"
 ---
 
 # Review a change

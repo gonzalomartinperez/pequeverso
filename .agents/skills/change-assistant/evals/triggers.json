@@ -1,0 +1,106 @@
+{
+  "skill": "change-assistant",
+  "runs_per_query": 3,
+  "queries": [
+    {
+      "query": "Change the assistant chat panel layout",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Use a real OpenAI key for the assistant",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Fix the SSE transport reconnect logic in the assistant",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Add the Meta pixel to the assistant",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Update the assistant contract pin to a new API revision",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Turn on the assistant in production",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Add a unit test for the assistant conversation state",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Change the price shown on the product page",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Adjust the assistant message rendering to stay text only",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Cut a release",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Add a new application-layer use case to the assistant",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Set NEXT_PUBLIC_ASSISTANT_ENABLED to true in the workflow",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Run the assistant browser tests with the fixture API",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Add a testimonial",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Fix a boundary violation in the assistant layers",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Change the API repository",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Update the assistant Spanish strings in content/es/assistant.ts",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Add a new landing page section",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Change the assistant launcher icon with a lucide icon",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Add a checkout button inside the assistant",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

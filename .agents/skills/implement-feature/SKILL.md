@@ -1,6 +1,10 @@
 ---
 name: implement-feature
-description: Build or change a page of pequeverso.com following the design system, content model and commerce rules. Not for checkout, Hotmart funnel, tracking or deployment changes.
+description: "Use when building or changing a page or component of pequeverso.com with the design system, content model and commerce rules. Not for checkout, Hotmart funnel, tracking or deployment changes, nor for copy, price or fact edits (use change-content)."
+metadata:
+  owner: gonzalomartinperez
+  last-reviewed: "2026-11-14"
+  version: "1.0.0"
 ---
 
 # Implement a page or component

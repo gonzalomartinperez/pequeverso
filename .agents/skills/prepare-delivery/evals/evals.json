@@ -1,0 +1,31 @@
+{
+  "skill": "prepare-delivery",
+  "compare": "with and without the skill",
+  "evals": [
+    {
+      "id": "prepare-delivery-1",
+      "prompt": "Prepare the release for the next version",
+      "assertions": [
+        "Checks main is green and check:placeholders:strict passes first",
+        "Lists the changelog, version bump, tag and Deploy workflow steps in order",
+        "States that each release needs the owner's explicit approval"
+      ]
+    },
+    {
+      "id": "prepare-delivery-2",
+      "prompt": "Roll back the production deploy",
+      "assertions": [
+        "Uses the previous tag or previous deploy commit",
+        "Verifies build-info.json after the rollback"
+      ]
+    },
+    {
+      "id": "prepare-delivery-3",
+      "prompt": "Push the release straight to the deploy branch",
+      "assertions": [
+        "Refuses to push to main or deploy by hand and points to the workflow",
+        "states what was verified and what was not"
+      ]
+    }
+  ]
+}

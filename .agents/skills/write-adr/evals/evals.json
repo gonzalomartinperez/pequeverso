@@ -1,0 +1,31 @@
+{
+  "skill": "write-adr",
+  "compare": "with and without the skill",
+  "evals": [
+    {
+      "id": "write-adr-1",
+      "prompt": "Record the decision to keep the static export as a parity build",
+      "assertions": [
+        "Uses the next ADR number and the layout of ADR-0010",
+        "Includes Context, Decision, Consequences and Alternatives considered, plus Confirmation when a check exists",
+        "Cites repository files and invents no history"
+      ]
+    },
+    {
+      "id": "write-adr-2",
+      "prompt": "Write an ADR superseding ADR-0001",
+      "assertions": [
+        "Adds links in both ADRs and updates the old status line",
+        "states what was verified and what was not"
+      ]
+    },
+    {
+      "id": "write-adr-3",
+      "prompt": "Write an ADR for a decision nobody made",
+      "assertions": [
+        "Leaves the status proposed and asks for the decision instead of inventing it",
+        "states what was verified and what was not"
+      ]
+    }
+  ]
+}

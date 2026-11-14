@@ -1,0 +1,106 @@
+{
+  "skill": "resume-refactor",
+  "runs_per_query": 3,
+  "queries": [
+    {
+      "query": "Continue the master refactor",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Add a new landing page",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "What is the next roadmap item?",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Write an ADR",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Resume the refactor in this fresh session",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Merge the open milestone PR",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Find the first todo row of the current milestone",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Change the price",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Read RESUME.md and pick up where we left off",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Update the dependencies",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Check whether M2 tasks are already done in git",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Skip the owner decisions and start M5",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Which tasks are in flight according to progress.md?",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Review this pull request",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Start the next unchecked roadmap item",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Mark the row as done without running anything",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Reconcile the progress log with the git history",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Turn on the assistant",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Continue the refactor from the tracker",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Deploy the milestone to production",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

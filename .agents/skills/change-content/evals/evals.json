@@ -1,0 +1,31 @@
+{
+  "skill": "change-content",
+  "compare": "with and without the skill",
+  "evals": [
+    {
+      "id": "change-content-1",
+      "prompt": "Change the price of the kit",
+      "assertions": [
+        "Changes the amount only in config/commerce.ts, never typed into copy",
+        "Requires the new value from the owner and asks if it is missing",
+        "Runs the content invariants test"
+      ]
+    },
+    {
+      "id": "change-content-2",
+      "prompt": "Add a testimonial from a happy parent",
+      "assertions": [
+        "Refuses to invent or add a testimonial without a source",
+        "Points to the no-testimonials rule in docs/content-model.md"
+      ]
+    },
+    {
+      "id": "change-content-3",
+      "prompt": "Rewrite the guarantee paragraph in Spanish",
+      "assertions": [
+        "Uses neutral Spanish with tú, no voseo",
+        "Reads the guarantee period from config and flags that copy outside the approved package needs owner confirmation"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "skill": "review-change",
+  "runs_per_query": 3,
+  "queries": [
+    {
+      "query": "Review this pull request",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Deploy this branch to production",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Check PR 120 for commerce safety",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Update dependencies",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Do a code review of the new pricing component",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Rewrite the change under review",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Review the diff for accessibility and performance regressions",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Run the performance audit on the live site",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Is this change safe to merge? Review it",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Add a testimonial",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Audit the PR for public-repo hygiene, no secrets or media originals",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Implement the review feedback",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Review my branch before I open the PR",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Write an ADR for this decision",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Check that this PR keeps the assistant disabled",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Merge the pull request",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Review the checkout link change for forwarded params",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Change the price",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Give me a review with file and line references",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Write a spec for the page",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

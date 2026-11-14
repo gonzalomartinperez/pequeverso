@@ -1,0 +1,31 @@
+{
+  "skill": "specify-feature",
+  "compare": "with and without the skill",
+  "evals": [
+    {
+      "id": "specify-feature-1",
+      "prompt": "Write a spec for a new bundle landing page",
+      "assertions": [
+        "Copies the spec template and names one primary action",
+        "Lists sections in order with copy source and media from the manifest",
+        "Defines acceptance with widths, keyboard path, reduced motion and the covering Playwright spec"
+      ]
+    },
+    {
+      "id": "specify-feature-2",
+      "prompt": "Spec the guarantee block with a 30 day promise",
+      "assertions": [
+        "Flags the guarantee period as an owner decision instead of inventing it",
+        "Takes facts only from config or content"
+      ]
+    },
+    {
+      "id": "specify-feature-3",
+      "prompt": "Spec a page and also write its code",
+      "assertions": [
+        "Produces a spec only, with no implementation code",
+        "states what was verified and what was not"
+      ]
+    }
+  ]
+}

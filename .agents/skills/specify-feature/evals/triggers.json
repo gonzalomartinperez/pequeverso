@@ -1,0 +1,106 @@
+{
+  "skill": "specify-feature",
+  "runs_per_query": 3,
+  "queries": [
+    {
+      "query": "Write a spec for the new bundle landing page",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Add a testimonial section",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Draft the acceptance criteria for the thank-you page",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Turn on the assistant for visitors",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Spec out the new FAQ section before we build it",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Implement the new landing page",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Plan the sections of the support page with copy sources",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Review the open pull request",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Define observable behaviours for the offer modes on the product page",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Fix the failing responsive test",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Write the page brief for the upsell screen",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Write the Spanish copy for the guarantee block",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "I want a spec before redesigning the hub",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Cut the release",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "List what needs an owner decision for the new page",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Write an ADR for the new rendering approach",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "query": "Create docs/specs entry for the cookie page changes",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "query": "Run the accessibility audit",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "query": "Describe the single primary action of the downsell page",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "query": "Change the price on the product page",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}
