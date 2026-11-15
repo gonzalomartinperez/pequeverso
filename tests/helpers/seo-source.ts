@@ -66,22 +66,28 @@ export async function seoModule(file: string): Promise<Record<string, unknown>> 
   return import(pathToFileURL(resolve(file)).href);
 }
 
+type GenerateMetadata = (props: { params: Promise<{ product: string }> }) => Promise<Metadata>;
+
+/** Metadata of every `[product]` route, keyed by path (thank-you pages use the funnel path). */
+async function productRouteMetadata(
+  file: string,
+  module: Record<string, unknown>,
+  routes: Map<string, Metadata>,
+): Promise<void> {
+  const generate = module.generateMetadata as GenerateMetadata;
+  const thanks = file.includes("/gracias/");
+  for (const product of thanks ? coreProducts() : products) {
+    const path = thanks && product.kind === "core" ? product.funnel.thanksPath : product.path;
+    routes.set(path, await generate({ params: Promise.resolve({ product: product.slug }) }));
+  }
+}
+
 export async function routeMetadata(): Promise<Map<string, Metadata>> {
   const routes = new Map<string, Metadata>();
   for (const file of sourceFiles("src/app").filter((file) => file.endsWith("/page.tsx"))) {
     const module = await seoModule(file);
-    if (!file.includes("[product]")) {
-      routes.set(file.slice("src/app".length, -"page.tsx".length), module.metadata as Metadata);
-    } else {
-      const generate = module.generateMetadata as (props: {
-        params: Promise<{ product: string }>;
-      }) => Promise<Metadata>;
-      const thanks = file.includes("/gracias/");
-      for (const product of thanks ? coreProducts() : products) {
-        const path = thanks && product.kind === "core" ? product.funnel.thanksPath : product.path;
-        routes.set(path, await generate({ params: Promise.resolve({ product: product.slug }) }));
-      }
-    }
+    if (file.includes("[product]")) await productRouteMetadata(file, module, routes);
+    else routes.set(file.slice("src/app".length, -"page.tsx".length), module.metadata as Metadata);
   }
   return routes;
 }
