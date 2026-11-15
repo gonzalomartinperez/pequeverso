@@ -29,6 +29,13 @@ test("artifact CLI fails closed on invalid operations, roots and candidate ident
       { args: ["unknown", "out", "unused"] },
       { args: ["pack-off", "wrong", "unused"] },
       { args: ["attest-native", "out", "unused"] },
+      { args: ["pack-off", "sites", "unused"] },
+      { args: ["pack-off", "site/", "unused"] },
+      { args: ["pack-off", "./site", "unused"] },
+      { args: ["pack-off", "site", "unused"] },
+      { args: ["unpack-off", "site", "unused"] },
+      { args: ["unpack-off", "elsewhere", "unused"] },
+      { args: ["attest-native", "site", "unused"] },
       { args: ["pack-off", "out", "unused"], overrides: { CI_CANDIDATE_SHA: "c".repeat(40) } },
       { args: ["pack-off", "out", "unused"], overrides: { FIXTURE_GIT_OUTPUT: "c".repeat(40) } },
     ];

@@ -1,4 +1,7 @@
-/** OFF-only, source-bound file transfer. Quarantine is validated before out/ is created. */
+/**
+ * OFF-only, source-bound file transfer. Quarantine is validated before the target root (`out/` or
+ * the assembled `site/`) is created. The variant is derived from the root, never from the input.
+ */
 
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -12,6 +15,7 @@ import {
   openSync,
   readdirSync,
   readSync,
+  rmSync,
   writeFileSync,
 } from "node:fs";
 import { join, resolve } from "node:path";
@@ -29,9 +33,54 @@ export type Binding = {
   lock_sha256: string;
 };
 type Member = { path: string; size: number; sha256: string };
+/** One transferable shape of the OFF build, keyed by its root directory. */
+export type Variant = {
+  variant: "off-export" | "off-standalone";
+  /** `output` that `build-info.json` must report. */
+  output: "export" | "standalone";
+  /** Where the build identity lives, relative to the root. */
+  info: string;
+  /** Members that must exist (the first is the entry that proves the shape). */
+  required: readonly string[];
+  /** When set, the only allowed first path segments (the executable site is allowlisted). */
+  top?: readonly string[];
+};
+export const variants: Readonly<Record<"out" | "site", Variant>> = {
+  out: {
+    variant: "off-export",
+    output: "export",
+    info: "build-info.json",
+    required: ["index.html", "build-info.json"],
+  },
+  site: {
+    variant: "off-standalone",
+    output: "standalone",
+    info: "public/build-info.json",
+    required: ["server.js", "public/build-info.json", ".next/BUILD_ID"],
+    top: ["server.js", "package.json", ".next", "media", "public"],
+  },
+};
+/** Never transferable: planted packages or native code would run in the consuming job. */
+const FORBIDDEN_SEGMENT = /^(node_modules|UNPUBLISHABLE\.txt)$|\.(node|so|dll|dylib)$/i;
+
+/** Members outside the variant's allowlist, or carrying a forbidden segment, fail closed. */
+function requireShape(names: ReadonlySet<string>, shape: Variant): void {
+  for (const name of names) {
+    const segments = name.split("/");
+    if (segments.some((segment) => FORBIDDEN_SEGMENT.test(segment)))
+      throw new Error("Forbidden artifact member");
+    if (shape.top && !shape.top.includes(segments[0] ?? "")) throw new Error("Unexpected member");
+  }
+}
+const exportVariant = variants.out;
+/** The variant for a root; any root other than `out` or `site` fails closed. */
+export function variantForRoot(root: string): Variant {
+  if (root !== "out" && root !== "site") throw new Error("Unexpected root");
+  return variants[root];
+}
 type Manifest = {
   schema_version: 1;
-  variant: "off-export";
+  variant: Variant["variant"];
   binding: Binding;
   build_id: string;
   files: Member[];
@@ -97,6 +146,7 @@ export function buildIdentity(
   bytes: Uint8Array,
   expected: Binding,
   assistant: "enabled" | "disabled",
+  output: Variant["output"] = "export",
 ): string {
   const info = object(JSON.parse(Buffer.from(bytes).toString("utf8")), [
     "sha",
@@ -110,7 +160,7 @@ export function buildIdentity(
     info.sha !== expected.source_sha ||
     info.assistant !== assistant ||
     info.site_analytics !== "disabled" ||
-    info.output !== "export" ||
+    info.output !== output ||
     typeof info.ref !== "string" ||
     !info.ref.trim() ||
     typeof info.builtAt !== "string" ||
@@ -120,7 +170,7 @@ export function buildIdentity(
   return digest(bytes);
 }
 
-export function requireMembers(value: unknown): Member[] {
+export function requireMembers(value: unknown, shape: Variant = exportVariant): Member[] {
   if (!Array.isArray(value) || !value.length || value.length > limits.files) {
     throw new Error("Invalid artifact file inventory");
   }
@@ -154,22 +204,22 @@ export function requireMembers(value: unknown): Member[] {
     }
     return { path, size: entry.size, sha256: entry.sha256 };
   });
-  if (!names.has("index.html") || !names.has("build-info.json") || names.has("UNPUBLISHABLE.txt")) {
-    throw new Error("Not an OFF export");
-  }
+  if (shape.required.some((path) => !names.has(path))) throw new Error("Not an OFF export");
+  requireShape(names, shape);
   return members;
 }
 export function requireManifest(
   value: unknown,
   expected: Binding,
   actual: readonly Member[],
+  shape: Variant = exportVariant,
 ): Manifest {
   const manifest = object(value, ["schema_version", "variant", "binding", "build_id", "files"]);
-  if (manifest.schema_version !== 1 || manifest.variant !== "off-export")
+  if (manifest.schema_version !== 1 || manifest.variant !== shape.variant)
     throw new Error("Not an OFF manifest");
   requireBinding(manifest.binding, expected);
-  const members = requireMembers(manifest.files);
-  requireMembers(actual);
+  const members = requireMembers(manifest.files, shape);
+  requireMembers(actual, shape);
   const order = (items: readonly Member[]) =>
     [...items].sort((a, b) => a.path.localeCompare(b.path));
   if (JSON.stringify(order(members)) !== JSON.stringify(order(actual)))
@@ -179,7 +229,7 @@ export function requireManifest(
   }
   return {
     schema_version: 1,
-    variant: "off-export",
+    variant: shape.variant,
     binding: expected,
     build_id: manifest.build_id,
     files: members,
@@ -226,7 +276,7 @@ function readRegular(path: string, maximum: number): Buffer {
     closeSync(fd);
   }
 }
-export function payloadInventory(directory: string): Member[] {
+export function payloadInventory(directory: string, shape: Variant = exportVariant): Member[] {
   const files: Member[] = [];
   let total = 0;
   let directories = 0;
@@ -253,7 +303,7 @@ export function payloadInventory(directory: string): Member[] {
     }
   }
   visit("");
-  requireMembers(files);
+  requireMembers(files, shape);
   return files;
 }
 /** Read-only quarantine validation; the caller creates out/ only after this succeeds. */
@@ -261,6 +311,7 @@ export function validateOffArtifact(
   artifact: string,
   binding: Binding,
   checksum: string,
+  shape: Variant = exportVariant,
 ): Manifest {
   const root = lstatSync(artifact);
   if (
@@ -275,11 +326,16 @@ export function validateOffArtifact(
   const manifest = requireManifest(
     JSON.parse(serialized.toString("utf8")),
     binding,
-    payloadInventory(payload),
+    payloadInventory(payload, shape),
+    shape,
   );
   if (
-    buildIdentity(readRegular(join(payload, "build-info.json"), 8192), binding, "disabled") !==
-    manifest.build_id
+    buildIdentity(
+      readRegular(join(payload, shape.info), 8192),
+      binding,
+      "disabled",
+      shape.output,
+    ) !== manifest.build_id
   ) {
     throw new Error("Build identity mismatch");
   }
@@ -318,64 +374,86 @@ function expectedBinding(): Binding {
   };
 }
 
+function writeMember(root: string, file: Member, source: string, message: string): void {
+  const bytes = readRegular(join(source, file.path), limits.fileBytes);
+  if (digest(bytes) !== file.sha256) throw new Error(message);
+  const target = join(root, file.path);
+  mkdirSync(resolve(target, ".."), { recursive: true });
+  writeFileSync(target, bytes, { flag: "wx" });
+}
+function packOff(directory: string, artifact: string, binding: Binding): void {
+  const shape = variantForRoot(directory);
+  if (existsSync(artifact)) throw new Error("Unexpected root or existing package");
+  const files = payloadInventory(directory, shape);
+  const build_id = buildIdentity(
+    readRegular(join(directory, shape.info), 8192),
+    binding,
+    "disabled",
+    shape.output,
+  );
+  const manifest = { schema_version: 1, variant: shape.variant, binding, build_id, files };
+  requireManifest(manifest, binding, files, shape);
+  const serialized = `${JSON.stringify(manifest, null, 2)}\n`;
+  mkdirSync(join(artifact, "payload"), { recursive: true });
+  for (const file of files)
+    writeMember(join(artifact, "payload"), file, directory, "Export changed during transfer");
+  writeFileSync(join(artifact, "manifest.json"), serialized, { flag: "wx" });
+  if (process.env.GITHUB_OUTPUT)
+    writeFileSync(
+      process.env.GITHUB_OUTPUT,
+      `manifest_sha256=${digest(serialized)}\nsource_sha=${binding.source_sha}\n`,
+      { flag: "a" },
+    );
+}
+function unpackOff(directory: string, artifact: string, binding: Binding): void {
+  const shape = variantForRoot(directory);
+  if (existsSync(directory)) throw new Error("Expected absent export root");
+  const manifest = validateOffArtifact(
+    artifact,
+    binding,
+    process.env.CI_MANIFEST_SHA256 ?? "",
+    shape,
+  );
+  const payload = join(artifact, "payload");
+  mkdirSync(directory);
+  try {
+    for (const file of manifest.files)
+      writeMember(directory, file, payload, "Payload changed during transfer");
+  } catch (error) {
+    // Never leave a partial tree that a later step could mistake for the verified one.
+    rmSync(directory, { recursive: true, force: true });
+    throw error;
+  }
+}
+function attestNative(directory: string, artifact: string, binding: Binding): void {
+  if (directory !== "out-assistant-fixture") throw new Error("Unexpected native fixture root");
+  const build_id = buildIdentity(
+    readRegular(join(directory, "build-info.json"), 8192),
+    binding,
+    "enabled",
+  );
+  writeFileSync(
+    artifact,
+    `${JSON.stringify({ ...binding, variant: "native-fixture", build_id, uploaded_export: false }, null, 2)}\n`,
+  );
+}
+const operations: Readonly<Record<string, (d: string, a: string, b: Binding) => void>> = {
+  "pack-off": packOff,
+  "unpack-off": unpackOff,
+  "attest-native": attestNative,
+};
+
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   try {
     const [mode, directory, artifact] = process.argv.slice(2);
     if (!directory || !artifact) throw new Error("Explicit artifact paths required");
     const binding = expectedBinding();
     requireBinding(binding, binding);
-    if (mode === "pack-off") {
-      if (directory !== "out" || existsSync(artifact))
-        throw new Error("Unexpected root or existing package");
-      const files = payloadInventory(directory);
-      const build_id = buildIdentity(
-        readRegular(join(directory, "build-info.json"), 8192),
-        binding,
-        "disabled",
-      );
-      const manifest = { schema_version: 1, variant: "off-export", binding, build_id, files };
-      requireManifest(manifest, binding, files);
-      const serialized = `${JSON.stringify(manifest, null, 2)}\n`;
-      mkdirSync(join(artifact, "payload"), { recursive: true });
-      for (const file of files) {
-        const bytes = readRegular(join(directory, file.path), limits.fileBytes);
-        if (digest(bytes) !== file.sha256) throw new Error("Export changed during transfer");
-        const target = join(artifact, "payload", file.path);
-        mkdirSync(resolve(target, ".."), { recursive: true });
-        writeFileSync(target, bytes, { flag: "wx" });
-      }
-      writeFileSync(join(artifact, "manifest.json"), serialized, { flag: "wx" });
-      if (process.env.GITHUB_OUTPUT)
-        writeFileSync(
-          process.env.GITHUB_OUTPUT,
-          `manifest_sha256=${digest(serialized)}\nsource_sha=${binding.source_sha}\n`,
-          { flag: "a" },
-        );
-    } else if (mode === "unpack-off") {
-      if (directory !== "out" || existsSync(directory))
-        throw new Error("Expected absent export root");
-      const manifest = validateOffArtifact(artifact, binding, process.env.CI_MANIFEST_SHA256 ?? "");
-      const payload = join(artifact, "payload");
-      mkdirSync(directory);
-      for (const file of manifest.files) {
-        const bytes = readRegular(join(payload, file.path), limits.fileBytes);
-        if (digest(bytes) !== file.sha256) throw new Error("Payload changed during transfer");
-        const target = join(directory, file.path);
-        mkdirSync(resolve(target, ".."), { recursive: true });
-        writeFileSync(target, bytes, { flag: "wx" });
-      }
-    } else if (mode === "attest-native") {
-      if (directory !== "out-assistant-fixture") throw new Error("Unexpected native fixture root");
-      const build_id = buildIdentity(
-        readRegular(join(directory, "build-info.json"), 8192),
-        binding,
-        "enabled",
-      );
-      writeFileSync(
-        artifact,
-        `${JSON.stringify({ ...binding, variant: "native-fixture", build_id, uploaded_export: false }, null, 2)}\n`,
-      );
-    } else throw new Error("Unknown artifact operation");
+    const operation = Object.hasOwn(operations, mode ?? "")
+      ? operations[mode as string]
+      : undefined;
+    if (!operation) throw new Error("Unknown artifact operation");
+    operation(directory, artifact, binding);
     console.log("Candidate identity and file integrity checked; no delivery authorized.");
   } catch {
     console.error("Candidate artifact validation failed (input details withheld).");

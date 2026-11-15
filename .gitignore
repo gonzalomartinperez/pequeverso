@@ -5,6 +5,8 @@ tools/media/node_modules/
 # next.js
 .next/
 out/
+# assembled standalone site (tools/ci/assemble-site.ts)
+/site/
 next-env.d.ts
 *.tsbuildinfo
 

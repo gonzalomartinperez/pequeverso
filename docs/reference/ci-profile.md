@@ -69,9 +69,10 @@ suitable for publication. Reports may contain synthetic browser traces; never ru
 
 ## OFF export transfer
 
-Only `out/` with disabled build identity is transferable. `tools/ci/artifacts.ts` stages a payload
-directory and a closed manifest: no tar extraction or base64 container. The producer publishes
-its manifest checksum as a job output. Pinned same-run upload/download actions transport the
+Only `out/` with disabled build identity is transferable. From M4-2 the assembled standalone `site/`
+(`tools/ci/assemble-site.ts`, variant `off-standalone`, allowlisted top-level entries only) is
+transferable too. `tools/ci/artifacts.ts` stages a payload directory and a closed manifest: no tar
+extraction or base64 container. The producer publishes its manifest checksum as a job output. Pinned same-run upload/download actions transport the
 staging directory; their success alone does not establish integrity.
 
 Every consumer verifies the producer's repository, candidate/workflow SHA, run/attempt, selected
