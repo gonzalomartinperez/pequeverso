@@ -15,7 +15,7 @@ may only fall. `measuredAt`, `commit` and `source` say where the baseline comes 
   placeholders) once it enforces, and a unit test fails otherwise. Postponing `expires`, going
   enforce to warn or withdrawing `calibrated` counts as loosening.
 - Baselines today: `interaction` (frame time, LoAF and INP proxy; `warn` until its `expires`, see docs/development.md), `mutation` (M2-3, scoped modules, no collector in the scorecard yet), `coverage`, `diff-coverage` (changed-line floor per PR, `tools/ci/diff-coverage.ts`), `bundle`, `lighthouse` (live, mobile), `lighthouse-lab` (production-config export, CI gate `tools/lhci-assert.ts`), `a11y`, `repo-size` and
-  `complexity` (first run). The plan adds more files as their gates land (`ci-duration`, `mutation`,
+  `complexity` (enforced by `tests/unit/complexity.test.ts`, M4-3). The plan adds more files as their gates land (`ci-duration`, `mutation`,
   `design-lint`, `scorecard-axes`, ...); the nightly scorecard (M2-9) compares measurements with
   these baselines.
 

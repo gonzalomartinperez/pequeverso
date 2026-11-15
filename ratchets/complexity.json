@@ -1,9 +1,9 @@
 {
-  "$comment": "Functions above Biome noExcessiveCognitiveComplexity 10 (ecosystem 10.1 target: at most 10 per function), first run. Counts and the maximum may only fall (M4-3 reduces hot spots; worst today: tools/check-skills.ts checkSkills 73, src/features/assistant/domain/conversation.ts 54).",
+  "$comment": "Functions above Biome noExcessiveCognitiveComplexity 10 (ecosystem 10.1 target: at most 10 per function). Enforced by tests/unit/complexity.test.ts (M4-3) with tools/complexity.ts (`npm run complexity` lists every function above 10). Counts and the maximum may only fall. First run 2026-11-14 at a317051: 61 / 26 / max 73; drift to 81 / 43 / 124 was refactored back in #213-#218 before enforcement; max tightened to 54 (worst today: src/features/assistant/domain/conversation.ts).",
   "metric": "complexity",
-  "measuredAt": "2026-11-14",
-  "commit": "a317051",
-  "source": "biome lint with complexity/noExcessiveCognitiveComplexity maxAllowedComplexity 10 over src config content tools tests",
+  "measuredAt": "2026-11-15",
+  "commit": "01b858b",
+  "source": "node tools/complexity.ts (biome lint, complexity/noExcessiveCognitiveComplexity maxAllowedComplexity 10, over src config content tools tests)",
   "values": [
     {
       "key": "functions over 10 (src, config, content, tools)",
@@ -19,7 +19,7 @@
     },
     {
       "key": "max cognitive complexity",
-      "value": 73,
+      "value": 54,
       "unit": "",
       "direction": "max"
     }

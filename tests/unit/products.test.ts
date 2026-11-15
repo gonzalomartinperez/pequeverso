@@ -48,12 +48,17 @@ test("the registry parses and exposes both products with canonical paths", () =>
   assert.equal(checkoutFallbackPath(featuredProduct()), "/grafismo-fonetico/#comprar");
 });
 
+/** Every image id a product references: hero, pages, cards, the OG image and core scenes. */
+function productImageIds(product: (typeof products)[number]): string[] {
+  const images = [product.media.hero, ...product.media.pageIds, ...product.media.cards];
+  if (product.media.og) images.push(product.media.og);
+  if (product.kind === "core") images.push(...Object.values(product.media.scenes));
+  return images;
+}
+
 test("every media id of every product exists in the manifest with the right kind", () => {
   for (const product of products) {
-    const images = [product.media.hero, ...product.media.pageIds, ...product.media.cards];
-    if (product.media.og) images.push(product.media.og);
-    if (product.kind === "core") images.push(...Object.values(product.media.scenes));
-    for (const id of images)
+    for (const id of productImageIds(product))
       assert.doesNotThrow(() => getImage(id), `${product.slug}: image ${id}`);
     for (const id of product.media.videoIds) {
       assert.doesNotThrow(() => getVideo(id), `${product.slug}: video ${id}`);
