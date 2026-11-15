@@ -11,7 +11,7 @@ A planning-and-execution brief to refactor `gonzalomartinperez/pequeverso` (the 
 3. `roadmap.md` (find the first `todo` row of the current milestone).
 4. `audit.md` (why), `scorecard.md` (targets), `target-state.md` (architecture, build target), `design-playbook.md` and `cro.md` (for design and conversion work), `testing.md`, `ci-cd.md`.
 5. `ecosystem.md` and `rubrics.md` (never edit; they are byte-identical copies).
-6. The repo's own `AGENTS.md`, `docs/architecture.md`, `docs/tracking.md`, `docs/legal-checklist.md` before touching code.
+6. The repo's own `AGENTS.md`, `docs/reference/architecture.md`, `docs/tracking.md`, `docs/legal-checklist.md` before touching code.
 
 ## Find the true next task (mid-milestone)
 

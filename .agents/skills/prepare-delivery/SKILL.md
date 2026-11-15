@@ -16,7 +16,7 @@ metadata:
    the `deploy` branch, waits for Hostinger Git to pull it, verifies `build-info.json` matches the
    commit and runs `tools/smoke.ts`.
 4. After production: run the curl matrix in `docs/deployment.md`, check Search Console
-   (`docs/migration.md`) and the Hotmart purchase checklist in `docs/hotmart-funnel.md`.
+   (`docs/migration.md`) and the Hotmart purchase checklist in `docs/how-to/verify-hotmart-checkout.md`.
 5. Rollback: re-run Deploy with the previous tag (or redeploy the previous `deploy` commit in hPanel → Git).
 
 ## Limits

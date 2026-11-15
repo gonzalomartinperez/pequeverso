@@ -10,7 +10,7 @@ metadata:
 # Implement a page or component
 
 1. Read `AGENTS.md`, the spec in `docs/specs/`, `docs/design-system.md` (tokens, primitives,
-   blocks, motion, responsive contract) and `docs/content-model.md`.
+   blocks, motion, responsive contract) and `docs/reference/content-model.md`.
 2. Copy lives in `content/es/<page>.ts` (typed), facts in `config/`. Components are Server
    Components unless they need browser APIs; keep client islands small (`"use client"` at the leaf).
 3. Compose from `src/shared/editorial` (Section, SectionHeading, Stack, Grid, Split,

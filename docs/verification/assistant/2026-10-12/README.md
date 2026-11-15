@@ -84,7 +84,7 @@ Chromium, Firefox and WebKit at 320/390 px (6 cases, 4 configuration skips).
 These photographs and checks do not establish physical keyboard behavior, field performance,
 production HTTPS/CORS/cookies/proxy behavior, actual Hotmart purchases or commercial correctness
 of model answers. See the [verification record](../../assistant.md) and
-[activation checklist](../../../assistant.md).
+[activation checklist](../../../explanation/assistant.md).
 
 ## Reproduce the photography
 

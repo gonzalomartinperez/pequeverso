@@ -27,7 +27,7 @@ spectacular but performant motion and a full-responsive guarantee.
    Vega keeps shadcn's neutral geometry; the warmth comes from the tokens (cream, Fraunces, coral
    pill CTA, 12 px cards). Maia's global rounding and spacing would override the documented
    scale, so it was rejected. Radix is not mixed in. Primitives are generated with the CLI and
-   restyled; provenance in `docs/assets/shadcn-ui.md`.
+   restyled; provenance in `docs/reference/third-party-assets.md`.
 3. **Light theme only.** The brand is a cream page with navy bands; a dark theme would double the
    contrast surface for no user demand. No `.dark`, no dark variant.
 4. **Server-first.** Blocks are server components; `buttonVariants`/`badgeVariants` live in

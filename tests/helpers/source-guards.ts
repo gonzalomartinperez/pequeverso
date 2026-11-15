@@ -28,7 +28,7 @@ export const SCRIPT_EXCEPTIONS: Record<string, string> = {
 };
 export const HTML_EXCEPTIONS: Record<string, string> = {
   "src/features/commerce/presentation/offer-mode-root.tsx":
-    "Constant pre-hydration offer-mode script (docs/architecture.md).",
+    "Constant pre-hydration offer-mode script (docs/reference/architecture.md).",
   "src/shared/seo/json-ld-script.tsx":
     "The single JSON-LD emitter; jsonLd() escapes every < (M3-6, tests/unit/json-ld.test.ts).",
 };

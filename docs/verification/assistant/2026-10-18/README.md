@@ -40,4 +40,4 @@ Capture only the isolated `out-assistant-fixture/` build; never publish its outp
 configuration for a normal build. Review each PNG before replacing evidence. The expanded
 image is supplementary, taken from the same actual native run.
 
-See the [activation checklist](../../../assistant.md) and [verification history](../../assistant.md).
+See the [activation checklist](../../../explanation/assistant.md) and [verification history](../../assistant.md).

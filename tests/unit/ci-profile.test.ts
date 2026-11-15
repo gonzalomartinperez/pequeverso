@@ -87,7 +87,7 @@ test("files that lint, typecheck or build never ride the docs-only fast path", (
 });
 
 test("profile routing: docs stay on the fast path, code and workflows run everything", () => {
-  assert.deepEqual(profilesFor("docs/architecture.md"), ["docs"]);
+  assert.deepEqual(profilesFor("docs/reference/architecture.md"), ["docs"]);
   assert.deepEqual(profilesFor(".agents/skills/review-change/SKILL.md").sort(), [
     "docs",
     "harness",

@@ -23,7 +23,7 @@ ADRs live in `docs/decisions/` as `ADR-NNNN-kebab-title.md`, numbered in sequenc
 - [ ] Facts come from the repository or the owner decision register; cite the file. Never invent
   history, numbers or approvals.
 - [ ] Superseding: add the link in both ADRs and update the old status line.
-- [ ] Link the new ADR from the docs that own the behaviour (for example `docs/architecture.md`) and
+- [ ] Link the new ADR from the docs that own the behaviour (for example `docs/reference/architecture.md`) and
   from `AGENTS.md` only if agents must follow it.
 - [ ] Check that every relative link you wrote resolves.
 

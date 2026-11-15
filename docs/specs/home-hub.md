@@ -76,7 +76,7 @@ not measured evidence of higher conversion.
      every route.
      The landing, offer and thank-you pages keep their own `nav`/`cta`, because the visitor has
      already chosen. The
-     landing's coral checkout and the Hotmart funnel (`docs/hotmart-funnel.md`) are unchanged.
+     landing's coral checkout and the Hotmart funnel (`docs/how-to/verify-hotmart-checkout.md`) are unchanged.
    - *Footer (hub pages only: home, support, legal, 404; `PageShell hub`):* the «Productos» column
      adds the course with a plain affiliate link to the configured redirect, an external indicator
      and the commission disclosure. The landing, offer and thank-you pages

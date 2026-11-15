@@ -40,7 +40,7 @@ handlers, invisible to the export), no runtime image optimizer. Server logic liv
 
 ## Source tree
 
-The [common-site decision](decisions/ADR-0009-common-site-module-spine.md) aligns physical
+The [common-site decision](../decisions/ADR-0009-common-site-module-spine.md) aligns physical
 responsibilities while retaining Pequeverso's behavior and actual feature ownership.
 
 ```text
@@ -104,7 +104,7 @@ Page copy lives in `content/es/home.ts`; shared labels live in `content/es/hub.t
 then selects exactly one existing `ProductInterestLink` or `AffiliateLink` handler.
 The registry stays outside the client import graph; stable `#leer` / `#bebe` chapters
 remain informational rather than an extra required selection step.
-The full behavior and ownership map is the [Home hub spec](specs/home-hub.md).
+The full behavior and ownership map is the [Home hub spec](../specs/home-hub.md).
 
 `config/affiliates.ts` owns the approved course facts, local redirect path and
 configuration key; the actual affiliate destination is a deployment value. The
@@ -114,7 +114,7 @@ course is not a third `config/products` kind and does not inherit the kit's pric
 PDF composition or funnel. Home links to the kit landing before its configured
 checkout, while `AffiliateLink` sends an explicitly disclosed recommendation
 through the configured redirect. Post-purchase offers retain their existing
-Hotmart widget flow. See [affiliate configuration](reference/affiliates.md) for the redirect
+Hotmart widget flow. See [affiliate configuration](affiliates.md) for the redirect
 and attribution contract; those facts are not duplicated in presentation code.
 
 ## Routes
@@ -159,7 +159,7 @@ repository). `src/app/layout.tsx` renders `AssistantSlot`, which imports the cli
 `NEXT_PUBLIC_ASSISTANT_ENABLED === "true"` at build time; the default build emits none of it
 (`tools/check-assistant-disabled.ts`). Layers: `domain` (pure) → `application` (controller, ports)
 → `adapters` (HTTP/SSE, validation) → `presentation` (React), wired only in `entry.ts`
-(`tests/unit/assistant/boundaries.test.ts`). Details and activation: `docs/assistant.md`, ADR-0008.
+(`tests/unit/assistant/boundaries.test.ts`). Details and activation: `docs/explanation/assistant.md`, ADR-0008.
 
 ### Assistant ownership and runtime
 
@@ -193,7 +193,7 @@ a gutter that changes the width of earlier messages.
 Default publishable artifacts must pass `check:assistant-disabled` and record
 `"assistant": "disabled"` in `build-info.json`. Local fixture screenshots do not validate a real
 provider, physical phone keyboard or production VPS cookies/CORS/proxy behavior. See
-[assistant verification](verification/assistant.md) and [activation requirements](assistant.md).
+[assistant verification](../verification/assistant.md) and [activation requirements](../explanation/assistant.md).
 
 ## Commerce and tracking boundaries
 
@@ -215,7 +215,7 @@ provider, physical phone keyboard or production VPS cookies/CORS/proxy behavior.
 
 ### Enforced dependency contracts
 
-[Architecture contracts](reference/architecture-contracts.md) document ownership, review and blocking CI rules.
+[Architecture contracts](architecture-contracts.md) document ownership, review and blocking CI rules.
 `npm run test:architecture` parses imports with Oxc, checks runtime cycles and follows client
 imports transitively through barrels and aliases. Assistant presentation receives a stable
 controller from `runtime.tsx`; only `entry.ts` constructs its HTTP adapter. Domain and application

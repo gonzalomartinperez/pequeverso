@@ -14,19 +14,19 @@ Every move, rename, split, deletion or conversion of the 906 tracked files at `o
 | `.claude/skills/review-change/SKILL.md` | `.claude/skills/review-change` | convert-to-symlink | M1 | Relative symlink to ../../.agents/skills/review-change (ecosystem 15.1) |
 | `.claude/skills/specify-feature/SKILL.md` | `.claude/skills/specify-feature` | convert-to-symlink | M1 | Relative symlink to ../../.agents/skills/specify-feature (ecosystem 15.1) |
 | `docs/affiliates.md` | `docs/reference/affiliates.md` | move | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
-| `docs/architecture.md` | `docs/reference/architecture.md` | move | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
-| `docs/assets/shadcn-ui.md` | `docs/reference/third-party-assets.md` | move | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
-| `docs/assistant.md` | `docs/explanation/assistant.md` | move | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
+| `docs/architecture.md` | `docs/reference/architecture.md` | move | done (M4-4) | Diátaxis quadrant (docs-and-community.md section 3) |
+| `docs/assets/shadcn-ui.md` | `docs/reference/third-party-assets.md` | move | done (M4-4) | Diátaxis quadrant (docs-and-community.md section 3) |
+| `docs/assistant.md` | `docs/explanation/assistant.md` | move | done (M4-4) | Diátaxis quadrant (docs-and-community.md section 3) |
 | `docs/ci-profile.md` | `docs/reference/ci-profile.md` | move | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
 | `docs/code-quality.md` | `docs/reference/code-quality.md` | move | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
-| `docs/content-model.md` | `docs/reference/content-model.md` | move | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
+| `docs/content-model.md` | `docs/reference/content-model.md` | move | done (M4-4) | Diátaxis quadrant (docs-and-community.md section 3) |
 | `docs/dependency-updates.md` | `docs/how-to/handle-the-weekly-dependency-pr.md` | move+rewrite | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
 | `docs/deployment.md` | `docs/how-to/release-and-verify.md` | move+rewrite | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
 | `docs/design-system.md` | `docs/reference/design-system.md` | move+rewrite | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
 | `docs/development.md` | `docs/tutorials/first-change.md` | move+rewrite | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
 | `docs/engineering-standards.md` | `docs/reference/architecture-contracts.md` | move | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
 | `docs/generated/htaccess.txt` | (deleted) | delete | M4 (PV-D3) | Static export retired (PV-D3, M4) |
-| `docs/hotmart-funnel.md` | `docs/how-to/verify-hotmart-checkout.md` | move | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
+| `docs/hotmart-funnel.md` | `docs/how-to/verify-hotmart-checkout.md` | move | done (M4-4) | Diátaxis quadrant (docs-and-community.md section 3) |
 | `docs/legal-checklist.md` | `docs/explanation/legal-model.md` | move+rewrite | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
 | `docs/media.md` | `docs/how-to/update-media.md` | move | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
 | `docs/migration.md` | `docs/explanation/hosting.md` | move | M3-M4 | Diátaxis quadrant (docs-and-community.md section 3) |
@@ -52,9 +52,12 @@ Pure `git mv` moves with every link and path reference updated (no rewrite): `do
 `docs/site-analytics.md`, `docs/ci-profile.md`, `docs/affiliates.md` to `docs/reference/`;
 `docs/engineering-standards.md` to `docs/reference/architecture-contracts.md`; `docs/media.md` to
 `docs/how-to/update-media.md`. The table above keeps the original From column for traceability.
-Remaining Diátaxis moves (architecture, assistant, content-model, design-system, deployment,
-development, dependency-updates, hotmart-funnel, legal-checklist, migration, performance, tracking,
-`docs/assets/shadcn-ui.md`) stay for M3-M4 because they combine rewrites or touch many consumers.
+Docs phase 2 (done in M4-4): `docs/architecture.md`, `docs/assets/shadcn-ui.md` and
+`docs/content-model.md` to `docs/reference/`; `docs/assistant.md` to `docs/explanation/`;
+`docs/hotmart-funnel.md` to `docs/how-to/verify-hotmart-checkout.md`, as pure moves with every
+reference updated. Remaining Diátaxis moves (design-system, deployment, development,
+dependency-updates, legal-checklist, migration, performance, tracking) stay for M3-M4 because they
+combine rewrites or touch many consumers.
 
 ## 2. Bulk actions
 

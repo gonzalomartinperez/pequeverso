@@ -16,7 +16,7 @@
       "prompt": "Add a testimonial from a happy parent",
       "assertions": [
         "Refuses to invent or add a testimonial without a source",
-        "Points to the no-testimonials rule in docs/content-model.md"
+        "Points to the no-testimonials rule in docs/reference/content-model.md"
       ]
     },
     {

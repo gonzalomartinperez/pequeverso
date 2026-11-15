@@ -25,7 +25,7 @@ import { parseAnalyticsEnv } from "./site-analytics-env.ts";
  *
  * Builds use `next build --webpack` (package.json): Hostinger's builder has GLIBC 2.28, where the
  * native SWC/Turbopack bindings cannot load and only the WASM fallback (webpack-compatible) works.
- * See docs/architecture.md and docs/decisions/ADR-0010-standalone-production-target.md.
+ * See docs/reference/architecture.md and docs/decisions/ADR-0010-standalone-production-target.md.
  *
  * `withCn` compiles the Tailwind class-merge tables used by `src/shared/styles/cn.ts` from the sources
  * before the compiler starts (dev, build and typegen alike); `SceneBudgetPlugin` records the

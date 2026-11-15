@@ -1,7 +1,7 @@
 import { expect, test } from "./fixtures";
 
 /**
- * The publishable export ships without the native assistant (docs/assistant.md). Runs against the
+ * The publishable export ships without the native assistant (docs/explanation/assistant.md). Runs against the
  * real default build: no launcher, no assistant script and no assistant request on any page type.
  */
 const MARKERS = ["assistant-launcher", "pv-assistant-panel", "/api/v1/session", "Idempotency-Key"];

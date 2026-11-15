@@ -27,7 +27,7 @@ text alternatives. The current baseline is `ratchets/a11y.json`.
 
 ## Hotmart iframe exception protocol
 
-The Hotmart widget (`docs/hotmart-funnel.md`) renders a third-party iframe we cannot edit. Findings
+The Hotmart widget (`docs/how-to/verify-hotmart-checkout.md`) renders a third-party iframe we cannot edit. Findings
 inside it (for example frame-title or link-name) are recorded, not "fixed" in the iframe: confirm the
 violation is inside the iframe, keep the count within `ratchets/a11y.json`, and note it as a known
 exception. Anything on our side of the iframe (container, label, focus entry and exit) is in scope.
