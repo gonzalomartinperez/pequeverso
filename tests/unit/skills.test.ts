@@ -412,3 +412,94 @@ test("a tracked external-looking skill link fails closed", { skip: !hasGit }, ()
   assert.ok(problems.some((p) => p.includes(".claude/skills/external: tracked")));
   assert.ok(problems.some((p) => p.includes(".agents/skills/external: tracked")));
 });
+
+// Characterization tests: pin the exact problems and their order (behaviour of tools/check-skills.ts).
+const skillFile = (dir: string, name: string) => path.join(dir, ".agents/skills", name, "SKILL.md");
+/** Exact problems, with the temp directory removed from the messages that embed a file path. */
+function exact(mutate: (dir: string, file: (name: string) => string) => void): string[] {
+  let temp = "";
+  const problems = broken((dir) => {
+    temp = dir;
+    mutate(dir, (name) => skillFile(dir, name));
+  });
+  return problems.map((p) => p.replace(`${temp}/`, ""));
+}
+const at = (name: string) => `.agents/skills/${name}/SKILL.md`;
+const insertAfter = (marker: string, line: string) => (t: string) =>
+  t.replace(marker, `${marker}\n${line}`);
+
+test("a SKILL.md that is a directory yields one problem and nothing downstream", () => {
+  const problems = exact((_dir, file) => {
+    rmSync(file("write-adr"));
+    mkdirSync(file("write-adr"));
+  });
+  assert.deepEqual(problems, ["write-adr: canonical entry must be a regular SKILL.md file"]);
+});
+
+test("a skill without frontmatter yields exactly the missing frontmatter problem", () => {
+  const problems = exact((_dir, file) => writeFileSync(file("write-adr"), "# No frontmatter\n"));
+  assert.deepEqual(problems, [`${at("write-adr")}: missing frontmatter`]);
+});
+
+test("a duplicate metadata field and a stray nested line give exact problems", () => {
+  const dup = exact((_dir, file) =>
+    edit(file("write-adr"), insertAfter('  version: "1.0.0"', '  version: "1.0.0"')),
+  );
+  assert.deepEqual(dup, [`${at("write-adr")}: duplicate metadata field version`]);
+  const nested = exact((_dir, file) =>
+    edit(file("write-adr"), (t) => t.replace(/^(name: .*)$/m, "$1\n  stray: value")),
+  );
+  assert.deepEqual(nested, [`${at("write-adr")}: unsupported frontmatter line "  stray: value"`]);
+});
+
+test("identical descriptions flag the alphabetically later skill", () => {
+  const problems = exact((_dir, file) => {
+    const description = readFileSync(file("implement-feature"), "utf8").match(/^description: .*$/m);
+    edit(file("review-change"), (t) => t.replace(/^description: .*$/m, description?.[0] ?? ""));
+  });
+  assert.deepEqual(problems, ["review-change: same description as implement-feature"]);
+});
+
+test("an empty skill catalog and a wrong CLAUDE.md are reported", () => {
+  const empty = exact((dir) => {
+    rmSync(path.join(dir, ".agents/skills"), { recursive: true });
+    mkdirSync(path.join(dir, ".agents/skills"));
+    rmSync(path.join(dir, ".claude/skills"), { recursive: true });
+    mkdirSync(path.join(dir, ".claude/skills"));
+  });
+  assert.ok(empty.includes("no skills in .agents/skills"));
+  assert.deepEqual(
+    exact((dir) => writeFileSync(path.join(dir, "CLAUDE.md"), "@AGENTS.md")),
+    ["CLAUDE.md must be exactly @AGENTS.md"],
+  );
+  assert.deepEqual(
+    exact((dir) => rmSync(path.join(dir, "CLAUDE.md"))),
+    ["CLAUDE.md must be exactly @AGENTS.md"],
+  );
+});
+
+test("several simultaneous defects come back in a fixed order", () => {
+  const problems = exact((dir, file) => {
+    writeFileSync(path.join(dir, "CLAUDE.md"), "changed\n");
+    rmSync(path.join(dir, ".claude/skills/change-content"));
+    rmSync(file("audit-accessibility"));
+    mkdirSync(file("audit-accessibility"));
+    writeFileSync(file("change-assistant"), "no frontmatter\n");
+
+    edit(file("prepare-delivery"), insertAfter('  version: "1.0.0"', '  version: "1.0.0"'));
+    edit(file("review-change"), (t) => `${t}\nTODO later\n`);
+    const twin = readFileSync(file("implement-feature"), "utf8").match(/^description: .*$/m);
+    edit(file("specify-feature"), (t) => t.replace(/^description: .*$/m, twin?.[0] ?? ""));
+    edit(file("write-adr"), (t) => t.replace(/^(name: .*)$/m, "$1\n  stray: value"));
+  });
+  assert.deepEqual(problems, [
+    "change-content: missing .claude/skills symlink",
+    "CLAUDE.md must be exactly @AGENTS.md",
+    "audit-accessibility: canonical entry must be a regular SKILL.md file",
+    `${at("change-assistant")}: missing frontmatter`,
+    `${at("prepare-delivery")}: duplicate metadata field version`,
+    "review-change: placeholder text",
+    "specify-feature: same description as implement-feature",
+    `${at("write-adr")}: unsupported frontmatter line "  stray: value"`,
+  ]);
+});
