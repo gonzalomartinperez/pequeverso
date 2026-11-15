@@ -1,6 +1,6 @@
 # Dependencies
 
-Policy (ecosystem section 7): a new runtime dependency passes an ADR with need versus platform, health (Scorecard and deps.dev), licence allow-list (MIT, Apache-2.0, BSD, ISC, 0BSD, BlueOak), bundle cost over 10 kB gz justified, maintainers, exit cost. Versions below are from `package.json` at `cbf519c`. Health, advisories and licence cells marked "M1 script" are filled by a script in M1 (`tools/deps-report.ts`: deps.dev, Scorecard API and `npm audit`) because this plan did not verify them against live registries; the `npm audit --omit=dev --audit-level=high` step is already green in CI.
+Policy (ecosystem section 7): a new runtime dependency passes an ADR with need versus platform, health (Scorecard and deps.dev), licence allow-list (MIT, Apache-2.0, BSD, ISC, 0BSD, BlueOak), bundle cost over 10 kB gz justified, maintainers, exit cost. Versions below are from `package.json` at `cbf519c`. Health, advisories and licence cells marked "M1 script" are filled by `tools/deps-report.ts` (`npm run deps:report`, optionally `-- --audit audit.json` with the output of `npm audit --json`; deps.dev, Scorecard via deps.dev and `npm audit`) because this plan did not verify them against live registries; the `npm audit --omit=dev --audit-level=high` step is already green in CI.
 
 ## Runtime
 

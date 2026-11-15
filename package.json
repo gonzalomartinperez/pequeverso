@@ -36,6 +36,7 @@
     "check:media": "node tools/check-media-budget.ts",
     "check:placeholders": "node tools/check-placeholders.ts",
     "check:placeholders:strict": "node tools/check-placeholders.ts --strict",
+    "deps:report": "node tools/deps-report.ts",
     "lhci": "lhci autorun && node tools/lhci-assert.ts ratchets/lighthouse-lab.json",
     "build:lhci": "node tools/build-lhci.ts",
     "lhci:production-config": "node tools/build-lhci.ts && SERVE_DIR=out-lhci npm run lhci",
