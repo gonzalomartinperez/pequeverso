@@ -71,6 +71,26 @@ const preloadZoom = () => void loadZoom();
 const ZoomContext = createContext<(image: HTMLImageElement) => void>(() => undefined);
 
 /**
+ * Selects the slide that is mostly in view. While a programmatic scroll is pending, only its
+ * target counts (intermediate slides are not selections) and reaching it settles the scroll.
+ */
+function selectInView(
+  entries: IntersectionObserverEntry[],
+  pendingTarget: { current: number | null },
+  settle: () => void,
+  select: (index: number) => void,
+): void {
+  for (const entry of entries) {
+    if (!entry.isIntersecting || entry.intersectionRatio < 0.6) continue;
+    const index = Number((entry.target as HTMLElement).dataset.index);
+    const target = pendingTarget.current;
+    if (target !== null && index !== target) continue;
+    if (target !== null) settle();
+    select(index);
+  }
+}
+
+/**
  * Zoom trigger wrapping a slide `<img>`; opens the gallery dialog with that element's
  * current rendition, srcset, alt and caption. Rendered by `GallerySlide` on the server.
  */
@@ -152,19 +172,7 @@ export function GalleryCarousel({
     const root = track.current;
     if (!root) return;
     const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting || entry.intersectionRatio < 0.6) continue;
-          const index = Number((entry.target as HTMLElement).dataset.index);
-          const target = pendingTarget.current;
-          if (target !== null) {
-            // Intermediate slides of a programmatic scroll are not selections.
-            if (index !== target) continue;
-            settle();
-          }
-          setSelected(index);
-        }
-      },
+      (entries) => selectInView(entries, pendingTarget, settle, setSelected),
       { root, threshold: [0.6, 1] },
     );
     const settle = () => {
