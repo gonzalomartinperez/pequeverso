@@ -1,4 +1,4 @@
-import { expect, test } from "./fixtures";
+import { expect, nudgePage, test } from "./fixtures";
 
 /**
  * Headless WebKit on Linux (the nightly runner) renders without GPU compositing at device scale 2:
@@ -252,14 +252,14 @@ test("hero scene: WebGL canvas mounts after the first interaction on desktop, is
   );
   if (!eligible) {
     // ADR-0017: phones, coarse pointers and narrow windows keep the static starfield.
-    await page.mouse.wheel(0, 120);
+    await nudgePage(page);
     await page.waitForTimeout(2_500);
     await expect(stage.locator("canvas")).toHaveCount(0);
     await expect(stage).toHaveAttribute("data-mode", "static");
     return;
   }
   await expect(stage.locator("canvas")).toHaveCount(0);
-  await page.mouse.wheel(0, 120);
+  await nudgePage(page);
   await expect(stage.locator("canvas")).toHaveCount(1, { timeout: 10_000 });
   await expect(stage).toHaveAttribute("data-mode", "running", { timeout: 10_000 });
   expect(
