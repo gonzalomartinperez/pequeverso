@@ -1,12 +1,14 @@
-// Enforces per-route transfer-size budgets (gzip) on the static export.
+// Enforces per-route transfer-size budgets (gzip) on the static export (`out/`), or on an assembled
+// standalone site when SITE_DIR is set (tools/ci/assemble-site.ts, tools/lib/site-layout.ts).
 // Budgets live in config/budgets.json; a markdown table is appended to $GITHUB_STEP_SUMMARY when set.
 // `--json <file>` also writes [{route, metric, kb}] for the scorecard (tools/scorecard).
-import { appendFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { appendFileSync, readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { gzipSync } from "node:zlib";
+import { assetFile, layoutFor, missingLayout, pageFile } from "./lib/site-layout.ts";
 
 const root = process.cwd();
-const outDir = resolve(root, "out");
+const layout = layoutFor(root, process.env);
 type Metric = "html" | "js" | "css";
 type Budgets = {
   default: Record<Metric, number>;
@@ -15,22 +17,26 @@ type Budgets = {
 const budgets = JSON.parse(readFileSync(resolve(root, "config/budgets.json"), "utf8")) as Budgets;
 const metrics: readonly Metric[] = ["html", "js", "css"];
 
-if (!existsSync(outDir)) {
-  console.error("check-bundle: out/ not found; run `npm run build` first");
+const missing = missingLayout(layout, "check-bundle");
+if (missing) {
+  console.error(missing);
   process.exit(1);
 }
 
 const gzipBytes = (file: string): number => gzipSync(readFileSync(file), { level: 9 }).length;
 
 function measureRoute(route: string): Record<Metric, number> & { route: string; scripts: number } {
-  const html = join(outDir, route === "/" ? "index.html" : `${route.replace(/^\//, "")}index.html`);
+  const html = pageFile(layout, route);
   const source = readFileSync(html, "utf8");
   const scripts = [...new Set(source.match(/\/_next\/static\/chunks\/[^"']+\.js/g) ?? [])].filter(
     (src) => !/polyfills/.test(src),
   );
   const styles = [...new Set(source.match(/\/_next\/static\/css\/[^"']+\.css/g) ?? [])];
   const sum = (files: string[]): number =>
-    files.reduce((total, file) => total + gzipBytes(join(outDir, decodeURIComponent(file))), 0);
+    files.reduce(
+      (total, file) => total + gzipBytes(assetFile(layout, decodeURIComponent(file))),
+      0,
+    );
   return {
     route,
     html: gzipBytes(html),
