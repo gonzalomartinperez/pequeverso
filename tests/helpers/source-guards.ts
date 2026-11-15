@@ -1,3 +1,4 @@
+import type { Argument, Expression, JSXAttributeItem, VisitorObject } from "oxc-parser";
 import { parseSync, Visitor } from "oxc-parser";
 import type { Finding } from "./design-lint.ts";
 import { sourceModule, sourceTarget } from "./source-architecture.ts";
@@ -32,60 +33,108 @@ export const HTML_EXCEPTIONS: Record<string, string> = {
     "The single JSON-LD emitter; jsonLd() escapes every < (M3-6, tests/unit/json-ld.test.ts).",
 };
 
-/** Syntax-aware guards: strings and comments cannot masquerade as executable code. */
-export function guardFindings(file: string, source: string, raw = false): Finding[] {
-  const parsed = parseSync(file, source);
-  if (parsed.errors.length) throw new Error(`${file}: invalid guard input`);
-  const found: Finding[] = [];
-  const add = (rule: string, value: string) => found.push({ rule, file, value });
-  const scriptAllowed =
-    !raw && (file in SCRIPT_EXCEPTIONS || file.startsWith("src/features/tracking/adapters/"));
-  const envAllowed =
-    !raw &&
-    (/^(?:config|tools|tests)\//.test(file) ||
-      /^next\.config\./.test(file) ||
-      file in ENV_EXCEPTIONS);
-  const processNames = new Set(["process"]);
-  const scripts = new Set(["script"]);
-  for (const node of parsed.program.body)
-    if (node.type === "ImportDeclaration") {
-      const from = String(node.source.value);
-      for (const specifier of node.specifiers) {
-        if (from === "next/script") scripts.add(specifier.local.name);
-        if (from === "node:process" || from === "process") {
-          if (specifier.type === "ImportSpecifier") {
-            if (specifier.imported.type === "Identifier" && specifier.imported.name === "env")
-              add("env", "import env");
-          } else processNames.add(specifier.local.name);
-        }
-      }
-    }
-  const isProcess = (node: { type: string }): boolean => {
-    const n = node as {
-      type: string;
-      name?: string;
-      object?: { name?: string };
-      property?: { name?: string };
-    };
-    return (
-      (n.type === "Identifier" && processNames.has(n.name ?? "")) ||
-      (n.type === "MemberExpression" &&
-        ["globalThis", "global", "window"].includes(n.object?.name ?? "") &&
-        n.property?.name === "process")
-    );
-  };
-  const named = (node: object): unknown => {
-    const n = node as { type: string; name?: string; value?: unknown };
-    return n.type === "Identifier" ? n.name : n.type === "Literal" ? n.value : null;
-  };
-  new Visitor({
+type Add = (rule: string, value: string) => void;
+type Program = ReturnType<typeof parseSync>["program"];
+type ImportDeclarationNode = Extract<Program["body"][number], { type: "ImportDeclaration" }>;
+type ImportSpecifierNode = ImportDeclarationNode["specifiers"][number];
+
+interface ImportNames {
+  processNames: Set<string>;
+  scripts: Set<string>;
+}
+
+/** Records one specifier of `node:process` / `process`: `env` imports are findings. */
+function processSpecifier(specifier: ImportSpecifierNode, names: ImportNames, add: Add): void {
+  if (specifier.type !== "ImportSpecifier") {
+    names.processNames.add(specifier.local.name);
+    return;
+  }
+  if (specifier.imported.type === "Identifier" && specifier.imported.name === "env")
+    add("env", "import env");
+}
+
+/** Records the bindings of one import declaration. */
+function declarationNames(node: ImportDeclarationNode, names: ImportNames, add: Add): void {
+  const from = String(node.source.value);
+  for (const specifier of node.specifiers) {
+    if (from === "next/script") names.scripts.add(specifier.local.name);
+    if (from === "node:process" || from === "process") processSpecifier(specifier, names, add);
+  }
+}
+
+/** Local names bound to `process` and to `next/script`, plus `import { env }` findings. */
+function importNames(program: Program, add: Add): ImportNames {
+  const names: ImportNames = { processNames: new Set(["process"]), scripts: new Set(["script"]) };
+  for (const node of program.body)
+    if (node.type === "ImportDeclaration") declarationNames(node, names, add);
+  return names;
+}
+
+function isProcess(node: { type: string }, processNames: Set<string>): boolean {
+  const n = node as { type: string; name?: string };
+  return (n.type === "Identifier" && processNames.has(n.name ?? "")) || isGlobalProcess(node);
+}
+
+/** `globalThis.process`, `global.process` and `window.process`. */
+function isGlobalProcess(node: { type: string }): boolean {
+  const n = node as { type: string; object?: { name?: string }; property?: { name?: string } };
+  return (
+    n.type === "MemberExpression" &&
+    ["globalThis", "global", "window"].includes(n.object?.name ?? "") &&
+    n.property?.name === "process"
+  );
+}
+
+function named(node: object): unknown {
+  const n = node as { type: string; name?: string; value?: unknown };
+  return n.type === "Identifier" ? n.name : n.type === "Literal" ? n.value : null;
+}
+
+/** Finding of one attribute of a `<script>` element, if any. */
+function scriptAttributeFinding(attr: JSXAttributeItem): string | null {
+  if (attr.type === "JSXSpreadAttribute") return "script spread props";
+  if (attr.name.type !== "JSXIdentifier" || attr.name.name !== "src") return null;
+  // Only root-relative literals are local; everything else may hide an external host.
+  const value = attr.value?.type === "Literal" ? String(attr.value.value) : null;
+  return value === null || !/^\/(?!\/)/.test(value) ? "script src" : null;
+}
+
+/** First argument of a call when it is a static string, else null. */
+function staticFirstArgument(first: Argument | undefined): unknown {
+  if (first?.type === "Literal") return first.value;
+  if (first?.type === "TemplateLiteral" && first.expressions.length === 0)
+    return first.quasis[0]?.value.cooked;
+  return null;
+}
+
+/** Called method name: `a.b()` and `b()` both give `b`. */
+function calledMethod(callee: Expression): unknown {
+  if (callee.type === "MemberExpression") return named(callee.property);
+  return callee.type === "Identifier" ? callee.name : null;
+}
+
+/** Findings of the adapter imports of a composition file. */
+function adapterImportFindings(file: string, source: string, raw: boolean, add: Add): void {
+  if (!/^src\/(?:app|views|shell)\//.test(file)) return;
+  for (const { specifier } of sourceModule(file, source).imports) {
+    const target = specifier === null ? null : sourceTarget(file, specifier);
+    if (target && ADAPTER_IMPORT_EXCEPTIONS[file] === target && !raw) continue;
+    if (target && /^src\/features\/(?:tracking|assistant)\/adapters\//.test(target))
+      add("adapter-import", target);
+  }
+}
+
+/** Visitor callbacks of the guards. */
+function guardVisitor(names: ImportNames, scriptAllowed: boolean, add: Add): VisitorObject {
+  return {
     MemberExpression(node) {
-      if (isProcess(node.object) && named(node.property) === "env") add("env", "process.env");
+      if (isProcess(node.object, names.processNames) && named(node.property) === "env")
+        add("env", "process.env");
     },
     VariableDeclarator(node) {
       if (
         node.init &&
-        isProcess(node.init) &&
+        isProcess(node.init, names.processNames) &&
         node.id.type === "ObjectPattern" &&
         node.id.properties.some((p) => p.type === "Property" && named(p.key) === "env")
       )
@@ -96,50 +145,41 @@ export function guardFindings(file: string, source: string, raw = false): Findin
         add("unsafe-html", "dangerouslySetInnerHTML");
     },
     JSXOpeningElement(node) {
-      if (scriptAllowed || node.name.type !== "JSXIdentifier" || !scripts.has(node.name.name))
+      if (scriptAllowed || node.name.type !== "JSXIdentifier" || !names.scripts.has(node.name.name))
         return;
       for (const attr of node.attributes) {
-        if (attr.type === "JSXSpreadAttribute") add("script-host", "script spread props");
-        else if (attr.name.type === "JSXIdentifier" && attr.name.name === "src") {
-          // Only root-relative literals are local; everything else may hide an external host.
-          const value = attr.value?.type === "Literal" ? String(attr.value.value) : null;
-          if (value === null || !/^\/(?!\/)/.test(value)) add("script-host", "script src");
-        }
+        const finding = scriptAttributeFinding(attr);
+        if (finding) add("script-host", finding);
       }
     },
     CallExpression(node) {
       if (scriptAllowed) return;
-      const callee = node.callee;
-      const method =
-        callee.type === "MemberExpression"
-          ? named(callee.property)
-          : callee.type === "Identifier"
-            ? callee.name
-            : null;
-      const first = node.arguments[0];
-      const tag =
-        first?.type === "Literal"
-          ? first.value
-          : first?.type === "TemplateLiteral" && first.expressions.length === 0
-            ? first.quasis[0]?.value.cooked
-            : null;
-      if (method === "createElement" && String(tag).toLowerCase() === "script")
+      const tag = staticFirstArgument(node.arguments[0]);
+      if (calledMethod(node.callee) === "createElement" && String(tag).toLowerCase() === "script")
         add("script-host", "createElement(script)");
     },
-  }).visit(parsed.program);
-  const composition = /^src\/(?:app|views|shell)\//.test(file);
-  if (composition)
-    for (const { specifier } of sourceModule(file, source).imports) {
-      const target = specifier === null ? null : sourceTarget(file, specifier);
-      if (target && ADAPTER_IMPORT_EXCEPTIONS[file] === target && !raw) continue;
-      if (target && /^src\/features\/(?:tracking|assistant)\/adapters\//.test(target))
-        add("adapter-import", target);
-    }
-  return raw
-    ? found
-    : found.filter(
-        (item) =>
-          !(item.rule === "env" && envAllowed) &&
-          !(item.rule === "unsafe-html" && file in HTML_EXCEPTIONS),
-      );
+  };
+}
+
+/** Syntax-aware guards: strings and comments cannot masquerade as executable code. */
+export function guardFindings(file: string, source: string, raw = false): Finding[] {
+  const parsed = parseSync(file, source);
+  if (parsed.errors.length) throw new Error(`${file}: invalid guard input`);
+  const found: Finding[] = [];
+  const add: Add = (rule, value) => found.push({ rule, file, value });
+  const scriptAllowed =
+    !raw && (file in SCRIPT_EXCEPTIONS || file.startsWith("src/features/tracking/adapters/"));
+  const names = importNames(parsed.program, add);
+  new Visitor(guardVisitor(names, scriptAllowed, add)).visit(parsed.program);
+  adapterImportFindings(file, source, raw, add);
+  return raw ? found : found.filter((item) => !isExempt(file, item.rule));
+}
+
+/** Findings the exact-file exception maps (and config/tools/tests paths) excuse. */
+function isExempt(file: string, rule: string): boolean {
+  const envAllowed =
+    /^(?:config|tools|tests)\//.test(file) ||
+    /^next\.config\./.test(file) ||
+    file in ENV_EXCEPTIONS;
+  return (rule === "env" && envAllowed) || (rule === "unsafe-html" && file in HTML_EXCEPTIONS);
 }
