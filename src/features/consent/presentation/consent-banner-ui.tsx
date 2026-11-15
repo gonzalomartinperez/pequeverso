@@ -7,9 +7,11 @@ import {
   readConsent,
   writeConsent,
 } from "@/features/consent/adapters/browser-storage.ts";
-import type { ConsentCategory, ConsentChoice } from "@/features/consent/domain/policy.ts";
-import { enabledAdapters } from "@/features/tracking/adapters/env.ts";
-import type { TrackingAdapter } from "@/features/tracking/adapters/types.ts";
+import type {
+  ConsentCategory,
+  ConsentChoice,
+  GatedIntegration,
+} from "@/features/consent/domain/policy.ts";
 
 type CategoryInfo = {
   id: ConsentCategory;
@@ -27,7 +29,7 @@ const CATEGORY_COPY: Record<ConsentCategory, Pick<CategoryInfo, "title" | "purpo
   },
 };
 
-function gatedCategories(adapters: TrackingAdapter[]): CategoryInfo[] {
+function gatedCategories(adapters: readonly GatedIntegration[]): CategoryInfo[] {
   return CATEGORY_ORDER.flatMap((id) => {
     const tools = [
       ...new Set([
@@ -133,6 +135,8 @@ type Props = {
   opener: HTMLElement | null;
   /** Button classes computed on the server (`buttonVariants`), keeping variant tables out of the layout chunk. */
   classes: { primary: string };
+  /** Enabled gated integrations (from the composition root, through the trigger). */
+  integrations: readonly GatedIntegration[];
 };
 
 /**
@@ -142,8 +146,8 @@ type Props = {
  * has a gated category; `CookieSettingsLink` reopens it (pv:consent:open). With no gated integration it
  * opens on request as a notice that only necessary cookies are used.
  */
-export function ConsentBannerUi({ classes, reopen, opener: requester }: Props) {
-  const [categories] = useState(() => gatedCategories(enabledAdapters()));
+export function ConsentBannerUi({ classes, integrations, reopen, opener: requester }: Props) {
+  const [categories] = useState(() => gatedCategories(integrations));
   const [open, setOpen] = useState(true);
   const [configuring, setConfiguring] = useState(false);
   const [selection, setSelection] = useState<ConsentChoice>(() => {

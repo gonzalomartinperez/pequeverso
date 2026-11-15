@@ -3,8 +3,9 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { preload } from "react-dom";
 import { AssistantSlot } from "@/features/assistant/slot.tsx";
+import { ConsentBanner } from "@/features/consent/presentation/consent-banner.tsx";
 import { SiteAnalyticsSlot } from "@/features/site-analytics/slot.tsx";
-import { ConsentBanner } from "@/features/tracking/presentation/consent-banner.tsx";
+import { consentIntegrations } from "@/features/tracking/presentation/consent-integrations.ts";
 import { Analytics } from "@/features/tracking/presentation/tracking-scripts.tsx";
 import { versionedPublicUrl } from "@/shared/media/media.ts";
 import { RevealObserver } from "@/shared/motion/reveal-observer.tsx";
@@ -14,6 +15,8 @@ import "./globals.css";
 
 // One class for every consent action: Aceptar, Rechazar and Configurar stay equally prominent.
 const consentClasses = { primary: buttonVariants({ variant: "secondary", size: "sm" }) };
+// What the banner asks about: tracking knows its enabled integrations; consent never imports it.
+const { integrations: consentGated, analyticsBuilt } = consentIntegrations();
 
 const fonts = [
   "/fonts/fraunces-latin-wght-7f9d191d.woff2",
@@ -56,7 +59,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         {children}
         <AssistantSlot />
         <SiteAnalyticsSlot />
-        <ConsentBanner classes={consentClasses} />
+        <ConsentBanner
+          classes={consentClasses}
+          integrations={consentGated}
+          analyticsBuilt={analyticsBuilt}
+        />
         <Analytics />
         <RevealObserver />
       </body>

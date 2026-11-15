@@ -3,9 +3,9 @@ import { site } from "@config/site.ts";
 import { hubCopy } from "@content/es/hub";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
+import { CookieSettingsLink } from "@/features/consent/presentation/cookie-settings-link.tsx";
 import { feeding } from "@/features/hub/adapters/hub-products.ts";
 import { HubProductLink } from "@/features/hub/presentation/hub-product-link.tsx";
-import { CookieSettingsLink } from "@/features/tracking/presentation/cookie-settings-link.tsx";
 import { BrandLogo } from "@/shared/identity/brand-logo.tsx";
 import { SocialLinks } from "@/shell/social-links.tsx";
 
