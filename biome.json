@@ -65,7 +65,8 @@
         "noUnusedPrivateClassMembers": "error"
       },
       "suspicious": {
-        "noConsole": "off"
+        "noConsole": "off",
+        "noImportCycles": "error"
       },
       "style": {
         "useConst": "error",

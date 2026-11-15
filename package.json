@@ -48,6 +48,7 @@
     "knip:production": "knip --no-progress --production",
     "check:bundle": "node tools/check-bundle-budget.ts",
     "scorecard": "node tools/scorecard/run.ts",
+    "complexity": "node tools/complexity.ts",
     "check:scene": "node tools/check-scene-budget.ts",
     "analyze": "ANALYZE=1 next build --webpack",
     "check:rendered": "node tools/check-rendered.ts",
