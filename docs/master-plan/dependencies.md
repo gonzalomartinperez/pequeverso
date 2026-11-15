@@ -30,7 +30,7 @@ Policy (ecosystem section 7): a new runtime dependency passes an ADR with need v
 | `oxc-parser` | 0.153.0 | Import parsing in the architecture test | Keep |
 | `tailwindcss`, `@tailwindcss/postcss`, `postcss` | 4.3.3, 4.3.3, 8.5.30 | Styling pipeline | Keep |
 | `@next/bundle-analyzer` | 16.4.2 | `npm run analyze` | Keep (dev) |
-| `cross-env` | 10.1.0 | Env in scripts | Remove at M4 (authoring on WSL and CI on Linux; `NODE_ENV`-style prefixes work) |
+| `cross-env` | removed (M4-5) | Env in scripts | Removed at M4-5: scripts use POSIX `VAR=value cmd` prefixes (authoring on WSL, CI on Linux) |
 | `@types/*` | various | Types | Keep; `@types/node` follows Node 24 |
 
 ## Proposed additions (each needs its ADR)
