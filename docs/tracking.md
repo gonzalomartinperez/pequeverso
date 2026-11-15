@@ -96,7 +96,7 @@ the browser ignores it. Only the Node.js Web App mode gains the Conversions API.
 ## Consent (prior opt-in)
 
 Policy: [ADR-0011](decisions/ADR-0011-prior-opt-in-consent.md). Categories: `necessary` (implicit),
-`analytics`, `marketing`. `DEFAULT_CHOICE` in `consent.ts` is all `false`: nothing gated runs and
+`analytics`, `marketing`. `DEFAULT_CHOICE` in `src/features/consent/domain/policy.ts` (the consent module, [ADR-0016](decisions/ADR-0016-consent-feature-module.md)) is all `false`: nothing gated runs and
 nothing third-party is requested until the visitor chooses. Store: `localStorage.pv_consent`
 (`{ version: 3, analytics, marketing, updatedAt }`) plus cookie `pv_consent=a<0|1>m<0|1>.v3`
 (6 months), which the Conversions API relay reads. `CONSENT_VERSION = 3`; a choice stored under an

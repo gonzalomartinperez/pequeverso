@@ -84,7 +84,8 @@
       "paths": [
         "config/products/schema.ts",
         "src/features/commerce/domain/checkout-url.ts",
-        "src/features/tracking/adapters/consent.ts",
+        "src/features/consent/domain/**",
+        "src/features/consent/adapters/**",
         "src/features/playground/domain/**",
         "tools/lib/edge-rules.ts",
         "src/features/assistant/domain/**",

@@ -2,11 +2,14 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import fc from "fast-check";
 import {
-  CONSENT_VERSION,
   readConsent,
-  serializeConsentCookie,
   writeConsent,
-} from "../../../src/features/tracking/adapters/consent.ts";
+} from "../../../src/features/consent/adapters/browser-storage.ts";
+import {
+  CONSENT_VERSION,
+  parseConsentCookie,
+  serializeConsentCookie,
+} from "../../../src/features/consent/domain/policy.ts";
 import { numRuns, seed } from "./runs.ts";
 
 function browser(raw: string): void {
@@ -34,7 +37,8 @@ test("consent choices round trip through storage and the versioned cookie wire f
         const state = writeConsent(value);
         assert.deepEqual(readConsent(), state);
         const cookie = serializeConsentCookie(value);
-        // No cookie reader exists yet: independently decode the documented server-readable wire format.
+        // The policy's reader inverts the writer; an independent decode pins the documented format.
+        assert.deepEqual(parseConsentCookie(cookie), { ...value });
         const parsed = /^a([01])m([01])\.v(\d+)$/.exec(cookie);
         assert.ok(parsed);
         assert.equal(Number(parsed[3]), CONSENT_VERSION);
@@ -84,4 +88,17 @@ test("garbage storage never throws and returns the unchosen state", () => {
     Reflect.deleteProperty(globalThis, "window");
     Reflect.deleteProperty(globalThis, "document");
   }
+});
+
+test("the cookie reader accepts only the current version's exact serialized text", () => {
+  fc.assert(
+    fc.property(fc.string(), (raw) => {
+      const choice = parseConsentCookie(raw);
+      if (choice === null) return;
+      assert.equal(serializeConsentCookie(choice), raw);
+    }),
+    { numRuns, ...(seed === undefined ? {} : { seed }) },
+  );
+  for (const raw of [`a1m1.v${CONSENT_VERSION - 1}`, `a1m1.v0${CONSENT_VERSION}`, "a2m1.v3", ""])
+    assert.equal(parseConsentCookie(raw), null, raw);
 });

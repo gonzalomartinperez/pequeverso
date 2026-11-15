@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { test } from "node:test";
 import { runInNewContext } from "node:vm";
-import { explicitGrant } from "../../../src/features/site-analytics/domain/consent.ts";
+import { explicitGrant } from "../../../src/features/consent/domain/policy.ts";
 
 const require = createRequire(import.meta.url);
 const { transformSync } = require("next/dist/build/swc/index.js");
@@ -99,8 +99,8 @@ function render(
         return [value, (next: unknown) => changes.push({ slot: current, value: next })];
       },
     },
-    "@/features/site-analytics/domain/consent.ts": { explicitGrant },
-    "@/features/tracking/adapters/consent.ts": {
+    "@/features/consent/domain/policy.ts": { explicitGrant },
+    "@/features/consent/adapters/browser-storage.ts": {
       readConsent: () => stored,
       onConsentChange: (listener: (state: unknown) => void) => {
         consentListeners.push(listener);

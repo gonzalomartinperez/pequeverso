@@ -49,6 +49,7 @@ export function sourcePlacementViolations(modules: ReadonlyMap<string, SourceMod
     hub: new Set(["domain", "adapters", "presentation"]),
     landing: new Set(["presentation"]),
     playground: new Set(["domain", "presentation"]),
+    consent: new Set(["domain", "adapters", "presentation"]),
     tracking: new Set(["adapters", "presentation"]),
     "site-analytics": new Set(["domain", "application", "adapters", "presentation"]),
   };
@@ -74,8 +75,34 @@ export function sourcePlacementViolations(modules: ReadonlyMap<string, SourceMod
   });
 }
 
+const consentRoot = "src/features/consent/";
+const consentLayerTargets: Record<string, readonly string[]> = {
+  domain: ["domain/"],
+  adapters: ["domain/", "adapters/"],
+  presentation: ["domain/", "adapters/", "presentation/"],
+};
+
+/**
+ * Consent is a leaf feature (ADR-0016): tracking, site analytics and composition consume it, it
+ * never imports them. Inside, domain <- adapters <- presentation; presentation may also use
+ * `src/shared`. Package imports (react, next) are allowed outside the domain; runtime-selected
+ * imports are not.
+ */
+export function consentDependencyAllowed(file: string, specifier: string | null): boolean {
+  if (!file.startsWith(consentRoot)) return true;
+  if (specifier === null) return false;
+  const layer = file.slice(consentRoot.length).split("/")[0] ?? "";
+  const allowed = consentLayerTargets[layer];
+  if (!allowed) return false;
+  const target = sourceTarget(file, specifier);
+  if (target === null) return layer !== "domain";
+  if (allowed.some((part) => target.startsWith(consentRoot + part))) return true;
+  return layer === "presentation" && target.startsWith("src/shared/");
+}
+
 /** Composition owns features; reused capabilities never depend on composition or features. */
 export function siteDependencyAllowed(file: string, specifier: string | null): boolean {
+  if (!consentDependencyAllowed(file, specifier)) return false;
   if (specifier === null) return true;
   const target = sourceTarget(file, specifier);
   if (target === null) return true;

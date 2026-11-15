@@ -1,15 +1,18 @@
 import assert from "node:assert/strict";
 import { beforeEach, test } from "node:test";
 import {
-  CONSENT_VERSION,
-  type ConsentState,
-  DEFAULT_CHOICE,
+  expireConsentCookie,
   hasConsent,
   onConsentChange,
   readConsent,
-  serializeConsentCookie,
   writeConsent,
-} from "../../src/features/tracking/adapters/consent.ts";
+} from "../../src/features/consent/adapters/browser-storage.ts";
+import {
+  CONSENT_VERSION,
+  type ConsentState,
+  DEFAULT_CHOICE,
+  serializeConsentCookie,
+} from "../../src/features/consent/domain/policy.ts";
 import { loadWhenIdle } from "../../src/features/tracking/adapters/idle-script.ts";
 import { createMetaAdapter } from "../../src/features/tracking/adapters/meta.ts";
 import {
@@ -241,8 +244,14 @@ test("consent v3 cookie format and re-prompt on version bump", () => {
     assert.equal(hasConsent("marketing"), false);
   }
   writeConsent({ analytics: true, marketing: true });
-  assert.match(document.cookie, /^pv_consent=a1m1\.v3; /);
+  // Exact cookie attributes: kept 180 days (15552000 s), site-wide, first-party, HTTPS only.
+  assert.equal(
+    document.cookie,
+    "pv_consent=a1m1.v3; Max-Age=15552000; Path=/; SameSite=Lax; Secure",
+  );
   assert.equal(readConsent()?.marketing, true);
+  expireConsentCookie();
+  assert.equal(document.cookie, "pv_consent=; Max-Age=0; Path=/; SameSite=Lax; Secure");
 });
 
 test("meta adapter inits active, revokes on rejection (expiring _fbp/_fbc) and passes eventID", () => {

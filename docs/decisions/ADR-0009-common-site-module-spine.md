@@ -1,6 +1,6 @@
 # ADR-0009: Common public-site module spine
 
-Date: 2026-10-18. Status: accepted for isolated implementation; verification and protected integration pending.
+Date: 2026-10-18. Status: accepted for isolated implementation; verification and protected integration pending. Amended by ADR-0016 (`features/consent` with domain, adapters and presentation layers).
 
 ## Context and decision
 

@@ -1,4 +1,9 @@
-import { type ConsentState, expireConsentCookie, hasConsent, readConsent } from "./consent.ts";
+import {
+  expireConsentCookie,
+  hasConsent,
+  readConsent,
+} from "../../consent/adapters/browser-storage.ts";
+import type { ConsentState } from "../../consent/domain/policy.ts";
 import type { EventParams, ScriptSpec, TrackedEvent, TrackingAdapter } from "./types.ts";
 
 /** One event in the body of `POST /api/meta/events` (validated by `src/features/tracking/adapters/server/meta-capi.ts`). */

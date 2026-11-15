@@ -241,10 +241,9 @@ test("site analytics preserves layer direction and closed composition ownership"
 });
 
 test("analytics grant expires independently; failed writes cannot reactivate a revoked document", async () => {
-  const { explicitGrant, createConsentGate } = await import(
-    "../../../src/features/site-analytics/domain/consent.ts"
+  const { CONSENT_VERSION, explicitGrant, createConsentGate } = await import(
+    "../../../src/features/consent/domain/policy.ts"
   );
-  const { CONSENT_VERSION } = await import("../../../src/features/tracking/adapters/consent.ts");
   const now = Date.parse("2026-10-19T00:00:00.000Z");
   const grant = {
     version: CONSENT_VERSION,

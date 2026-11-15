@@ -2,9 +2,11 @@
 // to the pixel (same event ids) and this handler forwards them to Graph API from the server so
 // Meta deduplicates browser/server pairs. Transport-agnostic core (createMetaCapiRelay) used by
 // the Node adapter in tools/serve-static.ts (static export) and by the standalone route
-// handler src/app/api/meta/events/route.standalone.ts. Zero dependencies; Node built-ins only.
+// handler src/app/api/meta/events/route.standalone.ts. Zero package dependencies: Node built-ins
+// plus the import-free consent policy (the consent cookie gate, ADR-0016), both runnable by `node`.
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { isIP } from "node:net";
+import { cookieHeaderGrantsMarketing } from "../../../consent/domain/policy.ts";
 
 type RelayEvent = {
   name: string;
@@ -222,20 +224,6 @@ export function pickClientIp(candidates: ReadonlyArray<string | undefined | null
   return "";
 }
 
-/** Consent cookie value of a marketing grant under the current policy (`serializeConsentCookie`). */
-const MARKETING_GRANT_VALUE = /^a[01]m1\.v3$/;
-
-/** True only with exactly one `pv_consent` cookie whose value is a valid v3 marketing grant. */
-function hasMarketingGrant(cookie: string | undefined): boolean {
-  const values: string[] = [];
-  for (const pair of (cookie || "").split(";")) {
-    const at = pair.indexOf("=");
-    if (at > 0 && pair.slice(0, at).trim() === "pv_consent") values.push(pair.slice(at + 1).trim());
-  }
-  const [only] = values;
-  return values.length === 1 && only !== undefined && MARKETING_GRANT_VALUE.test(only);
-}
-
 function allowedOrigins(host: string | undefined, siteOrigin: string | null): Set<string> {
   const origins = new Set(siteOrigin ? [siteOrigin] : []);
   if (typeof host === "string" && /^[a-z0-9.:[\]-]+$/i.test(host)) {
@@ -367,7 +355,7 @@ export function createMetaCapiRelay(options: RelayOptions): MetaCapiRelay {
     if (input.origin && !origins.has(input.origin)) return result(403, "origin");
     if (!enabled) return result(204);
     // Prior opt-in: an event without a stored grant is dropped, never forwarded to Meta.
-    if (!hasMarketingGrant(input.cookie)) return result(204);
+    if (!cookieHeaderGrantsMarketing(input.cookie)) return result(204);
     if (!/^application\/json\b/i.test(input.contentType || "")) return result(415, "content-type");
     if (Buffer.byteLength(input.bodyText, "utf8") > MAX_BODY_BYTES) return result(413, "size");
     let events: RelayEvent[];

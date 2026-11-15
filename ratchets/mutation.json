@@ -1,5 +1,5 @@
 {
-  "$comment": "Mutation score of the scoped pure modules (stryker.config.json, ADR-0015). `score` is the global floor checked by the weekly run; `files` are per-file floors checked by the pull-request gate (tools/ci/mutation-gate.ts). Both may only rise. First full run, 1565 mutants (997 killed, 5 timed out, 362 survived, 97 no coverage, 104 runtime errors excluded).",
+  "$comment": "Mutation score of the scoped pure modules (stryker.config.json, ADR-0015). `score` is the global floor checked by the weekly run; `files` are per-file floors checked by the pull-request gate (tools/ci/mutation-gate.ts). Both may only rise. First full run, 1565 mutants (997 killed, 5 timed out, 362 survived, 97 no coverage, 104 runtime errors excluded). M4-1 (2026-11-15): tracking/adapters/consent.ts (70.12) split into consent/domain/policy.ts 89.2 and consent/adapters/browser-storage.ts 71.15 (228 mutants, 85.09 combined; both above the old 70.12; the moved site-analytics freshness rule and the relay cookie gate are now mutated too).",
   "metric": "mutation",
   "measuredAt": "2026-11-14",
   "commit": "e8f58a3",
@@ -22,8 +22,9 @@
     "src/features/assistant/domain/rich-text.ts": 70.96,
     "src/features/assistant/domain/visitor-context.ts": 77.41,
     "src/features/commerce/domain/checkout-url.ts": 98.38,
+    "src/features/consent/adapters/browser-storage.ts": 71.15,
+    "src/features/consent/domain/policy.ts": 89.2,
     "src/features/playground/domain/syllable-game.ts": 80.26,
-    "src/features/tracking/adapters/consent.ts": 70.12,
     "tools/lib/edge-rules.ts": 66.92
   }
 }

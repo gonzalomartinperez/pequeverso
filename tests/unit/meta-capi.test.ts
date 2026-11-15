@@ -564,12 +564,18 @@ test("core: events without a stored marketing grant are dropped and never forwar
     "pv_consent=a1m1.v3; pv_consent=a0m0.v3",
     "pv_consent=a1m1.v3; pv_consent=a1m1.v3",
     "pv_consent=a1m1.v3x",
+    // Only the serializer's exact text grants: a zero-padded version is not "v3".
+    "pv_consent=a1m1.v03",
+    // The value must be the whole serialized text, not merely end with it.
+    "pv_consent=xa1m1.v3",
     "pv_consent=a1m1.v3;pv_consent=a1m1.v2",
   ];
   for (const cookie of denied) {
     assert.equal(relay.process(relayInput({ cookie })).status, 204, String(cookie));
   }
   assert.equal(relay.process(relayInput({ cookie: `x=1; ${GRANT}; y=2` })).status, 202);
+  // Whitespace around a cookie's name and value is tolerated, as browsers send it.
+  assert.equal(relay.process(relayInput({ cookie: " pv_consent = a1m1.v3 " })).status, 202);
   await Promise.all(relay.pending);
-  assert.equal(fake.calls.length, 1);
+  assert.equal(fake.calls.length, 2, "the plain and the whitespace-padded grant");
 });
