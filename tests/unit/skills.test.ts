@@ -382,7 +382,7 @@ test("skill catalogs keep real directories while confined resource links stay va
   const internal = broken((dir) => {
     const reference = path.join(dir, ".agents/skills/prepare-delivery/references");
     mkdirSync(reference);
-    symlinkSync("../../../../docs/architecture.md", path.join(reference, "guide.md"));
+    symlinkSync("../../../../docs/reference/architecture.md", path.join(reference, "guide.md"));
     edit(
       path.join(dir, ".agents/skills/prepare-delivery/SKILL.md"),
       (text) => `${text}\n[Reference](references/guide.md)\n`,

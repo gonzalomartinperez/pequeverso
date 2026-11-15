@@ -238,7 +238,7 @@ Acceptance criterion for every block and page, 320 → 1920 px, enforced by
   spacing uses the Tailwind scale.
 - **Animation duration/easing:** `--duration*`, `--pv-ease-*`, `--stagger`, `--reveal-y`.
 - **A new primitive:** `npx shadcn@latest add <name>` (Base UI), then restyle with roles, add
-  `data-slot`, keep targets ≥ 44 px, record it in `docs/assets/shadcn-ui.md`.
+  `data-slot`, keep targets ≥ 44 px, record it in `docs/reference/third-party-assets.md`.
 
 ## State gallery (`/_design`)
 

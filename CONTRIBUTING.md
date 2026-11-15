@@ -17,7 +17,7 @@ npm run build:standalone          # Node target parity
 
 The assistant suite (`npm run test:browser:assistant`) needs a local checkout of
 `pequeverso-assistant-api` at the revision in `tests/assistant/api-revision`; see
-`docs/assistant.md`. It never uses a real key.
+`docs/explanation/assistant.md`. It never uses a real key.
 
 ## TypeScript style
 

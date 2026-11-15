@@ -10,7 +10,7 @@ metadata:
 # Change the native assistant
 
 Scope: `src/features/assistant/`, `content/es/assistant.ts`, `config/assistant.ts`,
-`contracts/assistant-api/`, `tests/unit/assistant/`, `tests/assistant/`, `docs/assistant.md`.
+`contracts/assistant-api/`, `tests/unit/assistant/`, `tests/assistant/`, `docs/explanation/assistant.md`.
 Shared architecture checks also live in `tests/helpers/source-architecture.ts` and
 `tests/unit/architecture.test.ts`; review their negative fixtures when a boundary changes.
 Not in scope: enabling the assistant anywhere publishable, checkout/Hotmart/tracking/consent code,

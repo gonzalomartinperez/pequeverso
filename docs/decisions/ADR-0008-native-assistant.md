@@ -51,4 +51,4 @@ request-time code; the assistant API will run on the VPS behind vps-ops' proxy.
   `build-info.json` `assistant: "enabled"`), rejected by the publish guard.
 - Activation needs: owner authorization, approved API hostname, the API's `ALLOWED_ORIGINS`, the
   privacy-policy section, CSP `connect-src` for the API origin (enforced since ADR-0014),
-  paid-model authorization and live evaluation on the API side. See `docs/assistant.md`.
+  paid-model authorization and live evaluation on the API side. See `docs/explanation/assistant.md`.

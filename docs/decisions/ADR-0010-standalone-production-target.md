@@ -36,7 +36,7 @@ export is retired at M4 (DR-08, PV-D3 in `docs/master-plan/owner-decisions.md` a
 
 ## Consequences
 
-- AGENTS.md, README, `docs/architecture.md`, `docs/deployment.md`, `docs/development.md` and the
+- AGENTS.md, README, `docs/reference/architecture.md`, `docs/deployment.md`, `docs/development.md` and the
   `config/next.ts` header describe standalone as production and the export as a parity build.
   Other mentions of the export (Playwright and CI docs) are updated with the M1-1 CI change or
   removed at M4-2.

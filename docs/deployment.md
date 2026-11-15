@@ -202,7 +202,7 @@ re-deployed. The verify job then proves the previous `sha` is live; if Hostinger
 
 ## Not covered by automation
 
-Hotmart configuration (sales page URL, funnel stage URLs, thank-you URLs; `docs/hotmart-funnel.md`
+Hotmart configuration (sales page URL, funnel stage URLs, thank-you URLs; `docs/how-to/verify-hotmart-checkout.md`
 section 4), Search Console submissions and social bios are manual steps (`docs/migration.md`).
 
 ## Daily internal-link and affiliate checks

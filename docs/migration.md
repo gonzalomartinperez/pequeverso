@@ -40,7 +40,7 @@ and legal pages are `noindex`; the sitemap lists the indexable routes.
 ## External references (all point at pequeverso.com)
 
 The Hotmart funnel mapping, the Next.js adaptation of the sales-funnel widget and the end-to-end
-purchase checklist live in `docs/hotmart-funnel.md`.
+purchase checklist live in `docs/how-to/verify-hotmart-checkout.md`.
 
 1. **Hotmart**: product sales page URL, sales-funnel stage URLs (upsell
    `https://pequeverso.com/imprime-y-juega/`, downsell `.../imprime-y-juega/?downsell=1`) and the

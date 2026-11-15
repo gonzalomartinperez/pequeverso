@@ -34,7 +34,7 @@ not relabeled as successes. No provider call was made for this gallery.
 These photographs do not validate answer correctness with the real model, purchases, physical
 phone keyboards, field performance, production cookies/proxy settings or deployment to the VPS.
 The dated [2026-10-12 gallery](../2026-10-12/README.md) retains its earlier states and provenance.
-See the [assistant activation checklist](../../../assistant.md) before any future activation.
+See the [assistant activation checklist](../../../explanation/assistant.md) before any future activation.
 
 ## Reproduce
 

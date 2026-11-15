@@ -40,7 +40,7 @@ flowchart LR
 
 Dependencies point inward: `src/app` and `src/views` compose `src/features` and `src/shared`;
 business facts come from `config/` and reviewed copy from `content/`. Both are enforced by
-`npm run test:architecture`. See [docs/architecture.md](docs/architecture.md) and the
+`npm run test:architecture`. See [docs/reference/architecture.md](docs/reference/architecture.md) and the
 [generated diagrams](docs/architecture/README.md).
 
 ## Quickstart
@@ -59,7 +59,7 @@ variables; see [.env.example](.env.example) and [docs/development.md](docs/devel
 
 - Browser gates: `npm run test:browser` after `npx playwright install --with-deps chromium`.
 - Production build: `NEXT_OUTPUT=standalone` (ADR-0010); verify the deployed SHA at `/build-info.json`.
-- Change copy, prices or products: [content model](docs/content-model.md) and `config/`.
+- Change copy, prices or products: [content model](docs/reference/content-model.md) and `config/`.
 - Release and verification: [deployment](docs/deployment.md). Live site: https://pequeverso.com/
 
 ## Quality
@@ -82,9 +82,9 @@ Ratchets in [`ratchets/`](ratchets) only tighten; the scorecard is described in
 | Kind | Start with |
 |---|---|
 | Tutorials | [Development](docs/development.md) |
-| How-to | [Deployment](docs/deployment.md), [Media](docs/how-to/update-media.md), [Hotmart funnel](docs/hotmart-funnel.md) |
-| Reference | [Architecture](docs/architecture.md), [Design system](docs/design-system.md), [Content model](docs/content-model.md), [Tracking](docs/tracking.md) |
-| Explanation | [Decisions (ADRs)](docs/decisions/README.md), [Assistant](docs/assistant.md) |
+| How-to | [Deployment](docs/deployment.md), [Media](docs/how-to/update-media.md), [Hotmart funnel](docs/how-to/verify-hotmart-checkout.md) |
+| Reference | [Architecture](docs/reference/architecture.md), [Design system](docs/design-system.md), [Content model](docs/reference/content-model.md), [Tracking](docs/tracking.md) |
+| Explanation | [Decisions (ADRs)](docs/decisions/README.md), [Assistant](docs/explanation/assistant.md) |
 | Master plan | [docs/master-plan](docs/master-plan/README.md) |
 
 Agents start with [AGENTS.md](AGENTS.md).
@@ -110,7 +110,7 @@ PR `develop` to `main`.
 ## Scope and limits
 
 - The native shopping assistant is disabled in every publishable build; see
-  [docs/assistant.md](docs/assistant.md) before changing it.
+  [docs/explanation/assistant.md](docs/explanation/assistant.md) before changing it.
 - Hotmart owns payment, delivery and refunds; a thank-you URL is not proof of payment.
 - CI does not prove real purchases, field Core Web Vitals or production cookie behavior.
 

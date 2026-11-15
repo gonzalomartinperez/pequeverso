@@ -9,10 +9,10 @@ Spanish. Read this file first, then the doc that matches your task.
 
 | Task | Read |
 |---|---|
-| Understand the system | `docs/architecture.md` |
+| Understand the system | `docs/reference/architecture.md` |
 | Physical source moves | `docs/decisions/ADR-0009-common-site-module-spine.md`; reconcile every consumer before moving |
 | Run, build, test locally | `docs/development.md` |
-| Change copy, prices, product facts | `docs/content-model.md` (and `config/commerce.ts`) |
+| Change copy, prices, product facts | `docs/reference/content-model.md` (and `config/commerce.ts`) |
 | Visual work | `docs/design-system.md` |
 | Images, video, fonts | `docs/how-to/update-media.md` |
 | Events, pixel, consent | `docs/tracking.md` |
@@ -20,8 +20,8 @@ Spanish. Read this file first, then the doc that matches your task.
 | Release or deploy | `docs/deployment.md` |
 | URL changes, redirects, cutover | `docs/migration.md` |
 | Affiliate redirects (`/<slug>/` → affiliate link from an env variable) | `docs/reference/affiliates.md` |
-| Hotmart funnel (checkout, widget, dashboard changes, E2E checklist) | `docs/hotmart-funnel.md` |
-| Native shopping assistant (disabled by default) | `docs/assistant.md`, ADR-0008 |
+| Hotmart funnel (checkout, widget, dashboard changes, E2E checklist) | `docs/how-to/verify-hotmart-checkout.md` |
+| Native shopping assistant (disabled by default) | `docs/explanation/assistant.md`, ADR-0008 |
 | Code style, setup, skills validation | `CONTRIBUTING.md` (Google TS style adaptations); skills: `.agents/skills/*/SKILL.md` (canonical), `.claude/skills/<name>` relative symlinks to it, `npm run check:skills` |
 
 ## Non-negotiables
@@ -54,7 +54,7 @@ Spanish. Read this file first, then the doc that matches your task.
   publishable build; enabling it needs the owner's explicit authorization and a rebuild. Enabled
   builds (`npm run test:browser:assistant`, `out-assistant-fixture/`) are verification artifacts only;
   `npm run check:assistant-disabled` must pass on anything that ships. The assistant is advisory:
-  no checkout, payment, cart or tracking features (`docs/assistant.md`).
+  no checkout, payment, cart or tracking features (`docs/explanation/assistant.md`).
 - **Placeholders `[[LIKE_THIS]]` are allowed in legal copy until the owner supplies the details**;
   the deploy workflow refuses to ship them.
 
@@ -99,7 +99,7 @@ Do not duplicate the procedure or infer API/backoffice discovery changes from th
 ## Boundaries
 
 This repository does not contain, and must not import, private business knowledge, media masters,
-WordPress backups, credentials or customer data. Sources for facts are cited in `docs/content-model.md`.
+WordPress backups, credentials or customer data. Sources for facts are cited in `docs/reference/content-model.md`.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

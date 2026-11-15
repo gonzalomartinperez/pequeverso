@@ -11,16 +11,16 @@ metadata:
 # Change content
 
 Copy lives in `content/es/*.ts` (typed); business facts live in `config/` (`config/commerce.ts`).
-Rules and sources: `docs/content-model.md`. Owner decisions on copy: `docs/master-plan/owner-decisions.md`.
+Rules and sources: `docs/reference/content-model.md`. Owner decisions on copy: `docs/master-plan/owner-decisions.md`.
 
 ## Checklist
 
 - [ ] Classify the request: copy (`content/es/`), fact (price, composition, guarantee period, checkout
   URL, social profile: `config/`), or legal text (needs the task to name it).
 - [ ] A fact is changed once, in `config/`; copy reads it. Never type a price, period or URL into copy.
-- [ ] A new price, guarantee or claim needs a value from the owner or from `docs/content-model.md`; if
+- [ ] A new price, guarantee or claim needs a value from the owner or from `docs/reference/content-model.md`; if
   there is none, stop and ask. Never invent facts, testimonials, results, guarantees or numbers.
-- [ ] A testimonial or result request is refused: point to the no-testimonials rule in `docs/content-model.md`
+- [ ] A testimonial or result request is refused: point to the no-testimonials rule in `docs/reference/content-model.md`
   and offer wording that makes no claim.
 - [ ] Neutral Spanish addressing the reader as tú; consistent with the surrounding tone; no voseo.
 - [ ] New copy outside the package already approved in `docs/master-plan/design-playbook.md` section 10

@@ -30,7 +30,7 @@ without ever reaching Node.
    `frame-src` limited to Hotmart and Facebook, `connect-src` limited to the hosts above. The
    product-analytics origin (`docs/reference/site-analytics.md`) is appended to `connect-src` only for builds
    that enable it. The assistant API origin is not added: the assistant stays disabled
-   (`docs/assistant.md` lists the one-line addition for the enabling change).
+   (`docs/explanation/assistant.md` lists the one-line addition for the enabling change).
 4. The **Cloudflare Web Analytics beacon is deliberately not allowed** (`static.cloudflareinsights.com`
    for the script, `cloudflareinsights.com` for the report). It is injected by the Cloudflare
    dashboard, not by the repository, it measures visitors before any consent choice, and PV-D9
