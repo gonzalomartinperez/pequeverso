@@ -103,7 +103,18 @@ test("sticky decision bar stays hidden over the offer hero and appears after it"
   // offer, footer). The old target, #complemento-title, directly follows the tall #gfp-decision
   // band, which could still intersect the viewport (threshold 5%) while the wheel step or the
   // section heights settled, so the bar legitimately stayed hidden.
-  await page.locator("#incluye-title").scrollIntoViewIfNeeded();
-  await expect(bar).toHaveAttribute("data-visible", "");
-  await expect(bar).toBeVisible();
+  // Scroll through the DOM (Playwright's scrollIntoViewIfNeeded is a no-op in WebKit here: scrollY stays
+  // 0 with the heading ~3,500 px down) and repeat it while polling: WebKit keeps growing the page
+  // (~8,200 -> ~10,700 px) as images and sections settle, so a single scroll can land over the
+  // decision band once the layout shifts, and the bar then legitimately stays hidden.
+  const heading = page.locator("#incluye-title");
+  await expect
+    .poll(
+      async () => {
+        await heading.evaluate((element) => element.scrollIntoView());
+        return [await bar.getAttribute("data-visible"), await bar.isVisible()];
+      },
+      { timeout: 20_000 },
+    )
+    .toEqual(["", true]);
 });

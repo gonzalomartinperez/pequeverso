@@ -1,5 +1,7 @@
 import { expect, type Page, test } from "@playwright/test";
 
+import { nudgePage } from "./fixtures";
+
 /**
  * ADR-0017 (D-03): the WebGL scene chunks are requested only on a fine pointer at least 1024 px
  * wide after the first interaction. The scene closure is recognised by its content (three's
@@ -52,7 +54,7 @@ for (const path of PAGES) {
           matchMedia(query).matches && !matchMedia("(prefers-reduced-motion: reduce)").matches,
         SCENE_MEDIA,
       ));
-    await page.mouse.wheel(0, 120);
+    await nudgePage(page);
     await page.keyboard.press("Tab");
     await page.waitForTimeout(3_500);
     if (eligible) {
