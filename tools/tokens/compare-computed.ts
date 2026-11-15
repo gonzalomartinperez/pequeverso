@@ -14,7 +14,7 @@ import { join } from "node:path";
 import { chromium } from "@playwright/test";
 
 const WIDTHS = [390, 1280];
-const PROPERTIES = [
+export const PROPERTIES = [
   "color",
   "backgroundColor",
   "backgroundImage",
@@ -42,7 +42,7 @@ const PROPERTIES = [
   "fill",
 ];
 
-interface Page {
+export interface Page {
   vars: Record<string, string>;
   els: Record<string, Record<string, string>>;
 }
@@ -57,53 +57,6 @@ function routes(dir: string, rel = ""): string[] {
   });
 }
 
-/**
- * Runs in the browser through `page.evaluate`: Playwright serializes it, so every helper it uses
- * is declared inside it and nothing from this module may be referenced.
- */
-function snapshotPage(properties: string[]): Page {
-  const collectRootRuleNames = (rule: CSSStyleRule, names: Set<string>): void => {
-    for (const n of rule.style) if (n.startsWith("--")) names.add(n);
-  };
-  const walk = (rules: CSSRuleList, names: Set<string>): void => {
-    for (const rule of rules) {
-      if (rule instanceof CSSStyleRule && rule.selectorText === ":root") {
-        collectRootRuleNames(rule, names);
-      } else if ("cssRules" in rule) walk((rule as CSSGroupingRule).cssRules, names);
-    }
-  };
-  const collectNames = (): Set<string> => {
-    const names = new Set<string>();
-    for (const sheet of document.styleSheets) {
-      try {
-        walk(sheet.cssRules, names);
-      } catch {
-        /* cross-origin sheet */
-      }
-    }
-    return names;
-  };
-  const elementPath = (el: Element): string => {
-    const path: string[] = [];
-    for (let n: Element | null = el; n && n !== document.body; n = n.parentElement) {
-      path.unshift(`${n.tagName}:${[...(n.parentElement?.children ?? [])].indexOf(n)}`);
-    }
-    return path.join(">");
-  };
-  const root = getComputedStyle(document.documentElement);
-  const vars: Record<string, string> = {};
-  for (const n of [...collectNames()].sort()) vars[n] = root.getPropertyValue(n).trim();
-  const els: Record<string, Record<string, string>> = {};
-  const all = document.querySelectorAll(
-    "body *:not(next-route-announcer):not(next-route-announcer *)",
-  );
-  for (const el of all) {
-    const style = getComputedStyle(el) as unknown as Record<string, string>;
-    els[elementPath(el)] = Object.fromEntries(properties.map((p) => [p, style[p] ?? ""]));
-  }
-  return { vars, els };
-}
-
 async function capture(base: string, dir: string, out: string): Promise<void> {
   const browser = await chromium.launch();
   const result: Record<string, Page> = {};
@@ -116,7 +69,39 @@ async function capture(base: string, dir: string, out: string): Promise<void> {
       await page.goto(base + route, { waitUntil: "load" });
       await page.addStyleTag({ content: "*{animation:none!important;transition:none!important}" });
       await page.waitForTimeout(1500);
-      result[`${width}${route}`] = await page.evaluate(snapshotPage, PROPERTIES);
+      result[`${width}${route}`] = await page.evaluate((properties) => {
+        const root = getComputedStyle(document.documentElement);
+        const names = new Set<string>();
+        for (const sheet of document.styleSheets) {
+          const walk = (rules: CSSRuleList): void => {
+            for (const rule of rules) {
+              if (rule instanceof CSSStyleRule && rule.selectorText === ":root") {
+                for (const n of rule.style) if (n.startsWith("--")) names.add(n);
+              } else if ("cssRules" in rule) walk((rule as CSSGroupingRule).cssRules);
+            }
+          };
+          try {
+            walk(sheet.cssRules);
+          } catch {
+            /* cross-origin sheet */
+          }
+        }
+        const vars: Record<string, string> = {};
+        for (const n of [...names].sort()) vars[n] = root.getPropertyValue(n).trim();
+        const els: Record<string, Record<string, string>> = {};
+        const all = document.querySelectorAll(
+          "body *:not(next-route-announcer):not(next-route-announcer *)",
+        );
+        for (const el of all) {
+          const path: string[] = [];
+          for (let n: Element | null = el; n && n !== document.body; n = n.parentElement) {
+            path.unshift(`${n.tagName}:${[...(n.parentElement?.children ?? [])].indexOf(n)}`);
+          }
+          const style = getComputedStyle(el) as unknown as Record<string, string>;
+          els[path.join(">")] = Object.fromEntries(properties.map((p) => [p, style[p] ?? ""]));
+        }
+        return { vars, els };
+      }, PROPERTIES);
     }
     await page.close();
   }
@@ -127,7 +112,7 @@ async function capture(base: string, dir: string, out: string): Promise<void> {
 
 const norm = (v: string): string => v.replace(/^light-dark\((.*),\s*\1\)$/, "$1");
 
-function diffVars(key: string, x: Page, y: Page, problems: string[]): number {
+export function diffVars(key: string, x: Page, y: Page, problems: string[]): number {
   let checks = 0;
   for (const n of new Set([...Object.keys(x.vars), ...Object.keys(y.vars)])) {
     checks++;
@@ -137,7 +122,7 @@ function diffVars(key: string, x: Page, y: Page, problems: string[]): number {
   return checks;
 }
 
-function diffElements(key: string, x: Page, y: Page, problems: string[]): number {
+export function diffElements(key: string, x: Page, y: Page, problems: string[]): number {
   let checks = 0;
   for (const el of new Set([...Object.keys(x.els), ...Object.keys(y.els)])) {
     for (const p of PROPERTIES) {
@@ -149,7 +134,7 @@ function diffElements(key: string, x: Page, y: Page, problems: string[]): number
   return checks;
 }
 
-function diff(beforeFile: string, afterFile: string): number {
+export function diff(beforeFile: string, afterFile: string): number {
   const a = JSON.parse(readFileSync(beforeFile, "utf8")) as Record<string, Page>;
   const b = JSON.parse(readFileSync(afterFile, "utf8")) as Record<string, Page>;
   let checks = 0;
@@ -168,12 +153,14 @@ function diff(beforeFile: string, afterFile: string): number {
   return problems.length === 0 ? 0 : 1;
 }
 
-const [mode, ...args] = process.argv.slice(2);
-if (mode === "capture" && args.length === 3)
-  await capture(args[0] as string, args[1] as string, args[2] as string);
-else if (mode === "diff" && args.length === 2)
-  process.exitCode = diff(args[0] as string, args[1] as string);
-else
-  console.error(
-    "usage: capture <baseUrl> <exportDir> <out.json> | diff <before.json> <after.json>",
-  );
+if (import.meta.main) {
+  const [mode, ...args] = process.argv.slice(2);
+  if (mode === "capture" && args.length === 3)
+    await capture(args[0] as string, args[1] as string, args[2] as string);
+  else if (mode === "diff" && args.length === 2)
+    process.exitCode = diff(args[0] as string, args[1] as string);
+  else
+    console.error(
+      "usage: capture <baseUrl> <exportDir> <out.json> | diff <before.json> <after.json>",
+    );
+}
