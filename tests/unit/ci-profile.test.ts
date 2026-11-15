@@ -27,25 +27,26 @@ const gateOnly = new Set(["classify", "ci-gate", "ci"]);
 const gatedJobs = jobIds.filter((job) => !gateOnly.has(job));
 
 /** Same glob semantics as the classify workflow: a double star spans directories, `*` and `?` stay in one segment. */
+const GLOB_TOKENS: readonly (readonly [string, string])[] = [
+  ["**/", "(?:.*/)?"],
+  ["**", ".*"],
+  ["*", "[^/]*"],
+  ["?", "[^/]"],
+];
+
+/** The regex source and consumed length of the glob token at `index`. */
+function globToken(pattern: string, index: number): { out: string; length: number } {
+  for (const [glob, out] of GLOB_TOKENS)
+    if (pattern.startsWith(glob, index)) return { out, length: glob.length };
+  return { out: (pattern[index] ?? "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), length: 1 };
+}
+
 function globToRegex(pattern: string): RegExp {
   let out = "";
   for (let i = 0; i < pattern.length; ) {
-    if (pattern.startsWith("**/", i)) {
-      out += "(?:.*/)?";
-      i += 3;
-    } else if (pattern.startsWith("**", i)) {
-      out += ".*";
-      i += 2;
-    } else if (pattern[i] === "*") {
-      out += "[^/]*";
-      i += 1;
-    } else if (pattern[i] === "?") {
-      out += "[^/]";
-      i += 1;
-    } else {
-      out += (pattern[i] ?? "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      i += 1;
-    }
+    const token = globToken(pattern, i);
+    out += token.out;
+    i += token.length;
   }
   return new RegExp(`^${out}$`);
 }

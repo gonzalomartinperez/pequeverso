@@ -29,41 +29,63 @@ const permitted = (name: string): boolean =>
   (checkoutPassthroughParams as readonly string[]).includes(name.toLowerCase()) ||
   checkoutPassthroughPrefixes.some((prefix) => name.toLowerCase().startsWith(prefix));
 
+type Entries = [string, string][];
+
+/** Params the trusted base carries must survive untouched. */
+function assertBasePreserved(url: URL, trusted: URL): void {
+  assert.equal(url.origin, "https://pay.hotmart.com");
+  assert.equal(url.pathname, "/TEST0000000");
+  assert.equal(url.searchParams.get("checkoutMode"), "10");
+  for (const name of new Set(trusted.searchParams.keys())) {
+    assert.deepEqual(url.searchParams.getAll(name), trusted.searchParams.getAll(name));
+  }
+}
+
+/** First non-empty page value wins; extras only fill keys absent from both base and page. */
+function expectedParams(
+  incoming: Entries,
+  extra: Record<string, string>,
+  trusted: URL,
+): Map<string, string> {
+  const expected = new Map<string, string>();
+  for (const [name, value] of [...incoming, ...Object.entries(extra)]) {
+    if (!value || !permitted(name) || trusted.searchParams.has(name) || expected.has(name))
+      continue;
+    expected.set(name, name.toLowerCase() === "sck" ? value.slice(0, 30) : value);
+  }
+  return expected;
+}
+
+/** Every param the visitor could add is allowlisted, never off/ref, and sck is capped. */
+function assertAddedParamsAllowed(url: URL, trusted: URL): void {
+  for (const [name, value] of url.searchParams) {
+    if (trusted.searchParams.has(name)) continue;
+    assert.ok(permitted(name), name);
+    assert.ok(!["off", "ref"].includes(name.toLowerCase()));
+    if (name.toLowerCase() === "sck") assert.ok(value.length <= 30);
+  }
+}
+
+function assertCheckoutFilters(incoming: Entries, extras: Entries, baseEntries: Entries): void {
+  const search = new URLSearchParams(incoming).toString();
+  const extra = Object.fromEntries(extras);
+  const trusted = new URL(base);
+  for (const [name, value] of baseEntries) trusted.searchParams.append(name, value);
+  const built = buildCheckoutUrl(trusted.toString(), search, extra);
+  const url = new URL(built);
+  assertBasePreserved(url, trusted);
+  for (const [name, value] of expectedParams(incoming, extra, trusted))
+    assert.deepEqual(url.searchParams.getAll(name), [value]);
+  assertAddedParamsAllowed(url, trusted);
+  assert.equal(buildCheckoutUrl(built, search, extra), built);
+}
+
 test("checkout preserves its trusted Hotmart base, filters visitor/extra params and is idempotent", () => {
   // Base URLs are trusted build configuration; offer selection in the base must be preserved.
-  fc.assert(
-    fc.property(entries, entries, entries, (incoming, extras, baseEntries) => {
-      const search = new URLSearchParams(incoming).toString();
-      const extra = Object.fromEntries(extras);
-      const trusted = new URL(base);
-      for (const [name, value] of baseEntries) trusted.searchParams.append(name, value);
-      const built = buildCheckoutUrl(trusted.toString(), search, extra);
-      const url = new URL(built);
-      assert.equal(url.origin, "https://pay.hotmart.com");
-      assert.equal(url.pathname, "/TEST0000000");
-      assert.equal(url.searchParams.get("checkoutMode"), "10");
-      for (const name of new Set(trusted.searchParams.keys())) {
-        assert.deepEqual(url.searchParams.getAll(name), trusted.searchParams.getAll(name));
-      }
-      // First non-empty page value wins; extras only fill keys absent from both base and page.
-      const expected = new Map<string, string>();
-      for (const [name, value] of [...incoming, ...Object.entries(extra)]) {
-        if (!value || !permitted(name) || trusted.searchParams.has(name) || expected.has(name))
-          continue;
-        expected.set(name, name.toLowerCase() === "sck" ? value.slice(0, 30) : value);
-      }
-      for (const [name, value] of expected)
-        assert.deepEqual(url.searchParams.getAll(name), [value]);
-      for (const [name, value] of url.searchParams) {
-        if (trusted.searchParams.has(name)) continue;
-        assert.ok(permitted(name), name);
-        assert.ok(!["off", "ref"].includes(name.toLowerCase()));
-        if (name.toLowerCase() === "sck") assert.ok(value.length <= 30);
-      }
-      assert.equal(buildCheckoutUrl(built, search, extra), built);
-    }),
-    { numRuns, ...(seed === undefined ? {} : { seed }) },
-  );
+  fc.assert(fc.property(entries, entries, entries, assertCheckoutFilters), {
+    numRuns,
+    ...(seed === undefined ? {} : { seed }),
+  });
 });
 
 test("generated sck is sanitized and capped for any prefix and placement", () => {
