@@ -94,10 +94,10 @@ const KNOWN_FINDINGS: string[] = [];
 
 const visibleAttributes = new Set(["aria-label", "title", "alt", "placeholder", "label"]);
 
-function literals(value: unknown, visibleOnly = false): string[] {
-  if (!value || typeof value !== "object") return [];
-  if (Array.isArray(value)) return value.flatMap((child) => literals(child, visibleOnly));
-  const node = value as Record<string, unknown>;
+type AstNode = Record<string, unknown>;
+
+/** Literals of import, JSX text, attribute and expression-container nodes, else null. */
+function markupLiterals(node: AstNode): string[] | null {
   if (node.type === "ImportDeclaration") return [];
   if (node.type === "JSXText") {
     const text = String(node.value).trim();
@@ -106,19 +106,65 @@ function literals(value: unknown, visibleOnly = false): string[] {
   if (node.type === "JSXAttribute")
     return visibleAttributes.has((node.name as { name: string }).name) ? literals(node.value) : [];
   if (node.type === "JSXExpressionContainer") return literals(node.expression);
-  // Icon names select artwork; their adjacent label/text is the visible copy.
-  if (node.type === "Property") {
-    const key = node.key as { name?: string; value?: string };
-    if (/^(?:icon|className|href|src|data-.*)$/.test(key.name ?? key.value ?? "")) return [];
-  }
+  return null;
+}
+
+/** Icon names select artwork; their adjacent label/text is the visible copy. */
+function isArtworkProperty(node: AstNode): boolean {
+  if (node.type !== "Property") return false;
+  const key = node.key as { name?: string; value?: string };
+  return /^(?:icon|className|href|src|data-.*)$/.test(key.name ?? key.value ?? "");
+}
+
+/** Literals of property, TypeScript wrapper, string literal and template nodes, else null. */
+function valueLiterals(node: AstNode, visibleOnly: boolean): string[] | null {
+  if (isArtworkProperty(node)) return [];
   if (String(node.type).startsWith("TS")) return literals(node.expression, visibleOnly);
   if (node.type === "Literal" && typeof node.value === "string")
     return visibleOnly ? [] : [node.value];
   if (node.type === "TemplateElement")
     return visibleOnly ? [] : [(node.value as { cooked: string }).cooked];
+  return null;
+}
+
+/** Literals of every child except property keys. */
+function childLiterals(node: AstNode, visibleOnly: boolean): string[] {
   return Object.entries(node).flatMap(([key, child]) =>
     key === "key" ? [] : literals(child, visibleOnly),
   );
+}
+
+function literals(value: unknown, visibleOnly = false): string[] {
+  if (!value || typeof value !== "object") return [];
+  if (Array.isArray(value)) return value.flatMap((child) => literals(child, visibleOnly));
+  const node = value as AstNode;
+  return (
+    markupLiterals(node) ?? valueLiterals(node, visibleOnly) ?? childLiterals(node, visibleOnly)
+  );
+}
+
+/** Whether a literal is a URL, path or anchor rather than prose. */
+function isNonProse(text: string): boolean {
+  return /^https?:\/\/|^mailto:|^\/[\w/-]*$|^\.\/|^#[\w-]+$/.test(text);
+}
+
+/** Whether `rule` is skipped for this file. */
+function ruleSkipped(rule: string, path: string, visibleOnly: boolean): boolean {
+  if (rule === "english" && !visibleOnly && !path.startsWith("content/")) return true;
+  return rule === "formal" && /^(?:src\/views\/legal|content\/es\/legal)\//.test(path);
+}
+
+/** Findings of one literal against every rule. */
+function textFindings(
+  path: string,
+  text: string,
+  visibleOnly: boolean,
+  rules: Record<string, readonly RegExp[]>,
+): string[] {
+  return Object.entries(rules)
+    .filter(([rule]) => !ruleSkipped(rule, path, visibleOnly))
+    .filter(([, patterns]) => patterns.some((pattern) => pattern.test(text)))
+    .map(([rule]) => `${rule}: ${path}: ${text}`);
 }
 
 function scanCopy(
@@ -130,15 +176,8 @@ function scanCopy(
     const parsed = parseSync(path, source);
     assert.deepEqual(parsed.errors, [], path);
     const visibleOnly = path.startsWith("src/");
-    for (const text of literals(parsed.program, visibleOnly)) {
-      if (/^https?:\/\/|^mailto:|^\/[\w/-]*$|^\.\/|^#[\w-]+$/.test(text)) continue;
-      for (const [rule, patterns] of Object.entries(rules)) {
-        if (rule === "english" && !visibleOnly && !path.startsWith("content/")) continue;
-        if (rule === "formal" && /^(?:src\/views\/legal|content\/es\/legal)\//.test(path)) continue;
-        if (patterns.some((pattern) => pattern.test(text)))
-          findings.push(`${rule}: ${path}: ${text}`);
-      }
-    }
+    for (const text of literals(parsed.program, visibleOnly))
+      if (!isNonProse(text)) findings.push(...textFindings(path, text, visibleOnly, rules));
   }
   return findings.sort();
 }

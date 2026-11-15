@@ -42,36 +42,42 @@ test("known public paths accept a missing trailing slash and reject duplicates",
   }
 });
 
+const linkSegment = fc.stringMatching(/^[a-z][a-z0-9-]{0,20}$/);
+
+function assertInternalLink(
+  segments: string[],
+  leadingSlash: boolean,
+  campaign: string | undefined,
+  fragment: string | undefined,
+): void {
+  // Site helpers consume canonical trailing-slash paths, rather than repairing arbitrary URLs.
+  const path = segments.length ? `${segments.join("/")}/` : "";
+  const hash = fragment === undefined ? "" : `#${fragment}`;
+  const input = `${leadingSlash ? "/" : ""}${path}${hash}`;
+  const search = new URLSearchParams(campaign === undefined ? [] : [["utm_source", campaign]]);
+  const linked = withPassthrough(input, search.toString());
+  const built = absoluteUrl(linked);
+  // A fallback origin only parses the relative output when the build origin is unset.
+  const url = new URL(built, "https://site.example");
+  assert.equal(url.pathname, `/${path}`);
+  assert.ok(url.pathname.endsWith("/"));
+  assert.ok(!url.pathname.includes("//"));
+  assert.equal(url.hash, hash);
+  assert.equal(url.searchParams.get("utm_source"), campaign ?? null);
+  assert.equal(absoluteUrl(`${url.pathname}${url.search}${url.hash}`), built);
+  assert.equal(withPassthrough(linked, ""), linked);
+  assert.equal(built, `${site.url}/${path}${search.size ? `?${search}` : ""}${hash}`);
+  if (search.size && hash) assert.ok(built.indexOf("?") < built.indexOf("#"));
+}
+
 test("internal links preserve generated canonical paths and place fragments after acquisition queries", () => {
-  const segment = fc.stringMatching(/^[a-z][a-z0-9-]{0,20}$/);
   fc.assert(
     fc.property(
-      fc.array(segment, { maxLength: 8 }),
+      fc.array(linkSegment, { maxLength: 8 }),
       fc.boolean(),
       fc.option(fc.string({ minLength: 1 }), { nil: undefined }),
-      fc.option(segment, { nil: undefined }),
-      (segments, leadingSlash, campaign, fragment) => {
-        // Site helpers consume canonical trailing-slash paths, rather than repairing arbitrary URLs.
-        const path = segments.length ? `${segments.join("/")}/` : "";
-        const hash = fragment === undefined ? "" : `#${fragment}`;
-        const input = `${leadingSlash ? "/" : ""}${path}${hash}`;
-        const search = new URLSearchParams(
-          campaign === undefined ? [] : [["utm_source", campaign]],
-        );
-        const linked = withPassthrough(input, search.toString());
-        const built = absoluteUrl(linked);
-        // A fallback origin only parses the relative output when the build origin is unset.
-        const url = new URL(built, "https://site.example");
-        assert.equal(url.pathname, `/${path}`);
-        assert.ok(url.pathname.endsWith("/"));
-        assert.ok(!url.pathname.includes("//"));
-        assert.equal(url.hash, hash);
-        assert.equal(url.searchParams.get("utm_source"), campaign ?? null);
-        assert.equal(absoluteUrl(`${url.pathname}${url.search}${url.hash}`), built);
-        assert.equal(withPassthrough(linked, ""), linked);
-        assert.equal(built, `${site.url}/${path}${search.size ? `?${search}` : ""}${hash}`);
-        if (search.size && hash) assert.ok(built.indexOf("?") < built.indexOf("#"));
-      },
+      fc.option(linkSegment, { nil: undefined }),
+      assertInternalLink,
     ),
     { numRuns, ...(seed === undefined ? {} : { seed }) },
   );

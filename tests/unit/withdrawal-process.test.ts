@@ -144,38 +144,57 @@ function segments(text: string): string[] {
     .split(/[.!?;]\s|["'`]\s*[,;)]|<[^>]*>/u);
 }
 
-function unbackedPeriods(text: string): string[] {
+type Window = (typeof withdrawalWindows)[number];
+
+/** The country window named last before `before`, if any. */
+function nearestCountry(before: string): Window | undefined {
+  return withdrawalWindows
+    .map((window) => ({
+      window,
+      index: before.lastIndexOf(countryName(window.country).toLowerCase()),
+    }))
+    .filter((entry) => entry.index >= 0)
+    .sort((a, b) => b.index - a.index)[0]?.window;
+}
+
+/** Numeric value of a period quantity written in digits or words. */
+function quantityValue(quantity: string): number {
+  return /^\d+$/u.test(quantity) ? Number(quantity) : (WORDS[quantity.toLowerCase()] ?? NaN);
+}
+
+/** Whether a claimed period is backed by the guarantee, a country window or an allowed value. */
+function isBacked(
+  value: number,
+  unit: string,
+  keywordText: string,
+  country: Window | undefined,
+): boolean {
+  if (/semana|mes/u.test(unit)) return false;
+  if (/^garant/iu.test(keywordText)) return value === guaranteeDays;
+  if (country) return value === country.days && unit === country.unit;
+  return allowedDays.has(value);
+}
+
+/** Period claims of one sentence that nothing backs. */
+function unbackedInSentence(sentence: string): string[] {
+  const keywords = [...sentence.matchAll(keyword)];
+  if (keywords.length === 0) return [];
   const found: string[] = [];
-  for (const sentence of segments(text)) {
-    const keywords = [...sentence.matchAll(keyword)];
-    if (keywords.length === 0) continue;
-    for (const match of sentence.matchAll(periodClaim)) {
-      const at = match.index ?? 0;
-      const nearest = keywords.reduce((best, k) =>
-        Math.abs((k.index ?? 0) - at) < Math.abs((best.index ?? 0) - at) ? k : best,
-      );
-      const quantity = match[1] ?? "";
-      const value = /^\d+$/u.test(quantity)
-        ? Number(quantity)
-        : (WORDS[quantity.toLowerCase()] ?? NaN);
-      const unit = (match[2] ?? "").toLowerCase().replace(/\bdias\b/u, "días");
-      const before = sentence.slice(0, at).toLowerCase();
-      const country = withdrawalWindows
-        .map((window) => ({
-          window,
-          index: before.lastIndexOf(countryName(window.country).toLowerCase()),
-        }))
-        .filter((entry) => entry.index >= 0)
-        .sort((a, b) => b.index - a.index)[0]?.window;
-      let ok: boolean;
-      if (/semana|mes/u.test(unit)) ok = false;
-      else if (/^garant/iu.test(nearest[0])) ok = value === guaranteeDays;
-      else if (country) ok = value === country.days && unit === country.unit;
-      else ok = allowedDays.has(value);
-      if (!ok) found.push(match[0]);
-    }
+  for (const match of sentence.matchAll(periodClaim)) {
+    const at = match.index ?? 0;
+    const nearest = keywords.reduce((best, k) =>
+      Math.abs((k.index ?? 0) - at) < Math.abs((best.index ?? 0) - at) ? k : best,
+    );
+    const value = quantityValue(match[1] ?? "");
+    const unit = (match[2] ?? "").toLowerCase().replace(/\bdias\b/u, "días");
+    const country = nearestCountry(sentence.slice(0, at).toLowerCase());
+    if (!isBacked(value, unit, nearest[0], country)) found.push(match[0]);
   }
   return found;
+}
+
+function unbackedPeriods(text: string): string[] {
+  return segments(text).flatMap(unbackedInSentence);
 }
 
 test("no copy states a guarantee or withdrawal period that config does not back", () => {
