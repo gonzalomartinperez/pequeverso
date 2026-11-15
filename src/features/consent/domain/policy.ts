@@ -22,6 +22,9 @@ export type ConsentChoice = Record<ConsentCategory, boolean>;
  */
 export const DEFAULT_CHOICE: Readonly<ConsentChoice> = { analytics: false, marketing: false };
 
+/** A gated integration the banner must name: its category and the tool label shown to visitors. */
+export type GatedIntegration = { category: ConsentCategory; label: string };
+
 export type ConsentState = ConsentChoice & {
   version: typeof CONSENT_VERSION;
   updatedAt: string;

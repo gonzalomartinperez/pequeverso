@@ -1,6 +1,6 @@
 # Tracking and consent
 
-First-party tracking with a prior opt-in banner (`src/features/tracking/`). Hotmart remains the
+First-party tracking (`src/features/tracking/`) behind a prior opt-in banner (`src/features/consent/`, ADR-0016; the root layout passes it the enabled integrations from `tracking/presentation/consent-integrations.ts`). Hotmart remains the
 source of truth for checkout and purchases; the site only measures interest. The browser
 variable is the Meta Pixel id; the server-only `META_CAPI_ACCESS_TOKEN` enables the
 Conversions API relay (below); every other behaviour is policy in code. CI uses the fake pixel id

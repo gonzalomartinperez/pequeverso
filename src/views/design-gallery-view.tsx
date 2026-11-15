@@ -2,7 +2,7 @@ import { hotmart } from "@config/commerce.ts";
 import type { ReactNode } from "react";
 import { HotmartWidgetSlot } from "@/features/commerce/presentation/hotmart-widget-slot.tsx";
 import { StickyCTA } from "@/features/commerce/presentation/sticky-cta.tsx";
-import { CookieSettingsLink } from "@/features/tracking/presentation/cookie-settings-link.tsx";
+import { CookieSettingsLink } from "@/features/consent/presentation/cookie-settings-link.tsx";
 import { CTAButton } from "@/shared/editorial/cta-button.tsx";
 import { Notice } from "@/shared/editorial/notice.tsx";
 import { Section } from "@/shared/editorial/section.tsx";

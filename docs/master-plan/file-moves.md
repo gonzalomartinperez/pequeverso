@@ -37,10 +37,10 @@ Every move, rename, split, deletion or conversion of the 906 tracked files at `o
 | `src/app/api/meta/events/route.standalone.ts` | `src/app/api/meta/events/route.ts` | rename | M4 | pageExtensions trick unnecessary once export retired (M4) |
 | `src/features/gallery/presentation/page-wall.module.css` | (deleted) | delete | M3 | Converted to token utilities (F-17) |
 | `src/features/playground/presentation/playground.module.css` | (deleted) | delete | M3 | Converted to token utilities (F-17) |
-| `src/features/site-analytics/domain/consent.ts` | `src/features/consent/domain/freshness.ts` | move | M3 / M4 | One consent module, one freshness rule |
-| `src/features/tracking/adapters/consent.ts` | `src/features/consent/domain/consent.ts` | split | M3 / M4 | Policy pure in domain; storage adapter separate (ADR-0016); default false (PV-D1) |
-| `src/features/tracking/presentation/consent-banner.tsx` | `src/features/consent/presentation/consent-banner.tsx` | move+rewrite | M3 / M4 | Equal buttons, opt-in copy, compact (playbook 3.2) |
-| `src/features/tracking/presentation/cookie-settings-link.tsx` | `src/features/consent/presentation/cookie-settings-link.tsx` | move | M3 / M4 | Consent module owns it |
+| `src/features/site-analytics/domain/consent.ts` | `src/features/consent/domain/policy.ts` | move (done, M4-1) | M3 / M4 | One consent module, one freshness rule |
+| `src/features/tracking/adapters/consent.ts` | `src/features/consent/domain/policy.ts` and `src/features/consent/adapters/browser-storage.ts` | split (done, M4-1) | M3 / M4 | Policy pure in domain; storage adapter separate (ADR-0016); default false (PV-D1) |
+| `src/features/tracking/presentation/consent-banner.tsx` (and `consent-banner-ui.tsx`) | `src/features/consent/presentation/` | move (done, M4-1; the rewrite is M5) | M3 / M4 | Equal buttons, opt-in copy, compact (playbook 3.2) |
+| `src/features/tracking/presentation/cookie-settings-link.tsx` | `src/features/consent/presentation/cookie-settings-link.tsx` | move (done, M4-1) | M3 / M4 | Consent module owns it |
 | `src/views/metadata.ts` | `src/views/seo/metadata.ts` | move | M3 | SEO module |
 | `src/views/product-jsonld.ts` | `src/views/seo/product-jsonld.ts` | move+rewrite | M3 | Escaped serializer, seller, Organization and WebSite siblings |
 | `tools/gen-htaccess.ts` | (deleted) | delete | M4 (PV-D3) | Static export retired (PV-D3, M4) |

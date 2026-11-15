@@ -1,7 +1,7 @@
 import { affiliateExamplePath } from "@config/affiliates.ts";
 import { seller } from "@content/es/legal/seller";
 import Link from "next/link";
-import { CookieSettingsLink } from "@/features/tracking/presentation/cookie-settings-link.tsx";
+import { CookieSettingsLink } from "@/features/consent/presentation/cookie-settings-link.tsx";
 import {
   Table,
   TableBody,

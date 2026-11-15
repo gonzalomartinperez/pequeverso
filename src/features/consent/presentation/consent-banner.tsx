@@ -2,10 +2,14 @@
 
 import { type ComponentType, useEffect, useRef, useState } from "react";
 import { onConsentChange, readConsent } from "@/features/consent/adapters/browser-storage.ts";
-import { explicitGrant } from "@/features/consent/domain/policy.ts";
-import { enabledAdapters, siteAnalyticsBuilt } from "@/features/tracking/adapters/env.ts";
+import { explicitGrant, type GatedIntegration } from "@/features/consent/domain/policy.ts";
 
-type UiProps = { classes: { primary: string }; reopen: boolean; opener: HTMLElement | null };
+type UiProps = {
+  classes: { primary: string };
+  integrations: readonly GatedIntegration[];
+  reopen: boolean;
+  opener: HTMLElement | null;
+};
 
 const FIRST_PAINT_TIMEOUT_MS = 2500;
 
@@ -42,6 +46,10 @@ type Request = { reopen: boolean; opener: HTMLElement | null };
 type Props = {
   /** Button classes computed on the server (`buttonVariants`), keeping variant tables out of the layout chunk. */
   classes: { primary: string };
+  /** Enabled gated integrations, from the composition root (consent never imports tracking). */
+  integrations: readonly GatedIntegration[];
+  /** Whether the site analytics tool is built in (it needs a fresh analytics opt-in). */
+  analyticsBuilt: boolean;
 };
 
 /**
@@ -49,11 +57,13 @@ type Props = {
  * and idle, only with a gated integration) or on `pv:consent:open` from the footer control, loads
  * the banner chunk on demand. Only this reader and the trigger ship in the initial bundle.
  */
-export function ConsentBanner({ classes }: Props) {
+export function ConsentBanner({ classes, integrations, analyticsBuilt }: Props) {
   const [request, setRequest] = useState<Request | null>(null);
   const [Ui, setUi] = useState<ComponentType<UiProps> | null>(null);
   const loaded = useRef(false);
   const requested = request !== null;
+  // Primitives in the effect's dependencies: build-time values, so the listeners mount once.
+  const hasIntegrations = integrations.length > 0;
 
   // The banner UI and its copy are a separate chunk, fetched only once the banner is requested.
   // A failed fetch clears the request, so the next trigger or footer click retries it.
@@ -77,17 +87,13 @@ export function ConsentBanner({ classes }: Props) {
 
   useEffect(() => {
     let cancelFirstVisit = () => {};
-    const gated =
-      siteAnalyticsBuilt ||
-      enabledAdapters().some(
-        (adapter) => adapter.category === "analytics" || adapter.category === "marketing",
-      );
+    const gated = analyticsBuilt || hasIntegrations;
     const firstVisit = () => setRequest((current) => current ?? { reopen: false, opener: null });
     if (gated) {
       const stored = readConsent();
       const needsChoice =
         stored === null ||
-        (siteAnalyticsBuilt && stored.analytics && !explicitGrant(stored, Date.now()));
+        (analyticsBuilt && stored.analytics && !explicitGrant(stored, Date.now()));
       if (needsChoice) cancelFirstVisit = afterFirstPaint(firstVisit);
     }
     // Once the UI is mounted it handles both events itself; before that, the trigger requests it.
@@ -108,8 +114,15 @@ export function ConsentBanner({ classes }: Props) {
       window.removeEventListener("pv:consent:open", open);
       unsubscribe();
     };
-  }, []);
+  }, [analyticsBuilt, hasIntegrations]);
 
   if (request === null || Ui === null) return null;
-  return <Ui classes={classes} reopen={request.reopen} opener={request.opener} />;
+  return (
+    <Ui
+      classes={classes}
+      integrations={integrations}
+      reopen={request.reopen}
+      opener={request.opener}
+    />
+  );
 }

@@ -7,8 +7,8 @@ import { explicitGrant } from "../../../src/features/consent/domain/policy.ts";
 
 const require = createRequire(import.meta.url);
 const { transformSync } = require("next/dist/build/swc/index.js");
-const banner = readFileSync("src/features/tracking/presentation/consent-banner-ui.tsx", "utf8");
-const trigger = readFileSync("src/features/tracking/presentation/consent-banner.tsx", "utf8");
+const banner = readFileSync("src/features/consent/presentation/consent-banner-ui.tsx", "utf8");
+const trigger = readFileSync("src/features/consent/presentation/consent-banner.tsx", "utf8");
 
 function compile(enabled: boolean, commonjs = false, source = banner): string {
   // Exercise the installed Next compiler's environment substitution and dead-code pass,
@@ -112,10 +112,6 @@ function render(
         if (failWrite) throw new Error("synthetic storage failure");
       },
     },
-    "@/features/tracking/adapters/env.ts": {
-      enabledAdapters: () => [{ category: "marketing", label: "Meta Pixel" }],
-      siteAnalyticsBuilt: enabled,
-    },
   };
   const exports: Record<string, ((props: unknown) => Node) | undefined> = {};
   runInNewContext(compile(enabled, true, part === "ui" ? banner : trigger), {
@@ -151,7 +147,14 @@ function render(
   });
   const component = part === "ui" ? exports.ConsentBannerUi : exports.ConsentBanner;
   assert.ok(component);
-  const tree = component({ classes: { primary: "primary" }, reopen: true, opener: null });
+  // The composition root's props (ADR-0016): the enabled integrations and the analytics flag.
+  const tree = component({
+    classes: { primary: "primary" },
+    integrations: [{ category: "marketing", label: "Meta Pixel" }],
+    analyticsBuilt: enabled,
+    reopen: true,
+    opener: null,
+  });
   for (const effect of effects) effect();
   return { tree, changes, events, writes, listeners, consentListeners };
 }

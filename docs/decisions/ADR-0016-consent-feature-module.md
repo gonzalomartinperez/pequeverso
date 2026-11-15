@@ -20,16 +20,17 @@ test.
    - `domain/policy.ts`: import-free and pure. It holds the version, storage key, event name and 180-day lifetime; the
      categories and the prior-opt-in default; the stored-JSON parser; the cookie serializer and its
      inverse; the server-side cookie-header gate; the category check (`grants`); the analytics
-     freshness rule (`explicitGrant`); and the withdrawal gate (`createConsentGate`). It is
+     freshness rule (`explicitGrant`); the withdrawal gate (`createConsentGate`); and the
+     `GatedIntegration` contract the banner receives. It is
      import-free so the server relay can load it under plain `node`.
    - `adapters/browser-storage.ts`: localStorage, cookie and window events (`readConsent`,
      `writeConsent`, `expireConsentCookie`, `onConsentChange`, `hasConsent`).
-   - `presentation/`: the banner trigger, the lazy banner UI and the footer settings link. These
-     move in a follow-up PR under this same ADR.
+   - `presentation/`: the banner trigger, the lazy banner UI and the footer settings link.
 2. Dependency direction: tracking, site analytics and the composition layers import consent; consent
    imports nothing from another feature. Inside consent, domain <- adapters <- presentation, and
    presentation may also use `src/shared`. The banner learns which gated integrations exist from
-   props the root layout passes in (the composition root asks tracking), not by importing tracking.
+   props the root layout passes in (`integrations` and `analyticsBuilt`, from
+   `tracking/presentation/consent-integrations.ts`), not by importing tracking.
 3. No forwarding modules: the old paths are deleted and every consumer imports the new ones.
 
 ## Consequences
@@ -42,6 +43,10 @@ test.
     (`NEXT_PUBLIC_PRODUCT_ANALYTICS_ENABLED`) inline, because Next must dead-code-eliminate the
     analytics copy from publishable builds (`tests/unit/site-analytics/consent-build.test.ts`).
   - It also dispatches the string event `pv:site-analytics:withdraw`.
+  - The banner trigger receives the same flag as the `analyticsBuilt` prop (from tracking's
+    `siteAnalyticsBuilt`), so the fact has two read paths. Because a prop is a runtime value, the
+    trigger keeps the small `explicitGrant` check in the initial bundle of publishable builds as
+    well; the bundle budget (`npm run check:bundle`) is the gate on that cost.
   - Neither is a module import. Moving them behind a contributed integration is a candidate for
     MV-2, when site analytics is enabled.
 - Mutation scope follows the code: Stryker mutates `features/consent/domain` and `adapters`. The
