@@ -1,5 +1,7 @@
 # Native assistant · local preview, 2026-10-18
 
+> The screenshots this record cites are archived in the `evidence-2026-10` release ([details](../../ARCHIVE-2026-10.md)).
+
 **Production remains disabled. This enabled fixture export must never be published.**
 These are unedited PNG screenshots of the actual Pequeverso interface, with its existing
 cream, navy and turquoise identity. The assistant is Spanish-only, with no language/theme

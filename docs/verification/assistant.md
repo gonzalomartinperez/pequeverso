@@ -1,5 +1,7 @@
 # Native assistant verification
 
+> The screenshots this record cites are archived in the `evidence-2026-10` release ([details](ARCHIVE-2026-10.md)).
+
 ## Current local preview (2026-10-18)
 
 The [current seven-image gallery](assistant/2026-10-18/README.md) records exact Store and fixture

@@ -1,5 +1,7 @@
 # Text enlargement verification — 2026-10-10
 
+> The screenshots this record cites are archived in the `evidence-2026-10` release ([details](../ARCHIVE-2026-10.md)).
+
 At root font size200%, all13routes reflow at320/390CSSpx in Chromium,Firefox and WebKit. This tests text enlargement in the rem-based stylesheet; it is not a complete WCAG certification or a real-device/browser-menu audit. No hiding overflow was added to mask content.
 
 The original commit8a205fe was unverified and failed the resumed route checks. Its `text-*.webp` images are preliminary historical captures, not final acceptance evidence. Independent inspection found a floating offer occupying almost the viewport despite horizontal checks passing; the corrected offer gives its summary and action separate rows. Its active state now has a height/visibility/overflow regression test. A second finding corrected the closing price grid in all three engines.
