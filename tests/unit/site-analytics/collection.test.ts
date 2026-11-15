@@ -244,9 +244,10 @@ test("analytics grant expires independently; failed writes cannot reactivate a r
   const { explicitGrant, createConsentGate } = await import(
     "../../../src/features/site-analytics/domain/consent.ts"
   );
+  const { CONSENT_VERSION } = await import("../../../src/features/tracking/adapters/consent.ts");
   const now = Date.parse("2026-10-19T00:00:00.000Z");
   const grant = {
-    version: 2,
+    version: CONSENT_VERSION,
     analytics: true,
     marketing: true,
     updatedAt: new Date(now - 1000).toISOString(),
@@ -265,6 +266,8 @@ test("analytics grant expires independently; failed writes cannot reactivate a r
     {},
     { ...grant, analytics: false },
     { ...grant, version: 1 },
+    // A grant stored under an earlier policy (v2 opt-out era) never counts as an opt-in.
+    { ...grant, version: CONSENT_VERSION - 1 },
     { ...grant, updatedAt: undefined },
   ])
     assert.equal(explicitGrant(value, now), false);
