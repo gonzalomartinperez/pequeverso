@@ -4,7 +4,7 @@
 // functions above the threshold, split into tests and everything else, plus the maximum score.
 // Usage: node tools/complexity.ts [--json]
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -13,6 +13,7 @@ export const SCOPE = ["src", "config", "content", "tools", "tests"] as const;
 const RULE = "lint/complexity/noExcessiveCognitiveComplexity";
 
 export type Finding = { path: string; line: number; score: number };
+export type Report = { findings: Finding[]; files: number };
 export type Measurement = {
   "functions over 10 (src, config, content, tools)": number;
   "functions over 10 (tests)": number;
@@ -43,28 +44,36 @@ export function measureConfig(): string {
   )}\n`;
 }
 
-/** Complexity findings from Biome's JSON reporter output; other diagnostics are ignored. */
-export function parseFindings(report: string): Finding[] {
-  const parsed: unknown = JSON.parse(report);
-  const diagnostics =
-    typeof parsed === "object" && parsed !== null && "diagnostics" in parsed
-      ? (parsed as { diagnostics: unknown }).diagnostics
-      : undefined;
-  if (!Array.isArray(diagnostics)) throw new Error("biome report without diagnostics");
-  return diagnostics.flatMap((item: unknown): Finding[] => {
-    const diagnostic = item as {
-      category?: unknown;
-      message?: unknown;
-      location?: { path?: unknown; start?: { line?: unknown } };
-    };
-    if (diagnostic.category !== RULE) return [];
-    const score = /complexity of (\d+)/.exec(String(diagnostic.message))?.[1];
-    const path = diagnostic.location?.path;
-    if (score === undefined || typeof path !== "string")
-      throw new Error("unreadable complexity diagnostic");
-    const line = diagnostic.location?.start?.line;
-    return [{ path, line: typeof line === "number" ? line : 0, score: Number(score) }];
-  });
+type Diagnostic = {
+  category?: unknown;
+  severity?: unknown;
+  message?: unknown;
+  location?: { path?: unknown; start?: { line?: unknown } };
+};
+
+/** One complexity finding; any other error (unreadable path, parse error) fails closed. */
+function findingOf(diagnostic: Diagnostic): Finding[] {
+  if (diagnostic.category !== RULE) {
+    if (diagnostic.severity !== "error") return [];
+    throw new Error(`biome could not measure: ${String(diagnostic.category)}`);
+  }
+  const score = /complexity of (\d+)/.exec(String(diagnostic.message))?.[1];
+  const path = diagnostic.location?.path;
+  if (score === undefined || typeof path !== "string")
+    throw new Error("unreadable complexity diagnostic");
+  const line = diagnostic.location?.start?.line;
+  return [{ path, line: typeof line === "number" ? line : 0, score: Number(score) }];
+}
+
+/** Findings and the number of files Biome checked, from its JSON reporter output. */
+export function parseReport(report: string): Report {
+  const parsed = JSON.parse(report) as { diagnostics?: unknown; summary?: unknown } | null;
+  if (!parsed || !Array.isArray(parsed.diagnostics))
+    throw new Error("biome report without diagnostics");
+  const summary = (parsed.summary ?? {}) as { changed?: unknown; unchanged?: unknown };
+  const files = Number(summary.changed ?? 0) + Number(summary.unchanged ?? 0);
+  if (!Number.isFinite(files)) throw new Error("biome report without a file count");
+  return { findings: (parsed.diagnostics as Diagnostic[]).flatMap(findingOf), files };
 }
 
 export function summarize(findings: readonly Finding[]): Measurement {
@@ -76,16 +85,21 @@ export function summarize(findings: readonly Finding[]): Measurement {
   };
 }
 
-/** Runs Biome over the scope from `root` and returns every function above the threshold. */
-export function measure(root: string = process.cwd()): Finding[] {
+/** Runs Biome over `scope` from `root`: every function above the threshold and the files checked. */
+export function measure(
+  root: string = process.cwd(),
+  scope: readonly string[] = SCOPE,
+  biome: string = resolve(root, "node_modules/.bin/biome"),
+): Report {
+  const missing = scope.filter((entry) => !existsSync(join(root, entry)));
+  if (missing.length > 0) throw new Error(`complexity scope missing: ${missing.join(", ")}`);
   const config = mkdtempSync(join(tmpdir(), "pv-complexity-"));
   try {
     writeFileSync(join(config, "biome.json"), measureConfig());
-    const biome = resolve(root, "node_modules/.bin/biome");
     const args = ["lint", `--config-path=${config}`, "--reporter=json", "--max-diagnostics=none"];
     let stdout: string;
     try {
-      stdout = execFileSync(biome, [...args, ...SCOPE], {
+      stdout = execFileSync(biome, [...args, ...scope], {
         cwd: root,
         encoding: "utf8",
         stdio: ["ignore", "pipe", "ignore"],
@@ -98,7 +112,9 @@ export function measure(root: string = process.cwd()): Finding[] {
       if (typeof out !== "string" || !out.trim()) throw error;
       stdout = out;
     }
-    return parseFindings(stdout);
+    const report = parseReport(stdout);
+    if (report.files === 0) throw new Error("biome checked no files");
+    return report;
   } finally {
     rmSync(config, { recursive: true, force: true });
   }
@@ -114,4 +130,5 @@ export function report(findings: readonly Finding[], argv: readonly string[]): s
   ];
 }
 
-if (import.meta.main) for (const line of report(measure(), process.argv)) console.log(line);
+if (import.meta.main)
+  for (const line of report(measure().findings, process.argv)) console.log(line);

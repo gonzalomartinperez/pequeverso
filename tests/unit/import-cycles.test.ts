@@ -5,11 +5,12 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { test } from "node:test";
 
-const biome = resolve("node_modules/.bin/biome");
+const root = resolve(import.meta.dirname, "../..");
+const biome = join(root, "node_modules/.bin/biome");
 
 /** Lints `files` in a scratch project with only noImportCycles at the repository's level. */
 function lintScratch(files: Record<string, string>): { status: number; output: string } {
-  const level = JSON.parse(readFileSync("biome.json", "utf8")).linter.rules.suspicious
+  const level = JSON.parse(readFileSync(join(root, "biome.json"), "utf8")).linter.rules.suspicious
     .noImportCycles;
   const dir = mkdtempSync(join(tmpdir(), "pv-cycles-"));
   try {
@@ -44,7 +45,8 @@ test("biome.json rejects import cycles as errors (negative fixture)", () => {
     "b.ts": 'import { a } from "./a.ts";\nexport const b = () => a;\n',
   });
   assert.notEqual(cycle.status, 0);
-  assert.match(cycle.output, /noImportCycles/);
+  assert.match(cycle.output, /lint\/suspicious\/noImportCycles/);
+  assert.doesNotMatch(cycle.output, /configuration resulted in errors/);
   const chain = lintScratch({
     "a.ts": 'import { b } from "./b.ts";\nexport const a = () => b;\n',
     "b.ts": "export const b = 1;\n",
