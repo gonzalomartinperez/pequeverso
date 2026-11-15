@@ -7,7 +7,12 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 export type Direction = "min" | "max";
-export type RatchetValue = { key: string; value: number; unit: string; direction: Direction };
+export type RatchetValue = {
+  key: string;
+  value: number;
+  unit: string;
+  direction: Direction;
+};
 export type Ratchet = {
   metric: string;
   measuredAt: string;
@@ -23,6 +28,20 @@ export type Ratchet = {
    * A ratchet that declares a `mode` must have it once it enforces (`needsCalibration`).
    */
   calibrated?: boolean;
+  /**
+   * Record of an owner-approved re-baseline (a ratchet's values may rise or fall away from their
+   * direction once, under a NEW ADR). `loosened` honours it only when the caller's `approves`
+   * callback accepts the record and it differs from the previous file's record.
+   */
+  rebaseline?: Rebaseline;
+};
+export type Rebaseline = {
+  /** The ADR that approves the re-baseline, `ADR-NNNN`; it must be new in the same change. */
+  adr: string;
+  /** Who approved and when, `owner YYYY-MM-DD`; the ADR header must read `Owner approval: <approved>`. */
+  approved: string;
+  /** The develop commit the new values were measured at. */
+  from: string;
 };
 
 const DAY_MS = 86_400_000;
@@ -66,6 +85,20 @@ export function needsCalibration(
     ratchetPhase(ratchet, today) === "enforce" &&
     ratchet.calibrated !== true
   );
+}
+
+function rebaselineProblems(data: Record<string, unknown>, file: string): string[] {
+  const record = data.rebaseline;
+  if (record === undefined) return [];
+  if (!isRecord(record)) return [`${file}: rebaseline must be an object`];
+  const problems: string[] = [];
+  if (typeof record.adr !== "string" || !/^ADR-\d{4}$/.test(record.adr))
+    problems.push(`${file}: rebaseline.adr must look like ADR-0019`);
+  if (typeof record.approved !== "string" || !/^owner \d{4}-\d{2}-\d{2}$/.test(record.approved))
+    problems.push(`${file}: rebaseline.approved must look like "owner YYYY-MM-DD"`);
+  if (typeof record.from !== "string" || !/^[0-9a-f]{7,40}$/.test(record.from))
+    problems.push(`${file}: rebaseline.from must be a git SHA`);
+  return problems;
 }
 
 function phaseProblems(data: Record<string, unknown>, file: string): string[] {
@@ -121,7 +154,7 @@ export function validateRatchet(data: unknown, file: string): string[] {
     (key, index) => typeof key === "string" && keys.indexOf(key) !== index,
   );
   for (const key of new Set(duplicates)) problems.push(`${file}: duplicate key "${String(key)}"`);
-  problems.push(...phaseProblems(data, file));
+  problems.push(...phaseProblems(data, file), ...rebaselineProblems(data, file));
   return [...problems, ...data.values.flatMap((item) => valueProblems(item, file))];
 }
 
@@ -157,8 +190,20 @@ export function holds(baseline: RatchetValue, measured: number): boolean {
 /**
  * Keys whose baseline was loosened between two versions of a ratchet file (a floor lowered, a
  * ceiling raised, a direction or unit changed, or a key removed). Ratchets may only tighten.
+ *
+ * Narrow exception: when `after.rebaseline` is a new record (its `adr` differs from
+ * `before.rebaseline`'s) and `approves(record)` returns true, moving a value away from its
+ * direction is accepted. Removed keys, direction or unit changes and the phase checks (mode,
+ * expires, calibrated) still count. Without `approves`, a record never excuses anything.
  */
-export function loosened(before: Ratchet, after: Ratchet): string[] {
+export function loosened(
+  before: Ratchet,
+  after: Ratchet,
+  approves?: (record: Rebaseline) => boolean,
+): string[] {
+  const record = after.rebaseline;
+  const rebased =
+    record !== undefined && record.adr !== before.rebaseline?.adr && approves?.(record) === true;
   const next = new Map(after.values.map((item) => [item.key, item]));
   const phase: string[] = [];
   // enforce -> warn, or a later warn expiry, postpones enforcement: a loosening.
@@ -176,7 +221,7 @@ export function loosened(before: Ratchet, after: Ratchet): string[] {
           !current ||
           current.direction !== old.direction ||
           current.unit !== old.unit ||
-          !holds(old, current.value)
+          (!rebased && !holds(old, current.value))
         );
       })
       .map((old) => old.key),

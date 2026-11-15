@@ -25,3 +25,4 @@ contiguous (ADR-0018 follows the numbering of the ecosystem plan).
 | [ADR-0016](ADR-0016-consent-feature-module.md) | Consent is its own feature module, a leaf that tracking and site analytics consume | accepted |
 | [ADR-0017](ADR-0017-static-starfield-on-phones.md) | Static starfield on phones; WebGL scene only on fine pointers after first interaction | accepted |
 | [ADR-0018](ADR-0018-release-automation-version-pr.md) | Release automation by version-bump PR and a tagging workflow | accepted |
+| [ADR-0019](ADR-0019-bundle-rebaseline.md) | Re-baseline the bundle ceilings to the nightly environment | accepted |

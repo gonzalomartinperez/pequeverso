@@ -6,7 +6,9 @@ may only fall. `measuredAt`, `commit` and `source` say where the baseline comes 
 
 - `tools/scorecard/ratchets.ts` loads and validates the files (`node tools/scorecard/ratchets.ts`).
 - `tests/unit/ratchets.test.ts` fails when a file is invalid or when a baseline is loosened against
-  the merge base with `origin/develop`. Tightening is a normal change; loosening needs an ADR.
+  the merge base with `origin/develop`. Tightening is a normal change; loosening needs an ADR. An owner-approved loosening is recorded
+  in the file as `rebaseline` (`adr`, `approved`, `from`); it is honoured only for a new ADR added in
+  the same change (ADR-0019), once per ADR.
 - Optional `mode` (`warn` or `enforce`, absent means enforce), `expires` and `calibrated`: a `warn`
   ratchet is a time-boxed soft gate for gates that cannot be green yet. `expires` (YYYY-MM-DD) is
   the last day it only warns, at most 14 days after `measuredAt`; it enforces from 00:00 UTC the

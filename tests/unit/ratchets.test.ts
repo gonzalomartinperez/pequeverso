@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { test } from "node:test";
@@ -10,6 +10,7 @@ import {
   loosened,
   needsCalibration,
   type Ratchet,
+  type Rebaseline,
   ratchetPhase,
   validateRatchet,
 } from "../../tools/scorecard/ratchets.ts";
@@ -61,6 +62,22 @@ function developTip(): string | undefined {
   }
 }
 
+/**
+ * An ADR-approved re-baseline is accepted only when its ADR file exists, quotes the approval and
+ * is NEW relative to `base` by number, so a renamed old ADR does not count (each ADR excuses one
+ * loosening, in the PR that adds it), and carries an `Owner approval: <approved>` header.
+ */
+function adrApproves(base: string, record: Rebaseline): boolean {
+  const dir = path.join(root, "docs/decisions");
+  const name = readdirSync(dir).find((file) => file.startsWith(`${record.adr}-`));
+  if (!name) return false;
+  const onBase = git("ls-tree", "--name-only", base, "--", "docs/decisions/")
+    .split("\n")
+    .some((file) => path.basename(file).startsWith(`${record.adr}-`));
+  const text = readFileSync(path.join(dir, name), "utf8");
+  return !onBase && text.includes(`Owner approval: ${record.approved}`);
+}
+
 test("committed baselines only tighten against develop", (t) => {
   const base = developTip();
   if (!base) {
@@ -72,7 +89,8 @@ test("committed baselines only tighten against develop", (t) => {
     const exists = git("ls-tree", "--name-only", base, "--", file).trim() === file;
     if (!exists) continue; // new ratchet file: nothing to compare yet
     const previous = JSON.parse(git("show", `${base}:${file}`)) as Ratchet;
-    assert.deepEqual(loosened(previous, ratchet), [], `${file} was loosened`);
+    const approves = (record: Rebaseline) => adrApproves(base, record);
+    assert.deepEqual(loosened(previous, ratchet, approves), [], `${file} was loosened`);
   }
 });
 
@@ -115,7 +133,10 @@ test("floors may only rise and ceilings may only fall", () => {
     ["bytes"],
     "removing a key loosens",
   );
-  const flipped = { ...sample, values: [{ ...floor, direction: "max" as const }, ceiling] };
+  const flipped = {
+    ...sample,
+    values: [{ ...floor, direction: "max" as const }, ceiling],
+  };
   assert.deepEqual(loosened(sample, flipped), ["branches"]);
   const relabelled = { ...sample, values: [floor, { ...ceiling, unit: "KB" }] };
   assert.deepEqual(loosened(sample, relabelled), ["bytes"], "a unit change is a loosening");
@@ -218,5 +239,93 @@ test("no committed ratchet that declares a mode is uncalibrated after its warn w
       false,
       `ratchets/${ratchet.metric}.json passed its warn window without "calibrated": true: calibrate it from CI runs and set it`,
     );
+  }
+});
+
+const rebaseline: Rebaseline = {
+  adr: "ADR-0019",
+  approved: "owner 2026-11-15",
+  from: "df03e13",
+};
+const floorItem = { key: "branches", value: 88.11, unit: "%", direction: "min" as const };
+const ceilingItem = { key: "bytes", value: 120, unit: "B", direction: "max" as const };
+const raised: Ratchet = {
+  ...sample,
+  values: [
+    { key: "branches", value: 88.11, unit: "%", direction: "min" },
+    { key: "bytes", value: 120, unit: "B", direction: "max" },
+  ],
+};
+
+test("an approved re-baseline excuses a raised ceiling, once, and nothing else", () => {
+  const yes = () => true;
+  const no = () => false;
+  assert.deepEqual(loosened(sample, raised), ["bytes"], "no record: still a loosening");
+  assert.deepEqual(loosened(sample, { ...raised, rebaseline }, no), ["bytes"], "not approved");
+  assert.deepEqual(loosened(sample, { ...raised, rebaseline }), ["bytes"], "no approver");
+  assert.deepEqual(loosened(sample, { ...raised, rebaseline }, yes), []);
+  const rebased = { ...raised, rebaseline };
+  assert.deepEqual(
+    loosened(
+      rebased,
+      {
+        ...rebased,
+        values: [floorItem, { ...ceilingItem, value: 150 }],
+      },
+      yes,
+    ),
+    ["bytes"],
+    "the same ADR cannot excuse a second loosening",
+  );
+  const second = { ...rebased, rebaseline: { ...rebaseline, adr: "ADR-0020" } };
+  assert.deepEqual(
+    loosened(
+      rebased,
+      {
+        ...second,
+        values: [floorItem, { ...ceilingItem, value: 150 }],
+      },
+      yes,
+    ),
+    [],
+    "a new ADR can",
+  );
+  const flipped = {
+    ...rebased,
+    values: [{ ...floorItem, direction: "max" as const }, ceilingItem],
+  };
+  assert.deepEqual(loosened(sample, flipped, yes), ["branches"], "direction change still loosens");
+  assert.deepEqual(
+    loosened(sample, { ...rebased, values: [floorItem] }, yes),
+    ["bytes"],
+    "removal still loosens",
+  );
+  const warn = { ...rebased, mode: "warn" as const, expires: "2026-11-20" };
+  assert.deepEqual(loosened(sample, warn, yes), ["mode"], "phase loosening is not excused");
+});
+
+test("rebaseline records are validated", () => {
+  const check = (patch: unknown) =>
+    validateRatchet({ ...sample, rebaseline: patch }, "coverage.json").join();
+  assert.equal(check(rebaseline), "");
+  assert.match(check("x"), /must be an object/);
+  assert.match(check({ ...rebaseline, adr: "0019" }), /rebaseline\.adr/);
+  assert.match(check({ ...rebaseline, approved: " " }), /rebaseline\.approved/);
+  assert.match(check({ ...rebaseline, approved: "a" }), /rebaseline\.approved/);
+  assert.match(check({ ...rebaseline, from: "main" }), /rebaseline\.from/);
+});
+
+test("adrApproves needs an existing ADR that is new against the base and quotes the approval", () => {
+  const head = git("rev-parse", "HEAD").trim();
+  const record = { ...rebaseline, adr: "ADR-0001" };
+  assert.equal(existsSync(path.join(root, "docs/decisions")), true);
+  assert.equal(adrApproves(head, { ...record, adr: "ADR-9999" }), false, "missing ADR");
+  assert.equal(adrApproves(head, record), false, "an ADR already on the base is not new");
+  const renamed = path.join(root, "docs/decisions/ADR-0001-renamed-for-test.md");
+  writeFileSync(renamed, `Owner approval: ${record.approved}\n`);
+  try {
+    assert.equal(adrApproves(head, record), false, "a renamed old ADR is not new either");
+  } finally {
+    rmSync(renamed, { force: true });
   }
 });
