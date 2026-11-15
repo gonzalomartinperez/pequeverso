@@ -98,44 +98,91 @@ function checkTolerance(tolerance: number): void {
 
 type Collected = { key: string; item: RatchetValue; samples: number[] };
 
+type CollectState = {
+  failures: Failure[];
+  collected: Collected[];
+  reported: Set<string>;
+};
+
+function reportOnce(state: CollectState, key: string, reason: string, id: string): void {
+  if (state.reported.has(id)) return;
+  state.reported.add(id);
+  state.failures.push({ key, reason });
+}
+
+function reportRunProblems(
+  state: CollectState,
+  key: string,
+  pathname: string,
+  runs: Lhr[],
+  options: Options,
+): void {
+  if (options.expectedRuns !== undefined && runs.length < options.expectedRuns)
+    reportOnce(
+      state,
+      key,
+      `${runs.length} runs collected, ${options.expectedRuns} expected`,
+      `n:${pathname}`,
+    );
+  if (runs.some((lhr) => lhr.runtimeError))
+    reportOnce(state, key, "a run reported runtimeError", `e:${pathname}`);
+}
+
+function collectKey(
+  state: CollectState,
+  item: RatchetValue,
+  runsByPath: Map<string, Lhr[]>,
+  options: Options,
+): void {
+  const { pathname, metric } = parseKey(item.key);
+  const runs = runsByPath.get(pathname);
+  if (!runs) {
+    if (!options.allowMissingPaths)
+      state.failures.push({ key: item.key, reason: "route not collected" });
+    return;
+  }
+  reportRunProblems(state, item.key, pathname, runs, options);
+  const samples = runs.map((lhr) => metricOf(lhr, metric, item.unit));
+  if (samples.length === 0 || samples.some((s) => s === undefined || !Number.isFinite(s))) {
+    state.failures.push({ key: item.key, reason: "metric missing or not finite in a run" });
+    return;
+  }
+  state.collected.push({ key: item.key, item, samples: samples as number[] });
+}
+
 /** Validates routes, run counts and values; returns per-key samples plus every failure. */
 function collect(
   values: RatchetValue[],
   runsByPath: Map<string, Lhr[]>,
   options: Options,
 ): { collected: Collected[]; failures: Failure[] } {
-  const failures: Failure[] = [];
-  const collected: Collected[] = [];
-  const reported = new Set<string>();
-  const once = (key: string, reason: string, id: string) => {
-    if (reported.has(id)) return;
-    reported.add(id);
-    failures.push({ key, reason });
+  const state: CollectState = { failures: [], collected: [], reported: new Set() };
+  for (const item of values) collectKey(state, item, runsByPath, options);
+  return { collected: state.collected, failures: state.failures };
+}
+
+function ratchetLimit(item: RatchetValue, tolerance: number): number {
+  const slack = item.value === 0 && item.unit === "" ? 0.01 : Math.abs(item.value) * tolerance;
+  return item.direction === "max" ? item.value + slack : item.value - slack;
+}
+
+function ratchetOutcome(
+  { key, item, samples }: Collected,
+  tolerance: number,
+): { row: Row; failure?: Failure } {
+  const measured = median(samples);
+  const limit = ratchetLimit(item, tolerance);
+  const over = item.direction === "max" ? measured > limit : measured < limit;
+  const warn = warnMetrics.includes(parseKey(key).metric);
+  const row: Row = { key, measured, limit, status: over ? (warn ? "WARN" : "FAIL") : "ok" };
+  if (!over || warn) return { row };
+  return {
+    row,
+    failure: {
+      key,
+      reason: `median ${measured.toFixed(2)} ${item.unit} vs limit ${limit.toFixed(2)}`,
+    },
   };
-  for (const item of values) {
-    const { pathname, metric } = parseKey(item.key);
-    const runs = runsByPath.get(pathname);
-    if (!runs) {
-      if (!options.allowMissingPaths)
-        failures.push({ key: item.key, reason: "route not collected" });
-      continue;
-    }
-    if (options.expectedRuns !== undefined && runs.length < options.expectedRuns)
-      once(
-        item.key,
-        `${runs.length} runs collected, ${options.expectedRuns} expected`,
-        `n:${pathname}`,
-      );
-    if (runs.some((lhr) => lhr.runtimeError))
-      once(item.key, "a run reported runtimeError", `e:${pathname}`);
-    const samples = runs.map((lhr) => metricOf(lhr, metric, item.unit));
-    if (samples.length === 0 || samples.some((s) => s === undefined || !Number.isFinite(s))) {
-      failures.push({ key: item.key, reason: "metric missing or not finite in a run" });
-      continue;
-    }
-    collected.push({ key: item.key, item, samples: samples as number[] });
-  }
-  return { collected, failures };
 }
 
 /** Compares the per-path median of every ratchet key with its limit. */
@@ -148,18 +195,10 @@ export function assertRatchet(
   checkTolerance(tolerance);
   const { collected, failures } = collect(values, runsByPath, options);
   const rows: Row[] = failures.map((f) => ({ key: f.key, status: "FAIL", note: f.reason }));
-  for (const { key, item, samples } of collected) {
-    const measured = median(samples);
-    const slack = item.value === 0 && item.unit === "" ? 0.01 : Math.abs(item.value) * tolerance;
-    const limit = item.direction === "max" ? item.value + slack : item.value - slack;
-    const over = item.direction === "max" ? measured > limit : measured < limit;
-    const warn = warnMetrics.includes(parseKey(key).metric);
-    rows.push({ key, measured, limit, status: over ? (warn ? "WARN" : "FAIL") : "ok" });
-    if (over && !warn)
-      failures.push({
-        key,
-        reason: `median ${measured.toFixed(2)} ${item.unit} vs limit ${limit.toFixed(2)}`,
-      });
+  for (const entry of collected) {
+    const { row, failure } = ratchetOutcome(entry, tolerance);
+    rows.push(row);
+    if (failure) failures.push(failure);
   }
   return { failures, checked: collected.length, rows };
 }
