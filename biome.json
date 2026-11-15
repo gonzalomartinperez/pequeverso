@@ -11,6 +11,7 @@
       "!**/node_modules",
       "!**/.next",
       "!**/out",
+      "!site",
       "!**/public",
       "!**/next-env.d.ts",
       "!**/docs/generated",
