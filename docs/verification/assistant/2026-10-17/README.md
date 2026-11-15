@@ -1,5 +1,7 @@
 # Native assistant · final reading polish, 2026-10-17
 
+> The screenshots this record cites are archived in the `evidence-2026-10` release ([details](../../ARCHIVE-2026-10.md)).
+
 **Local fixture preview. Production remains disabled.** These photographs show the actual
 Pequeverso interface, not a generated mockup. The compact panel is 408 × 560 CSS px; its
 native element photographs are 816 × 1120 pixels (DPR 2), with no bitmap edits or stitching.

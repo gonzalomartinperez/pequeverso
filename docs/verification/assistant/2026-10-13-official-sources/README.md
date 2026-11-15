@@ -1,5 +1,7 @@
 # Exact informational Hotmart source links
 
+> The screenshots this record cites are archived in the `evidence-2026-10` release ([details](../../ARCHIVE-2026-10.md)).
+
 These local DPR-2 photographs show the native Pequeverso assistant with three exact official
 article URLs and the scope label “Hotmart · procedimiento general”. They use synthetic citation
 fields over a real isolated fixture session/CSRF/HTTP/SSE flow. They do not show live article

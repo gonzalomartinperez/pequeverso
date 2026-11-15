@@ -1,5 +1,7 @@
 # Native assistant — reviewed local photography, 2026-10-12
 
+> The screenshots this record cites are archived in the `evidence-2026-10` release ([details](../../ARCHIVE-2026-10.md)).
+
 These PNGs photograph the actual rendered interface at **DPR 2**. Desktop uses a
 **1440 × 1000 CSS px** viewport and the real **408 × 560 CSS px default compact panel**;
 mobile uses **390 × 844 CSS px**. Full-window photographs preserve the surrounding store.
