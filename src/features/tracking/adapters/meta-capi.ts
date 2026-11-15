@@ -58,6 +58,26 @@ function chunk<T>(items: T[], size: number): T[][] {
   return out;
 }
 
+/** Sends `body` with `sendBeacon` when the page unloads; false when the beacon is unavailable or refused. */
+function beacon(endpoint: string, body: string, unloading: boolean): boolean {
+  if (!unloading || typeof navigator === "undefined") return false;
+  if (typeof navigator.sendBeacon !== "function") return false;
+  return navigator.sendBeacon(endpoint, new Blob([body], { type: "application/json" }));
+}
+
+/** Adds the `_fbp`/`_fbc` match keys that exist to every buffered event. */
+function withMatchKeys(
+  events: RelayEvent[],
+  fbp: string | undefined,
+  fbc: string | undefined,
+): RelayEvent[] {
+  return events.map((event) => ({
+    ...event,
+    ...(fbp ? { fbp } : {}),
+    ...(fbc ? { fbc } : {}),
+  }));
+}
+
 /**
  * Meta Conversions API adapter: relays every event the browser pixel receives, with the same
  * `eventId`, to the same-origin endpoint served by `src/features/tracking/adapters/server/meta-capi.ts`, so Meta deduplicates
@@ -78,13 +98,7 @@ export function createMetaCapiAdapter(pixelId: string, deps: MetaCapiDeps = {}):
 
   function post(events: RelayEvent[], unloading: boolean): void {
     const body = JSON.stringify({ events });
-    if (
-      unloading &&
-      typeof navigator !== "undefined" &&
-      typeof navigator.sendBeacon === "function"
-    ) {
-      if (navigator.sendBeacon(endpoint, new Blob([body], { type: "application/json" }))) return;
-    }
+    if (beacon(endpoint, body, unloading)) return;
     const fetchImpl = deps.fetch ?? (typeof fetch === "function" ? fetch : undefined);
     if (!fetchImpl) return;
     fetchImpl(endpoint, {
@@ -101,30 +115,36 @@ export function createMetaCapiAdapter(pixelId: string, deps: MetaCapiDeps = {}):
     timer = null;
   }
 
+  /**
+   * Re-reads storage at the send boundary: a withdrawal in another tab may not have reached this
+   * tab as an event yet. Without a stored grant, drops the buffer and the grant cookie (true).
+   */
+  function droppedWithoutGrant(): boolean {
+    const stored = readConsent();
+    if (hasConsent("marketing", stored)) return false;
+    buffer = [];
+    waitingSince = null;
+    if (stored === null) expireConsentCookie();
+    return true;
+  }
+
+  /** On a fresh visit, keep waiting (up to `fbpWaitMs`) for fbevents.js to write `_fbp`. */
+  function awaitingFbp(unloading: boolean, fbp: string | undefined): boolean {
+    if (unloading || fbp || waitingSince === null) return false;
+    return now() - waitingSince < fbpWaitMs;
+  }
+
   function flush(unloading: boolean): void {
     clearTimer();
-    if (buffer.length === 0) return;
-    // Re-read storage at the send boundary: a withdrawal in another tab may not have reached
-    // this tab as an event yet. Without a stored grant, drop the buffer and the grant cookie.
-    const stored = readConsent();
-    if (!hasConsent("marketing", stored)) {
-      buffer = [];
-      waitingSince = null;
-      if (stored === null) expireConsentCookie();
-      return;
-    }
+    if (buffer.length === 0 || droppedWithoutGrant()) return;
     const fbp = readCookie("_fbp");
-    if (!unloading && !fbp && waitingSince !== null && now() - waitingSince < fbpWaitMs) {
+    if (awaitingFbp(unloading, fbp)) {
       timer = setTimeout(() => flush(false), flushDelayMs);
       return;
     }
     waitingSince = null;
     const fbc = readCookie("_fbc") ?? deriveFbc(now());
-    const events = buffer.map((event) => ({
-      ...event,
-      ...(fbp ? { fbp } : {}),
-      ...(fbc ? { fbc } : {}),
-    }));
+    const events = withMatchKeys(buffer, fbp, fbc);
     buffer = [];
     for (const batch of chunk(events, MAX_BATCH)) post(batch, unloading);
   }
