@@ -1,26 +1,27 @@
-// Structural checks over every exported page: landmarks, single visible h1, language,
+// Structural checks over every exported page (or, with SITE_DIR, every prerendered page of an
+// assembled standalone site; tools/lib/site-layout.ts): landmarks, single visible h1, language,
 // canonical, skip link, resolvable in-page anchors, no placeholder or retired text, and the
 // local-currency wording next to every USD price, and the Titular's personal mailbox only on the
-// legal routes.
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
-import { join, relative, resolve } from "node:path";
+// legal routes. A site's bare `_global-error` shell gets only the text rules (not landmarks/h1).
+import { readFileSync } from "node:fs";
 import { legalRoutes, seller } from "../content/es/legal/seller.ts";
+import {
+  layoutFor,
+  listErrorShells,
+  listRoutePages,
+  missingLayout,
+  type Page,
+} from "./lib/site-layout.ts";
 
-const root = resolve(process.cwd(), "out");
-if (!existsSync(root)) {
-  console.error("check-rendered: out/ not found; run `npm run build` first");
+const layout = layoutFor(process.cwd(), process.env);
+const missing = missingLayout(layout, "check-rendered");
+if (missing) {
+  console.error(missing);
   process.exit(1);
 }
 
-const pages: string[] = [];
-const walk = (dir: string): void => {
-  for (const entry of readdirSync(dir)) {
-    const full = join(dir, entry);
-    if (statSync(full).isDirectory()) walk(full);
-    else if (entry === "index.html" || entry === "404.html") pages.push(full);
-  }
-};
-walk(root);
+const pages = listRoutePages(layout);
+const shells = listErrorShells(layout);
 
 const forbiddenText = ["Trazos y Sonidos", "lorem ipsum"];
 /** Retired operator brand and domain (one pattern for both; owner decisions 2026-09-20 and OD-53). */
@@ -31,41 +32,71 @@ const localCurrencyWording = "moneda local";
 const placeholderPattern = /\[\[[A-Z0-9_]+\]\]/;
 const count = (html: string, pattern: RegExp): number => (html.match(pattern) ?? []).length;
 
-function check(page: string): string[] {
-  const html = readFileSync(page, "utf8");
-  const name = relative(root, page).split("\\").join("/");
-  const errors: string[] = [];
-  const isOfferPage = html.includes("data-offer-root");
-  const h1s = count(html, /<h1[\s>]/g);
-  if (h1s !== (isOfferPage ? 2 : 1))
-    errors.push(`expected ${isOfferPage ? 2 : 1} h1, found ${h1s}`);
-  if (!/<html[^>]*\slang="es"/.test(html)) errors.push('missing lang="es"');
+/** One structural rule: the error messages it finds in a page (empty when the page passes). */
+type Rule = (html: string, name: string) => string[];
+
+const headingErrors: Rule = (html) => {
+  const expected = html.includes("data-offer-root") ? 2 : 1;
+  const found = count(html, /<h1[\s>]/g);
+  return found === expected ? [] : [`expected ${expected} h1, found ${found}`];
+};
+const languageErrors: Rule = (html) =>
+  /<html[^>]*\slang="es"/.test(html) ? [] : ['missing lang="es"'];
+const canonicalErrors: Rule = (html, name) => {
   const isErrorPage = name.startsWith("404") || name.startsWith("_not-found");
-  if (!isErrorPage && !/<link rel="canonical"/.test(html)) errors.push("missing canonical");
-  for (const landmark of ["<main", "<header", "<footer"]) {
-    if (!html.includes(landmark)) errors.push(`missing ${landmark}>`);
-  }
-  if (!html.includes('href="#contenido"')) errors.push("missing skip link");
-  for (const text of forbiddenText) {
-    if (html.includes(text)) errors.push(`contains "${text}"`);
-  }
-  if (retiredOperator.test(html)) errors.push("names the retired operator brand or domain");
-  if (placeholderPattern.test(html)) errors.push("contains an owner placeholder");
+  return isErrorPage || /<link rel="canonical"/.test(html) ? [] : ["missing canonical"];
+};
+const landmarkErrors: Rule = (html) => [
+  ...["<main", "<header", "<footer"]
+    .filter((landmark) => !html.includes(landmark))
+    .map((landmark) => `missing ${landmark}>`),
+  ...(html.includes('href="#contenido"') ? [] : ["missing skip link"]),
+];
+const textErrors: Rule = (html) => [
+  ...forbiddenText.filter((text) => html.includes(text)).map((text) => `contains "${text}"`),
+  ...(retiredOperator.test(html) ? ["names the retired operator brand or domain"] : []),
+  ...(placeholderPattern.test(html) ? ["contains an owner placeholder"] : []),
+];
+const emailErrors: Rule = (html, name) => {
   const route = `/${name.replace(/(^|\/)index\.html$/, "$1")}`;
-  if (html.includes(seller.legalEmail) && !(legalRoutes as readonly string[]).includes(route)) {
-    errors.push("shows the Titular's personal email outside the legal pages");
-  }
-  if (html.includes(usdPrice) && !html.includes(localCurrencyWording)) {
-    errors.push(`shows a ${usdPrice} price without the "${localCurrencyWording}" wording`);
-  }
+  const onLegalPage = (legalRoutes as readonly string[]).includes(route);
+  return html.includes(seller.legalEmail) && !onLegalPage
+    ? ["shows the Titular's personal email outside the legal pages"]
+    : [];
+};
+const priceErrors: Rule = (html) =>
+  html.includes(usdPrice) && !html.includes(localCurrencyWording)
+    ? [`shows a ${usdPrice} price without the "${localCurrencyWording}" wording`]
+    : [];
+const anchorErrors: Rule = (html) => {
   const ids = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]));
-  for (const match of html.matchAll(/href="#([^"]+)"/g)) {
-    if (!ids.has(match[1] ?? "")) errors.push(`anchor #${match[1]} has no target`);
-  }
-  return errors.map((error) => `${name}: ${error}`);
+  return [...html.matchAll(/href="#([^"]+)"/g)]
+    .filter((match) => !ids.has(match[1] ?? ""))
+    .map((match) => `anchor #${match[1]} has no target`);
+};
+const rules: readonly Rule[] = [
+  headingErrors,
+  languageErrors,
+  canonicalErrors,
+  landmarkErrors,
+  textErrors,
+  emailErrors,
+  priceErrors,
+  anchorErrors,
+];
+
+/** The bare global-error shell has no landmarks, h1 or canonical, but its text must stay clean. */
+const shellRules: readonly Rule[] = [languageErrors, textErrors, emailErrors, priceErrors];
+
+function check({ file, name }: Page, applied: readonly Rule[] = rules): string[] {
+  const html = readFileSync(file, "utf8");
+  return applied.flatMap((rule) => rule(html, name)).map((error) => `${name}: ${error}`);
 }
 
-const failures = pages.flatMap(check);
+const failures = [
+  ...pages.flatMap((page) => check(page)),
+  ...shells.flatMap((shell) => check(shell, shellRules)),
+];
 if (failures.length) {
   for (const failure of failures) console.error(`✖ ${failure}`);
   process.exit(1);
