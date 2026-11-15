@@ -1,8 +1,8 @@
 "use client";
 
 import { type ComponentType, useEffect, useRef, useState } from "react";
-import { explicitGrant } from "@/features/site-analytics/domain/consent.ts";
-import { onConsentChange, readConsent } from "@/features/tracking/adapters/consent.ts";
+import { onConsentChange, readConsent } from "@/features/consent/adapters/browser-storage.ts";
+import { explicitGrant } from "@/features/consent/domain/policy.ts";
 import { enabledAdapters, siteAnalyticsBuilt } from "@/features/tracking/adapters/env.ts";
 
 type UiProps = { classes: { primary: string }; reopen: boolean; opener: HTMLElement | null };

@@ -1,4 +1,4 @@
-import type { ConsentCategory, ConsentState } from "./consent.ts";
+import type { ConsentCategory, ConsentState } from "../../consent/domain/policy.ts";
 
 /** Identifier of a shipped adapter. Extend the union when a new adapter is added. */
 export type AdapterId = "meta" | "meta-capi";

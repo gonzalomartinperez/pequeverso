@@ -22,5 +22,6 @@ contiguous (ADR-0018 follows the numbering of the ecosystem plan).
 | [ADR-0012](ADR-0012-design-tokens-dtcg.md) | Design tokens in DTCG with a generated theme; dark-ready, light-only | accepted |
 | [ADR-0014](ADR-0014-csp-enforcement.md) | Enforce the Content-Security-Policy, keeping inline scripts for now | accepted |
 | [ADR-0015](ADR-0015-mutation-tooling.md) | Mutation testing with StrykerJS on node:test (E7 spike outcome) | accepted |
+| [ADR-0016](ADR-0016-consent-feature-module.md) | Consent is its own feature module, a leaf that tracking and site analytics consume | accepted |
 | [ADR-0017](ADR-0017-static-starfield-on-phones.md) | Static starfield on phones; WebGL scene only on fine pointers after first interaction | accepted |
 | [ADR-0018](ADR-0018-release-automation-version-pr.md) | Release automation by version-bump PR and a tagging workflow | accepted |

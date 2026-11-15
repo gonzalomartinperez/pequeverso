@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { CONSENT_KEY, CONSENT_VERSION } from "../../src/features/tracking/adapters/consent";
+import { CONSENT_KEY, CONSENT_VERSION } from "../../src/features/consent/domain/policy";
 import { expect, test } from "./fixtures";
 
 /**

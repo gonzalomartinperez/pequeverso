@@ -5,8 +5,8 @@
   "plugins": ["@stryker-mutator/tap-runner"],
   "tap": {
     "testFiles": [
-      "tests/unit/{affiliates,csp,edge-rules,edge-rules-contract,headers-snapshot,params,products,syllable-game,tracking}.test.ts",
-      "tests/unit/site-analytics/consent-build.test.ts",
+      "tests/unit/{affiliates,csp,edge-rules,edge-rules-contract,headers-snapshot,meta-capi,params,products,syllable-game,tracking}.test.ts",
+      "tests/unit/site-analytics/{collection,consent-build}.test.ts",
       "tests/unit/property/*.test.ts",
       "tests/unit/assistant/!(boundaries|next-config|flag).test.ts"
     ],
@@ -15,7 +15,8 @@
   "mutate": [
     "config/products/schema.ts",
     "src/features/commerce/domain/checkout-url.ts",
-    "src/features/tracking/adapters/consent.ts",
+    "src/features/consent/domain/**/*.ts",
+    "src/features/consent/adapters/**/*.ts",
     "src/features/playground/domain/**/*.ts",
     "tools/lib/edge-rules.ts",
     "src/features/assistant/domain/**/*.ts",

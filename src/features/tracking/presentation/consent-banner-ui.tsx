@@ -3,12 +3,11 @@
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import {
-  type ConsentCategory,
-  type ConsentChoice,
   onConsentChange,
   readConsent,
   writeConsent,
-} from "@/features/tracking/adapters/consent.ts";
+} from "@/features/consent/adapters/browser-storage.ts";
+import type { ConsentCategory, ConsentChoice } from "@/features/consent/domain/policy.ts";
 import { enabledAdapters } from "@/features/tracking/adapters/env.ts";
 import type { TrackingAdapter } from "@/features/tracking/adapters/types.ts";
 

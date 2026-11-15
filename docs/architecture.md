@@ -51,7 +51,7 @@ media/, public/  provenance manifest and stable public assets
 src/app/         framework routes, statically analyzed exports and root composition
 src/views/       home, legal/support and product page composition; metadata/JSON-LD
 src/shell/       existing page shell, site header/footer, mobile navigation and page motion
-src/features/    assistant, commerce, gallery, hub, landing age/gallery state, playground, tracking
+src/features/    assistant, commerce, gallery, hub, landing age/gallery state, playground, consent (leaf: policy, storage, banner; ADR-0016), tracking, site-analytics
 src/shared/      ui, styles, motion, editorial, identity, media, navigation and seo (JSON-LD) capabilities
 tools/           repository CLI/build/verification tools; tools/media remains its own project
 tests/           unit, browser (including unchanged snapshots), assistant fixtures and helpers
@@ -202,7 +202,7 @@ provider, physical phone keyboard or production VPS cookies/CORS/proxy behavior.
   `features/commerce/checkout-url.ts` builds checkout URLs (never forwards `off`/`ref`) and the
   per-product `sck=pv-<sckPrefix>-<position>`.
 - `features/tracking` owns site events (PageView, ViewContent, PequeversoProductInterest,
-  PequeversoAffiliateClick, CheckoutIntent) with UUID event IDs, gated by `consent.ts`, sent by the browser pixel and
+  PequeversoAffiliateClick, CheckoutIntent) with UUID event IDs, gated by the consent module (`src/features/consent`, ADR-0016), sent by the browser pixel and
   mirrored through the same-origin Conversions API relay with the same ids. Hotmart owns
   InitiateCheckout and Purchase. See `docs/tracking.md`.
 

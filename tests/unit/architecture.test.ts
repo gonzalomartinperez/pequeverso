@@ -7,6 +7,7 @@ import { describe, it } from "node:test";
 import { pathToFileURL } from "node:url";
 import {
   clientBoundaryViolations,
+  consentDependencyAllowed,
   firstRuntimeCycle,
   ownedImportViolations,
   runtimeGraph,
@@ -193,6 +194,51 @@ describe("store architecture", () => {
         assert.ok(siteDependencyAllowed(file, edge.specifier), `${file}: ${edge.specifier}`);
   });
 
+  it("keeps consent a leaf feature with inward layers (ADR-0016)", () => {
+    // Negative fixtures: consent never reaches tracking, site analytics or composition, the
+    // domain stays import-free, and no layer points outward or is selected at runtime.
+    for (const [file, specifier] of [
+      ["src/features/consent/adapters/browser-storage.ts", "../../tracking/adapters/env.ts"],
+      ["src/features/consent/domain/policy.ts", "@/features/tracking/adapters/types.ts"],
+      ["src/features/consent/presentation/banner.tsx", "@/features/site-analytics/entry.ts"],
+      ["src/features/consent/presentation/banner.tsx", "@/features/tracking/presentation/x.tsx"],
+      ["src/features/consent/domain/policy.ts", "../adapters/browser-storage.ts"],
+      ["src/features/consent/domain/policy.ts", "../presentation/banner.tsx"],
+      ["src/features/consent/adapters/browser-storage.ts", "../presentation/banner.tsx"],
+      ["src/features/consent/adapters/browser-storage.ts", "@/shared/ui/button.tsx"],
+      ["src/features/consent/domain/policy.ts", "react"],
+      ["src/features/consent/presentation/banner.tsx", "@/views/home-view.tsx"],
+      ["src/features/consent/presentation/banner.tsx", "@config/site.ts"],
+      ["src/features/consent/presentation/banner.tsx", null],
+      ["src/features/consent/stray.ts", "./domain/policy.ts"],
+    ] as const)
+      assert.equal(consentDependencyAllowed(file, specifier), false, `${file}: ${specifier}`);
+    for (const [file, specifier] of [
+      ["src/features/consent/adapters/browser-storage.ts", "../domain/policy.ts"],
+      ["src/features/consent/presentation/banner.tsx", "@/features/consent/domain/policy.ts"],
+      ["src/features/consent/presentation/banner.tsx", "@/shared/ui/button.tsx"],
+      ["src/features/consent/presentation/banner.tsx", "react"],
+      ["src/features/tracking/adapters/track.ts", "../../consent/adapters/browser-storage.ts"],
+      ["src/features/site-analytics/entry.ts", "../consent/domain/policy.ts"],
+    ] as const)
+      assert.equal(consentDependencyAllowed(file, specifier), true, `${file}: ${specifier}`);
+    assert.equal(
+      siteDependencyAllowed(
+        "src/features/consent/domain/policy.ts",
+        "../../tracking/adapters/env.ts",
+      ),
+      false,
+      "the general direction check applies the consent rule",
+    );
+    const consentFiles = [...modules.keys()].filter((file) =>
+      file.startsWith("src/features/consent/"),
+    );
+    assert.ok(consentFiles.includes("src/features/consent/domain/policy.ts"));
+    for (const file of consentFiles)
+      for (const edge of modules.get(file)?.imports ?? [])
+        assert.ok(consentDependencyAllowed(file, edge.specifier), `${file}: ${edge.specifier}`);
+  });
+
   it("rejects relocated catalog and server glue through client barrels and dynamic imports", () => {
     for (const target of [
       "config/products/index.ts",
@@ -256,7 +302,7 @@ describe("store architecture", () => {
       "src/features/hub/adapters/hub-products.ts",
       "src/views/product/core-landing-view.tsx",
       "src/features/playground/presentation/playground-game.tsx",
-      "src/features/tracking/adapters/consent.ts",
+      "src/features/consent/domain/policy.ts",
       "src/shared/styles/cn-tables.d.ts",
       "src/shared/styles/cn-tables.js",
       "src/shared/motion/scene/runtime.ts",

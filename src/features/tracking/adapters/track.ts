@@ -1,12 +1,10 @@
 import {
-  CONSENT_VERSION,
-  type ConsentState,
-  DEFAULT_CHOICE,
   expireConsentCookie,
   hasConsent,
   onConsentChange,
   readConsent,
-} from "./consent.ts";
+} from "../../consent/adapters/browser-storage.ts";
+import { CONSENT_VERSION, type ConsentState, DEFAULT_CHOICE } from "../../consent/domain/policy.ts";
 import { enabledAdapters, trackingEnv } from "./env.ts";
 import type { EventParams, TrackedEvent, TrackingAdapter } from "./types.ts";
 

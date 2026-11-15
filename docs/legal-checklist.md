@@ -263,7 +263,7 @@ Data-protection law names:
      checkout suffices.
 7. **Consent model.** Prior opt-in: nothing runs before the visitor accepts (ADR-0011, PV-D1).
    - Ley 25.326 art. 5 asks for free, express and informed consent; the EU requires prior consent.
-   - `DEFAULT_CHOICE` in `src/features/tracking/adapters/consent.ts` is all false.
+   - `DEFAULT_CHOICE` in `src/features/consent/domain/policy.ts` is all false.
 8. **Legal review.** This is research, not legal advice. Before launch, a lawyer in the provincia de
    Buenos Aires should review:
    - the jurisdiction clause;

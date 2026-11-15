@@ -4,11 +4,11 @@ import { usePathname } from "next/navigation";
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import {
-  type ConsentState,
   hasConsent,
   onConsentChange,
   readConsent,
-} from "@/features/tracking/adapters/consent.ts";
+} from "@/features/consent/adapters/browser-storage.ts";
+import type { ConsentState } from "@/features/consent/domain/policy.ts";
 import { enabledAdapters } from "@/features/tracking/adapters/env.ts";
 import { loadWhenIdle } from "@/features/tracking/adapters/idle-script.ts";
 import {

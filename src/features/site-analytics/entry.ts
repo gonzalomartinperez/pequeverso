@@ -1,8 +1,8 @@
-import { onConsentChange, readConsent } from "../tracking/adapters/consent.ts";
+import { onConsentChange, readConsent } from "../consent/adapters/browser-storage.ts";
+import { CONSENT_KEY, createConsentGate } from "../consent/domain/policy.ts";
 import { observePublicSections } from "./adapters/browser.ts";
 import { createPublisher } from "./adapters/http.ts";
 import { createCollection } from "./application/collection.ts";
-import { createConsentGate } from "./domain/consent.ts";
 import { routeOf, viewportOf } from "./domain/profile.ts";
 
 /** The only composition root. Meta adapters/default consent and existing events stay independent. */
@@ -54,7 +54,7 @@ export function startSiteAnalytics(
   };
   view.addEventListener("pv:site-analytics:withdraw", withdraw);
   const storage = (event: StorageEvent) => {
-    if (event.key === "pv_consent" || event.key === null) refresh();
+    if (event.key === CONSENT_KEY || event.key === null) refresh();
   };
   const pagehide = () => {
     dispose();

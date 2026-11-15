@@ -1,6 +1,6 @@
 # ADR-0003: Tracking adapters behind consent
 
-Date: 2026-09-13 · Status: accepted
+Date: 2026-09-13 · Status: accepted · Amended by: ADR-0016 (consent moved to `src/features/consent`)
 
 ## Context
 
