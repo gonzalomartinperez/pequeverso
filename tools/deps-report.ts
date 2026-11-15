@@ -41,21 +41,19 @@ const LGPL_NOTE = "allowed (unmodified dynamic use, OD-80)";
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
+function optionValue(arg: string, value: string | undefined): string {
+  if (value === undefined || value.startsWith("--")) throw new Error(`${arg} needs a value`);
+  return value;
+}
+
 export function parseArgs(argv: string[]): Args {
   const args: Args = { root: ".", audit: null, json: false };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
-    if (arg === "--json") {
-      args.json = true;
-    } else if (arg === "--root" || arg === "--audit") {
-      const value = argv[i + 1];
-      if (value === undefined || value.startsWith("--")) throw new Error(`${arg} needs a value`);
-      if (arg === "--root") args.root = value;
-      else args.audit = value;
-      i += 1;
-    } else {
-      throw new Error(`unknown argument: ${arg}`);
-    }
+    if (arg === "--json") args.json = true;
+    else if (arg === "--root") args.root = optionValue(arg, argv[++i]);
+    else if (arg === "--audit") args.audit = optionValue(arg, argv[++i]);
+    else throw new Error(`unknown argument: ${arg}`);
   }
   return args;
 }
@@ -78,18 +76,18 @@ export function parseVersion(data: unknown): {
   const advisories = Array.isArray(data.advisoryKeys)
     ? data.advisoryKeys.filter((k) => isRecord(k) && typeof k.id === "string").length
     : null;
-  let projectId: string | null = null;
-  if (Array.isArray(data.relatedProjects)) {
-    for (const project of data.relatedProjects) {
-      if (!isRecord(project) || project.relationType !== "SOURCE_REPO") continue;
-      const key = project.projectKey;
-      if (isRecord(key) && typeof key.id === "string") {
-        projectId = key.id;
-        break;
-      }
-    }
+  return { licences, advisories, projectId: sourceRepoId(data.relatedProjects) };
+}
+
+/** The first `SOURCE_REPO` related project with a string id, or null. */
+function sourceRepoId(related: unknown): string | null {
+  if (!Array.isArray(related)) return null;
+  for (const project of related) {
+    if (!isRecord(project) || project.relationType !== "SOURCE_REPO") continue;
+    const key = project.projectKey;
+    if (isRecord(key) && typeof key.id === "string") return key.id;
   }
-  return { licences, advisories, projectId };
+  return null;
 }
 
 export function parseScorecard(data: unknown): number | null {
@@ -127,6 +125,13 @@ async function mapLimit<T, R>(
 
 type Entry = { name: string; kind: Kind };
 
+/** Runtime before dev, then by name (code-unit order). */
+function byKindThenName(a: Entry, b: Entry): number {
+  if (a.kind !== b.kind) return a.kind === "runtime" ? -1 : 1;
+  if (a.name === b.name) return 0;
+  return a.name < b.name ? -1 : 1;
+}
+
 export async function buildReport(
   manifest: Manifest,
   lock: Lock,
@@ -136,17 +141,7 @@ export async function buildReport(
   const entries: Entry[] = [
     ...Object.keys(manifest.dependencies ?? {}).map((name) => ({ name, kind: "runtime" as const })),
     ...Object.keys(manifest.devDependencies ?? {}).map((name) => ({ name, kind: "dev" as const })),
-  ].sort((a, b) =>
-    a.kind === b.kind
-      ? a.name < b.name
-        ? -1
-        : a.name > b.name
-          ? 1
-          : 0
-      : a.kind === "runtime"
-        ? -1
-        : 1,
-  );
+  ].sort(byKindThenName);
   return mapLimit(entries, MAX_CONCURRENCY, async ({ name, kind }): Promise<Row> => {
     const installed = lock.packages?.[`node_modules/${name}`]?.version;
     const version = typeof installed === "string" ? installed : "unknown";
@@ -218,14 +213,17 @@ export function renderJson(rows: Row[]): string {
 
 // Real network layer: 10 s timeout, one retry, 404 means "no data".
 export function createFetchJson(fetchImpl: typeof fetch = fetch): FetchJson {
+  const once = async (url: string): Promise<unknown> => {
+    const response = await fetchImpl(url, { signal: AbortSignal.timeout(TIMEOUT_MS) });
+    if (response.status === 404) return null;
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  };
   return async (url) => {
     let lastError: unknown;
     for (let attempt = 0; attempt < 2; attempt += 1) {
       try {
-        const response = await fetchImpl(url, { signal: AbortSignal.timeout(TIMEOUT_MS) });
-        if (response.status === 404) return null;
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        return await response.json();
+        return await once(url);
       } catch (error) {
         lastError = error;
       }
