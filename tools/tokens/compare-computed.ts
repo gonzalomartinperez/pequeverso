@@ -14,7 +14,7 @@ import { join } from "node:path";
 import { chromium } from "@playwright/test";
 
 const WIDTHS = [390, 1280];
-const PROPERTIES = [
+export const PROPERTIES = [
   "color",
   "backgroundColor",
   "backgroundImage",
@@ -42,7 +42,7 @@ const PROPERTIES = [
   "fill",
 ];
 
-interface Page {
+export interface Page {
   vars: Record<string, string>;
   els: Record<string, Record<string, string>>;
 }
@@ -110,10 +110,33 @@ async function capture(base: string, dir: string, out: string): Promise<void> {
   console.log(`captured ${Object.keys(result).length} pages (${WIDTHS.join(", ")} px) -> ${out}`);
 }
 
-function diff(beforeFile: string, afterFile: string): number {
+const norm = (v: string): string => v.replace(/^light-dark\((.*),\s*\1\)$/, "$1");
+
+export function diffVars(key: string, x: Page, y: Page, problems: string[]): number {
+  let checks = 0;
+  for (const n of new Set([...Object.keys(x.vars), ...Object.keys(y.vars)])) {
+    checks++;
+    if (norm(x.vars[n] ?? "") !== norm(y.vars[n] ?? ""))
+      problems.push(`${key} ${n}: ${x.vars[n]} | ${y.vars[n]}`);
+  }
+  return checks;
+}
+
+export function diffElements(key: string, x: Page, y: Page, problems: string[]): number {
+  let checks = 0;
+  for (const el of new Set([...Object.keys(x.els), ...Object.keys(y.els)])) {
+    for (const p of PROPERTIES) {
+      checks++;
+      if (x.els[el]?.[p] !== y.els[el]?.[p])
+        problems.push(`${key} ${el} ${p}: ${x.els[el]?.[p]} | ${y.els[el]?.[p]}`);
+    }
+  }
+  return checks;
+}
+
+export function diff(beforeFile: string, afterFile: string): number {
   const a = JSON.parse(readFileSync(beforeFile, "utf8")) as Record<string, Page>;
   const b = JSON.parse(readFileSync(afterFile, "utf8")) as Record<string, Page>;
-  const norm = (v: string): string => v.replace(/^light-dark\((.*),\s*\1\)$/, "$1");
   let checks = 0;
   const problems: string[] = [];
   for (const [key, x] of Object.entries(a)) {
@@ -122,30 +145,22 @@ function diff(beforeFile: string, afterFile: string): number {
       problems.push(`missing page ${key}`);
       continue;
     }
-    for (const n of new Set([...Object.keys(x.vars), ...Object.keys(y.vars)])) {
-      checks++;
-      if (norm(x.vars[n] ?? "") !== norm(y.vars[n] ?? ""))
-        problems.push(`${key} ${n}: ${x.vars[n]} | ${y.vars[n]}`);
-    }
-    for (const el of new Set([...Object.keys(x.els), ...Object.keys(y.els)])) {
-      for (const p of PROPERTIES) {
-        checks++;
-        if (x.els[el]?.[p] !== y.els[el]?.[p])
-          problems.push(`${key} ${el} ${p}: ${x.els[el]?.[p]} | ${y.els[el]?.[p]}`);
-      }
-    }
+    checks += diffVars(key, x, y, problems);
+    checks += diffElements(key, x, y, problems);
   }
   console.log(problems.slice(0, 20).join("\n"));
   console.log(`${checks} checks, ${problems.length} differences`);
   return problems.length === 0 ? 0 : 1;
 }
 
-const [mode, ...args] = process.argv.slice(2);
-if (mode === "capture" && args.length === 3)
-  await capture(args[0] as string, args[1] as string, args[2] as string);
-else if (mode === "diff" && args.length === 2)
-  process.exitCode = diff(args[0] as string, args[1] as string);
-else
-  console.error(
-    "usage: capture <baseUrl> <exportDir> <out.json> | diff <before.json> <after.json>",
-  );
+if (import.meta.main) {
+  const [mode, ...args] = process.argv.slice(2);
+  if (mode === "capture" && args.length === 3)
+    await capture(args[0] as string, args[1] as string, args[2] as string);
+  else if (mode === "diff" && args.length === 2)
+    process.exitCode = diff(args[0] as string, args[1] as string);
+  else
+    console.error(
+      "usage: capture <baseUrl> <exportDir> <out.json> | diff <before.json> <after.json>",
+    );
+}

@@ -20,56 +20,73 @@ export type DiffCoverage = {
   notMeasured: Map<string, number[]>;
 };
 
+function lcovFileEntry(files: Map<string, LineHits>, root: string, line: string): LineHits {
+  const file = path
+    .relative(root, path.resolve(root, line.slice(3)))
+    .split(path.sep)
+    .join("/");
+  const current = files.get(file) ?? new Map();
+  files.set(file, current);
+  return current;
+}
+
+function addLcovHit(current: LineHits, line: string): void {
+  const [number, hits] = line.slice(3).split(",").map(Number);
+  if (Number.isInteger(number) && Number.isFinite(hits))
+    current.set(number as number, (current.get(number as number) ?? 0) + (hits as number));
+}
+
 /** lcov text to `repo-relative file -> line -> hits` (DA records). */
 export function parseLcovLines(text: string, root: string): Map<string, LineHits> {
   const files = new Map<string, LineHits>();
   let current: LineHits | undefined;
   for (const raw of text.split("\n")) {
     const line = raw.trim();
-    if (line.startsWith("SF:")) {
-      const file = path
-        .relative(root, path.resolve(root, line.slice(3)))
-        .split(path.sep)
-        .join("/");
-      current = files.get(file) ?? new Map();
-      files.set(file, current);
-    } else if (line === "end_of_record") current = undefined;
-    else if (line.startsWith("DA:") && current) {
-      const [number, hits] = line.slice(3).split(",").map(Number);
-      if (Number.isInteger(number) && Number.isFinite(hits))
-        current.set(number as number, (current.get(number as number) ?? 0) + (hits as number));
-    }
+    if (line.startsWith("SF:")) current = lcovFileEntry(files, root, line);
+    else if (line === "end_of_record") current = undefined;
+    else if (line.startsWith("DA:") && current) addLcovHit(current, line);
   }
   return files;
 }
 
+// `---`/`+++` are headers only between `diff --git` and the first hunk; inside a hunk a content
+// line such as `+++ x` (an added `++ x`) is data.
+type DiffState = {
+  changed: Map<string, Set<number>>;
+  lines: Set<number> | undefined;
+  header: "none" | "start" | "old";
+};
+
+function readNewTarget(state: DiffState, line: string): void {
+  const target = line.slice(4).replace(/\t.*$/, "");
+  state.lines = target === "/dev/null" ? undefined : new Set();
+  if (state.lines) state.changed.set(target.replace(/^b\//, ""), state.lines);
+  state.header = "none";
+}
+
+function readHunk(state: DiffState, line: string): void {
+  state.header = "none";
+  if (!state.lines) return;
+  const hunk = /\+(\d+)(?:,(\d+))?/.exec(line);
+  const start = Number(hunk?.[1]);
+  const count = hunk?.[2] === undefined ? 1 : Number(hunk[2]);
+  for (let offset = 0; offset < count; offset += 1) state.lines.add(start + offset);
+}
+
+function readDiffLine(state: DiffState, line: string): void {
+  if (line.startsWith("diff --git ")) {
+    state.header = "start";
+    state.lines = undefined;
+  } else if (state.header === "start" && line.startsWith("--- ")) state.header = "old";
+  else if (state.header === "old" && line.startsWith("+++ ")) readNewTarget(state, line);
+  else if (line.startsWith("@@")) readHunk(state, line);
+}
+
 /** `git diff --unified=0` output to `file -> added line numbers`. */
 export function parseChangedLines(diff: string): Map<string, Set<number>> {
-  const changed = new Map<string, Set<number>>();
-  let lines: Set<number> | undefined;
-  // `---`/`+++` are headers only between `diff --git` and the first hunk; inside a hunk a content
-  // line such as `+++ x` (an added `++ x`) is data.
-  let header: "none" | "start" | "old" = "none";
-  for (const line of diff.split("\n")) {
-    if (line.startsWith("diff --git ")) {
-      header = "start";
-      lines = undefined;
-    } else if (header === "start" && line.startsWith("--- ")) header = "old";
-    else if (header === "old" && line.startsWith("+++ ")) {
-      const target = line.slice(4).replace(/\t.*$/, "");
-      lines = target === "/dev/null" ? undefined : new Set();
-      if (lines) changed.set(target.replace(/^b\//, ""), lines);
-      header = "none";
-    } else if (line.startsWith("@@")) {
-      header = "none";
-      if (!lines) continue;
-      const hunk = /\+(\d+)(?:,(\d+))?/.exec(line);
-      const start = Number(hunk?.[1]);
-      const count = hunk?.[2] === undefined ? 1 : Number(hunk[2]);
-      for (let offset = 0; offset < count; offset += 1) lines.add(start + offset);
-    }
-  }
-  return changed;
+  const state: DiffState = { changed: new Map(), lines: undefined, header: "none" };
+  for (const line of diff.split("\n")) readDiffLine(state, line);
+  return state.changed;
 }
 
 /**
@@ -91,35 +108,44 @@ export function isCodeLine(text: string): boolean {
   return line !== "" && !/^(\/\/|\/\*|\*)/.test(line);
 }
 
+type Tally = {
+  covered: number;
+  measured: number;
+  uncovered: Map<string, number[]>;
+  notMeasured: Map<string, number[]>;
+};
+
+function miss(target: Map<string, number[]>, file: string, number: number): void {
+  target.set(file, [...(target.get(file) ?? []), number]);
+}
+
+function tallyLine(tally: Tally, file: string, number: number, hits: LineHits | undefined): void {
+  tally.measured += 1;
+  if (!hits) {
+    // In scope but never loaded by a test: every changed code line is uncovered.
+    miss(tally.notMeasured, file, number);
+    return;
+  }
+  const count = hits.get(number);
+  if (count === undefined) tally.measured -= 1;
+  else if (count > 0) tally.covered += 1;
+  else miss(tally.uncovered, file, number);
+}
+
 export function diffCoverage(
   coverage: Map<string, LineHits>,
   changed: Map<string, Set<number>>,
   isCode: (file: string, line: number) => boolean = () => true,
 ): DiffCoverage {
-  const uncovered = new Map<string, number[]>();
-  const notMeasured = new Map<string, number[]>();
-  let covered = 0;
-  let measured = 0;
-  const miss = (target: Map<string, number[]>, file: string, number: number) => {
-    target.set(file, [...(target.get(file) ?? []), number]);
-  };
+  const tally: Tally = { covered: 0, measured: 0, uncovered: new Map(), notMeasured: new Map() };
   for (const [file, lines] of changed) {
     const hits = coverage.get(file);
     if (!hits && !inScope(file)) continue;
     for (const number of [...lines].sort((a, b) => a - b)) {
-      if (!isCode(file, number)) continue;
-      measured += 1;
-      if (!hits) {
-        // In scope but never loaded by a test: every changed code line is uncovered.
-        miss(notMeasured, file, number);
-        continue;
-      }
-      const count = hits.get(number);
-      if (count === undefined) measured -= 1;
-      else if (count > 0) covered += 1;
-      else miss(uncovered, file, number);
+      if (isCode(file, number)) tallyLine(tally, file, number, hits);
     }
   }
+  const { covered, measured, uncovered, notMeasured } = tally;
   // Nothing measurable changed: the gate has nothing to judge and passes (the CLI says so).
   return {
     covered,

@@ -14,15 +14,17 @@ export type MetricResult = {
   status: Status;
 };
 
+function addLcovTotal(sums: Record<string, number>, line: string): void {
+  const [tag, raw] = line.trim().split(":");
+  const value = Number(raw);
+  if (tag !== undefined && tag in sums && Number.isFinite(value))
+    sums[tag] = (sums[tag] ?? 0) + value;
+}
+
 /** Coverage percentages from an lcov report (LF/LH lines, BRF/BRH branches, FNF/FNH functions). */
 export function parseLcov(text: string): Record<string, number> {
   const sums: Record<string, number> = { LF: 0, LH: 0, BRF: 0, BRH: 0, FNF: 0, FNH: 0 };
-  for (const line of text.split("\n")) {
-    const [tag, raw] = line.trim().split(":");
-    const value = Number(raw);
-    if (tag !== undefined && tag in sums && Number.isFinite(value))
-      sums[tag] = (sums[tag] ?? 0) + value;
-  }
+  for (const line of text.split("\n")) addLcovTotal(sums, line);
   const pct = (hit: number, found: number): number => (found ? (hit / found) * 100 : 0);
   if (!sums.LF) return {};
   return {
@@ -149,29 +151,30 @@ export type AxisReport = {
   status: Status | "evaluator" | "unmeasured";
 };
 
+function axisStatus(spec: { ratchets: string[] }, groups: MetricResult[][]): AxisReport["status"] {
+  if (!spec.ratchets.length) return "unmeasured";
+  const statuses = new Set(groups.flat().map((result) => result.status));
+  if (statuses.has("fail")) return "fail";
+  return statuses.has("missing") || groups.some((group) => !group.length) ? "missing" : "pass";
+}
+
+function axisReport(
+  spec: { evaluator?: true; ratchets: string[] },
+  report: Record<string, MetricResult[]>,
+): AxisReport {
+  if (spec.evaluator) return { kind: "evaluator", inputs: [], status: "evaluator" };
+  const groups = spec.ratchets.map((metric) => report[metric] ?? []);
+  return {
+    kind: spec.ratchets.length ? "automatic" : "unmeasured",
+    inputs: spec.ratchets,
+    status: axisStatus(spec, groups),
+  };
+}
+
 /** Rolls the metric statuses up per axis: fail if any fails, missing if any is missing, else pass. */
 export function axisReports(report: Record<string, MetricResult[]>): Record<string, AxisReport> {
   const out: Record<string, AxisReport> = {};
-  for (const [axis, spec] of Object.entries(axes)) {
-    if (spec.evaluator) {
-      out[axis] = { kind: "evaluator", inputs: [], status: "evaluator" };
-      continue;
-    }
-    const groups = spec.ratchets.map((metric) => report[metric] ?? []);
-    const results = groups.flat();
-    const statuses = new Set(results.map((result) => result.status));
-    out[axis] = {
-      kind: spec.ratchets.length ? "automatic" : "unmeasured",
-      inputs: spec.ratchets,
-      status: !spec.ratchets.length
-        ? "unmeasured"
-        : statuses.has("fail")
-          ? "fail"
-          : statuses.has("missing") || groups.some((group) => !group.length)
-            ? "missing"
-            : "pass",
-    };
-  }
+  for (const [axis, spec] of Object.entries(axes)) out[axis] = axisReport(spec, report);
   return out;
 }
 

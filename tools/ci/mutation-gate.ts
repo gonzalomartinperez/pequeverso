@@ -41,6 +41,18 @@ export function readBaselines(ratchet: unknown): Baselines {
   return { score: global, files: data.files ?? {} };
 }
 
+function checkFile(report: Report, baselines: Baselines, file: string): string | undefined {
+  const entry = report.files[file];
+  if (entry === undefined) return `${file}: not in the mutation report`;
+  const value = score(entry.mutants);
+  if (value === undefined) return undefined;
+  const baseline = baselines.files[file];
+  const floor = baseline ?? BREAK;
+  if (value + TOLERANCE >= floor) return undefined;
+  const why = baseline === undefined ? "no baseline, needs the global break" : "per-file baseline";
+  return `${file}: score ${value.toFixed(2)} is below ${floor} (${why})`;
+}
+
 /** Problems for the listed files; empty means the gate passes. */
 export function checkFiles(
   report: Report,
@@ -49,20 +61,8 @@ export function checkFiles(
 ): string[] {
   const problems: string[] = [];
   for (const file of files) {
-    const entry = report.files[file];
-    if (entry === undefined) {
-      problems.push(`${file}: not in the mutation report`);
-      continue;
-    }
-    const value = score(entry.mutants);
-    if (value === undefined) continue;
-    const baseline = baselines.files[file];
-    const floor = baseline ?? BREAK;
-    if (value + TOLERANCE < floor) {
-      const why =
-        baseline === undefined ? "no baseline, needs the global break" : "per-file baseline";
-      problems.push(`${file}: score ${value.toFixed(2)} is below ${floor} (${why})`);
-    }
+    const problem = checkFile(report, baselines, file);
+    if (problem !== undefined) problems.push(problem);
   }
   return problems;
 }
