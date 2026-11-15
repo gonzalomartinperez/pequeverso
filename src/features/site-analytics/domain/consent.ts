@@ -1,8 +1,19 @@
+/**
+ * Stored consent version this freshness rule accepts. It must equal `CONSENT_VERSION` in
+ * `tracking/adapters/consent.ts` (a unit test pins them together; the domain layer may not import
+ * an adapter). Version 3 is the prior opt-in policy (ADR-0011).
+ */
+const GRANT_VERSION = 3;
+
 /** Independent opt-in freshness. Existing marketing defaults and storage parser stay untouched. */
 export function explicitGrant(value: unknown, now: number): boolean {
   if (!value || typeof value !== "object" || !Number.isFinite(now)) return false;
   const state = value as Record<string, unknown>;
-  if (state.version !== 2 || state.analytics !== true || typeof state.updatedAt !== "string")
+  if (
+    state.version !== GRANT_VERSION ||
+    state.analytics !== true ||
+    typeof state.updatedAt !== "string"
+  )
     return false;
   const updated = Date.parse(state.updatedAt);
   return (

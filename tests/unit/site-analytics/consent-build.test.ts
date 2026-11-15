@@ -184,6 +184,10 @@ test("enabled banner reopens stale opt-in while OFF preserves existing marketing
     opener: null,
   });
   assert.deepEqual(render(false, stale, false, false, "trigger").changes, []);
+  // A fresh opt-in stored under the current policy keeps the banner closed (no re-prompt loop);
+  // the harness clock is 2026-10-19T00:00:00Z.
+  const fresh = { ...stale, updatedAt: "2026-10-18T00:00:00.000Z" };
+  assert.deepEqual(render(true, fresh, false, false, "trigger").changes, []);
 });
 
 test("trigger requests the banner on a first visit, a footer click and a storage clear", () => {
